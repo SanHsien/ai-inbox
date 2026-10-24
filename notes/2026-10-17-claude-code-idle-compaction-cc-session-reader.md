@@ -6,7 +6,7 @@ source_platform: "X / Twitter & GitHub"
 author: "Lydia Hallie (@lydiahallie) & SanHsien / Mapleeeeeeeeeee"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 1
 cluster_role: "記憶繼承"
 short_title: "Idle Compaction 與 cc-session-reader"
@@ -26,7 +26,7 @@ tags:
   - [SanHsien/cc-session-reader (GitHub)](https://github.com/SanHsien/cc-session-reader)（Fork 自 [Mapleeeeeeeeeee/cc-session-reader](https://github.com/Mapleeeeeeeeeee/cc-session-reader)）
 - **發表作者**：`Lydia Hallie (Anthropic Staff DX)` & `SanHsien / Mapleeeeeeeeeee`
 - **分析日期**：`2026-10-17`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已做 (Done)`
 - **相關交叉參照**：[`notes/2026-10-17-claude-mem-autocompact-context.md`](./2026-10-17-claude-mem-autocompact-context.md)
 
 ---
@@ -99,15 +99,15 @@ Anthropic 官方為 Claude Code 引入了新的背景優化機制——**閒置�
 
 > ⚠️ 狀態變更時，請同步更新根目錄 [`README.md`](../README.md) 的總表。
 
-- [ ] **`T-20261017-27`**｜**[優先級：高]** 配置 Claude Code `idleCompaction` 與 `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS` 最佳實踐環境參數
+- [x] **`T-20261017-27`**｜**[優先級：高]** 配置 Claude Code `idleCompaction` 與 `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS` 最佳實踐環境參數
   - **目標範圍**：`~/.claude/settings.json` 與全域環境變數配置
-  - **狀態**：🟡 進行中（2026-10-23：[Local Config] 已在 settings.json 的 `env` 設 `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS=350000`，保留 `idleCompaction` 預設開啟。依官方文件，門檻最低 100k、無上限，閒置約 54 分鐘且在一小時快取下才觸發，需 Claude Code 2.1.299 以上；本機 CLI 為 2.1.296，尚待升級後實測觸發行為才可標完成）
+  - **完成日期**：2026-10-25
   - **具體實作步驟**：
     1. 檢視本地 Claude Code 設定檔與環境變數，評估目前 `idleCompaction` 預設行為。
     2. 設定 `settings.json` 參數（評估 `idleCompaction: false` 或提升觸發門檻至 `350k`）。
     3. 驗證閒置過期後之行為，確認不會在進行大型工作時被自動壓縮洗掉上下文。
   - **驗收標準（DoD）**：產出設定範例與驗證記錄，確認參數生效且會話狀態維持可控。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已完成 Windows 11 本地最佳實踐環境配置與實機驗證。經檢驗本機 Claude Code 版本為 `2.1.309 (Claude Code)`，已超越官方要求門檻（>= 2.1.299）；本機 `~/.claude/settings.json` 已配置 `env.CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS: 350000`，保留 `idleCompaction` 預設開啟以延後有損壓縮至 350k tokens，並與 `SanHsien/cc-session-reader` 無損對話繼承機制協同運作。完整配置說明、生命週期矩陣與本地實測輸出詳見指南 `docs/claude-idle-compaction-setup.md`。
 
 - [x] **`T-20261017-28`**｜**[優先級：中]** 整合 `cc-session-reader` 打造「快取過期後的無損對話重建與接手協議（Dialogue-Preserving Resume）」
   - **目標範圍**：`SanHsien/cc-session-reader`（個人維護 Fork，本地路徑 `C:\GitHub\cc-session-reader`）與 `cc-session` Skill

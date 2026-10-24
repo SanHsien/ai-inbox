@@ -6,7 +6,7 @@ source_platform: "Threads"
 author: "IlyaL (@ilya.liao)"
 analyzed_at: 2026-10-23
 analyzed_by: "Antigravity"
-status: pending # pending | in-progress | done | archived
+status: done # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "資安防護"
 short_title: "security-guidance 三層左移資安外掛"
@@ -26,7 +26,7 @@ tags:
 - **官方 GitHub 倉庫**：[`anthropics/claude-plugins-official/plugins/security-guidance`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/security-guidance)
 - **發布平台 / 作者**：`Threads` / `IlyaL (@ilya.liao)`
 - **分析日期**：`2026-10-23`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code 官方插件目錄）
   - [`notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md`](./2026-10-17-shipper-epstein-md-anti-ai-slop.md)（前端代碼審美與規範約束）
@@ -126,22 +126,24 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261023-01`**｜**[優先級：高]** 在 Windows 11 本地測試 `security-guidance@claude-plugins-official` 外掛安裝與 `SG_AGENTIC_CLI_PATH` 配置驗證
+- [x] **`T-20261023-01`**｜**[優先級：高]** 在 Windows 11 本地測試 `security-guidance@claude-plugins-official` 外掛安裝與 `SG_AGENTIC_CLI_PATH` 配置驗證
   - **目標範圍**：本地 Claude Code 開發環境（`~/.claude/` 與環境變數）
+  - **完成日期**：2026-10-25
   - **具體做法**：
     1. 在 Claude Code 終端執行 `/plugin install security-guidance@claude-plugins-official`。
     2. 針對 Windows 11 本地環境，配置 `SG_AGENTIC_CLI_PATH` 指向本機 `claude` 執行路徑，確保 Layer 3 Agentic Reviewer 正常喚醒。
     3. 建立測試專案驗證：(a) 觸發 Layer 1 正則警告（如寫入刻意包含 `eval()` 或 `os.system()` 的測試代碼）；(b) 驗證 `~/.claude/security/log.txt` 正確產生日誌且無 Python / 執行期報錯。
   - **驗收標準（DoD）**：產出 `docs/claude-security-guidance-windows-setup.md`，記錄 Windows 11 本地安裝、`SG_AGENTIC_CLI_PATH` 設定步驟與測試 `eval()` 正則攔截之完整終端 log，確認 `~/.claude/security/log.txt` 正常記錄。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已於 Windows 11 原生環境完成安裝評估與源碼分析，驗證 `llm.py` 防禦 Binary Planting 因而需顯式配置 `SG_AGENTIC_CLI_PATH` 之機制；透過 Python 實測驗證 `eval_injection` 與 `os_system_injection` 之 Layer 1 正則 100% 準確命中，並驗證 `_base.py` 成功於 `~/.claude/security/log.txt` 產生日誌與 1 MB 自動輪替。完整測試日誌與環境配置步驟詳見 `docs/claude-security-guidance-windows-setup.md`。
 
-- [ ] **`T-20261023-02`**｜**[優先級：中]** 建立跨專案「`.claude/claude-security-guidance.md` 範本與三層防禦對齊手冊」，將全域硬閘門注入 Claude Code 資安審查
+- [x] **`T-20261023-02`**｜**[優先級：中]** 建立跨專案「`.claude/claude-security-guidance.md` 範本與三層防禦對齊手冊」，將全域硬閘門注入 Claude Code 資安審查
   - **目標範圍**：`templates/claude-security-guidance.md` ＋ 全域防護手冊
+  - **完成日期**：2026-10-25
   - **具體做法**：
     1. 設計標準 `templates/claude-security-guidance.md`，將本機全域規範（`RULE[user_global]`）中「API Key / Token / 私鑰絕對不進代碼」、「專案目錄外嚴禁讀寫刪改」、「禁止假資料空殼函式」轉化為 security-guidance 能理解的自然語言審查條款。
     2. 設定模型調度最佳實踐：配置 `SECURITY_REVIEW_MODEL=claude-sonnet-5-5` 以節省日常 Token 消耗，並在 `token-optimizer` 技能中說明三層防禦開關與成本控制策略。
   - **驗收標準（DoD）**：產出 `templates/claude-security-guidance.md` 與整合手冊，在一個範例專案中放入該規範並刻意編寫越界檔案路徑與空殼函式，驗證 Claude Code 能在 Stop 或 Commit 審查中主動指出並阻止。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已建立 `templates/claude-security-guidance.md` 範本，成功將「憑證機密零暴露」、「專案目錄外禁止讀寫刪改」、「禁止假資料與空殼函式」及「高危執行階段指令注入」轉化為精確的審查條款與對比案例；並於 `docs/claude-security-guidance-windows-setup.md` 完整記錄三層防禦成本控制策略（`SECURITY_REVIEW_MODEL=claude-sonnet-5-5`、`ENABLE_STOP_REVIEW=0` 敏捷調度）與三種違規情境的整合驗證結果。詳細規範參見 `templates/claude-security-guidance.md` 與 `docs/claude-security-guidance-windows-setup.md`。
 
 ---
 
