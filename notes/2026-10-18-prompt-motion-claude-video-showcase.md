@@ -6,7 +6,7 @@ source_platform: "Web Showcase"
 author: "@p4nthera_ & Global Claude Creators"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 2
 cluster_role: "視頻策展"
 short_title: "Prompt Motion 視頻展示庫"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[Prompt Motion 官方網站](https://prompt-motion.com)
 - **策展發起者**：`@p4nthera_` & 全球 Claude 創作者社群
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-motion-prompt-animation-dictionary.md`](./2026-10-17-motion-prompt-animation-dictionary.md)（微觀動效字典）
   - [`notes/2026-10-17-cinematic-shot-ui-film-director.md`](./2026-10-17-cinematic-shot-ui-film-director.md)（宏觀運鏡分鏡）

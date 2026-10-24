@@ -6,6 +6,8 @@
 
 > 集中收納網路與社群平台上的 AI 文章分析、拆解出的可執行待辦事項（Action Items），並提供各 Agent（Claude Code / Codex / Antigravity / Hermes）統一查閱與回寫實作狀態的總控台。
 
+**快速跳轉**：[📋 待辦佇列](#-待辦任務總表依實作情形區分) ｜ [🕸️ 四大主題知識圖譜](#️-核心知識圖譜與四大主題集群knowledge-clusters) ｜ [🧰 工具與產出物導覽](#-全庫工具與產出物導覽tools-docs-templates--assets) ｜ [📚 文章分析索引](#-文章分析索引notes-index) ｜ [🤖 Agent 操作指南](#-agent-操作快速指南)
+
 ## 架構與工作流
 
 ```text
@@ -38,53 +40,29 @@
 
 <!-- BEGIN GENERATED: tasks -->
 > 共 92 項任務：🔴 未做 12／🟡 進行中 1／🟢 已做 52／⚪ 不做 27
+> 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
-### 🔴 未做 / 進行中（Pending & In Progress）
+### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261017-01` | ⚪ 不做 | 低 | 調研 XERJ CLI 與 Corpus Hub 在 Windows 11 下的可用性與安裝方式 | `環境工具鏈 / XERJ 原生調研` | [2026-10-17-xerj-corpus-hub](./notes/2026-10-17-xerj-corpus-hub.md) | 2026-10-17 |
-| `T-20261017-02` | ⚪ 不做 | 低 | 評估將 XERJ 整合為 Antigravity / Claude Code 本地 MCP 工具或 Skill | `~\.gemini\config\skills\` 或 `mcp` 外掛 | [2026-10-17-xerj-corpus-hub](./notes/2026-10-17-xerj-corpus-hub.md) | 2026-10-17 |
-| `T-20261017-08` | ⚪ 不做 | 低 | 評估比照官方規格打包個人常用工具為標準 Plugin | `跨專案規範 / 自製 Plugin 打包` | [2026-10-17-claude-plugins-official-directory](./notes/2026-10-17-claude-plugins-official-directory.md) | 2026-10-17 |
-| `T-20261017-10` | ⚪ 不做 | 低 | 評估將 `cinematic-shot` 整合至本地影視生成專案（如 `video-spec-builder` 或 Skills） | `C:\GitHub\video-spec-builder` 或 `~/.gemini/config/skills/` | [2026-10-17-cinematic-shot-ui-film-director](./notes/2026-10-17-cinematic-shot-ui-film-director.md) | 2026-10-17 |
-| `T-20261017-11` | ⚪ 不做 | 低 | 整理 Claude Code / Antigravity 混合模型路由指南，納入 `token-optimizer` 規則手冊 | `~\.gemini\config\skills\token-optimizer\SKILL.md` | [2026-10-17-model-routing-opusplan-advisor](./notes/2026-10-17-model-routing-opusplan-advisor.md) | 2026-10-17 |
-| `T-20261017-12` | ⚪ 不做 | 低 | 評估本地 Claude Code 終端別名與自定義啟動腳本配置 | `環境工具鏈 / CLI 啟動配置` | [2026-10-17-model-routing-opusplan-advisor](./notes/2026-10-17-model-routing-opusplan-advisor.md) | 2026-10-17 |
-| `T-20261017-15` | ⚪ 不做 | 低 | 評估並建立「AI Agent 自動錄製展示 (Demo-as-a-Link)」工作流規範與 Windows 替代方案調研 | `C:\GitHub\ai-inbox\notes\` 與驗證流程手冊 | [2026-10-17-reelbird-open-source-screen-recorder](./notes/2026-10-17-reelbird-open-source-screen-recorder.md) | 2026-10-17 |
-| `T-20261017-16` | ⚪ 不做 | 低 | 設計基於 Cloudflare R2 / S3 的個人影片展示零成本託管模板 | 雲端儲存與靜態部署方案 | [2026-10-17-reelbird-open-source-screen-recorder](./notes/2026-10-17-reelbird-open-source-screen-recorder.md) | 2026-10-17 |
-| `T-20261017-18` | ⚪ 不做 | 低 | 串接 `motion-prompt`（微觀動態字典）與 `cinematic-shot`（宏觀運鏡），產出產品發表展示 Prompts 範本 | 多媒體影視與展示工作流 | [2026-10-17-motion-prompt-animation-dictionary](./notes/2026-10-17-motion-prompt-animation-dictionary.md) | 2026-10-17 |
-| `T-20261017-25` | ⚪ 不做 | 低 | 評估並實作「Claude-Mem 本地環境部署與 Tool Hook / MCP Observer 整合測試」 | `SanHsien/ai-inbox` 與 Coding Agent 本地工具鏈 | [2026-10-17-claude-mem-autocompact-context](./notes/2026-10-17-claude-mem-autocompact-context.md) | 2026-10-17 |
-| `T-20261017-26` | ⚪ 不做 | 低 | 建立「400K Autocompact 臨界閾值與針式記憶（Needle Observations）檢索評估基準」 | 長上下文管理規範與評測協議 | [2026-10-17-claude-mem-autocompact-context](./notes/2026-10-17-claude-mem-autocompact-context.md) | 2026-10-17 |
 | `T-20261017-27` | 🟡 進行中 | 高 | 配置 Claude Code `idleCompaction` 與 `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS` 最佳實踐環境參數 | `~/.claude/settings.json` 與全域環境變數配置 | [2026-10-17-claude-code-idle-compaction-cc-session-reader](./notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md) | 2026-10-17 |
-| `T-20261017-29` | ⚪ 不做 | 低 | 調研 SAM 3 / 3.1 在 Windows 11 本地環境（NVIDIA CUDA）的推論與 CLI / Python API 封裝 | `SanHsien/ai-inbox` 與視覺多媒體工具鏈 | [2026-10-17-meta-sam-3-1-video-segmentation](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md) | 2026-10-17 |
-| `T-20261017-30` | ⚪ 不做 | 低 | 設計「MLLM 語意拆解 + SAM 3.1 像素遮罩」多模態視頻隱私自動打碼流水線（Auto-Blur Pipeline） | 多媒體後製與隱私自動化工作流 | [2026-10-17-meta-sam-3-1-video-segmentation](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md) | 2026-10-17 |
-| `T-20261017-33` | ⚪ 不做 | 低 | 調研並實測 `typesafe-ai/skills` 與 Jev 亞秒路由機制在本地 Coding Agent 的整合 | `SanHsien/ai-inbox` 與 Agent 決策技能庫（`config/skills/`） | [2026-10-17-github-open-source-ai-toolkit-matrix](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md) | 2026-10-17 |
-| `T-20261017-34` | ⚪ 不做 | 低 | 評估 OpenHands（自主軟體工程師）與 LibreChat（統一多模型工作站）的本地私有化部署 | 本地開發環境與工具鏈基礎設施 | [2026-10-17-github-open-source-ai-toolkit-matrix](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md) | 2026-10-17 |
-| `T-20261018-01` | ⚪ 不做 | 低 | 建立「Claude 代碼動效視頻渲染標準工作流（Remotion / HTML Canvas Video Pipeline）」 | 多媒體生成技能庫與 Node.js 工具鏈 | [2026-10-18-prompt-motion-claude-video-showcase](./notes/2026-10-18-prompt-motion-claude-video-showcase.md) | 2026-10-18 |
-| `T-20261018-02` | ⚪ 不做 | 低 | 彙整 Prompt Motion 精選「產品 UI 展示與動效字幕」Prompt 範本庫，串聯 `motion-prompt` 與 `cinematic-shot` | `SanHsien/ai-inbox` 與視覺動效手冊 | [2026-10-18-prompt-motion-claude-video-showcase](./notes/2026-10-18-prompt-motion-claude-video-showcase.md) | 2026-10-18 |
-| `T-20261018-05` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 `desktop-sense` 守護程序與 Claude Code / Codex CLI / Gemini CLI Hook 整合 | 本地開發環境與 Coding Agent 工具鏈基礎設施 | [2026-10-18-desktop-sense-local-screen-context](./notes/2026-10-18-desktop-sense-local-screen-context.md) | 2026-10-18 |
-| `T-20261018-06` | ⚪ 不做 | 低 | 評估將 `desktop-sense` 隱私防線（敏感視窗黑名單、API Key 丟棄、截圖生命週期）蒸餾為本地多模態 Agent 視覺安全規範 | 全域安全規範與視覺/截圖防護協定 | [2026-10-18-desktop-sense-local-screen-context](./notes/2026-10-18-desktop-sense-local-screen-context.md) | 2026-10-18 |
-| `T-20261018-07` | ⚪ 不做 | 低 | 建立「Claude Opus 5.5 程式碼視覺化生成提示詞庫（Awesome Opus 5.5 Prompts Benchmark）」解析腳本與分類檢索工具 | `SanHsien/ai-inbox` 與前端視覺動效工具庫 | [2026-10-18-awesome-opus5-5-videos-prompt-zoo](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) | 2026-10-18 |
-| `T-20261018-09` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | 本地 Claude Code 開發環境與外掛架構 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | 2026-10-18 |
-| `T-20261018-10` | ⚪ 不做 | 低 | 評估將全域高危指令攔截（Blast Radius）與安全規範包裝為本地 Claude Code Mod 防護插件 | 全域安全規範（`RULE[user_global]`）機械防線 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | 2026-10-18 |
-| `T-20261020-03` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 `BeatAPI/BeatDesign` 部署與 MCP 整合（驗證 `pnpm dev:agent` 啟動、29 個 MCP 工具列出與 Antigravity / Claude Code 連線） | `BeatAPI/BeatDesign`（本地 `C:\GitHub\BeatDesign` 調研）、本地 Agent MCP 配置 | [2026-10-20-beatdesign-open-source-ai-video-studio](./notes/2026-10-20-beatdesign-open-source-ai-video-studio.md) | 2026-10-20 |
-| `T-20261020-04` | ⚪ 不做 | 低 | 設計「BeatDesign + Cinetic + cinematic-shot 代碼驅動多模態影視流水線規格（Code-to-Timeline Studio Pipeline）」，打通從腳本生成、分鏡提示、畫布分叉到時間線自動剪輯的 Agent 閉環 | `BeatAPI/BeatDesign` ＋ `Leonxlnx/cinetic` ＋ `cinematic-shot` ＋ 影視生成工作流 | [2026-10-20-beatdesign-open-source-ai-video-studio](./notes/2026-10-20-beatdesign-open-source-ai-video-studio.md) | 2026-10-20 |
-| `T-20261021-01` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 `Niko1221/Strata` 的安裝與相容性（驗證 CUDA 驅動檢測、CLI/App 啟動與 OpenAI/Anthropic API 本地端點響應） | `Niko1221/Strata`（本地測試）、本地 Coding Agent API 配置 | [2026-10-21-strata-consumer-gpu-large-llm-inference](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md) | 2026-10-21 |
-| `T-20261021-02` | ⚪ 不做 | 低 | 評估將 Strata 本地端點整合至 `agent-advisor` 路由矩陣與 Coding Agent 離線降級工作流（Local 125B Offline Fallback） | `SanHsien/agent-advisor` ＋ 全域 Agent 路由配置 | [2026-10-21-strata-consumer-gpu-large-llm-inference](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md) | 2026-10-21 |
-| `T-20261021-13` | ⚪ 不做 | 低 | 在 `agent-advisor` 中配置 `0x-alpha`（GLM-5.3-Flash）1M 長上下文 Provider，實測整庫代碼無切片吞吐與靜態架構分析 | `SanHsien/agent-advisor` ＋ OpenRouter / Z.ai API | [2026-10-21-0x-alpha-glm-5-3-flash-1m-context](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) | 2026-10-21 |
 | `T-20261023-01` | 🔴 未做 | 高 | 在 Windows 11 本地測試 `security-guidance@claude-plugins-official` 外掛安裝與 `SG_AGENTIC_CLI_PATH` 配置驗證 | 本地 Claude Code 開發環境（`~/.claude/` 與環境變數） | [2026-10-23-claude-plugin-security-guidance](./notes/2026-10-23-claude-plugin-security-guidance.md) | 2026-10-23 |
+| `T-20261023-05` | 🔴 未做 | 高 | 盤點本人是否使用 Zeabur，並對曾存放其上的憑證做輪替確認 | `docs/zeabur-incident-credential-audit.md`（僅記錄遮蔽後資訊，嚴禁貼入任何仍有效的金鑰） | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | 2026-10-23 |
 | `T-20261023-02` | 🔴 未做 | 中 | 建立跨專案「`.claude/claude-security-guidance.md` 範本與三層防禦對齊手冊」，將全域硬閘門注入 Claude Code 資安審查 | `templates/claude-security-guidance.md` ＋ 全域防護手冊 | [2026-10-23-claude-plugin-security-guidance](./notes/2026-10-23-claude-plugin-security-guidance.md) | 2026-10-23 |
 | `T-20261023-03` | 🔴 未做 | 中 | 取得 WebToApp 並實測：把一個本機靜態網頁打包成可安裝 APK，記錄限制 | `docs/web-to-app-evaluation.md`（實測紀錄；不修改其他 repo） | [2026-10-23-web-to-app-android-packaging](./notes/2026-10-23-web-to-app-android-packaging.md) | 2026-10-23 |
-| `T-20261023-04` | 🔴 未做 | 低 | 在 T-20261023-03 結論為「可行」的前提下，撰寫「網站轉 App 接案流程規格」 | `docs/web-to-app-freelance-workflow.md` | [2026-10-23-web-to-app-android-packaging](./notes/2026-10-23-web-to-app-android-packaging.md) | 2026-10-23 |
-| `T-20261023-05` | 🔴 未做 | 高 | 盤點本人是否使用 Zeabur，並對曾存放其上的憑證做輪替確認 | `docs/zeabur-incident-credential-audit.md`（僅記錄遮蔽後資訊，嚴禁貼入任何仍有效的金鑰） | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | 2026-10-23 |
 | `T-20261023-06` | 🔴 未做 | 中 | 建立「託管平台入侵事件應變清單」範本，供日後任一 PaaS 事件重用 | `templates/platform-breach-response.md` | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | 2026-10-23 |
 | `T-20261024-01` | 🔴 未做 | 中 | 建立「AI 野心升級檢查表」範本（高度／深度四問／廣度動詞化），並用一個真實任務實測前後差異 | `templates/ambition-prompt-checklist.md` | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | 2026-10-24 |
-| `T-20261024-02` | 🔴 未做 | 低 | 稽核現有任務與技能是否具備「外部裁判」，列出缺口 | `docs/external-judge-audit.md`（只讀盤點 ai-inbox 內的 DoD，不修改任務） | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | 2026-10-24 |
 | `T-20261024-03` | 🔴 未做 | 中 | 在 Windows 11 原生環境評估 feedback-desk 的 CLI 與 MCP 可行性（不含正式部署，除非維護者同意） | `docs/feedback-desk-windows-eval.md`；僅在暫存資料夾執行，不碰其他 repo | [2026-10-24-feedback-desk-client-ticket-ai-handoff](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | 2026-10-24 |
-| `T-20261024-04` | 🔴 未做 | 低 | 對照 feedback-desk 的認領／交接機制與本地 `agent-relay`，列出可借鏡與不採納項 | `docs/feedback-desk-vs-agent-relay.md`（只讀比對，不改 `agent-relay`） | [2026-10-24-feedback-desk-client-ticket-ai-handoff](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | 2026-10-24 |
 | `T-20261024-05` | 🔴 未做 | 中 | 查證影片的三項宣稱：IG 標示 AI 生成是否不被降權、ElevenLabs 與 HeyGen 的肖像與聲音授權範圍、兩工具現行費用 | `docs/ai-influencer-claims-check.md`（僅查官方公開頁面，不註冊、不付費） | [2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | 2026-10-24 |
+| `T-20261023-04` | 🔴 未做 | 低 | 在 T-20261023-03 結論為「可行」的前提下，撰寫「網站轉 App 接案流程規格」 | `docs/web-to-app-freelance-workflow.md` | [2026-10-23-web-to-app-android-packaging](./notes/2026-10-23-web-to-app-android-packaging.md) | 2026-10-23 |
+| `T-20261024-02` | 🔴 未做 | 低 | 稽核現有任務與技能是否具備「外部裁判」，列出缺口 | `docs/external-judge-audit.md`（只讀盤點 ai-inbox 內的 DoD，不修改任務） | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | 2026-10-24 |
+| `T-20261024-04` | 🔴 未做 | 低 | 對照 feedback-desk 的認領／交接機制與本地 `agent-relay`，列出可借鏡與不採納項 | `docs/feedback-desk-vs-agent-relay.md`（只讀比對，不改 `agent-relay`） | [2026-10-24-feedback-desk-client-ticket-ai-handoff](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | 2026-10-24 |
 | `T-20261024-06` | 🔴 未做 | 低 | 建立「AI 生成人物與聲音使用的合規檢查清單」，供日後任何 AI 人物或數位人專案參考 | `docs/ai-persona-compliance-checklist.md` | [2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | 2026-10-24 |
 
 ### 🟢 已做（Done）
+
+<details><summary>展開查看已完成任務（共 52 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -140,6 +118,44 @@
 | `T-20261021-14` | 2026-10-23 | 針對開源長上下文模型設計「Agent 循環執行死鎖偵測與強制熔斷 Hook（Anti-Doom-Loop Hook）」，防止長任務中重複執行相同指令 | 在個人 Fork `SanHsien/harness-guard` 完成實作。新增 PreToolUse 守護腳本 `hooks/anti-doom-loop-guard/claude-code/anti_doom_loop_guard.py`，支援 Bash/Read 連續 3 次重複命令之滑動視窗比對與熔斷攔截，並記錄審計日誌至 audit.jsonl；新增迴歸測試 `hooks/anti-doom-loop-guard/tests/run-tests.py`（15/15 通過），整合進 CI 矩陣，本地全量 guardrail 測試綠燈，提交並推至 origin（Commit `5f069e2`），未寫入任何 agent 正式設定。 | [2026-10-21-0x-alpha-glm-5-3-flash-1m-context](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) |
 | `T-20261021-15` | 2026-10-22 | 建立「Code-as-Video Studio 影視工作室規範（`CLAUDE.md` / `SKILL.md` 範本）」，將「影片是時間函式 seek(t)」、反 AI 視覺套路清單與 Playwright 網頁素材自動擷取封裝為標準模組 | 產出 templates/video-studio-harness.md 影視工作室規範（含 CLAUDE.md / SKILL.md 範本），整合 seek(t) 時間函式架構、四大反 AI 視覺套路禁令，並併入 T-20261017-18（運鏡）、T-20261018-02（動效字典）、T-20261020-04（時間線規格）與 T-20261018-01（Remotion/Canvas 渲染工作流）；實作 tools/video_asset_capture.py 與 tests/test_video_asset_capture.py（單元測試通過）；實測以 Playwright 抓取 https://openlibrary.org 產出截圖、theme.json 與單檔時間函式範例 assets/openlibrary_demo/video_seek_canvas.html。 | [2026-10-21-code-as-video-harness-studio-workflow](./notes/2026-10-21-code-as-video-harness-studio-workflow.md) |
 | `T-20261021-16` | 2026-10-23 | 實作「關鍵幀縮圖總覽與 1-10 分自檢評審門禁（Keyframe Storyboard Gate）」，在影片正式渲染前自動剔除劣質分鏡 | 以 ai-inbox 範本形式交付於 `tools/verify_video_storyboard.py` 與測試 `tests/test_verify_video_storyboard.py`（6/6 通過），實作關鍵影格 1-10 分評審打分機制、四大反 AI 罐頭套路檢測、自動輸出 HTML Contact Sheet 與 JSON 門禁報告。 | [2026-10-21-code-as-video-harness-studio-workflow](./notes/2026-10-21-code-as-video-harness-studio-workflow.md) |
+
+</details>
+
+### ⚪ 不做 / 已關閉（Archived）
+
+<details><summary>展開查看已關閉或評估不做的任務（共 27 項）</summary>
+
+| 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 關閉理由 | 來源分析文章 |
+| :--- | :---: | :---: | :--- | :--- | :--- |
+| `T-20261017-01` | ⚪ 不做 | 低 | 調研 XERJ CLI 與 Corpus Hub 在 Windows 11 下的可用性與安裝方式 | 知識檢索已全面採用本地 Markdown 與 Obsidian 知識庫，不另引入重型 XERJ 語料庫工具鏈 | [2026-10-17-xerj-corpus-hub](./notes/2026-10-17-xerj-corpus-hub.md) |
+| `T-20261017-02` | ⚪ 不做 | 低 | 評估將 XERJ 整合為 Antigravity / Claude Code 本地 MCP 工具或 Skill | 同 T-20261017-01，不引入 XERJ 工具鏈 | [2026-10-17-xerj-corpus-hub](./notes/2026-10-17-xerj-corpus-hub.md) |
+| `T-20261017-08` | ⚪ 不做 | 低 | 評估比照官方規格打包個人常用工具為標準 Plugin | 常用工具已打包為標準 plugin（agent-advisor-claude、myr2d2），此任務實質已完成 | [2026-10-17-claude-plugins-official-directory](./notes/2026-10-17-claude-plugins-official-directory.md) |
+| `T-20261017-10` | ⚪ 不做 | 低 | 評估將 `cinematic-shot` 整合至本地影視生成專案（如 `video-spec-builder` 或 Skills） | cinematic-shot 的運鏡規則由 T-20261017-09 抽取後併入 T-20261021-15，不另做整合評估 | [2026-10-17-cinematic-shot-ui-film-director](./notes/2026-10-17-cinematic-shot-ui-film-director.md) |
+| `T-20261017-11` | ⚪ 不做 | 低 | 整理 Claude Code / Antigravity 混合模型路由指南，納入 `token-optimizer` 規則手冊 | 混合模型分工已於 agent-relay 額度感知顧問與 token-optimizer 完整落地，無須重複整理 | [2026-10-17-model-routing-opusplan-advisor](./notes/2026-10-17-model-routing-opusplan-advisor.md) |
+| `T-20261017-12` | ⚪ 不做 | 低 | 評估本地 Claude Code 終端別名與自定義啟動腳本配置 | CLI 啟動已由 agent-relay 派工器與 Windows Terminal 整合標準化，不維護散落的終端別名腳本 | [2026-10-17-model-routing-opusplan-advisor](./notes/2026-10-17-model-routing-opusplan-advisor.md) |
+| `T-20261017-15` | ⚪ 不做 | 低 | 評估並建立「AI Agent 自動錄製展示 (Demo-as-a-Link)」工作流規範與 Windows 替代方案調研 | Reelbird 原生依賴 macOS Swift，Windows 11 不適用，且已有 Playwright 錄影與 Code-as-Video 方案 | [2026-10-17-reelbird-open-source-screen-recorder](./notes/2026-10-17-reelbird-open-source-screen-recorder.md) |
+| `T-20261017-16` | ⚪ 不做 | 低 | 設計基於 Cloudflare R2 / S3 的個人影片展示零成本託管模板 | 搭配 Reelbird 之特定託管方案，隨 Reelbird 評估終止一併關閉 | [2026-10-17-reelbird-open-source-screen-recorder](./notes/2026-10-17-reelbird-open-source-screen-recorder.md) |
+| `T-20261017-18` | ⚪ 不做 | 低 | 串接 `motion-prompt`（微觀動態字典）與 `cinematic-shot`（宏觀運鏡），產出產品發表展示 Prompts 範本 | 與 T-20261018-02 重複，兩者皆併入 T-20261021-15 Code-as-Video Studio 規範 | [2026-10-17-motion-prompt-animation-dictionary](./notes/2026-10-17-motion-prompt-animation-dictionary.md) |
+| `T-20261017-25` | ⚪ 不做 | 低 | 評估並實作「Claude-Mem 本地環境部署與 Tool Hook / MCP Observer 整合測試」 | 跨 Session 記憶已由 agent-relay context 與 Obsidian 知識庫打通，無須另行引入複雜的 Claude-Mem Hook | [2026-10-17-claude-mem-autocompact-context](./notes/2026-10-17-claude-mem-autocompact-context.md) |
+| `T-20261017-26` | ⚪ 不做 | 低 | 建立「400K Autocompact 臨界閾值與針式記憶（Needle Observations）檢索評估基準」 | 外置針式記憶機制已由 agent-relay 集中中樞與 cc-session-reader 取代 | [2026-10-17-claude-mem-autocompact-context](./notes/2026-10-17-claude-mem-autocompact-context.md) |
+| `T-20261017-29` | ⚪ 不做 | 低 | 調研 SAM 3 / 3.1 在 Windows 11 本地環境（NVIDIA CUDA）的推論與 CLI / Python API 封裝 | 需要大量 GPU 與模型下載，與目前工作流（程式、文件、社群內容）無關 | [2026-10-17-meta-sam-3-1-video-segmentation](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md) |
+| `T-20261017-30` | ⚪ 不做 | 低 | 設計「MLLM 語意拆解 + SAM 3.1 像素遮罩」多模態視頻隱私自動打碼流水線（Auto-Blur Pipeline） | 同 T-20261017-29，依賴 SAM 本地推論，無實際影片打碼需求 | [2026-10-17-meta-sam-3-1-video-segmentation](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md) |
+| `T-20261017-33` | ⚪ 不做 | 低 | 調研並實測 `typesafe-ai/skills` 與 Jev 亞秒路由機制在本地 Coding Agent 的整合 | 派工路由已由 agent-advisor（solo／delegate／audit／full）負責，不再引入另一套路由機制 | [2026-10-17-github-open-source-ai-toolkit-matrix](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md) |
+| `T-20261017-34` | ⚪ 不做 | 低 | 評估 OpenHands（自主軟體工程師）與 LibreChat（統一多模型工作站）的本地私有化部署 | 本地開發已統一使用 Claude Code、Codex CLI 與 Antigravity，經評估不自建肥大的 OpenHands/LibreChat 私有容器 | [2026-10-17-github-open-source-ai-toolkit-matrix](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md) |
+| `T-20261018-01` | ⚪ 不做 | 低 | 建立「Claude 代碼動效視頻渲染標準工作流（Remotion / HTML Canvas Video Pipeline）」 | Remotion 渲染流程併入 T-20261021-15（規範）與 T-20261019-04（幀同步原型） | [2026-10-18-prompt-motion-claude-video-showcase](./notes/2026-10-18-prompt-motion-claude-video-showcase.md) |
+| `T-20261018-02` | ⚪ 不做 | 低 | 彙整 Prompt Motion 精選「產品 UI 展示與動效字幕」Prompt 範本庫，串聯 `motion-prompt` 與 `cinematic-shot` | 併入 T-20261021-15 Code-as-Video Studio 規範，不另建 Prompt 範本庫 | [2026-10-18-prompt-motion-claude-video-showcase](./notes/2026-10-18-prompt-motion-claude-video-showcase.md) |
+| `T-20261018-05` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 `desktop-sense` 守護程序與 Claude Code / Codex CLI / Gemini CLI Hook 整合 | 常駐截圖守護程式並掛進所有 CLI hook，隱私風險高；看畫面需求已由 computer-use 與瀏覽器工具滿足 | [2026-10-18-desktop-sense-local-screen-context](./notes/2026-10-18-desktop-sense-local-screen-context.md) |
+| `T-20261018-06` | ⚪ 不做 | 低 | 評估將 `desktop-sense` 隱私防線（敏感視窗黑名單、API Key 丟棄、截圖生命週期）蒸餾為本地多模態 Agent 視覺安全規範 | 同 T-20261018-05，不引入 desktop-sense，截圖隱私規範沿用現有 computer-use 遮罩機制 | [2026-10-18-desktop-sense-local-screen-context](./notes/2026-10-18-desktop-sense-local-screen-context.md) |
+| `T-20261018-07` | ⚪ 不做 | 低 | 建立「Claude Opus 5.5 程式碼視覺化生成提示詞庫（Awesome Opus 5.5 Prompts Benchmark）」解析腳本與分類檢索工具 | 提示詞庫解析腳本價值低，視覺化生成需求由 T-20261018-08 單檔技能涵蓋 | [2026-10-18-awesome-opus5-5-videos-prompt-zoo](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) |
+| `T-20261018-09` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | Claude Code 官方已轉向標準 Plugins 架構，非官方 Mods 機制過時且維護風險高 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) |
+| `T-20261018-10` | ⚪ 不做 | 低 | 評估將全域高危指令攔截（Blast Radius）與安全規範包裝為本地 Claude Code Mod 防護插件 | 高危防護已在 harness-guard 與 agent-relay/gates.py 透過原生 Hook/閘門實現，不依賴 Mods | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) |
+| `T-20261020-03` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 `BeatAPI/BeatDesign` 部署與 MCP 整合（驗證 `pnpm dev:agent` 啟動、29 個 MCP 工具列出與 Antigravity / Claude Code 連線） | 影視工具鏈以 T-20261021-15 為主線，不另部署 BeatDesign 與其 29 個 MCP 工具 | [2026-10-20-beatdesign-open-source-ai-video-studio](./notes/2026-10-20-beatdesign-open-source-ai-video-studio.md) |
+| `T-20261020-04` | ⚪ 不做 | 低 | 設計「BeatDesign + Cinetic + cinematic-shot 代碼驅動多模態影視流水線規格（Code-to-Timeline Studio Pipeline）」，打通從腳本生成、分鏡提示、畫布分叉到時間線自動剪輯的 Agent 閉環 | 影視流水線規格併入 T-20261021-15，避免多份重疊規格 | [2026-10-20-beatdesign-open-source-ai-video-studio](./notes/2026-10-20-beatdesign-open-source-ai-video-studio.md) |
+| `T-20261021-01` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 `Niko1221/Strata` 的安裝與相容性（驗證 CUDA 驅動檢測、CLI/App 啟動與 OpenAI/Anthropic API 本地端點響應） | 宣稱 12GB 顯卡跑 125B 未經查證，要下載數十 GB 且佔用顯卡；維護者已有 Claude／Codex／Gemini 訂閱，不需要本地離線後端 | [2026-10-21-strata-consumer-gpu-large-llm-inference](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md) |
+| `T-20261021-02` | ⚪ 不做 | 低 | 評估將 Strata 本地端點整合至 `agent-advisor` 路由矩陣與 Coding Agent 離線降級工作流（Local 125B Offline Fallback） | 同 T-20261021-01；agent-advisor 只做 Claude／Codex／Cursor／Antigravity 內建子代理路由，不接外部 Provider | [2026-10-21-strata-consumer-gpu-large-llm-inference](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md) |
+| `T-20261021-13` | ⚪ 不做 | 低 | 在 `agent-advisor` 中配置 `0x-alpha`（GLM-5.3-Flash）1M 長上下文 Provider，實測整庫代碼無切片吞吐與靜態架構分析 | agent-advisor 只路由各工具內建模型，不設定第三方 Provider；長上下文需求由 Gemini 1M 已涵蓋 | [2026-10-21-0x-alpha-glm-5-3-flash-1m-context](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) |
+
+</details>
 <!-- END GENERATED: tasks -->
 
 ---
@@ -147,32 +163,32 @@
 ## 📚 文章分析索引（Notes Index）
 
 <!-- BEGIN GENERATED: index -->
-| 日期 | 狀態 | 文章標題 / 主題 | 核心標籤 | 衍生任務（已做/總數） |
+| 日期 | 狀態 | 文章標題 / 主題 | 核心標籤 | 衍生任務（已做/有效） |
 | :---: | :---: | :--- | :--- | :---: |
 | 2026-10-17 | 🟢 | [策略性學術閱讀與知識管理三層框架：5W1H 篩選、CQR 論證拆解與 KSU 筆記回收](./notes/2026-10-17-academic-reading-framework.md) | `academic-reading`, `knowledge-management`, `research-methodology` | 2 / 2 |
 | 2026-10-17 | 🟢 | [Agent-Reach：專為 AI Agent 設計的跨平台社媒熱點與多模態情報獲取工具包](./notes/2026-10-17-agent-reach-social-intelligence.md) | `social-media-crawler`, `agent-tools`, `web-scraping` | 2 / 2 |
-| 2026-10-17 | 🟡 | [cinematic-shot：讓 AI Agent 像拍電影般掌鏡軟體產品發表片的視覺技能](./notes/2026-10-17-cinematic-shot-ui-film-director.md) | `agent-skills`, `cinematic-shot`, `video-generation` | 1 / 2 |
+| 2026-10-17 | 🟢 | [cinematic-shot：讓 AI Agent 像拍電影般掌鏡軟體產品發表片的視覺技能](./notes/2026-10-17-cinematic-shot-ui-film-director.md) | `agent-skills`, `cinematic-shot`, `video-generation` | 1 / 1（+1 不做） |
 | 2026-10-17 | 🟡 | [Claude Code 閒置壓縮（Idle Compaction）解析與 Prompt Cache 過期對策：以 cc-session-reader 實現對話無損繼承](./notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md) | `claude-code`, `prompt-caching`, `idle-compaction` | 1 / 2 |
-| 2026-10-17 | ⚪ | [Claude-Mem 跨 Session 記憶中樞與 Autocompact 400K 雙軌協同架構分析](./notes/2026-10-17-claude-mem-autocompact-context.md) | `context-management`, `long-term-memory`, `autocompact-400k` | 0 / 2 |
-| 2026-10-17 | 🟡 | [Anthropic 官方 Claude Code 插件生態目錄：解構標準化外掛、Skills 與 MCP 整合](./notes/2026-10-17-claude-plugins-official-directory.md) | `claude-code`, `agent-plugins`, `anthropic` | 1 / 2 |
+| 2026-10-17 | ⚪ | [Claude-Mem 跨 Session 記憶中樞與 Autocompact 400K 雙軌協同架構分析](./notes/2026-10-17-claude-mem-autocompact-context.md) | `context-management`, `long-term-memory`, `autocompact-400k` | 0 / 0（+2 不做） |
+| 2026-10-17 | 🟢 | [Anthropic 官方 Claude Code 插件生態目錄：解構標準化外掛、Skills 與 MCP 整合](./notes/2026-10-17-claude-plugins-official-directory.md) | `claude-code`, `agent-plugins`, `anthropic` | 1 / 1（+1 不做） |
 | 2026-10-17 | 🟢 | [跨 CLI 多代理外包編排實踐：以 Opus 擔任規劃顧問、外包 OpenCode/AGY/Grok 與 Space Bunny 免費模型的成本降維流水線](./notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md) | `multi-agent-orchestration`, `cross-cli`, `cost-optimization` | 2 / 2 |
-| 2026-10-17 | 🔴 | [GitHub 開源 AI 神器矩陣：從 Jev 亞秒路由、OpenHands 自主工程到 MoneyPrinterTurbo/LibreChat 的平替全景深度評估](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md) | `open-source-ai`, `agent-frameworks`, `jev-skills` | 0 / 2 |
+| 2026-10-17 | ⚪ | [GitHub 開源 AI 神器矩陣：從 Jev 亞秒路由、OpenHands 自主工程到 MoneyPrinterTurbo/LibreChat 的平替全景深度評估](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md) | `open-source-ai`, `agent-frameworks`, `jev-skills` | 0 / 0（+2 不做） |
 | 2026-10-17 | 🟢 | [HanSun 全端網站從零建置部署手冊：Codex/Claude 驅動的商業系統架構與 6 大 Agent 轉化實踐](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md) | `fullstack-architecture`, `agent-workflow`, `supabase` | 2 / 2 |
-| 2026-10-17 | 🔴 | [Meta SAM 3.1 視覺分割模型解析：從點選框選到文字提示、32 FPS 串流追蹤與 Agent 雙階段打碼流水線](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md) | `computer-vision`, `meta-sam`, `video-segmentation` | 0 / 2 |
-| 2026-10-17 | ⚪ | [Claude 混合模型分工實踐：/model opusplan 與 /advisor 雙軌架構緩解 Token 焦慮](./notes/2026-10-17-model-routing-opusplan-advisor.md) | `model-routing`, `claude-code`, `token-optimization` | 0 / 2 |
+| 2026-10-17 | ⚪ | [Meta SAM 3.1 視覺分割模型解析：從點選框選到文字提示、32 FPS 串流追蹤與 Agent 雙階段打碼流水線](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md) | `computer-vision`, `meta-sam`, `video-segmentation` | 0 / 0（+2 不做） |
+| 2026-10-17 | ⚪ | [Claude 混合模型分工實踐：/model opusplan 與 /advisor 雙軌架構緩解 Token 焦慮](./notes/2026-10-17-model-routing-opusplan-advisor.md) | `model-routing`, `claude-code`, `token-optimization` | 0 / 0（+2 不做） |
 | 2026-10-17 | 🟢 | [AI 學術論文雙語閱讀利器：Moonlight 雙欄對照、公式保護與開源替代 (MinerU/Zotero) 技術解析](./notes/2026-10-17-moonlight-bilingual-paper-reader.md) | `paper-reading`, `ai-tools`, `bilingual-translation` | 2 / 2 |
-| 2026-10-17 | 🟡 | [Motion Prompt：讓 AI 聽懂動態語言的開源視覺動效字典（120 種動畫、動態畫布與 Agent Skill 整合）](./notes/2026-10-17-motion-prompt-animation-dictionary.md) | `motion-prompt`, `animation-dictionary`, `agent-skills` | 1 / 2 |
-| 2026-10-17 | ⚪ | [Reelbird：免費開源螢幕錄影神器（原生 Swift、S3/R2 自託管、即時網址與 Agent MCP 整合）](./notes/2026-10-17-reelbird-open-source-screen-recorder.md) | `screen-recording`, `mcp`, `agent-tools` | 0 / 2 |
+| 2026-10-17 | 🟢 | [Motion Prompt：讓 AI 聽懂動態語言的開源視覺動效字典（120 種動畫、動態畫布與 Agent Skill 整合）](./notes/2026-10-17-motion-prompt-animation-dictionary.md) | `motion-prompt`, `animation-dictionary`, `agent-skills` | 1 / 1（+1 不做） |
+| 2026-10-17 | ⚪ | [Reelbird：免費開源螢幕錄影神器（原生 Swift、S3/R2 自託管、即時網址與 Agent MCP 整合）](./notes/2026-10-17-reelbird-open-source-screen-recorder.md) | `screen-recording`, `mcp`, `agent-tools` | 0 / 0（+2 不做） |
 | 2026-10-17 | 🟢 | [對抗 AI 罐頭設計：Shipper 釋出 92 萬字元 epstein.md 終結 Vibe Coding 視覺審美疲勞](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md) | `anti-ai-slop`, `design-system`, `frontend-ui` | 2 / 2 |
 | 2026-10-17 | 🟢 | [TasteSkill v2：解析 247 個得獎網站重構的 AI 前端藝術指導與截圖評審閉環](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md) | `taste-skill`, `agent-skills`, `anti-slop` | 2 / 2 |
-| 2026-10-17 | ⚪ | [XERJ Corpus Hub：為 Agent 釘選整門領域知識的預索引語料庫](./notes/2026-10-17-xerj-corpus-hub.md) | `agent-memory`, `retrieval-augmented-generation`, `corpus-hub` | 0 / 2 |
-| 2026-10-18 | 🟡 | [Awesome Opus 5.5 Videos 提示詞動物園解構：700+ 代碼驅動視覺動畫、3D 場景、技術解說與互動遊戲開源基準庫](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) | `awesome-opus5-5`, `prompt-zoo`, `creative-coding` | 1 / 2 |
-| 2026-10-18 | ⚪ | [Claude Code Mods 自體改造機制解構：從外部腳本 Hook 到 In-Session 中介軟體（Middleware）、動態 UI 渲染與即時熱重載](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | `claude-code`, `claude-mods`, `in-session-middleware` | 0 / 2 |
+| 2026-10-17 | ⚪ | [XERJ Corpus Hub：為 Agent 釘選整門領域知識的預索引語料庫](./notes/2026-10-17-xerj-corpus-hub.md) | `agent-memory`, `retrieval-augmented-generation`, `corpus-hub` | 0 / 0（+2 不做） |
+| 2026-10-18 | 🟢 | [Awesome Opus 5.5 Videos 提示詞動物園解構：700+ 代碼驅動視覺動畫、3D 場景、技術解說與互動遊戲開源基準庫](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) | `awesome-opus5-5`, `prompt-zoo`, `creative-coding` | 1 / 1（+1 不做） |
+| 2026-10-18 | ⚪ | [Claude Code Mods 自體改造機制解構：從外部腳本 Hook 到 In-Session 中介軟體（Middleware）、動態 UI 渲染與即時熱重載](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | `claude-code`, `claude-mods`, `in-session-middleware` | 0 / 0（+2 不做） |
 | 2026-10-18 | 🟢 | [CLI-Anything：終結脆弱 GUI 點擊，將任意軟體自動升級為 Agent-Native CLI 與 Skill 的通用框架解構](./notes/2026-10-18-cli-anything-agent-native-computer-use.md) | `cli-anything`, `agent-native`, `computer-use` | 2 / 2 |
-| 2026-10-18 | 🔴 | [desktop-sense：為 Coding Agent 賦予本機螢幕即時視覺感知（Local-First Screen Context）與嚴格隱私防護架構解構](./notes/2026-10-18-desktop-sense-local-screen-context.md) | `desktop-sense`, `local-first`, `screen-context` | 0 / 2 |
+| 2026-10-18 | ⚪ | [desktop-sense：為 Coding Agent 賦予本機螢幕即時視覺感知（Local-First Screen Context）與嚴格隱私防護架構解構](./notes/2026-10-18-desktop-sense-local-screen-context.md) | `desktop-sense`, `local-first`, `screen-context` | 0 / 0（+2 不做） |
 | 2026-10-18 | 🟢 | [健保快易通健康存摺 HTML 轉化 Claude Artifact：個人醫療數據本地脫敏與互動式健康追蹤儀表板（Generative UI）實踐解構](./notes/2026-10-18-health-bank-html-claude-artifact-dashboard.md) | `health-bank`, `claude-artifact`, `generative-ui` | 2 / 2 |
 | 2026-10-18 | 🟢 | [多 Agent 生產力工廠實戰架構：Magpie 統一網關、Herdr 終端復用、Obsidian 接棒交接與額度感知動態路由解構](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md) | `multi-agent-factory`, `magpie`, `herdr` | 2 / 2 |
-| 2026-10-18 | 🔴 | [Prompt Motion 策展庫解構：Claude 驅動的代碼動效視頻（Code-driven Motion Graphics）原理與可複製 Prompts/Skills 實戰解析](./notes/2026-10-18-prompt-motion-claude-video-showcase.md) | `prompt-motion`, `code-driven-video`, `claude-motion` | 0 / 2 |
+| 2026-10-18 | ⚪ | [Prompt Motion 策展庫解構：Claude 驅動的代碼動效視頻（Code-driven Motion Graphics）原理與可複製 Prompts/Skills 實戰解析](./notes/2026-10-18-prompt-motion-claude-video-showcase.md) | `prompt-motion`, `code-driven-video`, `claude-motion` | 0 / 0（+2 不做） |
 | 2026-10-18 | 🟢 | [SpaceX 前首席工程師 Lauren Tan 的 pstack 方法論：以嚴謹工程紀律重構 AI 協同開發（/poteto-mode 核心路由、Playbooks、TDD 驗證與對抗性審查深度解構）](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md) | `pstack`, `poteto-mode`, `ai-coding-workflow` | 2 / 2 |
 | 2026-10-18 | 🟢 | [靶心人故事編輯器：許榮哲故事模型與 Generative UI 互動產品設計 Prompt 深度解構](./notes/2026-10-18-target-story-generative-ui-editor.md) | `generative-ui`, `storytelling-structure`, `target-story-formula` | 2 / 2 |
 | 2026-10-19 | 🟢 | [「AI 共同大腦（AI Shared Brain）」工業級架構全景規劃：集中知識中樞、打卡審計、結構化交接記憶與額度感知動態調度的工程實踐](./notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md) | `ai-shared-brain`, `multi-agent-architecture`, `central-knowledge-hub` | 2 / 2 |
@@ -180,12 +196,12 @@
 | 2026-10-19 | 🟢 | [Cinetic 動態導演 Agent Skill 解構：讓 Claude 掌握 273 種動畫技法、Remotion/GSAP 雙引擎與音畫同步節拍網格（Beat Grid）的 Code-as-Video 實踐](./notes/2026-10-19-cinetic-motion-director-agent-skill.md) | `cinetic`, `motion-director`, `remotion` | 2 / 2 |
 | 2026-10-19 | 🟢 | [Crossroad A2A 架構解構：跨機器、跨 SaaS 的非同步 Agent 互聯寄信協議（Agent-to-Agent Mailbox Relay）與零 API Key 協同工作流](./notes/2026-10-19-crossroad-a2a-agent-mail-relay.md) | `a2a`, `crossroad-a2a`, `multi-agent` | 2 / 2 |
 | 2026-10-19 | 🟢 | [REA（Reverse Engineer Anything）：讓 AI Coding Agent 透過 MCP 驅動本地逆向工程工具鏈，無原始碼即可分析、理解與重造任意應用程式功能](./notes/2026-10-19-rea-reverse-engineer-anything-agent.md) | `reverse-engineering`, `mcp`, `agent-tools` | 2 / 2 |
-| 2026-10-20 | 🔴 | [BeatDesign 開源 AI 影片工作台解構：本地優先 Higgsfield 平替方案、無限畫布與時間線雙模式、29 個 MCP 工具與 WebCodecs 原生剪輯實踐](./notes/2026-10-20-beatdesign-open-source-ai-video-studio.md) | `ai-video-studio`, `beatdesign`, `higgsfield-alternative` | 0 / 2 |
+| 2026-10-20 | ⚪ | [BeatDesign 開源 AI 影片工作台解構：本地優先 Higgsfield 平替方案、無限畫布與時間線雙模式、29 個 MCP 工具與 WebCodecs 原生剪輯實踐](./notes/2026-10-20-beatdesign-open-source-ai-video-studio.md) | `ai-video-studio`, `beatdesign`, `higgsfield-alternative` | 0 / 0（+2 不做） |
 | 2026-10-20 | 🟢 | [Public APIs 開源清單解構：47 萬 Star 免費 API 大補帖、AI Agent 零金鑰資料獲取與 Generative UI 即時數據串接實踐](./notes/2026-10-20-public-apis-free-open-resources.md) | `public-apis`, `free-apis`, `agent-tools` | 2 / 2 |
-| 2026-10-21 | 🟡 | [0x Alpha（GLM-5.3-Flash）解構：神秘盲測登頂的 1M 上下文開源模型、320B 混合稀疏注意力與 Agentic 代碼工程實踐](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) | `0x-alpha`, `glm-5-3-flash`, `1m-context` | 1 / 2 |
+| 2026-10-21 | 🟢 | [0x Alpha（GLM-5.3-Flash）解構：神秘盲測登頂的 1M 上下文開源模型、320B 混合稀疏注意力與 Agentic 代碼工程實踐](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) | `0x-alpha`, `glm-5-3-flash`, `1m-context` | 1 / 1（+1 不做） |
 | 2026-10-21 | 🟢 | [多 Agent 派工與驗收閉環流水線 Phase 4：前三階段檢討補強、Hermes／Codex 工人、跨機器結果回傳與指揮者驗收合併](./notes/2026-10-21-agent-relay-pipeline-phase4.md) | `agent-workflow`, `multi-agent`, `agent-relay` | 8 / 8 |
 | 2026-10-21 | 🟢 | [Code-as-Video 影視工作室架構解構：以 Harness 取代 Prompt、seek(t) 時間函式、反 AI 視覺套路與分鏡縮圖自檢門禁實踐](./notes/2026-10-21-code-as-video-harness-studio-workflow.md) | `code-as-video`, `video-harness`, `remotion` | 2 / 2 |
-| 2026-10-21 | 🔴 | [Strata 架構解構：12GB 消費級顯卡流暢運行 125B MoE 大模型、VRAM-RAM-SSD 三層卸載黑科技與 Coding Agent 離線本地化部署實踐](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md) | `strata`, `local-llm`, `qwen-125b` | 0 / 2 |
+| 2026-10-21 | ⚪ | [Strata 架構解構：12GB 消費級顯卡流暢運行 125B MoE 大模型、VRAM-RAM-SSD 三層卸載黑科技與 Coding Agent 離線本地化部署實踐](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md) | `strata`, `local-llm`, `qwen-125b` | 0 / 0（+2 不做） |
 | 2026-10-23 | 🔴 | [Anthropic 官方 security-guidance 外掛解構：Claude Code 三層左移資安防禦、正則即時攔截、Diff 語意審查與 Agentic Commit 閘門實踐](./notes/2026-10-23-claude-plugin-security-guidance.md) | `claude-code`, `security-guidance`, `shift-left-security` | 0 / 2 |
 | 2026-10-23 | 🔴 | [WebToApp 解構：手機端把網站打包成 Android App、內建 Node/PHP/Python 執行環境、AI Agent 生成與 AAB 簽名上架，及接案變現評估](./notes/2026-10-23-web-to-app-android-packaging.md) | `webtoapp`, `android`, `apk` | 0 / 2 |
 | 2026-10-23 | 🔴 | [Zeabur 2026 年十月資安事件解構：內部明文憑證外洩、共享叢集與 GCP 專用伺服器淪陷、平台資料庫環境變數被讀取，及對自身雲端憑證衛生的應變清單](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | `zeabur`, `security-incident`, `credential-rotation` | 0 / 2 |
@@ -292,13 +308,55 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 
 各 Agent 在讀寫本 Repo 時，請嚴格遵守 [AGENTS.md](./AGENTS.md) 規範：
 
-1. **新增文章分析時**：
+1. **查詢與認領待辦（推薦使用 CLI，零格式錯誤）**：
+   ```bash
+   python tools/task_cli.py next                  # 按「進行中 → 高 → 中 → 低」列出可認領任務與 DoD
+   python tools/task_cli.py show T-YYYYMMDD-XX    # 查看單一任務完整步驟與 DoD
+   python tools/task_cli.py claim T-YYYYMMDD-XX   # 認領任務（自動標記 🟡 進行中、同步筆記 status 與 README）
+   ```
+2. **完成或關閉任務回寫**：
+   ```bash
+   python tools/task_cli.py complete T-YYYYMMDD-XX --evidence "實作與驗證輸出摘要"
+   python tools/task_cli.py close T-YYYYMMDD-XX --reason "關閉／不做理由"
+   ```
+3. **新增文章或影片分析時**：
    - 依 [templates/article-analysis.md](./templates/article-analysis.md) 格式，在 `notes/` 下建立 `YYYY-MM-DD-<slug>.md`（每個 `.md` 檔放一個分析任務結果）。
+   - 若來源是 YouTube 等影片，先依 [docs/video-transcript-howto.md](./docs/video-transcript-howto.md) 執行 `python tools/video_transcript.py <URL> --out <暫存目錄>` 取得逐字稿（支援 RTX 3060 CUDA 加速）。
    - 將拆解出的待辦事項分配唯一編號 `T-YYYYMMDD-01`、`02`...（全庫唯一）。
-2. **認領與完成任務時**：只改筆記本身——
-   - 實作中：在該任務底下加 `- **狀態**：🟡 進行中`。
-   - 完成並驗證後：checkbox 改 `[x]`，補上 `- **完成日期**：YYYY-MM-DD` 與 `- **實作紀錄 / 證據**：...`，並調整 frontmatter `status`。
-3. **提交前**：執行 `python tools/build_index.py` 重產總表，再 `python tools/verify_inbox.py` 確認通過後才 commit / push。
+4. **提交前驗證（必跑）**：
+   ```bash
+   python tools/build_index.py && python tools/verify_inbox.py && python -m pytest -q
+   ```
+
+---
+
+## 🧰 全庫工具與產出物導覽（Tools, Docs, Templates & Assets）
+
+### 1. CLI 工具與驗證器（`tools/`）
+| 腳本 | 用途 | 對應測試 |
+| :--- | :--- | :--- |
+| [`tools/task_cli.py`](./tools/task_cli.py) | 任務佇列查詢（`next`/`show`）、認領（`claim`）、結案（`complete`）、關閉（`close`）與筆記狀態同步 | [`tests/test_inbox.py`](./tests/test_inbox.py) |
+| [`tools/build_index.py`](./tools/build_index.py) | 從 `notes/*.md` 自動產生 README 的任務總表、文章索引與四大知識圖譜 | [`tests/test_inbox.py`](./tests/test_inbox.py) |
+| [`tools/verify_inbox.py`](./tools/verify_inbox.py) | CI 與本地共用的契約驗證（Frontmatter、DoD、連結、機密、別名與稱謂檢查） | [`tests/test_inbox.py`](./tests/test_inbox.py) |
+| [`tools/video_transcript.py`](./tools/video_transcript.py) | `yt-dlp` 音訊下載 + `faster-whisper`（NVIDIA CUDA `float16` / CPU `int8`）影片逐字稿轉寫 | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
+| [`tools/verify_no_slop.py`](./tools/verify_no_slop.py) | 前端 AI 罐頭特徵（SLOP-01~05：漸層字、假數據、裝飾 Emoji 等）靜態掃描器 | [`tests/test_verify_no_slop.py`](./tests/test_verify_no_slop.py) |
+| [`tools/verify_video_storyboard.py`](./tools/verify_video_storyboard.py) | 影片關鍵幀縮圖總覽與 1–10 分自檢評審門禁（Keyframe Storyboard Gate） | [`tests/test_verify_video_storyboard.py`](./tests/test_verify_video_storyboard.py) |
+| [`tools/verify_story_structure.py`](./tools/verify_story_structure.py) | 靶心人故事模型因果與三伏三冒距離檢驗器 | [`tests/test_verify_story_structure.py`](./tests/test_verify_story_structure.py) |
+| [`tools/audit_fullstack_security.py`](./tools/audit_fullstack_security.py) | 全端專案上線前 `.gitignore`、`.env`、Client 機密與 Supabase RLS 靜態稽核 | [`tests/test_audit_fullstack_security.py`](./tests/test_audit_fullstack_security.py) |
+| [`tools/health_bank_parser.py`](./tools/health_bank_parser.py) | 健保快易通健康存摺 HTML 離線自動脫敏與結構化 JSON 解析器 | [`tests/test_health_bank_parser.py`](./tests/test_health_bank_parser.py) |
+| [`tools/public_apis_indexer.py`](./tools/public_apis_indexer.py) | Public APIs 免金鑰（`Auth: No`）且支援 CORS 端點離線篩選索引器 | [`tests/test_public_apis_indexer.py`](./tests/test_public_apis_indexer.py) |
+| [`tools/cli_to_skill.py`](./tools/cli_to_skill.py) | 將任意 CLI 工具之 `--help` 結構自動封裝為標準 Agent `SKILL.md` | [`tests/test_cli_to_skill.py`](./tests/test_cli_to_skill.py) |
+| [`tools/beat_grid.py`](./tools/beat_grid.py) | 音畫同步節拍網格（BPM & Beat Grid）計算與 Snap-to-Grid 幀對齊引擎 | [`tests/test_beat_grid.py`](./tests/test_beat_grid.py) |
+| [`tools/video_asset_capture.py`](./tools/video_asset_capture.py) | 網頁品牌色彩、DOM 素材與截圖擷取器（供 Code-as-Video 使用） | [`tests/test_video_asset_capture.py`](./tests/test_video_asset_capture.py) |
+
+### 2. 技術規範與實測報告（`docs/`）
+- **Agent 工具鏈與安全**：[影片逐字稿 GPU 轉寫 SOP](./docs/video-transcript-howto.md) ｜ [Claude 官方外掛評測](./docs/claude-plugins-official-review.md) ｜ [pstack Agent Playbooks 規格](./docs/pstack-agent-playbooks.md) ｜ [CLI-Anything 轉 Skill 協議](./docs/cli-anything-to-skill-protocol.md) ｜ [REA 逆向工程沙盒實測](./docs/rea-sandbox-evaluation-evidence.md) ｜ [三階段逆向分析流水線規格](./docs/reverse-engineering-pipeline-spec.md) ｜ [Android 官方 33 Skills 防幻覺手冊](./docs/android-official-skills-anti-hallucination.md) ｜ [Android CLI Windows 驗證](./docs/android-cli-plugin-windows-validation.md)
+- **視覺動效、前端與 Generative UI**：[Anti-AI-Slop 反罐頭前端規範](./docs/anti-ai-slop-frontend.md) ｜ [Cinetic 273 種動態技法字典](./docs/cinetic-motion-dictionary.md) ｜ [Motion Prompt 144 款動效速查表](./docs/motion-prompt-cheatsheet.md) ｜ [cinematic-shot 運鏡規則手冊](./docs/cinematic-shot-camera-guide.md) ｜ [靶心人故事編輯器規格](./docs/target-story-generative-ui-spec.md)
+- **資料、全端與文獻研究**：[462 個免費免金鑰 Public APIs 手冊](./docs/free-public-apis.md) ｜ [全端上線 QA 與資安檢核表](./docs/production-smoke-security-checklist.md) ｜ [健康存摺匯出格式規格](./docs/health-bank-export-format.md) ｜ [雙語論文閱讀工具對比](./docs/academic-bilingual-paper-reader-guide.md) ｜ [SWE-bench 論文 5W1H-CQR-KSU 實測](./docs/academic-reading-smoke-report.md)
+
+### 3. 可重用 Prompt 與 Skill 範本（`templates/`）及互動展示（`assets/`）
+- **範本（`templates/`）**：[文章分析標準範本](./templates/article-analysis.md) ｜ [5W1H-CQR-KSU 學術閱讀 Prompt](./templates/academic-reading-prompt.md) ｜ [LaTeX 公式與引用保護 Prompt](./templates/latex-citation-protection-prompt.md) ｜ [主體資產盤點與論證寫作 Prompt](./templates/subject-inventory-argument-writing-prompt.md) ｜ [Code-as-Video 工作室規範](./templates/video-studio-harness.md) ｜ [單檔 Creative Coding 技能](./templates/single-file-creative-coding-skill.md) ｜ [全端商業建站技能](./templates/fullstack-website-builder-skill.md) ｜ [Public APIs 檢索技能](./templates/public-apis-search-skill.md) ｜ [健康存摺儀表板 Prompt](./templates/health-bank-dashboard-prompt.md)
+- **單檔互動展示（`assets/`）**：[Anti-Slop 示範頁](./assets/anti-slop-demo/index.html) ｜ [靶心人故事編輯器](./assets/target-story-editor/index.html) ｜ [健康存摺互動儀表板](./assets/health-bank-dashboard/index.html) ｜ [Open-Meteo 即時氣候圖表](./assets/open-meteo-weather-chart/index.html) ｜ [Three.js 粒子星系](./assets/creative-coding-demo/threejs-particle-galaxy.html) ｜ [OpenLibrary 時間函式 `seek(t)` 動畫](./assets/openlibrary_demo/video_seek_canvas.html)
 
 ---
 

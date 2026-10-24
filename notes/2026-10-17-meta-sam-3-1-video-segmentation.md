@@ -6,7 +6,7 @@ source_platform: "Web & Meta AI Research"
 author: "Meta AI / 凱文大叔 (SubTutor)"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 4
 cluster_role: "視覺追蹤"
 short_title: "Meta SAM 3.1 視訊分割"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[Meta Segment Anything (GitHub)](https://github.com/facebookresearch/sam3) / [Meta AI Demos](https://aidemos.meta.com/segment-anything/)
 - **發表作者**：`Meta AI` / `凱文大叔 (SubTutor 整合案例)`
 - **分析日期**：`2026-10-17`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 
 ---
 

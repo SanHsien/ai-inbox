@@ -16,9 +16,12 @@ C:\GitHub\ai-inbox\
 ├── notes/
 │   └── YYYY-MM-DD-<slug>.md         # 每一篇 AI 文章的分析任務結果（一檔一篇）★唯一資料來源
 ├── tools/
+│   ├── task_cli.py                  # 任務佇列查詢 (next/show)、認領 (claim)、結案 (complete)、關閉 (close)
 │   ├── build_index.py               # 從 notes/ 重產 README 的任務表與索引
 │   ├── verify_inbox.py              # 契約驗證（CI 同款）
 │   └── video_transcript.py          # 影片音訊下載 + faster-whisper (CUDA/CPU) 逐字稿轉寫（見 docs/video-transcript-howto.md）
+├── docs/                            # 技術規格、實測報告與 SOP 手冊
+├── assets/                          # 單檔 HTML / Generative UI / Canvas 互動成品
 └── tests/                           # tools/ 的單元測試
 ```
 
@@ -58,19 +61,31 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
 
 ### 流程 B：各 Agent 認領、實作與回寫狀態
 
-當任何 Agent 被指派執行某項任務（或巡檢本總表挑任務實作）時：
+當任何 Agent 被指派執行某項任務（或巡檢本總表挑任務實作）時，**優先使用 `tools/task_cli.py`** 以避免手動編輯行號或漏改 frontmatter `status`：
 
-1. **開始實作**：
-   - 先 `git pull --rebase` 確保拿到最新總表。
-   - 在筆記中該任務底下加一行 `  - **狀態**：🟡 進行中`，重跑 `build_index.py`。
+1. **查詢與認領任務**：
+   - 先 `git pull --rebase --autostash` 確保拿到最新總表。
+   - 查詢待辦佇列（按「🟡 進行中 → 高 → 中 → 低」排序）：
+     ```bash
+     python tools/task_cli.py next
+     python tools/task_cli.py show T-YYYYMMDD-XX
+     ```
+   - 認領任務（自動在對應筆記插入 `- **狀態**：🟡 進行中`、同步筆記 `status: in-progress` 並更新 `README.md`）：
+     ```bash
+     python tools/task_cli.py claim T-YYYYMMDD-XX
+     ```
 2. **完成與驗收閉環**：
    - 任務在目標專案或全域設定實作完畢，且**實際執行測試或驗證通過**後，才可標記為完成（嚴禁未驗證即標記完成）。
-   - 只改對應的 `notes/YYYY-MM-DD-<slug>.md`：
-     - 將該項任務的 `[ ]` 改為 `[x]`，移除 `狀態` 行，補上 `  - **完成日期**：YYYY-MM-DD` 與 `  - **實作紀錄 / 證據**：<Commit SHA / PR / 路徑>`。
-     - 調整 frontmatter `status`：全部完成 `done`、部分完成或有進行中 `in-progress`（驗證器會檢查一致性）。
-   - 執行 `python tools/build_index.py`，任務會自動從「🔴 未做」移到「🟢 已做」，索引計數同步更新。
+   - 執行結案指令（自動將 `[ ]` 改為 `[x]`、移除 `狀態` 行、填寫 `完成日期` 與 `實作紀錄 / 證據`、自動計算並更新筆記 frontmatter `status`，並重產 `README.md`）：
+     ```bash
+     python tools/task_cli.py complete T-YYYYMMDD-XX --evidence "<Commit SHA / 產出路徑 / 驗證輸出摘要>"
+     ```
+   - 若評估後決定不做／關閉：
+     ```bash
+     python tools/task_cli.py close T-YYYYMMDD-XX --reason "<關閉理由>"
+     ```
 3. **提交與推送**（驗證通過才提交）：
-   - `python tools/verify_inbox.py && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
+   - `python tools/verify_inbox.py && python -m pytest -q && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
 
 ---
 

@@ -7,7 +7,7 @@ author: "0x Alpha (@0xalpha.ai) / 智譜 AI (Z.ai)"
 github_repo: "https://github.com/zai-org/GLM-5"
 analyzed_at: 2026-10-21
 analyzed_by: "Antigravity"
-status: in-progress # pending | in-progress | done | archived
+status: done # pending | in-progress | done | archived
 cluster: 1
 cluster_role: "長上下文外包"
 short_title: "0x Alpha (GLM-5.3-Flash) 1M 模型"
@@ -26,7 +26,7 @@ tags:
 - **來源連結**：[0x Alpha (@0xalpha.ai) Threads 貼文](https://www.threads.com/@0xalpha.ai/post/DeO8nihElfh) ｜ [zai-org/GLM-5 (GitHub)](https://github.com/zai-org/GLM-5) ｜ [OpenRouter ox-alpha 評測](https://openrouter.ai)
 - **發布平台 / 原作者**：`Threads / OpenRouter` / `0x Alpha (@0xalpha.ai) / 智譜 AI (Z.ai)`
 - **分析日期**：`2026-10-21`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 

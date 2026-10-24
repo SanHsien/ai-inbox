@@ -7,6 +7,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 import build_index as bi  # noqa: E402
+import task_cli as tc  # noqa: E402
 import verify_inbox as vi  # noqa: E402
 
 NOTE = """---
@@ -155,9 +156,39 @@ tags:
         p.write_text(archived_note, encoding="utf-8")
         note = bi.parse_note(p)
         self.assertTrue(note.tasks[0].archived)
+        self.assertEqual(note.tasks[0].archive_reason, "已過時退役")
         out = bi.render_tasks([note])
+        active_part, rest = out.split("### 🟢 已做")
+        self.assertNotIn("T-20261020-03", active_part)  # 不污染待辦佇列
         self.assertIn("⚪ 不做 1", out)
-        self.assertIn("| `T-20261020-03` | ⚪ 不做 |", out)
+        self.assertIn("### ⚪ 不做 / 已關閉（Archived）", rest)
+        self.assertIn("| `T-20261020-03` | ⚪ 不做 | 低 | 已過時任務 | 已過時退役 |", rest)
+
+    def test_expected_note_status_handles_done_plus_archived(self):
+        n = make_note(self.tmp)
+        n.tasks[1].fields["狀態"] = "⚪ 不做（已取代）"
+        self.assertEqual(bi.expected_note_status(n), "done")
+        n.tasks[0].done = False
+        n.tasks[0].fields["狀態"] = "⚪ 不做（全部關閉）"
+        self.assertEqual(bi.expected_note_status(n), "archived")
+
+    def test_task_cli_claim_complete_and_close(self):
+        n = make_note(self.tmp, status="pending", box=" ", extra="  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*")
+        # 先把 T-02 的進行中拿掉，測試從純 pending 開始
+        text = n.path.read_text(encoding="utf-8").replace("  - **狀態**：🟡 進行中\n", "")
+        n.path.write_text(text, encoding="utf-8")
+
+        st = tc.apply_claim(n.path, "T-20261020-01")
+        self.assertEqual(st, "in-progress")
+        self.assertTrue(bi.parse_note(n.path).tasks[0].in_progress)
+
+        st = tc.apply_complete(n.path, "T-20261020-01", "commit 999999", "2026-10-24")
+        self.assertEqual(st, "in-progress")  # T-02 仍未完成
+
+        st = tc.apply_close(n.path, "T-20261020-02", "與現有工具重複")
+        self.assertEqual(st, "done")  # 1 done + 1 archived => 筆記 done
+        parsed = bi.parse_note(n.path)
+        self.assertEqual(vi.check_notes([parsed]), [])
 
     def test_build_readme_replaces_only_generated_blocks(self):
         readme = ("手寫\n<!-- BEGIN GENERATED: tasks -->\nold\n<!-- END GENERATED: tasks -->\n"

@@ -6,7 +6,7 @@ source_platform: "GitHub"
 author: "yihui-dev & Skillry Community"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 2
 cluster_role: "提示動物園"
 short_title: "Awesome Opus 5.5 Videos"
@@ -26,7 +26,7 @@ tags:
 - **來源連結**：[yihui-dev/awesome-opus5-5-videos (GitHub)](https://github.com/yihui-dev/awesome-opus5-5-videos/tree/main)
 - **展示與重製對照站**：[Skillry (skillry.dev/ai-videos/opus-5-5)](https://skillry.dev/ai-videos/opus-5-5)
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`🟢 已做 (Done)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-prompt-motion-claude-video-showcase.md`](./2026-10-18-prompt-motion-claude-video-showcase.md)（Prompt Motion 策展庫解構）
   - [`notes/2026-10-17-motion-prompt-animation-dictionary.md`](./2026-10-17-motion-prompt-animation-dictionary.md)（微觀動態字典）

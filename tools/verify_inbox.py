@@ -70,12 +70,14 @@ def check_notes(notes: list[bi.Note]) -> list[str]:
         status = n.meta.get("status", "")
         if status and status not in bi.STATUSES:
             errors.append(f"{name}: status '{status}' 不合法，需為 {'|'.join(bi.STATUSES)}")
-        elif status and status != "archived":
-            done = sum(t.done for t in n.tasks)
-            started = done or any(t.in_progress for t in n.tasks)
-            expected = "done" if n.tasks and done == len(n.tasks) else "in-progress" if started else "pending"
+        elif status and n.tasks:
+            expected = bi.expected_note_status(n)
             if status != expected:
-                errors.append(f"{name}: status 應為 '{expected}'（任務已做 {done}/{len(n.tasks)}），目前為 '{status}'")
+                done = sum(t.done for t in n.tasks)
+                arch = sum(t.archived for t in n.tasks)
+                errors.append(
+                    f"{name}: status 應為 '{expected}'（任務已做 {done}、不做 {arch}、總計 {len(n.tasks)}），目前為 '{status}'"
+                )
 
         for t in n.tasks:
             if t.priority not in bi.PRIORITIES:

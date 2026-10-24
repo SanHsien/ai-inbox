@@ -6,7 +6,7 @@ source_platform: "GitHub & Community Discussion"
 author: "Community Curator / Antigravity"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 4
 cluster_role: "開源矩陣"
 short_title: "GitHub 開源 AI 工具矩陣"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：GitHub 開源生態與社群高價值專案推薦
 - **涵蓋專案**：`Hermes + Jev Skills`、`typesafe-ai/skills`、`All-Hands-AI/OpenHands`、`MoneyPrinterTurbo`、`TradingAgents`、`danny-avila/LibreChat`
 - **分析日期**：`2026-10-17`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 
 ---
 

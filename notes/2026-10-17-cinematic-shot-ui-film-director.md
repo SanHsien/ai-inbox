@@ -7,7 +7,7 @@ author: "Yiwei Ho (@1weiho)"
 github_repo: "https://github.com/1weiho/cinematic-shot"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 2
 cluster_role: "鏡頭語言"
 short_title: "cinematic-shot 發表片導演"
@@ -25,7 +25,7 @@ tags:
 - **官方 GitHub**：[`1weiho/cinematic-shot`](https://github.com/1weiho/cinematic-shot)
 - **作者**：`Yiwei Ho (@1weiho)`
 - **分析日期**：`2026-10-17`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 

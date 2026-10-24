@@ -7,7 +7,7 @@ author: "Niko1221 / 社群分享"
 github_repo: "https://github.com/Niko1221/Strata"
 analyzed_at: 2026-10-21
 analyzed_by: "Antigravity"
-status: pending # pending | in-progress | done | archived
+status: archived # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "本地推論"
 short_title: "Strata 12GB 顯卡運行 125B 大模型"
@@ -26,7 +26,7 @@ tags:
 - **來源連結**：[Niko1221/Strata (GitHub)](https://github.com/Niko1221/Strata) ｜ [Qwen3.8-Flash-Next (HuggingFace)](https://huggingface.co/Qwen/Qwen3.8-Flash-Next)
 - **發布平台 / 原作者**：`GitHub / 社群貼文` / `Niko1221 / 社群分享`
 - **分析日期**：`2026-10-21`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 
 ---
 

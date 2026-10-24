@@ -23,6 +23,7 @@ README_FILE = REPO_ROOT / "README.md"
 
 TASK_ID = r"T-\d{8}-\d{2}"
 PRIORITIES = ("高", "中", "低")
+PRIORITY_RANK = {"高": 0, "中": 1, "低": 2}
 STATUSES = ("pending", "in-progress", "done", "archived")
 
 # - [ ] **`T-20261017-01`**｜**[優先級：中]** 任務標題
@@ -57,6 +58,16 @@ class Task:
         return not self.done and ("不做" in s or "archived" in s or "⚪" in s or "關閉" in s)
 
     @property
+    def archive_reason(self) -> str:
+        """從 `- **狀態**：⚪ 不做（原因）` 抽出原因；無括號則回傳原始狀態文字。"""
+        s = self.fields.get("狀態", "").strip()
+        m = re.search(r"[（(](.+)[）)]$", s)
+        if m:
+            return m.group(1).strip()
+        cleaned = re.sub(r"^[⚪\s]*不做[：:\s—-]*", "", s).strip()
+        return cleaned or "-"
+
+    @property
     def created(self) -> str:
         d = self.id[2:10]
         return f"{d[:4]}-{d[4:6]}-{d[6:]}"
@@ -76,6 +87,28 @@ class Note:
     @property
     def link(self) -> str:
         return f"./notes/{self.path.name}"
+
+
+def expected_note_status(note: Note) -> str:
+    """依筆記底下任務狀態推算 frontmatter 應有的 status。
+
+    - 無任務：維持既有 status（若無則 pending）
+    - 全部任務皆為 ⚪ 不做 (archived)：archived
+    - 有效任務（排除 ⚪ 不做）全數完成 (done)：done
+    - 有任一任務已做或進行中：in-progress
+    - 其餘（有效任務皆未開始）：pending
+    """
+    if not note.tasks:
+        return note.meta.get("status") or "pending"
+    active = [t for t in note.tasks if not t.archived]
+    if not active:
+        return "archived"
+    done_count = sum(t.done for t in active)
+    if done_count == len(active):
+        return "done"
+    if done_count > 0 or any(t.in_progress for t in active):
+        return "in-progress"
+    return "pending"
 
 
 def parse_frontmatter(text: str) -> tuple[dict[str, str], list[str]] | None:
@@ -155,12 +188,16 @@ def _cell(text: str) -> str:
 
 def render_tasks(notes: list[Note]) -> str:
     tasks = sorted((t for n in notes for t in n.tasks), key=lambda t: t.id)
-    open_tasks = [t for t in tasks if not t.done]
+    active_tasks = sorted(
+        (t for t in tasks if not t.done and not t.archived),
+        key=lambda t: (0 if t.in_progress else 1, PRIORITY_RANK.get(t.priority, 9), t.id),
+    )
     done_tasks = [t for t in tasks if t.done]
+    archived_tasks = [t for t in tasks if t.archived]
 
-    pending_count = sum(not t.in_progress and not t.archived for t in open_tasks)
-    in_progress_count = sum(t.in_progress for t in open_tasks)
-    archived_count = sum(t.archived for t in open_tasks)
+    pending_count = sum(not t.in_progress for t in active_tasks)
+    in_progress_count = sum(t.in_progress for t in active_tasks)
+    archived_count = len(archived_tasks)
     done_count = len(done_tasks)
 
     summary_parts = [
@@ -173,29 +210,27 @@ def render_tasks(notes: list[Note]) -> str:
 
     out = [
         f"> 共 {len(tasks)} 項任務：" + "／".join(summary_parts),
+        "> 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence \"...\"` 結案。",
         "",
-        "### 🔴 未做 / 進行中（Pending & In Progress）",
+        "### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）",
         "",
         "| 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |",
         "| :--- | :---: | :---: | :--- | :--- | :--- | :---: |",
     ]
-    for t in open_tasks:
-        if t.archived:
-            status = "⚪ 不做"
-        elif t.in_progress:
-            status = "🟡 進行中"
-        else:
-            status = "🔴 未做"
+    for t in active_tasks:
+        status = "🟡 進行中" if t.in_progress else "🔴 未做"
         out.append(
             f"| `{t.id}` | {status} | {t.priority} | {_cell(t.title)} | {_cell(t.fields.get('目標範圍', ''))} "
             f"| [{t.note.slug}]({t.note.link}) | {t.created} |"
         )
-    if not open_tasks:
+    if not active_tasks:
         out.append("| *（目前沒有未完成任務）* | - | - | - | - | - | - |")
 
     out += [
         "",
         "### 🟢 已做（Done）",
+        "",
+        f"<details><summary>展開查看已完成任務（共 {done_count} 項）</summary>",
         "",
         "| 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |",
         "| :--- | :---: | :--- | :--- | :--- |",
@@ -207,6 +242,25 @@ def render_tasks(notes: list[Note]) -> str:
         )
     if not done_tasks:
         out.append("| *（尚無已完成任務）* | - | - | - | - |")
+    out += ["", "</details>"]
+
+    if archived_tasks:
+        out += [
+            "",
+            "### ⚪ 不做 / 已關閉（Archived）",
+            "",
+            f"<details><summary>展開查看已關閉或評估不做的任務（共 {archived_count} 項）</summary>",
+            "",
+            "| 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 關閉理由 | 來源分析文章 |",
+            "| :--- | :---: | :---: | :--- | :--- | :--- |",
+        ]
+        for t in archived_tasks:
+            out.append(
+                f"| `{t.id}` | ⚪ 不做 | {t.priority} | {_cell(t.title)} | {_cell(t.archive_reason)} "
+                f"| [{t.note.slug}]({t.note.link}) |"
+            )
+        out += ["", "</details>"]
+
     return "\n".join(out) + "\n"
 
 
@@ -215,15 +269,18 @@ STATUS_LABEL = {"pending": "🔴", "in-progress": "🟡", "done": "🟢", "archi
 
 def render_index(notes: list[Note]) -> str:
     out = [
-        "| 日期 | 狀態 | 文章標題 / 主題 | 核心標籤 | 衍生任務（已做/總數） |",
+        "| 日期 | 狀態 | 文章標題 / 主題 | 核心標籤 | 衍生任務（已做/有效） |",
         "| :---: | :---: | :--- | :--- | :---: |",
     ]
     for n in notes:
         tags = ", ".join(f"`{t}`" for t in n.tags[:3])
         done = sum(t.done for t in n.tasks)
+        archived = sum(t.archived for t in n.tasks)
+        active_total = len(n.tasks) - archived
+        progress = f"{done} / {active_total}" + (f"（+{archived} 不做）" if archived else "")
         out.append(
             f"| {n.meta.get('analyzed_at', '-')} | {STATUS_LABEL.get(n.meta.get('status', ''), '?')} "
-            f"| [{_cell(n.meta.get('title', n.slug))}]({n.link}) | {tags or '-'} | {done} / {len(n.tasks)} |"
+            f"| [{_cell(n.meta.get('title', n.slug))}]({n.link}) | {tags or '-'} | {progress} |"
         )
     return "\n".join(out) + "\n"
 

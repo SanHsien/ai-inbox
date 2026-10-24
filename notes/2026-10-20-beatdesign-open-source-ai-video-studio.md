@@ -7,7 +7,7 @@ author: "BeatAPI 社群 (@BeatAPI)"
 github_repo: "https://github.com/BeatAPI/BeatDesign"
 analyzed_at: 2026-10-20
 analyzed_by: "Antigravity"
-status: pending # pending | in-progress | done | archived
+status: archived # pending | in-progress | done | archived
 cluster: 2
 cluster_role: "影音工作台"
 short_title: "BeatDesign 開源 AI 影片工作台"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[BeatAPI/BeatDesign (GitHub)](https://github.com/BeatAPI/BeatDesign) ｜ [BeatDesign 官方站點](https://design.beatapi.io)
 - **發布平台 / 原作者**：`GitHub / 社群貼文` / `BeatAPI 社群 (@BeatAPI)`
 - **分析日期**：`2026-10-20`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 
 ---
 
