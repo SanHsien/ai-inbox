@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 92 項任務：🔴 未做 11／🟡 進行中 1／🟢 已做 53／⚪ 不做 27
+> 共 92 項任務：🔴 未做 10／🟡 進行中 1／🟢 已做 54／⚪ 不做 27
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -51,7 +51,6 @@
 | `T-20261023-05` | 🔴 未做 | 高 | 盤點本人是否使用 Zeabur，並對曾存放其上的憑證做輪替確認 | `docs/zeabur-incident-credential-audit.md`（僅記錄遮蔽後資訊，嚴禁貼入任何仍有效的金鑰） | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | 2026-10-23 |
 | `T-20261023-02` | 🔴 未做 | 中 | 建立跨專案「`.claude/claude-security-guidance.md` 範本與三層防禦對齊手冊」，將全域硬閘門注入 Claude Code 資安審查 | `templates/claude-security-guidance.md` ＋ 全域防護手冊 | [2026-10-23-claude-plugin-security-guidance](./notes/2026-10-23-claude-plugin-security-guidance.md) | 2026-10-23 |
 | `T-20261023-03` | 🔴 未做 | 中 | 取得 WebToApp 並實測：把一個本機靜態網頁打包成可安裝 APK，記錄限制 | `docs/web-to-app-evaluation.md`（實測紀錄；不修改其他 repo） | [2026-10-23-web-to-app-android-packaging](./notes/2026-10-23-web-to-app-android-packaging.md) | 2026-10-23 |
-| `T-20261024-01` | 🔴 未做 | 中 | 建立「AI 野心升級檢查表」範本（高度／深度四問／廣度動詞化），並用一個真實任務實測前後差異 | `templates/ambition-prompt-checklist.md` | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | 2026-10-24 |
 | `T-20261024-03` | 🔴 未做 | 中 | 在 Windows 11 原生環境評估 feedback-desk 的 CLI 與 MCP 可行性（不含正式部署，除非維護者同意） | `docs/feedback-desk-windows-eval.md`；僅在暫存資料夾執行，不碰其他 repo | [2026-10-24-feedback-desk-client-ticket-ai-handoff](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | 2026-10-24 |
 | `T-20261024-05` | 🔴 未做 | 中 | 查證影片的三項宣稱：IG 標示 AI 生成是否不被降權、ElevenLabs 與 HeyGen 的肖像與聲音授權範圍、兩工具現行費用 | `docs/ai-influencer-claims-check.md`（僅查官方公開頁面，不註冊、不付費） | [2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | 2026-10-24 |
 | `T-20261023-04` | 🔴 未做 | 低 | 在 T-20261023-03 結論為「可行」的前提下，撰寫「網站轉 App 接案流程規格」 | `docs/web-to-app-freelance-workflow.md` | [2026-10-23-web-to-app-android-packaging](./notes/2026-10-23-web-to-app-android-packaging.md) | 2026-10-23 |
@@ -61,7 +60,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 53 項）</summary>
+<details><summary>展開查看已完成任務（共 54 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -118,6 +117,7 @@
 | `T-20261021-15` | 2026-10-22 | 建立「Code-as-Video Studio 影視工作室規範（`CLAUDE.md` / `SKILL.md` 範本）」，將「影片是時間函式 seek(t)」、反 AI 視覺套路清單與 Playwright 網頁素材自動擷取封裝為標準模組 | 產出 templates/video-studio-harness.md 影視工作室規範（含 CLAUDE.md / SKILL.md 範本），整合 seek(t) 時間函式架構、四大反 AI 視覺套路禁令，並併入 T-20261017-18（運鏡）、T-20261018-02（動效字典）、T-20261020-04（時間線規格）與 T-20261018-01（Remotion/Canvas 渲染工作流）；實作 tools/video_asset_capture.py 與 tests/test_video_asset_capture.py（單元測試通過）；實測以 Playwright 抓取 https://openlibrary.org 產出截圖、theme.json 與單檔時間函式範例 assets/openlibrary_demo/video_seek_canvas.html。 | [2026-10-21-code-as-video-harness-studio-workflow](./notes/2026-10-21-code-as-video-harness-studio-workflow.md) |
 | `T-20261021-16` | 2026-10-23 | 實作「關鍵幀縮圖總覽與 1-10 分自檢評審門禁（Keyframe Storyboard Gate）」，在影片正式渲染前自動剔除劣質分鏡 | 以 ai-inbox 範本形式交付於 `tools/verify_video_storyboard.py` 與測試 `tests/test_verify_video_storyboard.py`（6/6 通過），實作關鍵影格 1-10 分評審打分機制、四大反 AI 罐頭套路檢測、自動輸出 HTML Contact Sheet 與 JSON 門禁報告。 | [2026-10-21-code-as-video-harness-studio-workflow](./notes/2026-10-21-code-as-video-harness-studio-workflow.md) |
 | `T-20261023-06` | 2026-10-24 | 建立「託管平台入侵事件應變清單」範本，供日後任一 PaaS 事件重用 | 產出 templates/platform-breach-response.md（含立即處置、二次憑證、稽核與帳單、遷移評估、預防五大段落共 20 項檢核清單），通過 Select-String DoD 與 verify_inbox.py 驗證。 | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) |
+| `T-20261024-01` | 2026-10-25 | 建立「AI 野心升級檢查表」範本（高度／深度四問／廣度動詞化），並用一個真實任務實測前後差異 | 已透過外部 Claude Session (agent-relay 20261024T155802447Z-1a658f) 建立 templates/ambition-prompt-checklist.md，涵蓋目標背後的目標、深度四問、廣度動詞化（含 5 領域視角）與外部裁判四大面向（共 19 個勾選項），並以 T-20261024-05 完成「改寫前／改寫後」對照實測。 | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) |
 
 </details>
 
@@ -207,7 +207,7 @@
 | 2026-10-23 | 🟡 | [Zeabur 2026 年十月資安事件解構：內部明文憑證外洩、共享叢集與 GCP 專用伺服器淪陷、平台資料庫環境變數被讀取，及對自身雲端憑證衛生的應變清單](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | `zeabur`, `security-incident`, `credential-rotation` | 1 / 2 |
 | 2026-10-24 | 🔴 | [AI 網紅 IG 限動口播流程：自拍→ChatGPT 生成同場景人物→HeyGen 開口→ElevenLabs 變聲的影片解構（逐字稿已取得）](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | `ai-influencer`, `heygen`, `elevenlabs` | 0 / 2 |
 | 2026-10-24 | 🔴 | [feedback-desk 解構：客戶開單 × 多 AI 認領與交接的輕量工單系統（Cloudflare Workers 免費版／Laravel 主機版）、MCP 接入 Claude Code 與 Codex，及與本地交接機制的對照](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | `feedback-desk`, `ticketing`, `ai-handoff` | 0 / 2 |
-| 2026-10-24 | 🔴 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 0 / 2 |
+| 2026-10-24 | 🟡 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 1 / 2 |
 <!-- END GENERATED: index -->
 
 ---

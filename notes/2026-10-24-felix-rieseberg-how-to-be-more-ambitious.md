@@ -6,7 +6,7 @@ source_platform: "Blog（社群轉貼：老軒筆記）"
 author: "Felix Rieseberg (Anthropic)"
 analyzed_at: 2026-10-24
 analyzed_by: "Antigravity"
-status: pending # pending | in-progress | done | archived
+status: in-progress # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "Prompt 與工作流方法論"
 short_title: "AI 野心四維框架與深度四問"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[原文：How to be more ambitious: A tutorial for humans with models](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)（作者網站標示發布日 2026-10-13；本次由「老軒筆記」貼文轉述觸發分析，貼文未附原文連結，連結由我在作者網站首頁查得）
 - **發布平台 / 作者**：作者個人網站 / `Felix Rieseberg`（Anthropic 工程經理，帶領 Claude.ai、Claude Code 桌面版團隊）
 - **分析日期**：`2026-10-24`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md`](./2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)（嚴格 TDD 與對抗式驗證）
   - [`notes/2026-10-23-claude-plugin-security-guidance.md`](./2026-10-23-claude-plugin-security-guidance.md)（外部機械閘門）
@@ -83,13 +83,14 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261024-01`**｜**[優先級：中]** 建立「AI 野心升級檢查表」範本（高度／深度四問／廣度動詞化），並用一個真實任務實測前後差異
+- [x] **`T-20261024-01`**｜**[優先級：中]** 建立「AI 野心升級檢查表」範本（高度／深度四問／廣度動詞化），並用一個真實任務實測前後差異
   - **目標範圍**：`templates/ambition-prompt-checklist.md`
   - **具體做法**：
     1. 把四個面向整理成可勾選檢查表：目標背後的目標、深度四問、名詞換動詞與 5 領域提示、外部裁判。
     2. 從本 repo 的未做任務中挑一個，先寫原始指令，再套用檢查表改寫成高野心版本。
   - **驗收標準（DoD）**：產出 `templates/ambition-prompt-checklist.md`，含四個面向各至少 2 個勾選項與一段「改寫前／改寫後」對照（取自真實任務，註明任務編號）；以 `Select-String -Pattern '改寫前|改寫後'` 驗證兩者皆存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-25
+  - **實作紀錄 / 證據**：已透過外部 Claude Session (agent-relay 20261024T155802447Z-1a658f) 建立 templates/ambition-prompt-checklist.md，涵蓋目標背後的目標、深度四問、廣度動詞化（含 5 領域視角）與外部裁判四大面向（共 19 個勾選項），並以 T-20261024-05 完成「改寫前／改寫後」對照實測。
 
 - [ ] **`T-20261024-02`**｜**[優先級：低]** 稽核現有任務與技能是否具備「外部裁判」，列出缺口
   - **目標範圍**：`docs/external-judge-audit.md`（只讀盤點 ai-inbox 內的 DoD，不修改任務）
