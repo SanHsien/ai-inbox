@@ -86,9 +86,18 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
      ```
 3. **提交與推送**（驗證通過才提交）：
    - `python tools/verify_inbox.py && python -m pytest -q && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
-4. **開啟新 Session 派工注意事項（Antigravity / 跨 CLI）**：
-   - 在 Antigravity 內使用 `invoke_subagent` 開啟新子代理 session 派工實作任務時，**必須使用 `TypeName: "self"`**（或先以 `define_subagent` 設定 `EnableWriteTools: true`）。內建的 `advisor-flash-implementer` / `advisor-pro-implementer` 預設僅具唯讀權限，無法直接執行 `write_file` 或 `run_command`。
-   - 子代理完成 `task_cli.py claim` → 實作 → DoD 驗證 → `task_cli.py complete` 後，只回報三行摘要，由主 session 執行獨立驗收後統一 `git commit` 與 `git push`。
+4. **開啟新 Session 派工注意事項（Antigravity Desktop 頂層對話 / 內部子代理 / 跨 CLI）**：
+   - **方法一（推薦：在 Antigravity Desktop 左側對話欄建立使用者看得見的頂層新對話）**：
+     - 直接呼叫 Antigravity 原生 `language_server.exe agentapi new-conversation`（勿透過 `agentapi.bat` 以免 `cmd.exe` 截斷換行或特殊字元），這會建立 `nestingDepth: 0`、`parentConversationId: ""` 的頂層新對話，立即顯示在 Antigravity Desktop 左側欄：
+       ```powershell
+       & "$env:LOCALAPPDATA\Programs\Antigravity\resources\bin\language_server.exe" agentapi new-conversation --title="[派工] T-YYYYMMDD-XX 任務標題" "<完整派工 Prompt，結尾要求完成後呼叫 send_message 工具（Recipient 填主對話 UUID）回報 Commit SHA 與驗證輸出>"
+       ```
+     - 執行後從回傳 JSON 取得 `newConversation.conversationId`，在回覆中提供可點擊連結 `[[派工] T-YYYYMMDD-XX](conversation://<conversationId>)` 讓維護者可一鍵點開觀看即時進度；新對話完工推送後透過 `send_message` 自動喚醒主對話驗收。
+   - **方法二（Antigravity 內部背景子代理 `invoke_subagent`）**：
+     - 適合不需佔用左側頂層對話欄的快速子任務（建立 `nestingDepth: 1` 的子對話，顯示於當前對話右側 Subagents 面板，亦可透過 `conversation://<id>` 連結開啟）。
+     - **必須使用 `TypeName: "self"`**（或先以 `define_subagent` 設定 `EnableWriteTools: true`）。內建的 `advisor-flash-implementer` / `advisor-pro-implementer` 預設僅具唯讀權限，無法直接執行 `write_file` 或 `run_command`。
+   - **方法三（透過 `agent-relay` 跨 CLI 派工給外部 `claude.exe` / `codex.exe`）**：
+     - 會在獨立 Git Worktree（`.relay-worktrees/<id>`）以無頭模式（`claude.exe -p`）執行並自動跑驗證閘門；注意無頭 CLI 不會在 Claude Desktop 或 Antigravity Desktop 彈出 GUI 視窗，且預設 `claude` 工人僅開放檔案讀寫工具（`Read`/`Write`/`Edit`），完工合併回主線後須補跑 `python tools/task_cli.py complete` 與 `python tools/build_index.py`。
 
 ---
 
