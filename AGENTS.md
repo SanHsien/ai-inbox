@@ -93,6 +93,10 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
        & "$env:LOCALAPPDATA\Programs\Antigravity\resources\bin\language_server.exe" agentapi new-conversation --title="[派工] T-YYYYMMDD-XX 任務標題" "<完整派工 Prompt，結尾要求完成後呼叫 send_message 工具（Recipient 填主對話 UUID）回報 Commit SHA 與驗證輸出>"
        ```
        執行後從回傳 JSON 取得 `newConversation.conversationId`，在回覆中提供可點擊連結 `[[派工] T-YYYYMMDD-XX](conversation://<conversationId>)`。
+     - **完工自動封存（無後續待辦時必做）**：派工新對話在呼叫 `send_message` 回報主對話後，若該新對話已無任何待辦事項，應執行 Connect-RPC `UpdateConversationAnnotations` 將自身標記為封存（務必帶 `mergeAnnotations = $true` 以保留既有標題）：
+       ```powershell
+       Invoke-RestMethod -Method Post -Uri "http://$env:ANTIGRAVITY_LS_ADDRESS/exa.language_server_pb.LanguageServerService/UpdateConversationAnnotations" -Headers @{ "Connect-Protocol-Version" = "1"; "x-codeium-csrf-token" = $env:ANTIGRAVITY_CSRF_TOKEN } -ContentType "application/json" -Body (@{ cascadeId = $env:ANTIGRAVITY_CONVERSATION_ID; cascadeIds = @($env:ANTIGRAVITY_CONVERSATION_ID); annotations = @{ archived = $true }; mergeAnnotations = $true } | ConvertTo-Json -Depth 5)
+       ```
      - **從其他 Agent（Claude / Codex / Hermes）派給 Antigravity Desktop 開頂層新對話**：
        ```powershell
        python -m agent_relay send --to antigravity --kind task --project C:\GitHub\ai-inbox --ref antigravity-session:new --subject "T-YYYYMMDD-XX" --body-file task.md
