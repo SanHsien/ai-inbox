@@ -6,7 +6,7 @@ source_platform: "YouTube"
 author: "tangigtutor（頻道名稱依頁面資料）"
 analyzed_at: 2026-10-24
 analyzed_by: "Antigravity"
-status: pending # pending | in-progress | done | archived
+status: done # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "生成式媒體工作流"
 short_title: "AI 網紅限動：ChatGPT＋HeyGen＋ElevenLabs"
@@ -25,7 +25,7 @@ tags:
 - **發布平台 / 作者**：`YouTube` / 課程型頻道（說明欄附付費課程「AI Influencer Masterclass」連結與商業合作信箱）
 - **影片資料（2026-10-24 由頁面取得）**：長度約 510 秒（約 8 分 30 秒）、觀看約 477 次、發布約 2026-09-30
 - **分析日期**：`2026-10-24`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 > [!NOTE]
 > **資料來源說明**：YouTube 字幕端點對本機回 `HTTP 429`（連 `yt-dlp` 搭配 impersonation 也一樣），改用 `yt-dlp` 下載音訊，再以本機 `faster-whisper`（small 模型、CPU）轉寫成逐字稿。轉寫有誤聽：工具名被轉成「黑捲／黑准」（實為 HeyGen）、「全GPT」（ChatGPT）、「Cloud」（Claude），下文工具名已依上下文還原；`ElevenLabs` 推薦的兩個聲音名稱聽成「安納蘇」「令」，**無法確認正確拼寫**，僅標示為聽寫結果。影片畫面（操作介面）我沒有看，介面細節以講者口述為準。
@@ -105,21 +105,23 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261024-05`**｜**[優先級：中]** 查證影片的三項宣稱：IG 標示 AI 生成是否不被降權、ElevenLabs 與 HeyGen 的肖像與聲音授權範圍、兩工具現行費用
+- [x] **`T-20261024-05`**｜**[優先級：中]** 查證影片的三項宣稱：IG 標示 AI 生成是否不被降權、ElevenLabs 與 HeyGen 的肖像與聲音授權範圍、兩工具現行費用
+  - **完成日期**：2026-10-25
   - **目標範圍**：`docs/ai-influencer-claims-check.md`（僅查官方公開頁面，不註冊、不付費）
   - **具體做法**：
     1. 查 Meta／Instagram 官方說明中對 AI 生成內容標示與觸及的描述，記錄來源連結與查閱日期。
     2. 查 HeyGen、ElevenLabs 官方條款中關於照片肖像、聲音複製與商用的條文與方案價格。
     3. 每項宣稱標註「官方證實／官方未提及／與官方矛盾」。
   - **驗收標準（DoD）**：產出 `docs/ai-influencer-claims-check.md`，三項宣稱各一列，每列含官方來源連結、查閱日期與判定；以 `Select-String -Pattern 'https://'` 計數連結至少 4 個，且全文含三個判定字樣之一。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已完成查證並產出 `docs/ai-influencer-claims-check.md`。三項宣稱查核結果：(a) 標示 AI 不被降權且 IG 反而鼓勵判定為「官方未提及」（官方要求強制標示逼真內容以避免受罰，但無任何流量加成或鼓勵說明）；(b) 任意自拍照片開口與變聲商用判定為「與官方矛盾」（兩平台條款均強制要求被攝者與聲音書面同意，且免費版嚴禁商用；本人授權付費則為「官方證實」）；(c) 現行公開方案定價判定為「官方證實」（HeyGen Creator $29/月、ElevenLabs Starter $6/月，證實每月基本商用工具固定成本 $35 美元以上）。DoD 驗證全部通過。
 
-- [ ] **`T-20261024-06`**｜**[優先級：低]** 建立「AI 生成人物與聲音使用的合規檢查清單」，供日後任何 AI 人物或數位人專案參考
+- [x] **`T-20261024-06`**｜**[優先級：低]** 建立「AI 生成人物與聲音使用的合規檢查清單」，供日後任何 AI 人物或數位人專案參考
+  - **完成日期**：2026-10-25
   - **目標範圍**：`docs/ai-persona-compliance-checklist.md`
   - **具體做法**：
     1. 以 `T-20261024-05` 的查證結果為依據，整理成可勾選清單：AI 揭露、被攝者書面同意、聲音複製授權、商用條款、平台政策。
   - **驗收標準（DoD）**：產出 `docs/ai-persona-compliance-checklist.md`，含上述五個類別、每類至少 2 項可勾選項目，並附官方來源連結與查閱日期；以 `Select-String -Pattern 'https://'` 計數連結至少 3 個。若 `T-20261024-05` 尚未完成，本任務不得開始。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已完成產出 `docs/ai-persona-compliance-checklist.md`。包含五大類別（AI 揭露、被攝者書面同意、聲音複製授權、商用條款、平台政策），每類各提供 3 項可勾選項目（共 15 項），並附 9 個官方來源連結（包含 Meta、HeyGen、ElevenLabs 官方條款與定價）與查閱日期（2026-10-25）。DoD 驗證全部通過。
 
 ---
 

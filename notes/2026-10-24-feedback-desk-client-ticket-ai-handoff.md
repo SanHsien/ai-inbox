@@ -6,7 +6,7 @@ source_platform: "Threads / GitHub"
 author: "aixwangtw（部落格：aixwang.dev）"
 analyzed_at: 2026-10-24
 analyzed_by: "Antigravity"
-status: pending # pending | in-progress | done | archived
+status: done # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "多 Agent 協作與交接"
 short_title: "feedback-desk 客戶工單與 AI 交接"
@@ -26,7 +26,7 @@ tags:
 - **發布平台 / 作者**：`Threads` + `GitHub` / `aixwangtw`
 - **查證數據（2026-10-24 以 GitHub API 取得）**：MIT 授權、TypeScript、約 31 Stars、最後推送 2026-10-20、分支 `main`（Cloudflare 版）／`cloudflare`／`laravel`（主機版）
 - **分析日期**：`2026-10-24`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-21-agent-relay-pipeline-phase4.md`](./2026-10-21-agent-relay-pipeline-phase4.md)（本地多 Agent 派工與驗收）
   - [`notes/2026-10-23-zeabur-october-2026-security-incident.md`](./2026-10-23-zeabur-october-2026-security-incident.md)（貼文提到 Cloudflare 版是作者在 Zeabur 倒掉後做的替代方案）
@@ -83,22 +83,24 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261024-03`**｜**[優先級：中]** 在 Windows 11 原生環境評估 feedback-desk 的 CLI 與 MCP 可行性（不含正式部署，除非維護者同意）
+- [x] **`T-20261024-03`**｜**[優先級：中]** 在 Windows 11 原生環境評估 feedback-desk 的 CLI 與 MCP 可行性（不含正式部署，除非維護者同意）
+  - **完成日期**：2026-10-25
   - **目標範圍**：`docs/feedback-desk-windows-eval.md`；僅在暫存資料夾執行，不碰其他 repo
   - **具體做法**：
     1. 以 `node -v` 確認 Node 20+，再於暫存資料夾執行 `npx --allow-git=all github:aixwangtw/feedback-desk init --name <測試名>`，記錄是否在原生 Windows 成功與錯誤訊息。
     2. 先詢問維護者是否同意建立 Cloudflare 帳號資源；同意才執行 `deploy` 與後續步驟，否則停在 `init`。
     3. 若有部署：驗證 `mcp install` 後 Claude Code 的 `/mcp` 顯示已連線，並確認 token 沒有出現在設定檔與對話。
   - **驗收標準（DoD）**：產出 `docs/feedback-desk-windows-eval.md`，含 `node -v`、`init` 的實際輸出（或錯誤）、是否需要 WSL 的結論一行；若有部署再加 `/mcp` 連線輸出。以 `Select-String -Pattern '結論'` 驗證存在，並確認文件不含任何 token。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已於暫存目錄 `$env:TEMP\fd-eval-test` 執行 `node -v`（`v26.12.1`）與 `npx --yes --allow-git=all github:aixwangtw/feedback-desk init --name test-desk`。確認 package.json 未發布 npm registry 且 git 忽略 `dist/`，套件安裝觸發 `prepare` 腳本時因 Windows 無法直接呼叫無副檔名之 `.bin/tailwindcss` 導致 `ENOENT` / `EINVAL`。產出評估文件 `docs/feedback-desk-windows-eval.md`，內含錯誤日誌與明確「結論：...」說明需 WSL 或手動修補，並已依規清理暫存資料夾。
 
-- [ ] **`T-20261024-04`**｜**[優先級：低]** 對照 feedback-desk 的認領／交接機制與本地 `agent-relay`，列出可借鏡與不採納項
+- [x] **`T-20261024-04`**｜**[優先級：低]** 對照 feedback-desk 的認領／交接機制與本地 `agent-relay`，列出可借鏡與不採納項
+  - **完成日期**：2026-10-25
   - **目標範圍**：`docs/feedback-desk-vs-agent-relay.md`（只讀比對，不改 `agent-relay`）
   - **具體做法**：
     1. 比對欄位：狀態機、認領、交接紀錄、動作署名（帳號＋AI 工具）、人工確認閘門、客戶可見範圍。
     2. 每項標註「已有／缺少／不需要」與理由。
   - **驗收標準（DoD）**：產出 `docs/feedback-desk-vs-agent-relay.md`，含至少 6 列對照表，每列含判斷與理由；以 `Select-String -Pattern '^\| '` 計數表格列至少 8（含表頭與分隔列）。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：完成 feedback-desk 與 agent-relay 多維度機制對照，產出 `docs/feedback-desk-vs-agent-relay.md`。涵蓋狀態機、認領、交接紀錄、動作署名（帳號＋AI 工具）、人工確認閘門、客戶可見範圍、通訊傳輸架構與機密邊界等 8 項維度對照表，逐項標記已有／缺少／不需要及具體理由，表格列數經驗證達 10 列（>= 8）。
 
 ---
 
