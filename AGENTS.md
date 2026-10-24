@@ -86,6 +86,9 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
      ```
 3. **提交與推送**（驗證通過才提交）：
    - `python tools/verify_inbox.py && python -m pytest -q && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
+4. **開啟新 Session 派工注意事項（Antigravity / 跨 CLI）**：
+   - 在 Antigravity 內使用 `invoke_subagent` 開啟新子代理 session 派工實作任務時，**必須使用 `TypeName: "self"`**（或先以 `define_subagent` 設定 `EnableWriteTools: true`）。內建的 `advisor-flash-implementer` / `advisor-pro-implementer` 預設僅具唯讀權限，無法直接執行 `write_file` 或 `run_command`。
+   - 子代理完成 `task_cli.py claim` → 實作 → DoD 驗證 → `task_cli.py complete` 後，只回報三行摘要，由主 session 執行獨立驗收後統一 `git commit` 與 `git push`。
 
 ---
 

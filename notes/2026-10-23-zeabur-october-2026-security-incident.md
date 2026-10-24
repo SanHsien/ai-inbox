@@ -6,7 +6,7 @@ source_platform: "Threads"
 author: "Zeabur (@zeabur.app)"
 analyzed_at: 2026-10-23
 analyzed_by: "Antigravity"
-status: pending # pending | in-progress | done | archived
+status: in-progress # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "資安防護"
 short_title: "Zeabur 十月資安事件與憑證輪替"
@@ -25,7 +25,7 @@ tags:
 - **完整初步調查報告**：[Zeabur 2026 年十月資安事件（初步報告）](https://zeabur.com/zh-TW/blogs/october-2026-security-incident)（2026-10-19 發布，時間皆為 UTC，調查仍在進行，內容可能更新）
 - **發布平台 / 作者**：`Threads` / `Zeabur`（報告作者 Yuanlin Lin）
 - **分析日期**：`2026-10-23`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-23-claude-plugin-security-guidance.md`](./2026-10-23-claude-plugin-security-guidance.md)（Agent 寫碼時攔截硬編碼憑證）
 
@@ -105,13 +105,14 @@ tags:
   - **驗收標準（DoD）**：產出 `docs/zeabur-incident-credential-audit.md`，第一行明寫「結論：有使用／無使用 Zeabur」；若有使用，列出每項憑證「供應商、已撤銷日期、已重建日期」表格（不含值）與 GitHub 稽核與帳單檢查結果；以 `Select-String -Path docs/zeabur-incident-credential-audit.md -Pattern '結論'` 驗證，並以 secret 掃描確認文件不含金鑰。若結論為「無使用」，本任務可直接標示完成並附登入控制台的確認時間。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
-- [ ] **`T-20261023-06`**｜**[優先級：中]** 建立「託管平台入侵事件應變清單」範本，供日後任一 PaaS 事件重用
+- [x] **`T-20261023-06`**｜**[優先級：中]** 建立「託管平台入侵事件應變清單」範本，供日後任一 PaaS 事件重用
   - **目標範圍**：`templates/platform-breach-response.md`
   - **具體做法**：
     1. 依本事件整理通用步驟：先撤銷再重建、輪替範圍（含資料庫內密碼、加密金鑰、Access Token）、檢查第三方稽核紀錄與帳單、評估是否遷出平台。
     2. 加入「預防面」檢查項：憑證不明文落地、長效權杖設期限、備份與金鑰分離。
   - **驗收標準（DoD）**：產出 `templates/platform-breach-response.md`，含「立即處置／二次憑證／稽核與帳單／遷移評估／預防」五個段落且每段至少 3 項可勾選項目；以 `Select-String -Pattern '^## '` 確認五個段落標題存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-24
+  - **實作紀錄 / 證據**：產出 templates/platform-breach-response.md（含立即處置、二次憑證、稽核與帳單、遷移評估、預防五大段落共 20 項檢核清單），通過 Select-String DoD 與 verify_inbox.py 驗證。
 
 ---
 

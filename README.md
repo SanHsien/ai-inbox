@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 92 項任務：🔴 未做 12／🟡 進行中 1／🟢 已做 52／⚪ 不做 27
+> 共 92 項任務：🔴 未做 11／🟡 進行中 1／🟢 已做 53／⚪ 不做 27
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -51,7 +51,6 @@
 | `T-20261023-05` | 🔴 未做 | 高 | 盤點本人是否使用 Zeabur，並對曾存放其上的憑證做輪替確認 | `docs/zeabur-incident-credential-audit.md`（僅記錄遮蔽後資訊，嚴禁貼入任何仍有效的金鑰） | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | 2026-10-23 |
 | `T-20261023-02` | 🔴 未做 | 中 | 建立跨專案「`.claude/claude-security-guidance.md` 範本與三層防禦對齊手冊」，將全域硬閘門注入 Claude Code 資安審查 | `templates/claude-security-guidance.md` ＋ 全域防護手冊 | [2026-10-23-claude-plugin-security-guidance](./notes/2026-10-23-claude-plugin-security-guidance.md) | 2026-10-23 |
 | `T-20261023-03` | 🔴 未做 | 中 | 取得 WebToApp 並實測：把一個本機靜態網頁打包成可安裝 APK，記錄限制 | `docs/web-to-app-evaluation.md`（實測紀錄；不修改其他 repo） | [2026-10-23-web-to-app-android-packaging](./notes/2026-10-23-web-to-app-android-packaging.md) | 2026-10-23 |
-| `T-20261023-06` | 🔴 未做 | 中 | 建立「託管平台入侵事件應變清單」範本，供日後任一 PaaS 事件重用 | `templates/platform-breach-response.md` | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | 2026-10-23 |
 | `T-20261024-01` | 🔴 未做 | 中 | 建立「AI 野心升級檢查表」範本（高度／深度四問／廣度動詞化），並用一個真實任務實測前後差異 | `templates/ambition-prompt-checklist.md` | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | 2026-10-24 |
 | `T-20261024-03` | 🔴 未做 | 中 | 在 Windows 11 原生環境評估 feedback-desk 的 CLI 與 MCP 可行性（不含正式部署，除非維護者同意） | `docs/feedback-desk-windows-eval.md`；僅在暫存資料夾執行，不碰其他 repo | [2026-10-24-feedback-desk-client-ticket-ai-handoff](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | 2026-10-24 |
 | `T-20261024-05` | 🔴 未做 | 中 | 查證影片的三項宣稱：IG 標示 AI 生成是否不被降權、ElevenLabs 與 HeyGen 的肖像與聲音授權範圍、兩工具現行費用 | `docs/ai-influencer-claims-check.md`（僅查官方公開頁面，不註冊、不付費） | [2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | 2026-10-24 |
@@ -62,7 +61,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 52 項）</summary>
+<details><summary>展開查看已完成任務（共 53 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -118,6 +117,7 @@
 | `T-20261021-14` | 2026-10-23 | 針對開源長上下文模型設計「Agent 循環執行死鎖偵測與強制熔斷 Hook（Anti-Doom-Loop Hook）」，防止長任務中重複執行相同指令 | 在個人 Fork `SanHsien/harness-guard` 完成實作。新增 PreToolUse 守護腳本 `hooks/anti-doom-loop-guard/claude-code/anti_doom_loop_guard.py`，支援 Bash/Read 連續 3 次重複命令之滑動視窗比對與熔斷攔截，並記錄審計日誌至 audit.jsonl；新增迴歸測試 `hooks/anti-doom-loop-guard/tests/run-tests.py`（15/15 通過），整合進 CI 矩陣，本地全量 guardrail 測試綠燈，提交並推至 origin（Commit `5f069e2`），未寫入任何 agent 正式設定。 | [2026-10-21-0x-alpha-glm-5-3-flash-1m-context](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) |
 | `T-20261021-15` | 2026-10-22 | 建立「Code-as-Video Studio 影視工作室規範（`CLAUDE.md` / `SKILL.md` 範本）」，將「影片是時間函式 seek(t)」、反 AI 視覺套路清單與 Playwright 網頁素材自動擷取封裝為標準模組 | 產出 templates/video-studio-harness.md 影視工作室規範（含 CLAUDE.md / SKILL.md 範本），整合 seek(t) 時間函式架構、四大反 AI 視覺套路禁令，並併入 T-20261017-18（運鏡）、T-20261018-02（動效字典）、T-20261020-04（時間線規格）與 T-20261018-01（Remotion/Canvas 渲染工作流）；實作 tools/video_asset_capture.py 與 tests/test_video_asset_capture.py（單元測試通過）；實測以 Playwright 抓取 https://openlibrary.org 產出截圖、theme.json 與單檔時間函式範例 assets/openlibrary_demo/video_seek_canvas.html。 | [2026-10-21-code-as-video-harness-studio-workflow](./notes/2026-10-21-code-as-video-harness-studio-workflow.md) |
 | `T-20261021-16` | 2026-10-23 | 實作「關鍵幀縮圖總覽與 1-10 分自檢評審門禁（Keyframe Storyboard Gate）」，在影片正式渲染前自動剔除劣質分鏡 | 以 ai-inbox 範本形式交付於 `tools/verify_video_storyboard.py` 與測試 `tests/test_verify_video_storyboard.py`（6/6 通過），實作關鍵影格 1-10 分評審打分機制、四大反 AI 罐頭套路檢測、自動輸出 HTML Contact Sheet 與 JSON 門禁報告。 | [2026-10-21-code-as-video-harness-studio-workflow](./notes/2026-10-21-code-as-video-harness-studio-workflow.md) |
+| `T-20261023-06` | 2026-10-24 | 建立「託管平台入侵事件應變清單」範本，供日後任一 PaaS 事件重用 | 產出 templates/platform-breach-response.md（含立即處置、二次憑證、稽核與帳單、遷移評估、預防五大段落共 20 項檢核清單），通過 Select-String DoD 與 verify_inbox.py 驗證。 | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) |
 
 </details>
 
@@ -204,7 +204,7 @@
 | 2026-10-21 | ⚪ | [Strata 架構解構：12GB 消費級顯卡流暢運行 125B MoE 大模型、VRAM-RAM-SSD 三層卸載黑科技與 Coding Agent 離線本地化部署實踐](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md) | `strata`, `local-llm`, `qwen-125b` | 0 / 0（+2 不做） |
 | 2026-10-23 | 🔴 | [Anthropic 官方 security-guidance 外掛解構：Claude Code 三層左移資安防禦、正則即時攔截、Diff 語意審查與 Agentic Commit 閘門實踐](./notes/2026-10-23-claude-plugin-security-guidance.md) | `claude-code`, `security-guidance`, `shift-left-security` | 0 / 2 |
 | 2026-10-23 | 🔴 | [WebToApp 解構：手機端把網站打包成 Android App、內建 Node/PHP/Python 執行環境、AI Agent 生成與 AAB 簽名上架，及接案變現評估](./notes/2026-10-23-web-to-app-android-packaging.md) | `webtoapp`, `android`, `apk` | 0 / 2 |
-| 2026-10-23 | 🔴 | [Zeabur 2026 年十月資安事件解構：內部明文憑證外洩、共享叢集與 GCP 專用伺服器淪陷、平台資料庫環境變數被讀取，及對自身雲端憑證衛生的應變清單](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | `zeabur`, `security-incident`, `credential-rotation` | 0 / 2 |
+| 2026-10-23 | 🟡 | [Zeabur 2026 年十月資安事件解構：內部明文憑證外洩、共享叢集與 GCP 專用伺服器淪陷、平台資料庫環境變數被讀取，及對自身雲端憑證衛生的應變清單](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | `zeabur`, `security-incident`, `credential-rotation` | 1 / 2 |
 | 2026-10-24 | 🔴 | [AI 網紅 IG 限動口播流程：自拍→ChatGPT 生成同場景人物→HeyGen 開口→ElevenLabs 變聲的影片解構（逐字稿已取得）](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | `ai-influencer`, `heygen`, `elevenlabs` | 0 / 2 |
 | 2026-10-24 | 🔴 | [feedback-desk 解構：客戶開單 × 多 AI 認領與交接的輕量工單系統（Cloudflare Workers 免費版／Laravel 主機版）、MCP 接入 Claude Code 與 Codex，及與本地交接機制的對照](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | `feedback-desk`, `ticketing`, `ai-handoff` | 0 / 2 |
 | 2026-10-24 | 🔴 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 0 / 2 |
@@ -355,7 +355,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 - **資料、全端與文獻研究**：[462 個免費免金鑰 Public APIs 手冊](./docs/free-public-apis.md) ｜ [全端上線 QA 與資安檢核表](./docs/production-smoke-security-checklist.md) ｜ [健康存摺匯出格式規格](./docs/health-bank-export-format.md) ｜ [雙語論文閱讀工具對比](./docs/academic-bilingual-paper-reader-guide.md) ｜ [SWE-bench 論文 5W1H-CQR-KSU 實測](./docs/academic-reading-smoke-report.md)
 
 ### 3. 可重用 Prompt 與 Skill 範本（`templates/`）及互動展示（`assets/`）
-- **範本（`templates/`）**：[文章分析標準範本](./templates/article-analysis.md) ｜ [5W1H-CQR-KSU 學術閱讀 Prompt](./templates/academic-reading-prompt.md) ｜ [LaTeX 公式與引用保護 Prompt](./templates/latex-citation-protection-prompt.md) ｜ [主體資產盤點與論證寫作 Prompt](./templates/subject-inventory-argument-writing-prompt.md) ｜ [Code-as-Video 工作室規範](./templates/video-studio-harness.md) ｜ [單檔 Creative Coding 技能](./templates/single-file-creative-coding-skill.md) ｜ [全端商業建站技能](./templates/fullstack-website-builder-skill.md) ｜ [Public APIs 檢索技能](./templates/public-apis-search-skill.md) ｜ [健康存摺儀表板 Prompt](./templates/health-bank-dashboard-prompt.md)
+- **範本（`templates/`）**：[文章分析標準範本](./templates/article-analysis.md) ｜ [託管平台入侵應變清單](./templates/platform-breach-response.md) ｜ [5W1H-CQR-KSU 學術閱讀 Prompt](./templates/academic-reading-prompt.md) ｜ [LaTeX 公式與引用保護 Prompt](./templates/latex-citation-protection-prompt.md) ｜ [主體資產盤點與論證寫作 Prompt](./templates/subject-inventory-argument-writing-prompt.md) ｜ [Code-as-Video 工作室規範](./templates/video-studio-harness.md) ｜ [單檔 Creative Coding 技能](./templates/single-file-creative-coding-skill.md) ｜ [全端商業建站技能](./templates/fullstack-website-builder-skill.md) ｜ [Public APIs 檢索技能](./templates/public-apis-search-skill.md) ｜ [健康存摺儀表板 Prompt](./templates/health-bank-dashboard-prompt.md)
 - **單檔互動展示（`assets/`）**：[Anti-Slop 示範頁](./assets/anti-slop-demo/index.html) ｜ [靶心人故事編輯器](./assets/target-story-editor/index.html) ｜ [健康存摺互動儀表板](./assets/health-bank-dashboard/index.html) ｜ [Open-Meteo 即時氣候圖表](./assets/open-meteo-weather-chart/index.html) ｜ [Three.js 粒子星系](./assets/creative-coding-demo/threejs-particle-galaxy.html) ｜ [OpenLibrary 時間函式 `seek(t)` 動畫](./assets/openlibrary_demo/video_seek_canvas.html)
 
 ---
