@@ -6,7 +6,7 @@ source_platform: "Blog（社群轉貼：老軒筆記）"
 author: "Felix Rieseberg (Anthropic)"
 analyzed_at: 2026-10-24
 analyzed_by: "Antigravity"
-status: in-progress # pending | in-progress | done | archived
+status: done # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "Prompt 與工作流方法論"
 short_title: "AI 野心四維框架與深度四問"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[原文：How to be more ambitious: A tutorial for humans with models](https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/)（作者網站標示發布日 2026-10-13；本次由「老軒筆記」貼文轉述觸發分析，貼文未附原文連結，連結由我在作者網站首頁查得）
 - **發布平台 / 作者**：作者個人網站 / `Felix Rieseberg`（Anthropic 工程經理，帶領 Claude.ai、Claude Code 桌面版團隊）
 - **分析日期**：`2026-10-24`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md`](./2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)（嚴格 TDD 與對抗式驗證）
   - [`notes/2026-10-23-claude-plugin-security-guidance.md`](./2026-10-23-claude-plugin-security-guidance.md)（外部機械閘門）
@@ -92,13 +92,14 @@ tags:
   - **完成日期**：2026-10-25
   - **實作紀錄 / 證據**：已透過外部 Claude Session (agent-relay 20261024T155802447Z-1a658f) 建立 templates/ambition-prompt-checklist.md，涵蓋目標背後的目標、深度四問、廣度動詞化（含 5 領域視角）與外部裁判四大面向（共 19 個勾選項），並以 T-20261024-05 完成「改寫前／改寫後」對照實測。
 
-- [ ] **`T-20261024-02`**｜**[優先級：低]** 稽核現有任務與技能是否具備「外部裁判」，列出缺口
+- [x] **`T-20261024-02`**｜**[優先級：低]** 稽核現有任務與技能是否具備「外部裁判」，列出缺口
   - **目標範圍**：`docs/external-judge-audit.md`（只讀盤點 ai-inbox 內的 DoD，不修改任務）
   - **具體做法**：
     1. 抽查 ai-inbox 內 10 項未做任務的 DoD，標註其驗證是否來自自身以外的檢查（測試、腳本、外部工具）。
     2. 對只靠「文件存在」或自評的 DoD 列為缺口並建議補強方式。
   - **驗收標準（DoD）**：產出 `docs/external-judge-audit.md`，含 10 列表格（任務編號、驗證方式、是否外部裁判、建議）與缺口統計一行；表格列數以 `Select-String -Pattern '^\| T-'` 計數為 10。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-25
+  - **實作紀錄 / 證據**：已建立 docs/external-judge-audit.md 盤點 10 項未做任務之 DoD 外部裁判狀態與補強建議，通過 Select-String 計數 10 列與 verify_inbox.py 驗證。
 
 ---
 

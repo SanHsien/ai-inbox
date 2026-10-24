@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 92 項任務：🔴 未做 10／🟡 進行中 1／🟢 已做 54／⚪ 不做 27
+> 共 92 項任務：🔴 未做 9／🟡 進行中 1／🟢 已做 55／⚪ 不做 27
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -54,13 +54,12 @@
 | `T-20261024-03` | 🔴 未做 | 中 | 在 Windows 11 原生環境評估 feedback-desk 的 CLI 與 MCP 可行性（不含正式部署，除非維護者同意） | `docs/feedback-desk-windows-eval.md`；僅在暫存資料夾執行，不碰其他 repo | [2026-10-24-feedback-desk-client-ticket-ai-handoff](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | 2026-10-24 |
 | `T-20261024-05` | 🔴 未做 | 中 | 查證影片的三項宣稱：IG 標示 AI 生成是否不被降權、ElevenLabs 與 HeyGen 的肖像與聲音授權範圍、兩工具現行費用 | `docs/ai-influencer-claims-check.md`（僅查官方公開頁面，不註冊、不付費） | [2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | 2026-10-24 |
 | `T-20261023-04` | 🔴 未做 | 低 | 在 T-20261023-03 結論為「可行」的前提下，撰寫「網站轉 App 接案流程規格」 | `docs/web-to-app-freelance-workflow.md` | [2026-10-23-web-to-app-android-packaging](./notes/2026-10-23-web-to-app-android-packaging.md) | 2026-10-23 |
-| `T-20261024-02` | 🔴 未做 | 低 | 稽核現有任務與技能是否具備「外部裁判」，列出缺口 | `docs/external-judge-audit.md`（只讀盤點 ai-inbox 內的 DoD，不修改任務） | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | 2026-10-24 |
 | `T-20261024-04` | 🔴 未做 | 低 | 對照 feedback-desk 的認領／交接機制與本地 `agent-relay`，列出可借鏡與不採納項 | `docs/feedback-desk-vs-agent-relay.md`（只讀比對，不改 `agent-relay`） | [2026-10-24-feedback-desk-client-ticket-ai-handoff](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | 2026-10-24 |
 | `T-20261024-06` | 🔴 未做 | 低 | 建立「AI 生成人物與聲音使用的合規檢查清單」，供日後任何 AI 人物或數位人專案參考 | `docs/ai-persona-compliance-checklist.md` | [2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | 2026-10-24 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 54 項）</summary>
+<details><summary>展開查看已完成任務（共 55 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -118,6 +117,7 @@
 | `T-20261021-16` | 2026-10-23 | 實作「關鍵幀縮圖總覽與 1-10 分自檢評審門禁（Keyframe Storyboard Gate）」，在影片正式渲染前自動剔除劣質分鏡 | 以 ai-inbox 範本形式交付於 `tools/verify_video_storyboard.py` 與測試 `tests/test_verify_video_storyboard.py`（6/6 通過），實作關鍵影格 1-10 分評審打分機制、四大反 AI 罐頭套路檢測、自動輸出 HTML Contact Sheet 與 JSON 門禁報告。 | [2026-10-21-code-as-video-harness-studio-workflow](./notes/2026-10-21-code-as-video-harness-studio-workflow.md) |
 | `T-20261023-06` | 2026-10-24 | 建立「託管平台入侵事件應變清單」範本，供日後任一 PaaS 事件重用 | 產出 templates/platform-breach-response.md（含立即處置、二次憑證、稽核與帳單、遷移評估、預防五大段落共 20 項檢核清單），通過 Select-String DoD 與 verify_inbox.py 驗證。 | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) |
 | `T-20261024-01` | 2026-10-25 | 建立「AI 野心升級檢查表」範本（高度／深度四問／廣度動詞化），並用一個真實任務實測前後差異 | 已透過外部 Claude Session (agent-relay 20261024T155802447Z-1a658f) 建立 templates/ambition-prompt-checklist.md，涵蓋目標背後的目標、深度四問、廣度動詞化（含 5 領域視角）與外部裁判四大面向（共 19 個勾選項），並以 T-20261024-05 完成「改寫前／改寫後」對照實測。 | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) |
+| `T-20261024-02` | 2026-10-25 | 稽核現有任務與技能是否具備「外部裁判」，列出缺口 | 已建立 docs/external-judge-audit.md 盤點 10 項未做任務之 DoD 外部裁判狀態與補強建議，通過 Select-String 計數 10 列與 verify_inbox.py 驗證。 | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) |
 
 </details>
 
@@ -207,7 +207,7 @@
 | 2026-10-23 | 🟡 | [Zeabur 2026 年十月資安事件解構：內部明文憑證外洩、共享叢集與 GCP 專用伺服器淪陷、平台資料庫環境變數被讀取，及對自身雲端憑證衛生的應變清單](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | `zeabur`, `security-incident`, `credential-rotation` | 1 / 2 |
 | 2026-10-24 | 🔴 | [AI 網紅 IG 限動口播流程：自拍→ChatGPT 生成同場景人物→HeyGen 開口→ElevenLabs 變聲的影片解構（逐字稿已取得）](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | `ai-influencer`, `heygen`, `elevenlabs` | 0 / 2 |
 | 2026-10-24 | 🔴 | [feedback-desk 解構：客戶開單 × 多 AI 認領與交接的輕量工單系統（Cloudflare Workers 免費版／Laravel 主機版）、MCP 接入 Claude Code 與 Codex，及與本地交接機制的對照](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | `feedback-desk`, `ticketing`, `ai-handoff` | 0 / 2 |
-| 2026-10-24 | 🟡 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 1 / 2 |
+| 2026-10-24 | 🟢 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 2 / 2 |
 <!-- END GENERATED: index -->
 
 ---
