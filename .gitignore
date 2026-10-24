@@ -1,0 +1,19 @@
+# OS & Editor artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# Scratch or temporary files
+.scratch/
+tmp/
+*.tmp
+
+# Private repo real-name mapping (local only, never commit)
+private-aliases.local.json
+
+# Python bytecode cache
+__pycache__/
+*.py[cod]

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three.js 螺旋星系粒子視覺化 (Single-File Creative Coding Demo)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background-color: #05060a;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+    #canvas-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .hud-overlay {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      pointer-events: auto;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 18px 22px;
+      max-width: 340px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .hud-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #f8fafc;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+    .hud-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .hud-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+    .stat-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: #38bdf8;
+      font-family: monospace;
+    }
+    .hud-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+    .kbd {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-family: monospace;
+      color: #f1f5f9;
+    }
+    .btn-action {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 6px;
+      text-align: center;
+    }
+    .btn-action:hover {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: rgba(56, 189, 248, 0.6);
+      transform: translateY(-1px);
+    }
+  </style>
+  <!-- 固定版本 CDN：Three.js r128 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <div class="hud-overlay">
+    <div class="hud-title">
+      <span>螺旋星系粒子視覺化</span>
+      <span class="badge">Three.js r128</span>
+    </div>
+    <div class="hud-desc">
+      單檔零依賴 Creative Coding 示範。程序化生成雙臂螺旋星系，具備自適應視窗響應與平滑互動控制。
+    </div>
+    <div class="hud-stats">
+      <div class="stat-item">
+        <span class="stat-label">粒子總數</span>
+        <span class="stat-value" id="stat-particles">25,000</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">即時影格率</span>
+        <span class="stat-value" id="stat-fps">60 FPS</span>
+      </div>
+    </div>
+    <div class="hud-controls">
+      <div class="control-row">
+        <span>旋轉視角</span>
+        <span class="kbd">滑鼠左鍵拖曳</span>
+      </div>
+      <div class="control-row">
+        <span>縮放視野</span>
+        <span class="kbd">滾輪滾動</span>
+      </div>
+      <button class="btn-action" id="btn-toggle-color">切換星系光譜模式</button>
+    </div>
+  </div>
+
+  <canvas id="canvas-container"></canvas>
+
+  <script>
+    (function () {
+      // 1. 初始化 Scene, Camera, Renderer
+      const canvas = document.getElementById('canvas-container');
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x05060a, 0.015);
+
+      const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 28, 48);
+      camera.lookAt(0, 0, 0);
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // 2. 星系粒子參數與生成
+      const PARAMETERS = {
+        count: 25000,
+        size: 0.045,
+        radius: 35,
+        branches: 3,
+        spin: 1.2,
+        randomness: 0.45,
+        power: 3.5,
+        insideColor: 0xffaa44,
+        outsideColor: 0x1d4ed8
+      };
+
+      const COLOR_PALETTES = [
+        { inside: 0xffaa44, outside: 0x1d4ed8, name: '恆星琥珀 / 深空藍' },
+        { inside: 0xf43f5e, outside: 0x8b5cf6, name: '超新星玫紅 / 星雲紫' },
+        { inside: 0x10b981, outside: 0x06b6d4, name: '極光翠綠 / 電子青' }
+      ];
+      let currentPaletteIndex = 0;
+
+      let geometry = null;
+      let material = null;
+      let points = null;
+
+      function generateGalaxy() {
+        if (points !== null) {
+          geometry.dispose();
+          material.dispose();
+          scene.remove(points);
+        }
+
+        geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(PARAMETERS.count * 3);
+        const colors = new Float32Array(PARAMETERS.count * 3);
+
+        const colorInside = new THREE.Color(PARAMETERS.insideColor);
+        const colorOutside = new THREE.Color(PARAMETERS.outsideColor);
+
+        for (let i = 0; i < PARAMETERS.count; i++) {
+          // 位置計算 (螺旋手臂分佈)
+          const i3 = i * 3;
+          const r = Math.random() * PARAMETERS.radius;
+          const spinAngle = r * PARAMETERS.spin;
+          const branchAngle = ((i % PARAMETERS.branches) / PARAMETERS.branches) * Math.PI * 2;
+
+          const randomX = Math.pow(Math.random(), PARAMETERS.power) * (Math.random() < 0.5 ? 1 : -1) * PARAMETERS.randomness * r;
+          const randomY = Math.pow(Math.random(), PARAMETERS.power) * (Math.random() < 0.5 ? 1 : -1) * PARAMETERS.randomness * r;
+          const randomZ = Math.pow(Math.random(), PARAMETERS.power) * (Math.random() < 0.5 ? 1 : -1) * PARAMETERS.randomness * r;
+
+          positions[i3] = Math.cos(branchAngle + spinAngle) * r + randomX;
+          positions[i3 + 1] = randomY;
+          positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * r + randomZ;
+
+          // 核心到外圍漸層色彩
+          const mixedColor = colorInside.clone();
+          mixedColor.lerp(colorOutside, r / PARAMETERS.radius);
+
+          colors[i3] = mixedColor.r;
+          colors[i3 + 1] = mixedColor.g;
+          colors[i3 + 2] = mixedColor.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        // 材質
+        material = new THREE.PointsMaterial({
+          size: PARAMETERS.size,
+          sizeAttenuation: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          vertexColors: true
+        });
+
+        points = new THREE.Points(geometry, material);
+        scene.add(points);
+      }
+
+      generateGalaxy();
+
+      // 3. 視窗適應
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      });
+
+      // 4. 平滑滑鼠拖曳與視角旋轉控制
+      let isDragging = false;
+      let prevMousePos = { x: 0, y: 0 };
+      let spherical = { radius: 55, phi: Math.PI / 3.5, theta: 0 };
+      let targetSpherical = { ...spherical };
+
+      window.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.hud-overlay')) return;
+        isDragging = true;
+        prevMousePos = { x: e.clientX, y: e.clientY };
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const deltaX = e.clientX - prevMousePos.x;
+        const deltaY = e.clientY - prevMousePos.y;
+        prevMousePos = { x: e.clientX, y: e.clientY };
+
+        targetSpherical.theta -= deltaX * 0.005;
+        targetSpherical.phi -= deltaY * 0.005;
+        // 限制俯仰角避免極點反轉
+        targetSpherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, targetSpherical.phi));
+      });
+
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      window.addEventListener('wheel', (e) => {
+        targetSpherical.radius += e.deltaY * 0.04;
+        targetSpherical.radius = Math.max(15, Math.min(120, targetSpherical.radius));
+      }, { passive: true });
+
+      // 5. 調色盤切換互動
+      const btnToggleColor = document.getElementById('btn-toggle-color');
+      btnToggleColor.addEventListener('click', () => {
+        currentPaletteIndex = (currentPaletteIndex + 1) % COLOR_PALETTES.length;
+        const palette = COLOR_PALETTES[currentPaletteIndex];
+        PARAMETERS.insideColor = palette.inside;
+        PARAMETERS.outsideColor = palette.outside;
+        generateGalaxy();
+        btnToggleColor.textContent = '光譜：' + palette.name;
+      });
+
+      // 6. 動畫渲染迴圈與 FPS 計算
+      let lastTime = performance.now();
+      let frameCount = 0;
+      let fpsTimer = 0;
+      const fpsElement = document.getElementById('stat-fps');
+
+      function animate(time) {
+        requestAnimationFrame(animate);
+
+        const delta = (time - lastTime) * 0.001;
+        lastTime = time;
+
+        // FPS 統計
+        frameCount++;
+        fpsTimer += delta;
+        if (fpsTimer >= 0.5) {
+          const fps = Math.round(frameCount / fpsTimer);
+          fpsElement.textContent = fps + ' FPS';
+          frameCount = 0;
+          fpsTimer = 0;
+        }
+
+        // 星系本體自轉
+        if (points) {
+          points.rotation.y += delta * 0.08;
+        }
+
+        // 平滑相機軌道插值 (Damping)
+        spherical.theta += (targetSpherical.theta - spherical.theta) * 0.08;
+        spherical.phi += (targetSpherical.phi - spherical.phi) * 0.08;
+        spherical.radius += (targetSpherical.radius - spherical.radius) * 0.08;
+
+        camera.position.x = spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta);
+        camera.position.y = spherical.radius * Math.cos(spherical.phi);
+        camera.position.z = spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta);
+        camera.lookAt(0, 0, 0);
+
+        renderer.render(scene, camera);
+      }
+
+      animate(performance.now());
+    })();
+  </script>
+</body>
+</html>

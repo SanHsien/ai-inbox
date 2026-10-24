@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>靶心人故事編輯器 (Target Story Generative UI Editor - React 單檔範本)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React 18 & ReactDOM & Babel Standalone (固定版本) -->
+  <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.23.9/babel.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            darkbg: '#080a10',
+            cardbg: '#111625',
+            nodebg: '#1a2236'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: #080a10; color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const INITIAL_STORY = {
+      title: "少年琴師與沉默之弦",
+      theme: "放下執念，方得知音",
+      nodes: {
+        target: {
+          name: "1. 目標 (Target)",
+          pos: "起點高位",
+          summary: "欲登樂府奪魁首，七弦夜練指凝霜。聲名遠播名士宴，誓作天下第一琴。",
+          grid: [
+            ["夜探藏琴古閣", "窗外寒風驟起", "心懷天下虛名"],
+            ["發願奪取宮魁", "師尊臨行警語", "閉門苦練琴技"],
+            ["指裂血染琴柱", "暗留斷弦伏線", "啟程赴京應考"]
+          ]
+        },
+        obstacle: {
+          name: "2. 阻礙 (Obstacle)",
+          pos: "下滑受挫",
+          summary: "御前獻藝弦忽斷，宮廷大相冷言譏。禁足冷宮毀名譽，心血盡化一場空。",
+          grid: [
+            ["登階步履沉重", "御座帷幔深垂", "驚覺心浮氣躁"],
+            ["急撥繁複狂音", "主考冷笑譏諷", "金階驟然碎弦"],
+            ["被逐出殿除籍", "埋下宮闈內幕", "流落街頭殘冬"]
+          ]
+        },
+        effort: {
+          name: "3. 努力 (Effort)",
+          pos: "谷底掙扎",
+          summary: "隱居破廟求古譜，改弦更張苦參玄。以鐵為弦指磨繭，重練絕學百日寒。",
+          grid: [
+            ["避雨破廟古鐘", "暮鼓殘陽如血", "立誓洗刷奇恥"],
+            ["訪得古殘竹譜", "與盲僧論琴理", "改換撥弦手法"],
+            ["磨出厚繭如甲", "伏下殘譜內情", "重整琴心待發"]
+          ]
+        },
+        twist: {
+          name: "4. 意外 (Twist/Accident)",
+          pos: "谷底最低點",
+          summary: "鐵弦力重震裂骨，十指全廢不能彈。暴雨沖毀藏琴閣，絕學孤本化灰泥。",
+          grid: [
+            ["雷雨交加之夜", "破廟樑柱搖撼", "心魔急於求成"],
+            ["強催內力急奏", "鐵弦崩裂反噬", "雙腕骨碎筋斷"],
+            ["癱坐泥濘絕望", "無弦琴韻初現", "徹底一無所有"]
+          ]
+        },
+        turning: {
+          name: "5. 轉彎 (Turning Point)",
+          pos: "反彈爬升",
+          summary: "山野樵夫採木聲，聽見風穿竹林音。忘卻名利虛華相，撫木無絃勝有絃。",
+          grid: [
+            ["枯坐林間聽雨", "山澗清泉漱石", "萬念俱灰轉寧"],
+            ["偶遇採樵山客", "言及枯木天然", "悟得大音希聲"],
+            ["以殘指撫古松", "呼應舊時斷弦", "心意通融於天"]
+          ]
+        },
+        climax: {
+          name: "6. 超越 (Climax)",
+          pos: "高潮迸發",
+          summary: "街頭素手叩殘琴，無聲之音動京城。百鳥千羽凌空舞，仇隙權貴皆垂淚。",
+          grid: [
+            ["京兆鬧市廣場", "人潮洶湧喧嚷", "心無一絲勝負"],
+            ["輕叩無弦木板", "引動萬物共鳴", "主考掩面愧泣"],
+            ["百鳥集聚檐下", "呼應廟中殘僧", "琴道臻至化境"]
+          ]
+        },
+        resolution: {
+          name: "7. 結局 (Resolution)",
+          pos: "精神超越點",
+          summary: "謝絕御賜金琵琶，扁舟一葉入江湖。天地山川皆為弦，不作琴仙作琴人。",
+          grid: [
+            ["金榜特賜魁首", "皇城宮闕生輝", "看淡功名利祿"],
+            ["奉還御賜金帛", "飄然拜別故友", "踏上無垠青野"],
+            ["天地清風為友", "首尾呼應無弦", "終成通達智者"]
+          ]
+        }
+      },
+      foreshadowing: [
+        { plant: "target (夜練指凝霜)", payoff: "twist (強奏鐵弦反噬)", dist: "3 節點 (剛好)" },
+        { plant: "obstacle (弦斷宮廷譏)", payoff: "turning (撫木無絃悟音)", dist: "3 節點 (剛好)" },
+        { plant: "effort (古廟盲僧訓)", payoff: "climax (無聲琴動京華)", dist: "3 節點 (剛好)" }
+      ]
+    };
+
+    function App() {
+      const [story, setStory] = useState(INITIAL_STORY);
+      const [selectedKey, setSelectedKey] = useState("target");
+      const [activeTab, setActiveTab] = useState("v_editor");
+      const [copyStatus, setCopyStatus] = useState("");
+
+      const handleSummaryChange = (key, text) => {
+        setStory(prev => ({
+          ...prev,
+          nodes: {
+            ...prev.nodes,
+            [key]: { ...prev.nodes[key], summary: text }
+          }
+        }));
+      };
+
+      const handleGridChange = (key, r, c, val) => {
+        setStory(prev => {
+          const newGrid = prev.nodes[key].grid.map((row, ri) =>
+            row.map((col, ci) => (ri === r && ci === c ? val : col))
+          );
+          return {
+            ...prev,
+            nodes: {
+              ...prev.nodes,
+              [key]: { ...prev.nodes[key], grid: newGrid }
+            }
+          };
+        });
+      };
+
+      const handleExportJSON = () => {
+        const jsonStr = JSON.stringify(story, null, 2);
+        navigator.clipboard.writeText(jsonStr).then(() => {
+          setCopyStatus("JSON 已複製至剪貼簿！");
+          setTimeout(() => setCopyStatus(""), 3000);
+        });
+      };
+
+      const nodeKeys = ["target", "obstacle", "effort", "twist", "turning", "climax", "resolution"];
+      const activeNode = story.nodes[selectedKey];
+
+      return (
+        <div className="max-w-6xl mx-auto space-y-6">
+          {/* Header */}
+          <header className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-gray-800 gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-black text-white tracking-tight">靶心人故事編輯器</h1>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800">
+                  Generative UI React 範本
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                許榮哲故事模型：V 字型情緒佈局 ｜ 3x3 九宮鑽取 ｜ 三伏三冒檢驗 ｜ 雙向狀態綁定
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setActiveTab("v_editor")}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition ${activeTab === 'v_editor' ? 'bg-sky-600 text-white' : 'bg-gray-800 text-gray-300 hover:text-white'}`}
+              >
+                V 字編輯器
+              </button>
+              <button
+                onClick={() => setActiveTab("foreshadowing")}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition ${activeTab === 'foreshadowing' ? 'bg-sky-600 text-white' : 'bg-gray-800 text-gray-300 hover:text-white'}`}
+              >
+                三伏三冒檢驗
+              </button>
+              <button
+                onClick={handleExportJSON}
+                className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition flex items-center gap-1 shadow"
+              >
+                {copyStatus || "導出標準 JSON"}
+              </button>
+            </div>
+          </header>
+
+          {/* V 字編輯器主頁 */}
+          {activeTab === "v_editor" && (
+            <div className="space-y-6">
+              {/* V 字型節點總覽與因果指標 */}
+              <div className="bg-cardbg border border-gray-800 rounded-xl p-5 shadow-sm">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-sm font-bold text-gray-200">V 字型宏觀情節節點（點擊切換九宮鑽取）</h2>
+                  <div className="flex items-center gap-3 text-xs text-gray-400">
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-rose-500"></span> 下滑段</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span> 谷底意外</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> 上升超越</span>
+                  </div>
+                </div>
+
+                {/* 節點橫條 */}
+                <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
+                  {nodeKeys.map((k, idx) => {
+                    const node = story.nodes[k];
+                    const isSelected = selectedKey === k;
+                    const isDown = idx < 3;
+                    const isTwist = idx === 3;
+                    const borderColor = isSelected ? 'border-sky-400 ring-2 ring-sky-500/30' : 'border-gray-800';
+                    const badgeColor = isDown ? 'text-rose-400' : isTwist ? 'text-amber-400' : 'text-emerald-400';
+
+                    return (
+                      <div
+                        key={k}
+                        onClick={() => setSelectedKey(k)}
+                        className={`bg-nodebg border ${borderColor} rounded-lg p-3 cursor-pointer transition hover:border-gray-600 flex flex-col justify-between min-h-[110px]`}
+                      >
+                        <div>
+                          <div className={`text-[11px] font-bold ${badgeColor}`}>{node.name.split(' ')[0]}</div>
+                          <div className="text-xs font-semibold text-white mt-1 line-clamp-1">{node.name.split(' ')[1]}</div>
+                          <p className="text-[11px] text-gray-400 mt-1 line-clamp-2 leading-relaxed">{node.summary}</p>
+                        </div>
+                        <div className="text-[10px] text-gray-500 mt-2 text-right">字數: {node.summary.replace(/[\s，。]/g, '').length}/28</div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* 因果檢驗條 (H1, H2, H3 狀態) */}
+                <div className="mt-4 pt-3 border-t border-gray-800/80 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                  <div className="p-2 rounded bg-gray-900 border border-gray-800 text-gray-300">
+                    <span className="font-bold text-sky-400">H1 因果：</span> 結局 (精神超越) ＞ 目標 (世俗虛榮) ✓
+                  </div>
+                  <div className="p-2 rounded bg-gray-900 border border-gray-800 text-gray-300">
+                    <span className="font-bold text-sky-400">H2 因果：</span> 轉彎 (悟道) 來自 阻礙 (弦斷毀名) ✓
+                  </div>
+                  <div className="p-2 rounded bg-gray-900 border border-gray-800 text-gray-300">
+                    <span className="font-bold text-sky-400">H3 因果：</span> 意外 (骨裂) 來自 努力 (狂練鐵弦) ✓
+                  </div>
+                </div>
+              </div>
+
+              {/* 節點九宮格鑽取編輯區 */}
+              <div className="bg-cardbg border border-gray-800 rounded-xl p-5 shadow-sm space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-gray-800 gap-2">
+                  <div>
+                    <h3 className="text-base font-bold text-white flex items-center gap-2">
+                      <span>{activeNode.name}</span>
+                      <span className="text-xs px-2 py-0.5 rounded bg-gray-800 text-sky-300 font-normal">九宮微觀鑽取編輯</span>
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-0.5">位置定位：{activeNode.pos} ｜ 修改九宮細節將即時連動宏觀故事結構</p>
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    主摘要字數契約：<span className="font-mono text-sky-400 font-bold">{activeNode.summary.replace(/[\s，。]/g, '').length}</span> / 28 字
+                  </div>
+                </div>
+
+                {/* 宏觀摘要編輯 */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">宏觀 4 句 7 字核心摘要 (28字)</label>
+                  <input
+                    type="text"
+                    value={activeNode.summary}
+                    onChange={(e) => handleSummaryChange(selectedKey, e.target.value)}
+                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500"
+                  />
+                </div>
+
+                {/* 3x3 九宮細節矩陣 */}
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-2">3x3 九宮劇情鑽取格 (起承轉合與感官細化)</label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {activeNode.grid.map((row, rIdx) =>
+                      row.map((cellText, cIdx) => (
+                        <div key={`${rIdx}-${cIdx}`} className="bg-nodebg border border-gray-800/80 rounded-lg p-2.5">
+                          <div className="text-[10px] text-gray-500 uppercase font-mono mb-1">
+                            [{rIdx+1},{cIdx+1}] {rIdx === 0 ? '契機/場景' : rIdx === 1 ? '行動/衝突' : '代價/過渡'}
+                          </div>
+                          <textarea
+                            rows={2}
+                            value={cellText}
+                            onChange={(e) => handleGridChange(selectedKey, rIdx, cIdx, e.target.value)}
+                            className="w-full bg-gray-900/80 border border-gray-800 rounded p-1.5 text-xs text-gray-200 focus:outline-none focus:border-sky-500 custom-scrollbar resize-none"
+                          />
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 三伏三冒檢驗頁 */}
+          {activeTab === "foreshadowing" && (
+            <div className="bg-cardbg border border-gray-800 rounded-xl p-5 shadow-sm space-y-4">
+              <h2 className="text-base font-bold text-white">三伏三冒長跨度因果檢驗 (Foreshadowing & Payoff)</h2>
+              <p className="text-xs text-gray-400">
+                故事高明的伏筆必須埋在前面、在後續出人意料之處回收。跨度太緊（&lt;2 節點）易顯刻意，太鬆（&gt;5 節點）易被遺忘。
+              </p>
+              <div className="space-y-3 mt-4">
+                {story.foreshadowing.map((item, idx) => (
+                  <div key={idx} className="p-4 rounded-lg bg-nodebg border border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="text-xs font-bold text-sky-400">伏筆組 {idx + 1}</div>
+                      <div className="text-sm text-white">
+                        <span className="text-rose-400 font-semibold">【伏】</span> {item.plant} 
+                        <span className="mx-2 text-gray-500">⟶</span>
+                        <span className="text-emerald-400 font-semibold">【冒】</span> {item.payoff}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs px-2.5 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
+                        {item.dist}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

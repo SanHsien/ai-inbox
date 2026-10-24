@@ -1,0 +1,8 @@
+{
+  "_comment": "私有 repo 的公開別名。筆記一律寫 [Private Repo: <別名>]；真實名稱只放在本機的 private-aliases.local.json（已 gitignore，不可提交）。",
+  "aliases": {
+    "個人記憶庫": "跨 Agent 長期記憶與郵箱 / 門鈴結構",
+    "個人指揮中心": "個人 AI 作業系統與任務指揮中心",
+    "環境審計工具": "Agent 執行環境與設定稽核腳本"
+  }
+}
