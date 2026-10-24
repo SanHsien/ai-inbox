@@ -1,0 +1,12 @@
+version: 2
+updates:
+  # 沒有 pip manifest（tools/ 僅選用工具延遲載入第三方套件，CI 不需要）；受管依賴只有 workflow 引用的 actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]
+    cooldown:
+      default-days: 7
