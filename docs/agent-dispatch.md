@@ -7,9 +7,16 @@
 - **一、Antigravity Desktop（頂層可視新對話＋`send_message` 回報）**：
   - **同機 Antigravity 內直接呼叫**：呼叫原生 `language_server.exe agentapi new-conversation`（勿透過 `agentapi.bat` 以免 `cmd.exe` 截斷換行），建立 `nestingDepth: 0` 的頂層新對話，立即顯示在 Antigravity Desktop 左側欄：
     ```powershell
-    & "$env:LOCALAPPDATA\Programs\Antigravity\resources\bin\language_server.exe" agentapi new-conversation --title="[派工] T-YYYYMMDD-XX 任務標題" "<完整派工 Prompt，結尾要求完成後呼叫 send_message 工具（Recipient 填主對話 UUID）回報 Commit SHA 與驗證輸出>"
+    & "$env:LOCALAPPDATA\Programs\Antigravity\resources\bin\language_server.exe" agentapi new-conversation `
+      --model=flash `
+      --title="[派工] T-YYYYMMDD-XX 任務標題" `
+      "<完整派工 Prompt，結尾要求完成後呼叫 send_message 工具（Recipient 填主對話 UUID）回報 Commit SHA 與驗證輸出>"
     ```
     執行後從回傳 JSON 取得 `newConversation.conversationId`，在回覆中提供可點擊連結 `[[派工] T-YYYYMMDD-XX](conversation://<conversationId>)`。
+  - **模型梯隊選擇（`--model` 與 Gemini 3.8 Flash）**：
+    - CLI 參數僅支援三大梯隊：`--model=<flash_lite|flash|pro>`。
+    - 指定 `--model=flash` 時，底層自動調度為 **`gemini-3.8-flash-tiered`**（即 Gemini 3.8 Flash 梯隊）；`--model=flash_lite` 對應 `gemini-3.5-flash-lite`；`--model=pro` 對應 Pro 梯隊。
+    - ⚠️ **切勿直接傳入具體思考強度後綴**（例如傳入 `--model=gemini-3.8-flash-high` 會報錯 `no available models found for tier`）；Thinking Level（High / Medium / Low）是 Antigravity Desktop 前端介面專屬配置，CLI 派工時一律使用 `--model=flash`。
   - **完工自動封存（無後續待辦時必做）**：派工新對話在呼叫 `send_message` 回報主對話後，若該新對話已無任何待辦事項，應執行 Connect-RPC `UpdateConversationAnnotations` 將自身標記為封存（務必帶 `mergeAnnotations = $true` 以保留既有標題）：
     ```powershell
     Invoke-RestMethod -Method Post -Uri "http://$env:ANTIGRAVITY_LS_ADDRESS/exa.language_server_pb.LanguageServerService/UpdateConversationAnnotations" -Headers @{ "Connect-Protocol-Version" = "1"; "x-codeium-csrf-token" = $env:ANTIGRAVITY_CSRF_TOKEN } -ContentType "application/json" -Body (@{ cascadeId = $env:ANTIGRAVITY_CONVERSATION_ID; cascadeIds = @($env:ANTIGRAVITY_CONVERSATION_ID); annotations = @{ archived = $true }; mergeAnnotations = $true } | ConvertTo-Json -Depth 5)
