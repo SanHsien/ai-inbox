@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[Threads 原貼文 (MengShyue Tsai)](https://www.threads.com/@mengshyue.tsai/post/DenWauFklqQ)（短網址：[threads.com/share/BAXyuLT-xc](https://www.threads.com/share/BAXyuLT-xc/)）｜ [YouTube 影片解說](https://www.youtube.com/watch?v=b7-2w2T2Lqs) ｜ [Cursor 官方插件倉庫 (cursor/plugins)](https://github.com/cursor/plugins/tree/main/pstack) ｜ [社群開源版 open-pstack](https://github.com/ericlitman/open-pstack)
 - **發布平台 / 原作者**：`Threads / YouTube` / 原創者：`Lauren Tan (@poteto)`、社群分享：`MengShyue Tsai (@mengshyue.tsai)`
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`🟢 已做 (Done)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -166,6 +166,14 @@ tags:
   - **驗收標準（DoD）**：復用 `ai-quality-gates`（Gherkin 規格/覆蓋率）、`harness-guard`（阻止 hook）與 `agent-governance-toolkit`（運行期政策強制與沙箱審計），無真實終端日誌一律不放行
   - **完成日期**：2026-10-20
   - **實作紀錄 / 證據**：[SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) `agent_relay/gates.py`（`7860df5`→`752fbfb`，SPEC 第 11 節）：派工完成後由收件端跑驗收閘門——刪測試或改測試設定即 guarded、新增空殼函式即 stub-rejected、TDD 要求 base 綠＋加入新測試後紅、worktree 綠；每次執行完整終端輸出存 `verify-*.log`＋sha256，回信附 exit code 與 log 結尾，store audit 記 verify 事件；沒過或工人未正常結束一律不 commit，要求驗收但沒設閘門為 unverified。驗證指令可沿用 ai-quality-gates 的 `loop-policy.toml` quick_gate；互動 session 沿用 harness-guard 的 claim-guard／test-gate-guard。實測（`docs/evidence/2026-10-20-t18-gates.md`）：`--tdd` 工單紅燈為 `ImportError: cannot import name 'mod'`（exit 1）、綠燈 exit 0、commit `f0d487c`，log sha256 與檔案核對一致；不寫測試的工單 tdd-not-proven 不 commit。202 項單元測試通過，兩輪獨立審查判定 ship。限制：agent-governance-toolkit 未直接整合（以 relay audit 事件提供運行期審計，SPEC 註明可作外層）；全域 `quality-loop`／`verification-protocol` 技能未改動。
+- [x] **`T-20261025-08`**｜**[優先級：高]** 實作 pstack 五大工程 Playbooks、Claude 官方外掛評測與全端商業建站規範之「外部裁判」結構驗證器
+  - **目標範圍**：`tools/verify_pstack_and_fullstack_specs.py` 與 `tests/test_verify_pstack_and_fullstack_specs.py`
+  - **具體做法**：
+    1. 實作 `tools/verify_pstack_and_fullstack_specs.py`（純 Python stdlib），機械化解析並驗證：(a) `docs/pstack-agent-playbooks.md` 涵蓋 `/poteto-mode` 路由器、五大 Playbooks（Bug-fix、Feature、Refactoring、Investigation、Performance）跨 CLI 規格與至少 3 個實例對照；(b) `docs/claude-plugins-official-review.md` 涵蓋推薦外掛、排除項目與「未查證」誠實標註；(c) `templates/fullstack-website-builder-skill.md` 涵蓋軟刪除、定價快照、事件流水帳、訂單狀態機與 Webhook 簽名對帳；(d) `templates/subject-inventory-argument-writing-prompt.md` 涵蓋主體資產盤點與 Claim + Proof 論證規範。
+    2. 撰寫 `tests/test_verify_pstack_and_fullstack_specs.py`（使用 `unittest.TestCase` 以同時相容 `unittest discover` 與 `pytest`），涵蓋真實 4 份文件全數通過與各文件核心結構缺漏之反例攔截測試。
+  - **驗收標準（DoD）**：執行 `python tools/verify_pstack_and_fullstack_specs.py` 回傳 exit 0，且 `python -m unittest discover -s tests -p "test_verify_pstack_and_fullstack_specs.py"` 與 `pytest` 全數通過（至少 6 項測試）。
+  - **完成日期**：2026-10-25
+  - **實作紀錄 / 證據**：實作 `tools/verify_pstack_and_fullstack_specs.py`，完整支援純 Python 標準庫解析與四大文件規格校驗；實作安全檔案讀取輔助函式 `load_content` 杜絕多行字串在 Linux CI / Windows 上觸發 `ENAMETOOLONG`；實作 `tests/test_verify_pstack_and_fullstack_specs.py`（繼承 `unittest.TestCase`），提供 7 項單元測試，全面覆蓋真實文件驗證、各規格核心缺漏反例攔截、安全載入邊界與 CLI 進入點退出碼；經真實終端執行 `python tools/verify_pstack_and_fullstack_specs.py`（exit 0）、`python -m unittest discover -s tests -p "test_verify_pstack_and_fullstack_specs.py"`（7/7 passed, exit 0）與 `python -m pytest tests/test_verify_pstack_and_fullstack_specs.py -q`（7 passed, exit 0）全數綠燈驗收。
 
 ---
 

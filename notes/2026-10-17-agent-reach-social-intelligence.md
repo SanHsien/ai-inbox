@@ -25,7 +25,7 @@ tags:
 - **官方 GitHub**：[`Panniantong/Agent-Reach`](https://github.com/Panniantong/Agent-Reach)
 - **作者**：`Panniantong`
 - **分析日期**：`2026-10-17`
-- **當前狀態**：`🟢 已做 (Done)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -108,3 +108,12 @@ tags:
     3. 與 `SanHsien/ai-inbox` 對接：當使用者丟入純網址時，若原生 HTTP 抓取失敗，自動 fallback 調用 `agent-reach` 進行深層內容還原。
   - **驗收標準（DoD）**：撰寫 Skill 草案與整合文檔，驗證當一般網頁讀取工具遇到社群平台時能無縫降級獲取全文。
   - **實作紀錄 / 證據**：已將 Agent-Reach 封裝為 Antigravity 本地 Skill 並安裝至 `~/.gemini/config/skills/agent-reach/`（包含完整 SKILL.md 與 7 大領域 references 路由規範），同時於 `C:\GitHub\ai-inbox\templates\agent-reach/` 同步一份完整範本。支援 16 大平台路由、多後端降級與免 Key 抓取能力。
+
+- [x] **`T-20261025-09`**｜**[優先級：高]** 實作 Agent-Reach 16 平台路由範本、Public APIs 檢索技能與健康存摺匯出規格之「外部裁判」結構驗證器
+  - **目標範圍**：`tools/verify_agent_reach_and_data_specs.py` 與 `tests/test_verify_agent_reach_and_data_specs.py`
+  - **完成日期**：2026-10-25
+  - **具體做法**：
+    1. 實作 `tools/verify_agent_reach_and_data_specs.py`（純 Python stdlib），機械化解析並驗證：(a) `templates/agent-reach/SKILL.md` 與 `templates/agent-reach/references/` 下 7 大領域分類 references 檔案齊全、路由表完整無斷鏈；(b) `templates/public-apis-search-skill.md` 與 `docs/free-public-apis.md` 涵蓋 `Auth: No`、`CORS: Yes`、`HTTPS` 三道門檻與 462 筆 / 42 類別索引結構；(c) `docs/health-bank-export-format.md`、`templates/health-bank-dashboard-prompt.md` 與 `templates/health-report-pdf-prompt.md` 涵蓋離線脫敏欄位、民國年轉 ISO 規範與醫療免責聲明。
+    2. 撰寫 `tests/test_verify_agent_reach_and_data_specs.py`（使用 `unittest.TestCase` 以同時相容 `unittest discover` 與 `pytest`），涵蓋真實文件全數通過與 references 斷鏈、門檻缺失、脫敏規範缺漏之反例攔截測試。
+  - **驗收標準（DoD）**：執行 `python tools/verify_agent_reach_and_data_specs.py` 回傳 exit 0，且 `python -m unittest discover -s tests -p "test_verify_agent_reach_and_data_specs.py"` 與 `pytest` 全數通過（至少 6 項測試）。
+  - **實作紀錄 / 證據**：已完成外部裁判結構驗證器 `tools/verify_agent_reach_and_data_specs.py` 與單元測試套件 `tests/test_verify_agent_reach_and_data_specs.py`。驗證項目涵蓋：(1) Agent-Reach 16 平台路由與 7 大領域 references 檔案齊全度與無斷鏈檢查；(2) Public APIs 檢索技能之 Auth: No、CORS: Yes、HTTPS 三道篩選門檻與 462 筆端點 / 42 分類索引結構解析；(3) 健康存摺匯出格式與 Prompt 範本之 7 大核心個資脫敏欄位、民國年轉西元 ISO 與醫療免責聲明規範。執行驗證腳本、unittest 與 pytest（共 10 項測試）全數綠燈通過。

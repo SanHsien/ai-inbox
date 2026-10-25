@@ -162,6 +162,15 @@ tags:
   - **驗收標準（DoD）**：規格文件完成、包含至少一個端到端範例（選定一個開源應用，從操控→逆向→重造完整走通），經人工審閱確認各工具責任劃分無重疊無遺漏
   - **完成日期**：2026-10-23
   - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。撰寫三階段逆向分析流水線規格手冊 `docs/reverse-engineering-pipeline-spec.md`，定義 CLI-Anything（行為觀測探針）、REA（結構逆向與解包核心）與 Cleanroom 重造標準；因桌面截圖隱私外洩與 Token 開銷過高，明確將 desktop-sense 標註為「選用、未採用」並附端到端 Electron 逆向實戰範例。
+- [x] **`T-20261025-07`**｜**[優先級：高]** 實作逆向工程流水線（REA + CLI-Anything）與 Android 官方 33 Skills 防幻覺規範之「外部裁判」結構驗證器
+  - **狀態**：🟢 已完成（外部裁判與單元測試全數通過）
+  - **目標範圍**：`tools/verify_re_and_android_specs.py` 與 `tests/test_verify_re_and_android_specs.py`
+  - **完成日期**：2026-10-25
+  - **具體做法**：
+    1. 實作 `tools/verify_re_and_android_specs.py`（純 Python stdlib），機械化解析並驗證：(a) `docs/reverse-engineering-pipeline-spec.md` 涵蓋「觀測行為 → 理解結構 → 重造功能」三階段架構、Cleanroom 重造規範，且明確標註 `desktop-sense` 為「選用、未採用」；(b) `docs/rea-sandbox-evaluation-evidence.md` 涵蓋 SHA-256 校驗、ASAR 解包與系統 PATH 零污染結論；(c) `docs/android-official-skills-anti-hallucination.md` 涵蓋 33 個官方 Skills 清單、XML 轉 Compose 與 Play Billing 合規防線；(d) `docs/android-cli-plugin-windows-validation.md` 記錄修改 Windows Registry PATH 與超過 1 GB 下載硬閘門之安全攔截結論。函式支援多行長字串且先判斷型別，嚴格杜絕 Linux CI ENAMETOOLONG。
+    2. 撰寫 `tests/test_verify_re_and_android_specs.py`（繼承 `unittest.TestCase` 以同時相容 `unittest discover` 與 `pytest`），包含 12 項測試，完整涵蓋真實 4 份文件全數通過、關鍵契約反例精準攔截及超長字串防護。
+  - **驗收標準（DoD）**：執行 `python tools/verify_re_and_android_specs.py` 回傳 exit 0，且 `python -m unittest discover -s tests -p "test_verify_re_and_android_specs.py"` 與 `pytest` 全數通過（至少 6 項測試）。
+  - **實作紀錄 / 證據**：以純 Python stdlib 實作外部裁判驗證器 `tools/verify_re_and_android_specs.py` 與單元測試 `tests/test_verify_re_and_android_specs.py`，驗證 4 份關鍵架構與安全評估文件契約無訛，12 項測試在 `unittest` 與 `pytest` 下全數綠燈通過。
 
 ---
 
