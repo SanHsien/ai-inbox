@@ -185,6 +185,16 @@ def filled(value: str) -> bool:
     return bool(value) and not value.startswith("*（")
 
 
+# DoD 裡用反引號標出的本 repo 產出路徑，例如 `docs/x.md`；其他 repo 或全域路徑無法在此驗證，不檢查
+DOD_ARTIFACT = re.compile(r"`((?:docs|templates|assets|tools|tests|notes)/[^`\s*<>]+\.\w+)`")
+
+
+def missing_dod_artifacts(task: Task) -> list[str]:
+    """DoD 要求產出、但本 repo 找不到的檔案。DoD 沒達成就不能算已做，這是最容易機械檢查的一種。"""
+    dod = task.fields.get("驗收標準（DoD）", "")
+    return [p for p in dict.fromkeys(DOD_ARTIFACT.findall(dod)) if not (REPO_ROOT / p).exists()]
+
+
 def load_notes() -> list[Note]:
     notes = [parse_note(p) for p in NOTES_DIR.glob("*.md")]
     return sorted(notes, key=lambda n: (n.meta.get("analyzed_at", ""), n.slug))

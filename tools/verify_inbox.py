@@ -93,6 +93,15 @@ def check_notes(notes: list[bi.Note]) -> list[str]:
     return errors
 
 
+def check_dod_artifacts(notes: list[bi.Note]) -> list[str]:
+    """已做任務的 DoD 要求產出的本 repo 檔案必須存在。"""
+    return [
+        f"{rel(n.path)}: {t.id} 標為已做，但 DoD 要求的檔案不存在：{p}"
+        for n in notes for t in n.tasks if t.done
+        for p in bi.missing_dod_artifacts(t)
+    ]
+
+
 def check_task_ids(notes: list[bi.Note], texts: dict[Path, str]) -> list[str]:
     errors = []
     defined: dict[str, bi.Task] = {}
@@ -228,6 +237,7 @@ def main() -> int:
     scan = tracked_texts()
     errors = [
         *check_notes(notes),
+        *check_dod_artifacts(notes),
         *check_task_ids(notes, {**readme_texts, **note_texts}),
         *check_readme(notes),
         *check_links(texts),

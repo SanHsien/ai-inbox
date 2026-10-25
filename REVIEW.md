@@ -26,7 +26,7 @@
 ## 2. 外部裁判驗證器（12 支 `tools/verify_*.py`）
 
 - ✅ [高] 文件類驗證器：整份文件包進 `<!-- -->` 或程式碼區塊、或壓成一行仍判 PASS → 共用 `doc_guard`（先剝註解、要求可見標題）。套用在 academic、incident、motion、pstack、re_android 5 支共 19 個函式，加上 agent_reach 的 4 個函式（覆核後補上），3 種變異修後判失敗
-- ⏸ [中] `verify_compliance_and_matrix_docs.py` 的 4 個函式回傳型別不同，未套 `doc_guard`：整份包進程式碼區塊仍會過
+- ✅ [中] `verify_compliance_and_matrix_docs.py` 的 4 個函式回傳型別不同，未套 `doc_guard`：整份包進程式碼區塊仍會過 → 各函式改呼叫 `structural_floor`，包進程式碼區塊或壓成一行皆判失敗（後續修正）
 - ⏸ [低] 文件本身含程式碼區塊時，外面再包一層會讓內外顛倒，`doc_guard` 擋不住（agent_reach 有 3 份文件如此）
 - ✅ [高] 3 支驗證器的段落／規則區塊放在 HTML 註解裡也能過 → 載入時剝註解
 - ✅ [高] Windows cp950 終端印 emoji 會 UnicodeEncodeError（原本要 `PYTHONUTF8=1` 測試才過）→ 入口統一處理，加 cp950 strict 測試鎖住
@@ -38,8 +38,8 @@
 - ✅ [中] `verify_no_slop.py` 掃 0 個檔案仍 PASS；漏掉 delves、seamless 等詞形 → exit 2、補詞形
 - ✅ [中] 7 支驗證器重複 `find_repo_root` 與報告輸出 → 抽到 `tools/_judge_common.py`
 - ✅ [低] `docs/external-judge-audit.md` 沒列現有驗證器 → 補第 4 節
-- ⏸ [中] 文件類驗證器仍不限定關鍵字所在段落（打亂行序約 14/19 仍過）；要根治需逐文件加段落限定
-- ⏸ [低] `verify_video_storyboard.py` 的 `lighting_score` 恆為 9.0，是假指標（改動會動報告 schema）
+- ⏸ [中] 文件類驗證器仍不限定關鍵字所在段落（打亂行序約 14/19 仍過）。決定不再擴充這類驗證器，改做能攔真錯誤的檢查（見 `docs/external-judge-audit.md` 第 5 節）
+- ✅ [低] `verify_video_storyboard.py` 的 `lighting_score` 恆為 9.0，是假指標 → 移除該欄位（無任何測試或文件引用）（後續修正）
 - ⏸ [低] `verify_story_structure.py` 因果強弱靠關鍵字，`strength` 可自填「強」，等於自評
 - ⏸ [低] 三伏三冒間距：`docs/target-story-generative-ui-spec.md` 寫「太緊 <2、剛好 3-4、太鬆 >5」（2 與 5 未定義），程式為 2-4 剛好、≥5 太鬆
 - ⏸ [低] `verify_no_slop.py` 對 `assets/` 全目錄會報 3 處（box-shadow、animate-pulse）；目前只掃 anti-slop-demo
@@ -78,6 +78,9 @@
 - ⏸ [低] `docs/web-to-app-evaluation.md`、`docs/rea-sandbox-evaluation-evidence.md` 的 Stars、版本、雜湊等外部事實未重驗
 
 ## 5. 筆記與已做任務證據（75 項）
+
+- ✅ [高] 結案不檢查 DoD：這次退回的任務都是結案時沒擋住 → `build_index.missing_dod_artifacts`：DoD 用反引號標出的本 repo 產出檔必須存在；`task_cli.py complete` 不存在就拒絕結案，`verify_inbox.py` 對已做任務也檢查（後續修正）
+- ✅ [中] CI 只跑 Ubuntu，Windows 才會發生的編碼錯誤抓不到 → 加 `windows-latest` 矩陣（後續修正）
 
 - ➖ 61 項證據完整；8 項本機驗不了（`C:\GitHub\_sandbox` 已清除，或 SHA 在示範用暫存 repo）；全 repo 無私有 repo 真名
 - ✅ [中] 標準：DoD 逐字未達成就不算已做，證據裡的「限制」若落在 DoD 之內即退回。依此退回 4 項（勾選改回未做、移除完成日期、已完成部分保留、寫明剩下要做什麼）：

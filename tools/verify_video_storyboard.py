@@ -77,7 +77,6 @@ class ScoreBreakdown:
     composition_score: float
     motion_score: float
     anti_slop_score: float
-    lighting_score: float
 
 
 @dataclass
@@ -157,8 +156,7 @@ def evaluate_keyframe(kf: Keyframe, threshold: float = 8.0) -> KeyframeEvaluatio
 
     score -= (10.0 - motion_score)
 
-    # 4. 光影質感 (Lighting)
-    lighting_score = 9.0  # 基礎分
+    # 光影質感無法從分鏡 JSON 機械判斷，不打分（曾以常數 9.0 充當分數，已移除）
     total_score = round(max(1.0, min(10.0, score)), 2)
     passed = (total_score >= threshold and len(violations) == 0)
 
@@ -166,7 +164,6 @@ def evaluate_keyframe(kf: Keyframe, threshold: float = 8.0) -> KeyframeEvaluatio
         composition_score=round(composition_score, 1),
         motion_score=round(motion_score, 1),
         anti_slop_score=round(anti_slop_score, 1),
-        lighting_score=round(lighting_score, 1),
     )
 
     return KeyframeEvaluation(

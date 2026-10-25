@@ -33,7 +33,7 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _judge_common import ensure_utf8_output, strip_html_comments  # noqa: E402
+from _judge_common import ensure_utf8_output, strip_html_comments, structural_floor  # noqa: E402
 
 
 @dataclass
@@ -105,6 +105,8 @@ def verify_persona_compliance_checklist(content_or_path: str | Path) -> Verifica
     """驗證 docs/ai-persona-compliance-checklist.md 結構。"""
     text, target = _load_text(content_or_path)
     errors: list[str] = []
+    if text.strip():
+        errors.extend(structural_floor(text))  # 整份包進程式碼區塊或壓成一行就不算數
     details: dict[str, Any] = {}
 
     if not text.strip():
@@ -164,6 +166,8 @@ def verify_influencer_claims_check(content_or_path: str | Path) -> VerificationR
     """驗證 docs/ai-influencer-claims-check.md 結構。"""
     text, target = _load_text(content_or_path)
     errors: list[str] = []
+    if text.strip():
+        errors.extend(structural_floor(text))  # 整份包進程式碼區塊或壓成一行就不算數
     details: dict[str, Any] = {}
 
     if not text.strip():
@@ -220,6 +224,8 @@ def verify_feedback_desk_matrix(content_or_path: str | Path) -> VerificationResu
     """驗證 docs/feedback-desk-vs-agent-relay.md 結構。"""
     text, target = _load_text(content_or_path)
     errors: list[str] = []
+    if text.strip():
+        errors.extend(structural_floor(text))  # 整份包進程式碼區塊或壓成一行就不算數
     details: dict[str, Any] = {}
 
     if not text.strip():
@@ -278,6 +284,8 @@ def verify_ambition_prompt_checklist(content_or_path: str | Path) -> Verificatio
     """驗證 templates/ambition-prompt-checklist.md 結構。"""
     text, target = _load_text(content_or_path)
     errors: list[str] = []
+    if text.strip():
+        errors.extend(structural_floor(text))  # 整份包進程式碼區塊或壓成一行就不算數
     details: dict[str, Any] = {}
 
     if not text.strip():

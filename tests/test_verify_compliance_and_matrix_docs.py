@@ -51,6 +51,21 @@ def test_real_docs_all_pass():
     assert ambition_res.details["has_after_section"] is True
 
 
+def test_fenced_or_flattened_docs_fail():
+    """反例測試：整份真實文件包進程式碼區塊或壓成一行，關鍵字都還在，但不能算通過。"""
+    cases = [
+        (vcmd.verify_persona_compliance_checklist, "docs/ai-persona-compliance-checklist.md"),
+        (vcmd.verify_influencer_claims_check, "docs/ai-influencer-claims-check.md"),
+        (vcmd.verify_feedback_desk_matrix, "docs/feedback-desk-vs-agent-relay.md"),
+        (vcmd.verify_ambition_prompt_checklist, "templates/ambition-prompt-checklist.md"),
+    ]
+    for fn, rel_path in cases:
+        text = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        assert fn(text).is_valid, rel_path
+        assert not fn("```text\n" + text + "\n```").is_valid, f"{rel_path} 包進程式碼區塊仍通過"
+        assert not fn(" ".join(text.split())).is_valid, f"{rel_path} 壓成一行仍通過"
+
+
 def test_persona_compliance_category_deficit():
     """反例測試：分類不足 5 類，或某分類底下勾選項不足 3 個。"""
     # 只有 4 個分類

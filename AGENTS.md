@@ -16,11 +16,15 @@ C:\GitHub\ai-inbox\
 ├── notes/
 │   └── YYYY-MM-DD-<slug>.md         # 每一篇 AI 文章的分析任務結果（一檔一篇）★唯一資料來源
 ├── tools/
-│   ├── task_cli.py                  # 任務佇列查詢 (next/show)、認領 (claim)、結案 (complete)、關閉 (close)
+│   ├── task_cli.py                  # 任務佇列查詢 (next/show)、認領 (claim)、結案 (complete，DoD 要求的檔案須存在)、關閉 (close)
 │   ├── build_index.py               # 從 notes/ 重產 README 的任務表與索引
 │   ├── verify_inbox.py              # 契約驗證（CI 同款）
-│   └── video_transcript.py          # 影片音訊下載 + faster-whisper (CUDA/CPU) 逐字稿轉寫（見 docs/video-transcript-howto.md）
-├── docs/                            # 技術規格、實測報告與 SOP 手冊
+│   ├── verify_*.py（其餘 12 支）     # 外部裁判：檢查 docs/、templates/、assets/ 的規定結構（見 docs/external-judge-audit.md）
+│   ├── _judge_common.py             # 外部裁判共用：剝註解、結構下限、報告輸出
+│   ├── video_transcript.py          # 影片音訊下載 + faster-whisper (CUDA/CPU) 逐字稿轉寫（見 docs/video-transcript-howto.md）
+│   └── 其他功能型工具               # health_bank_parser、audit_fullstack_security、beat_grid、cli_to_skill、
+│                                    # public_apis_indexer、video_asset_capture（各有對應 tests/test_*.py）
+├── docs/                            # 技術規格、實測報告與 SOP 手冊（跨 Agent 派工指令見 docs/agent-dispatch.md）
 ├── assets/                          # 單檔 HTML / Generative UI / Canvas 互動成品
 └── tests/                           # tools/ 的單元測試
 ```
@@ -86,51 +90,7 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
      ```
 3. **提交與推送**（驗證通過才提交）：
    - `python tools/verify_inbox.py && python -m unittest discover -s tests && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
-4. **開啟新 Session 派工注意事項（四大 Agent Desktop 左側欄可視新對話＋自動回報）**：
-   - **一、Antigravity Desktop（頂層可視新對話＋`send_message` 回報）**：
-     - **同機 Antigravity 內直接呼叫**：呼叫原生 `language_server.exe agentapi new-conversation`（勿透過 `agentapi.bat` 以免 `cmd.exe` 截斷換行），建立 `nestingDepth: 0` 的頂層新對話，立即顯示在 Antigravity Desktop 左側欄：
-       ```powershell
-       & "$env:LOCALAPPDATA\Programs\Antigravity\resources\bin\language_server.exe" agentapi new-conversation --title="[派工] T-YYYYMMDD-XX 任務標題" "<完整派工 Prompt，結尾要求完成後呼叫 send_message 工具（Recipient 填主對話 UUID）回報 Commit SHA 與驗證輸出>"
-       ```
-       執行後從回傳 JSON 取得 `newConversation.conversationId`，在回覆中提供可點擊連結 `[[派工] T-YYYYMMDD-XX](conversation://<conversationId>)`。
-     - **完工自動封存（無後續待辦時必做）**：派工新對話在呼叫 `send_message` 回報主對話後，若該新對話已無任何待辦事項，應執行 Connect-RPC `UpdateConversationAnnotations` 將自身標記為封存（務必帶 `mergeAnnotations = $true` 以保留既有標題）：
-       ```powershell
-       Invoke-RestMethod -Method Post -Uri "http://$env:ANTIGRAVITY_LS_ADDRESS/exa.language_server_pb.LanguageServerService/UpdateConversationAnnotations" -Headers @{ "Connect-Protocol-Version" = "1"; "x-codeium-csrf-token" = $env:ANTIGRAVITY_CSRF_TOKEN } -ContentType "application/json" -Body (@{ cascadeId = $env:ANTIGRAVITY_CONVERSATION_ID; cascadeIds = @($env:ANTIGRAVITY_CONVERSATION_ID); annotations = @{ archived = $true }; mergeAnnotations = $true } | ConvertTo-Json -Depth 5)
-       ```
-     - **從其他 Agent（Claude / Codex / Hermes）派給 Antigravity Desktop 開頂層新對話**：
-       ```powershell
-       python -m agent_relay send --to antigravity --kind task --project C:\GitHub\ai-inbox --ref antigravity-session:new --subject "T-YYYYMMDD-XX" --body-file task.md
-       ```
-       Antigravity sidecar 會自動呼叫 `agentapi new-conversation --title="[Relay] <信件ID>"` 開啟頂層新對話，完工後透過 `agent-relay send --kind result` 回報原寄件端。
-   - **二、Claude Desktop / Claude Code（`--bg -n` / `--desktop` 可視新會話＋自動回報）**：
-     - **關鍵陷阱**：必須在**目標專案根目錄（`C:\GitHub\ai-inbox`）**啟動，不可在 `.relay-worktrees/<id>` 子目錄啟動，否則會話紀錄會歸入 `.relay-worktrees` 資料夾，導致在 Claude Desktop 的 `ai-inbox` 專案下看不到。
-     - **啟動與開啟桌面視窗**：
-       ```powershell
-       Set-Location C:\GitHub\ai-inbox
-       # 背景啟動具名會話（回傳 session <id>，寫入 ~/.claude/projects/C--GitHub-ai-inbox/）
-       claude --bg -n "[派工] T-YYYYMMDD-XX 任務標題" --permission-mode acceptEdits "<派工 Prompt>"
-       # 在 Claude Desktop 桌面視窗直接打開該會話觀看（或直接用 claude --desktop -n "[派工] ..." "<Prompt>" 啟動）
-       claude --desktop --resume <id>
-       ```
-     - **完工自動回報**：在派工 Prompt 結尾要求完工時依發起端執行回報指令（回報 Antigravity：`language_server.exe agentapi send-message <主對話UUID> "<結果>"` 或 `agent-relay send --to antigravity`；回報 Codex：`codex queue --thread <主會話ID> --message "<結果>"`）。
-   - **三、Codex Desktop / Codex CLI（專案會話＋原生 `codex queue` 跨會話 `send_message`）**：
-     - Codex Desktop 與 CLI 共用本機 `app-server` 與 `~/.codex/sessions`（可用 `codex agents` 列出全部活躍會話）。
-     - **啟動新會話**：在目標專案根目錄執行 `codex -C C:\GitHub\ai-inbox "<派工 Prompt>"`（或 `codex app C:\GitHub\ai-inbox` 開啟桌面端）。
-     - **完工自動回報（Codex 原生 `send_message` 等價指令）**：
-       ```powershell
-       codex queue -C C:\GitHub\ai-inbox --thread <主會話UUID或名稱> --message "<完工回報與 Commit SHA>"
-       ```
-   - **四、Hermes Desktop / Web Dashboard（`state.db` 具名會話＋自動回報）**：
-     - Hermes Desktop（`hermes desktop`）與 Web Dashboard（`hermes dashboard`，port 9119）共用 `%LOCALAPPDATA%\hermes\state.db`。
-     - **啟動並命名左側欄會話**：
-       ```powershell
-       hermes -z "<派工 Prompt>" --in C:\GitHub\ai-inbox --pass-session-id
-       hermes sessions rename <session_id> "[派工] T-YYYYMMDD-XX 任務標題"
-       ```
-     - **完工自動回報**：回報給 Hermes 主會話用 `hermes --resume <主會話ID> -z "<回報內容>" --in C:\GitHub\ai-inbox`（或 `hermes kanban` / `hermes send`）；回報給 Antigravity / Codex 則呼叫 `agentapi send-message` / `codex queue` / `agent-relay send`。
-   - **五、Antigravity 內部背景子代理（`invoke_subagent`）與 `agent-relay` 無頭 Worktree 工人**：
-     - 若不需出現在左側頂層對話欄，可用 `invoke_subagent(TypeName="self")`（內建 `advisor-*-implementer` 僅唯讀）或 `agent-relay dispatch`（在 `.relay-worktrees/<id>` 執行無頭 CLI 並自動跑驗證閘門）。
-
+4. **開新 Session 派工與完工回報**：Antigravity、Claude、Codex、Hermes 四套桌面端開新對話、派工與回報的指令，見 [`docs/agent-dispatch.md`](docs/agent-dispatch.md)。
 ---
 
 ## 3. 寫作與分析鐵律
@@ -140,6 +100,8 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
   - *影片來源必取逐字稿*：若來源是 YouTube 等影片，**不可只看標題與說明欄就交差**。先用 `python -m yt_dlp` 抓字幕；若遇到 `HTTP 429` 或無字幕，直接執行 `python tools/video_transcript.py <網址> --out <暫存目錄>`（本機已配妥 RTX 3060 CUDA 加速與 `faster-whisper`），完整步驟與踩坑紀錄見 [`docs/video-transcript-howto.md`](docs/video-transcript-howto.md)。
 - **規劃必須詳盡具體（拒絕空泛）**：分析時重點永遠是「這篇文章的哪個設計／技巧，能解決什麼痛點，或改進哪個具體專案／Skill？」。拆解任務必須包含目標範圍、具體實作步驟與嚴格的 DoD 驗收標準，不留空泛概念。
 - **待辦事項必須可驗收**：不要寫「研究如何優化 prompt」這種無邊界任務；要寫「在 `~/.gemini/config/skills/xxx/SKILL.md` 加入 YYY 檢查步驟，並用 ZZZ 案例實測通過」。
+- **DoD 要寫出產出檔路徑，未達成就不算完成**：DoD 若要求產出本 repo 的檔案，用反引號標出路徑（如 `docs/x.md`），`task_cli.py complete` 與 `verify_inbox.py` 會檢查它存在。DoD 裡的任何一項沒做到（例如「實測」只做了評估），就不可結案；證據裡的「限制」若落在 DoD 範圍內，等於未完成。
+- **不再新增關鍵字型外部裁判驗證器**：理由與替代做法見 [`docs/external-judge-audit.md`](docs/external-judge-audit.md) 第 5 節。
 - **查證個人 Fork 與遠端倉庫嚴禁依賴搜尋引擎斷言（必須直連真實 URL / API 驗證）**：
   - *教訓實例（2026-10-20）*：使用者詢問是否已 Fork `public-apis`，Agent 僅憑 `search_web` 搜尋 `site:github.com/SanHsien "public-apis"` 的空結果便妄下斷言稱「尚未 Fork」，實際上 `https://github.com/SanHsien/public-apis` 早已存在。第三方搜尋引擎爬蟲存在嚴重延遲與索引死角，**查證個人資產、遠端 Repo 或 Fork 狀態時，必須直接對目標 URL（如 `https://github.com/SanHsien/<repo>`）發起真實 HTTP 請求（如 read_url_content 或 curl）或調用 GitHub API 驗證，未經驗證真實網址前嚴禁聲稱不存在**。
 - **若文章經評估無須落地**：如實記錄分析結論，YAML frontmatter 的 `status` 設為 `archived`，不強湊無意義的待辦事項。

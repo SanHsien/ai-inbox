@@ -11,9 +11,15 @@ permissions:
 
 jobs:
   verify:
-    name: Verify Notes & Task Dashboard Contract
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
+    name: Verify Notes & Task Dashboard Contract (${{ matrix.os }})
+    # 維護者在 Windows（cp950 終端）上跑這些工具；Windows runner 的 cp1252 一樣印不出中文與 emoji，
+    # 能抓到「只有 Windows 才會 UnicodeEncodeError」的問題。不設 PYTHONUTF8，就是要測這個。
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
 
     steps:
       - name: Check out repository

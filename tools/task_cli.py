@@ -241,6 +241,9 @@ def cmd_claim(args: argparse.Namespace) -> int:
 def cmd_complete(args: argparse.Namespace) -> int:
     notes = bi.load_notes()
     task = find_task(notes, args.task_id)
+    missing = bi.missing_dod_artifacts(task)
+    if missing:
+        raise ValueError(f"{args.task_id} 的 DoD 要求產出的檔案不存在，不可結案：{', '.join(missing)}")
     date_str = args.date or dt.date.today().isoformat()
     new_status = apply_complete(task.note.path, args.task_id, args.evidence, date_str)
     bi.main([])

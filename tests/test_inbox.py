@@ -5,6 +5,7 @@ import io
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
@@ -286,6 +287,42 @@ tags:
     def test_build_readme_requires_markers(self):
         with self.assertRaises(SystemExit):
             bi.build_readme("沒有標記", [])
+
+
+class DodArtifactTest(unittest.TestCase):
+    """DoD 要求產出的本 repo 檔案不存在時，不能算已做。"""
+
+    def _note(self, tmp: Path, dod: str, box: str = "x") -> bi.Note:
+        note = make_note(tmp, box=box)
+        note.tasks[0].fields["驗收標準（DoD）"] = dod
+        return note
+
+    def test_missing_artifact_is_reported_and_existing_one_is_not(self):
+        with tempfile.TemporaryDirectory() as d:
+            note = self._note(Path(d), "產出 `docs/free-public-apis.md` 與 `docs/no-such-file-xyz.md`；"
+                                       "另一個 repo 的 `agent_relay/gates.py` 不檢查")
+            self.assertEqual(bi.missing_dod_artifacts(note.tasks[0]), ["docs/no-such-file-xyz.md"])
+            errors = vi.check_dod_artifacts([note])
+            self.assertEqual(len(errors), 1)
+            self.assertIn("docs/no-such-file-xyz.md", errors[0])
+
+    def test_unfinished_task_is_not_checked(self):
+        with tempfile.TemporaryDirectory() as d:
+            note = self._note(Path(d), "產出 `docs/no-such-file-xyz.md`", box=" ")
+            self.assertEqual(vi.check_dod_artifacts([note]), [])
+
+    def test_complete_refuses_when_dod_artifact_missing(self):
+        with tempfile.TemporaryDirectory() as d:
+            note = self._note(Path(d), "產出 `docs/no-such-file-xyz.md`", box=" ")
+            before = note.path.read_text(encoding="utf-8")
+            args = tc.argparse.Namespace(task_id="T-20261020-01", evidence="做完了", date=None)
+            # bi.main 也要替換：檢查失效時結案會重產 README，不可寫到真正的 README
+            with unittest.mock.patch.object(tc.bi, "load_notes", return_value=[note]), \
+                    unittest.mock.patch.object(tc.bi, "main"):
+                with self.assertRaises(ValueError) as ctx:
+                    tc.cmd_complete(args)
+            self.assertIn("docs/no-such-file-xyz.md", str(ctx.exception))
+            self.assertEqual(note.path.read_text(encoding="utf-8"), before)
 
 
 if __name__ == "__main__":
