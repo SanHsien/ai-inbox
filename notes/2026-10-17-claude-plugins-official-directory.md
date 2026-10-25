@@ -94,13 +94,13 @@ Claude Code Plugin 將一個完整能力封裝為獨立套件，通常包含：
   - **驗收標準（DoD）**：產出清單評估筆記，標明推薦啟用的官方外掛名稱與實測指令輸出。
   - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付於 `docs/claude-plugins-official-review.md`，直接 clone 並讀取 `anthropics/claude-plugins-official` 真實目錄與 `marketplace.json`，深度評比 8 款高度適配維護者 Windows 11+Python+TS 工作流之推薦插件、6 款不相容/偏離項目與排除原因，並對 3 款閉源 SaaS 標明「未查證」。
 
-- [ ] **`T-20261017-08`**｜**[優先級：低]** 評估比照官方規格打包個人常用工具為標準 Plugin
+- [x] **`T-20261017-08`**｜**[優先級：低]** 評估比照官方規格打包個人常用工具為標準 Plugin
   - **目標範圍**：`跨專案規範 / 自製 Plugin 打包`
-  - **狀態**：⚪ 不做（常用工具已打包為標準 plugin（agent-advisor-claude、myr2d2），此任務實質已完成）
   - **官方來源**：GitHub [`anthropics/claude-plugins-official`](https://github.com/anthropics/claude-plugins-official) 規範文檔
   - **具體實作步驟**：
     1. 研究官方 Plugin 的標準 Manifest 格式與宣告規範。
     2. 評估將核心工作流（如 `quality-loop` 或 `inbox-triage`）打包為相容格式的可行性。
     3. 產出打包規格筆記，供未來跨機器快速部署。
   - **驗收標準（DoD）**：完成打包規範驗證，確認可在終端中被正確識別載入。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-25
+  - **實作紀錄 / 證據**：重評 2026-10-25：原以「不做」關閉但實質已完成——個人工具已依官方規格打包為標準 plugin agent-advisor-claude（1 skill + 3 subagent）與 myr2d2（14 skill），~/.claude/plugins/installed_plugins.json 列有 agent-advisor-claude@agent-advisor、myr2d2@myr2d2，Claude Code 2.1.309 session 內可正確載入其技能。

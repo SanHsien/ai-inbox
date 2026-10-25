@@ -39,18 +39,19 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 101 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 74／⚪ 不做 27
+> 共 101 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 75／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| *（目前沒有未完成任務）* | - | - | - | - | - | - |
+| `T-20261018-09` | 🔴 未做 | 中 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | 本地 Claude Code 開發環境與外掛架構 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | 2026-10-18 |
+| `T-20261018-06` | 🔴 未做 | 低 | 評估將 `desktop-sense` 隱私防線（敏感視窗黑名單、API Key 丟棄、截圖生命週期）蒸餾為本地多模態 Agent 視覺安全規範 | 全域安全規範與視覺/截圖防護協定 | [2026-10-18-desktop-sense-local-screen-context](./notes/2026-10-18-desktop-sense-local-screen-context.md) | 2026-10-18 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 74 項）</summary>
+<details><summary>展開查看已完成任務（共 75 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -59,6 +60,7 @@
 | `T-20261017-05` | 2026-10-23 | 實測 `Agent-Reach` 在 Windows 11 下的安裝與 `agent-reach doctor` 通道健康度 | 已完成安全審查（無未知二進位、無提權、無外傳）並安裝於隔離沙盒 `C:\GitHub\_sandbox\agent-reach\.venv`。執行 `agent-reach doctor` 成功診斷通道狀態：4/16 渠道開箱即用（V2EX 公開 API、RSS/Atom 源、Jina Reader 網頁讀取、B站公開搜尋直連），Windows 11 原生編碼與 Rich 控制台相容正常，無登入或寫入全域環境。 | [2026-10-17-agent-reach-social-intelligence](./notes/2026-10-17-agent-reach-social-intelligence.md) |
 | `T-20261017-06` | 2026-10-23 | 評估將 `Agent-Reach` 封裝為 Antigravity / Claude Code 本地 Skill | 已將 Agent-Reach 封裝為 Antigravity 本地 Skill 並安裝至 `~/.gemini/config/skills/agent-reach/`（包含完整 SKILL.md 與 7 大領域 references 路由規範），同時於 `C:\GitHub\ai-inbox\templates\agent-reach/` 同步一份完整範本。支援 16 大平台路由、多後端降級與免 Key 抓取能力。 | [2026-10-17-agent-reach-social-intelligence](./notes/2026-10-17-agent-reach-social-intelligence.md) |
 | `T-20261017-07` | 2026-10-23 | 深度檢閱 `anthropics/claude-plugins-official` 精選外掛清單，篩選適合維護者工作流的插件 | 以 ai-inbox 範本形式交付於 `docs/claude-plugins-official-review.md`，直接 clone 並讀取 `anthropics/claude-plugins-official` 真實目錄與 `marketplace.json`，深度評比 8 款高度適配維護者 Windows 11+Python+TS 工作流之推薦插件、6 款不相容/偏離項目與排除原因，並對 3 款閉源 SaaS 標明「未查證」。 | [2026-10-17-claude-plugins-official-directory](./notes/2026-10-17-claude-plugins-official-directory.md) |
+| `T-20261017-08` | 2026-10-25 | 評估比照官方規格打包個人常用工具為標準 Plugin | 重評 2026-10-25：原以「不做」關閉但實質已完成——個人工具已依官方規格打包為標準 plugin agent-advisor-claude（1 skill + 3 subagent）與 myr2d2（14 skill），~/.claude/plugins/installed_plugins.json 列有 agent-advisor-claude@agent-advisor、myr2d2@myr2d2，Claude Code 2.1.309 session 內可正確載入其技能。 | [2026-10-17-claude-plugins-official-directory](./notes/2026-10-17-claude-plugins-official-directory.md) |
 | `T-20261017-09` | 2026-10-23 | 檢閱 `1weiho/cinematic-shot` 倉庫結構，提取其視覺提示詞（Visual Prompts）與運鏡規則手冊 | 以 ai-inbox 範本形式交付於 `docs/cinematic-shot-camera-guide.md`，完整提煉 `1weiho/cinematic-shot` 倉庫中 5 種經典 Shot 參數設定表、提示詞範本與運鏡規則。 | [2026-10-17-cinematic-shot-ui-film-director](./notes/2026-10-17-cinematic-shot-ui-film-director.md) |
 | `T-20261017-13` | 2026-10-23 | 整理學術論文雙語排版與公式保護閱讀工具手冊（Moonlight 與開源 MinerU 對比指南） | 以 ai-inbox 範本形式交付於 `docs/academic-bilingual-paper-reader-guide.md`，完整梳理 Moonlight 雙欄對照與開源 MinerU 本地 CLI 轉檔之全方位對比、排版公式保護機制與場景選型決策樹。 | [2026-10-17-moonlight-bilingual-paper-reader](./notes/2026-10-17-moonlight-bilingual-paper-reader.md) |
 | `T-20261017-14` | 2026-10-23 | 在學術論文摘要與翻譯提示詞中注入「LaTeX 數學公式與引用保護規則」 | 以 ai-inbox 範本形式交付於 `templates/latex-citation-protection-prompt.md`，制定包含行內公式、區塊公式、引用標籤與交叉參照四項零竄改保護契約，並附 3DGS 論文真實測試輸入案例與預期標準輸出。 | [2026-10-17-moonlight-bilingual-paper-reader](./notes/2026-10-17-moonlight-bilingual-paper-reader.md) |
@@ -133,13 +135,12 @@
 
 ### ⚪ 不做 / 已關閉（Archived）
 
-<details><summary>展開查看已關閉或評估不做的任務（共 27 項）</summary>
+<details><summary>展開查看已關閉或評估不做的任務（共 24 項）</summary>
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 關閉理由 | 來源分析文章 |
 | :--- | :---: | :---: | :--- | :--- | :--- |
 | `T-20261017-01` | ⚪ 不做 | 低 | 調研 XERJ CLI 與 Corpus Hub 在 Windows 11 下的可用性與安裝方式 | 知識檢索已全面採用本地 Markdown 與 Obsidian 知識庫，不另引入重型 XERJ 語料庫工具鏈 | [2026-10-17-xerj-corpus-hub](./notes/2026-10-17-xerj-corpus-hub.md) |
 | `T-20261017-02` | ⚪ 不做 | 低 | 評估將 XERJ 整合為 Antigravity / Claude Code 本地 MCP 工具或 Skill | 同 T-20261017-01，不引入 XERJ 工具鏈 | [2026-10-17-xerj-corpus-hub](./notes/2026-10-17-xerj-corpus-hub.md) |
-| `T-20261017-08` | ⚪ 不做 | 低 | 評估比照官方規格打包個人常用工具為標準 Plugin | 常用工具已打包為標準 plugin（agent-advisor-claude、myr2d2），此任務實質已完成 | [2026-10-17-claude-plugins-official-directory](./notes/2026-10-17-claude-plugins-official-directory.md) |
 | `T-20261017-10` | ⚪ 不做 | 低 | 評估將 `cinematic-shot` 整合至本地影視生成專案（如 `video-spec-builder` 或 Skills） | cinematic-shot 的運鏡規則由 T-20261017-09 抽取後併入 T-20261021-15，不另做整合評估 | [2026-10-17-cinematic-shot-ui-film-director](./notes/2026-10-17-cinematic-shot-ui-film-director.md) |
 | `T-20261017-11` | ⚪ 不做 | 低 | 整理 Claude Code / Antigravity 混合模型路由指南，納入 `token-optimizer` 規則手冊 | 混合模型分工已於 agent-relay 額度感知顧問與 token-optimizer 完整落地，無須重複整理 | [2026-10-17-model-routing-opusplan-advisor](./notes/2026-10-17-model-routing-opusplan-advisor.md) |
 | `T-20261017-12` | ⚪ 不做 | 低 | 評估本地 Claude Code 終端別名與自定義啟動腳本配置 | CLI 啟動已由 agent-relay 派工器與 Windows Terminal 整合標準化，不維護散落的終端別名腳本 | [2026-10-17-model-routing-opusplan-advisor](./notes/2026-10-17-model-routing-opusplan-advisor.md) |
@@ -155,9 +156,7 @@
 | `T-20261018-01` | ⚪ 不做 | 低 | 建立「Claude 代碼動效視頻渲染標準工作流（Remotion / HTML Canvas Video Pipeline）」 | Remotion 渲染流程併入 T-20261021-15（規範）與 T-20261019-04（幀同步原型） | [2026-10-18-prompt-motion-claude-video-showcase](./notes/2026-10-18-prompt-motion-claude-video-showcase.md) |
 | `T-20261018-02` | ⚪ 不做 | 低 | 彙整 Prompt Motion 精選「產品 UI 展示與動效字幕」Prompt 範本庫，串聯 `motion-prompt` 與 `cinematic-shot` | 併入 T-20261021-15 Code-as-Video Studio 規範，不另建 Prompt 範本庫 | [2026-10-18-prompt-motion-claude-video-showcase](./notes/2026-10-18-prompt-motion-claude-video-showcase.md) |
 | `T-20261018-05` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 `desktop-sense` 守護程序與 Claude Code / Codex CLI / Gemini CLI Hook 整合 | 常駐截圖守護程式並掛進所有 CLI hook，隱私風險高；看畫面需求已由 computer-use 與瀏覽器工具滿足 | [2026-10-18-desktop-sense-local-screen-context](./notes/2026-10-18-desktop-sense-local-screen-context.md) |
-| `T-20261018-06` | ⚪ 不做 | 低 | 評估將 `desktop-sense` 隱私防線（敏感視窗黑名單、API Key 丟棄、截圖生命週期）蒸餾為本地多模態 Agent 視覺安全規範 | 同 T-20261018-05，不引入 desktop-sense，截圖隱私規範沿用現有 computer-use 遮罩機制 | [2026-10-18-desktop-sense-local-screen-context](./notes/2026-10-18-desktop-sense-local-screen-context.md) |
 | `T-20261018-07` | ⚪ 不做 | 低 | 建立「Claude Opus 5.5 程式碼視覺化生成提示詞庫（Awesome Opus 5.5 Prompts Benchmark）」解析腳本與分類檢索工具 | 提示詞庫解析腳本價值低，視覺化生成需求由 T-20261018-08 單檔技能涵蓋 | [2026-10-18-awesome-opus5-5-videos-prompt-zoo](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) |
-| `T-20261018-09` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | Claude Code 官方已轉向標準 Plugins 架構，非官方 Mods 機制過時且維護風險高 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) |
 | `T-20261018-10` | ⚪ 不做 | 低 | 評估將全域高危指令攔截（Blast Radius）與安全規範包裝為本地 Claude Code Mod 防護插件 | 高危防護已在 harness-guard 與 agent-relay/gates.py 透過原生 Hook/閘門實現，不依賴 Mods | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) |
 | `T-20261020-03` | ⚪ 不做 | 低 | 在 Windows 11 本地測試 `BeatAPI/BeatDesign` 部署與 MCP 整合（驗證 `pnpm dev:agent` 啟動、29 個 MCP 工具列出與 Antigravity / Claude Code 連線） | 影視工具鏈以 T-20261021-15 為主線，不另部署 BeatDesign 與其 29 個 MCP 工具 | [2026-10-20-beatdesign-open-source-ai-video-studio](./notes/2026-10-20-beatdesign-open-source-ai-video-studio.md) |
 | `T-20261020-04` | ⚪ 不做 | 低 | 設計「BeatDesign + Cinetic + cinematic-shot 代碼驅動多模態影視流水線規格（Code-to-Timeline Studio Pipeline）」，打通從腳本生成、分鏡提示、畫布分叉到時間線自動剪輯的 Agent 閉環 | 影視流水線規格併入 T-20261021-15，避免多份重疊規格 | [2026-10-20-beatdesign-open-source-ai-video-studio](./notes/2026-10-20-beatdesign-open-source-ai-video-studio.md) |
@@ -180,7 +179,7 @@
 | 2026-10-17 | 🟢 | [cinematic-shot：讓 AI Agent 像拍電影般掌鏡軟體產品發表片的視覺技能](./notes/2026-10-17-cinematic-shot-ui-film-director.md) | `agent-skills`, `cinematic-shot`, `video-generation` | 1 / 1（+1 不做） |
 | 2026-10-17 | 🟢 | [Claude Code 閒置壓縮（Idle Compaction）解析與 Prompt Cache 過期對策：以 cc-session-reader 實現對話無損繼承](./notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md) | `claude-code`, `prompt-caching`, `idle-compaction` | 2 / 2 |
 | 2026-10-17 | ⚪ | [Claude-Mem 跨 Session 記憶中樞與 Autocompact 400K 雙軌協同架構分析](./notes/2026-10-17-claude-mem-autocompact-context.md) | `context-management`, `long-term-memory`, `autocompact-400k` | 0 / 0（+2 不做） |
-| 2026-10-17 | 🟢 | [Anthropic 官方 Claude Code 插件生態目錄：解構標準化外掛、Skills 與 MCP 整合](./notes/2026-10-17-claude-plugins-official-directory.md) | `claude-code`, `agent-plugins`, `anthropic` | 1 / 1（+1 不做） |
+| 2026-10-17 | 🟢 | [Anthropic 官方 Claude Code 插件生態目錄：解構標準化外掛、Skills 與 MCP 整合](./notes/2026-10-17-claude-plugins-official-directory.md) | `claude-code`, `agent-plugins`, `anthropic` | 2 / 2 |
 | 2026-10-17 | 🟢 | [跨 CLI 多代理外包編排實踐：以 Opus 擔任規劃顧問、外包 OpenCode/AGY/Grok 與 Space Bunny 免費模型的成本降維流水線](./notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md) | `multi-agent-orchestration`, `cross-cli`, `cost-optimization` | 2 / 2 |
 | 2026-10-17 | ⚪ | [GitHub 開源 AI 神器矩陣：從 Jev 亞秒路由、OpenHands 自主工程到 MoneyPrinterTurbo/LibreChat 的平替全景深度評估](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md) | `open-source-ai`, `agent-frameworks`, `jev-skills` | 0 / 0（+2 不做） |
 | 2026-10-17 | 🟢 | [HanSun 全端網站從零建置部署手冊：Codex/Claude 驅動的商業系統架構與 6 大 Agent 轉化實踐](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md) | `fullstack-architecture`, `agent-workflow`, `supabase` | 2 / 2 |
@@ -193,9 +192,9 @@
 | 2026-10-17 | 🟢 | [TasteSkill v2：解析 247 個得獎網站重構的 AI 前端藝術指導與截圖評審閉環](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md) | `taste-skill`, `agent-skills`, `anti-slop` | 2 / 2 |
 | 2026-10-17 | ⚪ | [XERJ Corpus Hub：為 Agent 釘選整門領域知識的預索引語料庫](./notes/2026-10-17-xerj-corpus-hub.md) | `agent-memory`, `retrieval-augmented-generation`, `corpus-hub` | 0 / 0（+2 不做） |
 | 2026-10-18 | 🟢 | [Awesome Opus 5.5 Videos 提示詞動物園解構：700+ 代碼驅動視覺動畫、3D 場景、技術解說與互動遊戲開源基準庫](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) | `awesome-opus5-5`, `prompt-zoo`, `creative-coding` | 2 / 2（+1 不做） |
-| 2026-10-18 | ⚪ | [Claude Code Mods 自體改造機制解構：從外部腳本 Hook 到 In-Session 中介軟體（Middleware）、動態 UI 渲染與即時熱重載](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | `claude-code`, `claude-mods`, `in-session-middleware` | 0 / 0（+2 不做） |
+| 2026-10-18 | 🔴 | [Claude Code Mods 自體改造機制解構：從外部腳本 Hook 到 In-Session 中介軟體（Middleware）、動態 UI 渲染與即時熱重載](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | `claude-code`, `claude-mods`, `in-session-middleware` | 0 / 1（+1 不做） |
 | 2026-10-18 | 🟢 | [CLI-Anything：終結脆弱 GUI 點擊，將任意軟體自動升級為 Agent-Native CLI 與 Skill 的通用框架解構](./notes/2026-10-18-cli-anything-agent-native-computer-use.md) | `cli-anything`, `agent-native`, `computer-use` | 2 / 2 |
-| 2026-10-18 | ⚪ | [desktop-sense：為 Coding Agent 賦予本機螢幕即時視覺感知（Local-First Screen Context）與嚴格隱私防護架構解構](./notes/2026-10-18-desktop-sense-local-screen-context.md) | `desktop-sense`, `local-first`, `screen-context` | 0 / 0（+2 不做） |
+| 2026-10-18 | 🔴 | [desktop-sense：為 Coding Agent 賦予本機螢幕即時視覺感知（Local-First Screen Context）與嚴格隱私防護架構解構](./notes/2026-10-18-desktop-sense-local-screen-context.md) | `desktop-sense`, `local-first`, `screen-context` | 0 / 1（+1 不做） |
 | 2026-10-18 | 🟢 | [健保快易通健康存摺 HTML 轉化 Claude Artifact：個人醫療數據本地脫敏與互動式健康追蹤儀表板（Generative UI）實踐解構](./notes/2026-10-18-health-bank-html-claude-artifact-dashboard.md) | `health-bank`, `claude-artifact`, `generative-ui` | 2 / 2 |
 | 2026-10-18 | 🟢 | [多 Agent 生產力工廠實戰架構：Magpie 統一網關、Herdr 終端復用、Obsidian 接棒交接與額度感知動態路由解構](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md) | `multi-agent-factory`, `magpie`, `herdr` | 2 / 2 |
 | 2026-10-18 | ⚪ | [Prompt Motion 策展庫解構：Claude 驅動的代碼動效視頻（Code-driven Motion Graphics）原理與可複製 Prompts/Skills 實戰解析](./notes/2026-10-18-prompt-motion-claude-video-showcase.md) | `prompt-motion`, `code-driven-video`, `claude-motion` | 0 / 0（+2 不做） |

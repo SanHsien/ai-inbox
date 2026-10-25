@@ -6,7 +6,7 @@ source_platform: "GitHub"
 author: "angletech2026-arch"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
-status: archived
+status: pending
 cluster: 3
 cluster_role: "視覺感知"
 short_title: "desktop-sense 本機螢幕上下文"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[angletech2026-arch/desktop-sense (GitHub)](https://github.com/angletech2026-arch/desktop-sense)
 - **開源授權**：MIT License
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`⚪ 已封存 (Archived)`
+- **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-mem-autocompact-context.md`](./2026-10-17-claude-mem-autocompact-context.md)（上下文與記憶管理）
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code Hook 機制）
@@ -156,7 +156,7 @@ tags:
 
 - [ ] **`T-20261018-06`**｜**[優先級：低]** 評估將 `desktop-sense` 隱私防線（敏感視窗黑名單、API Key 丟棄、截圖生命週期）蒸餾為本地多模態 Agent 視覺安全規範
   - **目標範圍**：全域安全規範與視覺/截圖防護協定
-  - **狀態**：⚪ 不做（同 T-20261018-05，不引入 desktop-sense，截圖隱私規範沿用現有 computer-use 遮罩機制）
+  - **重新評估（2026-10-25）**：原關閉理由「沿用現有 computer-use 遮罩機制」不成立——computer-use 只有逐 app 分級授權，沒有遮罩或金鑰偵測；repo 內也沒有截圖隱私規範。各 Agent 已大量用截圖與錄影當驗收證據（瀏覽器截圖、Playwright 錄影、`docs/evidence/`），這份規範不需安裝 desktop-sense，只蒸餾規則成文件，改為要做。不做常駐守護程式（T-20261018-05 維持不做）。
   - **具體實作步驟**：
     1. 分析 `desktop-sense` 的敏感視窗正則庫（涵蓋中英法德西日韓等語系之金融、密碼、無痕關鍵字）與無障礙樹（Accessibility Tree）偵測邏輯。
     2. 萃取其 API Key 與機密憑證正則過濾規則（OpenAI, GitHub, AWS, Stripe, JWT 等），建立「偵測到金鑰立即 Drop 截圖」的通用防護模組。
