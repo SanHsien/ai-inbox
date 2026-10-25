@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 92 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 65／⚪ 不做 27
+> 共 95 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 68／⚪ 不做 27
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,7 +50,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 65 項）</summary>
+<details><summary>展開查看已完成任務（共 68 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -119,6 +119,9 @@
 | `T-20261024-04` | 2026-10-25 | 對照 feedback-desk 的認領／交接機制與本地 `agent-relay`，列出可借鏡與不採納項 | 完成 feedback-desk 與 agent-relay 多維度機制對照，產出 `docs/feedback-desk-vs-agent-relay.md`。涵蓋狀態機、認領、交接紀錄、動作署名（帳號＋AI 工具）、人工確認閘門、客戶可見範圍、通訊傳輸架構與機密邊界等 8 項維度對照表，逐項標記已有／缺少／不需要及具體理由，表格列數經驗證達 10 列（>= 8）。 | [2026-10-24-feedback-desk-client-ticket-ai-handoff](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) |
 | `T-20261024-05` | 2026-10-25 | 查證影片的三項宣稱：IG 標示 AI 生成是否不被降權、ElevenLabs 與 HeyGen 的肖像與聲音授權範圍、兩工具現行費用 | 已完成查證並產出 `docs/ai-influencer-claims-check.md`。三項宣稱查核結果：(a) 標示 AI 不被降權且 IG 反而鼓勵判定為「官方未提及」（官方要求強制標示逼真內容以避免受罰，但無任何流量加成或鼓勵說明）；(b) 任意自拍照片開口與變聲商用判定為「與官方矛盾」（兩平台條款均強制要求被攝者與聲音書面同意，且免費版嚴禁商用；本人授權付費則為「官方證實」）；(c) 現行公開方案定價判定為「官方證實」（HeyGen Creator $29/月、ElevenLabs Starter $6/月，證實每月基本商用工具固定成本 $35 美元以上）。DoD 驗證全部通過。 | [2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) |
 | `T-20261024-06` | 2026-10-25 | 建立「AI 生成人物與聲音使用的合規檢查清單」，供日後任何 AI 人物或數位人專案參考 | 已完成產出 `docs/ai-persona-compliance-checklist.md`。包含五大類別（AI 揭露、被攝者書面同意、聲音複製授權、商用條款、平台政策），每類各提供 3 項可勾選項目（共 15 項），並附 9 個官方來源連結（包含 Meta、HeyGen、ElevenLabs 官方條款與定價）與查閱日期（2026-10-25）。DoD 驗證全部通過。 | [2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) |
+| `T-20261025-01` | 2026-10-25 | 依 `docs/external-judge-audit.md` 補強：實作 Claude 資安審查與閒置壓縮設定之「外部裁判（External Judge）」機械驗證器與對抗測試 | 已建立 `tools/verify_claude_security_config.py`（純 Python stdlib）與 `tests/test_verify_claude_security_config.py`；成功實作閒置壓縮 Token 門檻檢驗（`>= 100000` 與 JSON 語法斷言）、資安範本 8 KB 預算與四大條款完整性校驗，以及對抗式靜態掃描函式 `scan_code_snippet`（涵蓋硬編碼敏感憑證、越界路徑、空殼函式與高危呼叫攔截，並完整支援行內或上一行 `# safe:` / `# nosec` 豁免）。經實機檢測 `python tools/verify_claude_security_config.py` 回傳 exit 0，且 12 項單元測試 `python -m pytest tests/test_verify_claude_security_config.py -v` 100% 全數綠燈通過。引證檔案：`tools/verify_claude_security_config.py`、`tests/test_verify_claude_security_config.py`。 | [2026-10-23-claude-plugin-security-guidance](./notes/2026-10-23-claude-plugin-security-guidance.md) |
+| `T-20261025-02` | 2026-10-25 | 依 `docs/external-judge-audit.md` 補強：實作合規清單、宣稱查證與對照矩陣之「外部裁判」結構驗證器 | 已實作 `tools/verify_compliance_and_matrix_docs.py` 提供純 stdlib 結構驗證器，解析並驗證四大文件之五大分類、勾選項、URL 合法性、法定結論、對照矩陣完整性與改寫前後對照實例；建立 `tests/test_verify_compliance_and_matrix_docs.py` 共 9 項 pytest 測試（涵蓋真實文件檢驗與各類反例攔截），執行驗證器 exit 0 且 pytest 9 項測試全數綠燈通過。 | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) |
+| `T-20261025-03` | 2026-10-25 | 依 `docs/external-judge-audit.md` 補強：實作資安事件盤點與 WebToApp 接案規格之「外部裁判」結構驗證器 | 建立 `tools/verify_incident_and_workflow_specs.py`（純 Python stdlib）與 `tests/test_verify_incident_and_workflow_specs.py`。實作結構化驗證函式校驗資安事件盤點報告（首行結論、雙稽核表格、零明文金鑰）、應變清單範本（五大段落各自 >= 3 項勾選項）與 WebToApp 規格文件（可行性結論、權限與簽名分析、六大步驟、四大風險免責條款）。撰寫 8 項單元測試涵蓋真實文件與反例攔截，執行 `python tools/verify_incident_and_workflow_specs.py` exit code 0，且 `python -m pytest tests/test_verify_incident_and_workflow_specs.py -q` 8 筆全數通過。 | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) |
 
 </details>
 
@@ -203,12 +206,12 @@
 | 2026-10-21 | 🟢 | [多 Agent 派工與驗收閉環流水線 Phase 4：前三階段檢討補強、Hermes／Codex 工人、跨機器結果回傳與指揮者驗收合併](./notes/2026-10-21-agent-relay-pipeline-phase4.md) | `agent-workflow`, `multi-agent`, `agent-relay` | 8 / 8 |
 | 2026-10-21 | 🟢 | [Code-as-Video 影視工作室架構解構：以 Harness 取代 Prompt、seek(t) 時間函式、反 AI 視覺套路與分鏡縮圖自檢門禁實踐](./notes/2026-10-21-code-as-video-harness-studio-workflow.md) | `code-as-video`, `video-harness`, `remotion` | 2 / 2 |
 | 2026-10-21 | ⚪ | [Strata 架構解構：12GB 消費級顯卡流暢運行 125B MoE 大模型、VRAM-RAM-SSD 三層卸載黑科技與 Coding Agent 離線本地化部署實踐](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md) | `strata`, `local-llm`, `qwen-125b` | 0 / 0（+2 不做） |
-| 2026-10-23 | 🟢 | [Anthropic 官方 security-guidance 外掛解構：Claude Code 三層左移資安防禦、正則即時攔截、Diff 語意審查與 Agentic Commit 閘門實踐](./notes/2026-10-23-claude-plugin-security-guidance.md) | `claude-code`, `security-guidance`, `shift-left-security` | 2 / 2 |
+| 2026-10-23 | 🟢 | [Anthropic 官方 security-guidance 外掛解構：Claude Code 三層左移資安防禦、正則即時攔截、Diff 語意審查與 Agentic Commit 閘門實踐](./notes/2026-10-23-claude-plugin-security-guidance.md) | `claude-code`, `security-guidance`, `shift-left-security` | 3 / 3 |
 | 2026-10-23 | 🟢 | [WebToApp 解構：手機端把網站打包成 Android App、內建 Node/PHP/Python 執行環境、AI Agent 生成與 AAB 簽名上架，及接案變現評估](./notes/2026-10-23-web-to-app-android-packaging.md) | `webtoapp`, `android`, `apk` | 2 / 2 |
-| 2026-10-23 | 🟢 | [Zeabur 2026 年十月資安事件解構：內部明文憑證外洩、共享叢集與 GCP 專用伺服器淪陷、平台資料庫環境變數被讀取，及對自身雲端憑證衛生的應變清單](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | `zeabur`, `security-incident`, `credential-rotation` | 2 / 2 |
+| 2026-10-23 | 🟢 | [Zeabur 2026 年十月資安事件解構：內部明文憑證外洩、共享叢集與 GCP 專用伺服器淪陷、平台資料庫環境變數被讀取，及對自身雲端憑證衛生的應變清單](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | `zeabur`, `security-incident`, `credential-rotation` | 3 / 3 |
 | 2026-10-24 | 🟢 | [AI 網紅 IG 限動口播流程：自拍→ChatGPT 生成同場景人物→HeyGen 開口→ElevenLabs 變聲的影片解構（逐字稿已取得）](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | `ai-influencer`, `heygen`, `elevenlabs` | 2 / 2 |
 | 2026-10-24 | 🟢 | [feedback-desk 解構：客戶開單 × 多 AI 認領與交接的輕量工單系統（Cloudflare Workers 免費版／Laravel 主機版）、MCP 接入 Claude Code 與 Codex，及與本地交接機制的對照](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | `feedback-desk`, `ticketing`, `ai-handoff` | 2 / 2 |
-| 2026-10-24 | 🟢 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 2 / 2 |
+| 2026-10-24 | 🟢 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 3 / 3 |
 <!-- END GENERATED: index -->
 
 ---
@@ -349,6 +352,9 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/cli_to_skill.py`](./tools/cli_to_skill.py) | 將任意 CLI 工具之 `--help` 結構自動封裝為標準 Agent `SKILL.md` | [`tests/test_cli_to_skill.py`](./tests/test_cli_to_skill.py) |
 | [`tools/beat_grid.py`](./tools/beat_grid.py) | 音畫同步節拍網格（BPM & Beat Grid）計算與 Snap-to-Grid 幀對齊引擎 | [`tests/test_beat_grid.py`](./tests/test_beat_grid.py) |
 | [`tools/video_asset_capture.py`](./tools/video_asset_capture.py) | 網頁品牌色彩、DOM 素材與截圖擷取器（供 Code-as-Video 使用） | [`tests/test_video_asset_capture.py`](./tests/test_video_asset_capture.py) |
+| [`tools/verify_claude_security_config.py`](./tools/verify_claude_security_config.py) | Claude Code `idleCompaction` 門檻、`security-guidance` 8 KB 預算與對抗式代碼掃描外部裁判驗證器 | [`tests/test_verify_claude_security_config.py`](./tests/test_verify_claude_security_config.py) |
+| [`tools/verify_compliance_and_matrix_docs.py`](./tools/verify_compliance_and_matrix_docs.py) | AI 人物合規清單、宣稱查證、對照矩陣與野心檢查表之結構化外部裁判驗證器 | [`tests/test_verify_compliance_and_matrix_docs.py`](./tests/test_verify_compliance_and_matrix_docs.py) |
+| [`tools/verify_incident_and_workflow_specs.py`](./tools/verify_incident_and_workflow_specs.py) | Zeabur 資安事件盤點、PaaS 入侵應變清單與 WebToApp 接案規格之外部裁判驗證器 | [`tests/test_verify_incident_and_workflow_specs.py`](./tests/test_verify_incident_and_workflow_specs.py) |
 
 ### 2. 技術規範與實測報告（`docs/`）
 - **Agent 工具鏈與安全**：[影片逐字稿 GPU 轉寫 SOP](./docs/video-transcript-howto.md) ｜ [外部裁判 DoD 缺口稽核](./docs/external-judge-audit.md) ｜ [Claude Code idleCompaction 設定與驗證](./docs/claude-idle-compaction-setup.md) ｜ [security-guidance Windows 11 實測與三層防禦](./docs/claude-security-guidance-windows-setup.md) ｜ [Zeabur 資安事件衝擊盤點報告](./docs/zeabur-incident-credential-audit.md) ｜ [feedback-desk Windows 11 實測](./docs/feedback-desk-windows-eval.md) ｜ [feedback-desk 對照 agent-relay](./docs/feedback-desk-vs-agent-relay.md) ｜ [Claude 官方外掛評測](./docs/claude-plugins-official-review.md) ｜ [pstack Agent Playbooks 規格](./docs/pstack-agent-playbooks.md) ｜ [CLI-Anything 轉 Skill 協議](./docs/cli-anything-to-skill-protocol.md) ｜ [REA 逆向工程沙盒實測](./docs/rea-sandbox-evaluation-evidence.md) ｜ [三階段逆向分析流水線規格](./docs/reverse-engineering-pipeline-spec.md) ｜ [Android 官方 33 Skills 防幻覺手冊](./docs/android-official-skills-anti-hallucination.md) ｜ [Android CLI Windows 驗證](./docs/android-cli-plugin-windows-validation.md)

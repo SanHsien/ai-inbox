@@ -145,6 +145,15 @@ tags:
   - **驗收標準（DoD）**：產出 `templates/claude-security-guidance.md` 與整合手冊，在一個範例專案中放入該規範並刻意編寫越界檔案路徑與空殼函式，驗證 Claude Code 能在 Stop 或 Commit 審查中主動指出並阻止。
   - **實作紀錄 / 證據**：已建立 `templates/claude-security-guidance.md` 範本，成功將「憑證機密零暴露」、「專案目錄外禁止讀寫刪改」、「禁止假資料與空殼函式」及「高危執行階段指令注入」轉化為精確的審查條款與對比案例；並於 `docs/claude-security-guidance-windows-setup.md` 完整記錄三層防禦成本控制策略（`SECURITY_REVIEW_MODEL=claude-sonnet-5-5`、`ENABLE_STOP_REVIEW=0` 敏捷調度）與三種違規情境的整合驗證結果。詳細規範參見 `templates/claude-security-guidance.md` 與 `docs/claude-security-guidance-windows-setup.md`。
 
+- [x] **`T-20261025-01`**｜**[優先級：高]** 依 `docs/external-judge-audit.md` 補強：實作 Claude 資安審查與閒置壓縮設定之「外部裁判（External Judge）」機械驗證器與對抗測試
+  - **目標範圍**：`tools/verify_claude_security_config.py` 與 `tests/test_verify_claude_security_config.py`
+  - **完成日期**：2026-10-25
+  - **具體做法**：
+    1. 實作 `tools/verify_claude_security_config.py`（純 Python stdlib），機械化校驗：(a) `docs/claude-idle-compaction-setup.md` 與設定範例中 `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS` 門檻範圍（`>= 100000`）與 JSON 結構合法性；(b) `templates/claude-security-guidance.md` 內自訂規則區塊之 byte 大小（`<= 8192 bytes` 8 KB 預算上限）與四大硬閘門條款完整性；(c) 內建對抗式靜態掃描函式（檢測硬編碼憑證、越界路徑 `../` / `~/.ssh`、`return True` 空殼函式與 `eval()` / `os.system()` 危險呼叫，並支援 `# safe:` 行內豁免）。
+    2. 撰寫 `tests/test_verify_claude_security_config.py`，涵蓋真實產出檔驗證、8 KB 超限拒絕、四大違規樣本攔截與 `# safe:` 豁免放行之正反例測試。
+  - **驗收標準（DoD）**：執行 `python tools/verify_claude_security_config.py` 回傳 exit 0，且 `python -m pytest tests/test_verify_claude_security_config.py -q` 全數通過（至少 6 項測試）。
+  - **實作紀錄 / 證據**：已建立 `tools/verify_claude_security_config.py`（純 Python stdlib）與 `tests/test_verify_claude_security_config.py`；成功實作閒置壓縮 Token 門檻檢驗（`>= 100000` 與 JSON 語法斷言）、資安範本 8 KB 預算與四大條款完整性校驗，以及對抗式靜態掃描函式 `scan_code_snippet`（涵蓋硬編碼敏感憑證、越界路徑、空殼函式與高危呼叫攔截，並完整支援行內或上一行 `# safe:` / `# nosec` 豁免）。經實機檢測 `python tools/verify_claude_security_config.py` 回傳 exit 0，且 12 項單元測試 `python -m pytest tests/test_verify_claude_security_config.py -v` 100% 全數綠燈通過。引證檔案：`tools/verify_claude_security_config.py`、`tests/test_verify_claude_security_config.py`。
+
 ---
 
 ## 5. 關聯筆記與相關任務（Related Notes & Tasks）

@@ -115,6 +115,15 @@ tags:
   - **完成日期**：2026-10-24
   - **實作紀錄 / 證據**：產出 templates/platform-breach-response.md（含立即處置、二次憑證、稽核與帳單、遷移評估、預防五大段落共 20 項檢核清單），通過 Select-String DoD 與 verify_inbox.py 驗證。
 
+- [x] **`T-20261025-03`**｜**[優先級：高]** 依 `docs/external-judge-audit.md` 補強：實作資安事件盤點與 WebToApp 接案規格之「外部裁判」結構驗證器
+  - **目標範圍**：`tools/verify_incident_and_workflow_specs.py` 與 `tests/test_verify_incident_and_workflow_specs.py`
+  - **具體做法**：
+    1. 實作 `tools/verify_incident_and_workflow_specs.py`（純 Python stdlib），機械化驗證：(a) `docs/zeabur-incident-credential-audit.md` 第一行符合 `^結論：(有使用|無使用) Zeabur`、含倉庫掃描與 GitHub 授權稽核表格、且全文通過憑證與私有 repo 名稱零暴露檢查；(b) `templates/platform-breach-response.md` 五大應變段落（立即處置、二次憑證、稽核與帳單、遷移評估、預防）各有 `>= 3` 項 `- [ ]` 檢核項；(c) `docs/web-to-app-evaluation.md` 與 `docs/web-to-app-freelance-workflow.md` 包含明確可行性結論、六大標準接案步驟與四大風險免責條款。
+    2. 撰寫 `tests/test_verify_incident_and_workflow_specs.py`，涵蓋真實產出檔驗證與首行結論缺失、階段勾選項不足、接案步驟缺漏之反例攔截測試。
+  - **驗收標準（DoD）**：執行 `python tools/verify_incident_and_workflow_specs.py` 回傳 exit 0，且 `python -m pytest tests/test_verify_incident_and_workflow_specs.py -q` 全數通過（至少 6 項測試）。
+  - **完成日期**：2026-10-25
+  - **實作紀錄 / 證據**：建立 `tools/verify_incident_and_workflow_specs.py`（純 Python stdlib）與 `tests/test_verify_incident_and_workflow_specs.py`。實作結構化驗證函式校驗資安事件盤點報告（首行結論、雙稽核表格、零明文金鑰）、應變清單範本（五大段落各自 >= 3 項勾選項）與 WebToApp 規格文件（可行性結論、權限與簽名分析、六大步驟、四大風險免責條款）。撰寫 8 項單元測試涵蓋真實文件與反例攔截，執行 `python tools/verify_incident_and_workflow_specs.py` exit code 0，且 `python -m pytest tests/test_verify_incident_and_workflow_specs.py -q` 8 筆全數通過。
+
 ---
 
 ## 5. 關聯筆記與相關任務（Related Notes & Tasks）

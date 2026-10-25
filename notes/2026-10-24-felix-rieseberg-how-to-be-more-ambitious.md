@@ -101,6 +101,15 @@ tags:
   - **完成日期**：2026-10-25
   - **實作紀錄 / 證據**：已建立 docs/external-judge-audit.md 盤點 10 項未做任務之 DoD 外部裁判狀態與補強建議，通過 Select-String 計數 10 列與 verify_inbox.py 驗證。
 
+- [x] **`T-20261025-02`**｜**[優先級：高]** 依 `docs/external-judge-audit.md` 補強：實作合規清單、宣稱查證與對照矩陣之「外部裁判」結構驗證器
+  - **目標範圍**：`tools/verify_compliance_and_matrix_docs.py` 與 `tests/test_verify_compliance_and_matrix_docs.py`
+  - **具體做法**：
+    1. 實作 `tools/verify_compliance_and_matrix_docs.py`（純 Python stdlib），取代單純的 `Select-String` 行數統計，機械化解析並驗證：(a) `docs/ai-persona-compliance-checklist.md` 五大類別各有 `>= 3` 個 `- [ ]` 勾選項，且所有 `https://` 官方連結語法有效、無重複；(b) `docs/ai-influencer-claims-check.md` 三項宣稱區塊皆明確標註法定結論（`官方證實` / `官方未提及` / `與官方矛盾`）並附官方來源連結；(c) `docs/feedback-desk-vs-agent-relay.md` 對照表至少 8 個維度列、每列欄位數一致且無空白格；(d) `templates/ambition-prompt-checklist.md` 四大面向勾選項與「改寫前／改寫後」實例完整。
+    2. 撰寫 `tests/test_verify_compliance_and_matrix_docs.py`，涵蓋真實文件通過測試，以及缺漏分類、無效結論、空白表格單元格之反例攔截測試。
+  - **驗收標準（DoD）**：執行 `python tools/verify_compliance_and_matrix_docs.py` 回傳 exit 0，且 `python -m pytest tests/test_verify_compliance_and_matrix_docs.py -q` 全數通過（至少 6 項測試）。
+  - **完成日期**：2026-10-25
+  - **實作紀錄 / 證據**：已實作 `tools/verify_compliance_and_matrix_docs.py` 提供純 stdlib 結構驗證器，解析並驗證四大文件之五大分類、勾選項、URL 合法性、法定結論、對照矩陣完整性與改寫前後對照實例；建立 `tests/test_verify_compliance_and_matrix_docs.py` 共 9 項 pytest 測試（涵蓋真實文件檢驗與各類反例攔截），執行驗證器 exit 0 且 pytest 9 項測試全數綠燈通過。
+
 ---
 
 ## 5. 關聯筆記與相關任務（Related Notes & Tasks）
