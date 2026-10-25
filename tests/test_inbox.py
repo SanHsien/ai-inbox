@@ -398,6 +398,65 @@ class DodArtifactTest(unittest.TestCase):
             self.assertEqual(note.path.read_text(encoding="utf-8"), before)
 
 
+class NestedListFieldTest(unittest.TestCase):
+    """欄位值寫成巢狀清單（`- **DoD**：` 下一層一行一項）是支援的寫法：每一項都要讀進來。"""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def _note(self, body: str) -> bi.Note:
+        path = self.tmp / "2026-10-20-nested.md"
+        path.write_text(NOTE.format(slug="2026-10-20-nested", status="pending", box=" ", extra="")
+                        .split("- [ ] **`T-20261020-01`**")[0]
+                        + "- [ ] **`T-20261020-01`**｜**[優先級：高]** 巢狀清單\n" + body, encoding="utf-8")
+        return bi.parse_note(path)
+
+    def test_every_item_of_a_nested_list_is_read(self):
+        n = self._note(
+            "  - **目標範圍**：`x`\n"
+            "  - **驗收標準（DoD）**：\n"
+            "    - 產出 `docs/no-such-a-xyz.md`\n"
+            "    - 產出 `docs/no-such-b-xyz.md`\n"
+        )
+        dod = n.tasks[0].fields["驗收標準（DoD）"]
+        self.assertIn("no-such-a-xyz", dod)
+        self.assertIn("no-such-b-xyz", dod)
+        # 後面的項目也是 DoD：缺檔不能因為不在第一項就被漏掉，否則可以帶著缺的產出結案
+        self.assertEqual(bi.missing_dod_artifacts(n.tasks[0]),
+                         ["docs/no-such-a-xyz.md", "docs/no-such-b-xyz.md"])
+
+    def test_list_marker_is_stripped_but_leading_digits_of_the_text_are_kept(self):
+        n = self._note(
+            "  - **目標範圍**：\n"
+            "    - 3 個檔案\n"
+            "    2. 2026-10-26 前完成\n"
+        )
+        self.assertEqual(n.tasks[0].fields["目標範圍"], "3 個檔案 2026-10-26 前完成")
+
+    def test_stray_indented_line_does_not_leak_into_the_next_tasks_fields(self):
+        # 上一個任務最後讀到的欄位名不能帶到下一個任務：任務行底下直接出現的縮排文字不屬於任何欄位
+        n = self._note(
+            "  - **目標範圍**：`x`\n"
+            "  - **驗收標準（DoD）**：跑測試\n"
+            "- [ ] **`T-20261020-09`**｜**[優先級：低]** 第二個\n"
+            "    補充說明，不是任何欄位\n"
+            "  - **目標範圍**：`y`\n"
+        )
+        self.assertEqual(n.tasks[1].fields, {"目標範圍": "`y`"})
+
+    def test_indented_text_under_a_filled_field_is_not_merged(self):
+        n = self._note(
+            "  - **目標範圍**：`x`\n"
+            "    - 補充說明\n"
+            "  - **驗收標準（DoD）**：跑測試\n"
+        )
+        self.assertEqual(n.tasks[0].fields["目標範圍"], "`x`")
+
+
 class MultilineCliInputTest(unittest.TestCase):
     """--evidence／--reason 常是多行驗證輸出：必須整段留下，不能只留第一行、其餘掉到任務區塊外面。"""
 

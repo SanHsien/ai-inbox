@@ -33,6 +33,8 @@ TASK_LINE = re.compile(
 # 任務底下的縮排欄位：  - **目標範圍**：...
 TASK_FIELD = re.compile(r"^\s{2,}- \*\*(?P<key>[^*]+)\*\*[：:]\s*(?P<value>.*?)\s*$")
 FENCE_LINE = re.compile(r"^\s*(?P<fence>`{3,}|~{3,})")
+# 巢狀清單的項目符號：`- `、`* `、`+ `、`1. `、`1) `
+LIST_MARKER = re.compile(r"^(?:[-*+]|\d+[.)])\s+")
 GENERATED_BLOCK = re.compile(
     r"(<!-- BEGIN GENERATED: (?P<name>[\w-]+) -->\n)(?P<body>.*?)(<!-- END GENERATED: (?P=name) -->)",
     re.DOTALL,
@@ -190,6 +192,7 @@ def parse_note(path: Path) -> Note:
     note = Note(path=path, meta=meta, tags=tags)
     task: Task | None = None
     key = ""
+    open_key = ""  # 值留空、改寫成巢狀清單的欄位；只有它底下更深縮排的行才算它的內容
     fence: str | None = None
     for lineno, line in enumerate(text.split("\n"), 1):
         opened_here = fence is None
@@ -209,6 +212,7 @@ def parse_note(path: Path) -> Note:
                 line=lineno,
             )
             note.tasks.append(task)
+            key = open_key = ""  # 上一個任務的欄位狀態不能帶到這一個任務
             continue
         if task is None:
             continue
@@ -216,11 +220,14 @@ def parse_note(path: Path) -> Note:
         if f:
             key = f["key"].strip()
             task.fields[key] = f["value"]
+            open_key = key if not f["value"] else ""
         elif line.strip() and not line.startswith(" "):
             task = None
-        elif line.startswith("    ") and line.strip() and not task.fields.get(key):
-            # 欄位值寫在下一行（更深縮排）時，取第一行內容
-            task.fields[key] = line.strip().lstrip("-0123456789. ")
+        elif open_key and line.startswith("    ") and line.strip():
+            # 欄位值寫在下一行起（更深縮排的清單）：每一項都併進欄位值，
+            # 只拿第一項會讓 DoD 後面的產出檔檢查被漏掉。只剝項目符號，不剝文字開頭的數字。
+            item = LIST_MARKER.sub("", line.strip(), count=1)
+            task.fields[open_key] = f"{task.fields[open_key]} {item}".strip()
     return note
 
 
