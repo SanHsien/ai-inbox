@@ -6,7 +6,7 @@ source_platform: "Community Discussion & Developer Practice"
 author: "Community Practitioner / Antigravity"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
-status: done
+status: in-progress
 cluster: 1
 cluster_role: "跨 CLI 編排"
 short_title: "Opus 規劃顧問 + 多 Agent 降維外包"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：社群開發者實戰經驗分享 / [SanHsien/ai-inbox](https://github.com/SanHsien/ai-inbox)
 - **發表作者**：社群實踐者（OpenCode / AGY / Claude 混合編排）
 - **分析日期**：`2026-10-17`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：[`notes/2026-10-17-model-routing-opusplan-advisor.md`](./2026-10-17-model-routing-opusplan-advisor.md)
 
 ---
@@ -123,15 +123,14 @@ tags:
   - **完成日期**：2026-10-20
   - **實作紀錄 / 證據**：規範併入 `SanHsien/agent-advisor` Claude 版 orchestration 技能（`cf8ce3b`：`references/cross-cli.md`，跨 CLI 工人算 `delegate` 的那一個 auxiliary，必須設逾時、隔離 worktree、主 session 自行驗證）；派工契約（目標 CLI、模型、工作區、逾時）寫入 [SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) SPEC 第 7 節。實測報告 agent-relay `docs/evidence/2026-10-20-phase2.md`：(1) 主 Agent 依 agy-staff `implementer` 技能入口派 agy（gemini-3.8-flash-low，`--timeout 10m`）在獨立 worktree 加 `mul()`，43 秒、commit `58a0f74`，主 session 自跑 unittest 通過；(2) 經 agent-relay 信件 `--run agy --mode plan` 派 agy 唯讀審查，44 秒自動回信列出缺少的邊界測試。防呆：逾時強制結束整棵行程、只執行真正的 `.exe`（拒絕 `.cmd` 外殼）、例外一律回信、中斷補救。限制：opencode CLI 本機未安裝，未測。
 
-- [x] **`T-20261017-32`**｜**[優先級：中]** 評估並配置 Space Bunny（1M Context 免費模型）與雙軌回流升級除錯機制（Fallback Escalation Loop）
+- [ ] **`T-20261017-32`**｜**[優先級：中]** 評估並配置 Space Bunny（1M Context 免費模型）與雙軌回流升級除錯機制（Fallback Escalation Loop）
   - **目標範圍**：`SanHsien/agent-advisor`（**現有可用 Repo**：復用 `advisor-pro-reviewer` 獨立審查軌道與升級除錯協定）
   - **具體實作步驟**：
     1. 測試 `space-bunny-free` 於 OpenRouter / OpenCode 的連線延遲、代碼生成精確度與 1M 窗口承載力。
     2. 設計雙軌回流 Prompt 協定：定義當 Worker Agent 報錯時，如何格式化提煉「失敗上下文 + 終端報錯」回送給 Opus 高級顧問或 Reviewer Lane。
     3. 驗證完整閉環：模擬一個具備語法錯誤的難題，驗證「Space Bunny 失敗 ──▶ 回送 Opus 診斷 ──▶ 指導修正 ──▶ 測試通過」的端到端修復流。
   - **驗收標準（DoD）**：產出 Space Bunny 實測基準報告與回流除錯 Prompt 範本文檔。
-  - **完成日期**：2026-10-20
-  - **實作紀錄 / 證據**：報告 [SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) `docs/reports/2026-10-20-space-bunny-benchmark.md`、範本 `docs/templates/escalation-prompt.md`；回流升級實作於 `dispatch.py`（SPEC 第 12 節，`752fbfb`→`fa3024d`），agent-advisor Claude 版 `references/cross-cli.md` 加回流升級段（`52f3d9a`）。查證：Space Bunny Alpha 即 MiniMax M3.1 Flash，免費匿名期已結束、`stealth/space-bunny-alpha` 已無端點；現行免費版 `minimax/minimax-m3.1-flash:free`（1M ctx、$0）需 OpenRouter 金鑰，本機沒有，**MiniMax 本身的延遲／正確率／1M 承載力未實測**，報告附金鑰取得後的補測步驟。閉環實測（派工 `20261020T151929609Z-7e6d40`）：claude-haiku-5-5 只做表面修補（25.6 秒、$0.019）→ 閘門 verification-failed → 自動升級 claude-opus-5-5 引用失敗證據修正（34.5 秒、$0.685）→ 閘門 exit 0 → commit `66e8473`。219 項單元測試通過，兩輪獨立審查判定 ship。
+  - **實作紀錄 / 證據**：報告 [SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) `docs/reports/2026-10-20-space-bunny-benchmark.md`、範本 `docs/templates/escalation-prompt.md`；回流升級實作於 `dispatch.py`（SPEC 第 12 節，`752fbfb`→`fa3024d`），agent-advisor Claude 版 `references/cross-cli.md` 加回流升級段（`52f3d9a`）。查證：Space Bunny Alpha 即 MiniMax M3.1 Flash，免費匿名期已結束、`stealth/space-bunny-alpha` 已無端點；現行免費版 `minimax/minimax-m3.1-flash:free`（1M ctx、$0）需 OpenRouter 金鑰，本機沒有，**MiniMax 本身的延遲／正確率／1M 承載力未實測**，報告附金鑰取得後的補測步驟。閉環實測（派工 `20261020T151929609Z-7e6d40`）：claude-haiku-5-5 只做表面修補（25.6 秒、$0.019）→ 閘門 verification-failed → 自動升級 claude-opus-5-5 引用失敗證據修正（34.5 秒、$0.685）→ 閘門 exit 0 → commit `66e8473`。219 項單元測試通過，兩輪獨立審查判定 ship。**退回（2026-10-25）**：DoD 要的是「Space Bunny 實測基準報告」，但模型本身的延遲、正確率與 1M 承載力都未實測，沒有量測數字就不算基準報告，故退回待辦（回流除錯範本部分已完成）。剩下要做：取得 OpenRouter 金鑰後，依報告附的補測步驟實測 `minimax/minimax-m3.1-flash:free`，把數字補進報告；若確認免費版也已下架，改用 `close` 關閉並寫明理由。
 
 ---
 

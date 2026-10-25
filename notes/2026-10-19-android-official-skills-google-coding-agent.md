@@ -7,7 +7,7 @@ author: "Google Android Team (@android)"
 github_repo: "https://github.com/android/skills"
 analyzed_at: 2026-10-19
 analyzed_by: "Antigravity"
-status: done # pending | in-progress | done | archived
+status: in-progress # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "領域專家"
 short_title: "Google Android 官方 Agent Skills"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[android/skills (GitHub)](https://github.com/android/skills) ｜ [Android Developer 官方文檔](https://developer.android.com)
 - **發布平台 / 原作者**：`GitHub / 社群貼文` / `Google Android Team (@android)`
 - **分析日期**：`2026-10-19`
-- **當前狀態**：`🟢 已做 (Done)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 
 ---
 
@@ -140,8 +140,7 @@ android skills add --all
   - **驗收標準（DoD）**：產出 `docs/android-official-skills-anti-hallucination.md`，盤點官方收錄之 30 個 Skills 規格、觸發情境與輸入輸出契約，重點標注 Compose 遷移與 Play Billing 政策防護清單。
   - **完成日期**：2026-10-23
   - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。直連檢驗官方 `android/skills` 倉庫，如實釐清收錄清單實為 33 個 Skills（非原宣稱 30 個），產出完整盤點與防幻覺手冊 `docs/android-official-skills-anti-hallucination.md`，深度涵蓋 16 大領域、官方相對來源路徑、XML 轉 Compose 紀律與 Play Billing 政策防線。
-- [x] **`T-20261019-06`**｜**[優先級：中]** 評估本地 `android-cli-plugin` 與 `android skills add --all` 之 Windows 11 安裝與整合驗證，建立自動化 Android 專案建置與 AI 輔助開發測試流水線
+- [ ] **`T-20261019-06`**｜**[優先級：中]** 評估本地 `android-cli-plugin` 與 `android skills add --all` 之 Windows 11 安裝與整合驗證，建立自動化 Android 專案建置與 AI 輔助開發測試流水線
   - **目標範圍**：`android-cli`、本地 Android 開發環境
-  - **完成日期**：2026-10-23
   - **驗收標準（DoD）**：產出 `docs/android-cli-plugin-windows-validation.md`，記錄在 Windows 11 本地終端執行 `android skills list` 與建立測試專案之完整命令輸出日誌，驗證本地 CLI 外掛可用。
-  - **實作紀錄 / 證據**：完成 Google 官方安裝腳本 `install.cmd` 之完整安全審查。發現該腳本具備修改 Windows 全域 Registry PATH 之違規行為，且後續初始化觸發之 Android SDK / OpenJDK 依賴下載量高達數 GB（超過 1 GB 硬閘門上限），依安全規則第 3 條停下下載並交付完整評估報告於 `docs/android-cli-plugin-windows-validation.md`，規劃免全域註冊表污染之綠色沙盒化流水線架構。**覆核註記（2026-10-25）**：DoD 要求的 `android skills list` 與建立測試專案之實際命令輸出並未取得——因安全閘門刻意未執行安裝，本項實為「安全評估完成、實裝未做」；若要補齊，需在沙盒環境（不改全域 PATH）實際安裝後附上輸出。
+  - **實作紀錄 / 證據**：完成 Google 官方安裝腳本 `install.cmd` 之完整安全審查。發現該腳本具備修改 Windows 全域 Registry PATH 之違規行為，且後續初始化觸發之 Android SDK / OpenJDK 依賴下載量高達數 GB（超過 1 GB 硬閘門上限），依安全規則第 3 條停下下載並交付完整評估報告於 `docs/android-cli-plugin-windows-validation.md`，規劃免全域註冊表污染之綠色沙盒化流水線架構。**退回（2026-10-25）**：以上只完成安全評估；DoD 要求的 `android skills list` 與建立測試專案之實際命令輸出未取得，故退回待辦。剩下要做：在不改全域 PATH 的沙盒環境（例如手動解壓、僅在當前行程設 PATH）安裝 CLI，實跑兩個指令並把完整輸出寫入 `docs/android-cli-plugin-windows-validation.md`。

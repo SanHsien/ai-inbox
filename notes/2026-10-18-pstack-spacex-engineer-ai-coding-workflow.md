@@ -6,7 +6,7 @@ source_platform: "Threads / YouTube / GitHub"
 author: "Lauren Tan (@poteto) / 轉載分享：MengShyue Tsai (@mengshyue.tsai)"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
-status: done # pending | in-progress | done | archived
+status: in-progress # pending | in-progress | done | archived
 cluster: 1
 cluster_role: "驗證紀律"
 short_title: "pstack 方法論與 TDD 驗證"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[Threads 原貼文 (MengShyue Tsai)](https://www.threads.com/@mengshyue.tsai/post/DenWauFklqQ)（短網址：[threads.com/share/BAXyuLT-xc](https://www.threads.com/share/BAXyuLT-xc/)）｜ [YouTube 影片解說](https://www.youtube.com/watch?v=b7-2w2T2Lqs) ｜ [Cursor 官方插件倉庫 (cursor/plugins)](https://github.com/cursor/plugins/tree/main/pstack) ｜ [社群開源版 open-pstack](https://github.com/ericlitman/open-pstack)
 - **發布平台 / 原作者**：`Threads / YouTube` / 原創者：`Lauren Tan (@poteto)`、社群分享：`MengShyue Tsai (@mengshyue.tsai)`
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`🟢 已完成 (Done)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 
 ---
 
@@ -161,11 +161,10 @@ tags:
   - **驗收標準（DoD）**：產出 `docs/pstack-agent-playbooks.md`，定義 `/poteto-mode` 與 5 大 Playbooks 在 Claude Code / Codex / Antigravity 的參數與提示詞規格，附至少 3 個實例對照並通過 Markdown 結構檢驗。
   - **完成日期**：2026-10-22
   - **實作紀錄 / 證據**：產出 docs/pstack-agent-playbooks.md，完整拆解 SpaceX Lauren Tan (@poteto) 之 pstack 核心哲學；具備查證來源連結（YouTube、Threads、cursor/plugins/pstack、open-pstack）與未查證標註；定義 /poteto-mode 路由器與 5 大 Playbooks（Bug-fix、Feature、Refactoring、Investigation、Performance）在 Claude Code、Codex CLI、Antigravity 的參數與 Prompt 規格；提供 Bug-fix、Feature、Refactoring 3 大真實實例對照表並通過 Markdown 結構檢驗與契約測試。
-- [x] **`T-20261018-18`**｜**[優先級：高]** 將 `pstack` 的嚴格工程防線（強制 TDD 重現失敗案例才動手、禁止空殼函式與猜測性修復、執行期驗證閉環）融合進本地全域協作規範與 `quality-loop` / `verification-protocol` 技能庫中
+- [ ] **`T-20261018-18`**｜**[優先級：高]** 將 `pstack` 的嚴格工程防線（強制 TDD 重現失敗案例才動手、禁止空殼函式與猜測性修復、執行期驗證閉環）融合進本地全域協作規範與 `quality-loop` / `verification-protocol` 技能庫中
   - **目標範圍**：`SanHsien/ai-quality-gates` ＋ `SanHsien/harness-guard` ＋ `SanHsien/agent-governance-toolkit`
   - **驗收標準（DoD）**：復用 `ai-quality-gates`（Gherkin 規格/覆蓋率）、`harness-guard`（阻止 hook）與 `agent-governance-toolkit`（運行期政策強制與沙箱審計），無真實終端日誌一律不放行
-  - **完成日期**：2026-10-20
-  - **實作紀錄 / 證據**：[SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) `agent_relay/gates.py`（`7860df5`→`752fbfb`，SPEC 第 11 節）：派工完成後由收件端跑驗收閘門——刪測試或改測試設定即 guarded、新增空殼函式即 stub-rejected、TDD 要求 base 綠＋加入新測試後紅、worktree 綠；每次執行完整終端輸出存 `verify-*.log`＋sha256，回信附 exit code 與 log 結尾，store audit 記 verify 事件；沒過或工人未正常結束一律不 commit，要求驗收但沒設閘門為 unverified。驗證指令可沿用 ai-quality-gates 的 `loop-policy.toml` quick_gate；互動 session 沿用 harness-guard 的 claim-guard／test-gate-guard。實測（`docs/evidence/2026-10-20-t18-gates.md`）：`--tdd` 工單紅燈為 `ImportError: cannot import name 'mod'`（exit 1）、綠燈 exit 0、commit `f0d487c`，log sha256 與檔案核對一致；不寫測試的工單 tdd-not-proven 不 commit。202 項單元測試通過，兩輪獨立審查判定 ship。限制：agent-governance-toolkit 未直接整合（以 relay audit 事件提供運行期審計，SPEC 註明可作外層）；全域 `quality-loop`／`verification-protocol` 技能未改動。
+  - **實作紀錄 / 證據**：[SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) `agent_relay/gates.py`（`7860df5`→`752fbfb`，SPEC 第 11 節）：派工完成後由收件端跑驗收閘門——刪測試或改測試設定即 guarded、新增空殼函式即 stub-rejected、TDD 要求 base 綠＋加入新測試後紅、worktree 綠；每次執行完整終端輸出存 `verify-*.log`＋sha256，回信附 exit code 與 log 結尾，store audit 記 verify 事件；沒過或工人未正常結束一律不 commit，要求驗收但沒設閘門為 unverified。驗證指令可沿用 ai-quality-gates 的 `loop-policy.toml` quick_gate；互動 session 沿用 harness-guard 的 claim-guard／test-gate-guard。實測（`docs/evidence/2026-10-20-t18-gates.md`）：`--tdd` 工單紅燈為 `ImportError: cannot import name 'mod'`（exit 1）、綠燈 exit 0、commit `f0d487c`，log sha256 與檔案核對一致；不寫測試的工單 tdd-not-proven 不 commit。202 項單元測試通過，兩輪獨立審查判定 ship。限制：agent-governance-toolkit 未直接整合（以 relay audit 事件提供運行期審計，SPEC 註明可作外層）；全域 `quality-loop`／`verification-protocol` 技能未改動。**退回（2026-10-25）**：DoD 明列要復用 `agent-governance-toolkit`，證據自承未直接整合；任務標題要融合進全域 `quality-loop`，該技能也未改動，故退回待辦（`ai-quality-gates`、`harness-guard` 與 relay 驗收閘門部分已完成）。剩下要做：實際接上 `agent-governance-toolkit` 的運行期政策檢查（或在筆記寫明不採用並改 DoD 後重新驗收），並更新 `quality-loop` 技能引用驗收閘門。
 - [x] **`T-20261025-08`**｜**[優先級：高]** 實作 pstack 五大工程 Playbooks、Claude 官方外掛評測與全端商業建站規範之「外部裁判」結構驗證器
   - **目標範圍**：`tools/verify_pstack_and_fullstack_specs.py` 與 `tests/test_verify_pstack_and_fullstack_specs.py`
   - **具體做法**：
