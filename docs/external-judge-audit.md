@@ -50,7 +50,7 @@
 | `verify_generative_ui_assets.py` | `assets/` 內 4 個單檔 HTML（結構、HTTPS） | `python tools/verify_generative_ui_assets.py` |
 | `verify_academic_and_latex_guard.py` | LaTeX 保護提示詞、學術閱讀提示詞、實測報告（3 份） | `python tools/verify_academic_and_latex_guard.py` |
 | `verify_re_and_android_specs.py` | 逆向工程流水線、REA 沙盒、Android 33 Skills、Android CLI 評測（4 份） | `python tools/verify_re_and_android_specs.py` |
-| `verify_agent_reach_and_data_specs.py` | Agent-Reach 路由、Public APIs（3 份；健康存摺規格已移至 health-bank-toolkit） | `python tools/verify_agent_reach_and_data_specs.py` |
+| `verify_agent_reach_and_data_specs.py` | Agent-Reach 路由、Public APIs（3 份；健康存摺文件已移至 health-bank-toolkit，這 3 項檢查未帶過去） | `python tools/verify_agent_reach_and_data_specs.py` |
 | `verify_pstack_and_fullstack_specs.py` | pstack playbooks、外掛評測、全端建站技能、主體盤點提示詞（4 份） | `python tools/verify_pstack_and_fullstack_specs.py` |
 | `verify_no_slop.py` | HTML／CSS 的 SLOP-01~05 罐頭特徵（預設掃 `assets/anti-slop-demo/index.html`，可傳路徑或目錄；掃不到任何檔案回傳 exit 2） | `python tools/verify_no_slop.py [路徑...]` |
 | `verify_story_structure.py` | 靶心人故事 JSON：七節點／三箭頭字數契約、因果、三伏三冒（至少 3 組且張力皆「剛好」） | `python tools/verify_story_structure.py --input story.json` |

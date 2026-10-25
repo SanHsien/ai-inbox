@@ -7,11 +7,8 @@ tests/test_verify_agent_reach_and_data_specs.py
 3. Agent-Reach 路由表分類缺漏或參照斷鏈反例攔截。
 4. Public APIs 檢索技能缺少三大門檻（Auth: No, CORS: Yes, HTTPS）反例攔截。
 5. Free Public APIs 索引庫筆數/類別異常或未達門檻反例攔截。
-6. 健康存摺匯出格式缺少個資脫敏欄位或民國年轉 ISO 規範反例攔截。
-7. 健康存摺儀表板 Prompt 缺少離線隱私或醫療免責聲明反例攔截。
-8. 健康報告 PDF Prompt 缺少醫師角色免責界線或禁止個資輸出反例攔截。
-9. 多行字串防範 Linux CI ENAMETOOLONG 機制驗證。
-10. CLI main() 命令列執行成功與失敗退出碼驗證。
+6. 多行字串防範 Linux CI ENAMETOOLONG 機制驗證。
+7. CLI main() 命令列執行成功與失敗退出碼驗證。
 """
 
 from __future__ import annotations

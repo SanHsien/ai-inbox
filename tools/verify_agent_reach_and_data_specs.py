@@ -395,7 +395,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     return report_results(
         results,
-        success_msg='全數 Agent-Reach、Public APIs 與健康存摺規格文件均通過外部裁判結構驗證！',
+        success_msg='全數 Agent-Reach 與 Public APIs 規格文件均通過外部裁判結構驗證！',
         fail_label='規格缺陷',
         ok_label='結構與規格完全相符',
         fail_msg='外部裁判驗證未通過，請依上述錯誤修正文件。',
