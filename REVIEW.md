@@ -65,7 +65,7 @@
 
 ## 4. 文件、範本、互動成品
 
-- ✅ [高] `docs/zeabur-incident-credential-audit.md` 把私有 repo 列為「公開專案」，並用 3 個未登記別名 → 移除、改用已登記別名。**注意：該名稱仍在 git 歷史中**
+- ✅ [高] `docs/zeabur-incident-credential-audit.md` 把私有 repo 列為「公開專案」，並用 3 個未登記別名 → 移除、改用已登記別名。該名稱仍在 git 歷史中（`075f89e` 加入、`650f260` 移除）；維護者 2026-10-25 決定不改寫歷史：只外洩名稱、repo 本身仍私有、無 fork，強制推送的代價較大
 - ✅ [中] 同檔「零風險／從未上傳」屬自述 → 改「低（自述）」並加證據說明
 - ✅ [中] `docs/claude-security-guidance-windows-setup.md`「100% 準確、<5ms、無 Token」只有 2 個樣本且無量測；Layer 2/3 結論無實際輸出 → 改如實措辭、標「未實測」
 - ✅ [中] `docs/free-public-apis.md` 7 個目錄錨點斷鏈 → 修正
