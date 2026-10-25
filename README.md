@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 89 項任務：🔴 未做 4／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
+> 共 91 項任務：🔴 未做 6／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -49,7 +49,9 @@
 | `T-20261026-01` | 🔴 未做 | 高 | 撰寫「長程並行開發模型選型與配額消耗速查表」收錄於 `docs/model-burn-rate-routing-matrix.md` | `docs/model-burn-rate-routing-matrix.md`（規範文檔；不修改其他專案程式） | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
 | `T-20261018-09` | 🔴 未做 | 中 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | 本地 Claude Code 開發環境與外掛架構 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | 2026-10-18 |
 | `T-20261026-02` | 🔴 未做 | 中 | 將「骨架搭建降級至 Sol 6.1、極限攻堅再開 Astra 6」與「Luna 6 避開 5H 限制」原則沉澱至 `agent-assets` 共用偏好庫 | `C:\GitHub\agent-assets\knowledge\user_preferences.md` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
+| `T-20261026-04` | 🔴 未做 | 中 | 撰寫「TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引」收錄於 `docs/toml-config-engineering-spec.md` | `docs/toml-config-engineering-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-toml-v11-specification-and-config-engineering](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | 2026-10-26 |
 | `T-20261026-03` | 🔴 未做 | 低 | 在 `agent-relay` 派工模組中增加模型耗額等級警示與快取友善結構建議 | `C:\GitHub\agent-relay\docs\` 與 `agent_relay/advise.py` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
+| `T-20261026-05` | 🔴 未做 | 低 | 實作 `tools/toml_validator.py` 輕量校驗工具與單元測試 | `tools/toml_validator.py` 與 `tests/test_toml_validator.py` | [2026-10-26-toml-v11-specification-and-config-engineering](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | 2026-10-26 |
 
 ### 🟢 已做（Done）
 
@@ -199,6 +201,7 @@
 | 2026-10-24 | 🟢 | [feedback-desk 解構：客戶開單 × 多 AI 認領與交接的輕量工單系統（Cloudflare Workers 免費版／Laravel 主機版）、MCP 接入 Claude Code 與 Codex，及與本地交接機制的對照](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | `feedback-desk`, `ticketing`, `ai-handoff` | 2 / 2 |
 | 2026-10-24 | 🟢 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 3 / 3 |
 | 2026-10-26 | 🔴 | [多模型連續開發實測：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | `cost-control`, `model-routing`, `prompt-caching` | 0 / 3 |
+| 2026-10-26 | 🔴 | [TOML v1.1 繁中規格解析與 Agent 設定檔工程：從 YAML 陷阱走向無歧義強型別配置](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | `toml`, `configuration`, `standard-spec` | 0 / 2 |
 <!-- END GENERATED: index -->
 
 ---
@@ -241,6 +244,7 @@
 - 生成式媒體工作流：[AI 網紅限動：ChatGPT＋HeyGen＋ElevenLabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md)
 - 多 Agent 協作與交接：[feedback-desk 客戶工單與 AI 交接](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md)
 - Prompt 與工作流方法論：[AI 野心四維框架與深度四問](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md)
+- 設定工程：[TOML v1.1 規格與設定檔工程](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 閱讀框架：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)
