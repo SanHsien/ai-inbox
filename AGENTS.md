@@ -91,6 +91,7 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
 3. **提交與推送**（驗證通過才提交）：
    - `python tools/verify_inbox.py && python -m unittest discover -s tests && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
 4. **開新 Session 派工與完工回報**：Antigravity、Claude、Codex、Hermes 四套桌面端開新對話、派工與回報的指令，見 [`docs/agent-dispatch.md`](docs/agent-dispatch.md)。
+
 ---
 
 ## 3. 寫作與分析鐵律
