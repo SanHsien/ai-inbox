@@ -115,6 +115,23 @@ class TestCliToSkill(unittest.TestCase):
         self.assertIn("錯誤", err.getvalue())
 
 
+    def test_scalars_yaml_would_not_read_as_strings_are_quoted(self):
+        # 名稱叫 yes／no／on／true／null 或像數字、日期的 CLI：不加引號時 YAML 會讀成布林、null、數字、日期，
+        # SKILL.md 的 name／description 就不是字串了
+        for risky in ("yes", "No", "true", "FALSE", "null", "~", "on", "Off", "123", "1.5", "1e3", "0x1F",
+                      "2026-10-26", ".inf"):
+            with self.subTest(risky=risky):
+                output = convert_cli_to_skill({"name": risky, "description": risky, "triggers": []})
+                front = output.split("---")[1]
+                self.assertIn(f'name: "{risky}"', front)
+                self.assertIn(f'description: "{risky}"', front)
+
+    def test_ordinary_scalars_stay_unquoted(self):
+        for plain in ("sample-tool", "yes-man", "v1", "ffmpeg2", "hello world"):
+            with self.subTest(plain=plain):
+                front = convert_cli_to_skill({"name": plain, "description": plain}).split("---")[1]
+                self.assertIn(f"name: {plain}\n", front)
+
     def test_main_reports_missing_file_without_traceback(self):
         import io
         from contextlib import redirect_stderr

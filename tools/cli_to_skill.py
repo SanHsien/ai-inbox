@@ -14,12 +14,18 @@ from typing import Any, Dict
 
 # 需要加引號才不會被 YAML 誤判的內容（冒號空白、井號註解、換行、特殊起始字元等）
 _YAML_UNSAFE = re.compile(r"[\n\r\t]|: | #|:$|^[\s\-?:,\[\]{}#&*!|>'\"%@`]|\s$")
+# YAML 會讀成布林、null、數字或日期的字串：不加引號就不再是字串（YAML 1.1 的 yes/no/on/off 也算）
+_YAML_NON_STRING = re.compile(
+    r"(?i)(?:~|null|true|false|yes|no|on|off|y|n"
+    r"|[-+]?(?:\d[\d_]*(?:\.[\d_]*)?(?:e[-+]?\d+)?|\.\d+(?:e[-+]?\d+)?)"
+    r"|0x[0-9a-f_]+|0o?[0-7_]+|[-+]?\.(?:inf|nan)|\d{4}-\d{2}-\d{2}(?:[t ].*)?)"
+)
 
 
 def _yaml_scalar(value: Any) -> str:
     """產生 frontmatter 用的 YAML 純量；內含特殊字元時以 JSON 雙引號字串輸出（亦為合法 YAML）。"""
     text = "" if value is None else str(value)
-    if not text or _YAML_UNSAFE.search(text):
+    if not text or _YAML_UNSAFE.search(text) or _YAML_NON_STRING.fullmatch(text):
         return json.dumps(text, ensure_ascii=False)
     return text
 
