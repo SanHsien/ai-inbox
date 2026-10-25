@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 86 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 65／⚪ 不做 19
+> 共 86 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -47,11 +47,10 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261018-09` | 🔴 未做 | 中 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | 本地 Claude Code 開發環境與外掛架構 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | 2026-10-18 |
-| `T-20261018-06` | 🔴 未做 | 低 | 評估將 `desktop-sense` 隱私防線（敏感視窗黑名單、API Key 丟棄、截圖生命週期）蒸餾為本地多模態 Agent 視覺安全規範 | 全域安全規範與視覺/截圖防護協定 | [2026-10-18-desktop-sense-local-screen-context](./notes/2026-10-18-desktop-sense-local-screen-context.md) | 2026-10-18 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 65 項）</summary>
+<details><summary>展開查看已完成任務（共 66 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -74,6 +73,7 @@
 | `T-20261017-31` | 2026-10-20 | 建立「跨 CLI 外包 Agent 技能套件（Cross-CLI Subagent SKILL.md）」並整合至 `SanHsien/agent-advisor` | 規範併入 `SanHsien/agent-advisor` Claude 版 orchestration 技能（`cf8ce3b`：`references/cross-cli.md`，跨 CLI 工人算 `delegate` 的那一個 auxiliary，必須設逾時、隔離 worktree、主 session 自行驗證）；派工契約（目標 CLI、模型、工作區、逾時）寫入 [SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) SPEC 第 7 節。實測報告 agent-relay `docs/evidence/2026-10-20-phase2.md`：(1) 主 Agent 依 agy-staff `implementer` 技能入口派 agy（gemini-3.8-flash-low，`--timeout 10m`）在獨立 worktree 加 `mul()`，43 秒、commit `58a0f74`，主 session 自跑 unittest 通過；(2) 經 agent-relay 信件 `--run agy --mode plan` 派 agy 唯讀審查，44 秒自動回信列出缺少的邊界測試。防呆：逾時強制結束整棵行程、只執行真正的 `.exe`（拒絕 `.cmd` 外殼）、例外一律回信、中斷補救。限制：opencode CLI 本機未安裝，未測。 | [2026-10-17-cross-cli-subagent-orchestration-space-bunny](./notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md) |
 | `T-20261018-03` | 2026-10-23 | 封裝「靶心人故事編輯器」Generative UI 互動規格與 Antigravity Widget / React 範本（含 V 字型 SVG 佈局、九宮鑽取與雙向狀態綁定） | 以 ai-inbox 範本形式交付。撰寫互動規格文件 `docs/target-story-generative-ui-spec.md` 與單檔 React Generative UI 編輯器範本 `assets/target-story-editor/index.html`（React 18 CDN、V 字型節點佈局、3x3 九宮鑽取、三伏三冒分頁與 JSON 導出）。**覆核實測（2026-10-25）**：以瀏覽器開啟 `file://` 實跑，React 正常渲染 7 節點與九宮格；但「導出標準 JSON」在無剪貼簿 API 的環境拋出 `TypeError: Cannot read properties of undefined (reading 'writeText')`，已修為無剪貼簿時改下載 `story.json`，修後主控台零錯誤。 | [2026-10-18-target-story-generative-ui-editor](./notes/2026-10-18-target-story-generative-ui-editor.md) |
 | `T-20261018-04` | 2026-10-23 | 實作「故事因果與三伏三冒檢驗器」核心驗證邏輯（嚴格防範時間錯覺因果、字數契約驗證與伏冒距離評估） | 以 ai-inbox 範本形式交付於 `tools/verify_story_structure.py` 與測試 `tests/test_verify_story_structure.py`（5/5 通過），嚴格驗證七節點 4 句 7 字（28字）與三箭頭 2 句 7 字（14字）契約、防範時間先後錯覺因果、評估三伏三冒長距離跨度鬆緊度（太緊/剛好/太鬆/缺失），並精準輸出最需修正的一處。 | [2026-10-18-target-story-generative-ui-editor](./notes/2026-10-18-target-story-generative-ui-editor.md) |
+| `T-20261018-06` | 2026-10-26 | 評估將 `desktop-sense` 隱私防線（敏感視窗黑名單、API Key 丟棄、截圖生命週期）蒸餾為本地多模態 Agent 視覺安全規範 | 規範 docs/multimodal-screen-privacy-spec.md 加上可執行參考實作 tools/screen_privacy.py（56 項測試 tests/test_screen_privacy.py，含覆核兩輪找到的漏抓與誤判回歸測試，CI 於 Ubuntu 與 Windows 通過）。落地於三處：本 repo AGENTS.md 第 4 節第 4 點；Claude 全域 ~/.claude/AGENTS.md 路由表；跨 AI 共用規則 SanHsien/agent-assets rules/GLOBAL_RULES.md 第 12 條（commit 6327397，CI 通過；Codex 與 Gemini/Antigravity 的全域指令檔經 agent-assets-ssot 引用段讀取該規則）。 | [2026-10-18-desktop-sense-local-screen-context](./notes/2026-10-18-desktop-sense-local-screen-context.md) |
 | `T-20261018-08` | 2026-10-23 | 封裝「單檔 HTML/Canvas/Three.js 互動視覺化生成 Agent 技能（Single-File Creative Coding Skill）」 | 以 ai-inbox 範本形式交付。產出標準技能規範 `templates/single-file-creative-coding-skill.md` 與單檔 Three.js (r128 CDN) 螺旋星系粒子視覺化範例 `assets/creative-coding-demo/threejs-particle-galaxy.html`。 | [2026-10-18-awesome-opus5-5-videos-prompt-zoo](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) |
 | `T-20261018-11` | 2026-10-23 | 在 Windows 11 本地環境測試 `HKUDS/CLI-Anything` 安裝與 CLI 生成管線（驗證 7-Stage Harness 生成、`--json` 輸出與 REPL 模式） | 完成套件安全審查（純 Python / Click / Prompt-Toolkit，無惡意二進位、無提權）並安裝至沙盒 `C:\GitHub\_sandbox\cli-anything\.venv`。選取開源無害之 Mermaid 圖表小工具（`mermaid/agent-harness`）實測，單元測試 `test_core.py` 5/5 通過、E2E 測試 `test_full_e2e.py` 5/5 通過（包含 SVG/PNG 渲染與 URL 生成），`--json` 結構化輸出、REPL 指令與 exit code 錯誤處理均在 Windows 11 原生環境驗證成功。 | [2026-10-18-cli-anything-agent-native-computer-use](./notes/2026-10-18-cli-anything-agent-native-computer-use.md) |
 | `T-20261018-12` | 2026-10-23 | 建立「Agent-Native CLI 封裝與自動生成 Skill 標準協議（CLI-Anything to Skill Protocol）」 | 以 ai-inbox 範本形式交付。撰寫標準協議文件 `docs/cli-anything-to-skill-protocol.md`，實作轉換腳本 `tools/cli_to_skill.py`，並新增單元測試 `tests/test_cli_to_skill.py`（單元測試通過）。 | [2026-10-18-cli-anything-agent-native-computer-use](./notes/2026-10-18-cli-anything-agent-native-computer-use.md) |
@@ -177,7 +177,7 @@
 | 2026-10-18 | 🟢 | [Awesome Opus 5.5 Videos 提示詞動物園解構：700+ 代碼驅動視覺動畫、3D 場景、技術解說與互動遊戲開源基準庫](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) | `awesome-opus5-5`, `prompt-zoo`, `creative-coding` | 2 / 2（+1 不做） |
 | 2026-10-18 | 🔴 | [Claude Code Mods 自體改造機制解構：從外部腳本 Hook 到 In-Session 中介軟體（Middleware）、動態 UI 渲染與即時熱重載](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | `claude-code`, `claude-mods`, `in-session-middleware` | 0 / 1（+1 不做） |
 | 2026-10-18 | 🟢 | [CLI-Anything：終結脆弱 GUI 點擊，將任意軟體自動升級為 Agent-Native CLI 與 Skill 的通用框架解構](./notes/2026-10-18-cli-anything-agent-native-computer-use.md) | `cli-anything`, `agent-native`, `computer-use` | 2 / 2 |
-| 2026-10-18 | 🔴 | [desktop-sense：為 Coding Agent 賦予本機螢幕即時視覺感知（Local-First Screen Context）與嚴格隱私防護架構解構](./notes/2026-10-18-desktop-sense-local-screen-context.md) | `desktop-sense`, `local-first`, `screen-context` | 0 / 1（+1 不做） |
+| 2026-10-18 | 🟢 | [desktop-sense：為 Coding Agent 賦予本機螢幕即時視覺感知（Local-First Screen Context）與嚴格隱私防護架構解構](./notes/2026-10-18-desktop-sense-local-screen-context.md) | `desktop-sense`, `local-first`, `screen-context` | 1 / 1（+1 不做） |
 | 2026-10-18 | 🟢 | [多 Agent 生產力工廠實戰架構：Magpie 統一網關、Herdr 終端復用、Obsidian 接棒交接與額度感知動態路由解構](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md) | `multi-agent-factory`, `magpie`, `herdr` | 2 / 2 |
 | 2026-10-18 | 🟢 | [SpaceX 前首席工程師 Lauren Tan 的 pstack 方法論：以嚴謹工程紀律重構 AI 協同開發（/poteto-mode 核心路由、Playbooks、TDD 驗證與對抗性審查深度解構）](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md) | `pstack`, `poteto-mode`, `ai-coding-workflow` | 3 / 3 |
 | 2026-10-18 | 🟢 | [靶心人故事編輯器：許榮哲故事模型與 Generative UI 互動產品設計 Prompt 深度解構](./notes/2026-10-18-target-story-generative-ui-editor.md) | `generative-ui`, `storytelling-structure`, `target-story-formula` | 2 / 2 |
