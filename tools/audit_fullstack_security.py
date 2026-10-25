@@ -53,7 +53,8 @@ def check_gitignore(root: Path) -> list[str]:
         issues.append("找不到 .gitignore 檔案")
         return issues
 
-    content = gitignore_path.read_text(encoding="utf-8", errors="ignore")
+    # utf-8-sig：Windows 編輯器常在檔頭加 BOM，git 會略過它；不略過的話第一行 ".env" 會變成 "\ufeff.env"
+    content = gitignore_path.read_text(encoding="utf-8-sig", errors="ignore")
     lines = [line.strip() for line in content.splitlines() if line.strip() and not line.strip().startswith("#")]
 
     required_patterns = [".env", ".env.local"]

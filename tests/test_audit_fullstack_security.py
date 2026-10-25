@@ -95,6 +95,12 @@ class TestAuditFullstackSecurity(unittest.TestCase):
         issues = check_gitignore(self.test_dir)
         self.assertEqual(len(issues), 2)
 
+    def test_gitignore_with_utf8_bom_is_read_like_git_does(self):
+        # Windows PowerShell 5 的 Out-File／Set-Content -Encoding UTF8 會在檔頭加 BOM；git 會略過它，
+        # 稽核工具不能把第一行 ".env" 讀成 "﻿.env" 而誤報「未忽略」
+        (self.test_dir / ".gitignore").write_bytes(b"\xef\xbb\xbf.env\n.env.local\n")
+        self.assertEqual(check_gitignore(self.test_dir), [])
+
     def test_gitignore_glob_accepted(self):
         (self.test_dir / ".gitignore").write_text("# secrets\n.env*\n", encoding="utf-8")
         self.assertEqual(check_gitignore(self.test_dir), [])
