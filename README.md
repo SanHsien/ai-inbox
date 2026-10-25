@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 99 項任務：🔴 未做 14／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
+> 共 102 項任務：🔴 未做 17／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,16 +50,19 @@
 | `T-20261026-06` | 🔴 未做 | 高 | 撰寫「AI Agent 視覺化工件輸出規範與 8x Token 節流工程指引」收錄於 `docs/visual-agent-artifacts-engineering-spec.md` | `docs/visual-agent-artifacts-engineering-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-answer-me-with-html-visual-agent-artifacts](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) | 2026-10-26 |
 | `T-20261026-08` | 🔴 未做 | 高 | 撰寫「Block Buzz 架構解析與 Nostr+ACP/MCP 代理人協同設計指引」收錄於 `docs/buzz-nostr-agent-architecture.md` | `docs/buzz-nostr-agent-architecture.md`（規範文檔；不修改其他專案程式） | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | 2026-10-26 |
 | `T-20261026-11` | 🔴 未做 | 高 | 撰寫「空間運算 Agent 規範：物理 LiDAR 測量、Three.js 程式化建模與相機內參比對閉環」收錄於 `docs/scan-to-threejs-spatial-agent-spec.md` | `docs/scan-to-threejs-spatial-agent-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-3d-model-anything-iphone-lidar-threejs](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md) | 2026-10-26 |
+| `T-20261026-14` | 🔴 未做 | 高 | 撰寫「AI 影片電影級鏡頭語言與分鏡 Prompt 工程指引」收錄於 `docs/cinematic-ai-video-prompt-guide.md` | `docs/cinematic-ai-video-prompt-guide.md`（規範文檔；不修改其他專案程式） | [2026-10-26-cinematic-ai-video-reference-pipeline](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md) | 2026-10-26 |
 | `T-20261018-09` | 🔴 未做 | 中 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | 本地 Claude Code 開發環境與外掛架構 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | 2026-10-18 |
 | `T-20261026-02` | 🔴 未做 | 中 | 將「骨架搭建降級至 Sol 6.1、極限攻堅再開 Astra 6」與「Luna 6 避開 5H 限制」原則沉澱至 `agent-assets` 共用偏好庫 | `C:\GitHub\agent-assets\knowledge\user_preferences.md` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
 | `T-20261026-04` | 🔴 未做 | 中 | 撰寫「TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引」收錄於 `docs/toml-config-engineering-spec.md` | `docs/toml-config-engineering-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-toml-v11-specification-and-config-engineering](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | 2026-10-26 |
 | `T-20261026-07` | 🔴 未做 | 中 | 實作 `tools/render_artifact_html.py` 確定性工件渲染工具與單元測試 | `tools/render_artifact_html.py` 與 `tests/test_render_artifact_html.py` | [2026-10-26-answer-me-with-html-visual-agent-artifacts](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) | 2026-10-26 |
 | `T-20261026-09` | 🔴 未做 | 中 | 在 `SanHsien/buzz`（`C:\GitHub\buzz`）驗證 Windows 11 下 `buzz-dev-mcp` 與 `buzz-agent` 之獨立編譯與 Job Object 殺進程機制 | `C:\GitHub\buzz\crates\buzz-dev-mcp` 與 `buzz-agent` | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | 2026-10-26 |
 | `T-20261026-12` | 🔴 未做 | 中 | 實作 `tools/verify_spatial_alignment.py` 空間幾何契約校驗工具與單元測試 | `tools/verify_spatial_alignment.py` 與 `tests/test_verify_spatial_alignment.py` | [2026-10-26-3d-model-anything-iphone-lidar-threejs](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md) | 2026-10-26 |
+| `T-20261026-15` | 🔴 未做 | 中 | 實作 `tools/verify_cinematic_prompt.py` 檢查工具與單元測試 | `tools/verify_cinematic_prompt.py` 與 `tests/test_verify_cinematic_prompt.py` | [2026-10-26-cinematic-ai-video-reference-pipeline](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md) | 2026-10-26 |
 | `T-20261026-03` | 🔴 未做 | 低 | 在 `agent-relay` 派工模組中增加模型耗額等級警示與快取友善結構建議 | `C:\GitHub\agent-relay\docs\` 與 `agent_relay/advise.py` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
 | `T-20261026-05` | 🔴 未做 | 低 | 實作 `tools/toml_validator.py` 輕量校驗工具與單元測試 | `tools/toml_validator.py` 與 `tests/test_toml_validator.py` | [2026-10-26-toml-v11-specification-and-config-engineering](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | 2026-10-26 |
 | `T-20261026-10` | 🔴 未做 | 低 | 評估將 `agent-relay` 訊息中繼抽象對接 Nostr NIP-01 簽名事件格式之概念驗證 | `C:\GitHub\agent-relay` 訊息格式設計與擴充文檔 | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | 2026-10-26 |
 | `T-20261026-13` | 🔴 未做 | 低 | 建立 `assets/spatial-room-viewer/index.html` 輕量 Three.js 空間漫遊與娃娃屋展示範本 | `assets/spatial-room-viewer/index.html`（獨立 HTML 靜態展示） | [2026-10-26-3d-model-anything-iphone-lidar-threejs](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md) | 2026-10-26 |
+| `T-20261026-16` | 🔴 未做 | 低 | 建立 `templates/cinematic-storyboard-template.md` 標準化分鏡提示詞範本 | `templates/cinematic-storyboard-template.md` | [2026-10-26-cinematic-ai-video-reference-pipeline](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md) | 2026-10-26 |
 
 ### 🟢 已做（Done）
 
@@ -211,6 +214,7 @@
 | 2026-10-26 | 🔴 | [3D Model Anything 深度解析：iPhone LiDAR 空間掃描、Three.js 程式化三維重建與 Agent 視覺比對閉環](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md) | `threejs`, `lidar-scanning`, `spatial-computing` | 0 / 3 |
 | 2026-10-26 | 🔴 | [answer-me-with-html 深度評估：AI Agent 視覺化工件輸出與 8x Token 節流工程實踐](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) | `generative-ui`, `visual-artifacts`, `agent-skills` | 0 / 2 |
 | 2026-10-26 | 🔴 | [Block Buzz 深度解析：基於 Nostr 協議的去中心化人機協同工作區與 ACP/MCP 代理人架構](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | `nostr-protocol`, `multi-agent-collaboration`, `acp-protocol` | 0 / 3 |
+| 2026-10-26 | 🔴 | [從尾牙簡報走向坎城電影感：AI 影片的電影級鏡頭語言、調色參考庫與 Prompt 工程管線](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md) | `ai-video`, `cinematography`, `prompt-engineering` | 0 / 3 |
 | 2026-10-26 | 🔴 | [多模型連續開發實測：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | `cost-control`, `model-routing`, `prompt-caching` | 0 / 3 |
 | 2026-10-26 | 🔴 | [TOML v1.1 繁中規格解析與 Agent 設定檔工程：從 YAML 陷阱走向無歧義強型別配置](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | `toml`, `configuration`, `standard-spec` | 0 / 2 |
 <!-- END GENERATED: index -->
@@ -241,6 +245,7 @@
 - 互動生成：[靶心人故事編輯器](./notes/2026-10-18-target-story-generative-ui-editor.md)
 - LiDAR空間重建：[3D Model Anything](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md)
 - 視覺工件輸出：[answer-me-with-html 視覺工件](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md)
+- 鏡頭語言工程：[電影級 AI 影片管線](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)
