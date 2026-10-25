@@ -61,7 +61,8 @@ class VideoAssetCaptureTest(unittest.TestCase):
         self.assertIn("V = f(t) seek(t)", html_text)
 
     def test_rejects_non_http_urls(self):
-        for bad in ("file:///C:/Windows/win.ini", "javascript:alert(1)", "ftp://x/y", "", "example.com"):
+        for bad in ("file:///C:/Windows/win.ini", "javascript:alert(1)", "ftp://x/y", "", "example.com",
+                    "\x00http://a.com", "ht\ttp://a.com", "http://a .com"):
             with self.assertRaises(ValueError, msg=bad):
                 capture_url_assets(bad, self.tmp / "o", offline_fallback=True)
         self.assertFalse((self.tmp / "o").exists())

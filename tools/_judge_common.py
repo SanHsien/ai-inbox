@@ -96,6 +96,8 @@ def doc_guard(fn: Callable[..., List[str]]) -> Callable[..., List[str]]:
 
     @functools.wraps(fn)
     def wrapper(source, *args, **kwargs):
+        if isinstance(source, Path) and not source.is_file():
+            return fn(source, *args, **kwargs)  # 交給原函式回報「目標檔案不存在」
         text = read_text_safe(source)
         if not text.strip():
             return fn(text, *args, **kwargs)

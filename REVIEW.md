@@ -14,6 +14,7 @@
 
 - ✅ [高] `verify_inbox.py` 機密掃描只掃 README、notes、templates；`docs/`、`assets/*.html`、`tools/` 的金鑰抓不到 → 改為掃全部提交檔，副檔名補 `.html .js .ts .sh .ps1 .toml`
 - ✅ [中] `verify_inbox.py` 私有 repo 別名登記檢查漏掃 `docs/`、`assets/`（`docs/zeabur-incident-credential-audit.md` 因此藏了 3 個未登記別名）→ 納入檢查（`tools/`、`tests/` 除外）
+- ✅ [低] `verify_inbox.py` 掃描清單改用 `git ls-files`（含未加入 git 的新檔、排除 .gitignore），不再掃到 `.pytest_cache`、`node_modules` 等（覆核後補修）
 - ✅ [中] `build_index.py` 用子字串判斷「不做」，「🟡 進行中（等待關閉 PR）」會被誤判為不做而從佇列消失 → 只看狀態開頭
 - ✅ [中] `task_cli.py complete` 對已完成任務不擋，會靜默覆寫完成日期與證據 → 拒絕
 - ✅ [中] `task_cli.py` 查無 ID 時噴 traceback → 印 `[FAIL]` 訊息、exit 1
@@ -24,7 +25,9 @@
 
 ## 2. 外部裁判驗證器（12 支 `tools/verify_*.py`）
 
-- ✅ [高] 9 支文件類驗證器：整份文件包進 `<!-- -->` 或程式碼區塊、或壓成一行仍判 PASS → 共用 `doc_guard`（先剝註解、要求可見標題），19 個驗證函式的 3 種變異修後全部判失敗
+- ✅ [高] 文件類驗證器：整份文件包進 `<!-- -->` 或程式碼區塊、或壓成一行仍判 PASS → 共用 `doc_guard`（先剝註解、要求可見標題）。套用在 academic、incident、motion、pstack、re_android 5 支共 19 個函式，加上 agent_reach 的 4 個函式（覆核後補上），3 種變異修後判失敗
+- ⏸ [中] `verify_compliance_and_matrix_docs.py` 的 4 個函式回傳型別不同，未套 `doc_guard`：整份包進程式碼區塊仍會過
+- ⏸ [低] 文件本身含程式碼區塊時，外面再包一層會讓內外顛倒，`doc_guard` 擋不住（agent_reach 有 3 份文件如此）
 - ✅ [高] 3 支驗證器的段落／規則區塊放在 HTML 註解裡也能過 → 載入時剝註解
 - ✅ [高] Windows cp950 終端印 emoji 會 UnicodeEncodeError（原本要 `PYTHONUTF8=1` 測試才過）→ 入口統一處理，加 cp950 strict 測試鎖住
 - ✅ [高] `verify_story_structure.py` 零組伏筆、不足 3 組或張力不當仍 PASS → 至少 3 組且皆「剛好」
@@ -44,10 +47,12 @@
 ## 3. 功能型工具
 
 - ✅ [高] `health_bank_parser.py` 漢字緊鄰的西元生日（「出生1990-05-12」）沒遮 → 改用數字邊界
-- ✅ [高] `health_bank_parser.py`「姓名｜王小明｜身分證｜…」左右對照的個資表會原樣輸出 → 整張丟棄
+- ✅ [高] `health_bank_parser.py`「姓名｜王小明｜身分證｜…」左右對照的個資表會原樣輸出 → 整張丟棄。覆核後修正判斷：儲存格須「整格就是標籤」且右格有值，避免「出生24小時內接種」「通訊診療」整張誤丟；「通訊」移出整欄遮蔽清單
+- ⏸ [低] `health_bank_parser.py` 首欄以「電話」等開頭的一般表格（如「電話諮詢費」）會被既有的標題表規則整張略過（main 原本就如此，寧可少收不外洩）
 - ✅ [中] `health_bank_parser.py` 全形身分證、「病歷號：」後號碼、`(02)` 市話、`+886` 手機、`民國70/05/12` 漏遮 → 補齊，並測藥碼不誤殺
 - ✅ [高] `video_transcript.py` 網址以 `-` 開頭會被 yt-dlp 當參數（如 `--exec`）；無逾時、無 `--no-playlist` → 只收 http(s)、加 `--`、逾時 3600 秒
-- ✅ [中] `video_transcript.py` 會重用 `.part` 殘檔或別支影片的舊音訊；轉寫為空時覆蓋好檔 → 記錄來源網址、先寫暫存檔
+- ✅ [中] `video_transcript.py` 會重用 `.part` 殘檔或別支影片的舊音訊；轉寫為空時覆蓋好檔 → 記錄來源網址、換網址時先移除舊音訊（避免 m4a→webm 時沿用舊檔，覆核後補修）、先寫暫存檔
+- ✅ [低] `video_transcript.py`、`video_asset_capture.py` 的 `urlparse` 會默默去掉 tab、換行再判斷，驗過的字串與實際使用的不同 → 含空白或控制字元一律拒絕（覆核後補修）
 - ✅ [高] `video_asset_capture.py` 網頁標題未跳脫塞進 `<title>`／`<script>`（XSS）；`file://` 可截本機檔 → 跳脫、只收 http(s)
 - ✅ [高] `audit_fullstack_security.py` 專案放在 `build/`、`dist/` 底下時整個被略過；`.gitignore` 否定規則誤判 → 改相對路徑、fnmatch
 - ✅ [中] `audit_fullstack_security.py` 漏掉 `BEGIN RSA PRIVATE KEY`／OpenSSH 私鑰、SQL 大小寫與引號識別字 → 補規則

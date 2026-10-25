@@ -91,14 +91,28 @@ class DownloadAudioTest(unittest.TestCase):
         run.assert_called_once()
 
     def test_cached_audio_from_other_url_is_redownloaded(self):
-        (self.tmp / "audio.webm").write_bytes(b"old")
+        # 舊網址的音訊是 m4a、新網址下載成 webm：不能回傳舊的 m4a
+        (self.tmp / "audio.m4a").write_bytes(b"OLD")
         (self.tmp / "audio_source_url.txt").write_text("https://example.invalid/OLD\n", encoding="utf-8")
-        with mock.patch.object(video_transcript.subprocess, "run", return_value=_completed(0)) as run:
-            video_transcript.download_audio("https://example.invalid/NEW", self.tmp)
+
+        def fake_download(*args, **kwargs):
+            (self.tmp / "audio.webm").write_bytes(b"NEW")
+            return _completed(0)
+
+        with mock.patch.object(video_transcript.subprocess, "run", side_effect=fake_download) as run:
+            path = video_transcript.download_audio("https://example.invalid/NEW", self.tmp)
         run.assert_called_once()
-        self.assertIn("--force-overwrites", run.call_args.args[0])
+        self.assertEqual(path.read_bytes(), b"NEW")
+        self.assertFalse((self.tmp / "audio.m4a").exists())
         marker = (self.tmp / "audio_source_url.txt").read_text(encoding="utf-8").strip()
         self.assertEqual(marker, "https://example.invalid/NEW")
+
+    def test_rejects_urls_with_whitespace_or_control_chars(self):
+        for bad in ("\x00http://a.com", "ht\ttp://a.com", "http://a.com/\nx", "http://a .com"):
+            with mock.patch.object(video_transcript.subprocess, "run") as run:
+                with self.assertRaises(ValueError, msg=repr(bad)):
+                    video_transcript.download_audio(bad, self.tmp)
+            run.assert_not_called()
 
 
 class DeviceResolveTest(unittest.TestCase):

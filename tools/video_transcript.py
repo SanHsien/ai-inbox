@@ -85,10 +85,14 @@ def _resolve_device(requested: str) -> str:
 
 def _validate_url(url: str) -> str:
     """只接受 http(s) 網址。開頭為 "-" 的字串會被 yt-dlp 當成選項（例如 --exec），必須擋下。"""
-    parsed = urlparse(url.strip())
+    url = url.strip()
+    # urlparse 會默默去掉 tab、換行等字元再判斷，驗過的字串會跟實際傳給 yt-dlp 的不同，直接拒絕
+    if any(ch.isspace() or ord(ch) < 32 or ord(ch) == 127 for ch in url):
+        raise ValueError(f"網址含空白或控制字元：{url!r}")
+    parsed = urlparse(url)
     if parsed.scheme not in ("http", "https") or not parsed.netloc:
         raise ValueError(f"只接受 http(s) 影片網址：{url!r}")
-    return url.strip()
+    return url
 
 
 def _audio_files(out_dir: Path) -> list[Path]:
@@ -101,17 +105,16 @@ def download_audio(url: str, out_dir: Path) -> Path:
     """用 yt-dlp 下載最佳音訊，回傳音訊檔路徑；失敗時丟出 RuntimeError，網址不合法丟 ValueError。"""
     url = _validate_url(url)
     marker = out_dir / _SOURCE_URL_FILE
-    force = False
     existing = _audio_files(out_dir)
     if existing and existing[0].stat().st_size > 0:
         previous = marker.read_text(encoding="utf-8").strip() if marker.is_file() else None
         if previous is None or previous == url:
             return existing[0]
-        force = True  # 資料夾裡的舊音訊來自別的網址：重新下載並覆寫
+        # 資料夾裡的舊音訊來自別的網址：先移除，否則新音訊副檔名不同時（m4a→webm）會沿用舊檔
+        for stale in existing:
+            stale.unlink()
     template = str(out_dir / "audio.%(ext)s")
     cmd = [sys.executable, "-m", "yt_dlp", "--no-playlist", "-f", "bestaudio", "-o", template]
-    if force:
-        cmd.append("--force-overwrites")
     cmd += ["--", url]  # "--" 之後一律視為位置參數，不會被解析成選項
     try:
         result = subprocess.run(

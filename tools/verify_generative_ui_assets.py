@@ -28,7 +28,6 @@ from typing import Dict, List, Optional, Tuple
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _judge_common import (  # noqa: E402
-    doc_guard,
     ensure_utf8_output,
     find_repo_root as _common_find_repo_root,
     report_results,

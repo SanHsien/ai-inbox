@@ -299,10 +299,14 @@ def _json_for_script(data: Any) -> str:
 
 def validate_url(url: str) -> str:
     """只允許 http(s)。file:// 等協定會讓 Chromium 讀本機檔案並截圖外洩。"""
-    parsed = urlparse((url or "").strip())
+    url = (url or "").strip()
+    # urlparse 會默默去掉 tab、換行等字元再判斷，驗過的字串會跟實際開啟的不同，直接拒絕
+    if any(ch.isspace() or ord(ch) < 32 or ord(ch) == 127 for ch in url):
+        raise ValueError(f"網址含空白或控制字元：{url!r}")
+    parsed = urlparse(url)
     if parsed.scheme not in ("http", "https") or not parsed.netloc:
         raise ValueError(f"只接受 http(s) 網址：{url!r}")
-    return url.strip()
+    return url
 
 
 def extract_css_colors(html_content: str, default_theme: Optional[Dict[str, str]] = None) -> Dict[str, str]:

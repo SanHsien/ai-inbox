@@ -226,6 +226,7 @@ def verify_agent_reach_specs(
 # 2. Public APIs 檢索技能與 free-public-apis.md 結構驗證
 # ---------------------------------------------------------------------------
 
+@doc_guard
 def verify_public_apis_search_skill(skill_input: Union[Path, str]) -> List[str]:
     """
     驗證 templates/public-apis-search-skill.md：
@@ -259,6 +260,7 @@ def verify_public_apis_search_skill(skill_input: Union[Path, str]) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_free_public_apis_index(index_input: Union[Path, str]) -> List[str]:
     """
     驗證 docs/free-public-apis.md：
@@ -365,6 +367,7 @@ def verify_public_apis_specs(
 # 3. 健康存摺匯出格式與 Prompt 範本規格驗證
 # ---------------------------------------------------------------------------
 
+@doc_guard
 def verify_health_bank_format_doc(format_input: Union[Path, str]) -> List[str]:
     """
     驗證 docs/health-bank-export-format.md：
@@ -416,6 +419,7 @@ def verify_health_bank_format_doc(format_input: Union[Path, str]) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_health_bank_dashboard_prompt(dashboard_input: Union[Path, str]) -> List[str]:
     """
     驗證 templates/health-bank-dashboard-prompt.md：

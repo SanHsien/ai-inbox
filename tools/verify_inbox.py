@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import unquote
@@ -181,10 +182,22 @@ def check_self_references(scan: dict[Path, str]) -> list[str]:
 
 
 def tracked_texts() -> dict[Path, str]:
-    """會被提交的文字檔（排除 .git 與本機對照表本身）。"""
+    """會被提交的文字檔：已追蹤＋未追蹤但沒被 .gitignore 排除（新筆記在 git add 前就要掃到）。
+
+    不用 rglob：會掃到 .pytest_cache、node_modules、.relay-worktrees 等不會提交的檔案。
+    沒有 git（例如解壓縮的原始碼）時退回 rglob。
+    """
+    try:
+        listed = subprocess.run(
+            ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+            cwd=bi.REPO_ROOT, capture_output=True, check=True,
+        ).stdout.decode("utf-8").split("\0")
+        candidates = [bi.REPO_ROOT / name for name in listed if name]
+    except (OSError, subprocess.CalledProcessError):
+        candidates = [p for p in bi.REPO_ROOT.rglob("*") if ".git" not in p.parts]
     out = {}
-    for p in bi.REPO_ROOT.rglob("*"):
-        if p.is_file() and p.suffix in SCANNED_SUFFIXES and ".git" not in p.parts and p != LOCAL_ALIASES_FILE:
+    for p in candidates:
+        if p.is_file() and p.suffix in SCANNED_SUFFIXES and p != LOCAL_ALIASES_FILE:
             out[p] = p.read_text(encoding="utf-8", errors="ignore")
     return out
 
