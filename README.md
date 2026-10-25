@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 114 項任務：🔴 未做 29／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
+> 共 117 項任務：🔴 未做 32／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -55,6 +55,7 @@
 | `T-20261026-20` | 🔴 未做 | 高 | 撰寫「開源 Agent 中繼架構：ACP 通用橋接、Rate Limit 自動容錯降級與 E2EE 遠端審批工程指引」收錄於 `docs/codync-agent-fallback-and-mobile-relay-spec.md` | `docs/codync-agent-fallback-and-mobile-relay-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-codync-open-source-agent-relay-fallback](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md) | 2026-10-26 |
 | `T-20261026-23` | 🔴 未做 | 高 | 撰寫「多 Agent 團隊共用記憶系統工程規範」收錄於 `docs/ai-shared-memory-engineering-spec.md` | `docs/ai-shared-memory-engineering-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-ai-shared-memory-template-team-collaboration](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | 2026-10-26 |
 | `T-20261026-26` | 🔴 未做 | 高 | 擴充 `docs/reverse-engineering-pipeline-spec.md`：收錄 Clean Room 合規宣告 Prompt 範本與「GPT 靜態分析 + 本地未審查模型實操」雙軌逆向管線 | `docs/reverse-engineering-pipeline-spec.md` | [2026-10-19-rea-reverse-engineer-anything-agent](./notes/2026-10-19-rea-reverse-engineer-anything-agent.md) | 2026-10-26 |
+| `T-20261026-29` | 🔴 未做 | 高 | 撰寫「GPT Work / Codex 之 AGENTS.md 規範驅動起步與 Skill 預算控制手冊」收錄於 `docs/codex-skills-agents-bootstrap-guide.md` | `docs/codex-skills-agents-bootstrap-guide.md`（規範文檔；不修改其他專案程式） | [2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md) | 2026-10-26 |
 | `T-20261018-09` | 🔴 未做 | 中 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | 本地 Claude Code 開發環境與外掛架構 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | 2026-10-18 |
 | `T-20261026-02` | 🔴 未做 | 中 | 將「骨架搭建降級至 Sol 6.1、極限攻堅再開 Astra 6」與「Luna 6 避開 5H 限制」原則沉澱至 `agent-assets` 共用偏好庫 | `C:\GitHub\agent-assets\knowledge\user_preferences.md` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
 | `T-20261026-04` | 🔴 未做 | 中 | 撰寫「TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引」收錄於 `docs/toml-config-engineering-spec.md` | `docs/toml-config-engineering-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-toml-v11-specification-and-config-engineering](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | 2026-10-26 |
@@ -67,6 +68,7 @@
 | `T-20261026-24` | 🔴 未做 | 中 | 實作 `tools/check_memory_index.py` 跨平台記憶索引健檢工具與單元測試 | `tools/check_memory_index.py` 與 `tests/test_check_memory_index.py` | [2026-10-26-ai-shared-memory-template-team-collaboration](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | 2026-10-26 |
 | `T-20261026-27` | 🔴 未做 | 中 | 評估 Buzz 類 Slack 聊天室在 NAS 私有化常駐部署架構與「已讀不回」額度心跳防線設計 | `docs/buzz-nas-deployment-and-heartbeat-spec.md` | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | 2026-10-26 |
 | `T-20261026-28` | 🔴 未做 | 中 | 撰寫「Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範」收錄於 `docs/grok-herdr-agents-bootstrap.md` | `docs/grok-herdr-agents-bootstrap.md` | [2026-10-18-multi-agent-factory-magpie-herdr-routing](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md) | 2026-10-26 |
+| `T-20261026-30` | 🔴 未做 | 中 | 撰寫「AI Agent 操控 3D 與本機 GUI 軟體之雙軌橋接方案規格」收錄於 `docs/3d-gui-agent-control-bridge.md` | `docs/3d-gui-agent-control-bridge.md` | [2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md) | 2026-10-26 |
 | `T-20261026-03` | 🔴 未做 | 低 | 在 `agent-relay` 派工模組中增加模型耗額等級警示與快取友善結構建議 | `C:\GitHub\agent-relay\docs\` 與 `agent_relay/advise.py` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
 | `T-20261026-05` | 🔴 未做 | 低 | 實作 `tools/toml_validator.py` 輕量校驗工具與單元測試 | `tools/toml_validator.py` 與 `tests/test_toml_validator.py` | [2026-10-26-toml-v11-specification-and-config-engineering](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | 2026-10-26 |
 | `T-20261026-10` | 🔴 未做 | 低 | 評估將 `agent-relay` 訊息中繼抽象對接 Nostr NIP-01 簽名事件格式之概念驗證 | `C:\GitHub\agent-relay` 訊息格式設計與擴充文檔 | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | 2026-10-26 |
@@ -75,6 +77,7 @@
 | `T-20261026-19` | 🔴 未做 | 低 | 建立 `templates/lightweight-skill-template.md` 輕量化標準 Agent Skill 範本 | `templates/lightweight-skill-template.md` | [2026-10-26-github-trending-agent-skills-benchmark](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | 2026-10-26 |
 | `T-20261026-22` | 🔴 未做 | 低 | 評估 `codync-host` 在 Windows 11 本地環境的編譯與 `agent-relay` 雙向橋接可行性 | `C:\GitHub\agent-relay` 擴充評估文檔 | [2026-10-26-codync-open-source-agent-relay-fallback](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md) | 2026-10-26 |
 | `T-20261026-25` | 🔴 未做 | 低 | 在 `C:\GitHub\agent-assets` 評估引進「糾正審查佇列（`correction-queue.jsonl`）」架構 | `C:\GitHub\agent-assets\knowledge\` 與擴充評估文檔 | [2026-10-26-ai-shared-memory-template-team-collaboration](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | 2026-10-26 |
+| `T-20261026-31` | 🔴 未做 | 低 | 撰寫「多 Agent 私有化常駐工作台與 Token 燃燒率控制指引」收錄於 `docs/desktop-agent-burn-rate-and-buzz-guide.md` | `docs/desktop-agent-burn-rate-and-buzz-guide.md` | [2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md) | 2026-10-26 |
 
 ### 🟢 已做（Done）
 
@@ -227,6 +230,7 @@
 | 2026-10-26 | 🔴 | [AI 共用記憶系統全景分析：從 Going Li 三 Agent 同腦架構、社團留言實踐到 Leoceeport 工程範本](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | `shared-memory`, `git-workflow`, `context-optimization` | 0 / 3 |
 | 2026-10-26 | 🔴 | [answer-me-with-html 深度評估：AI Agent 視覺化工件輸出與 8x Token 節流工程實踐](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) | `generative-ui`, `visual-artifacts`, `agent-skills` | 0 / 2 |
 | 2026-10-26 | 🔴 | [Block Buzz 深度解析：基於 Nostr 協議的去中心化人機協同工作區與 ACP/MCP 代理人架構](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | `nostr-protocol`, `multi-agent-collaboration`, `acp-protocol` | 0 / 4 |
+| 2026-10-26 | 🔴 | [ChatGPT-6.1 生態系全景評測：GPT Work、Codex 與 Skills 的進階落地方案與 Session 工具鏈實戰映射](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md) | `chatgpt-6-1`, `gpt-work`, `codex` | 0 / 3 |
 | 2026-10-26 | 🔴 | [從尾牙簡報走向坎城電影感：AI 影片的電影級鏡頭語言、調色參考庫與 Prompt 工程管線](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md) | `ai-video`, `cinematography`, `prompt-engineering` | 0 / 3 |
 | 2026-10-26 | 🔴 | [Codync 深度解析：Grok Bot / Dots / Muse 開源平替、ACP 多代理群聊與配額自動 Fallback 架構](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md) | `multi-agent-orchestration`, `acp-protocol`, `rate-limit-fallback` | 0 / 3 |
 | 2026-10-26 | 🔴 | [GitHub 萬星熱門 Agent Skills 實測評估：從矽谷大神技能包到「按需載入」的工程治理防線](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | `agent-skills`, `skill-curation`, `context-optimization` | 0 / 3 |
@@ -245,7 +249,7 @@
 - 記憶繼承：[Idle Compaction 與 cc-session-reader](./notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md)、[Claude-Mem 跨 Session 記憶](./notes/2026-10-17-claude-mem-autocompact-context.md)
 - 跨 CLI 編排：[Opus 規劃顧問 + 多 Agent 降維外包](./notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)
 - 路由分流：[/model opusplan 與 /advisor 雙軌架構](./notes/2026-10-17-model-routing-opusplan-advisor.md)、[Sol/Astra/Luna 燒額與快取實測](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md)
-- 終端派工：[Herdr 終端復用 + Magpie 統一網關](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md)
+- 終端派工：[Herdr 終端復用 + Magpie 統一網關](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md)、[ChatGPT-6.1 全景實測與工具鏈映射](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md)
 - 驗證紀律：[pstack 方法論與 TDD 驗證](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)
 - 總綱中樞：[AI 共同大腦全景規劃](./notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md)
 - 訊息傳輸：[Crossroad A2A 跨機器寄信](./notes/2026-10-19-crossroad-a2a-agent-mail-relay.md)
