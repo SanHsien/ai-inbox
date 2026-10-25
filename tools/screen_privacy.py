@@ -27,7 +27,8 @@ from typing import List, Optional, Sequence, Tuple
 
 _LEADING_MARKS = re.compile(r"^(?:[⠀-⣿✳✻✽✶✢·◐◓◑◒◴◵◶◷⏺●○•]+\s*)+")
 _NOTIFY_COUNT = re.compile(r"^\(\d+\+?\)\s*")
-_URL = re.compile(r"https?://([^\s/]+)\S*", re.IGNORECASE)
+# 只留主機名：授權段（user:pass@）、沒有路徑時緊接在主機後的 ?query／#fragment 都是機密
+_URL = re.compile(r"(?:https?|ftps?|wss?|sftp|ssh)://([^\s/?#]+)\S*", re.IGNORECASE)
 _STRIP = re.compile(r"[`<>|{}\\]")
 _WS = re.compile(r"\s+")
 _SCHEME = re.compile(
@@ -50,7 +51,7 @@ def normalize_title(title: str) -> str:
 def sanitize_title(text: str, limit: int = 160) -> str:
     """過濾不可見字元、危險 Scheme 與控制符號，截斷長度。"""
     clean = _drop_invisible(text, keep="\n\t")
-    clean = _URL.sub(r"[網址:\1]", clean)
+    clean = _URL.sub(lambda m: f"[網址:{m.group(1).rsplit('@', 1)[-1]}]", clean)
     clean = _SCHEME.sub("[連結]:", clean)
     clean = _STRIP.sub("", clean)
     clean = _WS.sub(" ", clean).strip()

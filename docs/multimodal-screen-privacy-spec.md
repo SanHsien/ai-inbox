@@ -93,7 +93,7 @@ def normalize_title(title: str) -> str:
 ```python
 import unicodedata
 
-_URL = re.compile(r"https?://([^\s/]+)\S*", re.IGNORECASE)
+_URL = re.compile(r"(?:https?|ftps?|wss?|sftp|ssh)://([^\s/?#]+)\S*", re.IGNORECASE)
 _STRIP = re.compile(r"[`<>|{}\\]")
 _WS = re.compile(r"\s+")
 _SCHEME = re.compile(r"\b(?:javascript|vbscript|file):|\bdata:(?=[\w.+-]+/[\w.+-]+[;,])", re.IGNORECASE)
@@ -102,7 +102,7 @@ def sanitize_title(text: str, limit: int = 160) -> str:
     """過濾不可見字元、危險 Scheme 與控制符號，截斷長度。"""
     # 去除控制字元 (Cc)、格式字元 (Cf: 零寬/雙向覆寫)、私用區 (Co)、未指派碼位 (Cn)
     clean = "".join(ch for ch in (text or "") if ch in "\n\t" or unicodedata.category(ch) not in ("Cc", "Cf", "Co", "Cn"))
-    clean = _URL.sub(r"[網址:\1]", clean)
+    clean = _URL.sub(lambda m: f"[網址:{m.group(1).rsplit('@', 1)[-1]}]", clean)  # 只留主機名，不留帳密與 query
     clean = _SCHEME.sub("[連結]:", clean)
     clean = _STRIP.sub("", clean)
     clean = _WS.sub(" ", clean).strip()

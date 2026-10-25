@@ -45,6 +45,21 @@ class TitleNormalizationTest(unittest.TestCase):
         self.assertIn("[網址:evil.example]", clean)
         self.assertIn("[連結]:", clean)
 
+    def test_sanitize_url_keeps_only_the_host(self):
+        # 標題裡的網址只該留主機名：帳密（userinfo）、沒有路徑時緊接在主機後的 ?query 與 #fragment 都是機密
+        cases = {
+            "Login https://alice:hunter2@example.com/inbox": ("hunter2", "[網址:example.com]"),
+            "https://example.com?token=abc123secret": ("abc123secret", "[網址:example.com]"),
+            "https://example.com#access_token=zzz999": ("zzz999", "[網址:example.com]"),
+            "https://host.example:8443?key=k3y": ("k3y", "[網址:host.example:8443]"),
+            "ftp://admin:pw0rd@files.example/x": ("pw0rd", "[網址:files.example]"),
+        }
+        for dirty, (leaked, expected) in cases.items():
+            with self.subTest(dirty=dirty):
+                clean = sp.sanitize_title(dirty)
+                self.assertNotIn(leaked, clean)
+                self.assertIn(expected, clean)
+
     def test_sanitize_strips_markup_and_truncates(self):
         self.assertEqual(sp.sanitize_title("a`b<c>d|e{f}g\\h"), "abcdefgh")
         self.assertEqual(len(sp.sanitize_title("x" * 500)), 160)
