@@ -62,6 +62,12 @@ def _update_note_frontmatter_status(text: str, new_status: str) -> str:
     return "\n".join(lines)
 
 
+def _one_line(text: str) -> str:
+    """把使用者輸入壓成單行。欄位值只有一行：換行後的內容會落到沒縮排的位置，
+    被當成任務區塊結束，README 只剩第一行，其餘變成筆記裡的孤兒文字（甚至多出假任務行）。"""
+    return " ".join(text.split())
+
+
 def _read_note(note_path: Path) -> tuple[str, str]:
     """讀取筆記內容（內部統一以 \\n 切行）並回傳原檔換行符號（\\r\\n 或 \\n）。"""
     raw = note_path.read_bytes()
@@ -117,7 +123,7 @@ def apply_claim(note_path: Path, task_id: str) -> str:
 
 
 def apply_close(note_path: Path, task_id: str, reason: str) -> str:
-    reason = reason.strip()
+    reason = _one_line(reason)
     if not reason:
         raise ValueError("關閉理由不可為空")
     text, nl = _read_note(note_path)
@@ -141,7 +147,7 @@ def apply_close(note_path: Path, task_id: str, reason: str) -> str:
 
 
 def apply_complete(note_path: Path, task_id: str, evidence: str, date_str: str) -> str:
-    evidence = evidence.strip()
+    evidence = _one_line(evidence)
     if not bi.filled(evidence):
         raise ValueError("驗收證據不可為空或佔位文字")
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_str):

@@ -398,5 +398,34 @@ class DodArtifactTest(unittest.TestCase):
             self.assertEqual(note.path.read_text(encoding="utf-8"), before)
 
 
+class MultilineCliInputTest(unittest.TestCase):
+    """--evidence／--reason 常是多行驗證輸出：必須整段留下，不能只留第一行、其餘掉到任務區塊外面。"""
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def test_multiline_evidence_is_kept_whole_and_stays_inside_the_task(self):
+        n = make_note(self.tmp, status="pending", box=" ", extra="")
+        evidence = "commit abc1234\n本機測試 236 passed\n- [ ] 這行不是任務"
+        tc.apply_complete(n.path, "T-20261020-01", evidence, "2026-10-26")
+        parsed = bi.parse_note(n.path)
+        saved = parsed.tasks[0].fields["實作紀錄 / 證據"]
+        for part in ("commit abc1234", "本機測試 236 passed", "這行不是任務"):
+            self.assertIn(part, saved)
+        self.assertEqual(len(parsed.tasks), 2)  # 證據裡的「- [ ]」沒有變成第三個任務
+        self.assertEqual(vi.check_notes([parsed]), [])
+
+    def test_multiline_close_reason_is_kept_whole(self):
+        n = make_note(self.tmp)
+        tc.apply_close(n.path, "T-20261020-02", "與現有工具重複\n見 notes 的比較表")
+        parsed = bi.parse_note(n.path)
+        self.assertTrue(parsed.tasks[1].archived)
+        self.assertIn("見 notes 的比較表", parsed.tasks[1].archive_reason)
+
+
 if __name__ == "__main__":
     unittest.main()
