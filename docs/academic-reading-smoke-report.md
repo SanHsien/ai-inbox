@@ -81,5 +81,5 @@
 - **R - Recyclable（可復用架構模式）**：
   - **Fail-to-Pass + Pass-to-Pass 雙向回歸測試契約**：在 Coding Agent 工作流中，要求實作前先設計出可重現問題的失敗測試（Fail-to-Pass），實作完成後確認全套測試全綠（Pass-to-Pass），防範模型產生破壞性副作用。
 - **Usable（具體工程待辦事項）**：
-  - **待辦項目**：在本地工具鏈（如 `tools/verify_video_storyboard.py` 或 `tools/verify_story_structure.py`）之單元測試中，持續貫徹「正向通過與邊界反例」雙重測試覆蓋，每次修改以 `python -m unittest discover -s tests` 確定性閉環。
+  - **待辦項目**：在本地工具鏈（如 `tools/verify_story_structure.py`）之單元測試中，持續貫徹「正向通過與邊界反例」雙重測試覆蓋，每次修改以 `python -m unittest discover -s tests` 確定性閉環。
   - **驗收標準（DoD）**：測試套件在修改前能捕捉違規案例（紅燈），修改後完全通過（綠燈），且現有既有測試零回歸。

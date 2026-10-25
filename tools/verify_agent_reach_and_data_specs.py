@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 tools/verify_agent_reach_and_data_specs.py
-Agent-Reach 16 平台路由範本、Public APIs 檢索技能與健康存摺匯出規格之「外部裁判」結構驗證器（純 Python stdlib）。
+Agent-Reach 16 平台路由範本、Public APIs 檢索技能之「外部裁判」結構驗證器（純 Python stdlib）。
 
 驗證目標：
 1. templates/agent-reach/SKILL.md 與 templates/agent-reach/references/：
@@ -10,10 +10,7 @@ Agent-Reach 16 平台路由範本、Public APIs 檢索技能與健康存摺匯�
 2. templates/public-apis-search-skill.md 與 docs/free-public-apis.md：
    - 驗證 Auth: No、CORS: Yes、HTTPS 三道篩選門檻；
    - 驗證 462 筆公開端點與 42 類別目錄索引、表格欄位結構與每筆資料符合零金鑰/跨域放行條件。
-3. docs/health-bank-export-format.md、templates/health-bank-dashboard-prompt.md 與 templates/health-report-pdf-prompt.md：
-   - 驗證離線脫敏欄位規範（姓名、身分證、生日、電話、地址、病歷號、健保卡就醫序號，以及純本地離線、不得入 git repo）；
-   - 驗證民國年轉 ISO 規範（民國年 + 1911、<欄位>_iso）；
-   - 驗證醫療免責聲明（不下確定診斷、不調整藥物、非醫療診斷、需諮詢醫師）。
+（健康存摺三份文件已於 2026-10-25 移至 SanHsien/health-bank-toolkit，相關檢查一併移除。）
 """
 
 from __future__ import annotations
@@ -55,17 +52,6 @@ REQUIRED_PUBLIC_APIS_GATING = [
 
 TOTAL_PUBLIC_APIS_COUNT = 462
 TOTAL_PUBLIC_APIS_CATEGORIES = 42
-
-REQUIRED_HEALTH_PII_KEYWORDS = [
-    ("姓名", "name"),
-    ("身分證", "id_number"),
-    ("出生日期/生日", "birth_date"),
-    ("電話", "phone"),
-    ("地址", "address"),
-    ("病歷號", "medical_record_no"),
-    ("健保卡就醫序號", "card_seq"),
-]
-
 
 # ---------------------------------------------------------------------------
 # 輔助函式：安全路徑與文字解析（防範 Linux CI ENAMETOOLONG）
@@ -364,161 +350,7 @@ def verify_public_apis_specs(
 
 
 # ---------------------------------------------------------------------------
-# 3. 健康存摺匯出格式與 Prompt 範本規格驗證
-# ---------------------------------------------------------------------------
-
-@doc_guard
-def verify_health_bank_format_doc(format_input: Union[Path, str]) -> List[str]:
-    """
-    驗證 docs/health-bank-export-format.md：
-    - 離線脫敏欄位規範（包含姓名、身分證字號、出生日期、電話、地址、病歷號、健保卡就醫序號一律遮蔽）；
-    - 資料安全性原則（不得放進任何 git repo、私人資料夾）；
-    - 民國年轉 ISO 規範（民國年 + 1911、<欄位>_iso）；
-    - 醫療免責界線（不下確定診斷、不建議增減停用藥物）。
-    """
-    errors: List[str] = []
-    text, _ = _resolve_content_and_path(format_input, default_subpath="docs/health-bank-export-format.md")
-
-    if not text.strip():
-        return ["docs/health-bank-export-format.md 內容為空或檔案不存在"]
-
-    # 1. 安全原則：不得進 git repo
-    has_git_prohibition = bool(re.search(r"不得放進任何\s*git\s*repo|repo\s*外.*私人資料夾", text))
-    if not has_git_prohibition:
-        errors.append("docs/health-bank-export-format.md 缺少「原始檔與解析結果不得放進任何 git repo」之安全原則")
-
-    # 2. 脫敏欄位遮蔽校驗
-    has_redaction_heading = bool(re.search(r"##\s+7\.\s+脫敏欄位", text))
-    if not has_redaction_heading:
-        errors.append("docs/health-bank-export-format.md 缺少「## 7. 脫敏欄位」章節")
-
-    missing_pii: List[str] = []
-    for label_zh, _keyword in REQUIRED_HEALTH_PII_KEYWORDS:
-        # 部分標籤有多關鍵字（如「出生日期/生日」）
-        sub_kws = label_zh.split("/")
-        if not any(kw in text for kw in sub_kws):
-            missing_pii.append(label_zh)
-    if missing_pii:
-        errors.append(f"docs/health-bank-export-format.md 脫敏遮蔽清單缺少關鍵個資欄位：{missing_pii}")
-
-    # 3. 日期民國年轉 ISO 規範校驗
-    has_roc_date_rule = bool(
-        re.search(r"民國年.*\+?\s*1911|112/10/12\s*=\s*2023-10-12", text)
-    )
-    has_iso_field_rule = "_iso" in text
-    if not (has_roc_date_rule and has_iso_field_rule):
-        errors.append("docs/health-bank-export-format.md 缺少民國年轉西元 ISO（_iso 欄位）轉換規範")
-
-    # 4. 醫療免責聲明與行為邊界校驗
-    has_medical_boundary = bool(
-        re.search(r"不下確定診斷.*不建議增減|不建議增減.*停用.*更換藥物", text)
-    )
-    if not has_medical_boundary:
-        errors.append("docs/health-bank-export-format.md 缺少「不下確定診斷、不建議增減/停用/更換藥物」之醫療邊界規範")
-
-    return errors
-
-
-@doc_guard
-def verify_health_bank_dashboard_prompt(dashboard_input: Union[Path, str]) -> List[str]:
-    """
-    驗證 templates/health-bank-dashboard-prompt.md：
-    - 純本地離線運算原則（100% Client-Side Privacy、嚴禁向外部伺服器發送）；
-    - 醫療免責聲明（Medical Disclaimer、不構成任何醫療診斷、指標異常諮詢專業主治醫師）；
-    - 脫敏 JSON Schema 規範（包含 rules_applied 與核心遮蔽標籤）。
-    """
-    errors: List[str] = []
-    text, _ = _resolve_content_and_path(dashboard_input, default_subpath="templates/health-bank-dashboard-prompt.md")
-
-    if not text.strip():
-        return ["templates/health-bank-dashboard-prompt.md 內容為空或檔案不存在"]
-
-    # 1. 本地離線隱私
-    has_offline_privacy = bool(
-        re.search(r"純本地離線運算|100%\s*Client-Side Privacy|嚴禁向任何外部伺服器發送", text)
-    )
-    if not has_offline_privacy:
-        errors.append("templates/health-bank-dashboard-prompt.md 缺少純本地離線隱私保護（Client-Side Privacy）鐵律")
-
-    # 2. 醫療免責聲明
-    has_disclaimer = bool(
-        re.search(r"醫療免責聲明|Medical Disclaimer", text)
-        and re.search(r"不構成任何醫療診斷", text)
-        and re.search(r"諮詢專業主治醫師", text)
-    )
-    if not has_disclaimer:
-        errors.append("templates/health-bank-dashboard-prompt.md 缺少頁首/頁尾強制醫療免責聲明規範")
-
-    # 3. 脫敏資料結構契約
-    has_schema_rules = bool(
-        re.search(r'"rules_applied"', text)
-        and re.search(r'"name"|"id_number"|"birth_date"', text)
-    )
-    if not has_schema_rules:
-        errors.append("templates/health-bank-dashboard-prompt.md 缺少脫敏數據結構契約（rules_applied）")
-
-    return errors
-
-
-def verify_health_report_pdf_prompt(pdf_input: Union[Path, str]) -> List[str]:
-    """
-    驗證 templates/health-report-pdf-prompt.md：
-    - 資料安全性提醒（解壓至私人資料夾、不要放進 repo）；
-    - 角色定位與醫療免責（助理不是醫師、不下確定診斷、不調整藥物）；
-    - 嚴格個資脫敏規範（不寫姓名、身分證、生日、電話、地址、病歷號、健保卡就醫序號）；
-    - 參照 docs/health-bank-export-format.md 判讀規則。
-    """
-    errors: List[str] = []
-    text, _ = _resolve_content_and_path(pdf_input, default_subpath="templates/health-report-pdf-prompt.md")
-
-    if not text.strip():
-        return ["templates/health-report-pdf-prompt.md 內容為空或檔案不存在"]
-
-    # 1. 安全原則
-    has_repo_warning = bool(re.search(r"私人資料夾.*不要放進\s*repo|repo\s*以外的私人資料夾", text))
-    if not has_repo_warning:
-        errors.append("templates/health-report-pdf-prompt.md 缺少「報告存在私人資料夾，不要放進 repo」之安全提醒")
-
-    # 2. 角色定位與醫療免責
-    has_role_disclaimer = bool(
-        re.search(r"不是醫師", text)
-        and re.search(r"不下確定診斷", text)
-        and re.search(r"不調整藥物|不建議增加、減少、停用或更換任何藥物", text)
-    )
-    if not has_role_disclaimer:
-        errors.append("templates/health-report-pdf-prompt.md 缺少「不是醫師、不下確定診斷、不調整藥物」之核心免責界線")
-
-    # 3. 嚴格個資不寫規範
-    missing_pii: List[str] = []
-    for label_zh, _kw in REQUIRED_HEALTH_PII_KEYWORDS:
-        sub_kws = label_zh.split("/")
-        if not any(kw in text for kw in sub_kws):
-            missing_pii.append(label_zh)
-    if missing_pii:
-        errors.append(f"templates/health-report-pdf-prompt.md 報告規則缺少禁止寫出之個資欄位：{missing_pii}")
-
-    # 4. 參照格式文件
-    if "docs/health-bank-export-format.md" not in text:
-        errors.append("templates/health-report-pdf-prompt.md 缺少對判讀格式文件「docs/health-bank-export-format.md」之參照")
-
-    return errors
-
-
-def verify_health_bank_specs(
-    format_input: Union[Path, str],
-    dashboard_input: Union[Path, str],
-    pdf_input: Union[Path, str],
-) -> List[str]:
-    """整合驗證健康存摺三份規格文件。"""
-    errors: List[str] = []
-    errors.extend(verify_health_bank_format_doc(format_input))
-    errors.extend(verify_health_bank_dashboard_prompt(dashboard_input))
-    errors.extend(verify_health_report_pdf_prompt(pdf_input))
-    return errors
-
-
-# ---------------------------------------------------------------------------
-# 4. 全專案規格總體驗證器
+# 3. 全專案規格總體驗證器
 # ---------------------------------------------------------------------------
 
 def verify_all_specs(repo_root: Optional[Path] = None) -> Tuple[bool, Dict[str, List[str]]]:
@@ -539,14 +371,6 @@ def verify_all_specs(repo_root: Optional[Path] = None) -> Tuple[bool, Dict[str, 
     results["templates/public-apis-search-skill.md"] = verify_public_apis_search_skill(pub_skill)
     results["docs/free-public-apis.md"] = verify_free_public_apis_index(pub_index)
 
-    # (3) 健康存摺匯出格式與 Prompt 範本
-    hb_format = root / "docs" / "health-bank-export-format.md"
-    hb_dashboard = root / "templates" / "health-bank-dashboard-prompt.md"
-    hb_pdf = root / "templates" / "health-report-pdf-prompt.md"
-    results["docs/health-bank-export-format.md"] = verify_health_bank_format_doc(hb_format)
-    results["templates/health-bank-dashboard-prompt.md"] = verify_health_bank_dashboard_prompt(hb_dashboard)
-    results["templates/health-report-pdf-prompt.md"] = verify_health_report_pdf_prompt(hb_pdf)
-
     all_passed = all(len(errs) == 0 for errs in results.values())
     return all_passed, results
 
@@ -554,7 +378,7 @@ def verify_all_specs(repo_root: Optional[Path] = None) -> Tuple[bool, Dict[str, 
 def main(argv: Optional[List[str]] = None) -> int:
     ensure_utf8_output()
     parser = argparse.ArgumentParser(
-        description="Agent-Reach 路由、Public APIs 檢索與健康存摺規格外部裁判結構驗證器"
+        description="Agent-Reach 路由與 Public APIs 檢索規格外部裁判結構驗證器"
     )
     parser.add_argument(
         "--repo-root",

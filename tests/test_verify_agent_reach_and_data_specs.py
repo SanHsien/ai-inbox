@@ -126,75 +126,6 @@ class TestVerifyAgentReachAndDataSpecs(unittest.TestCase):
             f"未攔截到異常資料行：{errors_row}",
         )
 
-    def test_6_health_bank_format_missing_pii_or_iso_rules(self):
-        """6. 反例攔截：health-bank-export-format.md 缺少個資欄位或民國年轉西元 ISO 規範。"""
-        raw_format = (REPO_ROOT / "docs" / "health-bank-export-format.md").read_text(encoding="utf-8")
-
-        # 缺少健保卡就醫序號脫敏
-        no_card_seq = raw_format.replace("健保卡就醫序號", "序號")
-        errors = vsp.verify_health_bank_format_doc(no_card_seq)
-        self.assertTrue(
-            any("健保卡就醫序號" in e for e in errors),
-            f"未攔截到缺少健保卡就醫序號脫敏：{errors}",
-        )
-
-        # 缺少民國年轉西元規範
-        no_roc = raw_format.replace("+ 1911", "").replace("112/10/12 = 2023-10-12", "隨意格式")
-        errors_roc = vsp.verify_health_bank_format_doc(no_roc)
-        self.assertTrue(
-            any("民國年轉西元" in e for e in errors_roc),
-            f"未攔截到缺少民國年轉 ISO 規範：{errors_roc}",
-        )
-
-    def test_7_health_bank_dashboard_missing_privacy_or_disclaimer(self):
-        """7. 反例攔截：health-bank-dashboard-prompt.md 缺少離線隱私或醫療免責聲明。"""
-        raw_dashboard = (REPO_ROOT / "templates" / "health-bank-dashboard-prompt.md").read_text(encoding="utf-8")
-
-        # 移除免責聲明
-        no_disclaimer = (
-            raw_dashboard.replace("醫療免責聲明", "一般說明")
-            .replace("Medical Disclaimer", "General Info")
-            .replace("不構成任何醫療診斷", "分析報告")
-            .replace("諮詢專業主治醫師", "自行觀察")
-        )
-        errors = vsp.verify_health_bank_dashboard_prompt(no_disclaimer)
-        self.assertTrue(
-            any("醫療免責聲明" in e for e in errors),
-            f"未攔截到缺少醫療免責聲明：{errors}",
-        )
-
-        # 移除純本地離線
-        no_offline = (
-            raw_dashboard.replace("純本地離線運算", "雲端加速")
-            .replace("Client-Side Privacy", "API Service")
-            .replace("嚴禁向任何外部伺服器發送", "允許向外部伺服器發送")
-        )
-        errors_offline = vsp.verify_health_bank_dashboard_prompt(no_offline)
-        self.assertTrue(
-            any("純本地離線" in e for e in errors_offline),
-            f"未攔截到缺少離線隱私：{errors_offline}",
-        )
-
-    def test_8_health_bank_pdf_missing_medical_disclaimer_or_pii_rules(self):
-        """8. 反例攔截：health-report-pdf-prompt.md 缺少不是醫師/不下確定診斷或禁止個資輸出規範。"""
-        raw_pdf = (REPO_ROOT / "templates" / "health-report-pdf-prompt.md").read_text(encoding="utf-8")
-
-        # 缺少免責界線
-        no_boundary = raw_pdf.replace("不是醫師", "專業健康顧問").replace("不下確定診斷", "給予明確診斷")
-        errors = vsp.verify_health_report_pdf_prompt(no_boundary)
-        self.assertTrue(
-            any("免責界線" in e for e in errors),
-            f"未攔截到缺少醫師角色免責界線：{errors}",
-        )
-
-        # 缺少禁止寫出身分證/病歷號
-        no_pii_rule = raw_pdf.replace("不寫姓名、身分證、生日、電話、地址、病歷號、健保卡就醫序號", "完整記錄個人摘要")
-        errors_pii = vsp.verify_health_report_pdf_prompt(no_pii_rule)
-        self.assertTrue(
-            any("禁止寫出之個資欄位" in e for e in errors_pii),
-            f"未攔截到缺少個資禁止寫出規範：{errors_pii}",
-        )
-
     def test_9_safe_resolve_no_enametoolong_on_multiline_string(self):
         """9. 驗證多行巨量字串傳入時絕不觸發 Linux CI ENAMETOOLONG 異常。"""
         huge_multiline_text = ("測試行一\n" + "x" * 300 + "\n") * 50
@@ -204,7 +135,7 @@ class TestVerifyAgentReachAndDataSpecs(unittest.TestCase):
         self.assertIsNone(resolved_path)
 
         # 傳入驗證函式測試是否安全解析且不噴例外
-        errs = vsp.verify_health_bank_dashboard_prompt(huge_multiline_text)
+        errs = vsp.verify_public_apis_search_skill(huge_multiline_text)
         self.assertIsInstance(errs, list)
         self.assertTrue(len(errs) > 0)
 

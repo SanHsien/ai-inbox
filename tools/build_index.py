@@ -353,9 +353,14 @@ def build_readme(readme: str, notes: list[Note]) -> str:
 
 def main(argv: list[str]) -> int:
     ensure_utf8_stdout()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="從 notes/ 重產 README.md 的任務表、文章索引與知識圖譜")
+    parser.add_argument("--check", action="store_true", help="只檢查 README 是否過期，不寫檔（過期時 exit 1）")
+    args = parser.parse_args(argv)  # 先解析：--help 只印說明，不可重寫 README
     current = README_FILE.read_text(encoding="utf-8")
     expected = build_readme(current, load_notes())
-    if "--check" in argv:
+    if args.check:
         if current != expected:
             print("[FAIL] README.md 自動產生區塊已過期，請執行：python tools/build_index.py")
             return 1

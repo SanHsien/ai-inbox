@@ -184,17 +184,17 @@ def audit_fullstack_security(target_dir: Path) -> dict[str, Any]:
 
 
 def main() -> int:
+    # 要在解析參數之前設定：--help 由 argparse 直接印出，晚設就會用系統編碼（Windows cp950）輸出成亂碼
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError):
+            pass
+
     parser = argparse.ArgumentParser(description="全端商業網站上線前資安自檢稽核工具")
     parser.add_argument("--target", default=".", help="待稽核專案根目錄路徑 (預設為當前目錄)")
     parser.add_argument("--json", action="store_true", help="以 JSON 格式輸出")
     args = parser.parse_args()
-
-    # Windows cp950 終端遇到無法編碼的字元不應崩潰
-    for stream in (sys.stdout, sys.stderr):
-        try:
-            stream.reconfigure(errors="replace")
-        except (AttributeError, ValueError):
-            pass
 
     target_path = Path(args.target)
     if not target_path.is_dir():

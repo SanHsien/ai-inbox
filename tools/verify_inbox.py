@@ -222,8 +222,13 @@ def check_readme(notes: list[bi.Note]) -> list[str]:
     return []
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     bi.ensure_utf8_stdout()
+    import argparse
+
+    argparse.ArgumentParser(
+        description="ai-inbox 契約驗證（CI 同款）：筆記格式、任務狀態、DoD 產出檔、連結、機密、私有別名、README 是否過期"
+    ).parse_args(argv)
     print("[*] 正在執行 ai-inbox 契約完整性驗證...")
     notes = bi.load_notes()
     tasks = [t for n in notes for t in n.tasks]

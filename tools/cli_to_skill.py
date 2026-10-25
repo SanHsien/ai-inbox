@@ -6,6 +6,7 @@ Agent-Native CLI to SKILL.md 自動轉換工具
 將 CLI 中繼描述檔 (JSON) 自動轉換為 Antigravity / Claude Code 相容之 SKILL.md。
 """
 
+import argparse
 import json
 import re
 import sys
@@ -103,20 +104,20 @@ def convert_cli_to_skill(cli_schema: Dict[str, Any]) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
-def main() -> int:
-    # Windows cp950 終端遇到無法編碼的字元（例如 emoji）不應崩潰
+def main(argv: list[str] | None = None) -> int:
+    # 要在解析參數之前設定：--help 由 argparse 直接印出，晚設就會用系統編碼（Windows cp950）輸出成亂碼
     for stream in (sys.stdout, sys.stderr):
         try:
-            stream.reconfigure(errors="replace")
-        except (AttributeError, ValueError):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError):
             pass
 
-    if len(sys.argv) < 2:
-        print("用法: python tools/cli_to_skill.py <cli_schema.json> [output_skill.md]")
-        return 1
-
-    input_path = sys.argv[1]
-    output_path = sys.argv[2] if len(sys.argv) > 2 else None
+    parser = argparse.ArgumentParser(description="把 CLI 工具的參數結構 JSON 轉成 Agent 可用的 SKILL.md")
+    parser.add_argument("schema", help="CLI 參數結構 JSON 檔")
+    parser.add_argument("output", nargs="?", help="輸出的 SKILL.md 路徑（省略則印到螢幕）")
+    args = parser.parse_args(argv)
+    input_path = args.schema
+    output_path = args.output
 
     try:
         with open(input_path, "r", encoding="utf-8-sig") as f:

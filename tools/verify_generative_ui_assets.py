@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
 tools/verify_generative_ui_assets.py
-assets/ 全庫 6 個單檔 HTML Generative UI 互動展示之「外部裁判」結構與安全驗證器（純 Python stdlib）。
+assets/ 全庫 4 個單檔 HTML Generative UI 互動展示之「外部裁判」結構與安全驗證器（純 Python stdlib）。
 
 驗證規格：
 1. 檔案存在性與基礎 HTML5 結構：
-   - 6 個 HTML 檔案皆存在於 assets/ 下；
+   - 4 個 HTML 檔案皆存在於 assets/ 下；
    - 具備 <!DOCTYPE html> 宣告（不分大小寫）；
    - 具備 UTF-8 編碼宣告（<meta charset="UTF-8"> 等）；
    - 具備非空 <title> 標籤。
@@ -13,9 +13,6 @@ assets/ 全庫 6 個單檔 HTML Generative UI 互動展示之「外部裁判」�
    - 所有外部 <script src="..."> 與 <link href="..."> 若為外部網址一律使用 https://；
    - 嚴禁 http:// 明文傳輸；
    - 嚴禁使用 file:// 協定或指向本機磁碟路徑（如 C:\\ 或 C:/）。
-3. 核心契約與特定檔案安全規範：
-   - assets/openlibrary_demo/video_seek_canvas.html 必須實作 seek 時間函式契約；
-   - assets/health-bank-dashboard/index.html 不得含有未遮蔽之台灣身分證字號格式，且必須包含免責聲明。
 """
 
 from __future__ import annotations
@@ -34,14 +31,12 @@ from _judge_common import (  # noqa: E402
     strip_html_comments,
 )
 
-# 6 個標準 Generative UI HTML 資產相對路徑
+# 4 個標準 Generative UI HTML 資產相對路徑（健康存摺儀表板與 OpenLibrary seek(t) 範例已於 2026-10-25 移至獨立 repo，對應的專屬檢查一併移除）
 EXPECTED_HTML_ASSETS: List[str] = [
     "assets/anti-slop-demo/index.html",
     "assets/target-story-editor/index.html",
-    "assets/health-bank-dashboard/index.html",
     "assets/open-meteo-weather-chart/index.html",
     "assets/creative-coding-demo/threejs-particle-galaxy.html",
-    "assets/openlibrary_demo/video_seek_canvas.html",
 ]
 
 # DOCTYPE 正則（不分大小寫）
@@ -57,13 +52,7 @@ TITLE_RE = re.compile(r"<title>(.*?)</title>", re.IGNORECASE | re.DOTALL)
 SCRIPT_SRC_RE = re.compile(r'<script\b[^>]*\bsrc=["\']([^"\']+)["\']', re.IGNORECASE)
 LINK_HREF_RE = re.compile(r'<link\b[^>]*\bhref=["\']([^"\']+)["\']', re.IGNORECASE)
 
-# seek 時間函式契約正則（支援 function seek(、window.seek =、const/let seek =）
-SEEK_CONTRACT_RE = re.compile(
-    r"(?:function\s+seek\s*\(|window\.seek\s*=\s*(?:function|\()|const\s+seek\s*=\s*(?:function|\()|let\s+seek\s*=\s*(?:function|\())"
-)
 
-# 台灣身分證字號正則（1 個大寫字母 + 1/2/8/9 + 8 個數字，防範真實個資外洩）
-TW_ID_RE = re.compile(r"\b[A-Z][1289]\d{8}\b")
 
 # 本機磁碟路徑正則（如 C:\ 或 D:/）
 LOCAL_DRIVE_RE = re.compile(r"^[a-zA-Z]:[/\\]")
@@ -148,50 +137,6 @@ def verify_asset_security_urls(html_content: str, rel_path: str = "") -> List[st
     return errors
 
 
-def verify_video_seek_contract(html_content: str, rel_path: str = "") -> List[str]:
-    """
-    驗證 Code-as-Video 示範之 seek 時間函式契約：
-    - openlibrary_demo/video_seek_canvas.html 必須實作 seek(t) 契約。
-    """
-    errors: List[str] = []
-    prefix = f"[{rel_path}] " if rel_path else ""
-
-    # 剝除 JS 註解（/* */ 與整行 //），避免註解中的 function seek( 騙過檢查
-    code = re.sub(r"/\*[\s\S]*?\*/", "", html_content)
-    code = re.sub(r"(?m)^[ \t]*//.*$", "", code)
-    if not SEEK_CONTRACT_RE.search(code):
-        errors.append(
-            f"{prefix}未實作 seek 時間函式契約（必須包含 function seek(...) 或 window.seek = ...）"
-        )
-
-    return errors
-
-
-def verify_health_bank_privacy_and_disclaimer(html_content: str, rel_path: str = "") -> List[str]:
-    """
-    驗證健康存摺展示安全與隱私規範：
-    - 不含未遮蔽之真實台灣身分證字號格式（防範個資外洩）；
-    - 必須包含醫療免責聲明。
-    """
-    errors: List[str] = []
-    prefix = f"[{rel_path}] " if rel_path else ""
-
-    # 1. 檢測身分證字號格式
-    id_matches = TW_ID_RE.findall(html_content)
-    if id_matches:
-        masked_ids = [m[:3] + "****" + m[-3:] for m in id_matches]
-        errors.append(
-            f"{prefix}檢測到疑似未遮蔽之身分證字號格式：{masked_ids}，示範資料必須脫敏"
-        )
-
-    # 2. 檢測免責聲明
-    has_disclaimer = "免責聲明" in html_content or "免責" in html_content
-    if not has_disclaimer:
-        errors.append(f"{prefix}缺少健康資訊或醫療免責聲明文字")
-
-    return errors
-
-
 def verify_single_html_asset(html_content: str, rel_path: str) -> List[str]:
     """
     對指定相對路徑的 HTML 檔案執行完整規則校驗。
@@ -206,15 +151,6 @@ def verify_single_html_asset(html_content: str, rel_path: str) -> List[str]:
     # 通用規則 2：外部資源安全性
     errors.extend(verify_asset_security_urls(html_content, rel_path))
 
-    # 專屬規則 3：video_seek_canvas.html 時間函式契約
-    norm_path = rel_path.replace("\\", "/")
-    if "video_seek_canvas.html" in norm_path:
-        errors.extend(verify_video_seek_contract(html_content, rel_path))
-
-    # 專屬規則 4：health-bank-dashboard/index.html 隱私與免責聲明
-    if "health-bank-dashboard" in norm_path:
-        errors.extend(verify_health_bank_privacy_and_disclaimer(html_content, rel_path))
-
     return errors
 
 
@@ -222,7 +158,7 @@ def verify_all_generative_ui_assets(
     repo_root: Optional[Path] = None,
 ) -> Tuple[bool, Dict[str, List[str]]]:
     """
-    驗證 assets/ 目錄下全數 6 個 HTML 展示檔。
+    驗證 assets/ 目錄下全數 4 個 HTML 展示檔。
     傳回：(是否全數通過, {檔案相對路徑: 錯誤清單})
     """
     root = repo_root or find_repo_root()
@@ -250,7 +186,7 @@ def verify_all_generative_ui_assets(
 def main(argv: Optional[List[str]] = None) -> int:
     ensure_utf8_output()
     parser = argparse.ArgumentParser(
-        description="assets/ 全庫 6 個單檔 HTML Generative UI 互動展示之外部裁判結構與安全驗證器"
+        description="assets/ 全庫 4 個單檔 HTML Generative UI 互動展示之外部裁判結構與安全驗證器"
     )
     parser.add_argument(
         "--repo-root",
@@ -267,7 +203,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     return report_results(
         results,
-        success_msg='全數 6 個 Generative UI HTML 展示檔均通過外部裁判結構與安全驗證！',
+        success_msg='全數 4 個 Generative UI HTML 展示檔均通過外部裁判結構與安全驗證！',
         fail_label='安全或結構缺陷',
         ok_label='結構與安全規範完全相符',
         fail_msg='外部裁判驗證未通過，請修復上述問題。',

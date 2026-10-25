@@ -40,22 +40,20 @@
 
 ## 4. 已落地的外部裁判驗證器（2026-10-25 現況）
 
-上述補強方針已有 12 支驗證器實作於 `tools/`（皆純 Python stdlib），共用邏輯集中在 `tools/_judge_common.py`（UTF-8 輸出、repo 根推導、HTML 註解／程式碼區塊剝除、標題結構下限、統一 PASS/FAIL 報告）。每支都有對應的 `tests/test_verify_*.py`；`tests/test_verify_judge_common.py` 以「整份文件藏進註解／程式碼區塊／壓成一行必須失敗」的反例檢驗共用防線。
+上述補強方針已有 10 支驗證器實作於 `tools/`（原為 12 支；`verify_motion_and_video_specs.py` 與 `verify_video_storyboard.py` 已於 2026-10-25 隨影片工具移至 [`SanHsien/code-as-video-studio`](https://github.com/SanHsien/code-as-video-studio)）（皆純 Python stdlib），共用邏輯集中在 `tools/_judge_common.py`（UTF-8 輸出、repo 根推導、HTML 註解／程式碼區塊剝除、標題結構下限、統一 PASS/FAIL 報告）。每支都有對應的 `tests/test_verify_*.py`；`tests/test_verify_judge_common.py` 以「整份文件藏進註解／程式碼區塊／壓成一行必須失敗」的反例檢驗共用防線。
 
 | 驗證器 | 檢查對象 | 指令 |
 | :--- | :--- | :--- |
 | `verify_claude_security_config.py` | `docs/claude-idle-compaction-setup.md`、`templates/claude-security-guidance.md`（含 `scan_code_snippet` 靜態掃描） | `python tools/verify_claude_security_config.py` |
 | `verify_compliance_and_matrix_docs.py` | 合規清單、宣稱查證、對照矩陣、野心提示清單（4 份） | `python tools/verify_compliance_and_matrix_docs.py` |
 | `verify_incident_and_workflow_specs.py` | 資安事件盤點、應變清單、WebToApp 評估與接案流程（4 份） | `python tools/verify_incident_and_workflow_specs.py` |
-| `verify_generative_ui_assets.py` | `assets/` 內 6 個單檔 HTML（結構、HTTPS、seek 契約、健康資料脫敏） | `python tools/verify_generative_ui_assets.py` |
+| `verify_generative_ui_assets.py` | `assets/` 內 4 個單檔 HTML（結構、HTTPS） | `python tools/verify_generative_ui_assets.py` |
 | `verify_academic_and_latex_guard.py` | LaTeX 保護提示詞、學術閱讀提示詞、實測報告（3 份） | `python tools/verify_academic_and_latex_guard.py` |
-| `verify_motion_and_video_specs.py` | 動態字典、提示詞速查、運鏡指南、影片工作室 harness（4 份） | `python tools/verify_motion_and_video_specs.py` |
 | `verify_re_and_android_specs.py` | 逆向工程流水線、REA 沙盒、Android 33 Skills、Android CLI 評測（4 份） | `python tools/verify_re_and_android_specs.py` |
-| `verify_agent_reach_and_data_specs.py` | Agent-Reach 路由、Public APIs、健康存摺規格（6 份） | `python tools/verify_agent_reach_and_data_specs.py` |
+| `verify_agent_reach_and_data_specs.py` | Agent-Reach 路由、Public APIs（3 份；健康存摺規格已移至 health-bank-toolkit） | `python tools/verify_agent_reach_and_data_specs.py` |
 | `verify_pstack_and_fullstack_specs.py` | pstack playbooks、外掛評測、全端建站技能、主體盤點提示詞（4 份） | `python tools/verify_pstack_and_fullstack_specs.py` |
 | `verify_no_slop.py` | HTML／CSS 的 SLOP-01~05 罐頭特徵（預設掃 `assets/anti-slop-demo/index.html`，可傳路徑或目錄；掃不到任何檔案回傳 exit 2） | `python tools/verify_no_slop.py [路徑...]` |
 | `verify_story_structure.py` | 靶心人故事 JSON：七節點／三箭頭字數契約、因果、三伏三冒（至少 3 組且張力皆「剛好」） | `python tools/verify_story_structure.py --input story.json` |
-| `verify_video_storyboard.py` | 分鏡 JSON：關鍵影格 1-10 分自檢（需 8~12 張，與 `templates/video-studio-harness.md` 第 4 節一致） | `python tools/verify_video_storyboard.py --input storyboard.json` |
 
 另有 `tools/verify_inbox.py`（筆記契約，CI 同款）不在本批次內。全套單元測試：`python -m unittest discover -s tests`（CI 即執行此指令）。
 
@@ -63,6 +61,6 @@
 
 ## 5. 擴充政策（2026-10-25 起）
 
-- **不再新增「一份文件一支」的關鍵字型驗證器。** 現有 12 支保留，用途是防止既有文件的結構被改壞；它們只檢查關鍵字與段落是否存在，打亂行序後約 14／19 個函式仍會通過，擋不住內容錯誤。
+- **不再新增「一份文件一支」的關鍵字型驗證器。** 現有 10 支保留，用途是防止既有文件的結構被改壞；它們只檢查關鍵字與段落是否存在，打亂行序後約 14／19 個函式仍會通過，擋不住內容錯誤。
 - 要新增檢查時，優先做**能攔下真錯誤**的機械檢查，例如 `verify_inbox.py` 的「已做任務的 DoD 產出檔必須存在」、機密與私有別名掃描。
 - 新文件不需要配一支驗證器；DoD 寫清楚產出檔路徑（用反引號標出 `docs/...`），結案時 `task_cli.py complete` 就會檢查它存在。

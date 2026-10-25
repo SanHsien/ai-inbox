@@ -278,6 +278,13 @@ def locate_source_file(custom_path: Optional[str] = None) -> Path:
 
 
 def main() -> int:
+    # 要在解析參數之前設定：--help 由 argparse 直接印出，晚設就會用系統編碼（Windows cp950）輸出成亂碼
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError):
+            pass
+
     parser = argparse.ArgumentParser(
         description="Public APIs 本地離線索引與免金鑰 API 篩選工具"
     )
@@ -323,11 +330,6 @@ def main() -> int:
     )
 
     args = parser.parse_args()
-
-    # 保證 Windows 終端 UTF-8
-    for stream in (sys.stdout, sys.stderr):
-        if stream and hasattr(stream, "reconfigure"):
-            stream.reconfigure(encoding="utf-8", errors="replace")
 
     try:
         source_path = locate_source_file(args.source)

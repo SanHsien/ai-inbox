@@ -93,3 +93,14 @@
 - ⏸ [低] T-20261019-02：DoD「跨 Agent／機器／手機端門鈴」中，跨機器以同機雙 clone 模擬（跨 Agent 與手機為真實），目前保留已做
 - ✅ [低] T-20261018-03、T-20261018-14：DoD 要瀏覽器實跑，原證據無紀錄 → 已實跑並補上紀錄（過程中修掉上述 JSON 導出錯誤）
 - ⏸ [低] T-20261018-13 證據寫「38 項測試」，現為 50 項（歷史數字，不影響結論）
+
+## 6. 抽出獨立 repo（2026-10-25）
+
+- ✅ 評估標準：有獨立用途、自己的程式與測試、不依賴 inbox 筆記流程才抽出；屬於某篇文章分析成果的文件與範本留在原處。和待辦任務綁在一起的成果（pstack、Android、WebToApp、Mods、desktop-sense、Space Bunny）一律不動
+- ✅ [`SanHsien/health-bank-toolkit`](https://github.com/SanHsien/health-bank-toolkit)：健保存摺解析器、格式規格、PDF 與儀表板提示詞、儀表板範例、測試與 1 篇筆記（T-20261018-13／14），保留 git 歷史；搬移前先修完第 3 節三項待判斷；Ubuntu 與 Windows CI 皆通過（55 項）
+- ✅ [`SanHsien/code-as-video-studio`](https://github.com/SanHsien/code-as-video-studio)：節拍網格、網頁素材擷取、分鏡驗收閘門、動效與運鏡字典、Code-as-Video 規範、OpenLibrary 範例與 6 篇筆記（13 項任務），保留 git 歷史；Ubuntu 與 Windows CI 皆通過（31 項）
+- ✅ [中] 搬移時實跑發現：`beat_grid.py` 沒有命令列參數（`--help` 會直接跑示範）、`video_asset_capture.py` 的 `--help` 在 Windows 管線輸出亂碼 → 已在新 repo 修正並補測試
+- ✅ [中] 同一問題在本 repo 也有：`audit_fullstack_security.py`、`public_apis_indexer.py`、`video_transcript.py` 在參數解析之後才設 UTF-8，`--help` 輸出亂碼；`cli_to_skill.py` 沒有參數解析，把 `--help` 當檔名 → 一律在解析前設 UTF-8，`cli_to_skill` 改用 argparse；新增 `tests/test_cli_help_encoding.py`，每支工具在 cp950 下的 `--help` 必須是 UTF-8
+- ✅ [中] `build_index.py --help` 不顯示說明，而是直接重寫 README；`verify_inbox.py --help` 直接跑完整驗證 → 兩支補上參數解析，`--help` 不再有副作用
+- ✅ 外部裁判驗證器從 12 支變 10 支：`verify_motion_and_video_specs.py`、`verify_video_storyboard.py` 隨影片工具搬走；`verify_agent_reach_and_data_specs.py` 移除 3 項健保文件檢查（依第 2 節「不再擴充」政策，未帶到新 repo）；`verify_generative_ui_assets.py` 只檢查留下的 4 個 HTML
+- ➖ 第 3 節健保工具、第 5 節 T-20261018-13／14 的條目保留作為歷史；後續修改請到 health-bank-toolkit

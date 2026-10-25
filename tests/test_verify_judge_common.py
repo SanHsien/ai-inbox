@@ -25,7 +25,6 @@ import verify_claude_security_config as vcs  # noqa: E402
 import verify_compliance_and_matrix_docs as vcm  # noqa: E402
 import verify_generative_ui_assets as vgu  # noqa: E402
 import verify_incident_and_workflow_specs as vis  # noqa: E402
-import verify_motion_and_video_specs as vmv  # noqa: E402
 import verify_no_slop as vns  # noqa: E402
 import verify_pstack_and_fullstack_specs as vps  # noqa: E402
 import verify_re_and_android_specs as vre  # noqa: E402
@@ -40,10 +39,6 @@ DOC_VERIFIERS = [
     ("templates/platform-breach-response.md", vis.verify_platform_breach_response),
     ("docs/web-to-app-evaluation.md", vis.verify_web_to_app_evaluation),
     ("docs/web-to-app-freelance-workflow.md", vis.verify_web_to_app_workflow),
-    ("docs/cinetic-motion-dictionary.md", vmv.verify_cinetic_motion_dictionary),
-    ("docs/motion-prompt-cheatsheet.md", vmv.verify_motion_prompt_cheatsheet),
-    ("docs/cinematic-shot-camera-guide.md", vmv.verify_cinematic_shot_camera_guide),
-    ("templates/video-studio-harness.md", vmv.verify_video_studio_harness),
     ("docs/pstack-agent-playbooks.md", vps.verify_pstack_playbooks),
     ("docs/claude-plugins-official-review.md", vps.verify_claude_plugins_review),
     ("templates/fullstack-website-builder-skill.md", vps.verify_fullstack_website_builder),
@@ -119,19 +114,6 @@ class TestKeywordsMustBeVisibleAndStructured(unittest.TestCase):
 
 
 class TestOtherValidators(unittest.TestCase):
-    def test_generative_ui_disclaimer_in_comment_does_not_count(self):
-        rel = "assets/health-bank-dashboard/index.html"
-        html = _read(rel)
-        self.assertEqual(vgu.verify_single_html_asset(html, rel), [])
-        hidden = html.replace("免責", "XX").replace("<body", "<!-- 免責聲明 --><body", 1)
-        errs = vgu.verify_single_html_asset(hidden, rel)
-        self.assertTrue(any("免責" in e for e in errs))
-
-    def test_generative_ui_seek_in_comment_does_not_count(self):
-        html = "<!DOCTYPE html><meta charset='utf-8'><title>t</title><script>/* function seek(t){} */</script>"
-        errs = vgu.verify_single_html_asset(html, "assets/openlibrary_demo/video_seek_canvas.html")
-        self.assertTrue(any("seek" in e for e in errs))
-
     def test_security_clause_number_and_title_must_be_one_heading(self):
         tpl = REPO_ROOT / "templates/claude-security-guidance.md"
         with tempfile.TemporaryDirectory() as tmp:
@@ -201,7 +183,6 @@ class TestCp950Stdout(unittest.TestCase):
         mains = [
             vag.main,
             vis.main,
-            vmv.main,
             vps.main,
             vre.main,
             vgu.main,

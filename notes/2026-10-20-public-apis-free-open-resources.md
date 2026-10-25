@@ -128,4 +128,4 @@ tags:
   - [Agent-Reach：跨平台社媒熱點與情報獲取工具包](./2026-10-17-agent-reach-social-intelligence.md) ｜ 關聯任務：`T-20261017-05`、`T-20261017-06`
 - **Generative UI 與前端互動**：
   - [靶心人故事編輯器 Generative UI](./2026-10-18-target-story-generative-ui-editor.md) ｜ 關聯任務：`T-20261018-03`、`T-20261018-04`
-  - [健保快易通 HTML 轉化 Claude Artifact Dashboard](./2026-10-18-health-bank-html-claude-artifact-dashboard.md) ｜ 關聯任務：`T-20261018-13`、`T-20261018-14`
+  - [健保快易通 HTML 轉化 Claude Artifact Dashboard](https://github.com/SanHsien/health-bank-toolkit/blob/main/notes/2026-10-18-health-bank-html-claude-artifact-dashboard.md) ｜ 關聯任務已隨筆記移至 health-bank-toolkit

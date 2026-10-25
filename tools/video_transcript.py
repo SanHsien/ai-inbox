@@ -166,6 +166,13 @@ def transcribe(audio: Path, out_file: Path, lang: str, model_name: str, device: 
 
 
 def main() -> int:
+    # 要在解析參數之前設定：--help 由 argparse 直接印出，晚設就會用系統編碼（Windows cp950）輸出成亂碼
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError, OSError):
+            pass
+
     parser = argparse.ArgumentParser(description="下載影片音訊並以 Whisper 轉寫逐字稿")
     parser.add_argument("url", help="影片網址")
     parser.add_argument("--out", required=True, help="輸出資料夾（不存在會建立）")
@@ -178,13 +185,6 @@ def main() -> int:
         help="推論裝置，預設 auto（偵測到 NVIDIA GPU 即用 cuda，否則 cpu）；顯式指定 cuda 失敗時會直接報錯",
     )
     args = parser.parse_args()
-
-    # Windows cp950 終端遇到無法編碼的字元不應崩潰
-    for stream in (sys.stdout, sys.stderr):
-        try:
-            stream.reconfigure(errors="replace")
-        except (AttributeError, ValueError):
-            pass
 
     out_dir = Path(args.out)
     try:

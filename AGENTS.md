@@ -19,15 +19,16 @@ C:\GitHub\ai-inbox\
 │   ├── task_cli.py                  # 任務佇列查詢 (next/show)、認領 (claim)、結案 (complete，DoD 要求的檔案須存在)、關閉 (close)
 │   ├── build_index.py               # 從 notes/ 重產 README 的任務表與索引
 │   ├── verify_inbox.py              # 契約驗證（CI 同款）
-│   ├── verify_*.py（其餘 12 支）     # 外部裁判：檢查 docs/、templates/、assets/ 的規定結構（見 docs/external-judge-audit.md）
+│   ├── verify_*.py（其餘 10 支）     # 外部裁判：檢查 docs/、templates/、assets/ 的規定結構（見 docs/external-judge-audit.md）
 │   ├── _judge_common.py             # 外部裁判共用：剝註解、結構下限、報告輸出
 │   ├── video_transcript.py          # 影片音訊下載 + faster-whisper (CUDA/CPU) 逐字稿轉寫（見 docs/video-transcript-howto.md）
-│   └── 其他功能型工具               # health_bank_parser、audit_fullstack_security、beat_grid、cli_to_skill、
-│                                    # public_apis_indexer、video_asset_capture（各有對應 tests/test_*.py）
+│   └── 其他功能型工具               # audit_fullstack_security、cli_to_skill、public_apis_indexer（各有對應 tests/test_*.py）
 ├── docs/                            # 技術規格、實測報告與 SOP 手冊（跨 Agent 派工指令見 docs/agent-dispatch.md）
 ├── assets/                          # 單檔 HTML / Generative UI / Canvas 互動成品
 └── tests/                           # tools/ 的單元測試
 ```
+
+> 健康存摺解析器與 Code-as-Video 影片工具已於 2026-10-25 獨立成 [`SanHsien/health-bank-toolkit`](https://github.com/SanHsien/health-bank-toolkit) 與 [`SanHsien/code-as-video-studio`](https://github.com/SanHsien/code-as-video-studio)，相關筆記與任務一併移出；要改那些工具請到對應 repo。
 
 **資料流（單一資料來源）**：任務的優先級、範圍、狀態、證據**只寫在筆記裡**；README 的
 `<!-- BEGIN GENERATED -->` 區塊一律由腳本產生，禁止手改。

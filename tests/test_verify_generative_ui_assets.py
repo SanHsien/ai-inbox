@@ -2,14 +2,11 @@
 """
 tests/test_verify_generative_ui_assets.py
 測試 tools/verify_generative_ui_assets.py 外部裁判驗證器：
-1. 真實 6 個 Generative UI HTML 展示檔全數通過驗證。
+1. 真實 4 個 Generative UI HTML 展示檔全數通過驗證。
 2. DOCTYPE 宣告缺失反例攔截。
 3. UTF-8 charset 或非空 <title> 缺失反例攔截。
 4. 非安全外部資源（http://、file://、本機磁碟路徑、協定相對路徑 //）反例攔截。
-5. video_seek_canvas.html 缺少 seek(t) 時間函式契約反例攔截。
-6. health-bank-dashboard/index.html 含有未遮蔽台灣身分證字號之反例攔截（動態拼接）。
-7. health-bank-dashboard/index.html 缺少醫療資訊免責聲明反例攔截。
-8. CLI main() 執行成功（exit 0）與失敗（exit 1）行為驗證。
+5. CLI main() 執行成功（exit 0）與失敗（exit 1）行為驗證。
 """
 
 from __future__ import annotations
@@ -26,12 +23,12 @@ import verify_generative_ui_assets as vui  # noqa: E402
 
 class TestVerifyGenerativeUIAssets(unittest.TestCase):
     def test_real_assets_all_pass(self):
-        """1. 驗證現存於 assets/ 的真實 6 個 HTML 展示檔全數合規。"""
+        """1. 驗證現存於 assets/ 的真實 4 個 HTML 展示檔全數合規。"""
         all_passed, results = vui.verify_all_generative_ui_assets(REPO_ROOT)
         self.assertTrue(all_passed, f"真實 HTML 展示檔驗證失敗：{results}")
         for path, errs in results.items():
             self.assertEqual(errs, [], f"{path} 應無任何錯誤，實際：{errs}")
-        self.assertEqual(len(results), 6, "應涵蓋全部 6 個展示檔")
+        self.assertEqual(len(results), 4, "應涵蓋全部 4 個展示檔")
 
     def test_missing_doctype_intercepted(self):
         """2. 反例攔截：HTML 缺少 <!DOCTYPE html> 宣告。"""
@@ -88,59 +85,6 @@ class TestVerifyGenerativeUIAssets(unittest.TestCase):
                 len(errors) > 0 and any(label in e for e in errors),
                 f"未能攔截不安全資源 ({label})：{errors}",
             )
-
-    def test_video_seek_contract_missing_intercepted(self):
-        """5. 反例攔截：video_seek_canvas.html 未實作 seek(t) 時間函式契約。"""
-        real_content = (
-            REPO_ROOT / "assets" / "openlibrary_demo" / "video_seek_canvas.html"
-        ).read_text(encoding="utf-8")
-
-        # 破壞 seek 函式定義
-        broken_content = real_content.replace("window.seek = function(t)", "window.renderFrame = function(t)")
-        errors = vui.verify_single_html_asset(
-            broken_content, "assets/openlibrary_demo/video_seek_canvas.html"
-        )
-        self.assertTrue(
-            any("未實作 seek 時間函式契約" in e for e in errors),
-            f"未攔截缺少 seek 契約：{errors}",
-        )
-
-    def test_health_bank_unmasked_tw_id_intercepted(self):
-        """6. 反例攔截：health-bank-dashboard 包含未遮蔽之真實身分證字號格式（字串動態拼接）。"""
-        real_content = (
-            REPO_ROOT / "assets" / "health-bank-dashboard" / "index.html"
-        ).read_text(encoding="utf-8")
-
-        # 使用動態拼接建構假身分證字號
-        fake_id = "A1" + "23456789"
-        leaked_content = real_content.replace(
-            '[ID_REDACTED]',
-            fake_id,
-        )
-
-        errors = vui.verify_single_html_asset(
-            leaked_content, "assets/health-bank-dashboard/index.html"
-        )
-        self.assertTrue(
-            any("檢測到疑似未遮蔽之身分證字號格式" in e for e in errors),
-            f"未成功攔截未遮蔽身分證：{errors}",
-        )
-
-    def test_health_bank_missing_disclaimer_intercepted(self):
-        """7. 反例攔截：health-bank-dashboard 缺少醫療免責聲明。"""
-        real_content = (
-            REPO_ROOT / "assets" / "health-bank-dashboard" / "index.html"
-        ).read_text(encoding="utf-8")
-
-        # 移除免責聲明
-        no_disclaimer = real_content.replace("免責聲明", "一般通知").replace("免責", "告知")
-        errors = vui.verify_single_html_asset(
-            no_disclaimer, "assets/health-bank-dashboard/index.html"
-        )
-        self.assertTrue(
-            any("缺少健康資訊或醫療免責聲明文字" in e for e in errors),
-            f"未攔截免責聲明缺失：{errors}",
-        )
 
     def test_cli_main_exit_codes(self):
         """8. 驗證 CLI main() 執行成功返回 0，指定不存在之根目錄返回 1。"""

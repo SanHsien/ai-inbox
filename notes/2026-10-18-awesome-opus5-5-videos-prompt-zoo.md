@@ -28,9 +28,9 @@ tags:
 - **分析日期**：`2026-10-18`
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
-  - [`notes/2026-10-18-prompt-motion-claude-video-showcase.md`](./2026-10-18-prompt-motion-claude-video-showcase.md)（Prompt Motion 策展庫解構）
-  - [`notes/2026-10-17-motion-prompt-animation-dictionary.md`](./2026-10-17-motion-prompt-animation-dictionary.md)（微觀動態字典）
-  - [`notes/2026-10-17-cinematic-shot-ui-film-director.md`](./2026-10-17-cinematic-shot-ui-film-director.md)（宏觀運鏡分鏡）
+  - [`code-as-video-studio/notes/2026-10-18-prompt-motion-claude-video-showcase.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-18-prompt-motion-claude-video-showcase.md)（Prompt Motion 策展庫解構）
+  - [`code-as-video-studio/notes/2026-10-17-motion-prompt-animation-dictionary.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-17-motion-prompt-animation-dictionary.md)（微觀動態字典）
+  - [`code-as-video-studio/notes/2026-10-17-cinematic-shot-ui-film-director.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-17-cinematic-shot-ui-film-director.md)（宏觀運鏡分鏡）
 
 ---
 
@@ -140,6 +140,6 @@ tags:
     2. 撰寫 `tests/test_verify_generative_ui_assets.py`，涵蓋真實 6 個 HTML 資產全數通過，以及缺少 DOCTYPE、非安全 `http://` CDN、缺少 `seek(t)`、未遮蔽身分證之反例攔截測試。
   - **驗收標準（DoD）**：執行 `python tools/verify_generative_ui_assets.py` 回傳 exit 0，且 `python -m pytest tests/test_verify_generative_ui_assets.py -q` 全數通過（至少 6 項測試）。
   - **完成日期**：2026-10-25
-  - **實作紀錄 / 證據**：已完成純 Python stdlib 外部裁判驗證器 `tools/verify_generative_ui_assets.py`，提供對 assets/ 下全數 6 個單檔 HTML 展示之 HTML5 Baseline、外部資源 HTTPS 安全性、`video_seek_canvas.html` 之 `seek` 函式契約、`health-bank-dashboard/index.html` 之身分證脫敏與免責聲明檢驗；並建立 `tests/test_verify_generative_ui_assets.py`（8 項測試，涵蓋真實資產全數通過與各項缺陷反例攔截），執行 `python tools/verify_generative_ui_assets.py`（exit 0）與 `pytest` 8 passed 全數綠燈通過。
+  - **實作紀錄 / 證據**：已完成純 Python stdlib 外部裁判驗證器 `tools/verify_generative_ui_assets.py`，提供對 assets/ 下全數 6 個單檔 HTML 展示之 HTML5 Baseline、外部資源 HTTPS 安全性、`video_seek_canvas.html` 之 `seek` 函式契約、`health-bank-dashboard/index.html` 之身分證脫敏與免責聲明檢驗；並建立 `tests/test_verify_generative_ui_assets.py`（8 項測試，涵蓋真實資產全數通過與各項缺陷反例攔截），執行 `python tools/verify_generative_ui_assets.py`（exit 0）與 `pytest` 8 passed 全數綠燈通過。**搬移註記（2026-10-25）**：健康存摺儀表板與 OpenLibrary `seek(t)` 範例已分別移至 [`SanHsien/health-bank-toolkit`](https://github.com/SanHsien/health-bank-toolkit) 與 [`SanHsien/code-as-video-studio`](https://github.com/SanHsien/code-as-video-studio)，本驗證器改為只檢查留在本 repo 的 4 個 HTML。
 
 ---
