@@ -104,3 +104,4 @@
 - ✅ [中] `build_index.py --help` 不顯示說明，而是直接重寫 README；`verify_inbox.py --help` 直接跑完整驗證 → 兩支補上參數解析，`--help` 不再有副作用
 - ✅ 外部裁判驗證器從 12 支變 10 支：`verify_motion_and_video_specs.py`、`verify_video_storyboard.py` 隨影片工具搬走；`verify_agent_reach_and_data_specs.py` 移除 3 項健保文件檢查（依第 2 節「不再擴充」政策，未帶到新 repo）；`verify_generative_ui_assets.py` 只檢查留下的 4 個 HTML
 - ➖ 第 3 節健保工具、第 5 節 T-20261018-13／14 的條目保留作為歷史；後續修改請到 health-bank-toolkit
+- ✅ [中] 獨立審查指出：搬移時一併刪掉的「健康存摺儀表板不得含未遮蔽身分證、必須有免責聲明」與「OpenLibrary 示範頁必須實作 `seek(t)`」兩項檢查，新 repo 原本沒有對應 → 已在新 repo 補成一般測試：health-bank-toolkit `tests/test_published_content.py`（公開內容無身分證與手機格式、保留免責聲明）、code-as-video-studio `tests/test_examples.py`（示範頁實作 `seek(t)` 且不用 `Math.random`／`Date.now`，分鏡範例能通過閘門）
