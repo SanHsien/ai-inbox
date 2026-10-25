@@ -71,7 +71,7 @@
 | `T-20261026-16` | 🔴 未做 | 低 | 建立 `templates/cinematic-storyboard-template.md` 標準化分鏡提示詞範本 | `templates/cinematic-storyboard-template.md` | [2026-10-26-cinematic-ai-video-reference-pipeline](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md) | 2026-10-26 |
 | `T-20261026-19` | 🔴 未做 | 低 | 建立 `templates/lightweight-skill-template.md` 輕量化標準 Agent Skill 範本 | `templates/lightweight-skill-template.md` | [2026-10-26-github-trending-agent-skills-benchmark](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | 2026-10-26 |
 | `T-20261026-22` | 🔴 未做 | 低 | 評估 `codync-host` 在 Windows 11 本地環境的編譯與 `agent-relay` 雙向橋接可行性 | `C:\GitHub\agent-relay` 擴充評估文檔 | [2026-10-26-codync-open-source-agent-relay-fallback](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md) | 2026-10-26 |
-| `T-20261026-25` | 🔴 未做 | 低 | 在 `C:\GitHub\agent-assets` 評估引進「糾正審核佇列（`correction-queue.jsonl`）」架構 | `C:\GitHub\agent-assets\knowledge\` 與擴充評估文檔 | [2026-10-26-ai-shared-memory-template-team-collaboration](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | 2026-10-26 |
+| `T-20261026-25` | 🔴 未做 | 低 | 在 `C:\GitHub\agent-assets` 評估引進「糾正審查佇列（`correction-queue.jsonl`）」架構 | `C:\GitHub\agent-assets\knowledge\` 與擴充評估文檔 | [2026-10-26-ai-shared-memory-template-team-collaboration](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | 2026-10-26 |
 
 ### 🟢 已做（Done）
 
@@ -221,7 +221,7 @@
 | 2026-10-24 | 🟢 | [feedback-desk 解構：客戶開單 × 多 AI 認領與交接的輕量工單系統（Cloudflare Workers 免費版／Laravel 主機版）、MCP 接入 Claude Code 與 Codex，及與本地交接機制的對照](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | `feedback-desk`, `ticketing`, `ai-handoff` | 2 / 2 |
 | 2026-10-24 | 🟢 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 3 / 3 |
 | 2026-10-26 | 🔴 | [3D Model Anything 深度解析：iPhone LiDAR 空間掃描、Three.js 程式化三維重建與 Agent 視覺比對閉環](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md) | `threejs`, `lidar-scanning`, `spatial-computing` | 0 / 3 |
-| 2026-10-26 | 🔴 | [AI 共用記憶系統泛用範本解構：三跳索引、糾正審核佇列與 Git 機械防線的團隊記憶工程](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | `shared-memory`, `git-workflow`, `context-optimization` | 0 / 3 |
+| 2026-10-26 | 🔴 | [AI 共用記憶系統全景分析：從 Going Li 三 Agent 同腦架構、社團留言實踐到 Leoceeport 工程範本](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | `shared-memory`, `git-workflow`, `context-optimization` | 0 / 3 |
 | 2026-10-26 | 🔴 | [answer-me-with-html 深度評估：AI Agent 視覺化工件輸出與 8x Token 節流工程實踐](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) | `generative-ui`, `visual-artifacts`, `agent-skills` | 0 / 2 |
 | 2026-10-26 | 🔴 | [Block Buzz 深度解析：基於 Nostr 協議的去中心化人機協同工作區與 ACP/MCP 代理人架構](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | `nostr-protocol`, `multi-agent-collaboration`, `acp-protocol` | 0 / 3 |
 | 2026-10-26 | 🔴 | [從尾牙簡報走向坎城電影感：AI 影片的電影級鏡頭語言、調色參考庫與 Prompt 工程管線](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md) | `ai-video`, `cinematography`, `prompt-engineering` | 0 / 3 |
@@ -248,7 +248,7 @@
 - 訊息傳輸：[Crossroad A2A 跨機器寄信](./notes/2026-10-19-crossroad-a2a-agent-mail-relay.md)
 - 長上下文外包：[0x Alpha (GLM-5.3-Flash) 1M 模型](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md)
 - 派工落地：[agent-relay Phase 4：工人擴充、跨機器回傳與驗收合併](./notes/2026-10-21-agent-relay-pipeline-phase4.md)
-- 團隊共用記憶架構：[AI 共用記憶範本解構](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md)
+- 團隊共用記憶架構：[AI 共用記憶與三 Agent 全景](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md)
 - Nostr人機協同工作區：[Block Buzz 協同工作區](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md)
 - 遠端多Agent中繼與容錯：[Codync 開源 Agent 中繼](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md)
 

@@ -1,29 +1,31 @@
 ---
 id: 2026-10-26-ai-shared-memory-template-team-collaboration
-title: "AI 共用記憶系統泛用範本解構：三跳索引、糾正審核佇列與 Git 機械防線的團隊記憶工程"
+title: "AI 共用記憶系統全景分析：從 Going Li 三 Agent 同腦架構、社團留言實踐到 Leoceeport 工程範本"
 source_url: "https://github.com/Leoceeport/ai-memory-template"
-source_platform: "GitHub (Leoceeport/ai-memory-template) / Facebook"
-author: "Leoceeport"
+source_platform: "Facebook (Claude Taiwan) / GitHub (Leoceeport/ai-memory-template)"
+author: "Going Li / Leoceeport / 社團社群"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: pending
 cluster: 1
 cluster_role: "團隊共用記憶架構"
-short_title: "AI 共用記憶範本解構"
+short_title: "AI 共用記憶與三 Agent 全景"
 tags:
   - shared-memory
   - git-workflow
   - context-optimization
   - correction-queue
+  - multi-agent
+  - handoff-protocol
   - index-health
   - secret-scanning
 ---
 
-# AI 共用記憶系統泛用範本解構：三跳索引、糾正審核佇列與 Git 機械防線的團隊記憶工程
+# AI 共用記憶系統全景分析：從 Going Li 三 Agent 同腦架構、社團留言實踐到 Leoceeport 工程範本
 
+- **社群討論來源**：[Facebook 社團貼文討論串 (Claude Taiwan)](https://www.facebook.com/groups/1224997379198346/permalink/1423729639325118)
 - **官方開源倉庫**：[`Leoceeport/ai-memory-template`](https://github.com/Leoceeport/ai-memory-template)
-- **社群討論來源**：[Facebook 社團貼文討論串](https://www.facebook.com/groups/1224997379198346/permalink/1423729639325118)
-- **分析主題**：跨人/跨 Agent 團隊共用記憶、三跳查詢防線（3-Hop Query Protocol）、動詞寫入契約、糾正審核佇列（Correction Queue）、索引健檢防腐蝕與 Git 機械防線
+- **分析主題**：跨 Agent「住進同一顆大腦」實戰、SSOT 資料夾架構、非同步交接帳本（`HANDOFF.md`）、滾動視窗 Hook、三跳查詢防線（3-Hop Query Protocol）、動詞寫入契約與糾正審核佇列
 - **分析日期**：`2026-10-26`
 - **當前狀態**：`🔴 待辦處理中 (Pending)`
 - **相關交叉參照**：
@@ -33,19 +35,49 @@ tags:
 
 ---
 
-## 1. 核心內容摘要與痛點剖析（Key Insights）
+## 1. 核心內容摘要與討論串全景剖析（Key Insights）
 
-開發者 Leoceeport 在開源社群分享了專為工程團隊打造的 **`ai-memory-template`（AI 共用記憶系統泛用範本）**。該專案旨在解決多位工程師各自使用 Claude Code、Codex 或 Cursor 時的團隊級記憶斷裂：
-1. **開新對話就失憶**：不同工作 Session 之間無法繼承歷史決策，工程師必須重複說明背景。
-2. **各養各的 AI 導致規則打架**：不同成員的本機設定與 Prompt 互相衝突，難以維護統一的工程防線。
-3. **多人接力斷線**：上一位開發者做過的架構決策與實施紀錄未能結構化沉澱，下一位接手者難以銜接。
+本次調研源自 Facebook **Claude Taiwan** 社團熱門討論串，由開發者 Going Li 分享其實戰配置，並引發社群成員（顏志吉、Max DDuan 等）與開源作者 Leoceeport 的深度技術交鋒。
 
-### 1.1 核心解法：Git + Markdown + 機械防線
-專案捨棄了複雜繁瑣、難以版本控制的外部向量資料庫（Vector DB），採用極簡且高度工程化的 **「Git 倉庫 ＋ 樹狀 Markdown 索引 ＋ 機械腳本驗證」** 體系，讓團隊成員與多個 AI 代理人共用同一個真實資料來源（SSOT）。
+### 1.1 Going Li 主貼文核心：三 Agent 住進同一顆大腦
+
+- **痛點根源（記憶分裂）**：
+  同時使用多個 AI 開發工具時，最大瓶頸不是模型智商差異，而是「記憶與規則分裂」——在主力 AI 身上踩過的 300 多條工程坑、定好的開發規矩、積累的 78 支 Skill，換到另一個工具全部歸零，換手接力時痛苦不堪。
+- **解法架構（不搬家、不複製檔案，以 Claude Code 目錄為 SSOT 母體）**：
+  1. **Claude Code（主力工程師）**：負責深度架構與主力代碼開發，直接掌管單一真實資料來源（SSOT）：全域規矩（`CLAUDE.md`）、長期記憶（`MEMORY.md`）與 78 支 Skill。
+  2. **Antigravity（架構師與第二主力）**：撰寫本機橋接外掛，以外部引用將 Claude 全域規則與記憶索引動態掛載進來；利用系統 symlink 映射 78 支 Skill；共用危險指令攔截 Hook（禁止危險 `rm`），並在對話結束時透過腳本自動把記憶回寫至 Obsidian 知識庫。
+  3. **Hermes Agent（調度與接力手）**：負責反應迅速的輕量任務，背後調用 GitHub Copilot 的 GPT-4o / Sonnet 模型（實現零額外 API 成本備援）；專屬配置 `agent-handoff` CLI，統一管理專案根目錄的 `HANDOFF.md` 交接帳本。
+- **無縫接力工作流**：
+  各 Agent 開工第一步均讀取專案禁區與 `HANDOFF.md`；任務切片完成或即將抵達 Token/Rate Limit 上限前，執行 `agent-handoff checkpoint` 記錄 Git commit 與下一步待辦，下一個 Agent 立即無痛接棒。
+- **核心哲學**：個人 AI 工作台的真正護城河不是綁定頂級訂閱，而是長期沉澱的**記憶結構、防呆護欄與跨 AI 交接協定**。
+
+### 1.2 留言串關鍵互動與各家流派交鋒
+
+1. **顏志吉的實踐（Hook 自動載入最新 10 份 Summary 流派）**：
+   - **實作方式**：在 Session 啟動的 Hook 中強制規定 AI 必須先讀取專案的 `memory`、規格書與「最新 10 份 summary」。
+   - **優缺點剖析**：屬於「滑動視窗（Sliding Window）」策略。優點是配置簡單、能確保接手者掌握近期脈絡；但缺點是缺乏層級索引，當專案規模擴大或歷史踩坑分散時，載入 10 份文件會快速膨脹 Context 預算，且容易漏掉關鍵的長期歷史架構決策。
+2. **Max DDuan 的核心疑問（跨 Agent 溝通機制）**：
+   - **提問關鍵**：「你是用什麼機制讓三者可以互相溝通？」
+   - **技術維度拆解**：跨 Agent 協同本質上有兩種路徑：
+     - **檔案非同步中繼（File-based Handoff）**：Going Li 採用的 `HANDOFF.md` + Git commit。無行程相依、跨機器相容性最強、最不易因連線中斷丟失狀態。
+     - **即時行程通訊（RPC / Relay / ACP）**：透過語言伺服器 API、Socket 或 Message Relay（如 Codync / Nostr Relay）進行即時推播，適合需要秒級自動派工的自動化管線。
+3. **Leoceeport 的回饋（泛用型工程範本 `ai-memory-template`）**：
+   - 留言串中釋出開源專案，將 Going Li 的單人跨 Agent 特化架構進一步抽象為**團隊多工程師協作的標準模板**，補足了「三跳查詢防線（3-Hop Query）」與「Git 機械健檢防線」。
 
 ---
 
 ## 2. 深入技術拆解與架構原理（Deep Dive）
+
+### 2.1 四大記憶流派對比
+
+| 維度 | Going Li（三 Agent 同腦） | 顏志吉（滾動視窗 Hook） | Leoceeport（ai-memory-template） | 現有 agent-assets 體系 |
+| :--- | :--- | :--- | :--- | :--- |
+| **核心定位** | 單人多 Agent 跨工具無縫切換 | 單人輕量級快速無痛接手 | 多人團隊/跨 Agent 標準記憶庫 | 跨 AI 助理全域 SSOT 知識資產 |
+| **記憶儲存體** | Claude Code 目錄 + Obsidian | 本機專案目錄 + Summary | 獨立 Git 倉庫 (Markdown + jsonl) | `C:\GitHub\agent-assets` (Git) |
+| **讀取策略** | `HANDOFF.md` + 動態符號連結 | Hook 讀取最新 10 份 Summary | 三跳查詢協議（嚴禁整包讀取） | 按需 JIT 讀取（入口 + 領域檔） |
+| **寫入防線** | `agent-handoff checkpoint` | 手動/自動撰寫 Summary 檔案 | 動詞寫入契約 + 糾正審核佇列 | 規範強制要求、主表集中收斂 |
+| **跨工具溝通** | 檔案帳本（`HANDOFF.md`） | 檔案帳本（專案文件） | Git Pull/Push Rebase 同步 | Git + Task CLI + 跨平台通訊 |
+| **優缺點評估** | 靈活高產，但仰賴個人環境配置 | 直覺易用，但缺乏防腐蝕機制 | 規範嚴密、防呆健全，適合團隊 | 跨專案泛用，兼顧規範與自動化 |
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -76,7 +108,7 @@ tags:
  └──────────────────────────────────────────────────┘
 ```
 
-### 2.1 記憶讀寫的三大核心鐵律
+### 2.2 記憶讀寫的三大核心鐵律（Leoceeport 範本核心）
 
 1. **三跳查詢協議（The 3-Hop Query Protocol）**：
    - 傳統記憶系統最常犯的錯誤是將全部背景資料打包一股腦塞入 System Prompt，造成 Context 嚴重浪費與注意力稀釋。
@@ -88,7 +120,7 @@ tags:
    - 為防止多位成員或不同 Agent 隨意破壞最核心的規則主表（`domains/rules/rules_summary.md`），任何日常的糾正與教訓**嚴禁直接修改主表**。
    - 所有改動先追加至 `domains/lessons/correction-queue.jsonl`，由管理員或主負責人定期審核後才正式合入主表，實現規則的單一寫入權威。
 
-### 2.2 四大機械腳本防線（Scripts & Hooks）
+### 2.3 四大機械腳本防線（Scripts & Hooks）
 
 專案之所以能長期維持健康而不腐爛，關鍵在於將管理紀律交給自動化腳本：
 - **收工安全同步（`scripts/memory_commit.sh`）**：
@@ -105,8 +137,10 @@ tags:
 ## 3. 本地化評估與採用決策（Adoption Decision）
 
 - **與現有體系（`agent-assets` 與 `ai-inbox`）的對照**：
-  - 我們目前在 `C:\GitHub\agent-assets` 建立了 SSOT 跨 AI 共用規則庫，在 `C:\GitHub\ai-inbox` 建立了任務與知識收件匣。
-  - `Leoceeport/ai-memory-template` 提出的設計與我們的架構高度同頻，且在「多工程師團隊協作」與「防腐蝕索引管理」上提供了極佳的借鏡。
+  - 我們目前在 `C:\GitHub\agent-assets` 建立了跨 AI 共用規則與記憶庫，並透過 `CLAUDE.md` / `AGENTS.md` 達成單一事實來源（SSOT）。
+  - Going Li 的「Claude Code + Antigravity + Hermes」三位一體分工與 `HANDOFF.md` 切片交接，印證了我們在本地多 Agent 分工上的可行性。
+  - 顏志吉的 Hook 載入經驗提醒我們：**不能單靠無腦讀取最新 N 份紀錄**，必須搭配三跳索引協議，否則隨著專案疊代，Context 膨脹將吞噬有限預算。
+  - Leoceeport 的 `ai-memory-template` 則提供了最關鍵的「防腐蝕檢查」與「糾正審查佇列」，能直接強化我們的協作穩定度。
 
 - **採納與落地行動**：
   1. **跨平台記憶索引檢查工具（移植至 Python）**：
@@ -141,7 +175,7 @@ tags:
   - **驗收標準（DoD）**：產出 `tools/check_memory_index.py` 與 `tests/test_check_memory_index.py`，通過 `python -m unittest discover -s tests -p "test_check_memory_index.py"`。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
-- [ ] **`T-20261026-25`**｜**[優先級：低]** 在 `C:\GitHub\agent-assets` 評估引進「糾正審核佇列（`correction-queue.jsonl`）」架構
+- [ ] **`T-20261026-25`**｜**[優先級：低]** 在 `C:\GitHub\agent-assets` 評估引進「糾正審查佇列（`correction-queue.jsonl`）」架構
   - **目標範圍**：`C:\GitHub\agent-assets\knowledge\` 與擴充評估文檔
   - **具體做法**：
     1. 評估各 Agent 在會話糾正時將教訓先寫入 `correction-queue.jsonl`，再由主 Session 審核合入 `lessons.md` 的操作流。
