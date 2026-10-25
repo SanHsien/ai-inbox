@@ -39,14 +39,17 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 86 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
+> 共 89 項任務：🔴 未做 4／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
+| `T-20261026-01` | 🔴 未做 | 高 | 撰寫「長程並行開發模型選型與配額消耗速查表」收錄於 `docs/model-burn-rate-routing-matrix.md` | `docs/model-burn-rate-routing-matrix.md`（規範文檔；不修改其他專案程式） | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
 | `T-20261018-09` | 🔴 未做 | 中 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | 本地 Claude Code 開發環境與外掛架構 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | 2026-10-18 |
+| `T-20261026-02` | 🔴 未做 | 中 | 將「骨架搭建降級至 Sol 6.1、極限攻堅再開 Astra 6」與「Luna 6 避開 5H 限制」原則沉澱至 `agent-assets` 共用偏好庫 | `C:\GitHub\agent-assets\knowledge\user_preferences.md` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
+| `T-20261026-03` | 🔴 未做 | 低 | 在 `agent-relay` 派工模組中增加模型耗額等級警示與快取友善結構建議 | `C:\GitHub\agent-relay\docs\` 與 `agent_relay/advise.py` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
 
 ### 🟢 已做（Done）
 
@@ -195,6 +198,7 @@
 | 2026-10-24 | 🟢 | [AI 網紅 IG 限動口播流程：自拍→ChatGPT 生成同場景人物→HeyGen 開口→ElevenLabs 變聲的影片解構（逐字稿已取得）](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | `ai-influencer`, `heygen`, `elevenlabs` | 2 / 2 |
 | 2026-10-24 | 🟢 | [feedback-desk 解構：客戶開單 × 多 AI 認領與交接的輕量工單系統（Cloudflare Workers 免費版／Laravel 主機版）、MCP 接入 Claude Code 與 Codex，及與本地交接機制的對照](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md) | `feedback-desk`, `ticketing`, `ai-handoff` | 2 / 2 |
 | 2026-10-24 | 🟢 | [Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) | `anthropic`, `prompt-engineering`, `ambition` | 3 / 3 |
+| 2026-10-26 | 🔴 | [多模型連續開發實測：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | `cost-control`, `model-routing`, `prompt-caching` | 0 / 3 |
 <!-- END GENERATED: index -->
 
 ---
@@ -207,7 +211,7 @@
 **集群 1：多 Agent 共同大腦、通訊與協同調度**
 - 記憶繼承：[Idle Compaction 與 cc-session-reader](./notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md)、[Claude-Mem 跨 Session 記憶](./notes/2026-10-17-claude-mem-autocompact-context.md)
 - 跨 CLI 編排：[Opus 規劃顧問 + 多 Agent 降維外包](./notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)
-- 路由分流：[/model opusplan 與 /advisor 雙軌架構](./notes/2026-10-17-model-routing-opusplan-advisor.md)
+- 路由分流：[/model opusplan 與 /advisor 雙軌架構](./notes/2026-10-17-model-routing-opusplan-advisor.md)、[Sol/Astra/Luna 燒額與快取實測](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md)
 - 終端派工：[Herdr 終端復用 + Magpie 統一網關](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md)
 - 驗證紀律：[pstack 方法論與 TDD 驗證](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)
 - 總綱中樞：[AI 共同大腦全景規劃](./notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md)
