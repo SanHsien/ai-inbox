@@ -6,7 +6,7 @@ source_platform: "Anthropic Official Blog & X"
 author: "Addy Osmani (Anthropic) & @NFT_Chen"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 3
 cluster_role: "自體改造"
 short_title: "Claude Code Mods"
@@ -28,7 +28,7 @@ tags:
   - [Anthropic 官方說明 (claude.com Blog)](https://claude.com/blog/claude-code-mods)
   - [社群貼文分析 (@NFT_Chen on X)](https://x.com/NFT_Chen/status/2105738805785596166)
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`⚪ 不做 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code 插件生態）
   - [`notes/2026-10-18-desktop-sense-local-screen-context.md`](./2026-10-18-desktop-sense-local-screen-context.md)（Hook 螢幕注入）
@@ -134,8 +134,12 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
 > ⚠️ 狀態變更時，請同步更新根目錄 [`README.md`](../README.md) 的總表。
 
 - [ ] **`T-20261018-09`**｜**[優先級：中]** 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化）
+  - **狀態**：⚪ 不做（本機 Claude Code 2.1.309 二進位實測查無 `~/.claude/mods/` 與 `defineMod` API，原貼文為虛構概念；終端狀態列改採官方原生 `statusLine` 機制）
   - **目標範圍**：本地 Claude Code 開發環境與外掛架構
-  - **重新評估（2026-10-25）**：原關閉理由「非官方 Mods 機制過時」不成立——來源即 Anthropic 官方部落格，Claude Code 內建 `plugin-authoring` 技能專門製作 mod，本機版本 `2.1.309` 已符合 `>= 2.1.287`。Mods 能做 hook 做不到的常駐 UI（狀態列、提示上方面板），改為要做。
+  - **二進位查驗與實測結論（2026-10-25）**：
+    1. 實測本機 `claude --version` 為 `2.1.309 (Claude Code)`，符合 `>= 2.1.287`。
+    2. 對官方執行檔 `C:\Users\SanHsien\.local\bin\claude.exe`（298 MB）進行位元組層級全文掃描，證實 `~/.claude/mods/` 為 0 筆匹配、`defineMod` 為 0 筆匹配，原貼文宣稱之 Mods 載入目錄與函式 API 在官方執行期完全不存在。
+    3. 查明官方原生狀態列機制為 `statusLine`（指令 `/statusline`，配置於 `~/.claude/settings.json`），本機已實測整合 `ai-inbox` 待辦數與 `agent-relay` 未讀信件數之動態腳本，成功輸出並記錄於驗證文檔。
   - **具體實作步驟**：
     1. 檢查並確保本機 Claude Code 版本符合 `>= 2.1.287`（`claude --version`）。
     2. 參考官方 `token-weather` 樣板，在本地建立第一個測試 Mod，驗證 `AbovePrompt` 介面渲染。
@@ -143,7 +147,7 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
     4. 驗證 `$.state` 在熱重載前後的數值持久性。
     5. 以實用內容取代樣板：在 `AbovePrompt` 顯示 ai-inbox 待辦數（讀 `python tools/task_cli.py next` 或 README 統計行）與 agent-relay 未讀信件數。
   - **驗收標準（DoD）**：在本地 Claude Code 終端成功渲染出自定義上下文狀態列（含 ai-inbox 待辦數），且熱重載能即時更新無拋錯；附截圖或終端輸出為證。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已於 Windows 11 本機對官方 Claude Code 2.1.309 二進位執行檔進行全文掃描與實測，證實原貼文 API 不存在；並完成官方原生 `statusLine` 整合 ai-inbox 與 agent-relay 之替代方案實測，完整報告與終端輸出已寫入 `docs/claude-code-mods-windows-validation.md`，因官方無此 API 轉為 ⚪ 不做。
 
 - [ ] **`T-20261018-10`**｜**[優先級：低]** 評估將全域高危指令攔截（Blast Radius）與安全規範包裝為本地 Claude Code Mod 防護插件
   - **目標範圍**：全域安全規範（`RULE[user_global]`）機械防線

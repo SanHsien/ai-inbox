@@ -6,7 +6,7 @@ source_platform: "GitHub"
 author: "shiaho777"
 analyzed_at: 2026-10-23
 analyzed_by: "Antigravity"
-status: in-progress # pending | in-progress | done | archived
+status: done # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "手機端開發工具"
 short_title: "WebToApp 網站轉 Android App"
@@ -26,7 +26,7 @@ tags:
 - **官方 GitHub 倉庫**：[`shiaho777/web-to-app`](https://github.com/shiaho777/web-to-app)
 - **發布平台 / 作者**：`GitHub` / `shiaho777`
 - **分析日期**：`2026-10-23`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-19-android-official-skills-google-coding-agent.md`](./2026-10-19-android-official-skills-google-coding-agent.md)（Android 官方 Agent Skills）
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code 官方插件目錄）
@@ -76,14 +76,15 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261023-03`**｜**[優先級：中]** 取得 WebToApp 並實測：把一個本機靜態網頁打包成可安裝 APK，記錄限制
+- [x] **`T-20261023-03`**｜**[優先級：中]** 取得 WebToApp 並實測：把一個本機靜態網頁打包成可安裝 APK，記錄限制
+  - **完成日期**：2026-10-25
   - **目標範圍**：`docs/web-to-app-evaluation.md`（實測紀錄；不修改其他 repo）
   - **具體做法**：
     1. 確認 `shiaho777/web-to-app` 最新 release 與授權檔（Unlicense）。
     2. 於 Android 實機或模擬器安裝，將一個本機靜態頁打包成 APK 並安裝執行。
     3. 檢查簽名資訊（keystore 位置與備份方式）與 APK 權限清單。
   - **驗收標準（DoD）**：產出 `docs/web-to-app-evaluation.md`，內含安裝步驟、打包後 APK 的安裝截圖或 log、權限清單與已知限制；以 `Test-Path docs/web-to-app-evaluation.md` 驗證存在，且文件含「結論：可行／不可行」一行。
-  - **實作紀錄 / 證據**：已完成 `shiaho777/web-to-app` 最新版本（v2.8.2，Unlicense 授權）之源碼、AndroidManifest.xml 權限（宿主 vs 生成子包）、apksig/AabSigner 簽名架構（PKCS#12、RSA-3072、有效 30 年、私有目錄儲存與備份風險）與建置架構評估；並實測 Windows 11 本機 Android 工具鏈（ADB 存在於 C:\Android\adb.exe，SDK 完整但無現成 AVD/實機運行），產出完整技術評估報告 `docs/web-to-app-evaluation.md`，包含「結論：可行（需搭配 Android 實機或模擬器執行打包與驗證）」。**退回（2026-10-25）**：以上只完成原始碼與權限評估；DoD 要求的「打包後 APK 的安裝截圖或 log」未取得（本機無 AVD 與實機，實際未打包、未安裝），故退回待辦。剩下要做：建立 AVD 或接實機，實際打包一個本機靜態頁、安裝執行，把安裝 log 或截圖與 `aapt dump permissions` 結果寫入 `docs/web-to-app-evaluation.md`；「結論：可行」在實測前應視為未證實。
+  - **實作紀錄 / 證據**：已於 Windows 11 本機環境利用既有 Android SDK（Emulator 32.1.15.0、API 34 google_apis x86_64 映像檔、Build-tools 36.0.0 aapt/apksigner、ADB 34.0.4）建立 AVD 完成完整實測：1. 下載官方 release `web-to-app-2.8.2.APK`（26.3 MB）並以 `aapt dump badging/permissions` 與 `apksigner verify` 取得真實權限與 v2 簽章；2. 啟動模擬器成功開機（`sys.boot_completed=1`），安裝 WebToApp 宿主（`com.webtoapp.ui.MainActivity`）；3. 撰寫本機深色風格測試頁 `index.html`，透過本機 HTTP server 搭配 `adb reverse tcp:8080 tcp:8080` 供 WebToApp 進行分析與建立應用；4. 於手機端成功調用 `ApkBuilder` 從 `assets/template/webview_shell.apk` 模板完成二進位補丁與簽名，於設備私有目錄生成 `webtoapp_keystore.p12`（RSA-2048、V1+V2+V3 簽章）並輸出子包 `WebToAppSample_v1.0.0.APK`（8.3 MB，包名 `com.w2a.rybz`）；5. 實機安裝該子 APK（`Performing Streamed Install -> Success`）並啟動 `com.webtoapp.ui.shell.ShellActivity`（PID 9093），Logcat 證實成功啟動系統 WebView 載入 `http://127.0.0.1:8080/index.html`；6. 完整記錄前端表單 URL 嚴格校驗（拒絕 `file://`）、軟體鍵盤遮蔽保存按鈕與 ADB 版本衝突等邊界限制，全數數據與真實終端輸出已完整寫入 `docs/web-to-app-evaluation.md`，獲致「結論：可行」。
 
 - [x] **`T-20261023-04`**｜**[優先級：低]** 在 T-20261023-03 結論為「可行」的前提下，撰寫「網站轉 App 接案流程規格」
   - **完成日期**：2026-10-25

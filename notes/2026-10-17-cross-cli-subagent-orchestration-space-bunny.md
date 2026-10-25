@@ -6,7 +6,7 @@ source_platform: "Community Discussion & Developer Practice"
 author: "Community Practitioner / Antigravity"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 1
 cluster_role: "跨 CLI 編排"
 short_title: "Opus 規劃顧問 + 多 Agent 降維外包"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：社群開發者實戰經驗分享 / [SanHsien/ai-inbox](https://github.com/SanHsien/ai-inbox)
 - **發表作者**：社群實踐者（OpenCode / AGY / Claude 混合編排）
 - **分析日期**：`2026-10-17`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：[`notes/2026-10-17-model-routing-opusplan-advisor.md`](./2026-10-17-model-routing-opusplan-advisor.md)
 
 ---
@@ -125,6 +125,7 @@ tags:
 
 - [ ] **`T-20261017-32`**｜**[優先級：中]** 評估並配置 Space Bunny（1M Context 免費模型）與雙軌回流升級除錯機制（Fallback Escalation Loop）
   - **目標範圍**：`SanHsien/agent-advisor`（**現有可用 Repo**：復用 `advisor-pro-reviewer` 獨立審查軌道與升級除錯協定）
+  - **狀態**：⚪ 不做（2026-10-25 實測查詢 OpenRouter API /api/v1/models 確認 stealth/space-bunny-alpha 與免費版 minimax/minimax-m3.1-flash:free 均已下架，僅存付費端點 minimax/minimax-m3.1-flash，依退回規範關閉；對應回流除錯機制已於 agent-relay commit 66e8473 落地，查驗輸出已更新至 agent-relay 報告）。
   - **具體實作步驟**：
     1. 測試 `space-bunny-free` 於 OpenRouter / OpenCode 的連線延遲、代碼生成精確度與 1M 窗口承載力。
     2. 設計雙軌回流 Prompt 協定：定義當 Worker Agent 報錯時，如何格式化提煉「失敗上下文 + 終端報錯」回送給 Opus 高級顧問或 Reviewer Lane。
