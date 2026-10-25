@@ -48,9 +48,14 @@ def _load_text(content_or_path: str | Path) -> tuple[str, str]:
             return "", str(path)
         return path.read_text(encoding="utf-8"), str(path)
     if isinstance(content_or_path, str):
-        p = Path(content_or_path)
-        if p.exists() and p.is_file():
-            return p.read_text(encoding="utf-8"), str(p)
+        # 多行或過長字串必為內文；對它做 stat 在 Linux 會丟 OSError(ENAMETOOLONG)
+        if "\n" not in content_or_path:
+            try:
+                p = Path(content_or_path)
+                if p.is_file():
+                    return p.read_text(encoding="utf-8"), str(p)
+            except (OSError, ValueError):
+                pass
         return content_or_path, "<inline_text>"
     return str(content_or_path), "<unknown>"
 
