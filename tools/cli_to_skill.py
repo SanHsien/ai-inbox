@@ -29,17 +29,34 @@ def _one_line(value: Any) -> str:
     return " ".join(("" if value is None else str(value)).split())
 
 
+def _get(data: Dict[str, Any], key: str, default: Any) -> Any:
+    """dict.get 加上「值是 JSON null 也用預設值」。"""
+    value = data.get(key)
+    return default if value is None else value
+
+
+def _as_list(value: Any, label: str) -> list:
+    """JSON null 視為沒有；其餘非陣列的型別明確拒絕（main 只接 ValueError，TypeError 會變成 traceback）。"""
+    if value is None:
+        return []
+    if not isinstance(value, list):
+        raise ValueError(f"'{label}' 必須是陣列，實際是 {type(value).__name__}")
+    return value
+
+
 def convert_cli_to_skill(cli_schema: Dict[str, Any]) -> str:
     """將 CLI 描述物件轉換為合規的 SKILL.md 內容。"""
     if not isinstance(cli_schema, dict):
         raise ValueError("CLI 描述檔最外層必須是 JSON 物件")
     name = _one_line(cli_schema.get("name", "unnamed-cli")) or "unnamed-cli"
-    description = _one_line(cli_schema.get("description", "Agent-Native CLI 工具封裝"))
-    triggers = cli_schema.get("triggers", [name])
+    # 鍵存在但值是 null 時 dict.get 的預設值不會生效，改用 _get
+    description = _one_line(_get(cli_schema, "description", "Agent-Native CLI 工具封裝"))
+    triggers = cli_schema.get("triggers")
     if isinstance(triggers, str):
         triggers = [triggers]
-    version = _one_line(cli_schema.get("version", "1.0.0"))
-    commands = cli_schema.get("commands", [])
+    triggers = _as_list(triggers, "triggers") or [name]
+    version = _one_line(_get(cli_schema, "version", "1.0.0"))
+    commands = _as_list(cli_schema.get("commands"), "commands")
 
     lines = []
     # Frontmatter
@@ -72,10 +89,10 @@ def convert_cli_to_skill(cli_schema: Dict[str, Any]) -> str:
     for cmd in commands:
         if not isinstance(cmd, dict):
             continue
-        cmd_name = _one_line(cmd.get("name", "action"))
-        cmd_desc = _one_line(cmd.get("description", ""))
+        cmd_name = _one_line(_get(cmd, "name", "action"))
+        cmd_desc = _one_line(cmd.get("description"))
         destructive = cmd.get("destructive", False)
-        args = cmd.get("args", [])
+        args = _as_list(cmd.get("args"), f"commands[{cmd_name}].args")
 
         lines.append(f"### `{name} {cmd_name}`")
         lines.append("")

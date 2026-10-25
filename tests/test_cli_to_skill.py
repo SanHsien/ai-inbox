@@ -77,6 +77,44 @@ class TestCliToSkill(unittest.TestCase):
         with self.assertRaises(ValueError):
             convert_cli_to_skill(["not", "a", "dict"])
 
+    def test_json_null_fields_are_treated_as_absent(self):
+        # 其他語言產生的 JSON 常把沒有的欄位寫成 null：dict.get 的預設值只管「鍵不存在」，null 會原樣穿過去
+        output = convert_cli_to_skill({
+            "name": "nulls",
+            "description": None,
+            "triggers": None,
+            "commands": [{"name": "run", "args": None, "description": None}],
+        })
+        self.assertIn("### `nulls run`", output)
+        self.assertIn('- "nulls"', output)  # triggers 缺省時預設為 [name]
+        output = convert_cli_to_skill({"name": "nulls", "commands": None})
+        self.assertIn("## 2. 支援子指令清單", output)
+
+    def test_wrong_container_types_raise_value_error_not_type_error(self):
+        # main() 只接 OSError／ValueError；TypeError 會變成整段 traceback
+        for field, bad in (("commands", "run"), ("commands", 3), ("triggers", 3), ("triggers", {"a": 1})):
+            with self.subTest(field=field, bad=bad):
+                with self.assertRaises(ValueError):
+                    convert_cli_to_skill({"name": "x", field: bad})
+        with self.assertRaises(ValueError):
+            convert_cli_to_skill({"name": "x", "commands": [{"name": "r", "args": "--a"}]})
+
+    def test_main_reports_wrongly_typed_schema_without_traceback(self):
+        import io
+        import tempfile
+        from contextlib import redirect_stderr
+
+        from tools import cli_to_skill
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "bad.json"
+            path.write_text('{"name": "x", "commands": 3}', encoding="utf-8")
+            err = io.StringIO()
+            with redirect_stderr(err):
+                self.assertEqual(cli_to_skill.main([str(path)]), 1)
+        self.assertIn("錯誤", err.getvalue())
+
+
     def test_main_reports_missing_file_without_traceback(self):
         import io
         from contextlib import redirect_stderr
