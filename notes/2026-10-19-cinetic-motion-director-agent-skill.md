@@ -26,7 +26,7 @@ tags:
 - **來源連結**：[Threads 原貼文 (pizza的存錢日記＆＆自我成長)](https://www.threads.com/@ethansavemoneydairy/post/DeoDwjXgGYy)（短網址：[threads.com/share/BAW0aDxKf8](https://www.threads.com/share/BAW0aDxKf8/)）｜ [官方 GitHub (Leonxlnx/cinetic)](https://github.com/Leonxlnx/cinetic)
 - **發布平台 / 原作者**：`Threads / GitHub` / 原創者：`Leon Lin (@Leonxlnx)`、社群分享：`pizza的存錢日記＆＆自我成長 (@ethansavemoneydairy)`
 - **分析日期**：`2026-10-19`
-- **當前狀態**：`🟢 已做 (Done)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -152,6 +152,14 @@ tags:
   - **驗收標準（DoD）**：產出 `tests/test_beat_grid.py` 與範例 Remotion/GSAP 幀同步代碼，輸入特定 BPM 自動計算拍點影格並生成吸附動畫序列，執行 `pytest tests/test_beat_grid.py` 全數通過。
   - **完成日期**：2026-10-23
   - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。實作節拍網格計算引擎 `tools/beat_grid.py`，撰寫 Remotion/GSAP 幀同步範例代碼 `templates/beat-grid-motion-example.ts`，並新增單元測試 `tests/test_beat_grid.py`（6 項測試全數通過，支援拍點影格、小節強拍、前奏偏移、Snap-to-Grid 吸附與卡點轉場生成）。
+- [x] **`T-20261025-06`**｜**[優先級：高]** 實作動態視覺字典（Cinetic／Motion Prompt／cinematic-shot）與 Code-as-Video 規範之「外部裁判」結構驗證器
+  - **目標範圍**：`tools/verify_motion_and_video_specs.py` 與 `tests/test_verify_motion_and_video_specs.py`
+  - **完成日期**：2026-10-25
+  - **具體做法**：
+    1. 實作 `tools/verify_motion_and_video_specs.py`（純 Python stdlib），機械化解析並驗證：(a) `docs/cinetic-motion-dictionary.md` 涵蓋 14 大分類、技法項目與 60 FPS Easing / Spring 時間配方；(b) `docs/motion-prompt-cheatsheet.md` 涵蓋 6 大套件共 144 款動效對照表且無空白單元格；(c) `docs/cinematic-shot-camera-guide.md` 涵蓋 5 種經典運鏡 Shot 參數表與提示詞範本；(d) `templates/video-studio-harness.md` 涵蓋 `seek(t)` 時間函式契約與四大反 AI 視覺套路禁令。
+    2. 撰寫 `tests/test_verify_motion_and_video_specs.py`，涵蓋真實 4 份文件全數通過，以及分類缺漏、動效列數不足、運鏡表缺失、`seek(t)` 契約遺漏之反例攔截測試。
+  - **驗收標準（DoD）**：執行 `python tools/verify_motion_and_video_specs.py` 回傳 exit 0，且 `python -m pytest tests/test_verify_motion_and_video_specs.py -q` 全數通過（至少 6 項測試）。
+  - **實作紀錄 / 證據**：完成實作外部裁判驗證器 `tools/verify_motion_and_video_specs.py`，機械化檢驗 4 份動態視覺與 Code-as-Video 核心規範（14 大分類 273 種技法與 60 FPS 配方、6 大套件 144 款無空白動效表、5 種運鏡 Shot 參數與提示詞範本、`seek(t)` 契約與四大反 AI 禁令）。並撰寫單元測試 `tests/test_verify_motion_and_video_specs.py`（8 項測試全數通過，涵蓋真實文件綠燈及分類缺漏、行數不足、空白單元格、運鏡缺失、`seek(t)` 遺漏等反例攔截），執行 `python tools/verify_motion_and_video_specs.py` 回傳 exit 0，`python -m pytest tests/test_verify_motion_and_video_specs.py -q` 8 passed。
 
 ---
 

@@ -133,4 +133,13 @@ tags:
   - **完成日期**：2026-10-23
   - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。產出標準技能規範 `templates/single-file-creative-coding-skill.md` 與單檔 Three.js (r128 CDN) 螺旋星系粒子視覺化範例 `assets/creative-coding-demo/threejs-particle-galaxy.html`。
 
+- [x] **`T-20261025-04`**｜**[優先級：高]** 實作 `assets/` 全庫 6 個單檔 HTML Generative UI 互動展示之「外部裁判（External Judge）」結構與安全驗證器
+  - **目標範圍**：`tools/verify_generative_ui_assets.py` 與 `tests/test_verify_generative_ui_assets.py`
+  - **具體做法**：
+    1. 實作 `tools/verify_generative_ui_assets.py`（純 Python stdlib），機械化驗證 `assets/` 下全部 6 個 HTML 展示檔（`anti-slop-demo/index.html`、`target-story-editor/index.html`、`health-bank-dashboard/index.html`、`open-meteo-weather-chart/index.html`、`creative-coding-demo/threejs-particle-galaxy.html`、`openlibrary_demo/video_seek_canvas.html`）：(a) 具備合法 HTML5 `<!DOCTYPE html>`、UTF-8 charset 與非空 `<title>`；(b) 所有外部 CDN `<script src>` / `<link href>` 一律使用 `https://`（嚴禁 `http://` 明文或本機路徑 `file://` / `C:\`）；(c) `openlibrary_demo/video_seek_canvas.html` 實作 `seek` 時間函式契約；(d) `health-bank-dashboard/index.html` 不含未遮蔽真實台灣身分證字號且包含免責聲明。
+    2. 撰寫 `tests/test_verify_generative_ui_assets.py`，涵蓋真實 6 個 HTML 資產全數通過，以及缺少 DOCTYPE、非安全 `http://` CDN、缺少 `seek(t)`、未遮蔽身分證之反例攔截測試。
+  - **驗收標準（DoD）**：執行 `python tools/verify_generative_ui_assets.py` 回傳 exit 0，且 `python -m pytest tests/test_verify_generative_ui_assets.py -q` 全數通過（至少 6 項測試）。
+  - **完成日期**：2026-10-25
+  - **實作紀錄 / 證據**：已完成純 Python stdlib 外部裁判驗證器 `tools/verify_generative_ui_assets.py`，提供對 assets/ 下全數 6 個單檔 HTML 展示之 HTML5 Baseline、外部資源 HTTPS 安全性、`video_seek_canvas.html` 之 `seek` 函式契約、`health-bank-dashboard/index.html` 之身分證脫敏與免責聲明檢驗；並建立 `tests/test_verify_generative_ui_assets.py`（8 項測試，涵蓋真實資產全數通過與各項缺陷反例攔截），執行 `python tools/verify_generative_ui_assets.py`（exit 0）與 `pytest` 8 passed 全數綠燈通過。
+
 ---

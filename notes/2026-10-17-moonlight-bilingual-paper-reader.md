@@ -23,7 +23,7 @@ tags:
 - **來源貼文**：[Threads @jokdooaa 貼文](https://www.threads.com/@jokdooaa/post/Dejc_d5GWh_)
 - **發布者**：`jokdooaa (@jokdooaa)`
 - **分析日期**：`2026-10-17`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -124,3 +124,12 @@ tags:
     3. 加入引用索引保護規範：論文引用標籤（如 `[Author et al., Year]` 或 `[1]`）強制保留超連結或原文代號。
   - **驗收標準（DoD）**：隨機抽測一篇含密集數學公式的 arXiv 論文進行 AI 解讀，所有 LaTeX 符號與引用標記保持 100% 原始語法。
   - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付於 `templates/latex-citation-protection-prompt.md`，制定包含行內公式、區塊公式、引用標籤與交叉參照四項零竄改保護契約，並附 3DGS 論文真實測試輸入案例與預期標準輸出。
+
+- [x] **`T-20261025-05`**｜**[優先級：高]** 實作學術論文雙語翻譯「LaTeX 公式與引用零竄改保護」及「5W1H-CQR-KSU 結構」之外部裁判驗證器
+  - **完成日期**：2026-10-25
+  - **目標範圍**：`tools/verify_academic_and_latex_guard.py` 與 `tests/test_verify_academic_and_latex_guard.py`
+  - **具體做法**：
+    1. 實作 `tools/verify_academic_and_latex_guard.py`（純 Python stdlib），包含：(a) 原文與譯文比對函式 `verify_latex_and_citations_preserved(source_text, translated_text)`，自動抽取所有行內公式 `$...$` / `\(...\)`、區塊公式 `$$...$$` / `\begin{equation}...\end{equation}`、引用標籤 `\cite{...}` / `[1]`–`[99]` 與交叉參照 `\ref{...}` / `\eqref{...}`，斷言譯文 100% 零遺漏、零竄改；(b) 機械驗證 `templates/latex-citation-protection-prompt.md` 內嵌之測試輸入與預期輸出符合零竄改契約；(c) 機械驗證 `templates/academic-reading-prompt.md` 與 `docs/academic-reading-smoke-report.md` 完整涵蓋 5W1H、CQR 與 KSU 三層結構。
+    2. 撰寫 `tests/test_verify_academic_and_latex_guard.py`，涵蓋真實範本通過、公式變數被誤譯攔截、引用標籤遺失攔截、交叉參照竄改攔截與 5W1H-CQR-KSU 缺漏攔截測試。
+  - **驗收標準（DoD）**：執行 `python tools/verify_academic_and_latex_guard.py` 回傳 exit 0，且 `python -m pytest tests/test_verify_academic_and_latex_guard.py -q` 全數通過（至少 6 項測試）。
+  - **實作紀錄 / 證據**：完成 `tools/verify_academic_and_latex_guard.py` 與 `tests/test_verify_academic_and_latex_guard.py`，實作原文與譯文雙向公式/引用精確比對、四大契約校驗與 5W1H-CQR-KSU 三層架構外部裁判，並通過 9 項單元測試與 CLI 驗證。

@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 95 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 68／⚪ 不做 27
+> 共 98 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 71／⚪ 不做 27
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,7 +50,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 68 項）</summary>
+<details><summary>展開查看已完成任務（共 71 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -122,6 +122,9 @@
 | `T-20261025-01` | 2026-10-25 | 依 `docs/external-judge-audit.md` 補強：實作 Claude 資安審查與閒置壓縮設定之「外部裁判（External Judge）」機械驗證器與對抗測試 | 已建立 `tools/verify_claude_security_config.py`（純 Python stdlib）與 `tests/test_verify_claude_security_config.py`；成功實作閒置壓縮 Token 門檻檢驗（`>= 100000` 與 JSON 語法斷言）、資安範本 8 KB 預算與四大條款完整性校驗，以及對抗式靜態掃描函式 `scan_code_snippet`（涵蓋硬編碼敏感憑證、越界路徑、空殼函式與高危呼叫攔截，並完整支援行內或上一行 `# safe:` / `# nosec` 豁免）。經實機檢測 `python tools/verify_claude_security_config.py` 回傳 exit 0，且 12 項單元測試 `python -m pytest tests/test_verify_claude_security_config.py -v` 100% 全數綠燈通過。引證檔案：`tools/verify_claude_security_config.py`、`tests/test_verify_claude_security_config.py`。 | [2026-10-23-claude-plugin-security-guidance](./notes/2026-10-23-claude-plugin-security-guidance.md) |
 | `T-20261025-02` | 2026-10-25 | 依 `docs/external-judge-audit.md` 補強：實作合規清單、宣稱查證與對照矩陣之「外部裁判」結構驗證器 | 已實作 `tools/verify_compliance_and_matrix_docs.py` 提供純 stdlib 結構驗證器，解析並驗證四大文件之五大分類、勾選項、URL 合法性、法定結論、對照矩陣完整性與改寫前後對照實例；建立 `tests/test_verify_compliance_and_matrix_docs.py` 共 9 項 pytest 測試（涵蓋真實文件檢驗與各類反例攔截），執行驗證器 exit 0 且 pytest 9 項測試全數綠燈通過。 | [2026-10-24-felix-rieseberg-how-to-be-more-ambitious](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md) |
 | `T-20261025-03` | 2026-10-25 | 依 `docs/external-judge-audit.md` 補強：實作資安事件盤點與 WebToApp 接案規格之「外部裁判」結構驗證器 | 建立 `tools/verify_incident_and_workflow_specs.py`（純 Python stdlib）與 `tests/test_verify_incident_and_workflow_specs.py`。實作結構化驗證函式校驗資安事件盤點報告（首行結論、雙稽核表格、零明文金鑰）、應變清單範本（五大段落各自 >= 3 項勾選項）與 WebToApp 規格文件（可行性結論、權限與簽名分析、六大步驟、四大風險免責條款）。撰寫 8 項單元測試涵蓋真實文件與反例攔截，執行 `python tools/verify_incident_and_workflow_specs.py` exit code 0，且 `python -m pytest tests/test_verify_incident_and_workflow_specs.py -q` 8 筆全數通過。 | [2026-10-23-zeabur-october-2026-security-incident](./notes/2026-10-23-zeabur-october-2026-security-incident.md) |
+| `T-20261025-04` | 2026-10-25 | 實作 `assets/` 全庫 6 個單檔 HTML Generative UI 互動展示之「外部裁判（External Judge）」結構與安全驗證器 | 已完成純 Python stdlib 外部裁判驗證器 `tools/verify_generative_ui_assets.py`，提供對 assets/ 下全數 6 個單檔 HTML 展示之 HTML5 Baseline、外部資源 HTTPS 安全性、`video_seek_canvas.html` 之 `seek` 函式契約、`health-bank-dashboard/index.html` 之身分證脫敏與免責聲明檢驗；並建立 `tests/test_verify_generative_ui_assets.py`（8 項測試，涵蓋真實資產全數通過與各項缺陷反例攔截），執行 `python tools/verify_generative_ui_assets.py`（exit 0）與 `pytest` 8 passed 全數綠燈通過。 | [2026-10-18-awesome-opus5-5-videos-prompt-zoo](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) |
+| `T-20261025-05` | 2026-10-25 | 實作學術論文雙語翻譯「LaTeX 公式與引用零竄改保護」及「5W1H-CQR-KSU 結構」之外部裁判驗證器 | 完成 `tools/verify_academic_and_latex_guard.py` 與 `tests/test_verify_academic_and_latex_guard.py`，實作原文與譯文雙向公式/引用精確比對、四大契約校驗與 5W1H-CQR-KSU 三層架構外部裁判，並通過 9 項單元測試與 CLI 驗證。 | [2026-10-17-moonlight-bilingual-paper-reader](./notes/2026-10-17-moonlight-bilingual-paper-reader.md) |
+| `T-20261025-06` | 2026-10-25 | 實作動態視覺字典（Cinetic／Motion Prompt／cinematic-shot）與 Code-as-Video 規範之「外部裁判」結構驗證器 | 完成實作外部裁判驗證器 `tools/verify_motion_and_video_specs.py`，機械化檢驗 4 份動態視覺與 Code-as-Video 核心規範（14 大分類 273 種技法與 60 FPS 配方、6 大套件 144 款無空白動效表、5 種運鏡 Shot 參數與提示詞範本、`seek(t)` 契約與四大反 AI 禁令）。並撰寫單元測試 `tests/test_verify_motion_and_video_specs.py`（8 項測試全數通過，涵蓋真實文件綠燈及分類缺漏、行數不足、空白單元格、運鏡缺失、`seek(t)` 遺漏等反例攔截），執行 `python tools/verify_motion_and_video_specs.py` 回傳 exit 0，`python -m pytest tests/test_verify_motion_and_video_specs.py -q` 8 passed。 | [2026-10-19-cinetic-motion-director-agent-skill](./notes/2026-10-19-cinetic-motion-director-agent-skill.md) |
 
 </details>
 
@@ -180,13 +183,13 @@
 | 2026-10-17 | 🟢 | [HanSun 全端網站從零建置部署手冊：Codex/Claude 驅動的商業系統架構與 6 大 Agent 轉化實踐](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md) | `fullstack-architecture`, `agent-workflow`, `supabase` | 2 / 2 |
 | 2026-10-17 | ⚪ | [Meta SAM 3.1 視覺分割模型解析：從點選框選到文字提示、32 FPS 串流追蹤與 Agent 雙階段打碼流水線](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md) | `computer-vision`, `meta-sam`, `video-segmentation` | 0 / 0（+2 不做） |
 | 2026-10-17 | ⚪ | [Claude 混合模型分工實踐：/model opusplan 與 /advisor 雙軌架構緩解 Token 焦慮](./notes/2026-10-17-model-routing-opusplan-advisor.md) | `model-routing`, `claude-code`, `token-optimization` | 0 / 0（+2 不做） |
-| 2026-10-17 | 🟢 | [AI 學術論文雙語閱讀利器：Moonlight 雙欄對照、公式保護與開源替代 (MinerU/Zotero) 技術解析](./notes/2026-10-17-moonlight-bilingual-paper-reader.md) | `paper-reading`, `ai-tools`, `bilingual-translation` | 2 / 2 |
+| 2026-10-17 | 🟢 | [AI 學術論文雙語閱讀利器：Moonlight 雙欄對照、公式保護與開源替代 (MinerU/Zotero) 技術解析](./notes/2026-10-17-moonlight-bilingual-paper-reader.md) | `paper-reading`, `ai-tools`, `bilingual-translation` | 3 / 3 |
 | 2026-10-17 | 🟢 | [Motion Prompt：讓 AI 聽懂動態語言的開源視覺動效字典（120 種動畫、動態畫布與 Agent Skill 整合）](./notes/2026-10-17-motion-prompt-animation-dictionary.md) | `motion-prompt`, `animation-dictionary`, `agent-skills` | 1 / 1（+1 不做） |
 | 2026-10-17 | ⚪ | [Reelbird：免費開源螢幕錄影神器（原生 Swift、S3/R2 自託管、即時網址與 Agent MCP 整合）](./notes/2026-10-17-reelbird-open-source-screen-recorder.md) | `screen-recording`, `mcp`, `agent-tools` | 0 / 0（+2 不做） |
 | 2026-10-17 | 🟢 | [對抗 AI 罐頭設計：Shipper 釋出 92 萬字元 epstein.md 終結 Vibe Coding 視覺審美疲勞](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md) | `anti-ai-slop`, `design-system`, `frontend-ui` | 2 / 2 |
 | 2026-10-17 | 🟢 | [TasteSkill v2：解析 247 個得獎網站重構的 AI 前端藝術指導與截圖評審閉環](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md) | `taste-skill`, `agent-skills`, `anti-slop` | 2 / 2 |
 | 2026-10-17 | ⚪ | [XERJ Corpus Hub：為 Agent 釘選整門領域知識的預索引語料庫](./notes/2026-10-17-xerj-corpus-hub.md) | `agent-memory`, `retrieval-augmented-generation`, `corpus-hub` | 0 / 0（+2 不做） |
-| 2026-10-18 | 🟢 | [Awesome Opus 5.5 Videos 提示詞動物園解構：700+ 代碼驅動視覺動畫、3D 場景、技術解說與互動遊戲開源基準庫](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) | `awesome-opus5-5`, `prompt-zoo`, `creative-coding` | 1 / 1（+1 不做） |
+| 2026-10-18 | 🟢 | [Awesome Opus 5.5 Videos 提示詞動物園解構：700+ 代碼驅動視覺動畫、3D 場景、技術解說與互動遊戲開源基準庫](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md) | `awesome-opus5-5`, `prompt-zoo`, `creative-coding` | 2 / 2（+1 不做） |
 | 2026-10-18 | ⚪ | [Claude Code Mods 自體改造機制解構：從外部腳本 Hook 到 In-Session 中介軟體（Middleware）、動態 UI 渲染與即時熱重載](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | `claude-code`, `claude-mods`, `in-session-middleware` | 0 / 0（+2 不做） |
 | 2026-10-18 | 🟢 | [CLI-Anything：終結脆弱 GUI 點擊，將任意軟體自動升級為 Agent-Native CLI 與 Skill 的通用框架解構](./notes/2026-10-18-cli-anything-agent-native-computer-use.md) | `cli-anything`, `agent-native`, `computer-use` | 2 / 2 |
 | 2026-10-18 | ⚪ | [desktop-sense：為 Coding Agent 賦予本機螢幕即時視覺感知（Local-First Screen Context）與嚴格隱私防護架構解構](./notes/2026-10-18-desktop-sense-local-screen-context.md) | `desktop-sense`, `local-first`, `screen-context` | 0 / 0（+2 不做） |
@@ -197,7 +200,7 @@
 | 2026-10-18 | 🟢 | [靶心人故事編輯器：許榮哲故事模型與 Generative UI 互動產品設計 Prompt 深度解構](./notes/2026-10-18-target-story-generative-ui-editor.md) | `generative-ui`, `storytelling-structure`, `target-story-formula` | 2 / 2 |
 | 2026-10-19 | 🟢 | [「AI 共同大腦（AI Shared Brain）」工業級架構全景規劃：集中知識中樞、打卡審計、結構化交接記憶與額度感知動態調度的工程實踐](./notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md) | `ai-shared-brain`, `multi-agent-architecture`, `central-knowledge-hub` | 2 / 2 |
 | 2026-10-19 | 🟢 | [Google Android 團隊官方 30 個 Agent Skills 解構：終結過時 API 幻覺、Jetpack Compose 遷移、Play Billing 審查與跨終端（Wear/TV/Auto/XR）開發閉環](./notes/2026-10-19-android-official-skills-google-coding-agent.md) | `android-skills`, `jetpack-compose`, `google-play-billing` | 2 / 2 |
-| 2026-10-19 | 🟢 | [Cinetic 動態導演 Agent Skill 解構：讓 Claude 掌握 273 種動畫技法、Remotion/GSAP 雙引擎與音畫同步節拍網格（Beat Grid）的 Code-as-Video 實踐](./notes/2026-10-19-cinetic-motion-director-agent-skill.md) | `cinetic`, `motion-director`, `remotion` | 2 / 2 |
+| 2026-10-19 | 🟢 | [Cinetic 動態導演 Agent Skill 解構：讓 Claude 掌握 273 種動畫技法、Remotion/GSAP 雙引擎與音畫同步節拍網格（Beat Grid）的 Code-as-Video 實踐](./notes/2026-10-19-cinetic-motion-director-agent-skill.md) | `cinetic`, `motion-director`, `remotion` | 3 / 3 |
 | 2026-10-19 | 🟢 | [Crossroad A2A 架構解構：跨機器、跨 SaaS 的非同步 Agent 互聯寄信協議（Agent-to-Agent Mailbox Relay）與零 API Key 協同工作流](./notes/2026-10-19-crossroad-a2a-agent-mail-relay.md) | `a2a`, `crossroad-a2a`, `multi-agent` | 2 / 2 |
 | 2026-10-19 | 🟢 | [REA（Reverse Engineer Anything）：讓 AI Coding Agent 透過 MCP 驅動本地逆向工程工具鏈，無原始碼即可分析、理解與重造任意應用程式功能](./notes/2026-10-19-rea-reverse-engineer-anything-agent.md) | `reverse-engineering`, `mcp`, `agent-tools` | 2 / 2 |
 | 2026-10-20 | ⚪ | [BeatDesign 開源 AI 影片工作台解構：本地優先 Higgsfield 平替方案、無限畫布與時間線雙模式、29 個 MCP 工具與 WebCodecs 原生剪輯實踐](./notes/2026-10-20-beatdesign-open-source-ai-video-studio.md) | `ai-video-studio`, `beatdesign`, `higgsfield-alternative` | 0 / 0（+2 不做） |
@@ -355,6 +358,9 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_claude_security_config.py`](./tools/verify_claude_security_config.py) | Claude Code `idleCompaction` 門檻、`security-guidance` 8 KB 預算與對抗式代碼掃描外部裁判驗證器 | [`tests/test_verify_claude_security_config.py`](./tests/test_verify_claude_security_config.py) |
 | [`tools/verify_compliance_and_matrix_docs.py`](./tools/verify_compliance_and_matrix_docs.py) | AI 人物合規清單、宣稱查證、對照矩陣與野心檢查表之結構化外部裁判驗證器 | [`tests/test_verify_compliance_and_matrix_docs.py`](./tests/test_verify_compliance_and_matrix_docs.py) |
 | [`tools/verify_incident_and_workflow_specs.py`](./tools/verify_incident_and_workflow_specs.py) | Zeabur 資安事件盤點、PaaS 入侵應變清單與 WebToApp 接案規格之外部裁判驗證器 | [`tests/test_verify_incident_and_workflow_specs.py`](./tests/test_verify_incident_and_workflow_specs.py) |
+| [`tools/verify_generative_ui_assets.py`](./tools/verify_generative_ui_assets.py) | `assets/` 全庫 6 個單檔 HTML Generative UI 互動展示之結構、HTTPS CDN、`seek(t)` 與脫敏外部裁判驗證器 | [`tests/test_verify_generative_ui_assets.py`](./tests/test_verify_generative_ui_assets.py) |
+| [`tools/verify_academic_and_latex_guard.py`](./tools/verify_academic_and_latex_guard.py) | 學術雙語翻譯 LaTeX 公式／引用標籤／交叉參照零竄改比對與 5W1H-CQR-KSU 結構外部裁判驗證器 | [`tests/test_verify_academic_and_latex_guard.py`](./tests/test_verify_academic_and_latex_guard.py) |
+| [`tools/verify_motion_and_video_specs.py`](./tools/verify_motion_and_video_specs.py) | Cinetic 273 技法、Motion Prompt 144 動效、cinematic-shot 5 運鏡與 Code-as-Video 規範外部裁判驗證器 | [`tests/test_verify_motion_and_video_specs.py`](./tests/test_verify_motion_and_video_specs.py) |
 
 ### 2. 技術規範與實測報告（`docs/`）
 - **Agent 工具鏈與安全**：[影片逐字稿 GPU 轉寫 SOP](./docs/video-transcript-howto.md) ｜ [外部裁判 DoD 缺口稽核](./docs/external-judge-audit.md) ｜ [Claude Code idleCompaction 設定與驗證](./docs/claude-idle-compaction-setup.md) ｜ [security-guidance Windows 11 實測與三層防禦](./docs/claude-security-guidance-windows-setup.md) ｜ [Zeabur 資安事件衝擊盤點報告](./docs/zeabur-incident-credential-audit.md) ｜ [feedback-desk Windows 11 實測](./docs/feedback-desk-windows-eval.md) ｜ [feedback-desk 對照 agent-relay](./docs/feedback-desk-vs-agent-relay.md) ｜ [Claude 官方外掛評測](./docs/claude-plugins-official-review.md) ｜ [pstack Agent Playbooks 規格](./docs/pstack-agent-playbooks.md) ｜ [CLI-Anything 轉 Skill 協議](./docs/cli-anything-to-skill-protocol.md) ｜ [REA 逆向工程沙盒實測](./docs/rea-sandbox-evaluation-evidence.md) ｜ [三階段逆向分析流水線規格](./docs/reverse-engineering-pipeline-spec.md) ｜ [Android 官方 33 Skills 防幻覺手冊](./docs/android-official-skills-anti-hallucination.md) ｜ [Android CLI Windows 驗證](./docs/android-cli-plugin-windows-validation.md)
