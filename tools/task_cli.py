@@ -62,10 +62,17 @@ def _update_note_frontmatter_status(text: str, new_status: str) -> str:
     return "\n".join(lines)
 
 
+def _read_note(note_path: Path) -> tuple[str, str]:
+    """讀取筆記內容（內部統一以 \\n 切行）並回傳原檔換行符號（\\r\\n 或 \\n）。"""
+    raw = note_path.read_bytes()
+    nl = "\r\n" if b"\r\n" in raw else "\n"
+    return raw.decode("utf-8").replace("\r\n", "\n"), nl
+
+
 def _locate_task_span(lines: list[str], task_id: str) -> tuple[int, int]:
     """回傳任務標題行 index (0-based) 與該任務區塊結束 index (exclusive)。"""
     start = -1
-    for i, line in enumerate(lines):
+    for i, line in bi.iter_outside_fences(lines):
         m = bi.TASK_LINE.match(line)
         if m and m["id"] == task_id:
             start = i
@@ -87,7 +94,7 @@ def _locate_task_span(lines: list[str], task_id: str) -> tuple[int, int]:
 
 
 def apply_claim(note_path: Path, task_id: str) -> str:
-    text = note_path.read_text(encoding="utf-8")
+    text, nl = _read_note(note_path)
     lines = text.split("\n")
     start, end = _locate_task_span(lines, task_id)
     if re.match(r"^- \[[xX]\] ", lines[start]):
@@ -103,7 +110,7 @@ def apply_claim(note_path: Path, task_id: str) -> str:
     else:
         lines.insert(start + 1, status_line)
 
-    note_path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
+    note_path.write_text("\n".join(lines), encoding="utf-8", newline=nl)
     return sync_single_note_status(note_path)
 
 
@@ -111,7 +118,7 @@ def apply_close(note_path: Path, task_id: str, reason: str) -> str:
     reason = reason.strip()
     if not reason:
         raise ValueError("關閉理由不可為空")
-    text = note_path.read_text(encoding="utf-8")
+    text, nl = _read_note(note_path)
     lines = text.split("\n")
     start, end = _locate_task_span(lines, task_id)
     if re.match(r"^- \[[xX]\] ", lines[start]):
@@ -127,7 +134,7 @@ def apply_close(note_path: Path, task_id: str, reason: str) -> str:
     else:
         lines.insert(start + 1, status_line)
 
-    note_path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
+    note_path.write_text("\n".join(lines), encoding="utf-8", newline=nl)
     return sync_single_note_status(note_path)
 
 
@@ -138,7 +145,7 @@ def apply_complete(note_path: Path, task_id: str, evidence: str, date_str: str) 
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_str):
         raise ValueError(f"完成日期需為 YYYY-MM-DD：{date_str}")
 
-    text = note_path.read_text(encoding="utf-8")
+    text, nl = _read_note(note_path)
     lines = text.split("\n")
     start, end = _locate_task_span(lines, task_id)
     if re.match(r"^- \[[xX]\] ", lines[start]):
@@ -167,17 +174,17 @@ def apply_complete(note_path: Path, task_id: str, evidence: str, date_str: str) 
         block.append(ev_line)
 
     lines[start + 1 : end] = block
-    note_path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
+    note_path.write_text("\n".join(lines), encoding="utf-8", newline=nl)
     return sync_single_note_status(note_path)
 
 
 def sync_single_note_status(note_path: Path) -> str:
     note = bi.parse_note(note_path)
     expected = bi.expected_note_status(note)
-    text = note_path.read_text(encoding="utf-8")
+    text, nl = _read_note(note_path)
     updated = _update_note_frontmatter_status(text, expected)
     if updated != text:
-        note_path.write_text(updated, encoding="utf-8", newline="\n")
+        note_path.write_text(updated, encoding="utf-8", newline=nl)
     return expected
 
 

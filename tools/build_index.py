@@ -32,10 +32,31 @@ TASK_LINE = re.compile(
 )
 # 任務底下的縮排欄位：  - **目標範圍**：...
 TASK_FIELD = re.compile(r"^\s{2,}- \*\*(?P<key>[^*]+)\*\*[：:]\s*(?P<value>.*?)\s*$")
+FENCE_LINE = re.compile(r"^\s*(?P<fence>`{3,}|~{3,})")
 GENERATED_BLOCK = re.compile(
     r"(<!-- BEGIN GENERATED: (?P<name>[\w-]+) -->\n)(?P<body>.*?)(<!-- END GENERATED: (?P=name) -->)",
     re.DOTALL,
 )
+
+
+def iter_outside_fences(lines: list[str]):
+    """逐行產生 (0-based index, line)，略過 ``` 或 ~~~ 程式碼圍欄區塊（含圍欄行本身）。"""
+    fence: str | None = None
+    for idx, line in enumerate(lines):
+        m = FENCE_LINE.match(line)
+        if fence is None:
+            if m:
+                fence = m.group("fence")
+                continue
+            yield idx, line
+        else:
+            if (
+                m
+                and m.group("fence")[0] == fence[0]
+                and len(m.group("fence")) >= len(fence)
+                and not line[m.end() :].strip()
+            ):
+                fence = None
 
 
 @dataclass
@@ -152,7 +173,24 @@ def parse_note(path: Path) -> Note:
     note = Note(path=path, meta=meta, tags=tags)
     task: Task | None = None
     key = ""
+    fence: str | None = None
     for lineno, line in enumerate(text.split("\n"), 1):
+        fm = FENCE_LINE.match(line)
+        if fence is None:
+            if fm:
+                fence = fm.group("fence")
+                if not line.startswith(" "):
+                    task = None
+                continue
+        else:
+            if (
+                fm
+                and fm.group("fence")[0] == fence[0]
+                and len(fm.group("fence")) >= len(fence)
+                and not line[fm.end() :].strip()
+            ):
+                fence = None
+            continue
         m = TASK_LINE.match(line)
         if m:
             task = Task(

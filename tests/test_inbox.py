@@ -288,6 +288,46 @@ tags:
         with self.assertRaises(SystemExit):
             bi.build_readme("沒有標記", [])
 
+    def test_fenced_code_block_task_lines_ignored(self):
+        n = make_note(self.tmp)
+        fenced_example = (
+            "\n```markdown\n"
+            "- [ ] **`T-20261020-99`**｜**[優先級：高]** 圍欄內的範例任務\n"
+            "  - **目標範圍**：`example`\n"
+            "- [ ] **T-20261020-98**: 圍欄內的不符範本簡寫行\n"
+            "```\n"
+            "~~~\n"
+            "- [ ] **`T-20261020-97`**｜**[優先級：低]** 波浪號圍欄內的範例任務\n"
+            "~~~\n"
+        )
+        full_text = n.path.read_text(encoding="utf-8") + fenced_example
+        n.path.write_text(full_text, encoding="utf-8")
+        reparsed = bi.parse_note(n.path)
+        self.assertEqual([t.id for t in reparsed.tasks], ["T-20261020-01", "T-20261020-02"])
+        with self.assertRaises(KeyError):
+            tc._locate_task_span(full_text.split("\n"), "T-20261020-99")
+        # 圍欄內的簡寫範例行不應觸發「任務行格式不符範本」
+        errs = vi.check_task_ids([reparsed], {n.path: "\n".join(line for _, line in bi.iter_outside_fences(full_text.split("\n")))})
+        self.assertEqual(errs, [])
+
+    def test_task_cli_preserves_crlf_and_lf_line_endings(self):
+        n = make_note(self.tmp, status="pending", box=" ", extra="  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*")
+        lf_text = n.path.read_text(encoding="utf-8").replace("  - **狀態**：🟡 進行中\n", "")
+        crlf_bytes = lf_text.replace("\n", "\r\n").encode("utf-8")
+        n.path.write_bytes(crlf_bytes)
+
+        tc.apply_claim(n.path, "T-20261020-01")
+        self.assertIn(b"\r\n", n.path.read_bytes())
+        self.assertNotIn(b"\n", n.path.read_bytes().replace(b"\r\n", b""))
+
+        tc.apply_complete(n.path, "T-20261020-01", "commit crlf123", "2026-10-25")
+        self.assertIn(b"\r\n", n.path.read_bytes())
+        self.assertNotIn(b"\n", n.path.read_bytes().replace(b"\r\n", b""))
+
+        tc.apply_close(n.path, "T-20261020-02", "測試關閉保留 CRLF")
+        self.assertIn(b"\r\n", n.path.read_bytes())
+        self.assertNotIn(b"\n", n.path.read_bytes().replace(b"\r\n", b""))
+
 
 class DodArtifactTest(unittest.TestCase):
     """DoD 要求產出的本 repo 檔案不存在時，不能算已做。"""

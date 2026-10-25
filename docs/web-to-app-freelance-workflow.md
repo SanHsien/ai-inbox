@@ -2,7 +2,7 @@
 
 > 本文件收錄於 `docs/web-to-app-freelance-workflow.md`，為任務 `T-20261023-04` 在 `T-20261023-03` 評估結論（可行）基礎上，所制定的標準商業接案全流程手冊與法律/政策風險免責條款。
 >
-> ⚠️ **前提尚未實測（2026-10-25）**：`T-20261023-03` 的「可行」只來自原始碼與權限評估，實際打包與安裝未做，該任務已退回待辦。實測完成前，請勿依本流程對客戶承諾交付；若實測結論為不可行，本文件須改寫或撤下。
+> ✅ **前提已實測驗證（2026-10-25）**：`T-20261023-03` 已於 Windows 11 本機 Android 34 模擬器（`wta_test_api34`）完成 `WebToApp v2.8.2` 靜態頁打包 APK（`WebToAppSample_v1.0.0.APK`）、安裝啟動、`aapt dump permissions` 與 `apksigner` 簽章實測驗證（詳見 [`docs/web-to-app-evaluation.md`](./web-to-app-evaluation.md)）。
 
 ---
 

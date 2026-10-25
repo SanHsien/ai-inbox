@@ -111,10 +111,11 @@ def check_task_ids(notes: list[bi.Note], texts: dict[Path, str]) -> list[str]:
             errors.append(f"任務 ID 重複定義：{t.id}（{prev.note.path.name}:{prev.line} 與 {t.note.path.name}:{t.line}）")
         defined.setdefault(t.id, t)
 
-    # 抓出看起來像任務定義、但不符合範本格式（因此不會進總表）的行
+    # 抓出看起來像任務定義、但不符合範本格式（因此不會進總表）的行（略過程式碼圍欄）
     loose = re.compile(rf"^- \[[ xX]\] .*{bi.TASK_ID}")
     for n in notes:
-        for lineno, line in enumerate(texts[n.path].split("\n"), 1):
+        for idx, line in bi.iter_outside_fences(texts[n.path].split("\n")):
+            lineno = idx + 1
             if loose.match(line) and not bi.TASK_LINE.match(line):
                 errors.append(f"{n.path.name}:{lineno}: 任務行格式不符範本，總表讀不到：{line[:60]}…")
 

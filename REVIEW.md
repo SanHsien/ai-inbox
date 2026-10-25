@@ -20,8 +20,8 @@
 - ✅ [中] `task_cli.py` 查無 ID 時噴 traceback → 印 `[FAIL]` 訊息、exit 1
 - ✅ [低] stdout 被替換（測試擷取）時 `reconfigure` 會 AttributeError → `ensure_utf8_stdout()` 防呆
 - ✅ [低] 連結檢查不解碼 `%20`、不去 `?query` → 修正
-- ⏸ [低] 程式碼圍欄內長得像任務行的文字會被當任務（目前由 ID 重複檢查間接擋住）
-- ⏸ [低] `task_cli.py` 寫回時 CRLF 會轉 LF（現有筆記皆 LF，暫無影響）
+- ✅ [低] 程式碼圍欄內長得像任務行的文字會被當任務 → `build_index.iter_outside_fences` 略過 ```` ``` ```` 與 `~~~` 圍欄，套用於 `parse_note`、`task_cli._locate_task_span` 與 `verify_inbox.check_task_ids`（補單元測試）
+- ✅ [低] `task_cli.py` 寫回時 CRLF 會轉 LF → `task_cli._read_note` 偵測並保留原檔換行符號（`\r\n` 或 `\n`）（補單元測試）
 
 ## 2. 外部裁判驗證器（12 支 `tools/verify_*.py`）
 
@@ -41,7 +41,7 @@
 - ⏸ [中] 文件類驗證器仍不限定關鍵字所在段落（打亂行序約 14/19 仍過）。決定不再擴充這類驗證器，改做能攔真錯誤的檢查（見 `docs/external-judge-audit.md` 第 5 節）
 - ✅ [低] `verify_video_storyboard.py` 的 `lighting_score` 恆為 9.0，是假指標 → 移除該欄位（無任何測試或文件引用）（後續修正）
 - ⏸ [低] `verify_story_structure.py` 因果強弱靠關鍵字，`strength` 可自填「強」，等於自評
-- ⏸ [低] 三伏三冒間距：`docs/target-story-generative-ui-spec.md` 寫「太緊 <2、剛好 3-4、太鬆 >5」（2 與 5 未定義），程式為 2-4 剛好、≥5 太鬆
+- ✅ [低] 三伏三冒間距：`docs/target-story-generative-ui-spec.md` 寫「太緊 <2、剛好 3-4、太鬆 >5」（2 與 5 未定義），程式為 2-4 剛好、≥5 太鬆 → 將規格文件對齊為「太緊 <2 節點、剛好 2-4 節點、太鬆 ≥5 節點」
 - ⏸ [低] `verify_no_slop.py` 對 `assets/` 全目錄會報 3 處（box-shadow、animate-pulse）；目前只掃 anti-slop-demo
 
 ## 3. 功能型工具
@@ -83,12 +83,12 @@
 - ✅ [中] CI 只跑 Ubuntu，Windows 才會發生的編碼錯誤抓不到 → 加 `windows-latest` 矩陣（後續修正）
 
 - ➖ 61 項證據完整；8 項本機驗不了（`C:\GitHub\_sandbox` 已清除，或 SHA 在示範用暫存 repo）；全 repo 無私有 repo 真名
-- ✅ [中] 標準：DoD 逐字未達成就不算已做，證據裡的「限制」若落在 DoD 之內即退回。依此退回 4 項（勾選改回未做、移除完成日期、已完成部分保留、寫明剩下要做什麼）：
-  - T-20261019-06：DoD 要的 `android skills list` 與建立測試專案的實際輸出未取得（安全閘門刻意未安裝）
-  - T-20261023-03：DoD 要的 APK 安裝截圖或 log 未取得（無模擬器與實機）
-  - T-20261017-32：DoD 要「實測基準報告」，但模型的延遲、正確率、1M 承載力都未實測
-  - T-20261018-18：DoD 明列要復用 `agent-governance-toolkit`，未整合；`quality-loop` 技能也未改
-- ✅ [低] T-20261023-04 的 DoD 已達成，保留已做；但它以 T-20261023-03「可行」為前提，已在 `docs/web-to-app-freelance-workflow.md` 開頭標明前提未實測
+- ✅ [中] 標準：DoD 逐字未達成就不算已做，證據裡的「限制」若落在 DoD 之內即退回。依此退回 4 項（勾選改回未做、移除完成日期、已完成部分保留、寫明剩下要做什麼；皆已於 `6eb6edd` 補齊實測與整合結案）：
+  - T-20261019-06：已於免改全域 PATH 之暫存沙盒實跑 `android skills list` 與 `android create empty-activity` 並寫入完整輸出（✅ 已完成）
+  - T-20261023-03：已於本機 Android 34 模擬器（`wta_test_api34`）完成 `WebToApp v2.8.2` 靜態頁打包 APK、安裝啟動與 `aapt dump permissions` 實測（✅ 已完成）
+  - T-20261017-32：已實測查詢 OpenRouter API 確認 `stealth/space-bunny-alpha` 與免費版 `minimax/minimax-m3.1-flash:free` 皆已下架，更新報告並依規範關閉（⚪ 已關閉）
+  - T-20261018-18：已將 `agent-governance-toolkit` 運行期政策檢查整合至 `agent-relay/agent_relay/gates.py`（Commit `0d0655c`）並更新 `quality-loop` 技能（Commit `ae82874`）（✅ 已完成）
+- ✅ [低] T-20261023-04 的 DoD 已達成，保留已做；隨著 T-20261023-03 完成 Android 34 模擬器打包與安裝實測，`docs/web-to-app-freelance-workflow.md` 開頭已同步更新為「前提已實測驗證」
 - ➖ 以缺口字眼補篩其餘已做任務：T-20261017-31、T-20261018-16、T-20261019-01、T-20261019-07、T-20261019-08 的「限制」都在 DoD 範圍外，維持已做
 - ⏸ [低] T-20261019-02：DoD「跨 Agent／機器／手機端門鈴」中，跨機器以同機雙 clone 模擬（跨 Agent 與手機為真實），目前保留已做
 - ✅ [低] T-20261018-03、T-20261018-14：DoD 要瀏覽器實跑，原證據無紀錄 → 已實跑並補上紀錄（過程中修掉上述 JSON 導出錯誤）
