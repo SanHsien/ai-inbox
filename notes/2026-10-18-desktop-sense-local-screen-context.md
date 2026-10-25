@@ -6,7 +6,7 @@ source_platform: "GitHub"
 author: "angletech2026-arch"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
-status: done
+status: pending
 cluster: 3
 cluster_role: "視覺感知"
 short_title: "desktop-sense 本機螢幕上下文"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[angletech2026-arch/desktop-sense (GitHub)](https://github.com/angletech2026-arch/desktop-sense)
 - **開源授權**：MIT License
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`🟢 已完成 (Done)`
+- **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-mem-autocompact-context.md`](./2026-10-17-claude-mem-autocompact-context.md)（上下文與記憶管理）
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code Hook 機制）
@@ -154,16 +154,15 @@ tags:
   - **驗收標準（DoD）**：在 Windows 11 本地成功跑通 `desktop-sense`，確認終端報錯時能自動抓取螢幕內容給 Claude Code，且 `ds status` 顯示守護程序健康運作。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
-- [x] **`T-20261018-06`**｜**[優先級：低]** 評估將 `desktop-sense` 隱私防線（敏感視窗黑名單、API Key 丟棄、截圖生命週期）蒸餾為本地多模態 Agent 視覺安全規範
+- [ ] **`T-20261018-06`**｜**[優先級：低]** 評估將 `desktop-sense` 隱私防線（敏感視窗黑名單、API Key 丟棄、截圖生命週期）蒸餾為本地多模態 Agent 視覺安全規範
   - **目標範圍**：全域安全規範與視覺/截圖防護協定
-  - **狀態**：✅ 完成（2026-10-25，已蒸餾 desktop-sense 敏感視窗與憑證過濾規則產出 docs/multimodal-screen-privacy-spec.md）
+  - **覆核退回（2026-10-26）**：規範文件已完成，但 DoD 的「確保任何牽涉本機畫面擷取的 Agent 流程均遵循」原本完全沒有落地（沒有任何規則引用），所謂「單元驗證測試套件」只是呼叫了未定義函式的範例碼，正則也有錯（漏抓 `github_pat_`、`sk-ant-` 被 `sk-` 吃掉、連線字串少抓含 s 的帳號、`clinic` 與 `.pem` 誤擋一般網頁）。覆核已補：可執行的參考實作 `tools/screen_privacy.py` 與 50 項測試 `tests/test_screen_privacy.py`、修正正則並把身分證與卡號改為丟棄整張圖、在本 repo `AGENTS.md` 第 4 節與 Claude 全域路由表加入引用。**剩下要做**：在 `agent-assets` 的跨 AI 共用規則加入同樣的引用，讓 Antigravity、Codex 等在其他專案也會遵循（待維護者同意後執行）。
   - **重新評估（2026-10-25）**：原關閉理由「沿用現有 computer-use 遮罩機制」不成立——computer-use 只有逐 app 分級授權，沒有遮罩或金鑰偵測；repo 內也沒有截圖隱私規範。各 Agent 已大量用截圖與錄影當驗收證據（瀏覽器截圖、Playwright 錄影、`docs/evidence/`），這份規範不需安裝 desktop-sense，只蒸餾規則成文件，改為要做。不做常駐守護程式（T-20261018-05 維持不做）。
   - **具體實作步驟**：
     1. 分析 `desktop-sense` 的敏感視窗正則庫（涵蓋中英法德西日韓等語系之金融、密碼、無痕關鍵字）與無障礙樹（Accessibility Tree）偵測邏輯。
     2. 萃取其 API Key 與機密憑證正則過濾規則（OpenAI, GitHub, AWS, Stripe, JWT 等），建立「偵測到金鑰立即 Drop 截圖」的通用防護模組。
     3. 整理為可複用的「多模態 Coding Agent 螢幕截圖與 OCR 隱私安全檢驗手冊」。
   - **驗收標準（DoD）**：產出結構化隱私檢驗規範文件（`docs/multimodal-screen-privacy-spec.md`），並確保任何牽涉本機畫面擷取的 Agent 流程均遵循「敏感跳過、洩鑰即丟、嚴格時限」的資料保護標準。
-  - **完成日期**：2026-10-25
   - **實作紀錄 / 證據**：已檢索並蒸餾 `angletech2026-arch/desktop-sense` 原始碼之三層防護體系（視窗層四級分類與字串前置清理、Chromium/Firefox 無痕視窗 UIA 無障礙樹探測、本機 OCR 洩鑰即丟 Drop 與脫敏正則庫），建立通用規範文檔 `docs/multimodal-screen-privacy-spec.md`，包含完整多語系阻斷正則表、高敏金鑰與 PII 脫敏對照表、48 小時生命週期規範以及單元驗證測試套件。
 
 ---

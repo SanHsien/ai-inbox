@@ -307,8 +307,29 @@ tags:
         with self.assertRaises(KeyError):
             tc._locate_task_span(full_text.split("\n"), "T-20261020-99")
         # 圍欄內的簡寫範例行不應觸發「任務行格式不符範本」
-        errs = vi.check_task_ids([reparsed], {n.path: "\n".join(line for _, line in bi.iter_outside_fences(full_text.split("\n")))})
+        errs = vi.check_task_ids([reparsed], {n.path: full_text})  # 傳原文：要測的是 check_task_ids 自己略過圍欄
         self.assertEqual(errs, [])
+
+    def test_inline_triple_backticks_do_not_open_a_fence(self):
+        # 同一行裡的 ```x``` 是行內程式碼；若被當成圍欄開頭，後面的任務會整段消失
+        n = make_note(self.tmp)
+        text = n.path.read_text(encoding="utf-8")
+        text = text.replace("- [ ] **`T-20261020-02`**", "```inline``` 開頭的行內程式碼說明\n- [ ] **`T-20261020-02`**", 1)
+        n.path.write_text(text, encoding="utf-8")
+        self.assertEqual([t.id for t in bi.parse_note(n.path).tasks], ["T-20261020-01", "T-20261020-02"])
+
+    def test_longer_fence_wraps_shorter_one(self):
+        lines = ["````markdown", "```", "- [ ] **`T-20261020-99`**｜**[優先級：高]** 範例", "```", "````", "外面"]
+        self.assertEqual([line for _, line in bi.iter_outside_fences(lines)], ["外面"])
+
+    def test_unclosed_fence_is_reported(self):
+        self.assertEqual(bi.unclosed_fence_line(["a", "```python", "x = 1"]), 2)
+        self.assertIsNone(bi.unclosed_fence_line(["```", "x", "```"]))
+        self.assertIsNone(bi.unclosed_fence_line(["用 ```x``` 行內"]))
+        n = make_note(self.tmp)
+        n.path.write_text(n.path.read_text(encoding="utf-8") + "\n```\n沒關的圍欄\n", encoding="utf-8")
+        errs = vi.check_notes([bi.parse_note(n.path)])
+        self.assertTrue(any("沒有關閉" in e for e in errs), errs)
 
     def test_task_cli_preserves_crlf_and_lf_line_endings(self):
         n = make_note(self.tmp, status="pending", box=" ", extra="  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*")
@@ -327,6 +348,18 @@ tags:
         tc.apply_close(n.path, "T-20261020-02", "測試關閉保留 CRLF")
         self.assertIn(b"\r\n", n.path.read_bytes())
         self.assertNotIn(b"\n", n.path.read_bytes().replace(b"\r\n", b""))
+
+
+class LineEndingMajorityTest(unittest.TestCase):
+    def test_mostly_lf_file_with_a_few_crlf_lines_stays_lf(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "n.md"
+            p.write_bytes(b"a\r\nb\nc\nd\ne\n")
+            _, nl = tc._read_note(p)
+            self.assertEqual(nl, "\n")
+            p.write_bytes(b"a\r\nb\r\nc\r\nd\n")
+            _, nl = tc._read_note(p)
+            self.assertEqual(nl, "\r\n")
 
 
 class DodArtifactTest(unittest.TestCase):

@@ -39,24 +39,41 @@ GENERATED_BLOCK = re.compile(
 )
 
 
+def fence_step(fence: str | None, line: str) -> tuple[str | None, bool]:
+    """程式碼圍欄狀態機：回傳 (下一行開始時的圍欄狀態, 這一行是否屬於圍欄)。
+
+    依 CommonMark：反引號圍欄的開頭行後面不可再出現反引號，否則是行內程式碼（例如 ```x``` 文字），
+    不是圍欄；關閉行要用同一種符號、長度不短於開頭，且後面只能有空白。
+    """
+    m = FENCE_LINE.match(line)
+    if fence is None:
+        if m and not (m["fence"][0] == "`" and "`" in line[m.end():]):
+            return m["fence"], True
+        return None, False
+    if m and m["fence"][0] == fence[0] and len(m["fence"]) >= len(fence) and not line[m.end():].strip():
+        return None, True
+    return fence, True
+
+
 def iter_outside_fences(lines: list[str]):
     """逐行產生 (0-based index, line)，略過 ``` 或 ~~~ 程式碼圍欄區塊（含圍欄行本身）。"""
     fence: str | None = None
     for idx, line in enumerate(lines):
-        m = FENCE_LINE.match(line)
-        if fence is None:
-            if m:
-                fence = m.group("fence")
-                continue
+        fence, in_fence = fence_step(fence, line)
+        if not in_fence:
             yield idx, line
-        else:
-            if (
-                m
-                and m.group("fence")[0] == fence[0]
-                and len(m.group("fence")) >= len(fence)
-                and not line[m.end() :].strip()
-            ):
-                fence = None
+
+
+def unclosed_fence_line(lines: list[str]) -> int | None:
+    """到檔尾仍未關閉的圍欄，回傳其開頭行號（1-based）；後面的任務會被當成程式碼而消失。"""
+    fence: str | None = None
+    start = None
+    for lineno, line in enumerate(lines, 1):
+        before = fence
+        fence, _ = fence_step(fence, line)
+        if before is None and fence is not None:
+            start = lineno
+    return start if fence is not None else None
 
 
 @dataclass
@@ -175,21 +192,11 @@ def parse_note(path: Path) -> Note:
     key = ""
     fence: str | None = None
     for lineno, line in enumerate(text.split("\n"), 1):
-        fm = FENCE_LINE.match(line)
-        if fence is None:
-            if fm:
-                fence = fm.group("fence")
-                if not line.startswith(" "):
-                    task = None
-                continue
-        else:
-            if (
-                fm
-                and fm.group("fence")[0] == fence[0]
-                and len(fm.group("fence")) >= len(fence)
-                and not line[fm.end() :].strip()
-            ):
-                fence = None
+        opened_here = fence is None
+        fence, in_fence = fence_step(fence, line)
+        if in_fence:
+            if opened_here and not line.startswith(" "):
+                task = None  # 頂層圍欄結束目前任務的欄位區
             continue
         m = TASK_LINE.match(line)
         if m:

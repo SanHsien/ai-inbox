@@ -65,7 +65,9 @@ def _update_note_frontmatter_status(text: str, new_status: str) -> str:
 def _read_note(note_path: Path) -> tuple[str, str]:
     """讀取筆記內容（內部統一以 \\n 切行）並回傳原檔換行符號（\\r\\n 或 \\n）。"""
     raw = note_path.read_bytes()
-    nl = "\r\n" if b"\r\n" in raw else "\n"
+    crlf = raw.count(b"\r\n")
+    # 多數決：只有幾行 CRLF 的 LF 檔（例如貼上的片段）寫回時不該整份變成 CRLF
+    nl = "\r\n" if crlf > raw.count(b"\n") - crlf else "\n"
     return raw.decode("utf-8").replace("\r\n", "\n"), nl
 
 

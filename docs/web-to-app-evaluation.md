@@ -271,3 +271,5 @@ mFocusedApp=ActivityRecord{9d3c565 u0 com.w2a.rybz/com.webtoapp.ui.shell.ShellAc
 ## 7. 總體結論
 
 結論：可行（本機 Windows 11 已透過原生 Android SDK 工具鏈與 API 34 模擬器完成全流程實機驗證：WebToApp 宿主安裝、本機靜態頁打包、APK 二進位改名與簽名、權限自動裁剪，以及生成子 App 之安裝與 WebView 執行驗證均 100% 成功）
+
+> **證據保存狀況（2026-10-26 覆核補充）**：實測痕跡可對上——SDK 元件版本（emulator 32.1.15、build-tools 36.0.0、platform-tools 34.0.4、`system-images\android-34\google_apis\x86_64`）存在於 `%LOCALAPPDATA%\Android\Sdk`，模擬器 GPU 記錄 `%TEMP%\AndroidEmulator\opengl_log.txt` 的寫入時間（2026-10-25 22:54～23:20）涵蓋上文 Logcat 時間。但 AVD `wta_test_api34` 與 `web-to-app-2.8.2.APK`、`WebToAppSample_v1.0.0.APK`、`webtoapp_keystore.p12` 事後皆已刪除，本機無法重驗大小、雜湊與簽章；DoD 要求的安裝 log 以本文內嵌的終端輸出為準。下次實測請把 APK 的 SHA-256 與 `aapt dump badging` 原始輸出另存於 `docs/evidence/`。

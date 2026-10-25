@@ -1,5 +1,7 @@
 # Claude Code Mods 自體改造機制 Windows 11 本機二進位深度查驗與替代方案驗證報告
 
+> ⚠️ **更正（2026-10-26）**：本文第 3 節與第 5 節「Mods 不存在、原貼文虛構」的結論**有誤**。掃描搜尋的 `~/.claude/mods/`、`defineMod` 不是實際名稱；Claude Code 2.1.308／2.1.309 透過內建的 `plugin-authoring` 技能提供 mod：外掛資料夾＋`hooks/hooks.json` 的 `modules`＋`register.tsx`，以 `ui.render` hook 畫 `AbovePrompt`，以 `$.state` 保存值並支援熱重載（見技能目錄的 `types/claude-code.d.ts` 與 `examples/band.tsx`）。第 4 節的 `statusLine` 腳本仍可運作，但只是備案。任務 `T-20261018-09` 已退回待辦。
+
 > 本文件收錄於 `docs/claude-code-mods-windows-validation.md`，為任務 `T-20261018-09` 針對社群貼文（碼農冠傑 @NFT_Chen 等）宣稱之「Claude Code 2.1.287+ 開放 Mods 機制（`~/.claude/mods/`、`defineMod`、`AbovePrompt`、`$.state`、即時熱重載）」在 Windows 11 原生環境下的官方 CLI 2.1.309 二進位底層深挖、全文比對與官方原生 `statusLine` 替代方案實測驗證報告。
 
 ---

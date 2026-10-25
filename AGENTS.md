@@ -22,6 +22,7 @@ C:\GitHub\ai-inbox\
 │   ├── verify_*.py（其餘 10 支）     # 外部裁判：檢查 docs/、templates/、assets/ 的規定結構（見 docs/external-judge-audit.md）
 │   ├── _judge_common.py             # 外部裁判共用：剝註解、結構下限、報告輸出
 │   ├── video_transcript.py          # 影片音訊下載 + faster-whisper (CUDA/CPU) 逐字稿轉寫（見 docs/video-transcript-howto.md）
+│   ├── screen_privacy.py            # 截圖／OCR 隱私檢查（規範 docs/multimodal-screen-privacy-spec.md 的參考實作）
 │   └── 其他功能型工具               # audit_fullstack_security、cli_to_skill、public_apis_indexer（各有對應 tests/test_*.py）
 ├── docs/                            # 技術規格、實測報告與 SOP 手冊（跨 Agent 派工指令見 docs/agent-dispatch.md）
 ├── assets/                          # 單檔 HTML / Generative UI / Canvas 互動成品
@@ -129,3 +130,7 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
 3. **版權與隱私過濾**：
    - 若來源為付費內容、內部研討截圖或私人對話，**不可直接摘錄完整原文**，僅可提煉抽象的架構概念與實作邏輯。
    - 所有公開分析必須保持出處連結（Attribution）與作者標記。
+4. **本機截圖、錄影與 OCR**：擷取本機畫面給 AI 看、或把截圖／錄影放進 repo 當證據之前，遵循 [`docs/multimodal-screen-privacy-spec.md`](docs/multimodal-screen-privacy-spec.md)（敏感視窗不截、洩鑰即丟、48 小時內清除）。
+   - 截圖前用 `python tools/screen_privacy.py --title "<視窗標題>" --app <程式名>` 判斷：`blocked`／`nocap` 不可截圖。
+   - 截圖後先 OCR，再用 `python tools/screen_privacy.py --ocr-file <OCR 文字檔>` 檢查：結果是 `drop_image`（含金鑰、身分證、卡號，或敏感關鍵字達門檻）就刪掉這張圖，不可送出、不可提交。
+   - 規則以 `tools/screen_privacy.py` 為準；要改規則先在 `tests/test_screen_privacy.py` 補反例。

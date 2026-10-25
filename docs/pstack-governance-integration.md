@@ -49,7 +49,8 @@
 1. **動態定位與載入（`load_governance_toolkit`）**：
    - 優先嘗試直接導入環境既有的 `agent_os` 與 `agent_sandbox`。
    - 支援掃描本機候選路徑（`AGENT_GOVERNANCE_PATH`、`C:\GitHub\agent-governance-toolkit`、同級目錄），動態加入 `sys.path`。
-   - 具備內建安全 fallback，即使在無外部套件環境下亦能安全運作。
+   - ~~具備內建安全 fallback，即使在無外部套件環境下亦能安全運作。~~ **更正（2026-10-26 覆核）**：原本 AGT 載入失敗時是**悄悄降級**——路徑改用 fnmatch、機密只搜 `sk-`／`ghp_`／`AKIA`、危險指令掃描整段跳過卻仍寫「通過」，並不安全。已在 agent-relay `e298031`／`cc5eff1` 改為：要求治理但 AGT 未載入時回 `unverified`（不放行），只有設定明寫 `governance_fallback: "builtin"` 才用內建簡化檢查，且報告標「降級」、危險指令掃描標「未執行」。
+   - 治理檢查是**選用**的：只有派工設定帶 `governance`、`no_credentials`、`blocked_paths`、`max_files`、`scan_subprocesses` 或 `strict` 時才會執行，預設派工不會觸發。
 
 2. **路徑邊界檢查（`agent_os.diff_policy.DiffPolicy`）**：
    - 檢查 `changed` 檔案清單是否違反 `blocked_paths`（預設阻斷 `*.env*`、`id_rsa*`、`*.pem`、`*.key`、`secrets/**` 等高危路徑）。
@@ -78,13 +79,15 @@
 - 強制引入 `agent-relay.gates`（`verify-gates`）：防禦刪改測試、拒絕空殼函式、TDD 紅轉綠閉環、日誌保全。
 - 強制引入 `agent-governance-toolkit` 運行期政策檢查（DiffPolicy 路徑邊界、CredentialRedactor 機密防護、CodeScanner 危險指令防禦）。
 
+**補充（2026-10-26 覆核）**：上面兩份只給 Gemini 與跨 Agent 資產庫用；Claude Code 依 `~/.claude/skills/SKILLS.md` 的既定設計，`quality-loop` 綁專案根目錄、不裝進 `~/.claude`。任務標題點名的另一支技能 `verification-protocol`（Claude 全域）原本沒有改，覆核時已在 `~/.claude/skills/verification-protocol/SKILL.md` 新增第 5 節：委派工作以 agent-relay 閘門結果為證據，`unverified`／`guarded`／`stub-rejected`／`tdd-not-proven`／`policy-violation` 都不算完成，「未執行」不算通過。
+
 ---
 
 ## 5. 實測終端執行輸出與證據
 
 ### 5.1 維護者 fork `agent-relay` 驗收閘門單元測試全綠
 
-在 `C:\GitHub\agent-relay` 執行單元測試，涵蓋新增的 16 項治理政策檢驗與端到端派工阻斷測試，全數通過：
+在 `C:\GitHub\agent-relay` 執行單元測試，全數通過（**更正（2026-10-26 覆核）**：原稿寫「新增 16 項治理政策檢驗」，`test_gates.py` 中實際只有 5～6 個治理測試；下方 183 秒含冷啟動，覆核時重跑約 54 秒。另外，這次推送的 `0d0655c` 在 GitHub CI 上其實是**失敗**的——CI 沒有 AGT，而這些測試假設它一定存在；「全數通過」只在本機成立。已在 agent-relay `cc5eff1` 修正，現行 `test_gates.py` 共 55 項、完整測試 340 項，CI 綠燈）：
 
 ```text
 C:\GitHub\agent-relay> python -m unittest discover -s "C:\GitHub\agent-relay\tests" -p "test_gates.py"

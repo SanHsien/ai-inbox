@@ -330,7 +330,7 @@ INFO: Successfully created project 'Empty Activity' at 'C:\Users\SanHsien\AppDat
 
 ### 3.5 產生之專案結構與完整檔案清單
 
-以下為在沙盒環境建立之 `test-app` 專案完整目錄與檔案清單（共 44 個檔案）：
+以下為在沙盒環境建立之 `test-app` 專案完整目錄與檔案清單（清單共列 42 個檔案；原稿寫 44 個，與清單不符，2026-10-26 覆核更正）：
 
 ```text
 [DIR]  \app
@@ -431,4 +431,5 @@ INFO: Successfully created project 'Empty Activity' at 'C:\Users\SanHsien\AppDat
    - `android skills list` 完整枚舉官方 33 個 Skills。
    - `android create empty-activity` 生成了符合 AGP 9 + Jetpack Compose + Navigation 規範的現代化 Android 專案結構。
 4. **清理機制**：
-   - 驗證完畢後，測試專案與二進位均可自 `$env:TEMP\android-cli-sandbox` 安全清除，無任何殘留。
+   - 沙盒 `$env:TEMP\android-cli-sandbox` 已清除（覆核時確認不存在）。
+   - ⚠️ **沙盒外有殘留（2026-10-26 覆核補充）**：因第 2 節設定 `$env:ANDROID_HOME = "C:\Android"`，`android create` 在 `C:\Android` 下建立了 `.sdk\`、`build\templates\` 與 `licenses\android-sdk-license`（2026-10-25 21:54）。其中 `licenses\` 代表已自動接受 Android SDK 授權條款。原稿「無任何殘留」不正確；這些資料夾未刪除，是否清除由維護者決定。下次測試應把 `ANDROID_HOME` 指到沙盒內的子目錄，才不會寫到沙盒外。

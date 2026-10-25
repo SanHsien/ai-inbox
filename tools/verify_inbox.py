@@ -52,6 +52,9 @@ def check_notes(notes: list[bi.Note]) -> list[str]:
         name = n.path.name
         if not FILENAME.match(name):
             errors.append(f"{name}: 檔名需為 YYYY-MM-DD-<slug>.md（slug 用小寫英數與連字號）")
+        open_at = bi.unclosed_fence_line(n.path.read_text(encoding="utf-8").split("\n"))
+        if open_at is not None:
+            errors.append(f"{name}:{open_at}: 程式碼圍欄到檔尾都沒有關閉，之後的任務會被當成程式碼而讀不到")
         if not n.meta:
             errors.append(f"{name}: 缺少或無法解析 YAML frontmatter")
             continue
@@ -120,7 +123,9 @@ def check_task_ids(notes: list[bi.Note], texts: dict[Path, str]) -> list[str]:
                 errors.append(f"{n.path.name}:{lineno}: 任務行格式不符範本，總表讀不到：{line[:60]}…")
 
     for path, text in texts.items():
-        for ref in sorted(set(re.findall(bi.TASK_ID, text)) - set(defined)):
+        # 圍欄內是範例文字（例如範本示範的任務行），其中的編號不算引用
+        visible = "\n".join(line for _, line in bi.iter_outside_fences(text.split("\n")))
+        for ref in sorted(set(re.findall(bi.TASK_ID, visible)) - set(defined)):
             errors.append(f"{rel(path)}: 引用了未定義的任務 {ref}")
     return errors
 

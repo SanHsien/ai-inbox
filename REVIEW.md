@@ -105,3 +105,16 @@
 - ✅ 外部裁判驗證器從 12 支變 10 支：`verify_motion_and_video_specs.py`、`verify_video_storyboard.py` 隨影片工具搬走；`verify_agent_reach_and_data_specs.py` 移除 3 項健保文件檢查（依第 2 節「不再擴充」政策，未帶到新 repo）；`verify_generative_ui_assets.py` 只檢查留下的 4 個 HTML
 - ➖ 第 3 節健保工具、第 5 節 T-20261018-13／14 的條目保留作為歷史；後續修改請到 health-bank-toolkit
 - ✅ [中] 獨立審查指出：搬移時一併刪掉的「健康存摺儀表板不得含未遮蔽身分證、必須有免責聲明」與「OpenLibrary 示範頁必須實作 `seek(t)`」兩項檢查，新 repo 原本沒有對應 → 已在新 repo 補成一般測試：health-bank-toolkit `tests/test_published_content.py`（公開內容無身分證與手機格式、保留免責聲明）、code-as-video-studio `tests/test_examples.py`（示範頁實作 `seek(t)` 且不用 `Math.random`／`Date.now`，分鏡範例能通過閘門）
+
+## 7. 覆核 Antigravity 交付（`6eb6edd`、`d320a82`，2026-10-26）
+
+標準同第 5 節：DoD 逐字沒達成就不算完成；宣稱「已實測」要能在本機找到痕跡。
+
+- ✅ [高] T-20261018-09（Mods）以「官方沒有這個 API、原貼文虛構」關閉，**結論錯誤** → 退回待辦。二進位掃描找的是 `~/.claude/mods/`、`defineMod`，但實際機制透過內建的 `plugin-authoring` 技能：外掛資料夾＋`hooks/hooks.json` 的 `modules`＋`register.tsx`，用 `ui.render` 畫 `AbovePrompt`、`$.state` 存值、支援熱重載（官方型別檔與 `examples/band.tsx` 可證）。掃描結果本身也顯示 `AbovePrompt` 76 筆、`$.state` 15 筆，且關鍵字清單列了 `plugin-authoring` 卻沒回報結果。`docs/claude-code-mods-windows-validation.md` 已加更正
+- ✅ [高] T-20261018-06（截圖隱私規範）標為完成，但 DoD「確保任何 Agent 流程遵循」沒有落地、「測試套件」是呼叫未定義函式的範例碼 → 新增參考實作 `tools/screen_privacy.py` 與 50 項測試；修正正則（漏抓 `github_pat_`、`sk-ant-` 被 `sk-` 吃掉、連線字串漏抓含 s 的帳號、`clinic`／`.pem` 誤擋一般網頁、變數名誤判為密碼）；身分證（含 8／9 開頭居留證）與卡號改為丟棄整張截圖；在本 repo `AGENTS.md` 第 4 節與 Claude 全域路由表加入引用。⏸ 仍差 `agent-assets` 跨 AI 規則的引用（待維護者同意），任務退回待辦
+- ✅ [高] T-20261018-18（治理整合）部分達成：AGT 未載入時悄悄降級、危險指令掃描沒執行卻寫「通過」；`0d0655c` 在 GitHub CI 實際失敗 → agent-relay `e298031`／`cc5eff1` 改為 fail-closed 並修 CI（340 項、CI 綠）；Claude 全域 `verification-protocol` 技能補第 5 節（已備份）；文件更正「16 項治理測試」「無外部套件亦能安全運作」等。補齊後維持已做
+- ✅ [中] T-20261019-06（Android CLI）：文件寫 44 個檔案，清單只有 42 個；宣稱「無任何殘留」，實際在 `C:\Android` 留下 `.sdk`、`build`、`licenses`（自動接受 SDK 授權）→ 文件與筆記如實更正。殘留未刪除，⏸ 由維護者決定
+- ✅ [低] T-20261023-03（WebToApp）：SDK 版本與模擬器記錄時間對得上，實測可信；但 AVD 與 APK 產物事後已刪，無法重驗 → 文件補證據保存狀況，建議下次存 SHA-256 到 `docs/evidence/`
+- ➖ T-20261017-32（Space Bunny）以「免費版已下架」關閉：重查 OpenRouter 公開清單（467 個模型）確認只剩付費版，agent-relay 報告也有更新，屬實
+- ✅ [中] `d320a82` 圍欄判斷：同一行的 ```` ```x``` ```` 被當成圍欄開頭，後面任務整段消失；未關閉的圍欄也會靜默吞掉任務；引用檢查沒有略過圍欄 → 抽成共用 `fence_step`，依 CommonMark 排除行內反引號，`verify_inbox` 回報未關閉的圍欄，引用檢查也略過圍欄；原測試傳的是預先過濾的文字、測不到 `verify_inbox`，已改傳原文並補邊界測試
+- ✅ [低] `task_cli` 換行：檔內只要有一行 CRLF 就整份轉 CRLF → 改為多數決
