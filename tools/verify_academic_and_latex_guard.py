@@ -30,6 +30,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import (  # noqa: E402
+    doc_guard,
+    ensure_utf8_output,
+    find_repo_root as _common_find_repo_root,
+    report_results,
+)
+
 # ---------------------------------------------------------------------------
 # 正則表示式定義
 # ---------------------------------------------------------------------------
@@ -193,16 +201,11 @@ def verify_latex_and_citations_preserved(
 
 
 def find_repo_root(start: Optional[Path] = None) -> Path:
-    """自動推導 repository 根目錄。"""
-    if start is not None:
-        return start.resolve()
-    cur = Path(__file__).resolve()
-    for parent in [cur, *cur.parents]:
-        if (parent / "notes").is_dir() and (parent / "docs").is_dir():
-            return parent
-    return Path.cwd()
+    """自動推導 repository 根目錄（共用實作見 _judge_common）。"""
+    return _common_find_repo_root(start, markers=('notes', 'docs'), anchor=Path(__file__))
 
 
+@doc_guard
 def verify_latex_citation_protection_prompt(content: str) -> List[str]:
     """
     驗證 templates/latex-citation-protection-prompt.md：
@@ -271,6 +274,7 @@ def verify_latex_citation_protection_prompt(content: str) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_academic_reading_prompt(content: str) -> List[str]:
     """
     驗證 templates/academic-reading-prompt.md：
@@ -321,6 +325,7 @@ def verify_academic_reading_prompt(content: str) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_academic_reading_smoke_report(content: str) -> List[str]:
     """
     驗證 docs/academic-reading-smoke-report.md：
@@ -400,6 +405,7 @@ def verify_all_academic_and_latex_guards(
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(
         description="學術論文雙語翻譯「LaTeX 公式與引用零竄改保護」及「5W1H-CQR-KSU 結構」之外部裁判驗證器"
     )
@@ -418,20 +424,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     all_passed, results = verify_all_academic_and_latex_guards(root)
 
-    for rel_path, errs in results.items():
-        if errs:
-            print(f"\n[FAIL] ❌ {rel_path} 發現 {len(errs)} 項規格缺陷：")
-            for e in errs:
-                print(f"  - {e}")
-        else:
-            print(f"[PASS] ✅ {rel_path} 結構與規格完全相符")
-
-    if all_passed:
-        print("\n[SUCCESS] 🎉 全數學術論文雙語翻譯保護與結構規範均通過外部裁判驗證！")
-        return 0
-    else:
-        print("\n[ERROR] 外部裁判驗證未通過，請依上述錯誤修正文件。")
-        return 1
+    return report_results(
+        results,
+        success_msg='全數學術論文雙語翻譯保護與結構規範均通過外部裁判驗證！',
+        fail_label='規格缺陷',
+        ok_label='結構與規格完全相符',
+        fail_msg='外部裁判驗證未通過，請依上述錯誤修正文件。',
+    )
 
 
 if __name__ == "__main__":

@@ -86,6 +86,8 @@ $env:SG_AGENTIC_MODEL = "claude-sonnet-5-5"
 ```
 
 #### 寫入永久使用者環境變數（PowerShell）：
+> ⚠️ 此操作會永久寫入「使用者」層級環境變數（登錄檔 `HKCU\Environment`），影響之後所有新開的程序；執行前先確認值正確。還原方式：`[Environment]::SetEnvironmentVariable("<名稱>", $null, "User")`。
+
 ```powershell
 $claudePath = (Get-Command claude.cmd).Source
 [Environment]::SetEnvironmentVariable("SG_AGENTIC_CLI_PATH", $claudePath, "User")
@@ -147,7 +149,7 @@ Eval matches: ['eval_injection']
 OS system matches: ['os_system_injection']
 ```
 
-- **結果判定**：✅ 通過。`eval_injection` 與 `os_system_injection` 正則規則 100% 準確匹配，耗時 < 5ms，無任何 Token 消耗。
+- **結果判定**：✅ 通過。`eval_injection` 與 `os_system_injection` 正則規則 各自匹配成功（僅兩個測試樣本；耗時與 Token 消耗未量測）。
 
 ---
 
@@ -179,9 +181,9 @@ Log content: [2026-10-25 02:32:00.076] Test security guidance log entry on Windo
 
 ---
 
-### 驗證 C：三層防禦範本（`templates/claude-security-guidance.md`）整合驗證
+### 驗證 C：三層防禦範本（`templates/claude-security-guidance.md`）整合情境（設計推演）
 
-維護者將自訂規則範本 `templates/claude-security-guidance.md` 掛載至測試環境，設計三種經典違反全域硬閘門情境，驗證外掛在不同防禦層級之協同反饋：
+維護者將自訂規則範本 `templates/claude-security-guidance.md` 掛載至測試環境，設計三種經典違反全域硬閘門情境，推演外掛在不同防禦層級之協同反饋：
 
 | 測試情境 | 刻意注入之違規模式 | 觸發防禦層級 | 外掛預期反饋與阻擋行為 |
 | :--- | :--- | :--- | :--- |
@@ -189,7 +191,7 @@ Log content: [2026-10-25 02:32:00.076] Test security guidance log entry on Windo
 | **情境 2：目錄越界操作** | `open(r"C:\Users\username\.ssh\id_rsa")` | Layer 2 (LLM Diff) + Layer 3 (Agentic) | 命中自訂「條款二」，審查員識別絕對路徑脫離專案邊界，標記阻擋級 Finding。 |
 | **情境 3：空殼實作與例外吞噬** | `def verify(): try: return True except: pass` | Layer 2 (LLM Diff) | 命中自訂「條款三」，審查員指出空殼函式與假綠燈，要求補齊真實驗證邏輯。 |
 
-- **整合驗證結論**：自訂規範成功透過 8 KB 預算空間注入審查模型，形成「本地正則攔高危語法 ➔ LLM Diff 攔全域違規 ➔ Agentic 追跨檔資料流」的完整防護鏈。
+- **整合驗證結論（未實測）**：上表為依設計推演的「預期反饋」，Layer 2／Layer 3 的 LLM 審查並未在本 repo 留有實際執行輸出；僅規則範本的 8 KB 預算與條款完整性由 `tools/verify_claude_security_config.py` 機械檢驗。設計意圖是透過 8 KB 預算空間注入審查模型，形成「本地正則攔高危語法 ➔ LLM Diff 攔全域違規 ➔ Agentic 追跨檔資料流」的防護鏈。
 
 ---
 

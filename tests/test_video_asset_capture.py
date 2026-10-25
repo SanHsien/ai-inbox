@@ -60,6 +60,44 @@ class VideoAssetCaptureTest(unittest.TestCase):
         self.assertIn("spring", html_text)
         self.assertIn("V = f(t) seek(t)", html_text)
 
+    def test_rejects_non_http_urls(self):
+        for bad in ("file:///C:/Windows/win.ini", "javascript:alert(1)", "ftp://x/y", "", "example.com"):
+            with self.assertRaises(ValueError, msg=bad):
+                capture_url_assets(bad, self.tmp / "o", offline_fallback=True)
+        self.assertFalse((self.tmp / "o").exists())
+
+    def test_untrusted_title_and_colors_cannot_break_out_of_html(self):
+        import video_asset_capture as vac
+
+        evil_title = '</title><script>alert(1)</script>'
+        evil_color = "red;}</style><script>alert(2)</script>"
+        fake = {
+            "url": "https://example.com",
+            "title": evil_title,
+            "primary_color": evil_color,
+            "background_color": "rgb(1, 2, 3)",
+            "text_color": "#fff",
+            "accent_color": "#38bdf8",
+            "screenshot_file": "screenshot.png",
+        }
+        out_dir = self.tmp / "evil"
+
+        # 走 offline 路徑，再手動以惡意資料呼叫模板產生器所用的清理函式
+        self.assertEqual(vac._safe_color(evil_color, "#000"), "#000")
+        self.assertEqual(vac._safe_color("rgb(1, 2, 3)", "#000"), "rgb(1, 2, 3)")
+        script_json = vac._json_for_script(fake)
+        self.assertNotIn("</script>", script_json)
+        self.assertNotIn("<", script_json)
+        self.assertEqual(json.loads(script_json)["title"], evil_title)  # 解析後內容不變
+
+        data = capture_url_assets("https://example.com/</title>", out_dir, offline_fallback=True)
+        html_text = (out_dir / "video_seek_canvas.html").read_text(encoding="utf-8")
+        self.assertNotIn("<script>alert", html_text)
+        self.assertIn("&lt;/title&gt;", html_text)  # offline 標題含網址，已 HTML 跳脫
+        self.assertEqual(html_text.count("</title>"), 1)
+        self.assertNotIn("6.0.00s", html_text)
+        self.assertEqual(data["url"], "https://example.com/</title>")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -155,6 +155,19 @@ class TestVerifyReAndAndroidSpecs(unittest.TestCase):
         errors_key = vre.verify_android_skills_anti_hallucination(no_compose_skill)
         self.assertTrue(any("遺漏核心關鍵技能" in e for e in errors_key), f"未攔截關鍵技能遺漏：{errors_key}")
 
+    def test_android_skills_table_padding_and_duplicates_rejected(self):
+        """反例：灌水(重複編號/缺 SKILL.md 路徑的數字列)不得湊成 33 個。"""
+        raw = (REPO_ROOT / "docs" / "android-official-skills-anti-hallucination.md").read_text(encoding="utf-8")
+        self.assertEqual(vre.verify_android_skills_anti_hallucination(raw), [])
+        lines = raw.splitlines()
+        # 把最後一個編號列改成與前一列相同編號(重複)
+        idx = [i for i, l in enumerate(lines) if l.startswith("| 33 |")][0]
+        dup = "\n".join(lines[:idx] + [lines[idx].replace("| 33 |", "| 32 |", 1)] + lines[idx + 1:])
+        self.assertTrue(any("不足 33 個" in e for e in vre.verify_android_skills_anti_hallucination(dup)))
+        # 移除 SKILL.md 路徑的數字列不算數
+        nopath = "\n".join(l.replace("SKILL.md", "README.txt") if l.startswith("| 5 |") else l for l in lines)
+        self.assertTrue(any("不足 33 個" in e for e in vre.verify_android_skills_anti_hallucination(nopath)))
+
     def test_android_skills_compose_and_play_billing_guardrails(self):
         """9. 反例攔截：XML 轉 Compose 防幻覺或 Play Billing 合規防線缺漏。"""
         raw = (REPO_ROOT / "docs" / "android-official-skills-anti-hallucination.md").read_text(encoding="utf-8")

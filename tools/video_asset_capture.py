@@ -12,11 +12,13 @@ Code-as-Video 影視工作室素材自動捕獲與時間函式代碼範例生成
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import re
 import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
+from urllib.parse import urlparse
 
 
 HTML_CANVAS_TEMPLATE = """<!DOCTYPE html>
@@ -86,7 +88,7 @@ HTML_CANVAS_TEMPLATE = """<!DOCTYPE html>
   <div id="controls">
     <button id="play-btn">播放 / 暫停</button>
     <input type="range" id="scrubber" min="0" max="{duration}" step="0.016" value="0">
-    <span id="time-display">0.00s / {duration}.00s</span>
+    <span id="time-display">0.00s / {duration_label}s</span>
     <span class="badge">V = f(t) seek(t)</span>
   </div>
 
@@ -277,6 +279,32 @@ HTML_CANVAS_TEMPLATE = """<!DOCTYPE html>
 """
 
 
+# CSS 顏色值白名單字元：十六進位、rgb()/hsl() 函式、顏色名稱；其餘一律改用預設色，
+# 避免頁面提供的樣式字串跳出 <style> 區塊。
+_SAFE_COLOR_RE = re.compile(r"^[#A-Za-z0-9 .,()%/-]{1,64}$")
+
+
+def _safe_color(value: Any, default: str) -> str:
+    text = str(value or "").strip()
+    return text if _SAFE_COLOR_RE.match(text) else default
+
+
+def _json_for_script(data: Any) -> str:
+    """序列化成可安全嵌入 <script> 的 JSON：跳脫 < > & 與 JS 行分隔符，擋下 </script> 跳出。"""
+    text = json.dumps(data, ensure_ascii=False)
+    for ch, esc in (("<", "\\u003c"), (">", "\\u003e"), ("&", "\\u0026"), ("\u2028", "\\u2028"), ("\u2029", "\\u2029")):
+        text = text.replace(ch, esc)
+    return text
+
+
+def validate_url(url: str) -> str:
+    """只允許 http(s)。file:// 等協定會讓 Chromium 讀本機檔案並截圖外洩。"""
+    parsed = urlparse((url or "").strip())
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        raise ValueError(f"只接受 http(s) 網址：{url!r}")
+    return url.strip()
+
+
 def extract_css_colors(html_content: str, default_theme: Optional[Dict[str, str]] = None) -> Dict[str, str]:
     """從 HTML/CSS 內容中抽取色彩資訊作為備用或補充。"""
     theme = {
@@ -309,6 +337,7 @@ def capture_url_assets(
     offline_fallback: bool = False,
 ) -> Dict[str, Any]:
     """使用 Playwright 捕獲真實網頁截圖與色彩，若失敗或處於 offline 模式則安全降級。"""
+    url = validate_url(url)
     output_dir.mkdir(parents=True, exist_ok=True)
     screenshot_path = output_dir / "screenshot.png"
     theme_path = output_dir / "theme.json"
@@ -390,14 +419,23 @@ def capture_url_assets(
     theme_path.write_text(json.dumps(captured_data, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # 生成 HTML/Canvas seek(t) 範例
+    # 網頁標題與顏色來自不受信任的頁面：標題做 HTML 跳脫、顏色做白名單、JSON 做 script 安全序列化
+    for key, default in (
+        ("primary_color", "#3b82f6"),
+        ("background_color", "#0d1117"),
+        ("text_color", "#f0f6fc"),
+        ("accent_color", "#58a6ff"),
+    ):
+        captured_data[key] = _safe_color(captured_data.get(key), default)
     html_code = HTML_CANVAS_TEMPLATE.format(
-        title=captured_data["title"],
+        title=html.escape(str(captured_data["title"])),
         background_color=captured_data["background_color"],
         text_color=captured_data["text_color"],
         primary_color=captured_data["primary_color"],
         accent_color=captured_data["accent_color"],
         duration=6.0,
-        theme_json=json.dumps(captured_data, ensure_ascii=False),
+        duration_label="6.00",
+        theme_json=_json_for_script(captured_data),
         screenshot_rel="screenshot.png",
     )
     demo_html_path.write_text(html_code, encoding="utf-8")
@@ -429,13 +467,18 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    # 保證 Windows 終端 UTF-8
-    if sys.stdout and hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8")
+    # 保證 Windows 終端 UTF-8；stderr 也要處理，否則 [WARN] 訊息含特殊字元時會 UnicodeEncodeError
+    for stream in (sys.stdout, sys.stderr):
+        if stream and hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
 
     out_dir = Path(args.output_dir)
     print(f"[*] 開始捕獲網頁資產: {args.url}")
-    data = capture_url_assets(args.url, out_dir, offline_fallback=args.offline)
+    try:
+        data = capture_url_assets(args.url, out_dir, offline_fallback=args.offline)
+    except (ValueError, OSError) as err:
+        print(f"[ERROR] {err}", file=sys.stderr)
+        return 1
 
     print(f"[+] 捕獲成功！網頁標題: {data.get('title')}")
     print(f"    - 主色: {data.get('primary_color')}")

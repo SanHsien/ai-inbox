@@ -145,7 +145,7 @@ tags:
     3. 封裝為符合 Antigravity `generative_ui` 交付規範的獨立 Component 模板。
   - **驗收標準（DoD）**：在瀏覽器中跑通完整的靶心人故事編輯器 UI，點擊節點能無重載切換九宮、編輯文字能雙向同步總圖、一鍵複製能導出完整 JSON 結構。
   - **完成日期**：2026-10-23
-  - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。撰寫互動規格文件 `docs/target-story-generative-ui-spec.md` 與單檔 React Generative UI 編輯器範本 `assets/target-story-editor/index.html`（React 18 CDN、V 字型節點佈局、3x3 九宮鑽取、三伏三冒分頁與 JSON 導出）。
+  - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。撰寫互動規格文件 `docs/target-story-generative-ui-spec.md` 與單檔 React Generative UI 編輯器範本 `assets/target-story-editor/index.html`（React 18 CDN、V 字型節點佈局、3x3 九宮鑽取、三伏三冒分頁與 JSON 導出）。**覆核實測（2026-10-25）**：以瀏覽器開啟 `file://` 實跑，React 正常渲染 7 節點與九宮格；但「導出標準 JSON」在無剪貼簿 API 的環境拋出 `TypeError: Cannot read properties of undefined (reading 'writeText')`，已修為無剪貼簿時改下載 `story.json`，修後主控台零錯誤。
 
 - [x] **`T-20261018-04`**｜**[優先級：中]** 實作「故事因果與三伏三冒檢驗器」核心驗證邏輯（嚴格防範時間錯覺因果、字數契約驗證與伏冒距離評估）
   - **完成日期**：2026-10-23

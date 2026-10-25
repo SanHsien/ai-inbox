@@ -24,6 +24,15 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import (  # noqa: E402
+    doc_guard,
+    ensure_utf8_output,
+    find_repo_root as _common_find_repo_root,
+    report_results,
+    strip_html_comments,
+)
+
 # ---------------------------------------------------------------------------
 # 常數定義
 # ---------------------------------------------------------------------------
@@ -67,7 +76,7 @@ def _is_path_string(val: str) -> bool:
     return "\n" not in val and "\r" not in val and len(val) < 240
 
 
-def _resolve_content_and_path(
+def _resolve_content_and_path_raw(
     arg: Union[Path, str],
     default_subpath: Optional[str] = None,
 ) -> Tuple[str, Optional[Path]]:
@@ -105,14 +114,17 @@ def _resolve_content_and_path(
 
 
 def find_repo_root(start: Optional[Path] = None) -> Path:
-    """自動推導 repository 根目錄。"""
-    if start is not None:
-        return start.resolve()
-    cur = Path(__file__).resolve()
-    for parent in [cur, *cur.parents]:
-        if (parent / "notes").is_dir() and (parent / "docs").is_dir():
-            return parent
-    return Path.cwd()
+    """自動推導 repository 根目錄（共用實作見 _judge_common）。"""
+    return _common_find_repo_root(start, markers=('notes', 'docs'), anchor=Path(__file__))
+
+
+def _resolve_content_and_path(
+    arg: Union[Path, str],
+    default_subpath: Optional[str] = None,
+) -> Tuple[str, Optional[Path]]:
+    """同 raw 版本，但回傳前剝除 HTML 註解（藏在註解內的關鍵字不算數）。"""
+    text, path = _resolve_content_and_path_raw(arg, default_subpath)
+    return strip_html_comments(text), path
 
 
 # ---------------------------------------------------------------------------
@@ -536,6 +548,7 @@ def verify_all_specs(repo_root: Optional[Path] = None) -> Tuple[bool, Dict[str, 
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(
         description="Agent-Reach 路由、Public APIs 檢索與健康存摺規格外部裁判結構驗證器"
     )
@@ -552,20 +565,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     all_passed, results = verify_all_specs(root)
 
-    for rel_path, errs in results.items():
-        if errs:
-            print(f"\n[FAIL] ❌ {rel_path} 發現 {len(errs)} 項規格缺陷：")
-            for e in errs:
-                print(f"  - {e}")
-        else:
-            print(f"[PASS] ✅ {rel_path} 結構與規格完全相符")
-
-    if all_passed:
-        print("\n[SUCCESS] 🎉 全數 Agent-Reach、Public APIs 與健康存摺規格文件均通過外部裁判結構驗證！")
-        return 0
-    else:
-        print("\n[ERROR] 外部裁判驗證未通過，請依上述錯誤修正文件。")
-        return 1
+    return report_results(
+        results,
+        success_msg='全數 Agent-Reach、Public APIs 與健康存摺規格文件均通過外部裁判結構驗證！',
+        fail_label='規格缺陷',
+        ok_label='結構與規格完全相符',
+        fail_msg='外部裁判驗證未通過，請依上述錯誤修正文件。',
+    )
 
 
 if __name__ == "__main__":

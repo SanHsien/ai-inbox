@@ -6,6 +6,7 @@
 最近節拍吸附（Snap-to-Grid），以及轉場與動效卡點序列生成（Remotion / GSAP 驅動）。
 """
 
+import math
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
@@ -28,10 +29,15 @@ class BeatGridEngine:
         beats_per_bar: int = 4,
         offset_seconds: float = 0.0,
     ):
-        if bpm <= 0:
-            raise ValueError("BPM 必須大於 0")
-        if fps <= 0:
-            raise ValueError("FPS 必須大於 0")
+        # NaN / inf 也必須擋下：bpm=inf 會讓每拍秒數為 0，get_beat_cues 變成無窮迴圈
+        if not math.isfinite(bpm) or bpm <= 0:
+            raise ValueError("BPM 必須是大於 0 的有限數值")
+        if not math.isfinite(fps) or fps <= 0:
+            raise ValueError("FPS 必須是大於 0 的有限數值")
+        if int(beats_per_bar) != beats_per_bar or beats_per_bar <= 0:
+            raise ValueError("beats_per_bar 必須是正整數")
+        if not math.isfinite(offset_seconds):
+            raise ValueError("offset_seconds 必須是有限數值")
 
         self.bpm = bpm
         self.fps = fps
@@ -44,11 +50,16 @@ class BeatGridEngine:
 
     def get_beat_cues(self, duration_seconds: float) -> List[BeatCue]:
         """計算在指定秒數長度內的所有拍點影格清單"""
+        if not math.isfinite(duration_seconds):
+            raise ValueError("duration_seconds 必須是有限數值")
         cues = []
-        t = self.offset_seconds
         beat_idx = 0
 
-        while t < duration_seconds:
+        while True:
+            # 以「索引 × 60 / BPM」一次除法計算，不逐拍累加，避免浮點誤差累積而多算或少算邊界拍點
+            t = self.offset_seconds + beat_idx * 60.0 / self.bpm
+            if t >= duration_seconds:
+                break
             bar_idx = beat_idx // self.beats_per_bar
             beat_in_bar = (beat_idx % self.beats_per_bar) + 1
             is_downbeat = beat_in_bar == 1
@@ -64,7 +75,6 @@ class BeatGridEngine:
                     is_downbeat=is_downbeat,
                 )
             )
-            t += self.seconds_per_beat
             beat_idx += 1
 
         return cues
@@ -78,6 +88,8 @@ class BeatGridEngine:
         將目標影格吸附至最近的節拍網格點。
         回傳 (吸附後的 frame, 與原始影格的時間誤差秒數)
         """
+        if not math.isfinite(subdivision) or subdivision <= 0:
+            raise ValueError("subdivision 必須是大於 0 的有限數值")
         step_frames = self.frames_per_beat * subdivision
         offset_frames = self.offset_seconds * self.fps
 
@@ -95,6 +107,8 @@ class BeatGridEngine:
         transition_duration_frames: int = 15,
     ) -> List[Dict]:
         """生成影片自動卡點轉場序列 (Transition Cut Cue Sequence)"""
+        if int(beats_per_cut) != beats_per_cut or beats_per_cut <= 0:
+            raise ValueError("beats_per_cut 必須是正整數")
         cues = self.get_beat_cues(duration_seconds)
         transitions = []
 

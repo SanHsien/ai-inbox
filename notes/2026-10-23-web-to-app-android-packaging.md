@@ -84,7 +84,7 @@ tags:
     2. 於 Android 實機或模擬器安裝，將一個本機靜態頁打包成 APK 並安裝執行。
     3. 檢查簽名資訊（keystore 位置與備份方式）與 APK 權限清單。
   - **驗收標準（DoD）**：產出 `docs/web-to-app-evaluation.md`，內含安裝步驟、打包後 APK 的安裝截圖或 log、權限清單與已知限制；以 `Test-Path docs/web-to-app-evaluation.md` 驗證存在，且文件含「結論：可行／不可行」一行。
-  - **實作紀錄 / 證據**：已完成 `shiaho777/web-to-app` 最新版本（v2.8.2，Unlicense 授權）之源碼、AndroidManifest.xml 權限（宿主 vs 生成子包）、apksig/AabSigner 簽名架構（PKCS#12、RSA-3072、有效 30 年、私有目錄儲存與備份風險）與建置架構評估；並實測 Windows 11 本機 Android 工具鏈（ADB 存在於 C:\Android\adb.exe，SDK 完整但無現成 AVD/實機運行），產出完整技術評估報告 `docs/web-to-app-evaluation.md`，包含「結論：可行（需搭配 Android 實機或模擬器執行打包與驗證）」。
+  - **實作紀錄 / 證據**：已完成 `shiaho777/web-to-app` 最新版本（v2.8.2，Unlicense 授權）之源碼、AndroidManifest.xml 權限（宿主 vs 生成子包）、apksig/AabSigner 簽名架構（PKCS#12、RSA-3072、有效 30 年、私有目錄儲存與備份風險）與建置架構評估；並實測 Windows 11 本機 Android 工具鏈（ADB 存在於 C:\Android\adb.exe，SDK 完整但無現成 AVD/實機運行），產出完整技術評估報告 `docs/web-to-app-evaluation.md`，包含「結論：可行（需搭配 Android 實機或模擬器執行打包與驗證）」。**覆核註記（2026-10-25）**：DoD 要求的「打包後 APK 的安裝截圖或 log」並未取得——本機無 AVD 與實機，實際未打包、未安裝；本項實為「原始碼與權限評估完成、實測未做」，任務標題的「實測」部分尚未達成。
 
 - [x] **`T-20261023-04`**｜**[優先級：低]** 在 T-20261023-03 結論為「可行」的前提下，撰寫「網站轉 App 接案流程規格」
   - **完成日期**：2026-10-25

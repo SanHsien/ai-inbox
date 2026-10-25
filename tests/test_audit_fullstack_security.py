@@ -89,6 +89,52 @@ class TestAuditFullstackSecurity(unittest.TestCase):
         self.assertEqual(len(issues), 1)
         self.assertIn("ENABLE ROW LEVEL SECURITY", issues[0])
 
+    def test_gitignore_substring_and_negation_do_not_count(self):
+        # ".env.example" 不等於忽略 ".env"；否定規則也不算忽略
+        (self.test_dir / ".gitignore").write_text(".env.example\n!.env\n!.env.local\n", encoding="utf-8")
+        issues = check_gitignore(self.test_dir)
+        self.assertEqual(len(issues), 2)
+
+    def test_gitignore_glob_accepted(self):
+        (self.test_dir / ".gitignore").write_text("# secrets\n.env*\n", encoding="utf-8")
+        self.assertEqual(check_gitignore(self.test_dir), [])
+        (self.test_dir / ".gitignore").write_text("/.env\n**/.env.local\n", encoding="utf-8")
+        self.assertEqual(check_gitignore(self.test_dir), [])
+
+    def test_env_example_detects_rsa_and_openssh_private_keys(self):
+        for header in ("RSA PRIVATE KEY", "OPENSSH PRIVATE KEY", "PRIVATE KEY", "EC PRIVATE KEY"):
+            (self.test_dir / ".env.example").write_text(f"KEY=-----BEGIN {header}-----\n", encoding="utf-8")
+            self.assertEqual(len(check_env_example(self.test_dir)), 1, header)
+
+    def test_client_component_scan_works_when_root_is_under_build_dir(self):
+        # 專案根目錄的絕對路徑含 build/ 時，不可整個專案被略過
+        root = self.test_dir / "build" / "app"
+        (root / "src").mkdir(parents=True)
+        (root / "src" / "Leak.tsx").write_text("'use client'\nconst k = SUPABASE_SERVICE_ROLE_KEY;\n", encoding="utf-8")
+        (root / "node_modules" / "pkg").mkdir(parents=True)
+        (root / "node_modules" / "pkg" / "x.js").write_text("'use client'\nJWT_SECRET\n", encoding="utf-8")
+        issues = check_client_components(root)
+        self.assertEqual(len(issues), 1)
+        self.assertIn("SUPABASE_SERVICE_ROLE_KEY", issues[0])
+
+    def test_client_component_mjs_extension_scanned(self):
+        (self.test_dir / "a.mjs").write_text('"use client"\nconst k = STRIPE_SECRET_KEY;\n', encoding="utf-8")
+        self.assertEqual(len(check_client_components(self.test_dir)), 1)
+
+    def test_sql_rls_case_quoted_schema_and_comments(self):
+        (self.test_dir / "a.sql").write_text(
+            'CREATE TABLE "public"."Users" (id int);\nALTER TABLE public.users ENABLE ROW LEVEL SECURITY;\n',
+            encoding="utf-8",
+        )
+        self.assertEqual(check_sql_rls(self.test_dir), [])
+        (self.test_dir / "a.sql").write_text(
+            'CREATE TABLE "Leaky" (id int);\n-- CREATE TABLE commented_out (id int);\n/* CREATE TABLE blk (id int); */\n',
+            encoding="utf-8",
+        )
+        issues = check_sql_rls(self.test_dir)
+        self.assertEqual(len(issues), 1)
+        self.assertIn("leaky", issues[0])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,7 +2,7 @@
 """關鍵幀縮圖總覽與自檢評審門禁工具 (verify_video_storyboard.py)
 
 Code-as-Video 影視工作室品質保證門禁：
-在影片正式執行重型渲染前，抽取 6~12 個關鍵影格（Keyframes），
+在影片正式執行重型渲染前，抽取 8~12 個關鍵影格（Keyframes；與 templates/video-studio-harness.md 第 4 節一致），
 依照構圖層次、動態動機、對比光影與反 AI 罐頭設計準則進行 1-10 分自檢打分。
 全數影格達到 8.0 分以上方可放行渲染，自動標記劣質分鏡並輸出微調修正建議。
 """
@@ -17,6 +17,13 @@ import sys
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import ensure_utf8_output  # noqa: E402
+
+# 關鍵影格數量範圍（templates/video-studio-harness.md 第 4 節：8~12 張 Contact Sheet）
+MIN_KEYFRAMES = 8
+MAX_KEYFRAMES = 12
 
 # 反 AI 視覺罐頭特徵及其扣分權重
 ANTI_SLOP_RULES = [
@@ -193,10 +200,13 @@ def evaluate_storyboard(keyframes: List[Keyframe], threshold: float = 8.0) -> St
     avg_score = round(sum(e.total_score for e in evaluations) / total, 2)
     flagged = [e for e in evaluations if not e.passed]
     passed_count = total - len(flagged)
-    gate_passed = (len(flagged) == 0 and avg_score >= threshold)
+    count_ok = MIN_KEYFRAMES <= total <= MAX_KEYFRAMES
+    gate_passed = (len(flagged) == 0 and avg_score >= threshold and count_ok)
 
     if gate_passed:
         summary = f"門禁通過！全數 {total} 個關鍵影格評分均達標 (平均 {avg_score} 分)。"
+    elif not count_ok and not flagged:
+        summary = f"門禁阻擋！關鍵影格數 {total} 超出規定範圍 {MIN_KEYFRAMES}~{MAX_KEYFRAMES} 張。"
     else:
         summary = f"門禁阻擋！發現 {len(flagged)} 個影格未達標準 (門檻 {threshold} 分，平均 {avg_score} 分)。"
 
@@ -372,20 +382,25 @@ def load_keyframes_from_json(path: Path) -> List[Keyframe]:
     return frames
 
 
-def main() -> int:
+def main(argv: Optional[List[str]] = None) -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(description="Code-as-Video 關鍵影格縮圖總覽與自檢評審門禁工具")
     parser.add_argument("--input", required=True, help="分鏡規格 JSON 檔案路徑")
     parser.add_argument("--output", default="./storyboard_out", help="輸出報告與 HTML 縮圖總覽目錄")
     parser.add_argument("--threshold", type=float, default=8.0, help="放行及格分數門檻 (預設 8.0)")
     parser.add_argument("--json", action="store_true", help="在終端以 JSON 輸出報告")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     input_path = Path(args.input)
     if not input_path.exists():
         print(f"錯誤：輸入檔案不存在 '{input_path}'", file=sys.stderr)
         return 1
 
-    keyframes = load_keyframes_from_json(input_path)
+    try:
+        keyframes = load_keyframes_from_json(input_path)
+    except (OSError, UnicodeDecodeError, ValueError, TypeError, AttributeError) as err:
+        print(f"錯誤：無法解析分鏡 JSON '{input_path}'：{err}", file=sys.stderr)
+        return 1
     report = evaluate_storyboard(keyframes, threshold=args.threshold)
 
     out_dir = Path(args.output)

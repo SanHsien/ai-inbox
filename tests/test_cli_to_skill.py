@@ -57,6 +57,38 @@ class TestCliToSkill(unittest.TestCase):
         self.assertIn("[!CAUTION] 高危破壞性指令", output)
         self.assertIn("Blast Radius: High", output)
 
+    def test_frontmatter_special_chars_are_quoted(self):
+        schema = {
+            "name": "evil",
+            "description": "desc: with colon\nsecond line # not comment",
+            "triggers": ['say "hi"', "plain"],
+        }
+        output = convert_cli_to_skill(schema)
+        front = output.split("---")[1]
+        self.assertIn('description: "desc: with colon second line # not comment"', front)
+        self.assertIn(r'- "say \"hi\""', front)
+        # frontmatter 內不得因說明文字換行而多出任何看似新鍵的行
+        keys = [ln for ln in front.splitlines() if ln and not ln.startswith(" ")]
+        self.assertEqual(keys, ["name: evil", 'description: "desc: with colon second line # not comment"', "triggers:"])
+
+    def test_malformed_schema_entries_do_not_crash(self):
+        output = convert_cli_to_skill({"name": "x", "commands": ["bad", {"name": "ok", "args": [None, {"name": "--a"}]}]})
+        self.assertIn("### `x ok`", output)
+        with self.assertRaises(ValueError):
+            convert_cli_to_skill(["not", "a", "dict"])
+
+    def test_main_reports_missing_file_without_traceback(self):
+        import io
+        from contextlib import redirect_stderr
+        from unittest import mock
+
+        from tools import cli_to_skill
+
+        err = io.StringIO()
+        with mock.patch.object(sys, "argv", ["cli_to_skill.py", "no_such_file.json"]), redirect_stderr(err):
+            self.assertEqual(cli_to_skill.main(), 1)
+        self.assertIn("錯誤", err.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()

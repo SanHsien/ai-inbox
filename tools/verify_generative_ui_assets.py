@@ -26,6 +26,15 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import (  # noqa: E402
+    doc_guard,
+    ensure_utf8_output,
+    find_repo_root as _common_find_repo_root,
+    report_results,
+    strip_html_comments,
+)
+
 # 6 個標準 Generative UI HTML 資產相對路徑
 EXPECTED_HTML_ASSETS: List[str] = [
     "assets/anti-slop-demo/index.html",
@@ -62,14 +71,8 @@ LOCAL_DRIVE_RE = re.compile(r"^[a-zA-Z]:[/\\]")
 
 
 def find_repo_root(start: Optional[Path] = None) -> Path:
-    """自動推導 repository 根目錄。"""
-    if start is not None:
-        return start.resolve()
-    cur = Path(__file__).resolve()
-    for parent in [cur, *cur.parents]:
-        if (parent / "assets").is_dir() and (parent / "tools").is_dir():
-            return parent
-    return Path.cwd()
+    """自動推導 repository 根目錄（共用實作見 _judge_common）。"""
+    return _common_find_repo_root(start, markers=('assets', 'tools'), anchor=Path(__file__))
 
 
 def verify_html_baseline(html_content: str, rel_path: str = "") -> List[str]:
@@ -154,7 +157,10 @@ def verify_video_seek_contract(html_content: str, rel_path: str = "") -> List[st
     errors: List[str] = []
     prefix = f"[{rel_path}] " if rel_path else ""
 
-    if not SEEK_CONTRACT_RE.search(html_content):
+    # 剝除 JS 註解（/* */ 與整行 //），避免註解中的 function seek( 騙過檢查
+    code = re.sub(r"/\*[\s\S]*?\*/", "", html_content)
+    code = re.sub(r"(?m)^[ \t]*//.*$", "", code)
+    if not SEEK_CONTRACT_RE.search(code):
         errors.append(
             f"{prefix}未實作 seek 時間函式契約（必須包含 function seek(...) 或 window.seek = ...）"
         )
@@ -192,6 +198,8 @@ def verify_single_html_asset(html_content: str, rel_path: str) -> List[str]:
     對指定相對路徑的 HTML 檔案執行完整規則校驗。
     """
     errors: List[str] = []
+    # 註解內的內容不會被瀏覽器執行或顯示，不得讓它滿足「必須存在」的檢查
+    html_content = strip_html_comments(html_content)
 
     # 通用規則 1：基礎 HTML5 結構
     errors.extend(verify_html_baseline(html_content, rel_path))
@@ -241,6 +249,7 @@ def verify_all_generative_ui_assets(
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(
         description="assets/ 全庫 6 個單檔 HTML Generative UI 互動展示之外部裁判結構與安全驗證器"
     )
@@ -257,20 +266,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     all_passed, results = verify_all_generative_ui_assets(root)
 
-    for rel_path, errs in results.items():
-        if errs:
-            print(f"\n[FAIL] ❌ {rel_path} 發現 {len(errs)} 項安全或結構缺陷：")
-            for e in errs:
-                print(f"  - {e}")
-        else:
-            print(f"[PASS] ✅ {rel_path} 結構與安全規範完全相符")
-
-    if all_passed:
-        print("\n[SUCCESS] 🎉 全數 6 個 Generative UI HTML 展示檔均通過外部裁判結構與安全驗證！")
-        return 0
-    else:
-        print("\n[ERROR] ❌ 外部裁判驗證未通過，請修復上述問題。")
-        return 1
+    return report_results(
+        results,
+        success_msg='全數 6 個 Generative UI HTML 展示檔均通過外部裁判結構與安全驗證！',
+        fail_label='安全或結構缺陷',
+        ok_label='結構與安全規範完全相符',
+        fail_msg='外部裁判驗證未通過，請修復上述問題。',
+    )
 
 
 if __name__ == "__main__":

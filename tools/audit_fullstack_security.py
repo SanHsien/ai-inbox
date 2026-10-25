@@ -11,8 +11,8 @@
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import json
-import os
 import re
 import sys
 from pathlib import Path
@@ -33,8 +33,16 @@ SUSPICIOUS_KEY_PATTERNS = [
     (re.compile(r"sk" + r"_live_[0-9a-zA-Z]{20,}"), "Stripe Live Secret Key"),
     (re.compile(r"sbp_[0-9a-fA-F]{20,}"), "Supabase Service Role Key"),
     (re.compile(r"ghp_[0-9a-zA-Z]{20,}"), "GitHub Personal Access Token"),
-    (re.compile(r"-----BEGIN (RSA|EC|PRIVATE) KEY-----"), "Private Key PEM block"),
+    # RSA / EC / OPENSSH / ENCRYPTED / 無前綴的 PEM 私鑰區塊
+    (re.compile(r"-----BEGIN (?:[A-Z]+ )*PRIVATE KEY-----"), "Private Key PEM block"),
+    (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "AWS Access Key ID"),
+    (re.compile(r"github_pat_[0-9a-zA-Z_]{20,}"), "GitHub Fine-grained Token"),
 ]
+
+# 掃描時略過的目錄（只比對「相對於稽核根目錄」的路徑片段，
+# 避免專案本身位於 /home/x/build/app 之類路徑時整個專案被誤略過）
+SKIP_DIRS = ("node_modules", ".next", ".git", "dist", "build")
+CLIENT_EXTENSIONS = {".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".mts", ".cts"}
 
 
 def check_gitignore(root: Path) -> list[str]:
@@ -49,9 +57,19 @@ def check_gitignore(root: Path) -> list[str]:
     lines = [line.strip() for line in content.splitlines() if line.strip() and not line.strip().startswith("#")]
 
     required_patterns = [".env", ".env.local"]
+    # 否定規則（!.env.example）不算忽略；其餘以 gitignore 萬用字元比對。
+    # 舊版用子字串判斷，會讓 ".env.example" 被誤當成已忽略 ".env"。
+    ignore_globs = []
+    for line in lines:
+        if line.startswith("!"):
+            continue
+        glob = line.lstrip("/")
+        if glob.startswith("**/"):
+            glob = glob[3:]
+        ignore_globs.append(glob.rstrip("/"))
+
     for pattern in required_patterns:
-        # 簡單判定 pattern 是否出現在 gitignore 中
-        if not any(pattern == line or pattern in line for line in lines):
+        if not any(fnmatch.fnmatchcase(pattern, glob) for glob in ignore_globs):
             issues.append(f".gitignore 未明確包含 '{pattern}' 忽略規則")
 
     return issues
@@ -80,14 +98,11 @@ def check_env_example(root: Path) -> list[str]:
 def check_client_components(root: Path) -> list[str]:
     """檢查 Client Components 中是否洩漏後端專用密鑰字串"""
     issues = []
-    extensions = {".js", ".jsx", ".ts", ".tsx"}
 
     for path in root.rglob("*"):
-        if not path.is_file() or path.suffix not in extensions:
+        if path.suffix.lower() not in CLIENT_EXTENSIONS or not path.is_file():
             continue
-        # 略過 node_modules, .next, .git
-        parts = path.parts
-        if any(p in ("node_modules", ".next", ".git", "dist", "build") for p in parts):
+        if any(p in SKIP_DIRS for p in path.relative_to(root).parts):
             continue
 
         try:
@@ -111,12 +126,22 @@ def check_client_components(root: Path) -> list[str]:
 def check_sql_rls(root: Path) -> list[str]:
     """檢查 SQL Migration 檔案中建立的表格是否都啟用 RLS"""
     issues = []
-    create_table_re = re.compile(r"CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:public\.)?([a-zA-Z0-9_]+)", re.IGNORECASE)
-    enable_rls_re = re.compile(r"ALTER\s+TABLE\s+(?:public\.)?([a-zA-Z0-9_]+)\s+ENABLE\s+ROW\s+LEVEL\s+SECURITY", re.IGNORECASE)
+    # 支援 IF NOT EXISTS、schema 前綴與雙引號識別字（"public"."Users"）
+    ident = r'"?([A-Za-z0-9_]+)"?'
+    schema = r'(?:"?[A-Za-z0-9_]+"?\s*\.\s*)?'
+    create_table_re = re.compile(
+        r"CREATE\s+(?:UNLOGGED\s+|TEMP(?:ORARY)?\s+)?TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?" + schema + ident,
+        re.IGNORECASE,
+    )
+    enable_rls_re = re.compile(
+        r"ALTER\s+TABLE\s+(?:IF\s+EXISTS\s+)?(?:ONLY\s+)?" + schema + ident + r"\s+ENABLE\s+ROW\s+LEVEL\s+SECURITY",
+        re.IGNORECASE,
+    )
+    block_comment_re = re.compile(r"/\*.*?\*/", re.DOTALL)
+    line_comment_re = re.compile(r"--[^\n]*")
 
-    for path in root.rglob("*.sql"):
-        parts = path.parts
-        if any(p in ("node_modules", ".git") for p in parts):
+    for path in sorted(root.rglob("*.sql")):
+        if any(p in ("node_modules", ".git") for p in path.relative_to(root).parts):
             continue
 
         try:
@@ -124,10 +149,12 @@ def check_sql_rls(root: Path) -> list[str]:
         except Exception:
             continue
 
-        created_tables = set(create_table_re.findall(content))
-        enabled_tables = set(enable_rls_re.findall(content))
+        # 註解掉的 CREATE TABLE 不算；未加引號的識別字在 PostgreSQL 不分大小寫
+        content = line_comment_re.sub("", block_comment_re.sub("", content))
+        created_tables = {t.lower() for t in create_table_re.findall(content)}
+        enabled_tables = {t.lower() for t in enable_rls_re.findall(content)}
 
-        for table in created_tables:
+        for table in sorted(created_tables):
             if table not in enabled_tables:
                 rel_path = path.relative_to(root)
                 issues.append(f"SQL 遷移檔 '{rel_path}' 建立了資料表 '{table}'，但未在同一檔案中啟用 RLS (ENABLE ROW LEVEL SECURITY)")
@@ -162,9 +189,16 @@ def main() -> int:
     parser.add_argument("--json", action="store_true", help="以 JSON 格式輸出")
     args = parser.parse_args()
 
+    # Windows cp950 終端遇到無法編碼的字元不應崩潰
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
     target_path = Path(args.target)
-    if not target_path.exists():
-        print(f"錯誤：目錄不存在 '{target_path}'", file=sys.stderr)
+    if not target_path.is_dir():
+        print(f"錯誤：目錄不存在或不是資料夾 '{target_path}'", file=sys.stderr)
         return 1
 
     report = audit_fullstack_security(target_path)

@@ -32,6 +32,14 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import (  # noqa: E402
+    doc_guard,
+    ensure_utf8_output,
+    find_repo_root as _common_find_repo_root,
+    report_results,
+)
+
 # ----------------------------------------------------------------------
 # 規則與常數定義
 # ----------------------------------------------------------------------
@@ -131,20 +139,15 @@ def load_content(source: Union[str, Path]) -> str:
 
 
 def find_repo_root(start: Optional[Path] = None) -> Path:
-    """自動推導 repository 根目錄。"""
-    if start is not None:
-        return start.resolve()
-    cur = Path(__file__).resolve()
-    for parent in [cur, *cur.parents]:
-        if (parent / "notes").is_dir() and (parent / "docs").is_dir():
-            return parent
-    return Path.cwd()
+    """自動推導 repository 根目錄（共用實作見 _judge_common）。"""
+    return _common_find_repo_root(start, markers=('notes', 'docs'), anchor=Path(__file__))
 
 
 # ----------------------------------------------------------------------
 # 核心驗證函式
 # ----------------------------------------------------------------------
 
+@doc_guard
 def verify_pstack_playbooks(source: Union[str, Path]) -> List[str]:
     """
     驗證 docs/pstack-agent-playbooks.md：
@@ -196,6 +199,7 @@ def verify_pstack_playbooks(source: Union[str, Path]) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_claude_plugins_review(source: Union[str, Path]) -> List[str]:
     """
     驗證 docs/claude-plugins-official-review.md：
@@ -240,6 +244,7 @@ def verify_claude_plugins_review(source: Union[str, Path]) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_fullstack_website_builder(source: Union[str, Path]) -> List[str]:
     """
     驗證 templates/fullstack-website-builder-skill.md：
@@ -294,6 +299,7 @@ def verify_fullstack_website_builder(source: Union[str, Path]) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_subject_inventory_prompt(source: Union[str, Path]) -> List[str]:
     """
     驗證 templates/subject-inventory-argument-writing-prompt.md：
@@ -372,6 +378,7 @@ def verify_all_specs(repo_root: Optional[Path] = None) -> Tuple[bool, Dict[str, 
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(
         description="pstack Playbooks、Claude 外掛評測與全端建站規範之外部裁判結構驗證器"
     )
@@ -388,20 +395,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     all_passed, results = verify_all_specs(root)
 
-    for rel_path, errs in results.items():
-        if errs:
-            print(f"\n[FAIL] ❌ {rel_path} 發現 {len(errs)} 項規格缺陷：")
-            for e in errs:
-                print(f"  - {e}")
-        else:
-            print(f"[PASS] ✅ {rel_path} 結構與規格完全相符")
-
-    if all_passed:
-        print("\n[SUCCESS] 🎉 全數 pstack、外掛評測與全端商業建站規格文件均通過外部裁判結構驗證！")
-        return 0
-    else:
-        print("\n[ERROR] 外部裁判驗證未通過，請依上述錯誤修正文件。")
-        return 1
+    return report_results(
+        results,
+        success_msg='全數 pstack、外掛評測與全端商業建站規格文件均通過外部裁判結構驗證！',
+        fail_label='規格缺陷',
+        ok_label='結構與規格完全相符',
+        fail_msg='外部裁判驗證未通過，請依上述錯誤修正文件。',
+    )
 
 
 if __name__ == "__main__":

@@ -21,6 +21,9 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import ensure_utf8_output  # noqa: E402
+
 
 @dataclass
 class SlopViolation:
@@ -90,7 +93,8 @@ RULES = [
         "SLOP-05",
         "AI 罐頭黑話文案",
         re.compile(
-            r"\b(?:delve|delving|seamlessly|elevate|revolutionize|tapestry|empower|unleash|game-changer|gamechanger|vibe-coding)\b",
+            r"\b(?:delv(?:e[sd]?|ing)|seamless(?:ly)?|elevat(?:e[sd]?|ing)|revolutioniz(?:e[sd]?|ing)|"
+            r"tapestry|empower(?:s|ed|ing|ment)?|unleash(?:e[sd]|ing)?|game-?changers?|vibe-coding)\b",
             re.IGNORECASE,
         ),
         "禁止使用空洞 AI 行銷陳腔濫調，請改用具體客觀數據與活人文案",
@@ -147,7 +151,7 @@ def format_report(violations: list[SlopViolation]) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
-    sys.stdout.reconfigure(encoding="utf-8")
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(description="靜態檢測 HTML / CSS 中的 AI 罐頭設計特徵")
     parser.add_argument("paths", nargs="*", help="要掃描的 HTML 或 CSS 檔案路徑（預設: assets/anti-slop-demo/index.html）")
     args = parser.parse_args(argv)
@@ -170,6 +174,11 @@ def main(argv: list[str] | None = None) -> int:
             scanned_count += 1
         else:
             print(f"[WARN] 路徑不存在：{p}", file=sys.stderr)
+
+    if scanned_count == 0:
+        # 沒掃到任何檔案不能算通過（避免路徑打錯或目錄為空時恆 PASS）
+        print("[ERROR] 未掃描到任何 HTML/CSS 檔案，無法判定 (0 files scanned)", file=sys.stderr)
+        return 2
 
     report = format_report(all_violations)
     print(f"[*] 已掃描 {scanned_count} 個檔案。")

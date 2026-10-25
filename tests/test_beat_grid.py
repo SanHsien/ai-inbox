@@ -97,6 +97,34 @@ class TestBeatGridEngine(unittest.TestCase):
         with self.assertRaises(ValueError):
             BeatGridEngine(bpm=120, fps=0)
 
+    def test_non_finite_and_degenerate_parameters_rejected(self):
+        # bpm=inf 以前會讓 get_beat_cues 無窮迴圈
+        for bad in (float("inf"), float("nan")):
+            with self.assertRaises(ValueError):
+                BeatGridEngine(bpm=bad)
+        with self.assertRaises(ValueError):
+            BeatGridEngine(bpm=120, beats_per_bar=0)
+        engine = BeatGridEngine(bpm=120, fps=60)
+        with self.assertRaises(ValueError):
+            engine.snap_frame_to_grid(10, subdivision=0)
+        with self.assertRaises(ValueError):
+            engine.generate_cut_transitions(4.0, beats_per_cut=0)
+        with self.assertRaises(ValueError):
+            engine.get_beat_cues(float("inf"))
+
+    def test_no_float_drift_at_duration_boundary(self):
+        # 70 BPM、6 秒剛好 7 拍 (0..6 拍位於 0, 6/7, ... 5.142857)，第 7 拍剛好落在 6.0 不應被包含
+        engine = BeatGridEngine(bpm=70, fps=30)
+        cues = engine.get_beat_cues(duration_seconds=6.0)
+        self.assertEqual(len(cues), 7)
+        self.assertEqual([c.beat_index for c in cues], list(range(7)))
+
+    def test_negative_offset_and_empty_duration(self):
+        engine = BeatGridEngine(bpm=120, fps=60, offset_seconds=-0.25)
+        cues = engine.get_beat_cues(duration_seconds=1.0)
+        self.assertEqual(cues[0].frame, -15)
+        self.assertEqual(BeatGridEngine(bpm=120).get_beat_cues(0.0), [])
+
 
 if __name__ == "__main__":
     unittest.main()

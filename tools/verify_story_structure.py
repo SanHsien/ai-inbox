@@ -18,6 +18,11 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import ensure_utf8_output  # noqa: E402
+
+MIN_FORESHADOWING = 3  # 三伏三冒：至少 3 組伏筆/回收
+
 NODE_ORDER = ["A", "B", "C", "D", "E", "F", "G"]
 NODE_NAMES = {
     "A": "目標 (A)",
@@ -299,10 +304,24 @@ def verify_story_structure(story_data: Dict[str, Any]) -> StoryVerificationRepor
         else:
             critical_fix = "結構完備！七節點字數契約、三因果向右箭頭與三伏三冒長距離張力皆達高標準。"
 
-    is_valid = (len(violations) == 0 and len(weak_causals) == 0)
+    # 三伏三冒也是通過條件：至少 3 組，且每組張力皆為「剛好」
+    bad_fs_all = [f for f in fs_evals if f.tension != "剛好"]
+    fs_shortage = len(fs_evals) < MIN_FORESHADOWING
+    if fs_shortage and not (weak_causals or violations):
+        critical_fix = (
+            f"【伏筆不足】三伏三冒至少需 {MIN_FORESHADOWING} 組伏筆/回收，實際僅 {len(fs_evals)} 組。"
+        )
+
+    is_valid = (
+        len(violations) == 0
+        and len(weak_causals) == 0
+        and not fs_shortage
+        and len(bad_fs_all) == 0
+    )
     summary = (
         f"靶心人結構驗證{'通過' if is_valid else '未通過'}！"
-        f"字數契約違規 {len(violations)} 項，薄弱因果 {len(weak_causals)} 處。"
+        f"字數契約違規 {len(violations)} 項，薄弱因果 {len(weak_causals)} 處，"
+        f"伏筆 {len(fs_evals)} 組（張力不佳 {len(bad_fs_all)} 組）。"
     )
 
     return StoryVerificationReport(
@@ -315,19 +334,26 @@ def verify_story_structure(story_data: Dict[str, Any]) -> StoryVerificationRepor
     )
 
 
-def main() -> int:
+def main(argv: Optional[List[str]] = None) -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(description="故事因果與三伏三冒檢驗器")
     parser.add_argument("--input", required=True, help="靶心人故事 JSON 檔案路徑")
     parser.add_argument("--json", action="store_true", help="以 JSON 格式輸出驗證報告")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     input_path = Path(args.input)
     if not input_path.exists():
         print(f"錯誤：輸入檔案不存在 '{input_path}'", file=sys.stderr)
         return 1
 
-    content = input_path.read_text(encoding="utf-8")
-    data = json.loads(content)
+    try:
+        data = json.loads(input_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as err:
+        print(f"錯誤：無法解析 JSON 輸入 '{input_path}'：{err}", file=sys.stderr)
+        return 1
+    if not isinstance(data, dict):
+        print(f"錯誤：JSON 根節點必須為物件（含 nodes/arrows/foreshadowing）：'{input_path}'", file=sys.stderr)
+        return 1
     report = verify_story_structure(data)
     rep_dict = asdict(report)
 

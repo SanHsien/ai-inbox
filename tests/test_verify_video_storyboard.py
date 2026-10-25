@@ -75,15 +75,44 @@ class TestVerifyVideoStoryboard(unittest.TestCase):
         )
 
         # 混合分鏡：門禁應阻擋
-        report_fail = evaluate_storyboard([good_kf, bad_kf], threshold=8.0)
+        report_fail = evaluate_storyboard([good_kf] * 7 + [bad_kf], threshold=8.0)
         self.assertFalse(report_fail.gate_passed)
         self.assertEqual(report_fail.flagged_frames, 1)
-        self.assertEqual(report_fail.passed_frames, 1)
+        self.assertEqual(report_fail.passed_frames, 7)
 
         # 全優良分鏡：門禁應放行
-        report_pass = evaluate_storyboard([good_kf], threshold=8.0)
+        report_pass = evaluate_storyboard([good_kf] * 8, threshold=8.0)
         self.assertTrue(report_pass.gate_passed)
         self.assertEqual(report_pass.flagged_frames, 0)
+
+    def test_frame_count_outside_8_to_12_blocks_gate(self):
+        good_kf = Keyframe(
+            frame_id="KF-01", timestamp=0.0, shot_type="Hero",
+            description="黑石平板斜角 34 度，極淺景深代碼高亮",
+            camera_angle="oblique", pitch_deg=34.0, focal_plane="selective",
+        )
+        for n in (1, 7, 13):
+            report = evaluate_storyboard([good_kf] * n, threshold=8.0)
+            self.assertEqual(report.flagged_frames, 0)
+            self.assertFalse(report.gate_passed, f"{n} 張不在 8~12 範圍，不得放行")
+            self.assertIn("8~12", report.summary)
+        self.assertTrue(evaluate_storyboard([good_kf] * 12, threshold=8.0).gate_passed)
+
+    def test_cli_main_exit_codes(self):
+        from verify_video_storyboard import main
+
+        good = {"keyframes": [{"frame_id": f"KF-{i:02d}", "description": "黑石平板斜角，極淺景深", "pitch_deg": 34.0} for i in range(8)]}
+        bad = {"keyframes": [dict(good["keyframes"][0], effects=["fade_in_all"]) for _ in range(8)]}
+        out = self.test_dir / "out"
+        gp, bp = self.test_dir / "good.json", self.test_dir / "bad.json"
+        gp.write_text(json.dumps(good), encoding="utf-8")
+        bp.write_text(json.dumps(bad), encoding="utf-8")
+        self.assertEqual(main(["--input", str(gp), "--output", str(out)]), 0)
+        self.assertEqual(main(["--input", str(bp), "--output", str(out)]), 1)
+        self.assertEqual(main(["--input", str(self.test_dir / "missing.json"), "--output", str(out)]), 1)
+        broken = self.test_dir / "broken.json"
+        broken.write_text("{oops", encoding="utf-8")
+        self.assertEqual(main(["--input", str(broken), "--output", str(out)]), 1)
 
     def test_empty_storyboard(self):
         report = evaluate_storyboard([], threshold=8.0)

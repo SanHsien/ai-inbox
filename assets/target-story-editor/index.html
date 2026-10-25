@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>靶心人故事編輯器 (Target Story Generative UI Editor - React 單檔範本)</title>
   <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.1"></script>
   <!-- React 18 & ReactDOM & Babel Standalone (固定版本) -->
   <script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
@@ -151,10 +151,25 @@
 
       const handleExportJSON = () => {
         const jsonStr = JSON.stringify(story, null, 2);
-        navigator.clipboard.writeText(jsonStr).then(() => {
-          setCopyStatus("JSON 已複製至剪貼簿！");
+        const flash = (msg) => {
+          setCopyStatus(msg);
           setTimeout(() => setCopyStatus(""), 3000);
-        });
+        };
+        // file:// 等非安全來源沒有 navigator.clipboard，改為下載檔案
+        const download = () => {
+          const url = URL.createObjectURL(new Blob([jsonStr], { type: "application/json" }));
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "story.json";
+          a.click();
+          URL.revokeObjectURL(url);
+          flash("已下載 story.json");
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(jsonStr).then(() => flash("JSON 已複製至剪貼簿！"), download);
+        } else {
+          download();
+        }
       };
 
       const nodeKeys = ["target", "obstacle", "effort", "twist", "turning", "climax", "resolution"];

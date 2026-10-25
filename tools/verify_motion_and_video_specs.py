@@ -28,6 +28,14 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import (  # noqa: E402
+    doc_guard,
+    ensure_utf8_output,
+    find_repo_root as _common_find_repo_root,
+    report_results,
+)
+
 # 1. Cinetic 14 大分類定義 (key, 中文名稱, 技法數量)
 EXPECTED_CINETIC_CATEGORIES: List[Tuple[str, str, int]] = [
     ("opening_hook", "開場視覺鉤子", 10),
@@ -77,16 +85,11 @@ EXPECTED_ANTI_SLOP_BANS: List[Tuple[int, str]] = [
 
 
 def find_repo_root(start: Optional[Path] = None) -> Path:
-    """自動推導 repository 根目錄。"""
-    if start is not None:
-        return start.resolve()
-    cur = Path(__file__).resolve()
-    for parent in [cur, *cur.parents]:
-        if (parent / "notes").is_dir() and (parent / "docs").is_dir():
-            return parent
-    return Path.cwd()
+    """自動推導 repository 根目錄（共用實作見 _judge_common）。"""
+    return _common_find_repo_root(start, markers=('notes', 'docs'), anchor=Path(__file__))
 
 
+@doc_guard
 def verify_cinetic_motion_dictionary(text: str) -> List[str]:
     """
     驗證 docs/cinetic-motion-dictionary.md：
@@ -176,6 +179,7 @@ def verify_cinetic_motion_dictionary(text: str) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_motion_prompt_cheatsheet(text: str) -> List[str]:
     """
     驗證 docs/motion-prompt-cheatsheet.md：
@@ -232,6 +236,7 @@ def verify_motion_prompt_cheatsheet(text: str) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_cinematic_shot_camera_guide(text: str) -> List[str]:
     """
     驗證 docs/cinematic-shot-camera-guide.md：
@@ -285,6 +290,7 @@ def verify_cinematic_shot_camera_guide(text: str) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_video_studio_harness(text: str) -> List[str]:
     """
     驗證 templates/video-studio-harness.md：
@@ -350,6 +356,7 @@ def verify_all_motion_specs(repo_root: Optional[Path] = None) -> Tuple[bool, Dic
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(
         description="動態視覺字典（Cinetic／Motion Prompt／cinematic-shot）與 Code-as-Video 規範之外部裁判結構驗證器"
     )
@@ -366,20 +373,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     all_passed, results = verify_all_motion_specs(root)
 
-    for rel_path, errs in results.items():
-        if errs:
-            print(f"\n[FAIL] ❌ {rel_path} 發現 {len(errs)} 項規格缺陷：")
-            for e in errs:
-                print(f"  - {e}")
-        else:
-            print(f"[PASS] ✅ {rel_path} 結構與規格完全相符")
-
-    if all_passed:
-        print("\n[SUCCESS] 🎉 全數動態視覺字典與 Code-as-Video 規範文件均通過外部裁判結構驗證！")
-        return 0
-    else:
-        print("\n[ERROR] 外部裁判驗證未通過，請依上述錯誤修正文件。")
-        return 1
+    return report_results(
+        results,
+        success_msg='全數動態視覺字典與 Code-as-Video 規範文件均通過外部裁判結構驗證！',
+        fail_label='規格缺陷',
+        ok_label='結構與規格完全相符',
+        fail_msg='外部裁判驗證未通過，請依上述錯誤修正文件。',
+    )
 
 
 if __name__ == "__main__":

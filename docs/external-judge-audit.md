@@ -35,3 +35,28 @@
 1. **升級正則計數為語法／Schema 斷言**：對於純文件或規格類任務，避免僅用 Select-String 計算列數或連結數，改以 Python/Pydantic/YAML Schema 解析實際結構與必填欄位。
 2. **實體執行取代靜態日誌記錄**：對於工具配置與外掛整合任務（如 CLI、外掛設定），禁止僅要求貼上 terminal log，必須搭配可執行的微型測試腳本（Smoke Test）驗證真實環境反饋與 Exit Code。
 3. **質化產出引入獨立審查代理人（Multi-Agent Review）**：針對調研、分析與架構比對等難以單靠單元測試斷言之任務，明確指定外部審查技能（如 `blind-review`、`ai-review`）作為驗收硬閘門，避免 Agent 自產自評。
+
+---
+
+## 4. 已落地的外部裁判驗證器（2026-10-25 現況）
+
+上述補強方針已有 12 支驗證器實作於 `tools/`（皆純 Python stdlib），共用邏輯集中在 `tools/_judge_common.py`（UTF-8 輸出、repo 根推導、HTML 註解／程式碼區塊剝除、標題結構下限、統一 PASS/FAIL 報告）。每支都有對應的 `tests/test_verify_*.py`；`tests/test_verify_judge_common.py` 以「整份文件藏進註解／程式碼區塊／壓成一行必須失敗」的反例檢驗共用防線。
+
+| 驗證器 | 檢查對象 | 指令 |
+| :--- | :--- | :--- |
+| `verify_claude_security_config.py` | `docs/claude-idle-compaction-setup.md`、`templates/claude-security-guidance.md`（含 `scan_code_snippet` 靜態掃描） | `python tools/verify_claude_security_config.py` |
+| `verify_compliance_and_matrix_docs.py` | 合規清單、宣稱查證、對照矩陣、野心提示清單（4 份） | `python tools/verify_compliance_and_matrix_docs.py` |
+| `verify_incident_and_workflow_specs.py` | 資安事件盤點、應變清單、WebToApp 評估與接案流程（4 份） | `python tools/verify_incident_and_workflow_specs.py` |
+| `verify_generative_ui_assets.py` | `assets/` 內 6 個單檔 HTML（結構、HTTPS、seek 契約、健康資料脫敏） | `python tools/verify_generative_ui_assets.py` |
+| `verify_academic_and_latex_guard.py` | LaTeX 保護提示詞、學術閱讀提示詞、實測報告（3 份） | `python tools/verify_academic_and_latex_guard.py` |
+| `verify_motion_and_video_specs.py` | 動態字典、提示詞速查、運鏡指南、影片工作室 harness（4 份） | `python tools/verify_motion_and_video_specs.py` |
+| `verify_re_and_android_specs.py` | 逆向工程流水線、REA 沙盒、Android 33 Skills、Android CLI 評測（4 份） | `python tools/verify_re_and_android_specs.py` |
+| `verify_agent_reach_and_data_specs.py` | Agent-Reach 路由、Public APIs、健康存摺規格（6 份） | `python tools/verify_agent_reach_and_data_specs.py` |
+| `verify_pstack_and_fullstack_specs.py` | pstack playbooks、外掛評測、全端建站技能、主體盤點提示詞（4 份） | `python tools/verify_pstack_and_fullstack_specs.py` |
+| `verify_no_slop.py` | HTML／CSS 的 SLOP-01~05 罐頭特徵（預設掃 `assets/anti-slop-demo/index.html`，可傳路徑或目錄；掃不到任何檔案回傳 exit 2） | `python tools/verify_no_slop.py [路徑...]` |
+| `verify_story_structure.py` | 靶心人故事 JSON：七節點／三箭頭字數契約、因果、三伏三冒（至少 3 組且張力皆「剛好」） | `python tools/verify_story_structure.py --input story.json` |
+| `verify_video_storyboard.py` | 分鏡 JSON：關鍵影格 1-10 分自檢（需 8~12 張，與 `templates/video-studio-harness.md` 第 4 節一致） | `python tools/verify_video_storyboard.py --input storyboard.json` |
+
+另有 `tools/verify_inbox.py`（筆記契約，CI 同款）不在本批次內。全套單元測試：`python -m unittest discover -s tests`（CI 即執行此指令）。
+
+**已知限制（誠實揭露）**：文件類驗證器本質上仍是「在可見內容中找必備關鍵字／標題／表格列數」。它們能擋下整份藏進註解、塞進程式碼區塊或缺少標題結構的作弊，但不證明語意正確；關鍵字是否出現在「對的段落」多半未逐段限定。質化內容仍需第 3 節的獨立審查代理人（`blind-review`、`ai-review`）把關。

@@ -30,16 +30,18 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import (  # noqa: E402
+    doc_guard,
+    ensure_utf8_output,
+    find_repo_root as _common_find_repo_root,
+    report_results,
+)
+
 
 def find_repo_root(start: Optional[Path] = None) -> Path:
-    """自動推導 repository 根目錄。"""
-    if start is not None:
-        return start.resolve()
-    cur = Path(__file__).resolve()
-    for parent in [cur, *cur.parents]:
-        if (parent / "notes").is_dir() and (parent / "docs").is_dir():
-            return parent
-    return Path.cwd()
+    """自動推導 repository 根目錄（共用實作見 _judge_common）。"""
+    return _common_find_repo_root(start, markers=('notes', 'docs'), anchor=Path(__file__))
 
 
 def load_content(source: Union[Path, str]) -> str:
@@ -63,6 +65,7 @@ def load_content(source: Union[Path, str]) -> str:
     raise TypeError(f"不支援的參數型別：{type(source)}")
 
 
+@doc_guard
 def verify_re_pipeline_spec(source: Union[Path, str]) -> List[str]:
     """驗證 docs/reverse-engineering-pipeline-spec.md：
 
@@ -113,6 +116,7 @@ def verify_re_pipeline_spec(source: Union[Path, str]) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_rea_sandbox_evidence(source: Union[Path, str]) -> List[str]:
     """驗證 docs/rea-sandbox-evaluation-evidence.md：
 
@@ -159,6 +163,7 @@ def verify_rea_sandbox_evidence(source: Union[Path, str]) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_android_skills_anti_hallucination(source: Union[Path, str]) -> List[str]:
     """驗證 docs/android-official-skills-anti-hallucination.md：
 
@@ -173,15 +178,21 @@ def verify_android_skills_anti_hallucination(source: Union[Path, str]) -> List[s
     has_33_claim = "33 個" in text or "33 個 Skills" in text
 
     # 解析 Markdown 表格項目
-    table_rows: List[str] = []
+    # 每列必須是「| 編號 | ... | `路徑/SKILL.md` | ...」，編號需恰為 1..33 不重複
+    # （避免任何以數字開頭的表格列、重複編號或缺路徑的空列灌水湊數）
+    table_numbers: List[int] = []
     for line in text.splitlines():
-        line_str = line.strip()
-        if re.match(r"^\|\s*\d+\s*\|", line_str):
-            table_rows.append(line_str)
+        row = re.match(r"^\|\s*(\d+)\s*\|", line.strip())
+        if row and re.search(r"`[^`|]*SKILL\.md`", line):
+            table_numbers.append(int(row.group(1)))
 
-    skill_count = len(table_rows)
-    if not (has_33_claim and skill_count >= 33):
-        errors.append(f"官方 Skills 清單盤點不足 33 個（表格解析出 {skill_count} 個項目）")
+    skill_count = len(table_numbers)
+    numbering_ok = sorted(table_numbers) == list(range(1, 34))
+    if not (has_33_claim and numbering_ok):
+        errors.append(
+            f"官方 Skills 清單盤點不足 33 個或編號異常（含 SKILL.md 路徑的表格列解析出 {skill_count} 個，"
+            f"編號需恰為 1~33 且不重複）"
+        )
 
     # 檢查關鍵代表性技能存在
     required_key_skills = [
@@ -218,6 +229,7 @@ def verify_android_skills_anti_hallucination(source: Union[Path, str]) -> List[s
     return errors
 
 
+@doc_guard
 def verify_android_cli_validation(source: Union[Path, str]) -> List[str]:
     """驗證 docs/android-cli-plugin-windows-validation.md：
 
@@ -281,6 +293,7 @@ def verify_all_specs(repo_root: Optional[Path] = None) -> Tuple[bool, Dict[str, 
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(
         description="逆向工程流水線（REA + CLI-Anything）與 Android 官方 33 Skills 防幻覺規範之外部裁判結構驗證器"
     )
@@ -297,20 +310,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     all_passed, results = verify_all_specs(root)
 
-    for rel_path, errs in results.items():
-        if errs:
-            print(f"\n[FAIL] ❌ {rel_path} 發現 {len(errs)} 項規格缺陷：")
-            for e in errs:
-                print(f"  - {e}")
-        else:
-            print(f"[PASS] ✅ {rel_path} 結構與規格契約完全相符")
-
-    if all_passed:
-        print("\n[SUCCESS] 🎉 全數逆向工程與 Android 官方規格文件均通過外部裁判結構驗證！")
-        return 0
-    else:
-        print("\n[ERROR] 外部裁判驗證未通過，請依上述錯誤修正文件。")
-        return 1
+    return report_results(
+        results,
+        success_msg='全數逆向工程與 Android 官方規格文件均通過外部裁判結構驗證！',
+        fail_label='規格缺陷',
+        ok_label='結構與規格契約完全相符',
+        fail_msg='外部裁判驗證未通過，請依上述錯誤修正文件。',
+    )
 
 
 if __name__ == "__main__":

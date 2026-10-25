@@ -77,6 +77,22 @@ class TestVerifyNoSlop(unittest.TestCase):
         exit_code = vns.main([demo_path])
         self.assertEqual(exit_code, 0, "CLI 掃描乾淨範例應返回 exit code 0")
 
+    def test_word_forms_are_caught(self):
+        for word in ("delves", "Elevating", "seamless", "empowers", "unleashed", "revolutionized", "game-changer"):
+            v = vns.scan_text(f"<p>{word} everything</p>", filename="w.html")
+            self.assertTrue(any(x.rule_id == "SLOP-05" for x in v), f"{word} 應被 SLOP-05 抓到")
+
+    def test_clean_prose_not_flagged_by_word_forms(self):
+        v = vns.scan_text("<p>The elevator and the delivery date are 42ms apart.</p>", filename="c.html")
+        self.assertEqual(v, [])
+
+    def test_empty_or_missing_target_is_not_a_pass(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(vns.main([tmp]), 2, "空目錄不得視為通過")
+        self.assertEqual(vns.main([str(REPO_ROOT / "no-such-dir-xyz")]), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

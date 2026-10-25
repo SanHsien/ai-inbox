@@ -71,9 +71,10 @@ python tools/video_transcript.py https://youtu.be/<id> --out <暫存資料夾>
 ```
 
 - 輸出：`<暫存資料夾>/transcript.txt`，每行 `[mm:ss] 文字`。
-- 若 `<暫存資料夾>/audio.*` 已存在且非空，腳本會直接重用，不重複向 YouTube 下載。
+- 若 `<暫存資料夾>/audio.*` 已存在、非空且不是 `.part` 等下載中暫存檔，腳本會直接重用，不重複向 YouTube 下載；腳本會在同資料夾記錄來源網址（`audio_source_url.txt`），換成別的網址時會自動重新下載覆寫，不會誤用舊音訊。
+- 網址只接受 `http(s)://`；其他字串（含以 `-` 開頭者）會被拒絕。yt-dlp 單次下載逾時 3600 秒。
 - **暫存資料夾請放在 repo 以外**（例如各 Agent 的 scratch 目錄）。音訊與逐字稿是第三方內容，不要提交進本 repo。
-- 失敗會明確丟出 `RuntimeError`（yt-dlp 失敗、找不到音訊、CUDA 載入失敗、轉寫為空），不會靜默產生空檔。
+- 失敗時命令列會印出「錯誤：…」並以 exit code 1 結束（函式層級為 `RuntimeError`：yt-dlp 失敗或逾時、找不到音訊、CUDA 載入失敗、轉寫為空）；轉寫先寫暫存檔，失敗不會留下空的 `transcript.txt`，也不會蓋掉上一次的好結果。
 
 ### 實測效能對照（2026-10-24，同一支 510 秒中文影片）
 

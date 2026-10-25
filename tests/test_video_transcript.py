@@ -59,6 +59,48 @@ class DownloadAudioTest(unittest.TestCase):
         self.assertEqual(cmd[:3], [sys.executable, "-m", "yt_dlp"])
 
 
+    def test_rejects_non_http_urls_and_option_injection(self):
+        for bad in ("--exec=calc", "-o/etc/x", "file:///C:/secret.mp4", "javascript:alert(1)", "", "example.com/v"):
+            with mock.patch.object(video_transcript.subprocess, "run") as run:
+                with self.assertRaises(ValueError, msg=bad):
+                    video_transcript.download_audio(bad, self.tmp)
+            run.assert_not_called()
+
+    def test_url_goes_after_double_dash_without_shell(self):
+        with mock.patch.object(video_transcript.subprocess, "run", return_value=_completed(1)) as run:
+            with self.assertRaises(RuntimeError):
+                video_transcript.download_audio("https://example.invalid/v?a=1&b=2", self.tmp)
+        cmd = run.call_args.args[0]
+        self.assertEqual(cmd[-2:], ["--", "https://example.invalid/v?a=1&b=2"])
+        self.assertIn("--no-playlist", cmd)
+        self.assertFalse(run.call_args.kwargs.get("shell", False))
+        self.assertIsNotNone(run.call_args.kwargs.get("timeout"))
+
+    def test_timeout_becomes_runtime_error(self):
+        err = subprocess.TimeoutExpired(cmd="yt-dlp", timeout=1)
+        with mock.patch.object(video_transcript.subprocess, "run", side_effect=err):
+            with self.assertRaises(RuntimeError) as ctx:
+                video_transcript.download_audio("https://example.invalid/v", self.tmp)
+        self.assertIn("逾時", str(ctx.exception))
+
+    def test_partial_download_is_not_reused(self):
+        (self.tmp / "audio.webm.part").write_bytes(b"half")
+        with mock.patch.object(video_transcript.subprocess, "run", return_value=_completed(0)) as run:
+            with self.assertRaises(RuntimeError):
+                video_transcript.download_audio("https://example.invalid/v", self.tmp)
+        run.assert_called_once()
+
+    def test_cached_audio_from_other_url_is_redownloaded(self):
+        (self.tmp / "audio.webm").write_bytes(b"old")
+        (self.tmp / "audio_source_url.txt").write_text("https://example.invalid/OLD\n", encoding="utf-8")
+        with mock.patch.object(video_transcript.subprocess, "run", return_value=_completed(0)) as run:
+            video_transcript.download_audio("https://example.invalid/NEW", self.tmp)
+        run.assert_called_once()
+        self.assertIn("--force-overwrites", run.call_args.args[0])
+        marker = (self.tmp / "audio_source_url.txt").read_text(encoding="utf-8").strip()
+        self.assertEqual(marker, "https://example.invalid/NEW")
+
+
 class DeviceResolveTest(unittest.TestCase):
     def test_explicit_cpu_or_cuda_preserved(self):
         self.assertEqual(video_transcript._resolve_device("cpu"), "cpu")
@@ -95,6 +137,24 @@ class TranscribeTest(unittest.TestCase):
         with mock.patch.dict(sys.modules, {"faster_whisper": mod}):
             with self.assertRaises(RuntimeError):
                 video_transcript.transcribe(self.tmp / "a.webm", self.tmp / "t.txt", "zh", "small", "cpu")
+
+    def test_empty_result_keeps_previous_transcript_and_leaves_no_tmp(self):
+        out = self.tmp / "t.txt"
+        out.write_text("[00:00] 舊的好結果\n", encoding="utf-8")
+        mod, _ = self._fake_module([])
+        with mock.patch.dict(sys.modules, {"faster_whisper": mod}):
+            with self.assertRaises(RuntimeError):
+                video_transcript.transcribe(self.tmp / "a.webm", out, "zh", "small", "cpu")
+        self.assertEqual(out.read_text(encoding="utf-8"), "[00:00] 舊的好結果\n")
+        self.assertEqual([p.name for p in self.tmp.iterdir()], ["t.txt"])
+
+    def test_timestamp_over_one_hour_keeps_minutes(self):
+        seg = types.SimpleNamespace(start=3725.0, text="x")
+        out = self.tmp / "t.txt"
+        mod, _ = self._fake_module([seg])
+        with mock.patch.dict(sys.modules, {"faster_whisper": mod}):
+            video_transcript.transcribe(self.tmp / "a.webm", out, "zh", "small", "cpu")
+        self.assertEqual(out.read_text(encoding="utf-8"), "[62:05] x\n")
 
     def test_writes_timestamped_lines_in_utf8_and_uses_float16_on_cuda(self):
         seg = types.SimpleNamespace(start=65.4, text=" 你好 ")

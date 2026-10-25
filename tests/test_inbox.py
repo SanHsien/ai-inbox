@@ -1,5 +1,7 @@
 """tools/ 的單元測試：python -m unittest discover -s tests"""
 
+import contextlib
+import io
 import sys
 import tempfile
 import unittest
@@ -223,6 +225,63 @@ tags:
         errs = vi.check_self_references({self.tmp / "a.md": f"經{word}決定", self.tmp / "b.md": "經維護者決定"})
         self.assertEqual(len(errs), 1, errs)
         self.assertIn("a.md", errs[0])
+
+    def test_archived_matches_status_prefix_only(self):
+        n = make_note(self.tmp)
+        t = n.tasks[1]
+        t.fields["狀態"] = "🟡 進行中（等待關閉 PR）"
+        self.assertFalse(t.archived)
+        self.assertTrue(t.in_progress)
+        t.fields["狀態"] = "⚪ 不做（進行中的重複項）"
+        self.assertTrue(t.archived)
+        self.assertFalse(t.in_progress)  # 已封存就不是進行中
+
+    def test_complete_on_done_task_is_rejected_and_file_untouched(self):
+        n = make_note(self.tmp)
+        before = n.path.read_text(encoding="utf-8")
+        with self.assertRaises(ValueError):
+            tc.apply_complete(n.path, "T-20261020-01", "new evidence", "2026-11-01")
+        self.assertEqual(before, n.path.read_text(encoding="utf-8"))
+        with self.assertRaises(ValueError):
+            tc.apply_claim(n.path, "T-20261020-01")
+        with self.assertRaises(ValueError):
+            tc.apply_close(n.path, "T-20261020-01", "x")
+
+    def test_cli_main_reports_unknown_id_without_traceback_and_survives_captured_stdout(self):
+        out, err = io.StringIO(), io.StringIO()  # StringIO 沒有 reconfigure
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            rc = tc.main(["show", "T-99999999-99"])
+        self.assertEqual(rc, 1)
+        self.assertIn("T-99999999-99", err.getvalue())
+
+    def test_secret_scan_skip_labels_and_non_md_files(self):
+        texts = {self.tmp / "page.html": "AKIA" + "A" * 16 + " conversation://abc"}
+        errs = vi.check_secrets(texts, skip_labels=(vi.SESSION_LINK_LABEL,))
+        self.assertEqual(len(errs), 1, errs)
+        self.assertIn("AWS", errs[0])
+        self.assertIn(".html", vi.SCANNED_SUFFIXES)
+
+    def test_links_percent_encoding_and_query(self):
+        (self.tmp / "a b.md").write_text("x", encoding="utf-8")
+        ok = {self.tmp / "r.md": "[a](a%20b.md) [b](a%20b.md?x=1#h)"}
+        self.assertEqual(vi.check_links(ok), [])
+        bad = {self.tmp / "r.md": "[a](missing.md)"}
+        self.assertEqual(len(vi.check_links(bad)), 1)
+
+    def test_stale_readme_detected(self):
+        n = make_note(self.tmp)
+        readme = self.tmp / "README.md"
+        body = "".join(f"<!-- BEGIN GENERATED: {k} -->\n<!-- END GENERATED: {k} -->\n"
+                       for k in ("tasks", "index", "clusters"))
+        readme.write_text(bi.build_readme(body, [n]), encoding="utf-8")
+        old = bi.README_FILE
+        bi.README_FILE = readme
+        try:
+            self.assertEqual(vi.check_readme([n]), [])
+            readme.write_text(readme.read_text(encoding="utf-8").replace("共 2 項", "共 9 項"), encoding="utf-8")
+            self.assertEqual(len(vi.check_readme([n])), 1)
+        finally:
+            bi.README_FILE = old
 
     def test_build_readme_requires_markers(self):
         with self.assertRaises(SystemExit):

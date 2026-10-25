@@ -141,6 +141,8 @@ def apply_complete(note_path: Path, task_id: str, evidence: str, date_str: str) 
     text = note_path.read_text(encoding="utf-8")
     lines = text.split("\n")
     start, end = _locate_task_span(lines, task_id)
+    if re.match(r"^- \[[xX]\] ", lines[start]):
+        raise ValueError(f"{task_id} 已是完成狀態，不可重複結案（會覆寫既有完成日期與證據）")
 
     lines[start] = re.sub(r"^- \[[ xX]\] ", "- [x] ", lines[start], count=1)
 
@@ -308,10 +310,14 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    sys.stdout.reconfigure(encoding="utf-8")
+    bi.ensure_utf8_stdout()
     parser = build_parser()
     args = parser.parse_args(argv)
-    return args.func(args)
+    try:
+        return args.func(args)
+    except (KeyError, ValueError) as e:
+        print(f"[FAIL] {e.args[0] if e.args else e}", file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

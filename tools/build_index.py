@@ -50,12 +50,13 @@ class Task:
 
     @property
     def in_progress(self) -> bool:
-        return not self.done and "進行中" in self.fields.get("狀態", "")
+        return not self.done and not self.archived and "進行中" in self.fields.get("狀態", "")
 
     @property
     def archived(self) -> bool:
-        s = self.fields.get("狀態", "")
-        return not self.done and ("不做" in s or "archived" in s or "⚪" in s or "關閉" in s)
+        # 只看狀態文字開頭：避免「🟡 進行中（等待關閉 PR）」這類理由內含關鍵字被誤判為不做
+        s = self.fields.get("狀態", "").lstrip()
+        return not self.done and s.startswith(("⚪", "不做", "archived", "關閉", "已關閉"))
 
     @property
     def archive_reason(self) -> str:
@@ -109,6 +110,13 @@ def expected_note_status(note: Note) -> str:
     if done_count > 0 or any(t.in_progress for t in active):
         return "in-progress"
     return "pending"
+
+
+def ensure_utf8_stdout() -> None:
+    """Windows cp950 終端 print emoji 會 UnicodeEncodeError；stdout 被取代（如測試擷取）時略過。"""
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if reconfigure:
+        reconfigure(encoding="utf-8")
 
 
 def parse_frontmatter(text: str) -> tuple[dict[str, str], list[str]] | None:
@@ -334,7 +342,7 @@ def build_readme(readme: str, notes: list[Note]) -> str:
 
 
 def main(argv: list[str]) -> int:
-    sys.stdout.reconfigure(encoding="utf-8")
+    ensure_utf8_stdout()
     current = README_FILE.read_text(encoding="utf-8")
     expected = build_readme(current, load_notes())
     if "--check" in argv:

@@ -60,7 +60,7 @@
 
 ---
 
-## 5. 實測指令與外掛調用範例
+## 5. 外掛調用範例（示意，未於本 repo 實測）
 
 以推薦之 `security-guidance` 與 `skill-creator` 為例，在 Claude Code 中可進行之典型驗收操作：
 
@@ -71,6 +71,6 @@
 # 2. 安裝官方精選安全輔助插件
 /plugin install security-guidance@claude-plugins-official
 
-# 3. 執行本機 Skill 結構驗證 (以 skill-creator 內建腳本)
+# 3. 執行本機 Skill 結構驗證（示意；模組路徑與參數未查證，請以外掛實際提供的腳本為準）
 python -m plugins.skill_creator.scripts.quick_validate --path ./templates/fullstack-website-builder-skill.md
 ```

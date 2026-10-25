@@ -19,6 +19,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_index as bi  # noqa: E402
@@ -117,16 +118,21 @@ def check_links(texts: dict[Path, str]) -> list[str]:
     errors = []
     for path, text in texts.items():
         for target in LINK.findall(text):
-            target = target.split("#", 1)[0]
+            target = unquote(target.split("#", 1)[0].split("?", 1)[0])
             if target and not (path.parent / target).exists():
                 errors.append(f"{rel(path)}: 連結目標不存在 {target}")
     return errors
 
 
-def check_secrets(texts: dict[Path, str]) -> list[str]:
+SESSION_LINK_LABEL = "內部 Session 連結"
+
+
+def check_secrets(texts: dict[Path, str], skip_labels: tuple[str, ...] = ()) -> list[str]:
     errors = []
     for path, text in texts.items():
         for label, pattern in SECRET_PATTERNS.items():
+            if label in skip_labels:
+                continue
             if re.search(pattern, text):
                 errors.append(f"[!] {rel(path)}: 偵測到疑似{label}")
     return errors
@@ -135,7 +141,7 @@ def check_secrets(texts: dict[Path, str]) -> list[str]:
 ALIASES_FILE = bi.REPO_ROOT / "private-aliases.json"
 LOCAL_ALIASES_FILE = bi.REPO_ROOT / "private-aliases.local.json"
 PRIVATE_TAG = re.compile(r"Private Repo: ([^\]<]+)\]")
-SCANNED_SUFFIXES = {".md", ".json", ".py", ".yml", ".yaml", ".txt"}
+SCANNED_SUFFIXES = {".md", ".json", ".py", ".yml", ".yaml", ".txt", ".html", ".js", ".ts", ".sh", ".ps1", ".toml"}
 
 
 def load_aliases() -> tuple[dict[str, str], dict[str, str]]:
@@ -195,7 +201,7 @@ def check_readme(notes: list[bi.Note]) -> list[str]:
 
 
 def main() -> int:
-    sys.stdout.reconfigure(encoding="utf-8")
+    bi.ensure_utf8_stdout()
     print("[*] 正在執行 ai-inbox 契約完整性驗證...")
     notes = bi.load_notes()
     tasks = [t for n in notes for t in n.tasks]
@@ -212,8 +218,12 @@ def main() -> int:
         *check_task_ids(notes, {**readme_texts, **note_texts}),
         *check_readme(notes),
         *check_links(texts),
-        *check_secrets(texts),
-        *check_private_aliases(texts, *load_aliases(), scan),
+        *check_secrets(texts),  # 文件（含 Session 連結檢查）
+        *check_secrets(scan, skip_labels=(SESSION_LINK_LABEL,)),  # 全部會提交的文字檔（docs/、assets/、tools/ 等）
+        # 別名登記也涵蓋 docs/、assets/ 等提交檔；tools/、tests/ 含正規表達式與測試假別名，不納入
+        *check_private_aliases({**texts, **{p: s for p, s in scan.items()
+                                            if p.relative_to(bi.REPO_ROOT).parts[0] not in ("tools", "tests")}},
+                               *load_aliases(), scan),
         *check_self_references(scan),
     ]
 
@@ -221,6 +231,7 @@ def main() -> int:
     if missing_dod:
         print(f"[WARN] {len(missing_dod)} 項未完成任務尚無可驗收的 DoD：{', '.join(missing_dod)}")
 
+    errors = list(dict.fromkeys(errors))  # 同一檔案可能被 texts 與 scan 各掃一次，去重
     if errors:
         print("\n[FAIL] 驗證失敗，發現以下問題：")
         for err in errors:

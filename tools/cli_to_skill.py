@@ -7,26 +7,47 @@ Agent-Native CLI to SKILL.md 自動轉換工具
 """
 
 import json
+import re
 import sys
 from typing import Any, Dict
+
+# 需要加引號才不會被 YAML 誤判的內容（冒號空白、井號註解、換行、特殊起始字元等）
+_YAML_UNSAFE = re.compile(r"[\n\r\t]|: | #|:$|^[\s\-?:,\[\]{}#&*!|>'\"%@`]|\s$")
+
+
+def _yaml_scalar(value: Any) -> str:
+    """產生 frontmatter 用的 YAML 純量；內含特殊字元時以 JSON 雙引號字串輸出（亦為合法 YAML）。"""
+    text = "" if value is None else str(value)
+    if not text or _YAML_UNSAFE.search(text):
+        return json.dumps(text, ensure_ascii=False)
+    return text
+
+
+def _one_line(value: Any) -> str:
+    """壓成單行，避免內文換行破壞 Markdown 清單結構。"""
+    return " ".join(("" if value is None else str(value)).split())
 
 
 def convert_cli_to_skill(cli_schema: Dict[str, Any]) -> str:
     """將 CLI 描述物件轉換為合規的 SKILL.md 內容。"""
-    name = cli_schema.get("name", "unnamed-cli")
-    description = cli_schema.get("description", "Agent-Native CLI 工具封裝")
+    if not isinstance(cli_schema, dict):
+        raise ValueError("CLI 描述檔最外層必須是 JSON 物件")
+    name = _one_line(cli_schema.get("name", "unnamed-cli")) or "unnamed-cli"
+    description = _one_line(cli_schema.get("description", "Agent-Native CLI 工具封裝"))
     triggers = cli_schema.get("triggers", [name])
-    version = cli_schema.get("version", "1.0.0")
+    if isinstance(triggers, str):
+        triggers = [triggers]
+    version = _one_line(cli_schema.get("version", "1.0.0"))
     commands = cli_schema.get("commands", [])
 
     lines = []
     # Frontmatter
     lines.append("---")
-    lines.append(f"name: {name}")
-    lines.append(f"description: {description}")
+    lines.append(f"name: {_yaml_scalar(name)}")
+    lines.append(f"description: {_yaml_scalar(description)}")
     lines.append("triggers:")
     for trig in triggers:
-        lines.append(f"  - \"{trig}\"")
+        lines.append(f"  - {json.dumps(_one_line(trig), ensure_ascii=False)}")
     lines.append("---")
     lines.append("")
 
@@ -48,8 +69,10 @@ def convert_cli_to_skill(cli_schema: Dict[str, Any]) -> str:
     lines.append("")
 
     for cmd in commands:
-        cmd_name = cmd.get("name", "action")
-        cmd_desc = cmd.get("description", "")
+        if not isinstance(cmd, dict):
+            continue
+        cmd_name = _one_line(cmd.get("name", "action"))
+        cmd_desc = _one_line(cmd.get("description", ""))
         destructive = cmd.get("destructive", False)
         args = cmd.get("args", [])
 
@@ -65,10 +88,12 @@ def convert_cli_to_skill(cli_schema: Dict[str, Any]) -> str:
         if args:
             lines.append("- **參數規格**：")
             for arg in args:
-                arg_name = arg.get("name", "")
+                if not isinstance(arg, dict):
+                    continue
+                arg_name = _one_line(arg.get("name", ""))
                 arg_req = "必填" if arg.get("required") else "選填"
-                arg_type = arg.get("type", "string")
-                arg_help = arg.get("help", "")
+                arg_type = _one_line(arg.get("type", "string"))
+                arg_help = _one_line(arg.get("help", ""))
                 default_val = arg.get("default")
                 def_str = f"（預設：`{default_val}`）" if default_val is not None else ""
                 lines.append(f"  - `{arg_name}` [{arg_req}, {arg_type}]：{arg_help}{def_str}")
@@ -78,26 +103,41 @@ def convert_cli_to_skill(cli_schema: Dict[str, Any]) -> str:
     return "\n".join(lines).strip() + "\n"
 
 
-def main():
+def main() -> int:
+    # Windows cp950 終端遇到無法編碼的字元（例如 emoji）不應崩潰
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
     if len(sys.argv) < 2:
         print("用法: python tools/cli_to_skill.py <cli_schema.json> [output_skill.md]")
-        sys.exit(1)
+        return 1
 
     input_path = sys.argv[1]
     output_path = sys.argv[2] if len(sys.argv) > 2 else None
 
-    with open(input_path, "r", encoding="utf-8") as f:
-        schema = json.load(f)
-
-    skill_content = convert_cli_to_skill(schema)
+    try:
+        with open(input_path, "r", encoding="utf-8-sig") as f:
+            schema = json.load(f)
+        skill_content = convert_cli_to_skill(schema)
+    except (OSError, ValueError) as err:  # JSONDecodeError 是 ValueError 的子類別
+        print(f"錯誤：無法讀取或轉換 '{input_path}'：{err}", file=sys.stderr)
+        return 1
 
     if output_path:
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(skill_content)
+        try:
+            with open(output_path, "w", encoding="utf-8", newline="\n") as f:
+                f.write(skill_content)
+        except OSError as err:
+            print(f"錯誤：無法寫入 '{output_path}'：{err}", file=sys.stderr)
+            return 1
         print(f"已產出 Skill 檔案至: {output_path}")
     else:
         print(skill_content)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -89,11 +89,13 @@ def parse_markdown_table_rows(
             if "|" in sline:
                 raw_parts = [p.strip() for p in sline.strip("|").split("|")]
                 if len(raw_parts) >= 5:
+                    # 後三欄固定是 Auth / HTTPS / CORS；說明文字若含未跳脫的 "|"，
+                    # 多出來的片段併回說明，避免欄位整體錯位。
                     api_col = raw_parts[0]
-                    desc_col = raw_parts[1]
-                    auth_col = raw_parts[2].replace("`", "").strip()
-                    https_col = raw_parts[3].strip()
-                    cors_col = raw_parts[4].strip()
+                    desc_col = " | ".join(raw_parts[1:-3])
+                    auth_col = raw_parts[-3].replace("`", "").strip()
+                    https_col = raw_parts[-2].strip()
+                    cors_col = raw_parts[-1].strip()
 
                     match = LINK_PATTERN.search(api_col)
                     if match:
@@ -165,6 +167,8 @@ def generate_markdown(
     entries: List[ApiEntry],
     title: str = "Public APIs 免金鑰與 CORS 支援精選手冊",
     source_ref: str = "SanHsien/public-apis",
+    auth: str = "No",
+    cors: str = "Yes",
 ) -> str:
     """生成分類 Markdown 查閱手冊。"""
     grouped = group_by_category(entries)
@@ -174,7 +178,8 @@ def generate_markdown(
         f"# {title}",
         "",
         f"- **資料來源**：`{source_ref}`",
-        f"- **篩選條件**：`Auth: No` 且 `CORS: Yes`（免申請金鑰、支援前端/Generative UI 直連跨域）",
+        f"- **篩選條件**：`Auth: {auth}` 且 `CORS: {cors}`"
+        + ("（免申請金鑰、支援前端/Generative UI 直連跨域）" if (auth, cors) == ("No", "Yes") else ""),
         f"- **涵蓋項目數**：共 {len(entries)} 個公開端點，跨 {len(sorted_categories)} 個分類",
         "",
         "---",
@@ -184,8 +189,9 @@ def generate_markdown(
     ]
 
     for cat in sorted_categories:
-        anchor = cat.lower().replace(" ", "-").replace("&", "").replace("--", "-")
-        anchor = re.sub(r"[^a-z0-9\-]", "", anchor)
+        # 與 GitHub 標題錨點規則一致：空白轉 "-"、移除標點但不合併連續的 "-"
+        # （"Cloud Storage & Backup" -> "cloud-storage--backup"）
+        anchor = re.sub(r"[^a-z0-9_\-]", "", cat.lower().replace(" ", "-"))
         lines.append(f"- [{cat}](#{anchor}) ({len(grouped[cat])})")
 
     lines.append("")
@@ -242,7 +248,8 @@ def generate_markdown(
         lines.append("| API | 說明 | 驗證 (Auth) | HTTPS | 跨域 (CORS) |")
         lines.append("| :--- | :--- | :--- | :--- | :--- |")
         for e in cat_entries:
-            link = f"[{e.name}]({e.url})" if e.url else e.name
+            safe_name = e.name.replace("|", "/")
+            link = f"[{safe_name}]({e.url})" if e.url else safe_name
             https_str = "Yes" if e.https else "No"
             # 清理說明文字中的表格分隔符
             clean_desc = e.description.replace("|", "/")
@@ -318,8 +325,9 @@ def main() -> int:
     args = parser.parse_args()
 
     # 保證 Windows 終端 UTF-8
-    if sys.stdout and hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8")
+    for stream in (sys.stdout, sys.stderr):
+        if stream and hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
 
     try:
         source_path = locate_source_file(args.source)
@@ -327,7 +335,11 @@ def main() -> int:
         print(f"[ERROR] {err}", file=sys.stderr)
         return 1
 
-    content = source_path.read_text(encoding="utf-8")
+    try:
+        content = source_path.read_text(encoding="utf-8-sig")
+    except (OSError, UnicodeDecodeError) as err:
+        print(f"[ERROR] 無法讀取來源檔案 {source_path}: {err}", file=sys.stderr)
+        return 1
     all_entries = parse_markdown_table_rows(content)
 
     filtered = filter_apis(
@@ -354,7 +366,7 @@ def main() -> int:
     if args.output:
         out_path = Path(args.output)
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        md_text = generate_markdown(filtered)
+        md_text = generate_markdown(filtered, auth=args.auth, cors=args.cors)
         out_path.write_text(md_text, encoding="utf-8")
         print(f"[+] 已產出 Markdown 手冊: {out_path.resolve()}")
 
@@ -375,7 +387,7 @@ def main() -> int:
     if not args.output and not args.json_output:
         default_out = Path(__file__).resolve().parent.parent / "docs" / "free-public-apis.md"
         default_out.parent.mkdir(parents=True, exist_ok=True)
-        md_text = generate_markdown(filtered)
+        md_text = generate_markdown(filtered, auth=args.auth, cors=args.cors)
         default_out.write_text(md_text, encoding="utf-8")
         print(f"[+] 已產出預設 Markdown 手冊: {default_out.resolve()}")
 

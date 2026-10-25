@@ -126,6 +126,33 @@ class PublicApisIndexerTest(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             locate_source_file(str(self.tmp / "nonexistent.md"))
 
+    def test_description_with_unescaped_pipe_does_not_shift_columns(self):
+        readme = (
+            "### Misc\n"
+            "API | Description | Auth | HTTPS | CORS |\n"
+            "|:---|:---|:---|:---|:---|\n"
+            "| [Pipey](https://p.example/) | a | b description | No | Yes | Yes |\n"
+        )
+        (entry,) = parse_markdown_table_rows(readme)
+        self.assertEqual(entry.description, "a | b description")
+        self.assertEqual((entry.auth, entry.https, entry.cors), ("No", True, "Yes"))
+
+    def test_toc_anchor_matches_github_for_ampersand_category(self):
+        entries = [ApiEntry("Cloud Storage & Backup", "X", "https://x/", "d", "No", True, "Yes")]
+        md = generate_markdown(entries)
+        self.assertIn("(#cloud-storage--backup)", md)
+
+    def test_markdown_reports_actual_filters(self):
+        entries = [ApiEntry("Misc", "X", "https://x/", "d", "apiKey", True, "No")]
+        md = generate_markdown(entries, auth="apiKey", cors="all")
+        self.assertIn("`Auth: apiKey` 且 `CORS: all`", md)
+        self.assertNotIn("免申請金鑰", md)
+
+    def test_name_with_pipe_does_not_break_table_row(self):
+        entries = [ApiEntry("Misc", "A|B", "https://x/", "d", "No", True, "Yes")]
+        row = [ln for ln in generate_markdown(entries).splitlines() if ln.startswith("| [A")][0]
+        self.assertEqual(row.count("|"), 6)
+
 
 if __name__ == "__main__":
     unittest.main()

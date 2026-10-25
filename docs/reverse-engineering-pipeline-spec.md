@@ -78,7 +78,7 @@ Agent 透過 MCP 調用 REA 工具：
 ```
 
 ### 步驟 3：無菌室重造 (Cleanroom Re-creation)
-Agent 完全不引用原始二進位，直接使用 Python stdlib 寫出標準 CLI 工具 `tools/media_watermark.py`：
+Agent 完全不引用原始二進位，直接使用 Python stdlib 寫出標準 CLI 工具 `tools/media_watermark.py`（示意檔名，本 repo 並未收錄此工具）：
 ```python
 import hashlib
 import time

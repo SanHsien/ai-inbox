@@ -23,6 +23,14 @@ import site
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
+
+# yt-dlp 單次下載上限（秒）；避免網路卡死時整個流程無限等待
+DOWNLOAD_TIMEOUT_SECONDS = 3600
+# yt-dlp 下載中途產生的暫存檔，不可當成完整音訊重用
+_PARTIAL_SUFFIXES = (".part", ".ytdl", ".temp", ".tmp")
+# 記錄 audio.* 是從哪個網址下載的；同一資料夾換網址時不可誤用舊音訊
+_SOURCE_URL_FILE = "audio_source_url.txt"
 
 
 def _register_cuda_dlls() -> list[Path]:
@@ -75,24 +83,53 @@ def _resolve_device(requested: str) -> str:
     return "cpu"
 
 
-def download_audio(url: str, out_dir: Path) -> Path:
-    """用 yt-dlp 下載最佳音訊，回傳音訊檔路徑；失敗時丟出 RuntimeError。"""
-    existing = sorted(out_dir.glob("audio.*"))
-    if existing and existing[0].stat().st_size > 0:
-        return existing[0]
-    template = str(out_dir / "audio.%(ext)s")
-    result = subprocess.run(
-        [sys.executable, "-m", "yt_dlp", "-f", "bestaudio", "-o", template, url],
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
+def _validate_url(url: str) -> str:
+    """只接受 http(s) 網址。開頭為 "-" 的字串會被 yt-dlp 當成選項（例如 --exec），必須擋下。"""
+    parsed = urlparse(url.strip())
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        raise ValueError(f"只接受 http(s) 影片網址：{url!r}")
+    return url.strip()
+
+
+def _audio_files(out_dir: Path) -> list[Path]:
+    return sorted(
+        p for p in out_dir.glob("audio.*") if p.is_file() and not p.name.lower().endswith(_PARTIAL_SUFFIXES)
     )
+
+
+def download_audio(url: str, out_dir: Path) -> Path:
+    """用 yt-dlp 下載最佳音訊，回傳音訊檔路徑；失敗時丟出 RuntimeError，網址不合法丟 ValueError。"""
+    url = _validate_url(url)
+    marker = out_dir / _SOURCE_URL_FILE
+    force = False
+    existing = _audio_files(out_dir)
+    if existing and existing[0].stat().st_size > 0:
+        previous = marker.read_text(encoding="utf-8").strip() if marker.is_file() else None
+        if previous is None or previous == url:
+            return existing[0]
+        force = True  # 資料夾裡的舊音訊來自別的網址：重新下載並覆寫
+    template = str(out_dir / "audio.%(ext)s")
+    cmd = [sys.executable, "-m", "yt_dlp", "--no-playlist", "-f", "bestaudio", "-o", template]
+    if force:
+        cmd.append("--force-overwrites")
+    cmd += ["--", url]  # "--" 之後一律視為位置參數，不會被解析成選項
+    try:
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=DOWNLOAD_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired:
+        raise RuntimeError(f"yt-dlp 下載逾時（{DOWNLOAD_TIMEOUT_SECONDS} 秒）") from None
     if result.returncode != 0:
-        raise RuntimeError(f"yt-dlp 下載失敗（exit {result.returncode}）：{result.stderr[-500:]}")
-    candidates = sorted(out_dir.glob("audio.*"))
+        raise RuntimeError(f"yt-dlp 下載失敗（exit {result.returncode}）：{(result.stderr or '')[-500:]}")
+    candidates = _audio_files(out_dir)
     if not candidates:
         raise RuntimeError("yt-dlp 回報成功，但找不到 audio.* 輸出檔")
+    marker.write_text(url + "\n", encoding="utf-8")
     return candidates[0]
 
 
@@ -109,12 +146,19 @@ def transcribe(audio: Path, out_file: Path, lang: str, model_name: str, device: 
     model = WhisperModel(model_name, device=actual_device, compute_type=compute_type)
     segments, info = model.transcribe(str(audio), language=lang, vad_filter=True)
     count = 0
-    with out_file.open("w", encoding="utf-8") as handle:
-        for seg in segments:
-            handle.write(f"[{int(seg.start) // 60:02d}:{int(seg.start) % 60:02d}] {seg.text.strip()}\n")
-            count += 1
-    if count == 0:
-        raise RuntimeError("轉寫結果為空：音訊可能無人聲，或語言設定不符")
+    # 先寫暫存檔，成功才取代正式檔；失敗或結果為空時不會留下空的／殘缺的 transcript.txt，
+    # 也不會覆蓋掉上一次的好結果。
+    tmp_file = out_file.with_name(out_file.name + ".tmp")
+    try:
+        with tmp_file.open("w", encoding="utf-8") as handle:
+            for seg in segments:
+                handle.write(f"[{int(seg.start) // 60:02d}:{int(seg.start) % 60:02d}] {seg.text.strip()}\n")
+                count += 1
+        if count == 0:
+            raise RuntimeError("轉寫結果為空：音訊可能無人聲，或語言設定不符")
+        os.replace(tmp_file, out_file)
+    finally:
+        tmp_file.unlink(missing_ok=True)
     return info.duration, actual_device
 
 
@@ -132,11 +176,22 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    # Windows cp950 終端遇到無法編碼的字元不應崩潰
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
     out_dir = Path(args.out)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    audio = download_audio(args.url, out_dir)
-    out_file = out_dir / "transcript.txt"
-    duration, actual_device = transcribe(audio, out_file, args.lang, args.model, args.device)
+    try:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        audio = download_audio(args.url, out_dir)
+        out_file = out_dir / "transcript.txt"
+        duration, actual_device = transcribe(audio, out_file, args.lang, args.model, args.device)
+    except (RuntimeError, ValueError, OSError) as err:
+        print(f"錯誤：{err}", file=sys.stderr)
+        return 1
     print(f"完成：{out_file}（音訊 {duration:.0f} 秒，device={actual_device}）")
     return 0
 

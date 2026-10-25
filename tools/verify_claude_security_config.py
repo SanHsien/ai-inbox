@@ -23,6 +23,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import ensure_utf8_output, strip_html_comments  # noqa: E402
+
 # 門檻常數
 MIN_IDLE_COMPACT_TOKENS = 100000
 MAX_GUIDANCE_BUDGET_BYTES = 8192  # 8 KB Prompt 預算上限
@@ -97,7 +100,7 @@ def verify_idle_compaction_doc(doc_path: Path | str) -> list[str]:
         return [f"閒置壓縮說明文件不存在: {path}"]
 
     try:
-        content = path.read_text(encoding="utf-8")
+        content = strip_html_comments(path.read_text(encoding="utf-8"))
     except Exception as e:
         return [f"讀取文件失敗: {e}"]
 
@@ -151,7 +154,7 @@ def extract_guidance_rules(template_path: Path | str) -> str:
     if not path.exists():
         raise FileNotFoundError(f"範本檔案不存在: {path}")
 
-    content = path.read_text(encoding="utf-8")
+    content = strip_html_comments(path.read_text(encoding="utf-8"))
     # 提取第二節中的 ```markdown ... ``` 區塊
     match = re.search(r"```markdown\s*\n(.*?)\n```", content, re.DOTALL)
     if not match:
@@ -181,10 +184,14 @@ def verify_security_guidance_template(template_path: Path | str) -> list[str]:
 
     # 2. 驗證四大硬閘門條款完整性
     for clause_id, clause_desc in MANDATORY_CLAUSES:
+        # 必須是「### 條款X：名稱」同一標題行，編號與名稱不可分開出現在無關位置
+        heading_re = re.compile(
+            rf"^#{{2,6}}[ \t]*{re.escape(clause_id)}[：:][ \t]*{re.escape(clause_desc)}", re.MULTILINE
+        )
         if clause_id not in rules_text:
             issues.append(f"自訂規則區塊缺少重要硬閘門：{clause_id} ({clause_desc})")
-        elif clause_desc not in rules_text and not any(k in rules_text for k in clause_desc.split("與")):
-            issues.append(f"自訂規則區塊中 {clause_id} 描述不完整，缺少主題關鍵字 '{clause_desc}'")
+        elif not heading_re.search(rules_text):
+            issues.append(f"自訂規則區塊中 {clause_id} 標題不完整，缺少主題名稱 '{clause_desc}'")
 
     return issues
 
@@ -389,6 +396,7 @@ def verify_all_configs(base_dir: Path | str) -> dict[str, Any]:
 
 
 def main() -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(
         description="Claude 資安審查與閒置壓縮設定之外部裁判機械驗證器"
     )

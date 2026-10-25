@@ -32,6 +32,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import ensure_utf8_output, strip_html_comments  # noqa: E402
+
 
 @dataclass
 class VerificationResult:
@@ -41,7 +44,7 @@ class VerificationResult:
     details: dict[str, Any] = field(default_factory=dict)
 
 
-def _load_text(content_or_path: str | Path) -> tuple[str, str]:
+def _load_text_raw(content_or_path: str | Path) -> tuple[str, str]:
     if isinstance(content_or_path, Path):
         path = content_or_path
         if not path.exists():
@@ -58,6 +61,12 @@ def _load_text(content_or_path: str | Path) -> tuple[str, str]:
                 pass
         return content_or_path, "<inline_text>"
     return str(content_or_path), "<unknown>"
+
+
+def _load_text(content_or_path: str | Path) -> tuple[str, str]:
+    """載入內文並剝除 HTML 註解（藏在註解內的章節/連結不算數）。"""
+    text, target = _load_text_raw(content_or_path)
+    return strip_html_comments(text), target
 
 
 def is_valid_https_url(url: str) -> bool:
@@ -341,6 +350,7 @@ def verify_all_docs(repo_root: Path | None = None) -> dict[str, VerificationResu
 
 
 def main() -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(
         description="合規清單、宣稱查證與對照矩陣之結構驗證器 (T-20261025-02)"
     )

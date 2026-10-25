@@ -27,6 +27,14 @@ import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _judge_common import (  # noqa: E402
+    doc_guard,
+    ensure_utf8_output,
+    find_repo_root as _common_find_repo_root,
+    report_results,
+)
+
 SECRET_PATTERNS = {
     "GitHub token": r"\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|\bgithub_pat_[A-Za-z0-9_]{20,}",
     "AWS access key": r"\bAKIA[0-9A-Z]{16}\b",
@@ -65,16 +73,11 @@ REQUIRED_DISCLAIMERS = [
 
 
 def find_repo_root(start: Optional[Path] = None) -> Path:
-    """自動推導 repository 根目錄。"""
-    if start is not None:
-        return start.resolve()
-    cur = Path(__file__).resolve()
-    for parent in [cur, *cur.parents]:
-        if (parent / "notes").is_dir() and (parent / "docs").is_dir():
-            return parent
-    return Path.cwd()
+    """自動推導 repository 根目錄（共用實作見 _judge_common）。"""
+    return _common_find_repo_root(start, markers=('notes', 'docs'), anchor=Path(__file__))
 
 
+@doc_guard
 def verify_zeabur_audit(text: str) -> List[str]:
     """
     驗證 docs/zeabur-incident-credential-audit.md：
@@ -121,6 +124,7 @@ def verify_zeabur_audit(text: str) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_platform_breach_response(text: str) -> List[str]:
     """
     驗證 templates/platform-breach-response.md：
@@ -162,6 +166,7 @@ def verify_platform_breach_response(text: str) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_web_to_app_evaluation(text: str) -> List[str]:
     """
     驗證 docs/web-to-app-evaluation.md：
@@ -191,6 +196,7 @@ def verify_web_to_app_evaluation(text: str) -> List[str]:
     return errors
 
 
+@doc_guard
 def verify_web_to_app_workflow(text: str) -> List[str]:
     """
     驗證 docs/web-to-app-freelance-workflow.md：
@@ -239,6 +245,7 @@ def verify_all_specs(repo_root: Optional[Path] = None) -> Tuple[bool, Dict[str, 
 
 
 def main(argv: Optional[List[str]] = None) -> int:
+    ensure_utf8_output()
     parser = argparse.ArgumentParser(
         description="資安事件盤點與 WebToApp 接案規格之外部裁判結構驗證器"
     )
@@ -255,20 +262,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     all_passed, results = verify_all_specs(root)
 
-    for rel_path, errs in results.items():
-        if errs:
-            print(f"\n[FAIL] ❌ {rel_path} 發現 {len(errs)} 項規格缺陷：")
-            for e in errs:
-                print(f"  - {e}")
-        else:
-            print(f"[PASS] ✅ {rel_path} 結構與規格完全相符")
-
-    if all_passed:
-        print("\n[SUCCESS] 🎉 全數資安事件與接案規格文件均通過外部裁判結構驗證！")
-        return 0
-    else:
-        print("\n[ERROR] 外部裁判驗證未通過，請依上述錯誤修正文件。")
-        return 1
+    return report_results(
+        results,
+        success_msg='全數資安事件與接案規格文件均通過外部裁判結構驗證！',
+        fail_label='規格缺陷',
+        ok_label='結構與規格完全相符',
+        fail_msg='外部裁判驗證未通過，請依上述錯誤修正文件。',
+    )
 
 
 if __name__ == "__main__":

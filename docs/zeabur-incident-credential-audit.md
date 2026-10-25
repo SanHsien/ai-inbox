@@ -6,7 +6,8 @@
 > 稽核基準事件：Zeabur 2026 年十月資安事件（初步調查報告發布日期：2026-10-19，受害事件窗口：2026-10-14 01:36 UTC 至 10-15 21:05 UTC）  
 > 稽核執行時間：2026-10-25 02:35 (UTC+8)  
 > 稽核範圍：本機環境（Windows 11 原生）、`C:\GitHub` 下所有專案倉庫、GitHub CLI (`gh api`) 帳號與倉庫授權紀錄、雲端及 AI 供應商憑證管理架構  
-> 安全原則：**嚴禁在任何檔案、指令列或輸出中留存真實金鑰值**，所有比對僅記錄供應商、雜湊/指紋或無涉密設定
+> 安全原則：**嚴禁在任何檔案、指令列或輸出中留存真實金鑰值**，所有比對僅記錄供應商、雜湊/指紋或無涉密設定  
+> 證據說明：本報告的結論為維護者本機稽核當下的結果，repo 內未保存原始指令輸出；「完全隔離」「從未上傳」等屬自述，不構成保證。
 
 ---
 
@@ -30,7 +31,7 @@
 本次稽核針對 `C:\GitHub` 目錄下全部專案進行自動化清查，清查方法與結果如下：
 
 ### 2.1 掃描範圍涵蓋專案清單
-涵蓋 `C:\GitHub` 下 74+ 個本地專案倉庫與工作樹（包含公開專案如 `agent-assets`、`agent-relay`、`agent-cortex`、`ai-inbox`、`ai-quality-gates`、`cc-session-reader`、`harness-guard`、`rea` 等，以及 `[Private Repo: 稽核倉庫]`、`[Private Repo: 個人系統倉庫]`、`[Private Repo: 記憶倉庫]` 等私有倉庫）。
+涵蓋 `C:\GitHub` 下 74+ 個本地專案倉庫與工作樹（包含公開專案如 `agent-relay`、`agent-cortex`、`ai-inbox`、`ai-quality-gates`、`cc-session-reader`、`harness-guard`、`rea` 等，以及 `[Private Repo: 環境審計工具]`、`[Private Repo: 個人指揮中心]`、`[Private Repo: 個人記憶庫]` 等私有倉庫）。
 
 ### 2.2 檢查項目與掃描日誌
 
@@ -62,14 +63,16 @@
 
 Zeabur 2026 年 10 月資安事件中，攻擊者主要針對平台儲存之資料庫環境變數與 AI API Key（如 OpenAI、Anthropic、Amazon Bedrock 等）進行搜刮。以下為維護者環境各類憑證的衛生狀態確認：
 
+> 註：本表「是否曾存於 Zeabur」與處置結論為維護者自述，repo 內無逐項查證證據；「低」代表依自述推定，非保證。
+
 | 憑證類別 / 供應商 | 儲存與管理方式 | 是否曾存於 Zeabur | 憑證暴露風險 | 處置結論 |
 | :--- | :--- | :---: | :---: | :--- |
-| **AI 供應商 (Anthropic)** | 本機獨立環境變數 / 受控金鑰庫，不落地至公開雲端 | ❌ 否 | 零風險 | 無需輪替，維持現有生命週期管理 |
-| **AI 供應商 (OpenAI)** | 本機獨立環境變數 / 受控金鑰庫 | ❌ 否 | 零風險 | 無需輪替，維持現有生命週期管理 |
-| **AI 供應商 (Google Gemini)** | Google AI Studio 金鑰本機管理，透過原生 SDK 呼叫 | ❌ 否 | 零風險 | 無需輪替，維持現有生命週期管理 |
-| **雲端 PaaS / Hosting (Vercel / Cloudflare)** | 直接於官方控制台配置，不經由 Zeabur 轉介 | ❌ 否 | 零風險 | 平台各自獨立隔離，無外洩風險 |
-| **資料庫服務 (Supabase / PostgreSQL)** | 本機或官方託管，密碼未曾在第三方 PaaS 共享 | ❌ 否 | 零風險 | 無需修改資料庫連線密碼 |
-| **雲端主機 (AWS / GCP / Hetzner)** | 維護者未配置 Zeabur 專用伺服器或 GCP 節點 | ❌ 否 | 零風險 | 無 `@zeabur-pentest` 等惡意 SSH 痕跡 |
+| **AI 供應商 (Anthropic)** | 本機獨立環境變數 / 受控金鑰庫，不落地至公開雲端 | ❌ 否 | 低（自述）| 無需輪替，維持現有生命週期管理 |
+| **AI 供應商 (OpenAI)** | 本機獨立環境變數 / 受控金鑰庫 | ❌ 否 | 低（自述）| 無需輪替，維持現有生命週期管理 |
+| **AI 供應商 (Google Gemini)** | Google AI Studio 金鑰本機管理，透過原生 SDK 呼叫 | ❌ 否 | 低（自述）| 無需輪替，維持現有生命週期管理 |
+| **雲端 PaaS / Hosting (Vercel / Cloudflare)** | 直接於官方控制台配置，不經由 Zeabur 轉介 | ❌ 否 | 低（自述）| 平台各自獨立隔離，未見外洩跡象 |
+| **資料庫服務 (Supabase / PostgreSQL)** | 本機或官方託管，密碼未曾在第三方 PaaS 共享 | ❌ 否 | 低（自述）| 無需修改資料庫連線密碼 |
+| **雲端主機 (AWS / GCP / Hetzner)** | 維護者未配置 Zeabur 專用伺服器或 GCP 節點 | ❌ 否 | 低（自述）| 無 `@zeabur-pentest` 等惡意 SSH 痕跡 |
 
 ---
 

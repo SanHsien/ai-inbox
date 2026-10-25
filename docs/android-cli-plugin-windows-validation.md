@@ -9,7 +9,7 @@
 Google 官方提供的 Windows 安裝腳本端點為：
 `https://dl.google.com/android/cli/latest/windows_x86_64/install.cmd`
 
-維護者將該腳本抓取至沙盒環境（`C:\GitHub\_sandbox\android-install.cmd`）進行靜態語法與行為審查，核心關鍵段落如下：
+維護者將該腳本抓取至沙盒環境（`C:\GitHub\_sandbox\android-install.cmd`）進行靜態語法與行為審查，核心關鍵段落如下（**警示：以下為待審查的官方腳本節錄，會改寫使用者登錄檔 PATH，請勿直接貼上執行**）：
 
 ```cmd
 :: Move to the installation directory
@@ -95,10 +95,10 @@ set "ANDROID_CLI_FRESH_INSTALL=1"
    ```powershell
    android skills list --all
    ```
-   *預期輸出*：列出 33 個官方收錄的 Android 專家技能（如 Compose 遷移、Accessibility 審查、Play Billing 等）。
+   *預期輸出*：列出 33 個官方收錄的 Android 專家技能（如 Compose 遷移、Intent/權限安全審查、Play Billing 等）。
 2. **安裝特定技能至本地工作區**：
    ```powershell
-   android skills add compose-migration
+   android skills add migrate-xml-views-to-jetpack-compose
    ```
 3. **無介面建立空專案**：
    ```powershell
