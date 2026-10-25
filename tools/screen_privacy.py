@@ -165,10 +165,10 @@ TITLE_NOCAP = (
 # 第 5.2 節：機密憑證（命中即丟）。順序有意義：先到先遮，所以 sk-ant- 必須排在 sk- 前面。
 # --------------------------------------------------------------------------
 
-SECRET_KEYWORDS = r"(?:password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key)"
+SECRET_KEYWORDS = r"(?:password|passwd|pwd|secret|token|api[_-]?key|access[_-]?key|密碼|密鑰|金鑰|權杖|口令)"
 _NOT_PLACEHOLDER = r"(?!(?:undefined|null|none|true|false|string|number|process|import|require|getenv)\b)"
 _Q = "'" + '"'  # 單引號與雙引號
-_KEY_TAIL = r"[A-Za-z0-9_]{0,40}[" + _Q + r"]?\s{0,8}[:=]\s{0,8}"
+_KEY_TAIL = r"[A-Za-z0-9_]{0,40}[" + _Q + r"]?\s{0,8}[:=：]\s{0,8}"
 _VALUE_CHARS = r"[A-Za-z0-9!@#$%^&_\-+=/]"
 
 # 明文密碼賦值（兩條，皆有界量詞以避免 "password" 重複造成的二次方回溯）：
@@ -186,26 +186,28 @@ SECRET_ASSIGN_BARE = (
 
 # (標籤, 正則, 遮蔽替代詞)
 SECRET_RULES: Tuple[Tuple[str, str, str], ...] = (
-    ("Anthropic API Key", r"\bsk-ant-[A-Za-z0-9_-]{32,}\b", "[Anthropic金鑰]"),
-    ("OpenAI API Key", r"\bsk-(?:proj-|admin-)?[A-Za-z0-9_-]{32,}\b", "[OpenAI金鑰]"),
-    ("GitHub Token", r"\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{36,}\b", "[GitHub金鑰]"),
-    ("GitHub Fine-grained PAT", r"\bgithub_pat_[A-Za-z0-9_]{22,}\b", "[GitHub金鑰]"),
-    ("AWS Access Key", r"\b(?:AKIA|ABIA|ACCA|ASIA)[0-9A-Z]{16}\b", "[AWS金鑰]"),
-    ("Google Cloud Key", r"\bAIza[0-9A-Za-z_\-]{35}\b", "[Google金鑰]"),
-    ("Slack Token", r"\bxox[abprs]-[A-Za-z0-9\-]{10,}", "[Slack權杖]"),
-    ("Supabase Secret", r"\bsb_secret_[A-Za-z0-9_\-]{10,}|\bsbp_[A-Za-z0-9]{20,}", "[Supabase金鑰]"),
-    ("Resend API Key", r"\bre_[A-Za-z0-9]{8,}_[A-Za-z0-9]{16,}", "[Resend金鑰]"),
-    ("npm Access Token", r"\bnpm_[A-Za-z0-9]{36}\b", "[npm權杖]"),
-    ("Hugging Face Token", r"\bhf_[A-Za-z0-9]{30,}", "[Hugging Face權杖]"),
-    ("SendGrid API Key", r"\bSG\.[A-Za-z0-9_\-]{16,}\.[A-Za-z0-9_\-]{16,}", "[SendGrid金鑰]"),
-    ("GitLab PAT", r"\bglpat-[A-Za-z0-9_\-]{20,}", "[GitLab權杖]"),
-    ("Webhook Secret", r"\bwhsec_[A-Za-z0-9]{24,}", "[Webhook金鑰]"),
-    ("Discord Token", r"\b[MN][A-Za-z\d]{23,25}\.[\w-]{6}\.[\w-]{27,}", "[Discord權杖]"),
-    ("Telegram Bot Token", r"\b\d{8,10}:[A-Za-z0-9_-]{35}\b", "[Telegram權杖]"),
-    ("JSON Web Token (JWT)", r"\beyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{4,}", "[JWT]"),
-    ("Bearer 授權標頭", r"(?i)\bBearer\s+[A-Za-z0-9._~+/\-]{16,}=*", "Bearer [遮蔽]"),
+    ("私鑰區塊", r"-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----", "[私鑰]"),
+    ("Stripe API Key", r"(?<![A-Za-z0-9_])[sr]k_(?:live|test)_[A-Za-z0-9]{16,}(?![A-Za-z0-9_])", "[Stripe金鑰]"),
+    ("Anthropic API Key", r"(?<![A-Za-z0-9_])sk-ant-[A-Za-z0-9_-]{32,}(?![A-Za-z0-9_])", "[Anthropic金鑰]"),
+    ("OpenAI API Key", r"(?<![A-Za-z0-9_])sk-(?:proj-|admin-)?[A-Za-z0-9_-]{32,}(?![A-Za-z0-9_])", "[OpenAI金鑰]"),
+    ("GitHub Token", r"(?<![A-Za-z0-9_])(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{36,}(?![A-Za-z0-9_])", "[GitHub金鑰]"),
+    ("GitHub Fine-grained PAT", r"(?<![A-Za-z0-9_])github_pat_[A-Za-z0-9_]{22,}(?![A-Za-z0-9_])", "[GitHub金鑰]"),
+    ("AWS Access Key", r"(?<![A-Za-z0-9_])(?:AKIA|ABIA|ACCA|ASIA)[0-9A-Z]{16}(?![A-Za-z0-9_])", "[AWS金鑰]"),
+    ("Google Cloud Key", r"(?<![A-Za-z0-9_])AIza[0-9A-Za-z_\-]{35}(?![A-Za-z0-9_])", "[Google金鑰]"),
+    ("Slack Token", r"(?<![A-Za-z0-9_])(?:xox[abprs]|xapp)-[A-Za-z0-9\-]{10,}", "[Slack權杖]"),
+    ("Supabase Secret", r"(?<![A-Za-z0-9_])sb_secret_[A-Za-z0-9_\-]{10,}|(?<![A-Za-z0-9_])sbp_[A-Za-z0-9]{20,}", "[Supabase金鑰]"),
+    ("Resend API Key", r"(?<![A-Za-z0-9_])re_[A-Za-z0-9]{8,}_[A-Za-z0-9]{16,}", "[Resend金鑰]"),
+    ("npm Access Token", r"(?<![A-Za-z0-9_])npm_[A-Za-z0-9]{36}(?![A-Za-z0-9_])", "[npm權杖]"),
+    ("Hugging Face Token", r"(?<![A-Za-z0-9_])hf_[A-Za-z0-9]{30,}", "[Hugging Face權杖]"),
+    ("SendGrid API Key", r"(?<![A-Za-z0-9_])SG\.[A-Za-z0-9_\-]{16,}\.[A-Za-z0-9_\-]{16,}", "[SendGrid金鑰]"),
+    ("GitLab PAT", r"(?<![A-Za-z0-9_])glpat-[A-Za-z0-9_\-]{20,}", "[GitLab權杖]"),
+    ("Webhook Secret", r"(?<![A-Za-z0-9_])whsec_[A-Za-z0-9]{24,}", "[Webhook金鑰]"),
+    ("Discord Token", r"(?<![A-Za-z0-9_])[MN][A-Za-z\d]{23,25}\.[\w-]{6}\.[\w-]{27,}", "[Discord權杖]"),
+    ("Telegram Bot Token", r"(?<![A-Za-z0-9_])\d{8,10}:[A-Za-z0-9_-]{35}(?![A-Za-z0-9_])", "[Telegram權杖]"),
+    ("JSON Web Token (JWT)", r"(?<![A-Za-z0-9_])eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{4,}", "[JWT]"),
+    ("Bearer 授權標頭", r"(?i)(?<![A-Za-z0-9_])Bearer\s+[A-Za-z0-9._~+/\-]{16,}=*", "Bearer [遮蔽]"),
     # 舊版寫成 [^\\s:@/]：照抄進原始字串會變成「排除反斜線與字母 s」，帳號含 s 就漏抓。
-    ("帳密連線字串", r"(?i)\b([a-z][a-z0-9+.\-]{1,20})://[^\s:@/]{1,64}:[^\s@/]{1,128}@[^\s" + _Q + r"]+",
+    ("帳密連線字串", r"(?i)(?<![A-Za-z0-9_])([a-z][a-z0-9+.\-]{1,20})://[^\s:@/]{1,64}:[^\s@/]{1,128}@[^\s" + _Q + r"]+",
      r"\1://[連線字串]"),
     ("明文密碼賦值（引號）", SECRET_ASSIGN_QUOTED, "[遮蔽的祕密]"),
     ("明文密碼賦值", SECRET_ASSIGN_BARE, "[遮蔽的祕密]"),
@@ -217,8 +219,8 @@ SECRET_RULES: Tuple[Tuple[str, str, str], ...] = (
 
 PII_RULES: Tuple[Tuple[str, str, str], ...] = (
     # 第二碼 1/2 為身分證，8/9 為新式外僑居留證（與 health-bank-toolkit 的遮罩規則一致）
-    ("台灣身分證字號", r"\b[A-Z][1289]\d{8}\b", "[身分證]"),
-    ("信用卡號", r"(?<!\d)(?:\d{4}[- ]){3}\d{4}(?!\d)", "[卡號]"),
+    ("台灣身分證字號", r"(?<![A-Za-z0-9_])[A-Z][1289]\d{8}(?![0-9])", "[身分證]"),
+    ("信用卡號", r"(?<!\d)\d(?:[- ]?\d){12,18}(?!\d)", "[卡號]"),  # 另需通過 Luhn 檢查碼（見 _luhn_ok）
     ("台灣手機號碼", r"(?<!\d)09\d{2}[- ]?\d{3}[- ]?\d{3}(?!\d)", "[手機]"),
     ("電子郵件信箱", r"[A-Za-z0-9._%+\-]{1,64}@[A-Za-z0-9.\-]{1,253}\.[A-Za-z]{2,24}", "[email]"),
     ("資料庫無密碼連線",
@@ -316,14 +318,37 @@ def keyword_hits(text: str) -> List[str]:
     return [kw for kw in SENSITIVE_KEYWORDS if kw.lower() in lowered]
 
 
+def _luhn_ok(digits: str) -> bool:
+    """信用卡號的 Luhn 檢查碼；13～19 位數但不符合的多半是訂單或流水號。"""
+    nums = [int(c) for c in digits if c.isdigit()]
+    if not 13 <= len(nums) <= 19:
+        return False
+    total = 0
+    for i, n in enumerate(reversed(nums)):
+        if i % 2:
+            n = n * 2 - 9 if n > 4 else n * 2
+        total += n
+    return total % 10 == 0
+
+
+def _pii_matches(label: str, rx: "re.Pattern[str]", text: str) -> List[str]:
+    found = [m.group(0) for m in rx.finditer(text)]
+    return [f for f in found if _luhn_ok(f)] if label == "信用卡號" else found
+
+
+def drop_image_pii_hits(text: str) -> List[str]:
+    """命中的高敏感號碼類別（身分證、卡號）。這些號碼會隨截圖一起送出，命中就丟棄整張圖。"""
+    return [label for label, rx, _ in _PII if label in DROP_IMAGE_PII and _pii_matches(label, rx, text)]
+
+
 def inspect_ocr_text(text: str) -> Tuple[bool, str]:
-    """回傳 (is_sensitive, action)。命中機密，或獨立敏感關鍵字達門檻，一律 drop_image。"""
+    """回傳 (is_sensitive, action)。命中機密、身分證或卡號，或獨立敏感關鍵字達門檻，一律 drop_image。"""
     if not text:
         return False, ACTION_PASS
     if scan_secrets(text):
         return True, ACTION_DROP
     # 截圖本身會帶著這些號碼送出去，只遮 OCR 文字沒有用：身分證、卡號一律丟棄整張圖
-    if any(rx.search(text) for label, rx, _ in _PII if label in DROP_IMAGE_PII):
+    if drop_image_pii_hits(text):
         return True, ACTION_DROP
     if len(keyword_hits(text)) >= KEYWORD_THRESHOLD:
         return True, ACTION_DROP
@@ -331,10 +356,13 @@ def inspect_ocr_text(text: str) -> Tuple[bool, str]:
 
 
 def redact_text(text: str) -> str:
-    """先遮蔽機密（縱深防禦），再遮蔽 PII。"""
+    """先遮蔽機密（縱深防禦），再遮蔽 PII。卡號只遮通過 Luhn 檢查的數字串。"""
     masked, _ = redact_secrets(text or "")
-    for _label, rx, repl in _PII:
-        masked = rx.sub(repl, masked)
+    for label, rx, repl in _PII:
+        if label == "信用卡號":
+            masked = rx.sub(lambda m: repl if _luhn_ok(m.group(0)) else m.group(0), masked)
+        else:
+            masked = rx.sub(repl, masked)
     return masked
 
 
@@ -376,7 +404,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         print(f"sensitive: {str(sensitive).lower()}")
         print(f"action: {action}")
         if sensitive:
-            reasons = scan_secrets(text) or ["敏感關鍵字達門檻：" + "、".join(keyword_hits(text))]
+            reasons = (scan_secrets(text) or drop_image_pii_hits(text)
+                       or ["敏感關鍵字達門檻：" + "、".join(keyword_hits(text))])
             print("reasons: " + "; ".join(reasons))
             print("（已丟棄，不輸出文字）")
         else:

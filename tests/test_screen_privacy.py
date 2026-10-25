@@ -411,7 +411,50 @@ class SpecDocConsistencyTest(unittest.TestCase):
         self.assertNotIn("class TestScreenPrivacySpecification", self.doc)
 
 
+class ReviewFindingRegressionTest(unittest.TestCase):
+    """2026-10-26 覆核審查找到的漏抓與誤判，每一項都要維持修正。"""
+
+    def assertDropped(self, text):
+        self.assertEqual(sp.inspect_ocr_text(text), (True, sp.ACTION_DROP), text)
+
+    def test_private_key_blocks(self):
+        for kind in ("OPENSSH ", "RSA ", "EC ", ""):
+            self.assertDropped(fake("-----BEGIN ", kind, "PRIVATE KEY-----\nMIIEvQ..."))
+
+    def test_stripe_keys(self):
+        self.assertDropped("key " + fake("sk_", "live_", "4eC39HqLyjWDarjtT1zdp7dc"))
+        self.assertDropped("key " + fake("rk_", "test_", "4eC39HqLyjWDarjtT1zdp7dc"))
+
+    def test_secrets_glued_to_chinese_text(self):
+        # OCR 常把空白吃掉；Python 的 \b 把中文字也當成字元，緊貼中文時 \b 不成立
+        self.assertDropped("金鑰" + fake("sk-ant-", "api03-", "a" * 40))
+        self.assertDropped("權杖" + fake("ghp_", "A" * 36))
+        self.assertDropped("金鑰" + fake("AKIA", "IOSFODNN7EXAMPLE"))
+        self.assertDropped("身分證A123456789號")
+
+    def test_slack_app_token_and_chinese_password_label(self):
+        self.assertDropped(fake("xapp-", "1-A0123456789-0123456789-abcdef"))
+        self.assertDropped("密碼：Hunter2!xyz9")
+
+    def test_card_numbers_need_luhn(self):
+        self.assertDropped("card 4111111111111111")           # 無分隔
+        self.assertDropped("amex 3782 822463 10005")           # Amex 4-6-5
+        self.assertEqual(sp.inspect_ocr_text("order id 1234-5678-9012-3456"), (False, sp.ACTION_PASS))
+        self.assertEqual(sp.redact_text("order id 1234-5678-9012-3456"), "order id 1234-5678-9012-3456")
+        self.assertEqual(sp.redact_text("card 4111-1111-1111-1111."), "card [卡號].")
+
+
 class CliTest(unittest.TestCase):
+    def test_drop_reason_names_the_pii_category(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ocr.txt"
+            path.write_text("身分證：A123456789\n", encoding="utf-8")
+            code, out, _ = self.run_cli("--ocr-file", str(path))
+        self.assertIn("action: drop_image", out)
+        self.assertIn("台灣身分證字號", out)
+        self.assertNotIn("敏感關鍵字達門檻", out)
+        self.assertNotIn("A123456789", out)
+
     def run_cli(self, *args):
         env = {**os.environ, "PYTHONIOENCODING": "cp950", "PYTHONUTF8": "0"}
         proc = subprocess.run(

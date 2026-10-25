@@ -283,27 +283,29 @@ class IncognitoDetector:
 
 | 憑證類別 | 正則表達式 (Regex) | 遮蔽替代詞 | 洩漏處置動作 |
 | :--- | :--- | :--- | :--- |
-| **Anthropic API Key** | `\bsk-ant-[A-Za-z0-9_-]{32,}\b` | `[Anthropic金鑰]` | **Drop Image** |
-| **OpenAI API Key** | `\bsk-(?:proj-\|admin-)?[A-Za-z0-9_-]{32,}\b` | `[OpenAI金鑰]` | **Drop Image** |
-| **GitHub Token** | `\b(?:ghp\|gho\|ghu\|ghs\|ghr)_[A-Za-z0-9_]{36,}\b` | `[GitHub金鑰]` | **Drop Image** |
-| **GitHub Fine-grained PAT** | `\bgithub_pat_[A-Za-z0-9_]{22,}\b` | `[GitHub金鑰]` | **Drop Image** |
-| **AWS Access Key** | `\b(?:AKIA\|ABIA\|ACCA\|ASIA)[0-9A-Z]{16}\b` | `[AWS金鑰]` | **Drop Image** |
-| **Google Cloud Key** | `\bAIza[0-9A-Za-z_\-]{35}\b` | `[Google金鑰]` | **Drop Image** |
-| **Slack Token** | `\bxox[abprs]-[A-Za-z0-9\-]{10,}` | `[Slack權杖]` | **Drop Image** |
-| **Supabase Secret** | `\bsb_secret_[A-Za-z0-9_\-]{10,}\|\bsbp_[A-Za-z0-9]{20,}` | `[Supabase金鑰]` | **Drop Image** |
-| **Resend API Key** | `\bre_[A-Za-z0-9]{8,}_[A-Za-z0-9]{16,}` | `[Resend金鑰]` | **Drop Image** |
-| **npm Access Token** | `\bnpm_[A-Za-z0-9]{36}\b` | `[npm權杖]` | **Drop Image** |
-| **Hugging Face Token** | `\bhf_[A-Za-z0-9]{30,}` | `[Hugging Face權杖]` | **Drop Image** |
-| **SendGrid API Key** | `\bSG\.[A-Za-z0-9_\-]{16,}\.[A-Za-z0-9_\-]{16,}` | `[SendGrid金鑰]` | **Drop Image** |
-| **GitLab PAT** | `\bglpat-[A-Za-z0-9_\-]{20,}` | `[GitLab權杖]` | **Drop Image** |
-| **Webhook Secret** | `\bwhsec_[A-Za-z0-9]{24,}` | `[Webhook金鑰]` | **Drop Image** |
-| **Discord Token** | `\b[MN][A-Za-z\d]{23,25}\.[\w-]{6}\.[\w-]{27,}` | `[Discord權杖]` | **Drop Image** |
-| **Telegram Bot Token** | `\b\d{8,10}:[A-Za-z0-9_-]{35}\b` | `[Telegram權杖]` | **Drop Image** |
-| **JSON Web Token (JWT)** | `\beyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{4,}` | `[JWT]` | **Drop Image** |
-| **Bearer 授權標頭** | `(?i)\bBearer\s+[A-Za-z0-9._~+/\-]{16,}=*` | `Bearer [遮蔽]` | **Drop Image** |
-| **帳密連線字串** | `(?i)\b([a-z][a-z0-9+.\-]{1,20})://[^\s:@/]{1,64}:[^\s@/]{1,128}@[^\s'"]+` | `\1://[連線字串]` | **Drop Image** |
-| **明文密碼賦值（引號）** | `(?i)(?:password\|passwd\|pwd\|secret\|token\|api[_-]?key\|access[_-]?key)[A-Za-z0-9_]{0,40}['"]?\s{0,8}[:=]\s{0,8}(['"])(?!(?:undefined\|null\|none\|true\|false\|string\|number\|process\|import\|require\|getenv)\b)[A-Za-z0-9!@#$%^&_\-+=/]{8,}\1` | `[遮蔽的祕密]` | **Drop Image** |
-| **明文密碼賦值** | `(?i)(?:password\|passwd\|pwd\|secret\|token\|api[_-]?key\|access[_-]?key)[A-Za-z0-9_]{0,40}['"]?\s{0,8}[:=]\s{0,8}(?!(?:undefined\|null\|none\|true\|false\|string\|number\|process\|import\|require\|getenv)\b)(?=[A-Za-z0-9_\-]*[0-9!@#$%^&+=/])(?![a-z]+(?:_[a-z0-9]+)+(?:['"\s;,]\|$))[A-Za-z0-9!@#$%^&_\-+=/]{8,}(?=['"\s;,]\|$)` | `[遮蔽的祕密]` | **Drop Image** |
+| **私鑰區塊** | `-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----` | `[私鑰]` | **Drop Image** |
+| **Stripe API Key** | `(?<![A-Za-z0-9_])[sr]k_(?:live\|test)_[A-Za-z0-9]{16,}(?![A-Za-z0-9_])` | `[Stripe金鑰]` | **Drop Image** |
+| **Anthropic API Key** | `(?<![A-Za-z0-9_])sk-ant-[A-Za-z0-9_-]{32,}(?![A-Za-z0-9_])` | `[Anthropic金鑰]` | **Drop Image** |
+| **OpenAI API Key** | `(?<![A-Za-z0-9_])sk-(?:proj-\|admin-)?[A-Za-z0-9_-]{32,}(?![A-Za-z0-9_])` | `[OpenAI金鑰]` | **Drop Image** |
+| **GitHub Token** | `(?<![A-Za-z0-9_])(?:ghp\|gho\|ghu\|ghs\|ghr)_[A-Za-z0-9_]{36,}(?![A-Za-z0-9_])` | `[GitHub金鑰]` | **Drop Image** |
+| **GitHub Fine-grained PAT** | `(?<![A-Za-z0-9_])github_pat_[A-Za-z0-9_]{22,}(?![A-Za-z0-9_])` | `[GitHub金鑰]` | **Drop Image** |
+| **AWS Access Key** | `(?<![A-Za-z0-9_])(?:AKIA\|ABIA\|ACCA\|ASIA)[0-9A-Z]{16}(?![A-Za-z0-9_])` | `[AWS金鑰]` | **Drop Image** |
+| **Google Cloud Key** | `(?<![A-Za-z0-9_])AIza[0-9A-Za-z_\-]{35}(?![A-Za-z0-9_])` | `[Google金鑰]` | **Drop Image** |
+| **Slack Token** | `(?<![A-Za-z0-9_])(?:xox[abprs]\|xapp)-[A-Za-z0-9\-]{10,}` | `[Slack權杖]` | **Drop Image** |
+| **Supabase Secret** | `(?<![A-Za-z0-9_])sb_secret_[A-Za-z0-9_\-]{10,}\|(?<![A-Za-z0-9_])sbp_[A-Za-z0-9]{20,}` | `[Supabase金鑰]` | **Drop Image** |
+| **Resend API Key** | `(?<![A-Za-z0-9_])re_[A-Za-z0-9]{8,}_[A-Za-z0-9]{16,}` | `[Resend金鑰]` | **Drop Image** |
+| **npm Access Token** | `(?<![A-Za-z0-9_])npm_[A-Za-z0-9]{36}(?![A-Za-z0-9_])` | `[npm權杖]` | **Drop Image** |
+| **Hugging Face Token** | `(?<![A-Za-z0-9_])hf_[A-Za-z0-9]{30,}` | `[Hugging Face權杖]` | **Drop Image** |
+| **SendGrid API Key** | `(?<![A-Za-z0-9_])SG\.[A-Za-z0-9_\-]{16,}\.[A-Za-z0-9_\-]{16,}` | `[SendGrid金鑰]` | **Drop Image** |
+| **GitLab PAT** | `(?<![A-Za-z0-9_])glpat-[A-Za-z0-9_\-]{20,}` | `[GitLab權杖]` | **Drop Image** |
+| **Webhook Secret** | `(?<![A-Za-z0-9_])whsec_[A-Za-z0-9]{24,}` | `[Webhook金鑰]` | **Drop Image** |
+| **Discord Token** | `(?<![A-Za-z0-9_])[MN][A-Za-z\d]{23,25}\.[\w-]{6}\.[\w-]{27,}` | `[Discord權杖]` | **Drop Image** |
+| **Telegram Bot Token** | `(?<![A-Za-z0-9_])\d{8,10}:[A-Za-z0-9_-]{35}(?![A-Za-z0-9_])` | `[Telegram權杖]` | **Drop Image** |
+| **JSON Web Token (JWT)** | `(?<![A-Za-z0-9_])eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{4,}` | `[JWT]` | **Drop Image** |
+| **Bearer 授權標頭** | `(?i)(?<![A-Za-z0-9_])Bearer\s+[A-Za-z0-9._~+/\-]{16,}=*` | `Bearer [遮蔽]` | **Drop Image** |
+| **帳密連線字串** | `(?i)(?<![A-Za-z0-9_])([a-z][a-z0-9+.\-]{1,20})://[^\s:@/]{1,64}:[^\s@/]{1,128}@[^\s'"]+` | `\1://[連線字串]` | **Drop Image** |
+| **明文密碼賦值（引號）** | `(?i)(?:password\|passwd\|pwd\|secret\|token\|api[_-]?key\|access[_-]?key\|密碼\|密鑰\|金鑰\|權杖\|口令)[A-Za-z0-9_]{0,40}['"]?\s{0,8}[:=：]\s{0,8}(['"])(?!(?:undefined\|null\|none\|true\|false\|string\|number\|process\|import\|require\|getenv)\b)[A-Za-z0-9!@#$%^&_\-+=/]{8,}\1` | `[遮蔽的祕密]` | **Drop Image** |
+| **明文密碼賦值** | `(?i)(?:password\|passwd\|pwd\|secret\|token\|api[_-]?key\|access[_-]?key\|密碼\|密鑰\|金鑰\|權杖\|口令)[A-Za-z0-9_]{0,40}['"]?\s{0,8}[:=：]\s{0,8}(?!(?:undefined\|null\|none\|true\|false\|string\|number\|process\|import\|require\|getenv)\b)(?=[A-Za-z0-9_\-]*[0-9!@#$%^&+=/])(?![a-z]+(?:_[a-z0-9]+)+(?:['"\s;,]\|$))[A-Za-z0-9!@#$%^&_\-+=/]{8,}(?=['"\s;,]\|$)` | `[遮蔽的祕密]` | **Drop Image** |
 
 1.0.0 的修正（以程式為準）：
 
@@ -317,14 +319,16 @@ class IncognitoDetector:
 
 明文密碼賦值的取捨：引號內 8 字元以上一律視為機密（包含 `password = "your_password_here"` 這類佔位字串，寧可多丟一張圖）；未加引號的純小寫 snake_case（如 `my_secret_pass1`）會被當成變數名而漏抓。也接受 JSON 鍵的引號（`"password": "..."`）。
 
+> **邊界寫法（2026-10-26 修正）**：規則開頭用 `(?<![A-Za-z0-9_])`、結尾用 `(?![A-Za-z0-9_])`，不用 ``。Python 把中文字也算成「字元」，OCR 又常把空白吃掉，`` 在「金鑰sk-ant-…」「身分證A123456789號」這種緊貼中文的情況不成立，會整串漏抓。另補：私鑰區塊 `-----BEGIN … PRIVATE KEY-----`、Stripe `sk_live_`／`rk_live_`、Slack `xapp-`，密碼賦值也認中文標籤（密碼、密鑰、金鑰、權杖、口令）與全形冒號。
+
 ### 5.3 PII 個人隱私資訊脫敏正則表（Redact Only）
 
 非機密金鑰之個人身分資訊，若非主要測試標的，執行正則替換（Redact）。表格內的 `\|` 是 markdown 表格跳脫，**實際使用要改回 `|`**。**身分證（含新式外僑居留證）與卡號例外：一律丟棄整張截圖**——送給 AI 的是圖片本身，只遮 OCR 文字並不會讓號碼從圖上消失；`inspect_ocr_text` 命中即回傳 `(True, "drop_image")`，`redact_text` 仍會遮掉文字版本。其餘項目只做 Redact。
 
 | PII 項目 | 正則表達式 (Regex) | 替換文本 | 處置動作 |
 | :--- | :--- | :--- | :--- |
-| **台灣身分證字號** | `\b[A-Z][1289]\d{8}\b` | `[身分證]` | **Drop Image**（文字另做 Redact） |
-| **信用卡號** | `(?<!\d)(?:\d{4}[- ]){3}\d{4}(?!\d)` | `[卡號]` | **Drop Image**（文字另做 Redact） |
+| **台灣身分證字號** | `(?<![A-Za-z0-9_])[A-Z][1289]\d{8}(?![0-9])` | `[身分證]` | **Drop Image**（文字另做 Redact） |
+| **信用卡號** | `(?<!\d)\d(?:[- ]?\d){12,18}(?!\d)` | `[卡號]` | **Drop Image**（文字另做 Redact；13～19 位數、分隔可有可無，**另需通過 Luhn 檢查碼**，排除格式相同的訂單編號） |
 | **台灣手機號碼** | `(?<!\d)09\d{2}[- ]?\d{3}[- ]?\d{3}(?!\d)` | `[手機]` | **Redact** |
 | **電子郵件信箱** | `[A-Za-z0-9._%+\-]{1,64}@[A-Za-z0-9.\-]{1,253}\.[A-Za-z]{2,24}` | `[email]` | **Redact** |
 | **資料庫無密碼連線** | `(?i)\b(postgres(?:ql)?\|mysql\|mongodb(?:\+srv)?\|redis\|amqp)://[^\s'"]+` | `\1://[連線字串]` | **Redact** |
