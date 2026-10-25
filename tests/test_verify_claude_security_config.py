@@ -16,7 +16,9 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
+import tempfile
+import unittest
+from unittest import mock
 
 # 將 tools 加入 sys.path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -45,8 +47,9 @@ def test_real_idle_compaction_doc_passes():
     assert issues == [], f"閒置壓縮設定文件檢驗未通過: {issues}"
 
 
-def test_idle_compaction_threshold_too_low(tmp_path: Path):
+def test_idle_compaction_threshold_too_low():
     """驗證當 CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS 小於 100000 時被拒絕。"""
+    tmp_path = Path(tempfile.mkdtemp())
     bad_doc = tmp_path / "claude-idle-compaction-setup.md"
     bad_content = """# Test Doc
 ```json
@@ -64,8 +67,9 @@ def test_idle_compaction_threshold_too_low(tmp_path: Path):
     assert any("低於最低限制 100000" in iss for iss in issues)
 
 
-def test_idle_compaction_invalid_json(tmp_path: Path):
+def test_idle_compaction_invalid_json():
     """驗證當 JSON 設定範例語法損壞時被拒絕。"""
+    tmp_path = Path(tempfile.mkdtemp())
     bad_doc = tmp_path / "claude-idle-compaction-setup.md"
     bad_content = """# Test Doc
 ```json
@@ -96,8 +100,9 @@ def test_real_security_guidance_template_passes():
     assert issues == [], f"資安規範範本檢驗未通過: {issues}"
 
 
-def test_security_guidance_budget_exceeded(tmp_path: Path):
+def test_security_guidance_budget_exceeded():
     """驗證當自訂規則區塊超過 8192 bytes 時被拒絕。"""
+    tmp_path = Path(tempfile.mkdtemp())
     bad_tpl = tmp_path / "claude-security-guidance.md"
     oversized_rule = "### 條款一：憑證與敏感資訊零暴露\n" + ("A" * 9000) + "\n### 條款二：工作目錄與檔案邊界防禦\n### 條款三：代碼真實性與禁止空殼實作\n### 條款四：高危執行階段函式與指令注入防範\n"
     content = f"""# Test Guidance
@@ -112,8 +117,9 @@ def test_security_guidance_budget_exceeded(tmp_path: Path):
     assert any("超過 8 KB (8192 bytes) 預算上限" in iss for iss in issues)
 
 
-def test_security_guidance_missing_clause(tmp_path: Path):
+def test_security_guidance_missing_clause():
     """驗證當缺少四大硬閘門條款任一項時被拒絕。"""
+    tmp_path = Path(tempfile.mkdtemp())
     bad_tpl = tmp_path / "claude-security-guidance.md"
     incomplete_rule = """
 ### 條款一：憑證與敏感資訊零暴露
@@ -218,7 +224,7 @@ os.system("ping 127.0.0.1")
     assert all_findings[0]["exempted"] is True
 
 
-def test_verify_all_configs_and_cli(monkeypatch):
+def test_verify_all_configs_and_cli():
     """驗證全量設定檢查函式與 CLI 入口點。"""
     report = verify_all_configs(PROJECT_ROOT)
     assert report["all_passed"] is True
@@ -226,6 +232,20 @@ def test_verify_all_configs_and_cli(monkeypatch):
     assert report["security_guidance"]["passed"] is True
 
     # 測試 CLI main() 執行
-    monkeypatch.setattr(sys, "argv", ["verify_claude_security_config.py", "--target-dir", str(PROJECT_ROOT)])
-    exit_code = main()
+    argv = ["verify_claude_security_config.py", "--target-dir", str(PROJECT_ROOT)]
+    with mock.patch.object(sys, "argv", argv):
+        exit_code = main()
     assert exit_code == 0
+
+
+def load_tests(loader, tests, pattern):
+    """unittest discover 不收集裸函式；把本模組的 test_* 包成 FunctionTestCase。"""
+    suite = unittest.TestSuite()
+    for name, fn in sorted(globals().items()):
+        if name.startswith("test_") and callable(fn):
+            suite.addTest(unittest.FunctionTestCase(fn, description=name))
+    return suite
+
+
+if __name__ == "__main__":
+    unittest.main()

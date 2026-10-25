@@ -85,7 +85,7 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
      python tools/task_cli.py close T-YYYYMMDD-XX --reason "<關閉理由>"
      ```
 3. **提交與推送**（驗證通過才提交）：
-   - `python tools/verify_inbox.py && python -m pytest -q && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
+   - `python tools/verify_inbox.py && python -m unittest discover -s tests && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
 4. **開啟新 Session 派工注意事項（四大 Agent Desktop 左側欄可視新對話＋自動回報）**：
    - **一、Antigravity Desktop（頂層可視新對話＋`send_message` 回報）**：
      - **同機 Antigravity 內直接呼叫**：呼叫原生 `language_server.exe agentapi new-conversation`（勿透過 `agentapi.bat` 以免 `cmd.exe` 截斷換行），建立 `nestingDepth: 0` 的頂層新對話，立即顯示在 Antigravity Desktop 左側欄：

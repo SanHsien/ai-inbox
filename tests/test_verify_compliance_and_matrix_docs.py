@@ -18,7 +18,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import pytest
+import unittest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "tools"))
@@ -298,3 +298,16 @@ def test_ambition_checklist_missing_before_after():
     assert not res.is_valid
     assert any("缺少「改寫前」對照區塊標題" in err for err in res.errors)
     assert any("缺少「改寫後」對照區塊標題" in err for err in res.errors)
+
+
+def load_tests(loader, tests, pattern):
+    """unittest discover 不收集裸函式；把本模組的 test_* 包成 FunctionTestCase。"""
+    suite = unittest.TestSuite()
+    for name, fn in sorted(globals().items()):
+        if name.startswith("test_") and callable(fn):
+            suite.addTest(unittest.FunctionTestCase(fn, description=name))
+    return suite
+
+
+if __name__ == "__main__":
+    unittest.main()
