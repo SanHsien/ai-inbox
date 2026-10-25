@@ -6,7 +6,7 @@ source_platform: "Threads / GitHub"
 author: "Threads 社群實戰者 / yetone & herdrdev"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
-status: done # pending | in-progress | done | archived
+status: in-progress # pending | in-progress | done | archived
 cluster: 1
 cluster_role: "終端派工"
 short_title: "Herdr 終端復用 + Magpie 統一網關"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[yetone/magpie (GitHub)](https://github.com/yetone/magpie) ｜ [herdrdev/herdr (GitHub)](https://github.com/herdrdev/herdr) ｜ [OrcaRouter](https://github.com/orcarouter)
 - **發布平台 / 作者**：`Threads 對話節錄` / `yetone & herdrdev 社群實戰者`
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 
 ---
 
@@ -125,12 +125,27 @@ tags:
 - **不適用 / 需調整的部分**：
   1. **避免過度依賴雲端 Google Drive 同步**：跨 Agent 代碼寫入若放在雲端同步資料夾易產生檔案鎖定（File Lock）與同步延遲衝突，代碼與 Git 專案仍應維持本地原生目錄（`C:\GitHub\<repo>`），雲端資料中心僅適合存放唯讀知識庫與共用 Prompt。
 
+### 2.3 實務心得增補：Grok Bot + Herdr + Coding CLI 前哨派工與 AGENTS.md 規範驅動起步
+
+- **Grok Bot 派工前哨站**：
+  在 Grok 環境中安裝 Herdr 終端復用器與各 Coding CLI，將 Grok 作為高階任務理解與派工指揮官。Grok 負責拆解需求，再透過 Herdr 自動呼叫適配的 Coding CLI（Claude Code / Codex / Antigravity）在各專案目錄執行具體工程代碼。
+- **統一進入點與 `AGENTS.md` 規範驅動（AGENTS.md-driven Bootstrap）**：
+  在多 Bot / 多 CLI 協作時，最忌諱每換一個 Agent 就重新灌一次背景。實戰的最佳解是：**「統一所有 Grok Bot 對專案工作目錄（Workspace Entrypoint）的感知，專案的起步與施工規範全部交給各專案根目錄的 `AGENTS.md` 控制」**。任何 Coding Agent 被叫起時，第一步強制讀取當前專案的 `AGENTS.md`，自動獲取禁區、架構契約、依賴路徑與驗收標準（DoD），實現「零重複交待、即起即幹」的標準化派工閉環。
+
 ---
 
 ## 3. 拆解待辦事項（Action Items）
 
 > ⚠️ 狀態變更時，請同步更新根目錄 [`README.md`](../README.md) 的總表。
 
+- [ ] **`T-20261026-28`**｜**[優先級：中]** 撰寫「Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範」收錄於 `docs/grok-herdr-agents-bootstrap.md`
+  - **目標範圍**：`docs/grok-herdr-agents-bootstrap.md`
+  - **具體做法**：
+    1. 定義 Grok Bot 環境整合 Herdr 與 Coding CLI 的派工拓撲。
+    2. 規範專案根目錄進入點標準，制定 Coding CLI 啟動時自動掛載 `AGENTS.md` 的前置起步協議。
+    3. 實作進入點驗證腳本或檢查清單，確保任何 Agent 被啟動時均能自動解析當前專案之 SSOT 規範。
+  - **驗收標準（DoD）**：產出 `docs/grok-herdr-agents-bootstrap.md`，內含派工架構圖、AGENTS.md 起步協議與驗證範例；以 `Test-Path docs/grok-herdr-agents-bootstrap.md` 驗證存在。
+  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 - [x] **`T-20261018-15`**｜**[優先級：高]** 調研並測試 `yetone/magpie`（統一 Agent 網關）與 `herdrdev/herdr`（Agent-Native 終端復用器）在 Windows 11 下的整合
   - **目標範圍**：`SanHsien/agent-cortex` ＋ `SanHsien/opencodex` ＋ `SanHsien/claude-code-projects-workflow`（**現有可用 Repo**：直接復用 `agent-cortex` 原生 Windows 控制平面、`opencodex` 通用代理網關，與 `claude-code-projects-workflow` Worktree 派工範圍檢查，免去 Linux 專用 tmux/Herdr 摩擦）
   - **具體做法**：

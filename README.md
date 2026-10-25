@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 111 項任務：🔴 未做 26／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
+> 共 114 項任務：🔴 未做 29／🟡 進行中 0／🟢 已做 66／⚪ 不做 19
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -54,6 +54,7 @@
 | `T-20261026-17` | 🔴 未做 | 高 | 撰寫「Agent Skills 評選矩陣與上下文預算工程規範」收錄於 `docs/agent-skills-curation-and-context-budget-spec.md` | `docs/agent-skills-curation-and-context-budget-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-github-trending-agent-skills-benchmark](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | 2026-10-26 |
 | `T-20261026-20` | 🔴 未做 | 高 | 撰寫「開源 Agent 中繼架構：ACP 通用橋接、Rate Limit 自動容錯降級與 E2EE 遠端審批工程指引」收錄於 `docs/codync-agent-fallback-and-mobile-relay-spec.md` | `docs/codync-agent-fallback-and-mobile-relay-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-codync-open-source-agent-relay-fallback](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md) | 2026-10-26 |
 | `T-20261026-23` | 🔴 未做 | 高 | 撰寫「多 Agent 團隊共用記憶系統工程規範」收錄於 `docs/ai-shared-memory-engineering-spec.md` | `docs/ai-shared-memory-engineering-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-ai-shared-memory-template-team-collaboration](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | 2026-10-26 |
+| `T-20261026-26` | 🔴 未做 | 高 | 擴充 `docs/reverse-engineering-pipeline-spec.md`：收錄 Clean Room 合規宣告 Prompt 範本與「GPT 靜態分析 + 本地未審查模型實操」雙軌逆向管線 | `docs/reverse-engineering-pipeline-spec.md` | [2026-10-19-rea-reverse-engineer-anything-agent](./notes/2026-10-19-rea-reverse-engineer-anything-agent.md) | 2026-10-26 |
 | `T-20261018-09` | 🔴 未做 | 中 | 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化） | 本地 Claude Code 開發環境與外掛架構 | [2026-10-18-claude-code-mods-self-extending-runtime](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | 2026-10-18 |
 | `T-20261026-02` | 🔴 未做 | 中 | 將「骨架搭建降級至 Sol 6.1、極限攻堅再開 Astra 6」與「Luna 6 避開 5H 限制」原則沉澱至 `agent-assets` 共用偏好庫 | `C:\GitHub\agent-assets\knowledge\user_preferences.md` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
 | `T-20261026-04` | 🔴 未做 | 中 | 撰寫「TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引」收錄於 `docs/toml-config-engineering-spec.md` | `docs/toml-config-engineering-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-26-toml-v11-specification-and-config-engineering](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | 2026-10-26 |
@@ -64,6 +65,8 @@
 | `T-20261026-18` | 🔴 未做 | 中 | 實作 `tools/audit_skills_context_budget.py` 技能預算稽核工具與單元測試 | `tools/audit_skills_context_budget.py` 與 `tests/test_audit_skills_context_budget.py` | [2026-10-26-github-trending-agent-skills-benchmark](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | 2026-10-26 |
 | `T-20261026-21` | 🔴 未做 | 中 | 在 `agent-relay` 規劃實作模型配額 Rate Limit 捕捉與自動 Fallback 降級調度原型 | `C:\GitHub\agent-relay` 派工核心與容錯模組 | [2026-10-26-codync-open-source-agent-relay-fallback](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md) | 2026-10-26 |
 | `T-20261026-24` | 🔴 未做 | 中 | 實作 `tools/check_memory_index.py` 跨平台記憶索引健檢工具與單元測試 | `tools/check_memory_index.py` 與 `tests/test_check_memory_index.py` | [2026-10-26-ai-shared-memory-template-team-collaboration](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | 2026-10-26 |
+| `T-20261026-27` | 🔴 未做 | 中 | 評估 Buzz 類 Slack 聊天室在 NAS 私有化常駐部署架構與「已讀不回」額度心跳防線設計 | `docs/buzz-nas-deployment-and-heartbeat-spec.md` | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | 2026-10-26 |
+| `T-20261026-28` | 🔴 未做 | 中 | 撰寫「Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範」收錄於 `docs/grok-herdr-agents-bootstrap.md` | `docs/grok-herdr-agents-bootstrap.md` | [2026-10-18-multi-agent-factory-magpie-herdr-routing](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md) | 2026-10-26 |
 | `T-20261026-03` | 🔴 未做 | 低 | 在 `agent-relay` 派工模組中增加模型耗額等級警示與快取友善結構建議 | `C:\GitHub\agent-relay\docs\` 與 `agent_relay/advise.py` | [2026-10-26-llm-burn-rate-cache-routing-benchmark](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | 2026-10-26 |
 | `T-20261026-05` | 🔴 未做 | 低 | 實作 `tools/toml_validator.py` 輕量校驗工具與單元測試 | `tools/toml_validator.py` 與 `tests/test_toml_validator.py` | [2026-10-26-toml-v11-specification-and-config-engineering](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | 2026-10-26 |
 | `T-20261026-10` | 🔴 未做 | 低 | 評估將 `agent-relay` 訊息中繼抽象對接 Nostr NIP-01 簽名事件格式之概念驗證 | `C:\GitHub\agent-relay` 訊息格式設計與擴充文檔 | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | 2026-10-26 |
@@ -203,13 +206,13 @@
 | 2026-10-18 | 🔴 | [Claude Code Mods 自體改造機制解構：從外部腳本 Hook 到 In-Session 中介軟體（Middleware）、動態 UI 渲染與即時熱重載](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md) | `claude-code`, `claude-mods`, `in-session-middleware` | 0 / 1（+1 不做） |
 | 2026-10-18 | 🟢 | [CLI-Anything：終結脆弱 GUI 點擊，將任意軟體自動升級為 Agent-Native CLI 與 Skill 的通用框架解構](./notes/2026-10-18-cli-anything-agent-native-computer-use.md) | `cli-anything`, `agent-native`, `computer-use` | 2 / 2 |
 | 2026-10-18 | 🟢 | [desktop-sense：為 Coding Agent 賦予本機螢幕即時視覺感知（Local-First Screen Context）與嚴格隱私防護架構解構](./notes/2026-10-18-desktop-sense-local-screen-context.md) | `desktop-sense`, `local-first`, `screen-context` | 1 / 1（+1 不做） |
-| 2026-10-18 | 🟢 | [多 Agent 生產力工廠實戰架構：Magpie 統一網關、Herdr 終端復用、Obsidian 接棒交接與額度感知動態路由解構](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md) | `multi-agent-factory`, `magpie`, `herdr` | 2 / 2 |
+| 2026-10-18 | 🟡 | [多 Agent 生產力工廠實戰架構：Magpie 統一網關、Herdr 終端復用、Obsidian 接棒交接與額度感知動態路由解構](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md) | `multi-agent-factory`, `magpie`, `herdr` | 2 / 3 |
 | 2026-10-18 | 🟢 | [SpaceX 前首席工程師 Lauren Tan 的 pstack 方法論：以嚴謹工程紀律重構 AI 協同開發（/poteto-mode 核心路由、Playbooks、TDD 驗證與對抗性審查深度解構）](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md) | `pstack`, `poteto-mode`, `ai-coding-workflow` | 3 / 3 |
 | 2026-10-18 | 🟢 | [靶心人故事編輯器：許榮哲故事模型與 Generative UI 互動產品設計 Prompt 深度解構](./notes/2026-10-18-target-story-generative-ui-editor.md) | `generative-ui`, `storytelling-structure`, `target-story-formula` | 2 / 2 |
 | 2026-10-19 | 🟢 | [「AI 共同大腦（AI Shared Brain）」工業級架構全景規劃：集中知識中樞、打卡審計、結構化交接記憶與額度感知動態調度的工程實踐](./notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md) | `ai-shared-brain`, `multi-agent-architecture`, `central-knowledge-hub` | 2 / 2 |
 | 2026-10-19 | 🟢 | [Google Android 團隊官方 30 個 Agent Skills 解構：終結過時 API 幻覺、Jetpack Compose 遷移、Play Billing 審查與跨終端（Wear/TV/Auto/XR）開發閉環](./notes/2026-10-19-android-official-skills-google-coding-agent.md) | `android-skills`, `jetpack-compose`, `google-play-billing` | 2 / 2 |
 | 2026-10-19 | 🟢 | [Crossroad A2A 架構解構：跨機器、跨 SaaS 的非同步 Agent 互聯寄信協議（Agent-to-Agent Mailbox Relay）與零 API Key 協同工作流](./notes/2026-10-19-crossroad-a2a-agent-mail-relay.md) | `a2a`, `crossroad-a2a`, `multi-agent` | 2 / 2 |
-| 2026-10-19 | 🟢 | [REA（Reverse Engineer Anything）：讓 AI Coding Agent 透過 MCP 驅動本地逆向工程工具鏈，無原始碼即可分析、理解與重造任意應用程式功能](./notes/2026-10-19-rea-reverse-engineer-anything-agent.md) | `reverse-engineering`, `mcp`, `agent-tools` | 3 / 3 |
+| 2026-10-19 | 🟡 | [REA（Reverse Engineer Anything）：讓 AI Coding Agent 透過 MCP 驅動本地逆向工程工具鏈，無原始碼即可分析、理解與重造任意應用程式功能](./notes/2026-10-19-rea-reverse-engineer-anything-agent.md) | `reverse-engineering`, `mcp`, `agent-tools` | 3 / 4 |
 | 2026-10-20 | 🟢 | [Public APIs 開源清單解構：47 萬 Star 免費 API 大補帖、AI Agent 零金鑰資料獲取與 Generative UI 即時數據串接實踐](./notes/2026-10-20-public-apis-free-open-resources.md) | `public-apis`, `free-apis`, `agent-tools` | 2 / 2 |
 | 2026-10-21 | 🟢 | [0x Alpha（GLM-5.3-Flash）解構：神秘盲測登頂的 1M 上下文開源模型、320B 混合稀疏注意力與 Agentic 代碼工程實踐](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) | `0x-alpha`, `glm-5-3-flash`, `1m-context` | 1 / 1（+1 不做） |
 | 2026-10-21 | 🟢 | [多 Agent 派工與驗收閉環流水線 Phase 4：前三階段檢討補強、Hermes／Codex 工人、跨機器結果回傳與指揮者驗收合併](./notes/2026-10-21-agent-relay-pipeline-phase4.md) | `agent-workflow`, `multi-agent`, `agent-relay` | 8 / 8 |
@@ -223,7 +226,7 @@
 | 2026-10-26 | 🔴 | [3D Model Anything 深度解析：iPhone LiDAR 空間掃描、Three.js 程式化三維重建與 Agent 視覺比對閉環](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md) | `threejs`, `lidar-scanning`, `spatial-computing` | 0 / 3 |
 | 2026-10-26 | 🔴 | [AI 共用記憶系統全景分析：從 Going Li 三 Agent 同腦架構、社團留言實踐到 Leoceeport 工程範本](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | `shared-memory`, `git-workflow`, `context-optimization` | 0 / 3 |
 | 2026-10-26 | 🔴 | [answer-me-with-html 深度評估：AI Agent 視覺化工件輸出與 8x Token 節流工程實踐](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) | `generative-ui`, `visual-artifacts`, `agent-skills` | 0 / 2 |
-| 2026-10-26 | 🔴 | [Block Buzz 深度解析：基於 Nostr 協議的去中心化人機協同工作區與 ACP/MCP 代理人架構](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | `nostr-protocol`, `multi-agent-collaboration`, `acp-protocol` | 0 / 3 |
+| 2026-10-26 | 🔴 | [Block Buzz 深度解析：基於 Nostr 協議的去中心化人機協同工作區與 ACP/MCP 代理人架構](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | `nostr-protocol`, `multi-agent-collaboration`, `acp-protocol` | 0 / 4 |
 | 2026-10-26 | 🔴 | [從尾牙簡報走向坎城電影感：AI 影片的電影級鏡頭語言、調色參考庫與 Prompt 工程管線](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md) | `ai-video`, `cinematography`, `prompt-engineering` | 0 / 3 |
 | 2026-10-26 | 🔴 | [Codync 深度解析：Grok Bot / Dots / Muse 開源平替、ACP 多代理群聊與配額自動 Fallback 架構](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md) | `multi-agent-orchestration`, `acp-protocol`, `rate-limit-fallback` | 0 / 3 |
 | 2026-10-26 | 🔴 | [GitHub 萬星熱門 Agent Skills 實測評估：從矽谷大神技能包到「按需載入」的工程治理防線](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | `agent-skills`, `skill-curation`, `context-optimization` | 0 / 3 |

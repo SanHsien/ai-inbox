@@ -140,12 +140,29 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
 - **不採納／暫緩評估**：
   - 目前不急於在本地生產環境部署整套 Postgres+Redis+MinIO 的完整 Buzz Relay 叢集；現階段聚焦於研究與複用其 `buzz-dev-mcp`、`buzz-agent` 以及 Nostr 簽名工作流。
 
+### 3.1 實務心得增補：類 Slack 聊天室私有化常駐、多頻道派工分流與「已讀不回」額度警報
+
+- **地端與 NAS 長程常駐中樞**：
+  Buzz 提供的類 Slack 聊天室介面，打破了傳統 CLI 只能在當前終端視窗互動的限制。它不僅能在個人電腦地端啟動，還能直接部署在私有 NAS 或家用伺服器，將地端（Local LLM / 本地 CLI 工具鏈）與雲端（Claude / OpenAI / Grok）的多個 Agent 透過同一個私有聊天室串聯起來，實現真正的 24/7 私有化 Agent 協同中樞。
+- **多聊天室任務分配與頻道隔離（Channel-based Agent Routing）**：
+  利用不同聊天室頻道對應不同專案或任務目標，並分配指定 Agent 參加特定群組。這樣能以自然頻道邊界物理隔離專案上下文，避免跨專案 Prompt 污染與注意力稀釋。
+- **「已讀不回」額度枯竭警報（Quota Exhaustion Silent Drop）與心跳機制**：
+  在實務多 Agent 聊天協同中，最棘手的問題是「Agent 額度耗盡時不會丟出明確例外，而是直接已讀不回」。這揭示了在私有化聊天室協同架構下，必須補齊**「心跳偵測（Heartbeat Probe）與額度枯竭主動廣播退場」**機制，避免指揮官與使用者在頻道中陷入無效等待。
+
 ---
 
 ## 4. 拆解待辦事項（Action Items）
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
+- [ ] **`T-20261026-27`**｜**[優先級：中]** 評估 Buzz 類 Slack 聊天室在 NAS 私有化常駐部署架構與「已讀不回」額度心跳防線設計
+  - **目標範圍**：`docs/buzz-nas-deployment-and-heartbeat-spec.md`
+  - **具體做法**：
+    1. 規劃 Buzz Nostr Relay 與前端 Web/Desktop 客戶端在 NAS（Docker/Compose）私有化部署指引。
+    2. 設計多頻道任務切片與 Agent 分配策略，明確各群組進駐之 Agent 權限與上下文邊界。
+    3. 制定「額度感知心跳協定（Quota Heartbeat Protocol）」，當 Agent 偵測到 429 或配額歸零時主動在聊天室廣播退場狀態，消除已讀不回盲區。
+  - **驗收標準（DoD）**：產出 `docs/buzz-nas-deployment-and-heartbeat-spec.md`，內含 NAS 部署拓撲、多頻道配置範例與心跳協議定義；以 `Test-Path docs/buzz-nas-deployment-and-heartbeat-spec.md` 驗證存在。
+  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 - [ ] **`T-20261026-08`**｜**[優先級：高]** 撰寫「Block Buzz 架構解析與 Nostr+ACP/MCP 代理人協同設計指引」收錄於 `docs/buzz-nostr-agent-architecture.md`
   - **目標範圍**：`docs/buzz-nostr-agent-architecture.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
