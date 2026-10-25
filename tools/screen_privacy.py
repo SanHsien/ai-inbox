@@ -331,9 +331,42 @@ def _luhn_ok(digits: str) -> bool:
     return total % 10 == 0
 
 
+_DIGIT_GROUP = re.compile(r"\d+")
+_CARD_LABEL = "信用卡號"
+
+
+def _card_spans(rx: "re.Pattern[str]", text: str) -> List[Tuple[int, int]]:
+    """信用卡號候選字串裡「通過 Luhn 的連續數字群組」的 (起, 迄) 位置。
+
+    候選正則是貪婪的：卡號後面緊接空白加數字（有效期限「12 25」、安全碼「123」）時，
+    整串會被一起吞進去，13～19 位的整體多半不過 Luhn，真正的卡號就漏掉了。
+    所以只以數字群組為界，嘗試每個起點能接到的最長且通過 Luhn 的群組序列。
+    """
+    spans: List[Tuple[int, int]] = []
+    for m in rx.finditer(text):
+        groups = [(g.start() + m.start(), g.end() + m.start()) for g in _DIGIT_GROUP.finditer(m.group(0))]
+        i = 0
+        while i < len(groups):
+            digits = ""
+            best = None
+            for j in range(i, len(groups)):
+                digits += text[groups[j][0]:groups[j][1]]
+                if len(digits) > 19:
+                    break
+                if _luhn_ok(digits):
+                    best = j
+            if best is None:
+                i += 1
+            else:
+                spans.append((groups[i][0], groups[best][1]))
+                i = best + 1
+    return spans
+
+
 def _pii_matches(label: str, rx: "re.Pattern[str]", text: str) -> List[str]:
-    found = [m.group(0) for m in rx.finditer(text)]
-    return [f for f in found if _luhn_ok(f)] if label == "信用卡號" else found
+    if label == _CARD_LABEL:
+        return [text[a:b] for a, b in _card_spans(rx, text)]
+    return [m.group(0) for m in rx.finditer(text)]
 
 
 def drop_image_pii_hits(text: str) -> List[str]:
@@ -359,8 +392,12 @@ def redact_text(text: str) -> str:
     """先遮蔽機密（縱深防禦），再遮蔽 PII。卡號只遮通過 Luhn 檢查的數字串。"""
     masked, _ = redact_secrets(text or "")
     for label, rx, repl in _PII:
-        if label == "信用卡號":
-            masked = rx.sub(lambda m: repl if _luhn_ok(m.group(0)) else m.group(0), masked)
+        if label == _CARD_LABEL:
+            cursor, parts = 0, []
+            for a, b in _card_spans(rx, masked):
+                parts += [masked[cursor:a], repl]
+                cursor = b
+            masked = "".join(parts) + masked[cursor:]
         else:
             masked = rx.sub(repl, masked)
     return masked

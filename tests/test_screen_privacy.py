@@ -443,6 +443,26 @@ class ReviewFindingRegressionTest(unittest.TestCase):
         self.assertEqual(sp.redact_text("order id 1234-5678-9012-3456"), "order id 1234-5678-9012-3456")
         self.assertEqual(sp.redact_text("card 4111-1111-1111-1111."), "card [卡號].")
 
+    def test_card_followed_by_expiry_or_cvv_is_still_caught(self):
+        # 候選正則是貪婪的：卡號後面接「空白＋數字」（有效期限、安全碼）會被一起吞進去，
+        # 整串 18～19 位多半不過 Luhn，真正的卡號就漏掉、截圖照送出去。
+        cases = {
+            "卡號 4111 1111 1111 1111 12/25": "卡號 [卡號] 12/25",
+            "4111111111111111 123": "[卡號] 123",
+            "4111-1111-1111-1111 12 25": "[卡號] 12 25",
+            "Amex 3782 822463 10005 123": "Amex [卡號] 123",
+        }
+        for text, redacted in cases.items():
+            with self.subTest(text=text):
+                self.assertDropped(text)
+                self.assertEqual(sp.redact_text(text), redacted)
+
+    def test_digit_runs_beside_a_non_card_number_stay_untouched(self):
+        # 修正後仍以數字群組為界、且要過 Luhn：訂單編號後面再接數字不能被誤判成卡號
+        text = "order id 1234-5678-9012-3456 12"
+        self.assertEqual(sp.inspect_ocr_text(text), (False, sp.ACTION_PASS))
+        self.assertEqual(sp.redact_text(text), text)
+
 
 class CliTest(unittest.TestCase):
     def test_drop_reason_names_the_pii_category(self):
