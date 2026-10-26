@@ -47,26 +47,55 @@
 
 ---
 
-## 3. 資料結構契約 (JSON Export Contract)
+## 3. 資料結構契約 (JSON Contract)
+
+編輯器的匯出格式與驗證器 `tools/verify_story_structure.py` 的輸入格式**不相同，也沒有轉換工具**：節點名稱不同（編輯器 7 節點含「超越」，驗證器 7 節點含「結果」，A→D 與 target→twist 並非一一對應）、文字欄位不同（`summary` 對 `text`）、伏筆欄位不同（`plant`／`payoff` 對 `clue_node`／`reveal_node`）。直接把編輯器匯出檔傳給驗證器，只會得到整片「字數契約違規」。
+
+### 3.1 編輯器匯出格式（`assets/target-story-editor/index.html` 實際寫出的欄位）
 
 ```json
 {
   "title": "故事標題",
   "theme": "故事核心母題",
   "nodes": {
-    "target": { "summary": "七字句一七字句二七字句三七字句四", "grid": [["...", "...", "..."], ["...", "...", "..."], ["...", "...", "..."]] },
-    "obstacle": { "summary": "...", "grid": [...] },
-    "effort": { "summary": "...", "grid": [...] },
-    "twist": { "summary": "...", "grid": [...] },
-    "turning": { "summary": "...", "grid": [...] },
-    "climax": { "summary": "...", "grid": [...] },
-    "resolution": { "summary": "...", "grid": [...] }
+    "target": { "name": "1. 目標 (Target)", "pos": "起點高位", "summary": "七字句一，七字句二，七字句三，七字句四。", "grid": [["...", "...", "..."], ["...", "...", "..."], ["...", "...", "..."]] },
+    "obstacle": { "name": "...", "pos": "...", "summary": "...", "grid": [["...", "...", "..."], ["...", "...", "..."], ["...", "...", "..."]] },
+    "effort": { "name": "...", "pos": "...", "summary": "...", "grid": [["...", "...", "..."], ["...", "...", "..."], ["...", "...", "..."]] },
+    "twist": { "name": "...", "pos": "...", "summary": "...", "grid": [["...", "...", "..."], ["...", "...", "..."], ["...", "...", "..."]] },
+    "turning": { "name": "...", "pos": "...", "summary": "...", "grid": [["...", "...", "..."], ["...", "...", "..."], ["...", "...", "..."]] },
+    "climax": { "name": "...", "pos": "...", "summary": "...", "grid": [["...", "...", "..."], ["...", "...", "..."], ["...", "...", "..."]] },
+    "resolution": { "name": "...", "pos": "...", "summary": "...", "grid": [["...", "...", "..."], ["...", "...", "..."], ["...", "...", "..."]] }
   },
   "foreshadowing": [
-    { "plant_node": "target", "payoff_node": "resolution", "description": "象徵物伏筆" },
-    { "plant_node": "obstacle", "payoff_node": "turning", "description": "技能伏筆" },
-    { "plant_node": "effort", "payoff_node": "climax", "description": "情感承諾" }
+    { "plant": "target (伏筆描述)", "payoff": "twist (回收描述)", "dist": "3 節點 (剛好)" }
   ]
 }
 ```
-此 JSON 格式可無縫傳入 `tools/verify_story_structure.py` 進行全自動因果與字數合規性檢查。
+
+### 3.2 驗證器輸入格式（`python tools/verify_story_structure.py --input story.json`）
+
+節點 `A`~`G` 依序為目標、阻礙、努力、結果、意外、轉彎、結局，各 4 句 7 字；`H1`~`H3` 各 2 句 7 字；伏筆至少 3 組且間距皆為「剛好」（2～4 個節點）。下面這份範例由 `tests/test_verify_story_structure.py` 實際餵給驗證器，必須通過：
+
+```json
+{
+  "nodes": {
+    "A": { "text": "欲登樂府奪魁首，七弦夜練指凝霜。聲名遠播名士宴，誓作天下第一琴。" },
+    "B": { "text": "御前獻藝弦忽斷，宮廷大相冷言譏。禁足冷宮毀名譽，心血盡化一場空。" },
+    "C": { "text": "隱居破廟求古譜，改弦更張苦參玄。以鐵為弦指磨繭，重練絕學百日寒。" },
+    "D": { "text": "百日苦練終有成，鐵弦鋒利聲裂石。再度赴京求御前，卻遇暴雨沖古閣。" },
+    "E": { "text": "鐵弦力重震裂骨，十指全廢不能彈。暴雨沖毀藏琴閣，絕學孤本化灰泥。" },
+    "F": { "text": "山野樵夫採木聲，聽見風穿竹林音。忘卻名利虛華相，撫木無絃勝有絃。" },
+    "G": { "text": "謝絕御賜金琵琶，扁舟一葉入江湖。天地山川皆為弦，不作琴仙作琴人。" }
+  },
+  "arrows": {
+    "H1": { "text": "不求魁首求知音，心境超越舊執念。", "strength": "強" },
+    "H2": { "text": "阻礙逼人棄蠻力，轉而傾聽山林音。", "strength": "強" },
+    "H3": { "text": "苦練鐵弦力過猛，努力反成崩裂因。", "strength": "強" }
+  },
+  "foreshadowing": [
+    { "clue_node": "A", "reveal_node": "D", "note": "夜練指凝霜，回收於再赴京城" },
+    { "clue_node": "B", "reveal_node": "F", "note": "弦斷受挫，回收於撫木無絃" },
+    { "clue_node": "C", "reveal_node": "E", "note": "鐵弦磨繭，回收於鐵弦震裂骨" }
+  ]
+}
+```

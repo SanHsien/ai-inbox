@@ -103,5 +103,42 @@ class TestVerifyStoryStructure(unittest.TestCase):
         self.assertEqual(results[3].tension, "缺失")
 
 
+class SpecContractTest(unittest.TestCase):
+    """docs/target-story-generative-ui-spec.md 第 3 節的 JSON 範例必須與實作一致。
+
+    舊版規格寫「編輯器匯出的 JSON 可無縫傳入驗證器」，但驗證器吃的是 nodes.A~G／arrows／clue_node，
+    編輯器吐的是 target~resolution／summary／plant，實際餵進去只會得到整片「字數契約違規」。
+    """
+
+    ROOT = Path(__file__).resolve().parent.parent
+    SPEC = (ROOT / "docs" / "target-story-generative-ui-spec.md").read_text(encoding="utf-8")
+    EDITOR = (ROOT / "assets" / "target-story-editor" / "index.html").read_text(encoding="utf-8")
+
+    def _json_blocks(self):
+        import re
+
+        return re.findall(r"```json\n(.*?)\n```", self.SPEC, re.DOTALL)
+
+    def test_spec_has_a_verifier_input_example_that_actually_passes(self):
+        passing = []
+        for block in self._json_blocks():
+            try:
+                data = json.loads(block)
+            except ValueError:
+                continue
+            if isinstance(data, dict) and set(data.get("nodes", {})) == set("ABCDEFG"):
+                passing.append(verify_story_structure(data).is_valid)
+        self.assertEqual(passing, [True], "規格需要恰好一個可解析、且通過驗證器的驗證器輸入範例")
+
+    def test_editor_export_example_uses_the_keys_the_editor_really_writes(self):
+        block = next(b for b in self._json_blocks() if '"grid"' in b)
+        for key in ("plant", "payoff", "dist", "summary", "grid", "name", "pos"):
+            with self.subTest(key=key):
+                self.assertIn(f'"{key}"', block)
+                self.assertIn(f"{key}:", self.EDITOR)  # 編輯器原始碼確實有這個欄位
+        self.assertNotIn("plant_node", self.SPEC)
+        self.assertNotIn("無縫傳入", self.SPEC)
+
+
 if __name__ == "__main__":
     unittest.main()
