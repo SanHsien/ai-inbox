@@ -39,18 +39,18 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 120 項任務：🔴 未做 0／🟡 進行中 1／🟢 已做 95／⚪ 不做 24
+> 共 120 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261026-09` | 🟡 進行中 | 中 | 在 `SanHsien/buzz`（`C:\GitHub\buzz`）驗證 Windows 11 下 `buzz-dev-mcp` 與 `buzz-agent` 之獨立編譯與 Job Object 殺進程機制 | `C:\GitHub\buzz\crates\buzz-dev-mcp` 與 `buzz-agent` | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | 2026-10-26 |
+| *（目前沒有未完成任務）* | - | - | - | - | - | - |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 95 項）</summary>
+<details><summary>展開查看已完成任務（共 96 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -127,6 +127,7 @@
 | `T-20261026-06` | 2026-10-26 | 撰寫「AI Agent 視覺化工件輸出規範與 8x Token 節流工程指引」收錄於 `docs/visual-agent-artifacts-engineering-spec.md` | docs/visual-agent-artifacts-engineering-spec.md（326 行）：架構原理、Draft 語法規格、互動回饋機制；第 5 節實測草稿比手寫精簡 HTML 小 3.4～3.9 倍、比手寫完整 HTML 小 7.4～8.9 倍（上游 8x 標為作者宣稱）。獨立驗收（fresh-context 審查員，2026-10-26）通過；審查抓到第 5.3 節 MD5 無法重現，已重算更正為 f0781d51bcf3c660dc6ed9cb676ebd47（連跑兩次一致）。 | [2026-10-26-answer-me-with-html-visual-agent-artifacts](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) |
 | `T-20261026-07` | 2026-10-26 | 實作 `tools/render_artifact_html.py` 確定性工件渲染工具與單元測試 | tools/render_artifact_html.py＋tests/test_render_artifact_html.py：18 tests OK，含 14 個 XSS 插入點、HTMLParser 結構檢查、輸出確定性。限制：剪貼簿按鈕未在瀏覽器實測，文件已註明。獨立驗收（fresh-context 審查員，2026-10-26）通過。 | [2026-10-26-answer-me-with-html-visual-agent-artifacts](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) |
 | `T-20261026-08` | 2026-10-26 | 撰寫「Block Buzz 架構解析與 Nostr+ACP/MCP 代理人協同設計指引」收錄於 `docs/buzz-nostr-agent-architecture.md` | docs/buzz-nostr-agent-architecture.md（264 行）：系統拓撲圖、Nostr＋ACP 協議序列圖、buzz-dev-mcp 的 Windows Job Object 實作解析（附原始碼行號，buzz commit 9e8c9fc）、本地調度啟發。獨立驗收（fresh-context 審查員，2026-10-26）通過：抽查 10 處行號，git-sign-nostr 行號已由 :9 更正為 :6。 | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) |
+| `T-20261026-09` | 2026-10-26 | 在 `SanHsien/buzz`（`C:\GitHub\buzz`）驗證 Windows 11 下 `buzz-dev-mcp` 與 `buzz-agent` 之獨立編譯與 Job Object 殺進程機制 | docs/evidence/2026-10-26-buzz-windows-build.md：補裝 MSVC 14.44 後在 SanHsien/buzz（abc369f）跑 cargo check -p buzz-dev-mcp -p buzz-agent，exit 0、0 個警告（89 秒）；cargo test -p buzz-dev-mcp -- --test-threads=1 為 102/102 通過，含走 Windows Job Object 逾時殺行程樹的 timeout_fires（單獨跑 0.27 秒，遠短於 sleep 5 秒）。預設平行跑有 2 項失敗，查明是 buzz 測試之間搶 BUZZ_SHELL 環境變數（shell::tests 沒拿 ENV_MUTEX），記錄未修；另有同 API 的 P/Invoke 實驗佐證 cmd 與 MSYS 行程樹都會被清掉。未測：spawn 與 Assign 之間的競態。 | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) |
 | `T-20261026-10` | 2026-10-26 | 評估將 `agent-relay` 訊息中繼抽象對接 Nostr NIP-01 簽名事件格式之概念驗證 | SanHsien/agent-relay docs/nostr-nip01-evaluation.md（中英同步）：欄位映射表、ed25519 對 BIP-340 Schnorr 簽章差異、結論（核心不整合，只留單向橋接）。原型 tools/nostr_adapter_poc.py（commit 34bd57e，只用標準庫）把信件轉成 NIP-01 未簽章事件並無損還原，id 依 NIP-01 規則計算（範例信件 a77af769…e3b0）；15 項新測試全過、在刻意做壞的實作上 5 項轉紅，竄改 content 會被 verify 判 MISMATCH。全 repo 366 tests OK，CI 與 CodeQL success（34bd57e）。限制：標準庫沒有 secp256k1 所以事件不含 sig；沒有 WebSocket 所以未實連 relay；kind 9001～9004 是否撞號未查證。 | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) |
 | `T-20261026-11` | 2026-10-26 | 撰寫「空間運算 Agent 規範：物理 LiDAR 測量、Three.js 程式化建模與相機內參比對閉環」收錄於 `docs/scan-to-threejs-spatial-agent-spec.md` | docs/scan-to-threejs-spatial-agent-spec.md（216 行）：座標契約、工作流時序圖、相機比對腳本範例與驗收門檻。獨立驗收（fresh-context 審查員，2026-10-26）通過：cmp_camera 範例重跑輸出逐字相符。 | [2026-10-26-3d-model-anything-iphone-lidar-threejs](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md) |
 | `T-20261026-12` | 2026-10-26 | 實作 `tools/verify_spatial_alignment.py` 空間幾何契約校驗工具與單元測試 | tools/verify_spatial_alignment.py＋tests/test_verify_spatial_alignment.py：34 tests OK，反例含穿牆、懸空、Y 軸倒置、鏡像位姿，皆為幾何斷言。獨立驗收（fresh-context 審查員，2026-10-26）通過。 | [2026-10-26-3d-model-anything-iphone-lidar-threejs](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md) |
@@ -233,7 +234,7 @@
 | 2026-10-26 | 🟢 | [AI 接案的確定性交付工程：需求解壓縮、價值報價法、外部裁判 DoD 與 Session 工具鏈降維打擊](./notes/2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md) | `ai-freelance`, `value-based-pricing`, `scope-management` | 3 / 3 |
 | 2026-10-26 | 🟢 | [AI 共用記憶系統全景分析：從 Going Li 三 Agent 同腦架構、社團留言實踐到 Leoceeport 工程範本](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | `shared-memory`, `git-workflow`, `context-optimization` | 3 / 3 |
 | 2026-10-26 | 🟢 | [answer-me-with-html 深度評估：AI Agent 視覺化工件輸出與 8x Token 節流工程實踐](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) | `generative-ui`, `visual-artifacts`, `agent-skills` | 2 / 2 |
-| 2026-10-26 | 🟡 | [Block Buzz 深度解析：基於 Nostr 協議的去中心化人機協同工作區與 ACP/MCP 代理人架構](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | `nostr-protocol`, `multi-agent-collaboration`, `acp-protocol` | 3 / 4 |
+| 2026-10-26 | 🟢 | [Block Buzz 深度解析：基於 Nostr 協議的去中心化人機協同工作區與 ACP/MCP 代理人架構](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | `nostr-protocol`, `multi-agent-collaboration`, `acp-protocol` | 4 / 4 |
 | 2026-10-26 | 🟢 | [ChatGPT-6.1 生態系全景評測：GPT Work、Codex 與 Skills 的進階落地方案與 Session 工具鏈實戰映射](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md) | `chatgpt-6-1`, `gpt-work`, `codex` | 2 / 2（+1 不做） |
 | 2026-10-26 | 🟢 | [從尾牙簡報走向坎城電影感：AI 影片的電影級鏡頭語言、調色參考庫與 Prompt 工程管線](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md) | `ai-video`, `cinematography`, `prompt-engineering` | 2 / 2（+1 不做） |
 | 2026-10-26 | 🟢 | [Codync 深度解析：Grok Bot / Dots / Muse 開源平替、ACP 多代理群聊與配額自動 Fallback 架構](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md) | `multi-agent-orchestration`, `acp-protocol`, `rate-limit-fallback` | 2 / 2（+1 不做） |

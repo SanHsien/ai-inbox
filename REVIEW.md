@@ -133,4 +133,4 @@
 - ✅ [中] T-20261026-28：Antigravity 的 `--kind` 寫成 `antigravity`（合法值是 `agy`）；`herdr status`「真實輸出」少 4 行沒標省略；Grok 讀 AGENTS.md 的規則標「未查證」，官方其實有專頁 → 全部更正
 - ✅ [高] T-20261026-30：引用了不存在的「AGENTS.md 互動 HTML 鐵律」當出處（派工說明裡的要求被寫成 repo 規則）→ 改標為文件自己的建議；錯誤章節互引改指 blender-mcp README
 - ✅ [低] T-20261026-08：`git-sign-nostr/src/lib.rs` 行號 `:9` → `:6`
-- ➖ T-20261026-09 不結案：`cargo check` 因本機缺 MSVC 連結器失敗（exit 101），不是程式問題；Job Object 只能用同 API 的 P/Invoke 實驗佐證，不算 DoD 的「編譯驗證」
+- ✅ T-20261026-09 原本不結案（本機缺 MSVC 連結器，`cargo check` exit 101）→ 補裝 C++ 工作負載後重跑：`cargo check` exit 0；`cargo test -p buzz-dev-mcp` 單執行緒 102/102 通過（含 `timeout_fires`）。平行跑的 2 項失敗查明是 buzz 測試搶 `BUZZ_SHELL` 環境變數（`shell::tests` 沒拿 `ENV_MUTEX`），記錄未修

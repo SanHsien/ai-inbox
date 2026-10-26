@@ -6,7 +6,7 @@ source_platform: "GitHub (Block, Inc.)"
 author: "Block, Inc."
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 1
 cluster_role: "Nostr人機協同工作區"
 short_title: "Block Buzz 協同工作區"
@@ -26,7 +26,7 @@ tags:
 - **本地專案路徑**：`C:\GitHub\buzz`
 - **分析主題**：Nostr 協議中繼（Relay）、人機同室協同（Human-Agent Collaboration）、ACP/MCP 雙協議解耦、Windows Job Object 進程防線與不可篡改審計日誌
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md`](./2026-10-19-ai-shared-brain-multi-agent-architecture.md)（多 Agent 共同大腦與跨環境同步）
   - [`notes/2026-10-19-crossroad-a2a-agent-mail-relay.md`](./2026-10-19-crossroad-a2a-agent-mail-relay.md)（Agent-to-Agent 通訊與郵件中繼架構）
@@ -175,15 +175,15 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
   - **完成日期**：2026-10-26
   - **實作紀錄 / 證據**：docs/buzz-nostr-agent-architecture.md（264 行）：系統拓撲圖、Nostr＋ACP 協議序列圖、buzz-dev-mcp 的 Windows Job Object 實作解析（附原始碼行號，buzz commit 9e8c9fc）、本地調度啟發。獨立驗收（fresh-context 審查員，2026-10-26）通過：抽查 10 處行號，git-sign-nostr 行號已由 :9 更正為 :6。
 
-- [ ] **`T-20261026-09`**｜**[優先級：中]** 在 `SanHsien/buzz`（`C:\GitHub\buzz`）驗證 Windows 11 下 `buzz-dev-mcp` 與 `buzz-agent` 之獨立編譯與 Job Object 殺進程機制
-  - **狀態**：🟡 進行中（卡關：本機 Visual Studio Build Tools 沒裝 C++ 工作負載，cargo check 找不到 link.exe，exit 101；裝好後重跑，紀錄見 docs/evidence/2026-10-26-buzz-windows-build.md）
+- [x] **`T-20261026-09`**｜**[優先級：中]** 在 `SanHsien/buzz`（`C:\GitHub\buzz`）驗證 Windows 11 下 `buzz-dev-mcp` 與 `buzz-agent` 之獨立編譯與 Job Object 殺進程機制
   - **目標範圍**：`C:\GitHub\buzz\crates\buzz-dev-mcp` 與 `buzz-agent`
   - **具體做法**：
     1. 在 Windows 11 原生環境檢查 Rust 工具鏈（`cargo check -p buzz-dev-mcp -p buzz-agent`）。
     2. 深入測試其 Windows Job Object 進程綁定與超時中斷行為，確認 MSYS/cmd 子行程能否乾淨銷毀。
     3. 整理 Windows 原生編譯注意事項與相依套件需求至文檔。
   - **驗收標準（DoD）**：在 `SanHsien/buzz` 內完成 `buzz-dev-mcp` 與 `buzz-agent` 的編譯檢查，記錄執行日誌與 Job Object 驗證結果。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/evidence/2026-10-26-buzz-windows-build.md：補裝 MSVC 14.44 後在 SanHsien/buzz（abc369f）跑 cargo check -p buzz-dev-mcp -p buzz-agent，exit 0、0 個警告（89 秒）；cargo test -p buzz-dev-mcp -- --test-threads=1 為 102/102 通過，含走 Windows Job Object 逾時殺行程樹的 timeout_fires（單獨跑 0.27 秒，遠短於 sleep 5 秒）。預設平行跑有 2 項失敗，查明是 buzz 測試之間搶 BUZZ_SHELL 環境變數（shell::tests 沒拿 ENV_MUTEX），記錄未修；另有同 API 的 P/Invoke 實驗佐證 cmd 與 MSYS 行程樹都會被清掉。未測：spawn 與 Assign 之間的競態。
 
 - [x] **`T-20261026-10`**｜**[優先級：低]** 評估將 `agent-relay` 訊息中繼抽象對接 Nostr NIP-01 簽名事件格式之概念驗證
   - **目標範圍**：`C:\GitHub\agent-relay` 訊息格式設計與擴充文檔

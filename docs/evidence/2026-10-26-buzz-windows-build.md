@@ -2,7 +2,7 @@
 
 執行日期：2026-10-26。倉庫：`SanHsien/buzz`（Block 官方 buzz 的 fork，本機 `C:\GitHub\buzz`），未修改任何被追蹤檔案（`git status --short` 前後皆為空），未 commit／push。
 
-**結論先講**：`cargo check -p buzz-dev-mcp -p buzz-agent` **在本機失敗，不是程式碼問題**——本機 Visual Studio Build Tools 2022 沒有安裝 C++ 工作負載（找不到 MSVC `link.exe`），所有相依套件的 build script 都連結失敗。所以 `buzz-dev-mcp` 與 `buzz-agent` 本身**尚未被編譯到**。Job Object 機制改以原始碼閱讀加上獨立的 Win32 實驗驗證（實驗不是 buzz 的 Rust 程式碼本身，見第 4 節）。DoD 的「編譯檢查完成」因此**未達成**，需要裝好 C++ 工作負載後重跑（第 2 節）。
+**結論先講**：補裝 MSVC 後重跑（第 2.1 節），`cargo check -p buzz-dev-mcp -p buzz-agent` **通過（exit 0、0 個警告）**；`cargo test -p buzz-dev-mcp` 單執行緒跑 **102/102 通過**，含走 Windows Job Object 殺行程樹路徑的 `timeout_fires`。預設平行跑時有 2 項失敗，查明是 buzz 測試之間搶同一個環境變數，不是 Job Object 或編譯問題（第 2.2 節）。第一次執行失敗的紀錄（缺 MSVC 連結器）保留在第 2 節。
 
 ## 1. 環境
 
@@ -10,7 +10,7 @@
 | --- | --- |
 | 作業系統 | Windows 11 Pro 10.0.26300（原生，非 WSL） |
 | Rust | `~/.cargo/bin/cargo.exe`；`rust-toolchain.toml` 釘 `channel = "1.95.0"`，首次執行 rustup 自動安裝 `1.95.0-x86_64-pc-windows-msvc`（下載 6 個 component）；另有 `stable-x86_64-pc-windows-msvc` 為預設 |
-| C++ 工具 | `vswhere -all` 只找到 Visual Studio Build Tools 2022（17.14.42）；`vswhere -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64` 無輸出；`...\BuildTools\VC\Tools\MSVC` 目錄不存在；僅有 Windows SDK `10.0.26100.0` |
+| C++ 工具 | 第一次：`vswhere -all` 只找到 Visual Studio Build Tools 2022（17.14.42），沒有 VC 工具、`...\BuildTools\VC\Tools\MSVC` 不存在。補裝「使用 C++ 的桌面開發」後：`vswhere -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64` 回 `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools`，MSVC `14.44.35207` |
 
 ## 2. cargo check 實測
 
@@ -40,6 +40,43 @@ cd C:\GitHub\buzz; & "$env:USERPROFILE\.cargo\bin\cargo.exe" check -p buzz-dev-m
 ```
 
 編譯注意事項（讀自原始碼，**非實測**）：`rust-toolchain.toml` 釘 1.95.0；`buzz-dev-mcp/Cargo.toml` 第 52 行對 Windows 加 `windows-sys 0.61`（features：`Win32_Foundation`、`Win32_Security`、`Win32_System_JobObjects`、`Win32_System_Registry`、`Win32_System_Threading`），註解稱它已是 workspace 的傳遞相依，不新增 crate；相依樹含 `aws-lc-rs` 的 build script（原生程式碼編譯，依賴 C 工具鏈，是否還需 CMake／NASM 未驗證）。另需 Git for Windows 提供 `bash.exe`（`shell.rs` 的 `resolve_bash`，可用環境變數 `BUZZ_SHELL` 指定）。
+
+### 2.1 補裝 MSVC 後重跑（2026-10-26）
+
+buzz 當時的 HEAD 是 `abc369f`（fork 有新 commit，相對第一次的 `9e8c9fc`）；工作樹前後皆乾淨。
+
+```text
+PS> & "$env:USERPROFILE\.cargo\bin\cargo.exe" --version
+cargo 1.95.0 (f2d3ce0bd 2026-03-21)
+PS> & "$env:USERPROFILE\.cargo\bin\cargo.exe" check -p buzz-dev-mcp -p buzz-agent
+    Checking buzz-agent v0.1.0 (C:\GitHub\buzz\crates\buzz-agent)
+    Checking buzz-dev-mcp v0.1.0 (C:\GitHub\buzz\crates\buzz-dev-mcp)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 28s
+exit=0（89 秒，0 個 warning）
+```
+
+注意：PowerShell 的 PATH 沒有 `~\.cargo\bin`，直接打 `cargo` 會找不到，要用完整路徑（或把它加進 PATH）。
+
+### 2.2 buzz-dev-mcp 測試
+
+```text
+PS> cargo test -p buzz-dev-mcp
+test shell::tests::timeout_fires ... FAILED
+test shell::tests::workdir_is_honored ... FAILED
+test result: FAILED. 100 passed; 2 failed  （exit 101，107 秒）
+  panicked at crates\buzz-dev-mcp\src\shell.rs:998:37: json: Error("expected ident", line: 1, column: 3)
+
+PS> cargo test -p buzz-dev-mcp --lib shell::tests::timeout_fires
+test result: ok. 1 passed; 0 failed; 101 filtered out
+
+PS> cargo test -p buzz-dev-mcp -- --test-threads=1
+test shell::tests::timeout_fires ... ok
+test result: ok. 102 passed; 0 failed  （另 2 項整合測試也通過，exit 0）
+```
+
+原因（讀碼確認）：`windows_resolver_tests` 會用 `env::set_var("BUZZ_SHELL", ...)` 指向假的或不存在的 shell，並用模組內的 `ENV_MUTEX` 互斥；但 `shell::tests` 建立 `SharedState` 時也會讀 `BUZZ_SHELL` 解析 shell，卻沒有拿同一把鎖。平行執行時剛好讀到假 shell，啟動失敗，回傳 `failed to spawn shell: …` 純文字，測試把它當 JSON 解析就壞了（`fai` 對不上 `false`，所以是第 3 欄報錯）。單獨跑或單執行緒跑都通過。這是 buzz 測試的隔離問題，只影響測試，不影響 Job Object 行為；本任務沒有修改 buzz（要修可讓 `shell::tests` 共用同一把鎖）。
+
+`timeout_fires` 用 Git Bash 跑 `sleep 5`、逾時 150 ms：通過代表逾時路徑經 Job Object 把 bash 與 MSYS 子行程整棵終止，exit code 124、`timed_out = true`；若子行程沒被殺掉，測試會卡到 `sleep` 自己結束（約 5 秒）才回來，單獨跑這一項整個測試只花 0.27 秒，遠短於 5 秒，代表子行程確實被殺掉、沒有等 sleep 自己結束。
 
 ## 3. Job Object 實作位置（原始碼）
 
@@ -87,14 +124,14 @@ alive after killing root only: 2 of 3
 - B：Git for Windows 的 `bash.exe -c "sleep 60 & sleep 60 & wait"`（MSYS 行程），後代偵測到 `bash.exe`、`conhost.exe`，終止後 0/3 存活，結束碼 137。
 - C：不呼叫 Terminate，只 `CloseHandle`，KILL_ON_JOB_CLOSE 同樣清掉整棵樹，對應 `Drop` 的保底。
 - 對照組：不用 job、只殺根行程，後代存活 2/3——證明 job 才是讓子行程樹一併終止的原因。
-- 限制：樹的深度只有 2～3 層；MSYS 的 `sleep` 多為 fork 出的同名 bash.exe 行程，只偵測到 1 個；未測 spawn 與 Assign 之間的競態，也未測 buzz 實際的逾時路徑（`timeout_fires`）。實驗結束後已清除所有 ping 行程（`tasklist` 無 ping 殘留）。
+- 限制：樹的深度只有 2～3 層；MSYS 的 `sleep` 多為 fork 出的同名 bash.exe 行程，只偵測到 1 個；未測 spawn 與 Assign 之間的競態。buzz 實際的逾時路徑另由第 2.2 節的 `timeout_fires` 驗證。實驗結束後已清除所有 ping 行程（`tasklist` 無 ping 殘留）。
 
 ## 5. DoD 對照
 
 | DoD | 狀態 |
 | --- | --- |
-| 在 `SanHsien/buzz` 完成 `buzz-dev-mcp` 與 `buzz-agent` 編譯檢查 | **未達成**：環境缺 MSVC 連結器，第 2 節有完整指令、輸出與補救步驟 |
-| 記錄執行日誌 | 已記錄（第 2 節） |
-| Job Object 驗證結果 | 原始碼定位（第 3 節）＋同 API 實驗（第 4 節）已完成；buzz 自身的測試未能執行 |
+| 在 `SanHsien/buzz` 完成 `buzz-dev-mcp` 與 `buzz-agent` 編譯檢查 | **達成**：第 2.1 節，exit 0、0 個警告 |
+| 記錄執行日誌 | 達成：第 2 節（失敗紀錄）、第 2.1～2.2 節（重跑） |
+| Job Object 驗證結果 | 達成：原始碼定位（第 3 節）、buzz 自己的 `timeout_fires` 單執行緒通過（第 2.2 節）、同 API 實驗（第 4 節） |
 
-因 DoD 第一項未達成，建議 `T-20261026-09` 先不結案，待裝好 C++ 工作負載、`cargo check` 與 `cargo test -p buzz-dev-mcp` 實際通過後再補記。
+未做：spawn 與 AssignProcessToJobObject 之間的競態沒有實測；buzz 測試的環境變數競爭只記錄、沒有修。
