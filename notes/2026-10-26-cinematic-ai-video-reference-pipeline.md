@@ -134,6 +134,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-15`**｜**[優先級：中]** 實作 `tools/verify_cinematic_prompt.py` 檢查工具與單元測試
+  - **狀態**：⚪ 不做（不做：工具本質是比對黑名單詞彙的關鍵字檢查器，依 docs/external-judge-audit.md 第 5 節的政策不再新增這類驗證器；黑名單詞彙與替換建議直接寫在 docs/cinematic-ai-video-prompt-guide.md（T-20261026-14），由撰寫 prompt 的人或 Agent 照表使用。）
   - **目標範圍**：`tools/verify_cinematic_prompt.py` 與 `tests/test_verify_cinematic_prompt.py`
   - **具體做法**：
     1. 實作純 Python 提示詞審查工具，檢驗輸入字串是否包含空洞罐頭詞（如 `cinematic`, `8k`, `photorealistic`）。
@@ -143,6 +144,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-16`**｜**[優先級：低]** 建立 `templates/cinematic-storyboard-template.md` 標準化分鏡提示詞範本
+  - **狀態**：🟡 進行中
   - **目標範圍**：`templates/cinematic-storyboard-template.md`
   - **具體做法**：
     1. 提供結構化多鏡頭分鏡範本，包含 Shot 編號、秒數、畫面主體、鏡位景深、動態運鏡與調色參考鏈接。

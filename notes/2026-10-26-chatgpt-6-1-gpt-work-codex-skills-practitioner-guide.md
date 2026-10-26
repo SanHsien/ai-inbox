@@ -144,6 +144,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-30`**｜**[優先級：中]** 撰寫「AI Agent 操控 3D 與本機 GUI 軟體之雙軌橋接方案規格」收錄於 `docs/3d-gui-agent-control-bridge.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/3d-gui-agent-control-bridge.md`
   - **具體做法**：
     1. 剖析大模型無法直接操作本機 3D GUI 軟體的底層原因，並解答觀眾 payson1998 提問之本質。
@@ -153,6 +154,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-31`**｜**[優先級：低]** 撰寫「多 Agent 私有化常駐工作台與 Token 燃燒率控制指引」收錄於 `docs/desktop-agent-burn-rate-and-buzz-guide.md`
+  - **狀態**：⚪ 不做（不做：內容與 T-20261026-01（模型耗額與路由速查表）及 T-20261026-27（Buzz NAS 常駐部署與心跳協議）重複，兩份文件已涵蓋部署拓撲、預算路由矩陣與心跳協議，不另寫一份。）
   - **目標範圍**：`docs/desktop-agent-burn-rate-and-buzz-guide.md`
   - **具體做法**：
     1. 整合 Buzz Nostr 類 Slack 聊天室在 NAS 私有長程常駐之最佳實踐，制定多頻道任務切片架構。

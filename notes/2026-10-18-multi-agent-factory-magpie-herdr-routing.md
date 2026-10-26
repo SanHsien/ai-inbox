@@ -139,6 +139,7 @@ tags:
 > ⚠️ 狀態變更時，請同步更新根目錄 [`README.md`](../README.md) 的總表。
 
 - [ ] **`T-20261026-28`**｜**[優先級：中]** 撰寫「Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範」收錄於 `docs/grok-herdr-agents-bootstrap.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/grok-herdr-agents-bootstrap.md`
   - **具體做法**：
     1. 定義 Grok Bot 環境整合 Herdr 與 Coding CLI 的派工拓撲。

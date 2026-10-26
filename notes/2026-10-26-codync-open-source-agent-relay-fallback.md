@@ -135,7 +135,7 @@ Codync 提出 **BYOA（Bring Your Own Agent）** 與 **BYOS（Bring Your Own Sub
   - **驗收標準（DoD）**：產出 `docs/codync-agent-fallback-and-mobile-relay-spec.md`，內含系統架構圖、Fallback 狀態轉換圖與 ACP 橋接範例；以 `Test-Path docs/codync-agent-fallback-and-mobile-relay-spec.md` 驗證存在。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
-- [ ] **`T-20261026-21`**｜**[優先級：中]** 在 `agent-relay` 規劃實作模型配額 Rate Limit 捕捉與自動 Fallback 降級調度原型
+- [x] **`T-20261026-21`**｜**[優先級：中]** 在 `agent-relay` 規劃實作模型配額 Rate Limit 捕捉與自動 Fallback 降級調度原型
   - **目標範圍**：`C:\GitHub\agent-relay` 派工核心與容錯模組
   - **具體做法**：
     1. 在 `agent-relay` 執行期增加對 Provider 錯誤碼（429, Quota Exceeded, Overloaded）的標準化識別器。
@@ -143,9 +143,11 @@ Codync 提出 **BYOA（Bring Your Own Agent）** 與 **BYOS（Bring Your Own Sub
     3. 當觸發熔斷時，自動產生具備歷史摘要的接續封包並派工給備用 Worker。
     4. 撰寫單元測試驗證 429 觸發後的無縫接力行為。
   - **驗收標準（DoD）**：在 `agent-relay` 完成 Fallback 原型設計與單元測試，通過測試套件驗證。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：既有實作已滿足：SanHsien/agent-relay 的 agent_relay/dispatch.py 以 RATE_LIMIT_RE 辨識 429、rate limit、usage limit、too many requests，標為 rate-limited 後改派 advisor 給的下一個 fallback runtime，並避免在已限流的 runtime 之間來回切換；測試 tests/test_advisor.py 的 test_rate_limit_switches_to_fallback、test_worker_output_is_not_a_rate_limit、test_runtime_error_event_is_a_rate_limit、test_no_back_and_forth_between_limited_runtimes（commit fc59842，2026-10-24 加入，早於本任務）。2026-10-26 重跑 python -m unittest tests.test_advisor：52 項 OK。
 
 - [ ] **`T-20261026-22`**｜**[優先級：低]** 評估 `codync-host` 在 Windows 11 本地環境的編譯與 `agent-relay` 雙向橋接可行性
+  - **狀態**：⚪ 不做（不做：DoD 要求在本機編譯 codync-host 並附 Windows 原生執行日誌，等於下載並執行一個尚未審查來源的第三方 repo，違反維護者「不執行來源不明的 git repo」的安全規則。架構面的比較已涵蓋在 docs/codync-agent-fallback-and-mobile-relay-spec.md（T-20261026-20）；若日後要實測，先用 skill-vetting 審查來源再另開任務。）
   - **目標範圍**：`C:\GitHub\agent-relay` 擴充評估文檔
   - **具體做法**：
     1. 檢驗 `codync-host` 在 Windows 11 下的 Rust 建置流程與相依環境。

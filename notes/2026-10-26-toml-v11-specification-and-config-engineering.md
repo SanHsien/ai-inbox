@@ -104,6 +104,7 @@ TOML（Tom's Obvious, Minimal Language，Tom 的明顯、最小化語言）由 G
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-05`**｜**[優先級：低]** 實作 `tools/toml_validator.py` 輕量校驗工具與單元測試
+  - **狀態**：🟡 進行中
   - **目標範圍**：`tools/toml_validator.py` 與 `tests/test_toml_validator.py`
   - **具體做法**：
     1. 利用 Python 3.11+ 內建 `tomllib` 實作命令列檢查工具，支援掃描 repo 內所有 `.toml` 檔案（如 `pyproject.toml`）。

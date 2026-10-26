@@ -129,6 +129,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-18`**｜**[優先級：中]** 實作 `tools/audit_skills_context_budget.py` 技能預算稽核工具與單元測試
+  - **狀態**：🟡 進行中
   - **目標範圍**：`tools/audit_skills_context_budget.py` 與 `tests/test_audit_skills_context_budget.py`
   - **具體做法**：
     1. 以純 Python 實作掃描器，遞迴尋找指定目錄下的所有 `SKILL.md`。
@@ -139,6 +140,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-19`**｜**[優先級：低]** 建立 `templates/lightweight-skill-template.md` 輕量化標準 Agent Skill 範本
+  - **狀態**：🟡 進行中
   - **目標範圍**：`templates/lightweight-skill-template.md`
   - **具體做法**：
     1. 制定高密度、低 Token 消耗的單檔 Skill 範本，內建標準 YAML frontmatter、清晰觸發詞條件與邊界檢查。

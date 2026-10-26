@@ -156,6 +156,7 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261026-27`**｜**[優先級：中]** 評估 Buzz 類 Slack 聊天室在 NAS 私有化常駐部署架構與「已讀不回」額度心跳防線設計
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/buzz-nas-deployment-and-heartbeat-spec.md`
   - **具體做法**：
     1. 規劃 Buzz Nostr Relay 與前端 Web/Desktop 客戶端在 NAS（Docker/Compose）私有化部署指引。
@@ -185,6 +186,7 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-10`**｜**[優先級：低]** 評估將 `agent-relay` 訊息中繼抽象對接 Nostr NIP-01 簽名事件格式之概念驗證
+  - **狀態**：🟡 進行中
   - **目標範圍**：`C:\GitHub\agent-relay` 訊息格式設計與擴充文檔
   - **具體做法**：
     1. 分析現行 `agent-relay` Mailbox 事件結構與 Nostr NIP-01 事件（id, pubkey, created_at, kind, tags, content, sig）的對照映射。

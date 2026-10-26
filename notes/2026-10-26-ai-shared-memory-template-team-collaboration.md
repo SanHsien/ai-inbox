@@ -168,6 +168,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-24`**｜**[優先級：中]** 實作 `tools/check_memory_index.py` 跨平台記憶索引健檢工具與單元測試
+  - **狀態**：🟡 進行中
   - **目標範圍**：`tools/check_memory_index.py` 與 `tests/test_check_memory_index.py`
   - **具體做法**：
     1. 以純 Python 3.11+ 實作索引健全性檢查器，完美相容 Windows 11 原生環境。
@@ -177,6 +178,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-25`**｜**[優先級：低]** 在 `C:\GitHub\agent-assets` 評估引進「糾正審查佇列（`correction-queue.jsonl`）」架構
+  - **狀態**：🟡 進行中
   - **目標範圍**：`C:\GitHub\agent-assets\knowledge\` 與擴充評估文檔
   - **具體做法**：
     1. 評估各 Agent 在會話糾正時將教訓先寫入 `correction-queue.jsonl`，再由主 Session 審核合入 `lessons.md` 的操作流。

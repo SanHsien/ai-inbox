@@ -149,6 +149,7 @@ Debug 土撥鼠在本作中直擊了當前 AI 爆發期軟體外包與接案市�
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-33`**｜**[優先級：中]** 撰寫「AI 接案防失控合約與時程前提規範指南」收錄於 `docs/freelance-contract-scope-and-prerequisites-spec.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/freelance-contract-scope-and-prerequisites-spec.md`
   - **具體做法**：
     1. 制定時程前提條款（Prerequisites Clause）標準法言範本（將交付日與客戶前置依賴解耦）。
@@ -158,6 +159,7 @@ Debug 土撥鼠在本作中直擊了當前 AI 爆發期軟體外包與接案市�
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-34`**｜**[優先級：中]** 實作「客觀驗收標準（DoD）自動化驗證腳本產生器原型」於 `tools/generate_dod_verifier.py`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`tools/generate_dod_verifier.py` 與 `tests/test_generate_dod_verifier.py`
   - **具體做法**：
     1. 讀取專案需求 JSON/Markdown 規格，自動產生驗收 Python 測試腳本（HTTP API 檢查、DOM 元素斷言、環境變數檢驗）。

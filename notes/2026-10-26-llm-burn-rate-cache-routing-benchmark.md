@@ -140,6 +140,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-03`**｜**[優先級：低]** 在 `agent-relay` 派工模組中增加模型耗額等級警示與快取友善結構建議
+  - **狀態**：⚪ 不做（不做：要把單篇文章的模型耗額倍數寫進派工程式，屬於會變動的資料寫死成常數；agent-relay 的 advisor 已經讀本機即時額度（Claude statusline、codex-reset-checker）決定 runtime，比固定倍數準確。耗額數據改附出處與日期收錄於 docs/model-burn-rate-routing-matrix.md（T-20261026-01）。）
   - **目標範圍**：`C:\GitHub\agent-relay\docs\` 與 `agent_relay/advise.py`
   - **具體做法**：
     1. 在 `agent-relay` 派工指南與建議中，標注各模型階層之燃燒速率。

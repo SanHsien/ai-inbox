@@ -144,6 +144,7 @@ Agent 透過 `agent-browser` 截取渲染畫面，調用 Python 腳本將虛擬�
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-12`**｜**[優先級：中]** 實作 `tools/verify_spatial_alignment.py` 空間幾何契約校驗工具與單元測試
+  - **狀態**：🟡 進行中
   - **目標範圍**：`tools/verify_spatial_alignment.py` 與 `tests/test_verify_spatial_alignment.py`
   - **具體做法**：
     1. 以純 Python 3.11+ 實作幾何契約檢查器，解析房間模型資料（JSON / Three.js 節點定義）。
@@ -153,6 +154,7 @@ Agent 透過 `agent-browser` 截取渲染畫面，調用 Python 腳本將虛擬�
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-13`**｜**[優先級：低]** 建立 `assets/spatial-room-viewer/index.html` 輕量 Three.js 空間漫遊與娃娃屋展示範本
+  - **狀態**：🟡 進行中
   - **目標範圍**：`assets/spatial-room-viewer/index.html`（獨立 HTML 靜態展示）
   - **具體做法**：
     1. 採用純前端 CDN（Three.js + OrbitControls / PointerLockControls）實作單檔式 3D 空間展示。
