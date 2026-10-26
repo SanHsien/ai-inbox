@@ -1,0 +1,6 @@
+{
+  "name": "inbox-band",
+  "version": "0.3.0",
+  "description": "提示框上方顯示 ai-inbox 待辦數與 agent-relay 未讀信件數，每分鐘更新",
+  "types": "./types/index.d.ts"
+}

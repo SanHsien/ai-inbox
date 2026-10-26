@@ -1,6 +1,6 @@
 # Claude Code Mods 自體改造機制 Windows 11 本機二進位深度查驗與替代方案驗證報告
 
-> ⚠️ **更正（2026-10-26）**：本文第 3 節與第 5 節「Mods 不存在、原貼文虛構」的結論**有誤**。掃描搜尋的 `~/.claude/mods/`、`defineMod` 不是實際名稱；Claude Code 2.1.308／2.1.309 透過內建的 `plugin-authoring` 技能提供 mod：外掛資料夾＋`hooks/hooks.json` 的 `modules`＋`register.tsx`，以 `ui.render` hook 畫 `AbovePrompt`，以 `$.state` 保存值並支援熱重載（見技能目錄的 `types/claude-code.d.ts` 與 `examples/band.tsx`）。第 4 節的 `statusLine` 腳本仍可運作，但只是備案。任務 `T-20261018-09` 已退回待辦。
+> ⚠️ **更正（2026-10-26）**：本文第 3 節與第 5 節「Mods 不存在、原貼文虛構」的結論**有誤**。掃描搜尋的 `~/.claude/mods/`、`defineMod` 不是實際名稱；Claude Code 2.1.308／2.1.309 透過內建的 `plugin-authoring` 技能提供 mod：外掛資料夾＋`hooks/hooks.json` 的 `modules`＋`register.tsx`，以 `ui.render` hook 畫 `AbovePrompt`，以 `$.state` 保存值並支援熱重載（見技能目錄的 `types/claude-code.d.ts` 與 `examples/band.tsx`）。第 4 節的 `statusLine` 腳本仍可運作，但只是備案。任務 `T-20261018-09` 退回後已依官方機制實作並結案，見第 6 節。
 
 > 本文件收錄於 `docs/claude-code-mods-windows-validation.md`，為任務 `T-20261018-09` 針對社群貼文（碼農冠傑 @NFT_Chen 等）宣稱之「Claude Code 2.1.287+ 開放 Mods 機制（`~/.claude/mods/`、`defineMod`、`AbovePrompt`、`$.state`、即時熱重載）」在 Windows 11 原生環境下的官方 CLI 2.1.309 二進位底層深挖、全文比對與官方原生 `statusLine` 替代方案實測驗證報告。
 
@@ -179,3 +179,67 @@ PS C:\GitHub\ai-inbox> "{}" | python C:\Users\SanHsien\.gemini\antigravity\brain
    官方提供之終端狀態自訂介面為 `statusLine`（指令 `/statusline`），透過 `~/.claude/settings.json` 之 command 模式驅動；更深度的擴充則依賴 `.claude-plugin/plugin.json` 官方插件生態。
 3. **任務 T-20261018-09 處置**：
    依據真實查驗結果，誠實判定轉為 **⚪ 不做**。已在本文檔留存完整的二進位二進位掃描資料、匹配位移（offsets）與官方原生替代方案終端輸出鐵證。
+
+## 6. 實作與驗證（2026-10-26，T-20261018-09 結案）
+
+依官方 `plugin-authoring` 技能做出 mod `inbox-band`：在提示框正上方顯示 ai-inbox 待辦數與 agent-relay 未讀信件數，每 60 秒更新，旁邊有「更新」「隱藏」兩個按鈕。原始碼存於 [`assets/inbox-band-mod/`](../assets/inbox-band-mod/)。
+
+```text
+inbox-band/
+├── .claude-plugin/plugin.json   名稱、版本、types 契約位置
+├── hooks/hooks.json             { "modules": ["./register.tsx"] }
+├── hooks/register.tsx           session.start 讀一次並排 60 秒定時器；ui.render 畫 AbovePrompt
+├── types/index.d.ts             $.state 契約：counts、isHidden、loads
+└── tests/band.test.tsx          claude plugin test 的測試
+```
+
+- **ai-inbox 待辦數**：讀 `C:/GitHub/ai-inbox/README.md` 的統計行（`🔴 未做 N／🟡 進行中 M`），顯示「待辦 N+M（未做 N）」。
+- **relay 未讀數**：`python -m agent_relay status --json --no-sync` 各信箱 `new` 加總。`--no-sync` 是必要的：預設會 git pull／push，每分鐘跑一次不能碰網路（測試鎖住這個參數）。
+- **讀取失敗**：數字顯示「?」並附原因，狀態列不消失。
+- **`$.state`**：值只放 `$.state`，不放模組變數——熱重載會重跑 `register` 與 `session.start`，模組變數歸零，`$.state` 保留。`loads` 每次載入加 1，用來證明這件事。
+
+### 6.1 官方檢查（Claude Code 2.1.310）
+
+```text
+> claude plugin validate assets/inbox-band-mod
+Validating hooks: assets\inbox-band-mod\hooks\hooks.json
+  ❯ ./register.tsx hooks: session.start, ui.render{component=AbovePrompt}
+  ❯ ./register.tsx calls: $.clock.every, $.clock.now (via refresh), $.fs.read (via readInbox), $.process.run (via readRelay), $.state.get, $.state.set, $.ui.resolve
+✔ Validation passed with warnings
+> claude plugin test assets/inbox-band-mod
+(pass) 畫出 ai-inbox 待辦數與 relay 未讀數，各個介面都一樣
+(pass) 讀不到時顯示問號與原因，不會整條消失
+(pass) 按「隱藏」後把位置還給引擎
+ 3 pass
+ 0 fail
+```
+
+`validate` 的警告只有授權檔與圖示（送上架才需要）。測試在 4 種介面（terminal、desktop、vscode、mobile）各畫一次，並驗證讀取失敗的顯示與「隱藏」按鈕；突變驗證過：拿掉 `--no-sync` 會讓第一項失敗。
+
+### 6.2 終端實測（DoD 要求的終端輸出）
+
+在終端以 `claude --plugin-dir <assets/inbox-band-mod 的路徑>` 啟動 Claude Code 2.1.310，讀取終端畫面（節錄；當時 README 為「未做 35／進行中 0」，relay 未讀 0）：
+
+```text
+[v0.2] ai-inbox 待辦 35（未做 35） · relay 未讀 0 · 08:51 更新 · 第 1 次載入 [ 更新 ][ 隱藏 ]   [-]
+────────────────────────────────────────────────────────────────────────
+❯ Try "fix typecheck errors"
+```
+
+不重啟 session，把 `register.tsx` 的標記改成 `[v0.3]`、`plugin.json` 升 0.3.0 後存檔，畫面自動變成：
+
+```text
+● inbox-band: plugin.json changed — reloaded (modules: hooks\register.tsx unchanged; 2 hooks: session.start, ui.render)
+
+[v0.3] ai-inbox 待辦 35（未做 35） · relay 未讀 0 · 08:51 更新 · 第 2 次載入 [ 更新 ][ 隱藏 ]   [-]
+```
+
+新標記即時生效、沒有拋錯；`loads` 由 1 變 2，證明 `$.state` 撐過熱重載（模組變數會歸零）。
+
+### 6.3 桌面 app
+
+同一個 mod 在 Claude desktop app 的 session 也載入成功（維護者目視確認）：兩次熱重載依序顯示「第 1 次載入」與「[v0.2] … 第 2 次載入」，沒有載入失敗或 hook 被略過的紀錄。
+
+### 6.4 在其他 session 使用
+
+開發中的 mod 放在 session 專屬資料夾（`~/.claude/dev-mods/<session id>/`），換 session 不會自動載入。要沿用時用 `claude --plugin-dir <assets/inbox-band-mod 的路徑>` 啟動，或把該路徑加進環境變數 `CLAUDE_CODE_PLUGIN_DIRS`。

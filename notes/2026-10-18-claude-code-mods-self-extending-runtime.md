@@ -6,7 +6,7 @@ source_platform: "Anthropic Official Blog & X"
 author: "Addy Osmani (Anthropic) & @NFT_Chen"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 3
 cluster_role: "自體改造"
 short_title: "Claude Code Mods"
@@ -28,7 +28,7 @@ tags:
   - [Anthropic 官方說明 (claude.com Blog)](https://claude.com/blog/claude-code-mods)
   - [社群貼文分析 (@NFT_Chen on X)](https://x.com/NFT_Chen/status/2105738805785596166)
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code 插件生態）
   - [`notes/2026-10-18-desktop-sense-local-screen-context.md`](./2026-10-18-desktop-sense-local-screen-context.md)（Hook 螢幕注入）
@@ -133,7 +133,7 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
 
 > ⚠️ 狀態變更時，請同步更新根目錄 [`README.md`](../README.md) 的總表。
 
-- [ ] **`T-20261018-09`**｜**[優先級：中]** 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化）
+- [x] **`T-20261018-09`**｜**[優先級：中]** 在 Windows 11 本地測試 Claude Code Mods 執行期機制（驗證 Hot-Reload、`AbovePrompt` UI 渲染與 `$.state` 持久化）
   - **覆核更正（2026-10-26）**：上次「API 不存在、原貼文虛構」的結論**有誤**，退回待辦。二進位掃描找的是 `~/.claude/mods/` 與 `defineMod`，但實際機制不叫這些名字：本機 Claude Code 2.1.308／2.1.309 內建 `plugin-authoring` 技能，mod 是一個外掛資料夾（`.claude-plugin/plugin.json` ＋ `hooks/hooks.json` 寫 `{"modules": ["./register.tsx"]}` ＋ `hooks/register.tsx` 匯出 `register`），提示框上方那一條是對 `{ component: 'AbovePrompt' }` 註冊 `ui.render` hook，值存在 `$.state`，存檔後會熱重載；官方型別檔 `claude-code.d.ts`（約 2.2 萬行）與範例 `band.tsx` 都在技能目錄內。掃描結果本身也指向存在：`AbovePrompt` 76 筆、`$.state` 15 筆，關鍵字清單列了 `plugin-authoring` 卻沒有回報結果。`statusLine` 腳本可保留為備案，但不等於本任務的 DoD。
   - **目標範圍**：本地 Claude Code 開發環境與外掛架構
   - **二進位查驗與實測結論（2026-10-25）**：
@@ -146,7 +146,8 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
     3. `register.tsx` 在 `session.start` 與定時器讀 ai-inbox 待辦數（`python tools/task_cli.py next` 的筆數或 README 統計行）與 agent-relay 未讀數，存進 `$.state`，`ui.render` 在 `AbovePrompt` 畫出。
     4. 用 `claude plugin validate <mod 資料夾>` 與 `claude plugin test <mod 資料夾>` 驗證；修改一次文字確認熱重載後畫面更新、`$.state` 的值保留。
   - **驗收標準（DoD）**：在本地 Claude Code 終端成功渲染出自定義上下文狀態列（含 ai-inbox 待辦數），且熱重載能即時更新無拋錯；附截圖或終端輸出為證。
-  - **實作紀錄 / 證據**：已於 Windows 11 本機對官方 Claude Code 2.1.309 二進位執行檔進行全文掃描與實測，證實原貼文 API 不存在；並完成官方原生 `statusLine` 整合 ai-inbox 與 agent-relay 之替代方案實測，完整報告與終端輸出已寫入 `docs/claude-code-mods-windows-validation.md`，因官方無此 API 轉為 ⚪ 不做。
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：依官方 plugin-authoring 技能實作 mod inbox-band（原始碼 assets/inbox-band-mod/）：提示框上方顯示 ai-inbox 待辦數與 agent-relay 未讀數，每 60 秒更新，值存 $.state。claude plugin validate 通過、claude plugin test 3 項通過（4 種介面；突變驗證拿掉 --no-sync 會失敗）。終端實測（claude --plugin-dir，Claude Code 2.1.310）畫面為「[v0.2] ai-inbox 待辦 35（未做 35） · relay 未讀 0 · 08:51 更新 · 第 1 次載入」，不重啟改成 [v0.3] 後引擎印出「inbox-band: plugin.json changed — reloaded」，畫面變為「[v0.3] … · 第 2 次載入」：熱重載即時生效、無拋錯，$.state 撐過重新載入。桌面 app 也載入成功並經維護者目視確認。完整終端輸出見 docs/claude-code-mods-windows-validation.md 第 6 節。
 
 - [ ] **`T-20261018-10`**｜**[優先級：低]** 評估將全域高危指令攔截（Blast Radius）與安全規範包裝為本地 Claude Code Mod 防護插件
   - **目標範圍**：全域安全規範（`RULE[user_global]`）機械防線
