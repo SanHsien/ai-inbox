@@ -185,14 +185,14 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
   - **驗收標準（DoD）**：在 `SanHsien/buzz` 內完成 `buzz-dev-mcp` 與 `buzz-agent` 的編譯檢查，記錄執行日誌與 Job Object 驗證結果。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
-- [ ] **`T-20261026-10`**｜**[優先級：低]** 評估將 `agent-relay` 訊息中繼抽象對接 Nostr NIP-01 簽名事件格式之概念驗證
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-10`**｜**[優先級：低]** 評估將 `agent-relay` 訊息中繼抽象對接 Nostr NIP-01 簽名事件格式之概念驗證
   - **目標範圍**：`C:\GitHub\agent-relay` 訊息格式設計與擴充文檔
   - **具體做法**：
     1. 分析現行 `agent-relay` Mailbox 事件結構與 Nostr NIP-01 事件（id, pubkey, created_at, kind, tags, content, sig）的對照映射。
     2. 撰寫輕量適配器概念驗證原型，評估無中心依賴的 Nostr Relay 在本地與區域網多 Agent 協同的可行性。
   - **驗收標準（DoD）**：產出 Nostr 事件映射對照表與原型評估紀錄於 `agent-relay` 相關文檔。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：SanHsien/agent-relay docs/nostr-nip01-evaluation.md（中英同步）：欄位映射表、ed25519 對 BIP-340 Schnorr 簽章差異、結論（核心不整合，只留單向橋接）。原型 tools/nostr_adapter_poc.py（commit 34bd57e，只用標準庫）把信件轉成 NIP-01 未簽章事件並無損還原，id 依 NIP-01 規則計算（範例信件 a77af769…e3b0）；15 項新測試全過、在刻意做壞的實作上 5 項轉紅，竄改 content 會被 verify 判 MISMATCH。全 repo 366 tests OK，CI 與 CodeQL success（34bd57e）。限制：標準庫沒有 secp256k1 所以事件不含 sig；沒有 WebSocket 所以未實連 relay；kind 9001～9004 是否撞號未查證。
 
 ---
 
