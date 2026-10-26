@@ -14,6 +14,7 @@ export type Counts = {
 declare module 'claude-code' {
   interface PluginState {
     // loads：每次載入（含熱重載）加 1；模組變數在重新載入時會歸零，只有 $.state 會留下
-    'inbox-band': { counts: Counts | null; isHidden: boolean; loads: number }
+    // refreshes：每次讀取（定時或按「更新」）加 1，讓數字沒變時也看得出有更新
+    'inbox-band': { counts: Counts | null; loads: number; refreshes: number }
   }
 }

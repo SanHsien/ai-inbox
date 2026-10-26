@@ -182,14 +182,14 @@ PS C:\GitHub\ai-inbox> "{}" | python %USERPROFILE%\.gemini\antigravity\brain\8b2
 
 ## 6. 實作與驗證（2026-10-26，T-20261018-09 結案）
 
-依官方 `plugin-authoring` 技能做出 mod `inbox-band`：在提示框正上方顯示 ai-inbox 待辦數與 agent-relay 未讀信件數，每 60 秒更新，旁邊有「更新」「隱藏」兩個按鈕。原始碼存於 [`assets/inbox-band-mod/`](../assets/inbox-band-mod/)。
+依官方 `plugin-authoring` 技能做出 mod `inbox-band`：在提示框正上方顯示 ai-inbox 待辦數與 agent-relay 未讀信件數，每 60 秒更新，旁邊有「更新」按鈕（v0.4 起拿掉「隱藏」鈕，見 6.5）。原始碼存於 [`assets/inbox-band-mod/`](../assets/inbox-band-mod/)。
 
 ```text
 inbox-band/
 ├── .claude-plugin/plugin.json   名稱、版本、types 契約位置
 ├── hooks/hooks.json             { "modules": ["./register.tsx"] }
 ├── hooks/register.tsx           session.start 讀一次並排 60 秒定時器；ui.render 畫 AbovePrompt
-├── types/index.d.ts             $.state 契約：counts、isHidden、loads
+├── types/index.d.ts             $.state 契約：counts、loads、refreshes
 └── tests/band.test.tsx          claude plugin test 的測試
 ```
 
@@ -243,3 +243,24 @@ Validating hooks: assets\inbox-band-mod\hooks\hooks.json
 ### 6.4 在其他 session 使用
 
 開發中的 mod 放在 session 專屬資料夾（`~/.claude/dev-mods/<session id>/`），換 session 不會自動載入。要沿用時用 `claude --plugin-dir <assets/inbox-band-mod 的路徑>` 啟動，或把該路徑加進環境變數 `CLAUDE_CODE_PLUGIN_DIRS`。
+
+### 6.5 使用回報與 v0.4 修正（2026-10-26）
+
+維護者在桌面 app 使用時回報兩個問題：
+
+| 回報 | 原因 | 修正 |
+|------|------|------|
+| 按「更新」沒反應，連「第 N 次載入」都不變 | 有讀，但 README 數字沒變；時間只到分鐘；「第 N 次載入」只在 mod 重新載入時變，不是按更新會變的值 | 加「第 N 次更新」（`$.state.refreshes`，每次讀取加 1）、時間顯示到秒、按下後跳 toast「已更新（第 N 次）：…」 |
+| 選項框出現後 band 常常消失 | 推論：選項框出現時按 Enter／數字鍵誤觸 band 的「隱藏」鈕；隱藏狀態存在 `$.state`，沒有方法叫回來（未在畫面上重現，屬推論） | 拿掉「隱藏」鈕與 `isHidden`；選項框占用時照樣讓位（`hasSurvey`），結束後自動回來（新增測試） |
+
+```text
+> claude plugin test assets/inbox-band-mod
+(pass) 畫出 ai-inbox 待辦數與 relay 未讀數，各個介面都一樣
+(pass) 讀不到時顯示問號與原因，不會整條消失
+(pass) 按「更新」重新讀取並用 toast 回報結果
+(pass) 選項框占用時讓位，結束後 band 回來
+ 4 pass
+ 0 fail
+```
+
+測試環境的定時器會自己觸發讀取，所以「更新」測試比較按下前後的更新次數，不比絕對值。
