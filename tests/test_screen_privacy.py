@@ -472,6 +472,34 @@ class ReviewFindingRegressionTest(unittest.TestCase):
                 self.assertDropped(text)
                 self.assertEqual(sp.redact_text(text), redacted)
 
+    def test_short_tail_never_changes_the_verdict_of_a_non_card_number(self):
+        # 性質：16 位不過 Luhn 的編號後面接一小段數字，判定必須等同「把整串當一個號碼做 Luhn」。
+        # 修正卡號被尾巴吃掉的漏報時不能放大誤報（舊版取任意連續片段，誤報約變三倍）。
+        import random
+
+        rng = random.Random(20261026)
+        checked = 0
+        while checked < 400:
+            number = "".join(rng.choice("0123456789") for _ in range(16))
+            if sp._luhn_ok(number):
+                continue
+            tail = "".join(rng.choice("0123456789") for _ in range(rng.randint(1, 3)))
+            sep = rng.choice([" ", "-"])
+            text = "id " + sep.join(number[i:i + 4] for i in range(0, 16, 4)) + " " + tail
+            whole = number + tail
+            expected = len(whole) in sp._CARD_LENGTHS and sp._luhn_ok(whole)
+            with self.subTest(text=text):
+                self.assertEqual(sp.inspect_ocr_text(text)[0], expected)
+                if not expected:
+                    self.assertEqual(sp.redact_text(text), text)
+            checked += 1
+
+    def test_card_is_never_cut_out_of_the_middle_of_a_longer_number(self):
+        # 從第二組中間切出去的片段不是卡號：候選只從第一組起算、只切尾巴
+        text = "order id 1234-5678-9012-3456 18"
+        self.assertFalse(sp.inspect_ocr_text(text)[0])
+
+
     def test_digit_runs_beside_a_non_card_number_stay_untouched(self):
         # 修正後仍以數字群組為界、且要過 Luhn：訂單編號後面再接數字不能被誤判成卡號
         text = "order id 1234-5678-9012-3456 12"

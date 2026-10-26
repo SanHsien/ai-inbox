@@ -336,31 +336,33 @@ _DIGIT_GROUP = re.compile(r"\d+")
 _CARD_LABEL = "信用卡號"
 
 
+# 卡號後面緊接的有效期限（12 25）、安全碼（123）每組最多 4 位；超過就不當成尾巴切掉
+_CARD_TAIL_MAX_DIGITS = 4
+# 實際發行的卡號長度（13/14/15/16/19）。17、18 位幾乎不存在，但「16 位編號＋兩位數」恰好是 18 位，
+# 放行它們會讓每個 16 位流水號多一份約 10% 的 Luhn 誤中機率
+_CARD_LENGTHS = frozenset({13, 14, 15, 16, 19})
+
+
 def _card_spans(rx: "re.Pattern[str]", text: str) -> List[Tuple[int, int]]:
-    """信用卡號候選字串裡「通過 Luhn 的連續數字群組」的 (起, 迄) 位置。
+    """信用卡號候選字串裡通過 Luhn 的卡號 (起, 迄) 位置。
 
     候選正則是貪婪的：卡號後面緊接空白加數字（有效期限「12 25」、安全碼「123」）時，
     整串會被一起吞進去，13～19 位的整體多半不過 Luhn，真正的卡號就漏掉了。
-    所以只以數字群組為界，嘗試每個起點能接到的最長且通過 Luhn 的群組序列。
+    所以先看整串，不過就從尾端一組一組切掉再試；候選一律從第一組起算，
+    只切尾巴、且被切掉的每組不超過 4 位。不從中間起算，也不取任意片段：
+    否則訂單編號（16 位不過 Luhn）後面隨便接兩位數就有機會從第二組中間切出一個「有效卡號」。
     """
     spans: List[Tuple[int, int]] = []
     for m in rx.finditer(text):
         groups = [(g.start() + m.start(), g.end() + m.start()) for g in _DIGIT_GROUP.finditer(m.group(0))]
-        i = 0
-        while i < len(groups):
-            digits = ""
-            best = None
-            for j in range(i, len(groups)):
-                digits += text[groups[j][0]:groups[j][1]]
-                if len(digits) > 19:
-                    break
-                if _luhn_ok(digits):
-                    best = j
-            if best is None:
-                i += 1
-            else:
-                spans.append((groups[i][0], groups[best][1]))
-                i = best + 1
+        for last in range(len(groups) - 1, -1, -1):
+            dropped = groups[last + 1:]
+            if any(b - a > _CARD_TAIL_MAX_DIGITS for a, b in dropped):
+                break  # 再往前切只會切掉更長的組
+            digits = "".join(text[a:b] for a, b in groups[: last + 1])
+            if len(digits) in _CARD_LENGTHS and _luhn_ok(digits):
+                spans.append((groups[0][0], groups[last][1]))
+                break
     return spans
 
 
