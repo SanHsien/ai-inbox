@@ -101,6 +101,18 @@ class TestAuditFullstackSecurity(unittest.TestCase):
         (self.test_dir / ".gitignore").write_bytes(b"\xef\xbb\xbf.env\n.env.local\n")
         self.assertEqual(check_gitignore(self.test_dir), [])
 
+    def test_gitignore_negation_after_ignore_rule_un_ignores_the_file(self):
+        # gitignore 以最後一條符合的規則為準：先忽略再用 "!" 放行，.env.local 就會被提交
+        (self.test_dir / ".gitignore").write_text(".env*\n!.env.local\n", encoding="utf-8")
+        issues = check_gitignore(self.test_dir)
+        self.assertEqual(len(issues), 1)
+        self.assertIn(".env.local", issues[0])
+        # 放行的是範本檔就沒事；放行後又重新忽略也沒事
+        (self.test_dir / ".gitignore").write_text(".env*\n!.env.example\n", encoding="utf-8")
+        self.assertEqual(check_gitignore(self.test_dir), [])
+        (self.test_dir / ".gitignore").write_text(".env*\n!.env.local\n.env.local\n", encoding="utf-8")
+        self.assertEqual(check_gitignore(self.test_dir), [])
+
     def test_gitignore_glob_accepted(self):
         (self.test_dir / ".gitignore").write_text("# secrets\n.env*\n", encoding="utf-8")
         self.assertEqual(check_gitignore(self.test_dir), [])

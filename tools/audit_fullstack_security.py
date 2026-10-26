@@ -58,19 +58,23 @@ def check_gitignore(root: Path) -> list[str]:
     lines = [line.strip() for line in content.splitlines() if line.strip() and not line.strip().startswith("#")]
 
     required_patterns = [".env", ".env.local"]
-    # 否定規則（!.env.example）不算忽略；其餘以 gitignore 萬用字元比對。
-    # 舊版用子字串判斷，會讓 ".env.example" 被誤當成已忽略 ".env"。
-    ignore_globs = []
+    # 與 git 一樣以「最後一條符合的規則」為準：萬用字元比對，"!" 否定規則把檔案放回未忽略。
+    # 舊版用子字串判斷，會讓 ".env.example" 被誤當成已忽略 ".env"；
+    # 之後又把否定規則整條略過，".env*" 後面接 "!.env.local" 時仍判定為已忽略。
+    rules: list[tuple[bool, str]] = []
     for line in lines:
-        if line.startswith("!"):
-            continue
-        glob = line.lstrip("/")
+        negated = line.startswith("!")
+        glob = (line[1:] if negated else line).lstrip("/")
         if glob.startswith("**/"):
             glob = glob[3:]
-        ignore_globs.append(glob.rstrip("/"))
+        rules.append((negated, glob.rstrip("/")))
 
     for pattern in required_patterns:
-        if not any(fnmatch.fnmatchcase(pattern, glob) for glob in ignore_globs):
+        ignored = False
+        for negated, glob in rules:
+            if fnmatch.fnmatchcase(pattern, glob):
+                ignored = not negated
+        if not ignored:
             issues.append(f".gitignore 未明確包含 '{pattern}' 忽略規則")
 
     return issues
