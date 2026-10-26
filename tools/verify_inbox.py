@@ -8,14 +8,13 @@ tools/verify_inbox.py
 4. README.md 自動產生區塊與 notes/ 同步（等同 build_index.py --check）。
 5. README / notes / templates 內的相對連結都指向存在的檔案。
 6. 沒有機密字串或無法公開解析的內部 Session 連結。
-7. [Private Repo: 別名] 都登記在 private-aliases.json；本機有 private-aliases.local.json 時，
-   私有 repo 真實名稱不得出現在任何會提交的檔案。
-8. 會提交的檔案不得出現私人稱謂（公開 repo 用面向公眾的措辭）。
+7. 會提交的檔案不得出現私人稱謂（公開 repo 用面向公眾的措辭）。
+8. 會提交的檔案不得出現帶真實帳號的本機家目錄路徑（C:\\Users\\<帳號>、/Users/<帳號>、/home/<帳號>），
+   改寫成 %USERPROFILE% 或 ~。私有 repo 寫真名並標「（私有）」，不再用別名。
 """
 
 from __future__ import annotations
 
-import json
 import re
 import subprocess
 import sys
@@ -154,33 +153,22 @@ def check_secrets(texts: dict[Path, str], skip_labels: tuple[str, ...] = ()) -> 
     return errors
 
 
-ALIASES_FILE = bi.REPO_ROOT / "private-aliases.json"
-LOCAL_ALIASES_FILE = bi.REPO_ROOT / "private-aliases.local.json"
-PRIVATE_TAG = re.compile(r"Private Repo: ([^\]<]+)\]")
-SCANNED_SUFFIXES = {".md", ".json", ".py", ".yml", ".yaml", ".txt", ".html", ".js", ".ts", ".sh", ".ps1", ".toml"}
+SCANNED_SUFFIXES = {".md", ".json", ".py", ".yml", ".yaml", ".txt", ".html", ".js", ".ts", ".tsx", ".sh", ".ps1", ".toml"}
+
+# 家目錄路徑裡的帳號名稱：C:\Users\x、C:/Users/x、/c/Users/x、/Users/x、/home/x（含 JSON 的 \\ 跳脫）
+HOME_PATH = re.compile(r"(?i)(?:\b[a-z]:|/[a-z]|(?<![\w.]))(?:\\{1,2}|/)(?:users|home)(?:\\{1,2}|/)([^\\/\s'\"`<>|*?:、，。（）)]+)")
+# 範例用的佔位帳號與系統帳號，不是真實帳號
+PLACEHOLDER_ACCOUNTS = {"username", "user", "<username>", "admin", "test", "me", "x", "you", "public",
+                        "default", "all users", "%username%", "$env:username", "$user", "...", "…"}
 
 
-def load_aliases() -> tuple[dict[str, str], dict[str, str]]:
-    """回傳（公開別名 → 用途, 本機別名 → 真實 repo）。本機檔不存在時第二個為空（如 CI）。"""
-    public = json.loads(ALIASES_FILE.read_text(encoding="utf-8"))["aliases"] if ALIASES_FILE.exists() else {}
-    local = json.loads(LOCAL_ALIASES_FILE.read_text(encoding="utf-8")) if LOCAL_ALIASES_FILE.exists() else {}
-    return public, local
-
-
-def check_private_aliases(texts: dict[Path, str], public: dict[str, str], local: dict[str, str],
-                          scan: dict[Path, str]) -> list[str]:
+def check_home_paths(scan: dict[Path, str]) -> list[str]:
     errors = []
-    for path, text in texts.items():
-        for alias in sorted(set(PRIVATE_TAG.findall(text)) - set(public)):
-            errors.append(f"{rel(path)}: 私有 repo 別名 '{alias}' 未登記在 private-aliases.json")
-    for alias in sorted(set(local) - set(public)):
-        errors.append(f"private-aliases.local.json: 別名 '{alias}' 未登記在 private-aliases.json")
-
-    # 本機有真名對照表時，確認真名沒有出現在任何會被提交的檔案
-    real_names = {v for v in local.values()} | {v.split("/")[-1] for v in local.values()}
     for path, text in scan.items():
-        for name in sorted(n for n in real_names if n and n in text):
-            errors.append(f"[!] {rel(path)}: 出現私有 repo 真實名稱 '{name}'，請改寫為 [Private Repo: <別名>]")
+        names = sorted({m.group(1) for m in HOME_PATH.finditer(text)
+                        if m.group(1).lower() not in PLACEHOLDER_ACCOUNTS and not m.group(1).startswith(("<", "$", "%"))})
+        for name in names:
+            errors.append(f"[!] {rel(path)}: 出現帶真實帳號 '{name}' 的家目錄路徑，請改寫為 %USERPROFILE% 或 ~")
     return errors
 
 # 公開 repo 不使用私人稱謂；詞彙以跳脫碼寫，避免本檔自己被掃到
@@ -212,7 +200,7 @@ def tracked_texts() -> dict[Path, str]:
         candidates = [p for p in bi.REPO_ROOT.rglob("*") if ".git" not in p.parts]
     out = {}
     for p in candidates:
-        if p.is_file() and p.suffix in SCANNED_SUFFIXES and p != LOCAL_ALIASES_FILE:
+        if p.is_file() and p.suffix in SCANNED_SUFFIXES:
             out[p] = p.read_text(encoding="utf-8", errors="ignore")
     return out
 
@@ -233,7 +221,7 @@ def main(argv: list[str] | None = None) -> int:
     import argparse
 
     argparse.ArgumentParser(
-        description="ai-inbox 契約驗證（CI 同款）：筆記格式、任務狀態、DoD 產出檔、連結、機密、私有別名、README 是否過期"
+        description="ai-inbox 契約驗證（CI 同款）：筆記格式、任務狀態、DoD 產出檔、連結、機密、私人稱謂、家目錄路徑、README 是否過期"
     ).parse_args(argv)
     print("[*] 正在執行 ai-inbox 契約完整性驗證...")
     notes = bi.load_notes()
@@ -254,11 +242,9 @@ def main(argv: list[str] | None = None) -> int:
         *check_links(texts),
         *check_secrets(texts),  # 文件（含 Session 連結檢查）
         *check_secrets(scan, skip_labels=(SESSION_LINK_LABEL,)),  # 全部會提交的文字檔（docs/、assets/、tools/ 等）
-        # 別名登記也涵蓋 docs/、assets/ 等提交檔；tools/、tests/ 含正規表達式與測試假別名，不納入
-        *check_private_aliases({**texts, **{p: s for p, s in scan.items()
-                                            if p.relative_to(bi.REPO_ROOT).parts[0] not in ("tools", "tests")}},
-                               *load_aliases(), scan),
         *check_self_references(scan),
+        # tests/ 用假帳號當測試資料，不納入
+        *check_home_paths({p: s for p, s in scan.items() if p.relative_to(bi.REPO_ROOT).parts[0] != "tests"}),
     ]
 
     missing_dod = sorted(t.id for t in tasks if not t.done and not t.archived and not bi.filled(t.fields.get("驗收標準（DoD）", "")))

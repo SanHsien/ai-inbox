@@ -321,7 +321,7 @@ empty-activity-lightbuild   Empty Activity (Experimental)   compose,activity,lig
 INFO: Processing template 'empty-activity'
 INFO: Installing Android SDK package 'platforms/android-37' to 'C:\Android'
 Package platforms/android-37 not found.
-INFO: Successfully created project 'Empty Activity' at 'C:\Users\SanHsien\AppData\Local\Temp\android-cli-sandbox\test-app'
+INFO: Successfully created project 'Empty Activity' at '%USERPROFILE%\AppData\Local\Temp\android-cli-sandbox\test-app'
 ```
 
 - **說明**：專案建立完全離線化/模板化生成，提示中雖然嘗試尋找本地 SDK `platforms/android-37`，但缺少時並不阻塞專案原始碼的生成，成功退出且 Code 0。

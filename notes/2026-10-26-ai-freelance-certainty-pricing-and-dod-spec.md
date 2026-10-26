@@ -6,7 +6,7 @@ source_platform: "YouTube (Debug 土撥鼠)"
 author: "Debug 土撥鼠"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 1
 cluster_role: "接案與商業化"
 short_title: "AI 接案確定性與價值報價工程"
@@ -26,7 +26,7 @@ tags:
 - **影片標題**：〈AI 199 元做網站？新手接案最容易踩的四個坑：客戶付錢買的從來不是 Code〉
 - **頻道作者**：Debug 土撥鼠
 - **分析主題**：AI 接案市場低價內捲剖析、需求解壓縮（為什麼不能對名詞報價）、三大報價法（薪水法/請人成本法/價值報價法）、Scope 防失控與前提時程、結不了案的 Bug vs 新需求界線、軟體公司真正賣的「確定性（Certainty）」
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md`](./2026-10-24-feedback-desk-client-ticket-ai-handoff.md)（客戶工單流轉與 AI 接案交接帳本）
   - [`notes/2026-10-23-web-to-app-android-packaging.md`](./2026-10-23-web-to-app-android-packaging.md)（Web-to-App 接案流程與毛利評估）
@@ -123,7 +123,7 @@ Debug 土撥鼠在本作中直擊了當前 AI 爆發期軟體外包與接案市�
 
 ## 3. 本地化評估與採用決策（Adoption Decision）
 
-- **與現有體系（`ai-inbox` / `agent-assets`）的契合點**：
+- **與現有體系（`ai-inbox` / `SanHsien/agent-assets`（私有））的契合點**：
   - 本 repo 本身即是「確定性交付」的終極範本（46 篇筆記、117 項任務全部由外部裁判與單元測試嚴格守護）。
   - 將這套「DoD 逐字達成、零空殼、自動化驗證」的方法論整理為通用接案標準，能直接賦能所有外包與技術交付。
 
@@ -138,35 +138,35 @@ Debug 土撥鼠在本作中直擊了當前 AI 爆發期軟體外包與接案市�
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-32`**｜**[優先級：高]** 撰寫「需求解壓縮與名詞規格化提示詞範本」收錄於 `templates/client-requirement-decomposition-prompt.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-32`**｜**[優先級：高]** 撰寫「需求解壓縮與名詞規格化提示詞範本」收錄於 `templates/client-requirement-decomposition-prompt.md`
   - **目標範圍**：`templates/client-requirement-decomposition-prompt.md`（範本文件；不修改其他專案程式）
   - **具體做法**：
     1. 針對客戶常見的抽象名詞（會員、電商、AI 客服、後台管理），設計三層解壓縮結構。
     2. 自動產出：功能邊界、資料模型欄位、邊界異常處理與第一版 Single-file HTML 確定性原型代碼結構。
     3. 明列 Non-Goals（非本次範圍項目），徹底杜絕曖昧空間。
   - **驗收標準（DoD）**：產出 `templates/client-requirement-decomposition-prompt.md`，內含解壓縮框架、反例對照與電商/會員實戰案例；以 `Test-Path templates/client-requirement-decomposition-prompt.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：templates/client-requirement-decomposition-prompt.md（158 行）：三層解壓縮框架、反例對照、電商與會員實戰案例。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
-- [ ] **`T-20261026-33`**｜**[優先級：中]** 撰寫「AI 接案防失控合約與時程前提規範指南」收錄於 `docs/freelance-contract-scope-and-prerequisites-spec.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-33`**｜**[優先級：中]** 撰寫「AI 接案防失控合約與時程前提規範指南」收錄於 `docs/freelance-contract-scope-and-prerequisites-spec.md`
   - **目標範圍**：`docs/freelance-contract-scope-and-prerequisites-spec.md`
   - **具體做法**：
     1. 制定時程前提條款（Prerequisites Clause）標準法言範本（將交付日與客戶前置依賴解耦）。
     2. 定義 Bug vs 新需求之判定判定表與 Change Request（CR）加價變更流程。
     3. 整合請人成本法與價值報價法（Value-based Pricing）之對話話術與談判手冊。
   - **驗收標準（DoD）**：產出 `docs/freelance-contract-scope-and-prerequisites-spec.md`，涵蓋合約條款範本、前提公式與報價話術；以 `Test-Path docs/freelance-contract-scope-and-prerequisites-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/freelance-contract-scope-and-prerequisites-spec.md（182 行）：合約條款範本、前提公式、報價話術，附非法律意見聲明。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
-- [ ] **`T-20261026-34`**｜**[優先級：中]** 實作「客觀驗收標準（DoD）自動化驗證腳本產生器原型」於 `tools/generate_dod_verifier.py`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-34`**｜**[優先級：中]** 實作「客觀驗收標準（DoD）自動化驗證腳本產生器原型」於 `tools/generate_dod_verifier.py`
   - **目標範圍**：`tools/generate_dod_verifier.py` 與 `tests/test_generate_dod_verifier.py`
   - **具體做法**：
     1. 讀取專案需求 JSON/Markdown 規格，自動產生驗收 Python 測試腳本（HTTP API 檢查、DOM 元素斷言、環境變數檢驗）。
     2. 產生獨立的 `verify_delivery.py`，供客戶一鍵執行驗收並輸出法律級客觀交付報告。
     3. 撰寫單元測試驗證產生器之正確性。
   - **驗收標準（DoD）**：產出 `tools/generate_dod_verifier.py` 與單元測試，執行測試全綠通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：tools/generate_dod_verifier.py＋tests/test_generate_dod_verifier.py：22 tests OK；產生的 verify_delivery.py 對 T-20261026-07 實跑 3/3 PASS、exit 0。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
 ---
 

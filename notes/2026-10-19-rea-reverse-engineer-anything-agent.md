@@ -7,7 +7,7 @@ author: "偉騰 (@wayturn_)"
 github_repo: "https://github.com/morluto/rea"
 analyzed_at: 2026-10-19
 analyzed_by: "Antigravity"
-status: in-progress # pending | in-progress | done | archived
+status: done # pending | in-progress | done | archived
 cluster: 3
 cluster_role: "逆向分析"
 short_title: "REA 逆向工程 MCP Server"
@@ -23,7 +23,7 @@ tags:
 - **來源連結**：[偉騰 @wayturn_ Threads 貼文](https://www.threads.com/@wayturn_/post/DeTK8xZGfkX) ｜ [morluto/rea (GitHub)](https://github.com/morluto/rea)
 - **發布平台 / 原作者**：`Threads` / `偉騰 (@wayturn_)`
 - **分析日期**：`2026-10-19`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -157,14 +157,14 @@ tags:
 
 以下任務已同步至主倉庫 `README.md` 待辦事項清單：
 
-- [ ] **`T-20261026-26`**｜**[優先級：高]** 擴充 `docs/reverse-engineering-pipeline-spec.md`：收錄 Clean Room 合規宣告 Prompt 範本與「GPT 靜態分析 + 本地未審查模型實操」雙軌逆向管線
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-26`**｜**[優先級：高]** 擴充 `docs/reverse-engineering-pipeline-spec.md`：收錄 Clean Room 合規宣告 Prompt 範本與「GPT 靜態分析 + 本地未審查模型實操」雙軌逆向管線
   - **目標範圍**：`docs/reverse-engineering-pipeline-spec.md`
   - **具體做法**：
     1. 在流水線規格書增補「合規防線與審查避障規範」，提供宣告靜態分析、Call Graph、重建資料格式之標準 Clean Room Prompt 範本。
     2. 制定雲端 GPT（靜態分析/輸出 Assembly/呼叫位址/TfmRegKey/Patch 偏移量）與本地未審查模型（實機位元修補與動態除錯）的資料介接契約。
   - **驗收標準（DoD）**：`docs/reverse-engineering-pipeline-spec.md` 包含合規 Prompt 範本與雲地雙軌管線架構圖，執行既有外部裁判驗證通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/reverse-engineering-pipeline-spec.md 新增第 5 節：合規 Prompt 範本與雲地雙軌管線架構圖；python tools/verify_re_and_android_specs.py exit 0。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 - [x] **`T-20261019-09`**｜**[優先級：高]** 在 Windows 11 本地環境測試 `SanHsien/rea` Fork 的安裝流程（`npx rea-agents setup`），驗證 MCP Server 註冊、Ghidra/JADX 底層工具鏈整合，以及對 Electron 應用（ASAR 解包）與瀏覽器 CDP 觀測模式的基礎功能
   - **狀態**：🟢 已完成（沙盒環境驗證通過）
   - **目標範圍**：`SanHsien/rea`（本地路徑 `C:\GitHub\rea`）、沙盒環境（`C:\GitHub\_sandbox\rea\`）

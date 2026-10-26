@@ -6,7 +6,7 @@ source_platform: "TOML 官方繁體中文規格書 / GitHub toml-lang/toml"
 author: "Tom Preston-Werner / miniasp 譯"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 3
 cluster_role: "設定工程"
 short_title: "TOML v1.1 規格與設定檔工程"
@@ -23,7 +23,7 @@ tags:
 - **官方倉庫**：[`toml-lang/toml`](https://github.com/toml-lang/toml)
 - **繁中規格首頁**：[TOML 繁體中文版規格（miniasp 譯）](https://toml.gh.miniasp.com/tw/index)
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：[`notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md`](./2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)
 
 ---
@@ -93,25 +93,25 @@ TOML（Tom's Obvious, Minimal Language，Tom 的明顯、最小化語言）由 G
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-04`**｜**[優先級：中]** 撰寫「TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引」收錄於 `docs/toml-config-engineering-spec.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-04`**｜**[優先級：中]** 撰寫「TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引」收錄於 `docs/toml-config-engineering-spec.md`
   - **目標範圍**：`docs/toml-config-engineering-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 整理 TOML v1.1 關鍵新特性（內嵌表格換行、`\e` 與 `\xHH`、Unicode 無引號鍵、尾隨逗號）。
     2. 對比 YAML 經典陷阱（Norway 問題、縮排崩塌、多行文本符號混亂）與 TOML 字面字串優勢。
     3. 提供 Python 3.11+ `tomllib`（唯讀標準庫）與 `tomlkit`（保留註解可寫庫）之最佳實踐範例。
   - **驗收標準（DoD）**：產出 `docs/toml-config-engineering-spec.md`，內含 v1.0 vs v1.1 差異、YAML vs TOML 陷阱對照表、Python 範例；以 `Test-Path docs/toml-config-engineering-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/toml-config-engineering-spec.md（198 行）：v1.0 與 v1.1 差異（1.1.0 發布日 2025-12-18 已查證）、YAML 對 TOML 陷阱對照表、Python tomllib 範例。獨立驗收（fresh-context 審查員，2026-10-26）通過：YAML 與 tomllib 範例輸出重跑相符。
 
-- [ ] **`T-20261026-05`**｜**[優先級：低]** 實作 `tools/toml_validator.py` 輕量校驗工具與單元測試
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-05`**｜**[優先級：低]** 實作 `tools/toml_validator.py` 輕量校驗工具與單元測試
   - **目標範圍**：`tools/toml_validator.py` 與 `tests/test_toml_validator.py`
   - **具體做法**：
     1. 利用 Python 3.11+ 內建 `tomllib` 實作命令列檢查工具，支援掃描 repo 內所有 `.toml` 檔案（如 `pyproject.toml`）。
     2. 驗證語法合法性，並針對特定專案設定檔（如 PEP 621 `[project]`）驗證必要欄位。
     3. 撰寫完整的單元測試覆蓋正常案例與語法錯誤反例。
   - **驗收標準（DoD）**：產出 `tools/toml_validator.py` 與 `tests/test_toml_validator.py`，通過 `python -m unittest discover -s tests -p "test_toml_validator.py"`。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：tools/toml_validator.py＋tests/test_toml_validator.py：33 tests OK；反例斷言 exit code 與 finding code，不是關鍵字比對；只用標準庫 tomllib。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
 ---
 

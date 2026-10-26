@@ -155,17 +155,16 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-27`**｜**[優先級：中]** 評估 Buzz 類 Slack 聊天室在 NAS 私有化常駐部署架構與「已讀不回」額度心跳防線設計
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-27`**｜**[優先級：中]** 評估 Buzz 類 Slack 聊天室在 NAS 私有化常駐部署架構與「已讀不回」額度心跳防線設計
   - **目標範圍**：`docs/buzz-nas-deployment-and-heartbeat-spec.md`
   - **具體做法**：
     1. 規劃 Buzz Nostr Relay 與前端 Web/Desktop 客戶端在 NAS（Docker/Compose）私有化部署指引。
     2. 設計多頻道任務切片與 Agent 分配策略，明確各群組進駐之 Agent 權限與上下文邊界。
     3. 制定「額度感知心跳協定（Quota Heartbeat Protocol）」，當 Agent 偵測到 429 或配額歸零時主動在聊天室廣播退場狀態，消除已讀不回盲區。
   - **驗收標準（DoD）**：產出 `docs/buzz-nas-deployment-and-heartbeat-spec.md`，內含 NAS 部署拓撲、多頻道配置範例與心跳協議定義；以 `Test-Path docs/buzz-nas-deployment-and-heartbeat-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
-- [ ] **`T-20261026-08`**｜**[優先級：高]** 撰寫「Block Buzz 架構解析與 Nostr+ACP/MCP 代理人協同設計指引」收錄於 `docs/buzz-nostr-agent-architecture.md`
-  - **狀態**：🟡 進行中
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/buzz-nas-deployment-and-heartbeat-spec.md（255 行）：NAS compose 部署拓撲、[[rules]] 多頻道配置範例（依 buzz-acp config.rs 解析器，指出 README 寫的 [channel.UUID] 不被解析）、QHP v0 心跳協議（狀態機、訊息格式、watchdog）。未實際部署、協議未實作，文件第 5 節已列。獨立驗收（fresh-context 審查員，2026-10-26）通過：config.rs 行號與 presence TTL 180 秒核對相符。
+- [x] **`T-20261026-08`**｜**[優先級：高]** 撰寫「Block Buzz 架構解析與 Nostr+ACP/MCP 代理人協同設計指引」收錄於 `docs/buzz-nostr-agent-architecture.md`
   - **目標範圍**：`docs/buzz-nostr-agent-architecture.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳解 Buzz 的 Nostr Relay 設計哲學、Kind 系統與 Postgres FTS 全文檢索結構。
@@ -173,10 +172,11 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
     3. 解析 Windows Job Object 在防止子進程洩漏上的 Win32 API 實作細節。
     4. 探討 Nostr 簽名在 Agent 身分識別與不可篡改審計鏈（Hash-Chain Log）的工程落地方法。
   - **驗收標準（DoD）**：產出 `docs/buzz-nostr-agent-architecture.md`，內含系統拓撲圖、協議序列圖、Windows Job Object API 實作解析與本地調度啟發；以 `Test-Path docs/buzz-nostr-agent-architecture.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/buzz-nostr-agent-architecture.md（264 行）：系統拓撲圖、Nostr＋ACP 協議序列圖、buzz-dev-mcp 的 Windows Job Object 實作解析（附原始碼行號，buzz commit 9e8c9fc）、本地調度啟發。獨立驗收（fresh-context 審查員，2026-10-26）通過：抽查 10 處行號，git-sign-nostr 行號已由 :9 更正為 :6。
 
 - [ ] **`T-20261026-09`**｜**[優先級：中]** 在 `SanHsien/buzz`（`C:\GitHub\buzz`）驗證 Windows 11 下 `buzz-dev-mcp` 與 `buzz-agent` 之獨立編譯與 Job Object 殺進程機制
-  - **狀態**：🟡 進行中
+  - **狀態**：🟡 進行中（卡關：本機 Visual Studio Build Tools 沒裝 C++ 工作負載，cargo check 找不到 link.exe，exit 101；裝好後重跑，紀錄見 docs/evidence/2026-10-26-buzz-windows-build.md）
   - **目標範圍**：`C:\GitHub\buzz\crates\buzz-dev-mcp` 與 `buzz-agent`
   - **具體做法**：
     1. 在 Windows 11 原生環境檢查 Rust 工具鏈（`cargo check -p buzz-dev-mcp -p buzz-agent`）。

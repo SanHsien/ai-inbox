@@ -9,7 +9,6 @@
 ```text
 C:\GitHub\ai-inbox\
 ├── README.md                        # 總表（任務表、索引與知識圖譜由腳本產生）
-├── private-aliases.json             # 私有 repo 公開別名表（真名在本機 private-aliases.local.json）
 ├── AGENTS.md                        # 本規範：給各 Agent 的標準讀寫與狀態更新協定
 ├── templates/
 │   └── article-analysis.md          # 單篇文章分析與待辦拆解的標準範本
@@ -115,16 +114,13 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
 
 本 Repo 為**公開倉庫（Public Repository）**，為防範個人隱私、專利與內部專案資訊外洩，所有 Agent 必須嚴格執行以下防護：
 
-1. **嚴禁私有專案細節外流**：
-   - 當實作完成回寫 `README.md` 的「🟢 已做」或 `notes/` 內的驗收證據時，若修改的是維護者的**私人 Repo** 或**未公開專案**：
-     - **禁止**貼出私有 Repo 的 GitHub URL、內部專案名稱或敏感路徑。
-     - **統一寫法**：標註為 `[Private Repo: <別名>] 通過驗證` 或 `[Local Config] 已整合`，僅附上抽象的驗證結論（例如：`單元測試 15/15 通過`），不附內部代碼與敏感路徑。
-   - **私有 repo 別名對照（各 Agent 必讀）**：
-     - 公開別名表：`private-aliases.json`（別名 → 用途，會提交）。
-     - 真名對照表：`private-aliases.local.json`（別名 → `owner/repo`，已 gitignore，只存在維護者本機 `C:\GitHub\ai-inbox\`）。
-     - **讀**：看到 `[Private Repo: 個人記憶庫]` 這類標記，查本機對照表取得真實 repo 再動工；本機檔不存在就詢問維護者，不要猜。
-     - **寫**：提到私有 repo 一律寫 `[Private Repo: <別名>]`。新的私有 repo 先在兩個檔各加一筆（公開檔只寫別名與用途），再使用。
-     - `verify_inbox.py` 會擋未登記的別名；本機有對照表時，真名出現在任何會提交的檔案也會擋下。
+1. **私有 repo 寫真名並標「（私有）」，內容不外流**：
+   - 寫法：`` `SanHsien/agent-assets`（私有） ``。讀者一看就知道連結打不開，Agent 也不用查對照表。
+     （2026-10-26 起取代舊的 `[Private Repo: 別名]` 寫法；名稱外洩頂多讓人猜到用途，進不去也看不到內容。）
+   - 私有 repo 的內部程式碼、未公開的商業邏輯不貼進來，只寫抽象的驗證結論（例如：`單元測試 15/15 通過`）。
+   - **本機家目錄路徑不寫真實帳號**：`C:\Users\<帳號>\...`、`/Users/<帳號>/...`、`/home/<帳號>/...` 改寫成
+     `%USERPROFILE%\...` 或 `~/...`；指令輸出裡的也要改。`verify_inbox.py` 會擋。
+     範例用的佔位帳號（`<Username>`、`username`、`admin`、`test`、`me`、`x`）不擋。
 2. **絕對零機密（Zero Secrets）**：
    - 任何 API Key、Token、私鑰、內部帳號密碼、主機 IP 或私人憑證，**絕對不可寫入**任何 `.md` 檔案、Commit 訊息或代碼範例中。
 3. **版權與隱私過濾**：

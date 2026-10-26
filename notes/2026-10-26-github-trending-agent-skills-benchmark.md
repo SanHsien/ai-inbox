@@ -6,7 +6,7 @@ source_platform: "Threads"
 author: "一股GoodJob (@good_job_ai)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 3
 cluster_role: "Skill生態評估"
 short_title: "GitHub 必裝 Skill 實測"
@@ -24,7 +24,7 @@ tags:
 - **來源貼文**：[Threads 貼文（一股GoodJob @good_job_ai）](https://www.threads.com/@good_job_ai/post/De22eZgE32F) ｜ [分享短鏈](https://www.threads.com/share/_pAJBrMYd/)
 - **分析主題**：GitHub 萬星熱門 Agent Skills 實機實測、Skill 膨脹與上下文污染、按需動態載入（JIT Loading）、8KB 預算門檻與工程治理
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-23-claude-plugin-security-guidance.md`](./2026-10-23-claude-plugin-security-guidance.md)（Claude Plugin 安全規範與 8KB 上下文預算）
   - [`notes/2026-10-18-claude-code-mods-self-extending-runtime.md`](./2026-10-18-claude-code-mods-self-extending-runtime.md)（Claude Code Mods 擴充機制與執行期架構）
@@ -118,18 +118,17 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-17`**｜**[優先級：高]** 撰寫「Agent Skills 評選矩陣與上下文預算工程規範」收錄於 `docs/agent-skills-curation-and-context-budget-spec.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-17`**｜**[優先級：高]** 撰寫「Agent Skills 評選矩陣與上下文預算工程規範」收錄於 `docs/agent-skills-curation-and-context-budget-spec.md`
   - **目標範圍**：`docs/agent-skills-curation-and-context-budget-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 整理 GitHub 熱門技能四大體系（工程紀律、元技能、前端規範、文件工程）的評選與取捨矩陣。
     2. 定義三層治理架構（常駐全域硬閘門、專案邊界技能、動態按需載入技能）。
     3. 規範 8KB 上下文預算上限、YAML 觸發條件明確性與指令衝突防範清單。
   - **驗收標準（DoD）**：產出 `docs/agent-skills-curation-and-context-budget-spec.md`，內含評選矩陣、架構分層圖與預算計算公式；以 `Test-Path docs/agent-skills-curation-and-context-budget-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/agent-skills-curation-and-context-budget-spec.md（213 行）：評選矩陣、架構分層圖、預算計算公式。獨立驗收（fresh-context 審查員，2026-10-26）通過：4 個 repo 的 Star 數與 superpowers 15 個子技能經 gh api 核對相符，稽核摘要重跑逐字相符。
 
-- [ ] **`T-20261026-18`**｜**[優先級：中]** 實作 `tools/audit_skills_context_budget.py` 技能預算稽核工具與單元測試
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-18`**｜**[優先級：中]** 實作 `tools/audit_skills_context_budget.py` 技能預算稽核工具與單元測試
   - **目標範圍**：`tools/audit_skills_context_budget.py` 與 `tests/test_audit_skills_context_budget.py`
   - **具體做法**：
     1. 以純 Python 實作掃描器，遞迴尋找指定目錄下的所有 `SKILL.md`。
@@ -137,16 +136,17 @@ tags:
     3. 輸出包含總 Token 預算評估與肥大警告的稽核報告。
     4. 撰寫單元測試覆蓋合規 Skill 與超標肥大 Skill。
   - **驗收標準（DoD）**：產出 `tools/audit_skills_context_budget.py` 與 `tests/test_audit_skills_context_budget.py`，通過 `python -m unittest discover -s tests -p "test_audit_skills_context_budget.py"`。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：tools/audit_skills_context_budget.py＋tests/test_audit_skills_context_budget.py：27 tests OK，含門檻邊界、UTF-8 位元組計算、唯讀檢查。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
-- [ ] **`T-20261026-19`**｜**[優先級：低]** 建立 `templates/lightweight-skill-template.md` 輕量化標準 Agent Skill 範本
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-19`**｜**[優先級：低]** 建立 `templates/lightweight-skill-template.md` 輕量化標準 Agent Skill 範本
   - **目標範圍**：`templates/lightweight-skill-template.md`
   - **具體做法**：
     1. 制定高密度、低 Token 消耗的單檔 Skill 範本，內建標準 YAML frontmatter、清晰觸發詞條件與邊界檢查。
     2. 附帶中英雙語撰寫指引與反範例警示。
   - **驗收標準（DoD）**：產出 `templates/lightweight-skill-template.md`，以 `Test-Path templates/lightweight-skill-template.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：templates/lightweight-skill-template.md（81 行）：範本本身跑 audit_skills_context_budget.py --strict 無 ERROR／WARN。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
 ---
 

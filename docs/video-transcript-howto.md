@@ -39,7 +39,7 @@ python -m pip install --user -U yt-dlp "yt-dlp[curl-cffi]" faster-whisper "av>=1
 
 - **GPU**：NVIDIA GeForce RTX 3060 (12288 MiB, Driver 616.92)，`ctranslate2.get_cuda_device_count() == 1`
 - **Python**：`C:\Python314\python.exe` (Python 3.14)
-- **套件（User site-packages `C:\Users\SanHsien\AppData\Roaming\Python\Python314\site-packages`）**：
+- **套件（User site-packages `%USERPROFILE%\AppData\Roaming\Python\Python314\site-packages`）**：
   - `yt-dlp` 2026.10.21 + `curl-cffi` 0.16.3
   - `faster-whisper` 1.2.1 + `ctranslate2` 4.8.3
   - `av` 16.1.0（鎖定 `<17`）

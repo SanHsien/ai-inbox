@@ -115,18 +115,25 @@ class ParseTest(unittest.TestCase):
         errs = vi.check_secrets(texts)
         self.assertEqual(len(errs), 2, errs)
 
-    def test_private_alias_checks(self):
-        p = self.tmp / "x.md"
-        public = {"個人記憶庫": "說明"}
-        local = {"個人記憶庫": "owner/secret-repo"}
-        ok = {p: "用 [Private Repo: 個人記憶庫] 通過驗證，格式說明 [Private Repo: <別名>]"}
-        self.assertEqual(vi.check_private_aliases(ok, public, local, ok), [])
-        bad = {p: "[Private Repo: 未登記] 與 secret-repo"}
-        errs = vi.check_private_aliases(bad, public, local, bad)
-        self.assertTrue(any("未登記" in e for e in errs), errs)
-        self.assertTrue(any("真實名稱 'secret-repo'" in e for e in errs), errs)
-        # CI 沒有本機對照表：只檢查別名登記，不做真名掃描
-        self.assertEqual(len(vi.check_private_aliases(bad, public, {}, bad)), 1)
+    def test_home_path_with_real_account_detected(self):
+        bad = {
+            r"C:\Users\alice\.claude\settings.json": "alice",
+            "file:///C:/Users/bob/AppData/x.js": "bob",
+            r"'C:\\Users\\carol\\AppData'": "carol",  # JSON／錯誤訊息裡的跳脫寫法
+            "/c/Users/dave/.ssh": "dave",
+            "/Users/erin/Library": "erin",
+            "/home/frank/build": "frank",
+        }
+        for text, name in bad.items():
+            errs = vi.check_home_paths({self.tmp / "a.md": f"路徑 `{text}`"})
+            self.assertEqual(len(errs), 1, (text, errs))
+            self.assertIn(f"'{name}'", errs[0])
+
+    def test_home_path_placeholders_and_repo_names_allowed(self):
+        ok = (r"C:\Users\<Username>\.claude、C:\Users\username\.ssh\id_rsa、C:/Users/test/lib.js、"
+              r"%USERPROFILE%\.claude、~/.claude、/home/x/build、C:\GitHub\ai-inbox、"
+              "`SanHsien/agent-assets`（私有）")
+        self.assertEqual(vi.check_home_paths({self.tmp / "a.md": ok}), [])
 
     def test_render_moves_done_task_to_done_table(self):
         out = bi.render_tasks([make_note(self.tmp)])

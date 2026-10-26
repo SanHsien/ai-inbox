@@ -72,8 +72,8 @@
 ## 4. `quality-loop` 全域技能升級
 
 同步更新以下技能定義檔：
-- 本地配置：`C:\Users\SanHsien\.gemini\config\skills\quality-loop\SKILL.md`
-- 跨 Agent SSOT 資產庫：`C:\GitHub\agent-assets\skills\quality-loop\SKILL.md`
+- 本地配置：`%USERPROFILE%\.gemini\config\skills\quality-loop\SKILL.md`
+- 跨 Agent SSOT 資產庫：`C:\GitHub\agent-assets\skills\quality-loop\SKILL.md`（私有）
 
 在 Quality Loop 執行契約中明確規範：
 - 強制引入 `agent-relay.gates`（`verify-gates`）：防禦刪改測試、拒絕空殼函式、TDD 紅轉綠閉環、日誌保全。
@@ -106,9 +106,9 @@ OK
 - **提交訊息**：`feat(gates): integrate agent-governance-toolkit runtime policy checks and credential redaction`
 - **遠端分支**：已成功 push 至維護者 fork `agent-relay`（`main`）。
 
-### 5.2 維護者 fork `agent-assets` 單元測試全綠
+### 5.2 維護者 fork `SanHsien/agent-assets`（私有） 單元測試全綠
 
-在 `C:\GitHub\agent-assets` 執行資產庫單元測試，58 項測試全數通過：
+在 `C:\GitHub\agent-assets`（私有） 執行資產庫單元測試，58 項測試全數通過：
 
 ```text
 C:\GitHub\agent-assets> python -m unittest discover -s "C:\GitHub\agent-assets\tests"
@@ -122,4 +122,4 @@ ASSET_REGISTER sharedDocuments hashes updated.
 
 - **Commit Hash**：`ae82874`
 - **提交訊息**：`feat(skills): add quality-loop skill with pstack gates and AGT governance policy integration`
-- **遠端分支**：已成功 push 至維護者 fork `agent-assets`（`main`）。
+- **遠端分支**：已成功 push 至維護者 fork `SanHsien/agent-assets`（私有）（`main`）。

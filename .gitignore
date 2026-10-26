@@ -12,7 +12,6 @@ tmp/
 *.tmp
 
 # Private repo real-name mapping (local only, never commit)
-private-aliases.local.json
 
 # Python bytecode cache
 __pycache__/

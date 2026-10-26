@@ -6,7 +6,7 @@ source_platform: "Facebook (Claude Taiwan) / GitHub (Leoceeport/ai-memory-templa
 author: "Going Li / Leoceeport / 社團社群"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 1
 cluster_role: "團隊共用記憶架構"
 short_title: "AI 共用記憶與三 Agent 全景"
@@ -27,7 +27,7 @@ tags:
 - **官方開源倉庫**：[`Leoceeport/ai-memory-template`](https://github.com/Leoceeport/ai-memory-template)
 - **分析主題**：跨 Agent「住進同一顆大腦」實戰、SSOT 資料夾架構、非同步交接帳本（`HANDOFF.md`）、滾動視窗 Hook、三跳查詢防線（3-Hop Query Protocol）、動詞寫入契約與糾正審核佇列
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md`](./2026-10-19-ai-shared-brain-multi-agent-architecture.md)（多 Agent 共同大腦與跨環境同步）
   - [`notes/2026-10-26-github-trending-agent-skills-benchmark.md`](./2026-10-26-github-trending-agent-skills-benchmark.md)（熱門技能評估與上下文預算工程）
@@ -70,10 +70,10 @@ tags:
 
 ### 2.1 四大記憶流派對比
 
-| 維度 | Going Li（三 Agent 同腦） | 顏志吉（滾動視窗 Hook） | Leoceeport（ai-memory-template） | 現有 agent-assets 體系 |
+| 維度 | Going Li（三 Agent 同腦） | 顏志吉（滾動視窗 Hook） | Leoceeport（ai-memory-template） | 現有 `SanHsien/agent-assets`（私有） 體系 |
 | :--- | :--- | :--- | :--- | :--- |
 | **核心定位** | 單人多 Agent 跨工具無縫切換 | 單人輕量級快速無痛接手 | 多人團隊/跨 Agent 標準記憶庫 | 跨 AI 助理全域 SSOT 知識資產 |
-| **記憶儲存體** | Claude Code 目錄 + Obsidian | 本機專案目錄 + Summary | 獨立 Git 倉庫 (Markdown + jsonl) | `C:\GitHub\agent-assets` (Git) |
+| **記憶儲存體** | Claude Code 目錄 + Obsidian | 本機專案目錄 + Summary | 獨立 Git 倉庫 (Markdown + jsonl) | `C:\GitHub\agent-assets`（私有） (Git) |
 | **讀取策略** | `HANDOFF.md` + 動態符號連結 | Hook 讀取最新 10 份 Summary | 三跳查詢協議（嚴禁整包讀取） | 按需 JIT 讀取（入口 + 領域檔） |
 | **寫入防線** | `agent-handoff checkpoint` | 手動/自動撰寫 Summary 檔案 | 動詞寫入契約 + 糾正審核佇列 | 規範強制要求、主表集中收斂 |
 | **跨工具溝通** | 檔案帳本（`HANDOFF.md`） | 檔案帳本（專案文件） | Git Pull/Push Rebase 同步 | Git + Task CLI + 跨平台通訊 |
@@ -136,8 +136,8 @@ tags:
 
 ## 3. 本地化評估與採用決策（Adoption Decision）
 
-- **與現有體系（`agent-assets` 與 `ai-inbox`）的對照**：
-  - 我們目前在 `C:\GitHub\agent-assets` 建立了跨 AI 共用規則與記憶庫，並透過 `CLAUDE.md` / `AGENTS.md` 達成單一事實來源（SSOT）。
+- **與現有體系（`SanHsien/agent-assets`（私有） 與 `ai-inbox`）的對照**：
+  - 我們目前在 `C:\GitHub\agent-assets`（私有） 建立了跨 AI 共用規則與記憶庫，並透過 `CLAUDE.md` / `AGENTS.md` 達成單一事實來源（SSOT）。
   - Going Li 的「Claude Code + Antigravity + Hermes」三位一體分工與 `HANDOFF.md` 切片交接，印證了我們在本地多 Agent 分工上的可行性。
   - 顏志吉的 Hook 載入經驗提醒我們：**不能單靠無腦讀取最新 N 份紀錄**，必須搭配三跳索引協議，否則隨著專案疊代，Context 膨脹將吞噬有限預算。
   - Leoceeport 的 `ai-memory-template` 則提供了最關鍵的「防腐蝕檢查」與「糾正審查佇列」，能直接強化我們的協作穩定度。
@@ -146,10 +146,10 @@ tags:
   1. **跨平台記憶索引檢查工具（移植至 Python）**：
      - 原範本的 `check_index.sh` 依賴 bash/grep/sed，在 Windows 原生環境執行不便。
      - 在本 repo 中以 Python 3.11+ 實作跨平台的 `tools/check_memory_index.py`，支援掃描壞連結、未登錄檔案與索引過長門檻（>60 條）。
-  2. **在 `agent-assets` 引入「糾正審查佇列（`correction-queue.jsonl`）」**：
+  2. **在 `SanHsien/agent-assets`（私有） 引入「糾正審查佇列（`correction-queue.jsonl`）」**：
      - 目前多個 Agent 在記錄 `lessons.md` 時均直接寫檔。引入 jsonl 格式的審核佇列，能使各 Session 的除錯反思先非同步排隊，再由主 Session 批次精煉收錄，杜絕規則主表混亂。
   3. **吸收三跳查詢協議至全域指引**：
-     - 在 `agent-assets` 明訂索引指針與具體文檔的分層邊界，杜絕一次性載入全文造成的 Token 浪費。
+     - 在 `SanHsien/agent-assets`（私有） 明訂索引指針與具體文檔的分層邊界，杜絕一次性載入全文造成的 Token 浪費。
 
 ---
 
@@ -157,34 +157,34 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-23`**｜**[優先級：高]** 撰寫「多 Agent 團隊共用記憶系統工程規範」收錄於 `docs/ai-shared-memory-engineering-spec.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-23`**｜**[優先級：高]** 撰寫「多 Agent 團隊共用記憶系統工程規範」收錄於 `docs/ai-shared-memory-engineering-spec.md`
   - **目標範圍**：`docs/ai-shared-memory-engineering-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳解三跳查詢協議（MEMORY.md $\to$ 主題索引 $\to$ 具體文檔）的 Context 預算控制原理。
     2. 定義動詞寫入契約、糾正審核佇列（`correction-queue.jsonl`）與單一權威審核機制。
     3. 規範索引防腐蝕門檻（超過 60 條拆分/歸檔）與 Git 原子同步退回機制。
   - **驗收標準（DoD）**：產出 `docs/ai-shared-memory-engineering-spec.md`，內含三跳架構拓撲、目錄結構範例與 Git 防線說明；以 `Test-Path docs/ai-shared-memory-engineering-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/ai-shared-memory-engineering-spec.md（290 行）：三跳架構拓撲、目錄結構範例、Git 防線說明。獨立驗收（fresh-context 審查員，2026-10-26）通過：範本 repo 1 star、license null 核對相符。
 
-- [ ] **`T-20261026-24`**｜**[優先級：中]** 實作 `tools/check_memory_index.py` 跨平台記憶索引健檢工具與單元測試
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-24`**｜**[優先級：中]** 實作 `tools/check_memory_index.py` 跨平台記憶索引健檢工具與單元測試
   - **目標範圍**：`tools/check_memory_index.py` 與 `tests/test_check_memory_index.py`
   - **具體做法**：
     1. 以純 Python 3.11+ 實作索引健全性檢查器，完美相容 Windows 11 原生環境。
     2. 自動驗證：(1) 索引指向不存在檔案的壞連結、(2) 未編入索引的同層文檔、(3) 索引行數超過 60 條的過長警示。
     3. 撰寫單元測試覆蓋正常索引、壞連結、漏編檔案與過長條目。
   - **驗收標準（DoD）**：產出 `tools/check_memory_index.py` 與 `tests/test_check_memory_index.py`，通過 `python -m unittest discover -s tests -p "test_check_memory_index.py"`。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：tools/check_memory_index.py＋tests/test_check_memory_index.py：22 tests OK，含 60 條上限邊界、壞連結、漏編索引、CRLF／BOM。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
-- [ ] **`T-20261026-25`**｜**[優先級：低]** 在 `C:\GitHub\agent-assets` 評估引進「糾正審查佇列（`correction-queue.jsonl`）」架構
-  - **狀態**：🟡 進行中
-  - **目標範圍**：`C:\GitHub\agent-assets\knowledge\` 與擴充評估文檔
+- [x] **`T-20261026-25`**｜**[優先級：低]** 在 `C:\GitHub\agent-assets`（私有） 評估引進「糾正審查佇列（`correction-queue.jsonl`）」架構
+  - **目標範圍**：`C:\GitHub\agent-assets\knowledge\`（私有） 與擴充評估文檔
   - **具體做法**：
     1. 評估各 Agent 在會話糾正時將教訓先寫入 `correction-queue.jsonl`，再由主 Session 審核合入 `lessons.md` 的操作流。
     2. 撰寫評估報告與資料綱要定義。
-  - **驗收標準（DoD）**：產出評估紀錄收錄於 `agent-assets` 或 `ai-inbox` 文檔。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **驗收標準（DoD）**：產出評估紀錄收錄於 `SanHsien/agent-assets`（私有） 或 `ai-inbox` 文檔。
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/correction-queue-evaluation.md（137 行）：評估結論、與現有 SSOT 的衝突表、jsonl 綱要、觸發條件；唯讀查證 SanHsien/agent-assets（私有），未在該 repo 實際寫入（文件第 8 節已列）。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
 ---
 

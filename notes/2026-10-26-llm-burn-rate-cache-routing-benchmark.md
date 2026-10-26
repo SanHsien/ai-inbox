@@ -6,7 +6,7 @@ source_platform: "一線工程實測 (Empirical Benchmark)"
 author: "維護者 (Maintainer)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 1
 cluster_role: "路由分流"
 short_title: "Sol/Astra/Luna 燒額與快取實測"
@@ -23,7 +23,7 @@ tags:
 - **資料來源**：`維護者一線連續開發實測數據（2026-10-26）`
 - **評測情境**：搭配 Tibo's Reset 後的多專案高強度連續開發、從零骨架建構與長程自主派工
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：[`notes/2026-10-17-model-routing-opusplan-advisor.md`](./2026-10-17-model-routing-opusplan-advisor.md)、[`notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md`](./2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)
 
 ---
@@ -119,24 +119,24 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-01`**｜**[優先級：高]** 撰寫「長程並行開發模型選型與配額消耗速查表」收錄於 `docs/model-burn-rate-routing-matrix.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-01`**｜**[優先級：高]** 撰寫「長程並行開發模型選型與配額消耗速查表」收錄於 `docs/model-burn-rate-routing-matrix.md`
   - **目標範圍**：`docs/model-burn-rate-routing-matrix.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳細對比 Sol 6.1 High（24H 50%）、Astra 6 High（4H 100%）、Luna 6 Max~High（2天 100%）之耗額速度與單位成本。
     2. 總結骨架搭建、模組迭代、重構攻堅與長程自動化的選型建議。
     3. 整理 Prompt Caching 四層前綴友好排版手冊與 Plus 帳號 `/goal` 避開 5H 限制最佳實踐。
   - **驗收標準（DoD）**：產出 `docs/model-burn-rate-routing-matrix.md`，內含三大模型耗額數據對比、適用場景清單、快取排版原則與 5H 規避策略；以 `Test-Path docs/model-burn-rate-routing-matrix.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/model-burn-rate-routing-matrix.md（127 行）：三模型耗額與價格對照（附查證日與官方出處）、適用場景、快取排版原則、5H 規避策略。獨立驗收（fresh-context 審查員，2026-10-26）通過：API 價格、快取倍率、Plus 每 5 小時訊息數經官方頁逐字核對相符。
 
-- [ ] **`T-20261026-02`**｜**[優先級：中]** 將「骨架搭建降級至 Sol 6.1、極限攻堅再開 Astra 6」與「Luna 6 避開 5H 限制」原則沉澱至 `agent-assets` 共用偏好庫
-  - **狀態**：⚪ 不做（不做：要寫入的是單篇文章作者的模型選擇建議與耗額倍數（Astra 6 為 Sol 6.1 的 12 倍等），不是維護者的偏好；agent-assets RUNBOOK 也明訂模型名、價格、額度這類動態資料不寫成永久事實。這些數據改附出處與日期收錄在 T-20261026-01 的 docs/model-burn-rate-routing-matrix.md。）
-  - **目標範圍**：`C:\GitHub\agent-assets\knowledge\user_preferences.md`
+- [ ] **`T-20261026-02`**｜**[優先級：中]** 將「骨架搭建降級至 Sol 6.1、極限攻堅再開 Astra 6」與「Luna 6 避開 5H 限制」原則沉澱至 `SanHsien/agent-assets`（私有） 共用偏好庫
+  - **狀態**：⚪ 不做（不做：要寫入的是單篇文章作者的模型選擇建議與耗額倍數（Astra 6 為 Sol 6.1 的 12 倍等），不是維護者的偏好；`SanHsien/agent-assets`（私有） RUNBOOK 也明訂模型名、價格、額度這類動態資料不寫成永久事實。這些數據改附出處與日期收錄在 T-20261026-01 的 docs/model-burn-rate-routing-matrix.md。）
+  - **目標範圍**：`C:\GitHub\agent-assets\knowledge\user_preferences.md`（私有）
   - **具體做法**：
     1. 在 `user_preferences.md` 的模型調度段落中，補充實測耗額數據警示（Astra 6 耗額為 Sol 6.1 的 12 倍）。
     2. 加入從零搭建骨架時預設使用 Sol 6.1 或 Luna 6、嚴禁無界限使用頂級模型的紀律。
     3. 補充 Plus 帳號使用 Luna 6 + `/goal` 規避 5H 滾動限制的長程排程建議。
-  - **驗收標準（DoD）**：更新 `knowledge/user_preferences.md`，通過 `python -m unittest discover -s tests`，並主動 git push 至 `SanHsien/agent-assets`。
+  - **驗收標準（DoD）**：更新 `knowledge/user_preferences.md`，通過 `python -m unittest discover -s tests`，並主動 git push 至 `SanHsien/agent-assets`（私有）。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-03`**｜**[優先級：低]** 在 `agent-relay` 派工模組中增加模型耗額等級警示與快取友善結構建議

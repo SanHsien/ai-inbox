@@ -6,7 +6,7 @@ source_platform: "GitHub (leepokai/Codync) / Threads"
 author: "Kevin (leepokai) / it.oppa.twhk (@it.oppa.twhk)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 1
 cluster_role: "遠端多Agent中繼與容錯"
 short_title: "Codync 開源 Agent 中繼"
@@ -26,7 +26,7 @@ tags:
 - **社群引介來源**：[Threads 貼文（it.oppa.twhk）](https://www.threads.com/@it.oppa.twhk/post/De1ubh6Cf8i) ｜ [分享短鏈](https://www.threads.com/share/BAHSEoL7uM/)
 - **分析主題**：商業遠端 Agent 機器人平替、ACP（Agent Client Protocol）通用橋接、自帶訂閱（BYOS/BYOA）、Rate Limit 配額容錯自動 Fallback 降級、多 Agent 群聊協同與 E2EE 端到端加密
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（模型燒額率評估與配額調度矩陣）
   - [`notes/2026-10-26-block-buzz-nostr-agent-workspace.md`](./2026-10-26-block-buzz-nostr-agent-workspace.md)（Block Buzz 協同工作區與 ACP/MCP 雙協議解耦）
@@ -124,8 +124,7 @@ Codync 提出 **BYOA（Bring Your Own Agent）** 與 **BYOS（Bring Your Own Sub
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-20`**｜**[優先級：高]** 撰寫「開源 Agent 中繼架構：ACP 通用橋接、Rate Limit 自動容錯降級與 E2EE 遠端審批工程指引」收錄於 `docs/codync-agent-fallback-and-mobile-relay-spec.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-20`**｜**[優先級：高]** 撰寫「開源 Agent 中繼架構：ACP 通用橋接、Rate Limit 自動容錯降級與 E2EE 遠端審批工程指引」收錄於 `docs/codync-agent-fallback-and-mobile-relay-spec.md`
   - **目標範圍**：`docs/codync-agent-fallback-and-mobile-relay-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳解 Codync 的 BYOS/BYOA 設計哲學，以及與商業閉源工具（Grok Bot, Dots, Muse）的技術對比。
@@ -133,7 +132,8 @@ Codync 提出 **BYOA（Bring Your Own Agent）** 與 **BYOS（Bring Your Own Sub
     3. 設計模型 Rate Limit / 429 錯誤捕捉狀態機與上下文梯隊降級（Fallback Tier）演算法。
     4. 定義危險指令審批卡（Approval Card）契約與端到端加密通道驗證標準。
   - **驗收標準（DoD）**：產出 `docs/codync-agent-fallback-and-mobile-relay-spec.md`，內含系統架構圖、Fallback 狀態轉換圖與 ACP 橋接範例；以 `Test-Path docs/codync-agent-fallback-and-mobile-relay-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/codync-agent-fallback-and-mobile-relay-spec.md（302 行）：系統架構圖、Fallback 狀態轉換圖、ACP 橋接範例。獨立驗收（fresh-context 審查員，2026-10-26）通過：MAX_FALLBACKS=3、錯誤碼 -32000、agent-relay dispatch.py:74、buzz PROTOCOL_VERSION=2 均核對相符。
 
 - [x] **`T-20261026-21`**｜**[優先級：中]** 在 `agent-relay` 規劃實作模型配額 Rate Limit 捕捉與自動 Fallback 降級調度原型
   - **目標範圍**：`C:\GitHub\agent-relay` 派工核心與容錯模組

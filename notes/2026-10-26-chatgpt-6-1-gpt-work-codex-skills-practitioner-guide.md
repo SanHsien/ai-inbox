@@ -6,7 +6,7 @@ source_platform: "YouTube (孔老師AI研習社)"
 author: "孔老師AI研習社 (@Teacher_Kong)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 1
 cluster_role: "終端派工"
 short_title: "ChatGPT-6.1 全景實測與工具鏈映射"
@@ -28,7 +28,7 @@ tags:
 - **頻道作者**：孔老師AI研習社（@Teacher_Kong，80.4K 訂閱）
 - **發布日期**：`2026-10-01` ｜ 觀看次數：113,000+
 - **分析主題**：ChatGPT-6.1 桌面生態系（GPT Work 辦公協同、Codex 程式代理、Skills 模組化流程）、大眾化操作盲區破解、Session 實戰工具鏈（AGENTS.md 派工、Three.js 視覺工件、Buzz NAS 常駐、雲地雙軌實操、Cache 燃燒率矩陣）深度映射
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（Sol 6.1 vs Astra 6 燃燒率與 Cache 基準）
   - [`notes/2026-10-26-block-buzz-nostr-agent-workspace.md`](./2026-10-26-block-buzz-nostr-agent-workspace.md)（Buzz 類 Slack 聊天室與 NAS 常駐拓撲）
@@ -133,25 +133,25 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-29`**｜**[優先級：高]** 撰寫「GPT Work / Codex 之 AGENTS.md 規範驅動起步與 Skill 預算控制手冊」收錄於 `docs/codex-skills-agents-bootstrap-guide.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-29`**｜**[優先級：高]** 撰寫「GPT Work / Codex 之 AGENTS.md 規範驅動起步與 Skill 預算控制手冊」收錄於 `docs/codex-skills-agents-bootstrap-guide.md`
   - **目標範圍**：`docs/codex-skills-agents-bootstrap-guide.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳解專案根目錄 `AGENTS.md` 作為單一進入點的設計原理，徹底解決手動 `@Skill` 換專案失憶問題。
     2. 制定 Skills 載入的 8KB 上下文預算上限與 JIT 按需載入規則，防止多 Skill 同時掛載造成注意力稀釋。
     3. 提供相容於 Codex、Claude Code 與 Antigravity 的標準啟步協議範本。
   - **驗收標準（DoD）**：產出 `docs/codex-skills-agents-bootstrap-guide.md`，內含起步序列圖、目錄範例與預算檢驗標準；以 `Test-Path docs/codex-skills-agents-bootstrap-guide.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/codex-skills-agents-bootstrap-guide.md（195 行）：起步序列圖、目錄範例、預算檢驗標準（AGENTS.md 合併上限 32 KiB、技能清單 2%／8,000 字元）。獨立驗收（fresh-context 審查員，2026-10-26）通過：32 KiB、2%、v2.1.277、1,536 字元、4 層匯入經官方頁逐字核對。
 
-- [ ] **`T-20261026-30`**｜**[優先級：中]** 撰寫「AI Agent 操控 3D 與本機 GUI 軟體之雙軌橋接方案規格」收錄於 `docs/3d-gui-agent-control-bridge.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-30`**｜**[優先級：中]** 撰寫「AI Agent 操控 3D 與本機 GUI 軟體之雙軌橋接方案規格」收錄於 `docs/3d-gui-agent-control-bridge.md`
   - **目標範圍**：`docs/3d-gui-agent-control-bridge.md`
   - **具體做法**：
     1. 剖析大模型無法直接操作本機 3D GUI 軟體的底層原因，並解答觀眾 payson1998 提問之本質。
     2. 定義方案 A（Three.js WebGL 互動 HTML 工件渲染）之資料交換契約與適用場景。
     3. 定義方案 B（Blender Python / CLI-Anything / MCP 外部指令轉發）之架構實施指引。
   - **驗收標準（DoD）**：產出 `docs/3d-gui-agent-control-bridge.md`，涵蓋 WebGL 渲染管線與 MCP 控制架構圖；以 `Test-Path docs/3d-gui-agent-control-bridge.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/3d-gui-agent-control-bridge.md（173 行）：WebGL 渲染管線、blender-mcp／CLI-Anything 的 MCP 控制架構圖與風險。獨立驗收（fresh-context 審查員，2026-10-26）通過；審查退回 2 點已修：刪除不存在的 AGENTS.md 規則出處（改標為本文件建議）、安裝步驟出處改指 blender-mcp README。
 
 - [ ] **`T-20261026-31`**｜**[優先級：低]** 撰寫「多 Agent 私有化常駐工作台與 Token 燃燒率控制指引」收錄於 `docs/desktop-agent-burn-rate-and-buzz-guide.md`
   - **狀態**：⚪ 不做（不做：內容與 T-20261026-01（模型耗額與路由速查表）及 T-20261026-27（Buzz NAS 常駐部署與心跳協議）重複，兩份文件已涵蓋部署拓撲、預算路由矩陣與心跳協議，不另寫一份。）

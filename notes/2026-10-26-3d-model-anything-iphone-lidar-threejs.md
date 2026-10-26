@@ -6,7 +6,7 @@ source_platform: "GitHub (wesbos/3d-model-anything) / Threads"
 author: "Wes Bos / 李昱翰 (@leeunhn)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 2
 cluster_role: "LiDAR空間重建"
 short_title: "3D Model Anything"
@@ -26,7 +26,7 @@ tags:
 - **社群引介來源**：[Threads 貼文（李昱翰 @leeunhn）](https://www.threads.com/@leeunhn/post/De3ViwPkt0-) ｜ [分享短鏈](https://www.threads.com/share/BAPezaO6q6/)
 - **分析主題**：空間運算（Spatial Computing）、iPhone LiDAR + RoomPlan 數據捕獲、Three.js 程式化可編輯建模、AI Coding Agent 專屬技能（`scan-to-threejs`）與相機內參視覺對齊閉環
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-target-story-generative-ui-editor.md`](./2026-10-18-target-story-generative-ui-editor.md)（Generative UI 互動產品設計與狀態管理）
   - [`notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md`](./2026-10-26-answer-me-with-html-visual-agent-artifacts.md)（工件輸出與確定性版面計算）
@@ -117,7 +117,7 @@ Agent 透過 `agent-browser` 截取渲染畫面，調用 Python 腳本將虛擬�
 - **採納與落地行動**：
   1. **空間運算 Agent 技能範本提煉**：
      - Wes Bos 的 `scan-to-threejs` 是目前 AI Agent 在 3D 與空間運算領域結構最嚴謹、驗收規範最明確的 Skill 之一。
-     - 其「物理證據 $\to$ 坐標契約 $\to$ 語意化程式化建模 $\to$ 視覺相機內參比對」的四步閉環，為我們的 `agent-assets` 與技能體系提供了頂級範本。
+     - 其「物理證據 $\to$ 坐標契約 $\to$ 語意化程式化建模 $\to$ 視覺相機內參比對」的四步閉環，為我們的 `SanHsien/agent-assets`（私有） 與技能體系提供了頂級範本。
   2. **空間幾何契約校驗工具**：
      - 在本 repo 中提煉輕量空間契約檢驗工具（驗證單位為米、+Y 朝上、地面為零、Bounding Box 合法性），杜絕 Agent 生成錯亂的三維代碼。
   3. **Three.js 輕量展示範本整合**：
@@ -132,8 +132,7 @@ Agent 透過 `agent-browser` 截取渲染畫面，調用 Python 腳本將虛擬�
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-11`**｜**[優先級：高]** 撰寫「空間運算 Agent 規範：物理 LiDAR 測量、Three.js 程式化建模與相機內參比對閉環」收錄於 `docs/scan-to-threejs-spatial-agent-spec.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-11`**｜**[優先級：高]** 撰寫「空間運算 Agent 規範：物理 LiDAR 測量、Three.js 程式化建模與相機內參比對閉環」收錄於 `docs/scan-to-threejs-spatial-agent-spec.md`
   - **目標範圍**：`docs/scan-to-threejs-spatial-agent-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳解 iOS RoomPlan 與 LiDAR 數據格式（空間幾何、門窗開口、定位照片與相機內參）。
@@ -141,27 +140,28 @@ Agent 透過 `agent-browser` 截取渲染畫面，調用 Python 腳本將虛擬�
     3. 規範「先結構後細節」的漸進式建模分層與 Matched-Camera 視角並排比對流程。
     4. 闡述「編譯通過不等於視覺正確」在空間與圖形程式開發中的防幻覺實踐。
   - **驗收標準（DoD）**：產出 `docs/scan-to-threejs-spatial-agent-spec.md`，內含坐標契約、工作流時序圖、相機比對腳本範例與驗收門檻；以 `Test-Path docs/scan-to-threejs-spatial-agent-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/scan-to-threejs-spatial-agent-spec.md（216 行）：座標契約、工作流時序圖、相機比對腳本範例與驗收門檻。獨立驗收（fresh-context 審查員，2026-10-26）通過：cmp_camera 範例重跑輸出逐字相符。
 
-- [ ] **`T-20261026-12`**｜**[優先級：中]** 實作 `tools/verify_spatial_alignment.py` 空間幾何契約校驗工具與單元測試
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-12`**｜**[優先級：中]** 實作 `tools/verify_spatial_alignment.py` 空間幾何契約校驗工具與單元測試
   - **目標範圍**：`tools/verify_spatial_alignment.py` 與 `tests/test_verify_spatial_alignment.py`
   - **具體做法**：
     1. 以純 Python 3.11+ 實作幾何契約檢查器，解析房間模型資料（JSON / Three.js 節點定義）。
     2. 校驗基本契約：單位是否為米、最低地板坐標是否貼齊 Y=0、物體是否完全位於房間圍牆邊界內。
     3. 撰寫單元測試覆蓋正常房間幾何與穿牆、懸空、坐標倒置等異常案例。
   - **驗收標準（DoD）**：產出 `tools/verify_spatial_alignment.py` 與 `tests/test_verify_spatial_alignment.py`，通過 `python -m unittest discover -s tests -p "test_verify_spatial_alignment.py"`。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：tools/verify_spatial_alignment.py＋tests/test_verify_spatial_alignment.py：34 tests OK，反例含穿牆、懸空、Y 軸倒置、鏡像位姿，皆為幾何斷言。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
-- [ ] **`T-20261026-13`**｜**[優先級：低]** 建立 `assets/spatial-room-viewer/index.html` 輕量 Three.js 空間漫遊與娃娃屋展示範本
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-13`**｜**[優先級：低]** 建立 `assets/spatial-room-viewer/index.html` 輕量 Three.js 空間漫遊與娃娃屋展示範本
   - **目標範圍**：`assets/spatial-room-viewer/index.html`（獨立 HTML 靜態展示）
   - **具體做法**：
     1. 採用純前端 CDN（Three.js + OrbitControls / PointerLockControls）實作單檔式 3D 空間展示。
     2. 支援按鈕原地切換 Dollhouse（娃娃屋軌道視角）與 Walking（第一人稱走動漫遊視角）。
     3. 實作基礎牆面、地板、窗戶與簡單家具立方體之參數化網格，零外部本地後端即可在瀏覽器開啟。
   - **驗收標準（DoD）**：產出 `assets/spatial-room-viewer/index.html`，以瀏覽器 `file://` 協定開啟無 JavaScript 錯誤，可正常進行視角切換與空間導覽。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：assets/spatial-room-viewer/index.html（215 行，Three.js 0.160.0 固定版本、jsdelivr importmap）：審查員以 headless Chrome 用 file:// 開啟無 console 錯誤，dollhouse→walking→dollhouse 切換成功；主 session 另以本機 http 實測兩種視角皆可切換、無 JS 錯誤。
 
 ---
 

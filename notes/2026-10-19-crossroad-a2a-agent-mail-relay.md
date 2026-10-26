@@ -166,12 +166,12 @@ tags:
 以下任務已同步至主倉庫 `README.md` 待辦事項清單：
 
 - [x] **`T-20261019-01`**｜**[優先級：高]** 深入評估 Crossroad A2A 寄信協議規格（信件 Envelope 結構、非同步收件匣 Polling 與 Webhook 中繼），設計適配本地 Claude Code / Codex / Antigravity 的 CLI 信箱適配器（Mailbox Client Adapter）
-  - **目標範圍**：`SanHsien/agentdeck` ＋ [Private Repo: 個人記憶庫]
+  - **目標範圍**：`SanHsien/agentdeck` ＋ `SanHsien/xiaoke-claude-memory`（私有）
   - **驗收標準（DoD）**：復用 `agentdeck` 輪詢機制實作輕量 CLI Mailbox Client，Agent 能讀寫 JSON Envelope 信件並有實際收發紀錄
   - **完成日期**：2026-10-20
-  - **實作紀錄 / 證據**：協定與 CLI 在 [SanHsien/agent-relay](https://github.com/SanHsien/agent-relay)（`99f3dc8`，Envelope v1 規格見 SPEC.md，34 項單元測試通過，含雙 clone 經 git 遠端收發）；store 為 [Private Repo: 個人記憶庫] 的 `mailbox` 分支；輪詢沿用 agentdeck 排程做法（`StartWhenAvailable`），agentdeck 托盤新信通知 `b49486f`、`514e349`。實測一封派工信 `…165506382Z-9ba7aa` commander→codex，工人回信 `…165619565Z-9bc015`，雙方 ack，store 留 6 筆 git 紀錄。紀錄：agent-relay `docs/evidence/2026-10-20-phase1.md`。限制：兩台機器以同一主機的兩份 clone 模擬；工人由 Claude 子 agent 扮演（Codex 沙箱外網路權限被自動模式擋下）。
+  - **實作紀錄 / 證據**：協定與 CLI 在 [SanHsien/agent-relay](https://github.com/SanHsien/agent-relay)（`99f3dc8`，Envelope v1 規格見 SPEC.md，34 項單元測試通過，含雙 clone 經 git 遠端收發）；store 為 `SanHsien/xiaoke-claude-memory`（私有） 的 `mailbox` 分支；輪詢沿用 agentdeck 排程做法（`StartWhenAvailable`），agentdeck 托盤新信通知 `b49486f`、`514e349`。實測一封派工信 `…165506382Z-9ba7aa` commander→codex，工人回信 `…165619565Z-9bc015`，雙方 ack，store 留 6 筆 git 紀錄。紀錄：agent-relay `docs/evidence/2026-10-20-phase1.md`。限制：兩台機器以同一主機的兩份 clone 模擬；工人由 Claude 子 agent 扮演（Codex 沙箱外網路權限被自動模式擋下）。
 - [x] **`T-20261019-02`**｜**[優先級：中]** 整合本地現有 `dropoff` / `pickup` 與 Crossroad A2A 中繼架構，實作免公網 IP 與免額外 API Key 的跨機器 Agent 門鈴通知與任務接力原型
-  - **目標範圍**：`SanHsien/agent-session-restore` ＋ `SanHsien/line-desktop-mcp` ＋ [Private Repo: 個人記憶庫]
+  - **目標範圍**：`SanHsien/agent-session-restore` ＋ `SanHsien/line-desktop-mcp` ＋ `SanHsien/xiaoke-claude-memory`（私有）
   - **驗收標準（DoD）**：發信時觸發跨 Agent / 機器 / 手機端門鈴通知，實測一次完整接力
   - **完成日期**：2026-10-20
   - **實作紀錄 / 證據**：[SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) 的 `watch --once` 門鈴（toast／command／handoff）＋ Windows 排程輪詢；`--project asr:<會話名>` 從 agent-session-restore 登記檔查專案路徑；handoff 門鈴產生 dropoff/pickup 交接卡。實測：commander 寄 `…165758924Z-a805c6` → 第二台機器桌面通知 ok、Telegram 手機通知 ok、交接卡 ok → 新 session 接手（pending→picked→done）並回信 `…165845229Z-19470f` → commander 端排程工作 `agent-relay-watch-commander` 拉信並通知（00:59:20）。全程免公網 IP、免新增 API key（git push/pull＋既有 Telegram 腳本）。限制：line-desktop-mcp 每次傳送須人確認，未接成自動門鈴；同上為單主機雙 clone 模擬。

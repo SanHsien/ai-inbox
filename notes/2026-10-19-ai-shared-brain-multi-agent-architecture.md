@@ -131,13 +131,13 @@ tags:
 
 | 階段 | 關鍵作用 | 本地與遠端現有可用 Repo（直接復用） | 核心落地能力與職責邊界 |
 | :---: | :--- | :--- | :--- |
-| **Phase 1: Message Relay** | 非同步訊息通道 | `SanHsien/agentdeck` ＋ [Private Repo: 個人記憶庫] | 復用 `agentdeck` 的定時輪詢中樞與 [Private Repo: 個人記憶庫] 的郵箱結構，實作輕量 CLI Mailbox Client，使 Agent 能讀寫 JSON Envelope 信件 |
-| **Phase 1: Message Relay** | 即時喚醒門鈴 | `SanHsien/agent-session-restore` ＋ `SanHsien/line-desktop-mcp` ＋ [Private Repo: 個人記憶庫] | 復用 `asr` 會話喚醒機制與 `line-desktop-mcp` / [Private Repo: 個人記憶庫] 門鈴，發信時觸發跨 Agent/跨機器/跨裝置（LINE）通知接力 |
+| **Phase 1: Message Relay** | 非同步訊息通道 | `SanHsien/agentdeck` ＋ `SanHsien/xiaoke-claude-memory`（私有） | 復用 `agentdeck` 的定時輪詢中樞與 `SanHsien/xiaoke-claude-memory`（私有） 的郵箱結構，實作輕量 CLI Mailbox Client，使 Agent 能讀寫 JSON Envelope 信件 |
+| **Phase 1: Message Relay** | 即時喚醒門鈴 | `SanHsien/agent-session-restore` ＋ `SanHsien/line-desktop-mcp` ＋ `SanHsien/xiaoke-claude-memory`（私有） | 復用 `asr` 會話喚醒機制與 `line-desktop-mcp` / `SanHsien/xiaoke-claude-memory`（私有） 門鈴，發信時觸發跨 Agent/跨機器/跨裝置（LINE）通知接力 |
 | **Phase 2: Dispatch** | 跨終端開新 Session 與代理網關 | `SanHsien/agent-cortex` ＋ `SanHsien/opencodex` ＋ `SanHsien/claude-code-projects-workflow` | **直接復用原生 Windows 控制平面**（`agent-cortex`）與原生通用供應商代理（`opencodex`），結合 `claude-code-projects-workflow` 之 Worktree 派工，徹底平替 Linux 專用 tmux/Magpie |
 | **Phase 2: Dispatch** | 跨 CLI 子代理派工契約 | `SanHsien/agent-advisor` ＋ `SanHsien/agy-staff` | **直接復用 `agy-staff`**（將 Antigravity CLI 作為執行端 Worker 委派給 Claude Code / Codex）與 `agent-advisor` 派工合約，定義標準輸入工單與 headless 參數 |
 | **Phase 2: Dispatch** | 額度感知動態分派與斷線續跑 | `SanHsien/codex-reset-checker` ＋ `SanHsien/codex-auto-retry` ＋ `SanHsien/Antigravity-Manager` ＋ `SanHsien/agent-advisor` | 復用 `codex-reset-checker` 查額度、`Antigravity-Manager` 帳號切換與 `codex-auto-retry`（限流逾時自動原地續跑守護行程），實現智能路由分派 |
-| **Phase 2: Dispatch** | 跨 Session 記憶無損繼承 | `SanHsien/claude-obsidian` ＋ `SanHsien/cc-session-reader` ＋ [Private Repo: 個人指揮中心] | 復用 `claude-obsidian` 筆記同步、`cc-session-reader` 對話過濾與 [Private Repo: 個人指揮中心] 指揮中心，新開 Session 自動注入 Obsidian 交接單與精簡上下文 |
-| **Phase 2: Dispatch** | 集中庫打卡與簽出鎖 | `SanHsien/claude-code-projects-workflow` ＋ `SanHsien/codebase-memory-mcp` ＋ `SanHsien/harness-guard` ＋ [Private Repo: 環境審計工具] | **直接復用 `claude-code-projects-workflow`**（平行任務 Worktree 派工前範圍檢查與合併衝突預測），結合記憶中樞與環境審計，檔案讀寫強制打卡記錄防衝突 |
+| **Phase 2: Dispatch** | 跨 Session 記憶無損繼承 | `SanHsien/claude-obsidian` ＋ `SanHsien/cc-session-reader` ＋ `SanHsien/personal-ai-os`（私有） | 復用 `claude-obsidian` 筆記同步、`cc-session-reader` 對話過濾與 `SanHsien/personal-ai-os`（私有） 指揮中心，新開 Session 自動注入 Obsidian 交接單與精簡上下文 |
+| **Phase 2: Dispatch** | 集中庫打卡與簽出鎖 | `SanHsien/claude-code-projects-workflow` ＋ `SanHsien/codebase-memory-mcp` ＋ `SanHsien/harness-guard` ＋ `SanHsien/agent-environment-audits`（私有） | **直接復用 `claude-code-projects-workflow`**（平行任務 Worktree 派工前範圍檢查與合併衝突預測），結合記憶中樞與環境審計，檔案讀寫強制打卡記錄防衝突 |
 | **Phase 3: Verification** | 硬性驗收防線 | `SanHsien/ai-quality-gates` ＋ `SanHsien/harness-guard` ＋ `SanHsien/agent-governance-toolkit` ＋ `SanHsien/SkillSpector` | 復用 `ai-quality-gates`（Gherkin 規格/覆蓋率）、`harness-guard`（5 個阻止 hook）、`agent-governance-toolkit`（運行期政策強制與沙箱審計）與 `SkillSpector` 技能供應鏈掃描，強制終端真實日誌 |
 | **Phase 3: Verification** | 雙軌回流升級除錯 | `SanHsien/agent-advisor` (`advisor-pro-reviewer`) | 復用獨立審查員軌道，Worker 報錯時格式化提煉上下文，回送指揮官進行根因診斷與再派工 |
 
@@ -154,7 +154,7 @@ tags:
             ▼
   【Phase 1 & 2: 喚醒、傳遞與開新 Session】
             │
-            ├─ 透過 Mailbox 協議寄送信件 ──▶ [agentdeck + Private Repo: 個人記憶庫]
+            ├─ 透過 Mailbox 協議寄送信件 ──▶ [agentdeck + SanHsien/xiaoke-claude-memory（私有）]
             ├─ 觸發即時門鈴與會話恢復 ────▶ [agent-session-restore + dropoff/pickup]
             └─ Windows 原生終端開新 Session ──▶ [SanHsien/agent-cortex] (Worktree 隔離)
                                                   │
@@ -192,15 +192,15 @@ tags:
 以下任務已同步至主倉庫 `README.md` 待辦事項清單：
 
 - [x] **`T-20261019-07`**｜**[優先級：高]** 設計「AI 共同大腦集中知識庫打卡與簽出審計協議（Shared Brain Check-in & Audit Protocol）」，定義 Agent 讀取與修改共用專案/技能時的日誌契約與防衝突鎖
-  - **目標範圍**：`SanHsien/claude-code-projects-workflow` ＋ `SanHsien/codebase-memory-mcp` ＋ `SanHsien/harness-guard` ＋ [Private Repo: 環境審計工具]
+  - **目標範圍**：`SanHsien/claude-code-projects-workflow` ＋ `SanHsien/codebase-memory-mcp` ＋ `SanHsien/harness-guard` ＋ `SanHsien/agent-environment-audits`（私有）
   - **驗收標準（DoD）**：派工前做 Worktree 範圍檢查與合併衝突預測，檔案讀寫有打卡紀錄，實測兩個 Agent 同改一檔會被擋下
   - **完成日期**：2026-10-20
-  - **實作紀錄 / 證據**：[SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) `locks.py`（`931e35e`→`2ded579`，SPEC 第 9 節）：store 內 `claims/`（簽出鎖，經 git 跨機器共用，本機 O_EXCL）與 `audit/`（checkout／checkin／blocked 每事件一檔）；範圍重疊沿用 claude-code-projects-workflow 的 `may_overlap`。派工信 `dispatch.paths` 先簽出、重疊即 refused；施工後範圍外變更不 commit、回信附合併衝突預測。`SanHsien/harness-guard` 新增 `checkout-guard`（`4ccde8e`、`5970e74`）：互動 session 改別人簽出的檔即擋下，判斷記入 touch-log。agent-relay 133 項、checkout-guard 15 項測試通過，兩輪獨立審查判定 ship。實測（`docs/evidence/2026-10-20-t07-checkout.md`）：兩封派工同時改 `calc.py`，A 完成（`8463cbe`）、B 回信「relay:…448db8 持有 calc.py」被擋；掛 checkout-guard 的 Claude session 改被簽出的 calc.py 被擋、簽入後放行。限制：codebase-memory-mcp 與 [Private Repo: 環境審計工具] 未接入；跨機器同一輪同時簽出靠衝突預測發現；同機兩個互動 session 身分相同不互擋。
+  - **實作紀錄 / 證據**：[SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) `locks.py`（`931e35e`→`2ded579`，SPEC 第 9 節）：store 內 `claims/`（簽出鎖，經 git 跨機器共用，本機 O_EXCL）與 `audit/`（checkout／checkin／blocked 每事件一檔）；範圍重疊沿用 claude-code-projects-workflow 的 `may_overlap`。派工信 `dispatch.paths` 先簽出、重疊即 refused；施工後範圍外變更不 commit、回信附合併衝突預測。`SanHsien/harness-guard` 新增 `checkout-guard`（`4ccde8e`、`5970e74`）：互動 session 改別人簽出的檔即擋下，判斷記入 touch-log。agent-relay 133 項、checkout-guard 15 項測試通過，兩輪獨立審查判定 ship。實測（`docs/evidence/2026-10-20-t07-checkout.md`）：兩封派工同時改 `calc.py`，A 完成（`8463cbe`）、B 回信「relay:…448db8 持有 calc.py」被擋；掛 checkout-guard 的 Claude session 改被簽出的 calc.py 被擋、簽入後放行。限制：codebase-memory-mcp 與 `SanHsien/agent-environment-audits`（私有） 未接入；跨機器同一輪同時簽出靠衝突預測發現；同機兩個互動 session 身分相同不互擋。
 - [x] **`T-20261019-08`**｜**[優先級：中]** 實作「跨 Agent 結構化記憶檢索與交接單自動同步工具原型（Shared Brain Memory Sync）」，打通本地 Obsidian 知識庫與各 Coding Agent（Claude/Codex/AGY）之 Session 上下文
-  - **目標範圍**：`SanHsien/claude-obsidian` ＋ `SanHsien/cc-session-reader` ＋ [Private Repo: 個人指揮中心]
+  - **目標範圍**：`SanHsien/claude-obsidian` ＋ `SanHsien/cc-session-reader` ＋ `SanHsien/personal-ai-os`（私有）
   - **驗收標準（DoD）**：新開 Session 自動注入 Obsidian 交接單與精簡上下文，實測一次接手不需人工貼上下文
   - **完成日期**：2026-10-20
-  - **實作紀錄 / 證據**：[SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) `relay context`（`352edb7`→`0468bca`，SPEC 第 8 節）：把 HANDOFF.md、claude-obsidian vault 的 `handoffs/<repo>.md`、待接手交接卡、cc-session-reader 讀出的上一個 session、git 狀態整理成有時間與字數上限、遮罩過、以 nonce 區塊標示為資料的交接包；經 `relay dispatch` 工人 prompt 與 Claude Code SessionStart hook（`hooks/session_start.py`）自動注入。88 項單元測試通過，兩輪獨立審查判定 ship。實測（`docs/evidence/2026-10-20-t08-handover.md`）：三個來源各放一個只有它知道的事實，派工信只寫「依接手資料完成下一步。」，工人寫出 `power()`、負指數 `raise ValueError`、`test_power`／`test_power_negative`，relay commit `afe08cd`、unittest OK；掛 hook 的新 session 不讀檔即答對三項，不掛 hook 的對照組回答「沒有接手資料」。限制：Codex／agy 無 SessionStart hook，只經派工注入；[Private Repo: 個人指揮中心] 的接手資料模板已寫好，待該 repo 無關的 codeql-action 版本檢查處理後提交。
+  - **實作紀錄 / 證據**：[SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) `relay context`（`352edb7`→`0468bca`，SPEC 第 8 節）：把 HANDOFF.md、claude-obsidian vault 的 `handoffs/<repo>.md`、待接手交接卡、cc-session-reader 讀出的上一個 session、git 狀態整理成有時間與字數上限、遮罩過、以 nonce 區塊標示為資料的交接包；經 `relay dispatch` 工人 prompt 與 Claude Code SessionStart hook（`hooks/session_start.py`）自動注入。88 項單元測試通過，兩輪獨立審查判定 ship。實測（`docs/evidence/2026-10-20-t08-handover.md`）：三個來源各放一個只有它知道的事實，派工信只寫「依接手資料完成下一步。」，工人寫出 `power()`、負指數 `raise ValueError`、`test_power`／`test_power_negative`，relay commit `afe08cd`、unittest OK；掛 hook 的新 session 不讀檔即答對三項，不掛 hook 的對照組回答「沒有接手資料」。限制：Codex／agy 無 SessionStart hook，只經派工注入；`SanHsien/personal-ai-os`（私有） 的接手資料模板已寫好，待該 repo 無關的 codeql-action 版本檢查處理後提交。
 
 ---
 

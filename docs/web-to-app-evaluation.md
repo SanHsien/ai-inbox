@@ -169,10 +169,10 @@ uses-permission: name='com.w2a.rybz.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
 維護者針對當前 Windows 11 原生開發環境，使用本機現成之 Android SDK 工具鏈與 API 34 x86_64 模擬器完成了全流程實測驗證：
 
 ### 5.1 本機工具鏈規格
-- **模擬器**：`C:\Users\SanHsien\AppData\Local\Android\Sdk\emulator\emulator.exe`（Version 32.1.15.0，WHPX 硬體加速）
+- **模擬器**：`%USERPROFILE%\AppData\Local\Android\Sdk\emulator\emulator.exe`（Version 32.1.15.0，WHPX 硬體加速）
 - **系統映像檔**：`system-images\android-34\google_apis\x86_64`（Android 14.0, API Level 34）
-- **建置工具**：`C:\Users\SanHsien\AppData\Local\Android\Sdk\build-tools\36.0.0\aapt.exe`、`apksigner.bat`
-- **ADB**：`C:\Users\SanHsien\AppData\Local\Android\Sdk\platform-tools\adb.exe`（Android Debug Bridge version 1.0.41, 34.0.4）
+- **建置工具**：`%USERPROFILE%\AppData\Local\Android\Sdk\build-tools\36.0.0\aapt.exe`、`apksigner.bat`
+- **ADB**：`%USERPROFILE%\AppData\Local\Android\Sdk\platform-tools\adb.exe`（Android Debug Bridge version 1.0.41, 34.0.4）
 
 ### 5.2 模擬器建立與開機驗證
 維護者於 `$env:USERPROFILE\.android\avd` 建立了指向現成系統映像之暫存 AVD `wta_test_api34`：

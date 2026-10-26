@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spatial Room Viewer</title>
+<style>
+  :root { --bg:#10141a; --fg:#e8edf2; --accent:#4cc2ff; --panel:rgba(16,20,26,.82); }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--fg); font:14px/1.5 system-ui, "Noto Sans TC", sans-serif; overflow:hidden; }
+  #stage { position:fixed; inset:0; }
+  canvas { display:block; touch-action:none; }
+  #bar { position:fixed; top:12px; left:12px; display:flex; gap:8px; align-items:center; background:var(--panel); padding:8px 10px; border-radius:10px; z-index:2; }
+  button { background:#1d2630; color:var(--fg); border:1px solid #33414f; border-radius:8px; padding:6px 12px; font:inherit; cursor:pointer; }
+  button[aria-pressed="true"] { background:var(--accent); color:#04141c; border-color:var(--accent); font-weight:600; }
+  button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  #help { position:fixed; bottom:12px; left:12px; right:12px; background:var(--panel); padding:8px 12px; border-radius:10px; z-index:2; max-width:560px; }
+  #err { position:fixed; inset:0; display:none; align-items:center; justify-content:center; text-align:center; padding:24px; z-index:3; background:var(--bg); }
+  noscript { position:fixed; inset:0; padding:24px; background:var(--bg); z-index:3; }
+</style>
+</head>
+<body>
+<noscript>此頁需要 JavaScript。</noscript>
+<div id="stage"></div>
+<div id="bar" role="toolbar" aria-label="視角切換">
+  <button id="btn-dollhouse" aria-pressed="true">娃娃屋 Dollhouse</button>
+  <button id="btn-walking" aria-pressed="false">漫遊 Walking</button>
+</div>
+<div id="help"></div>
+<div id="err">無法載入 Three.js（需要網路連到 cdn.jsdelivr.net）。離線時請把 three@0.160.0 的檔案放在本機並改 importmap。</div>
+
+<!-- 固定版本 three@0.160.0，來源 jsdelivr；用 importmap 讓 OrbitControls 內部的 'three' 指向同一份 -->
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+// 坐標契約：單位公尺、+Y 朝上、地面 Y=0、右手系（與 Three.js 預設相同）。
+// 房間資料是純資料，改這裡就能換房間；footprint 是 XZ 平面的多邊形（這裡是矩形）。
+const ROOM = {
+  width: 5.0, depth: 4.0, height: 2.6, wallThickness: 0.12,
+  windows: [{ wall: 'back', center: 2.5, width: 1.4, sill: 0.9, height: 1.2 }],   // back = z=0 那面
+  door:    { wall: 'front', center: 1.0, width: 0.9, height: 2.05 },               // front = z=depth 那面
+  furniture: [
+    { id: 'sofa',  center: [1.3, 0.4, 0.9],  size: [2.0, 0.8, 0.9], color: 0x6b8fb3 },
+    { id: 'table', center: [3.4, 0.375, 2.2], size: [1.2, 0.75, 0.8], color: 0xb08968 },
+    { id: 'shelf', center: [4.75, 0.9, 1.0],  size: [0.3, 1.8, 1.2], color: 0x8d6e63 },
+    { id: 'lamp',  center: [0.35, 0.8, 3.65], size: [0.3, 1.6, 0.3], color: 0xe5d27a }
+  ]
+};
+
+const stage = document.getElementById('stage');
+const help = document.getElementById('help');
+let THREE, OrbitControls;
+try {
+  THREE = await import('three');
+  ({ OrbitControls } = await import('three/addons/controls/OrbitControls.js'));
+} catch (e) {
+  document.getElementById('err').style.display = 'flex';
+  console.warn('Three.js 載入失敗：', e);
+  throw e;
+}
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x10141a);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 1.0));
+const sun = new THREE.DirectionalLight(0xffffff, 1.2);
+sun.position.set(3, 6, 5);
+scene.add(sun);
+
+// ---- 參數化房間 ----
+const room = new THREE.Group();
+scene.add(room);
+const R = ROOM, T = R.wallThickness;
+const matWall = new THREE.MeshStandardMaterial({ color: 0xdfe3e8, roughness: 0.95 });
+const matFloor = new THREE.MeshStandardMaterial({ color: 0x9a8267, roughness: 0.9 });
+const matCeil = new THREE.MeshStandardMaterial({ color: 0xf2f2f2, roughness: 1 });
+const matGlass = new THREE.MeshStandardMaterial({ color: 0x9fd8ff, transparent: true, opacity: 0.35, roughness: 0.1 });
+
+function box(w, h, d, x, y, z, mat, name) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  m.name = name;
+  room.add(m);
+  return m;
+}
+
+box(R.width, 0.05, R.depth, R.width / 2, -0.025, R.depth / 2, matFloor, 'floor');   // 頂面在 Y=0
+const ceiling = box(R.width, 0.05, R.depth, R.width / 2, R.height + 0.025, R.depth / 2, matCeil, 'ceiling');
+
+// 一面沿 X 的牆（z 固定），在 [x0,x1] 開口 [y0,y1]：拆成左、右、下、上四塊
+function wallAlongX(z, name, openings) {
+  const pieces = [];
+  let cursor = 0;
+  const sorted = [...openings].sort((a, b) => a.x0 - b.x0);
+  for (const o of sorted) {
+    if (o.x0 > cursor) pieces.push([cursor, o.x0, 0, R.height]);
+    if (o.y0 > 0) pieces.push([o.x0, o.x1, 0, o.y0]);
+    if (o.y1 < R.height) pieces.push([o.x0, o.x1, o.y1, R.height]);
+    cursor = o.x1;
+  }
+  if (cursor < R.width) pieces.push([cursor, R.width, 0, R.height]);
+  pieces.forEach(([a, b, c, d], i) => box(b - a, d - c, T, (a + b) / 2, (c + d) / 2, z, matWall, `${name}-${i}`));
+}
+const win = R.windows[0];
+wallAlongX(0, 'wall-back', [{ x0: win.center - win.width / 2, x1: win.center + win.width / 2, y0: win.sill, y1: win.sill + win.height }]);
+box(win.width, win.height, 0.02, win.center, win.sill + win.height / 2, 0, matGlass, 'window-glass');
+wallAlongX(R.depth, 'wall-front', [{ x0: R.door.center - R.door.width / 2, x1: R.door.center + R.door.width / 2, y0: 0, y1: R.door.height }]);
+box(T, R.height, R.depth, 0, R.height / 2, R.depth / 2, matWall, 'wall-left');
+box(T, R.height, R.depth, R.width, R.height / 2, R.depth / 2, matWall, 'wall-right');
+
+for (const f of R.furniture) {
+  box(f.size[0], f.size[1], f.size[2], f.center[0], f.center[1], f.center[2],
+      new THREE.MeshStandardMaterial({ color: f.color, roughness: 0.7 }), f.id);
+}
+room.add(new THREE.GridHelper(Math.max(R.width, R.depth) + 2, 12, 0x33414f, 0x222b35).translateX(R.width / 2).translateZ(R.depth / 2).translateY(-0.06));
+
+// ---- 兩個相機與兩種控制 ----
+const aspect = () => innerWidth / innerHeight;
+const camDoll = new THREE.PerspectiveCamera(45, aspect(), 0.1, 100);
+camDoll.position.set(R.width / 2 + 5.5, 7, R.depth / 2 + 6.5);
+const orbit = new OrbitControls(camDoll, renderer.domElement);
+orbit.target.set(R.width / 2, 0.8, R.depth / 2);
+orbit.maxPolarAngle = Math.PI / 2 - 0.05;
+orbit.update();
+
+const EYE = 1.6;
+const camWalk = new THREE.PerspectiveCamera(70, aspect(), 0.05, 100);
+const walk = { x: 1.0, z: 2.8, yaw: -Math.PI / 2 + 0.6, pitch: 0 };
+const keys = new Set();
+
+function applyWalkPose() {
+  camWalk.position.set(walk.x, EYE, walk.z);
+  camWalk.rotation.order = 'YXZ';   // 先 yaw 再 pitch，避免滾轉
+  camWalk.rotation.set(walk.pitch, walk.yaw, 0);
+}
+applyWalkPose();
+
+let mode = 'dollhouse';
+function setMode(next) {
+  mode = next;
+  const dolly = next === 'dollhouse';
+  orbit.enabled = dolly;
+  ceiling.visible = !dolly;                       // 娃娃屋拿掉天花板與面向相機的兩面牆
+  room.children.forEach((o) => { if (/^wall-(front|right)/.test(o.name)) o.visible = !dolly; });
+  document.getElementById('btn-dollhouse').setAttribute('aria-pressed', String(dolly));
+  document.getElementById('btn-walking').setAttribute('aria-pressed', String(!dolly));
+  help.textContent = dolly
+    ? '娃娃屋：左鍵拖曳旋轉、滾輪縮放、右鍵平移。切到「漫遊」可走進房間。'
+    : '漫遊：W/A/S/D 或方向鍵移動，按住滑鼠拖曳轉頭（觸控：單指拖曳轉頭）。眼高 1.6 m，會被牆與家具擋住。';
+}
+document.getElementById('btn-dollhouse').onclick = () => setMode('dollhouse');
+document.getElementById('btn-walking').onclick = () => setMode('walking');
+setMode('dollhouse');
+
+// 第一人稱：拖曳轉頭（不依賴 Pointer Lock，file:// 與觸控都能用）
+let dragging = false, lx = 0, ly = 0;
+const el = renderer.domElement;
+el.addEventListener('pointerdown', (e) => { if (mode !== 'walking') return; dragging = true; lx = e.clientX; ly = e.clientY; el.setPointerCapture(e.pointerId); });
+el.addEventListener('pointermove', (e) => {
+  if (!dragging || mode !== 'walking') return;
+  walk.yaw -= (e.clientX - lx) * 0.004;
+  walk.pitch = Math.max(-1.2, Math.min(1.2, walk.pitch - (e.clientY - ly) * 0.004));
+  lx = e.clientX; ly = e.clientY;
+});
+el.addEventListener('pointerup', () => { dragging = false; });
+addEventListener('keydown', (e) => keys.add(e.code));
+addEventListener('keyup', (e) => keys.delete(e.code));
+
+// 碰撞：人視為半徑 0.25 m 的圓，限制在牆內側，且不進入家具 XZ 外框
+const RADIUS = 0.25, M = T / 2 + RADIUS;
+function blocked(x, z) {
+  if (x < M || x > R.width - M || z < M || z > R.depth - M) return true;
+  return R.furniture.some((f) =>
+    Math.abs(x - f.center[0]) < f.size[0] / 2 + RADIUS && Math.abs(z - f.center[2]) < f.size[2] / 2 + RADIUS);
+}
+function stepWalk(dt) {
+  const fwd = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0) - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0);
+  const side = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0) - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0);
+  if (!fwd && !side) return;
+  const speed = 1.6 * dt;
+  const dx = (-Math.sin(walk.yaw) * fwd + Math.cos(walk.yaw) * side) * speed;
+  const dz = (-Math.cos(walk.yaw) * fwd - Math.sin(walk.yaw) * side) * speed;
+  if (!blocked(walk.x + dx, walk.z)) walk.x += dx;   // 分軸移動，貼牆時可沿牆滑動
+  if (!blocked(walk.x, walk.z + dz)) walk.z += dz;
+}
+
+function resize() {
+  renderer.setSize(innerWidth, innerHeight);
+  camDoll.aspect = camWalk.aspect = aspect();
+  camDoll.updateProjectionMatrix();
+  camWalk.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+resize();
+
+let last = performance.now();
+renderer.setAnimationLoop((now) => {
+  const dt = Math.min((now - last) / 1000, 0.1);
+  last = now;
+  if (mode === 'walking') { stepWalk(dt); applyWalkPose(); }
+  else orbit.update();
+  renderer.render(scene, mode === 'walking' ? camWalk : camDoll);
+});
+
+// 供檢查用：不依賴 UI 即可讀目前狀態
+window.__viewer = { get mode() { return mode; }, setMode, walk, ROOM };
+</script>
+</body>
+</html>

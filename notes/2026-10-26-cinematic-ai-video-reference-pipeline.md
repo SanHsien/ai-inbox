@@ -6,7 +6,7 @@ source_platform: "Threads"
 author: "玖桃 (@xbox002000)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: 2
 cluster_role: "鏡頭語言工程"
 short_title: "電影級 AI 影片管線"
@@ -24,7 +24,7 @@ tags:
 - **來源貼文**：[Threads 貼文（玖桃 @xbox002000）](https://www.threads.com/@xbox002000/post/De3k3wgGkOE) ｜ [分享短鏈](https://www.threads.com/share/BAW7qiK1st/)
 - **分析主題**：告別 AI 影片罐頭感、電影級分鏡與鏡位術語、六大專業靜幀資料庫、光影色彩分級與 Prompt 結構化工程
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md`](./2026-10-18-awesome-opus5-5-videos-prompt-zoo.md)（高動態鏡頭與電影質感提示詞動物園）
   - [`notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md`](./2026-10-17-shipper-epstein-md-anti-ai-slop.md)（拒絕 AI 罐頭與審美廉價感）
@@ -123,15 +123,15 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261026-14`**｜**[優先級：高]** 撰寫「AI 影片電影級鏡頭語言與分鏡 Prompt 工程指引」收錄於 `docs/cinematic-ai-video-prompt-guide.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-14`**｜**[優先級：高]** 撰寫「AI 影片電影級鏡頭語言與分鏡 Prompt 工程指引」收錄於 `docs/cinematic-ai-video-prompt-guide.md`
   - **目標範圍**：`docs/cinematic-ai-video-prompt-guide.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 整合 6 大電影靜幀資料庫（Shot Cafe, Film-Grab, Eyecandy 等）的檢索與標籤術語。
     2. 建立焦段、鏡位（Extreme Close-up, Medium Shot, Low-angle）、運鏡（Dolly Zoom, Orbit, Whip Pan）與經典調色風格映射矩陣。
     3. 整理常見「AI 罐頭形容詞」黑名單與對應的「光學物理術語」改寫對照表。
   - **驗收標準（DoD）**：產出 `docs/cinematic-ai-video-prompt-guide.md`，內含光學參數對照表、黑名單詞彙過濾規則與經典電影風格 Prompt 實例；以 `Test-Path docs/cinematic-ai-video-prompt-guide.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/cinematic-ai-video-prompt-guide.md（283 行）：光學參數對照表、黑名單詞彙過濾規則、經典電影風格 Prompt 實例；回 403 抓不到的來源已標明。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
 - [ ] **`T-20261026-15`**｜**[優先級：中]** 實作 `tools/verify_cinematic_prompt.py` 檢查工具與單元測試
   - **狀態**：⚪ 不做（不做：工具本質是比對黑名單詞彙的關鍵字檢查器，依 docs/external-judge-audit.md 第 5 節的政策不再新增這類驗證器；黑名單詞彙與替換建議直接寫在 docs/cinematic-ai-video-prompt-guide.md（T-20261026-14），由撰寫 prompt 的人或 Agent 照表使用。）
@@ -143,14 +143,14 @@ tags:
   - **驗收標準（DoD）**：產出 `tools/verify_cinematic_prompt.py` 與 `tests/test_verify_cinematic_prompt.py`，通過 `python -m unittest discover -s tests -p "test_verify_cinematic_prompt.py"`。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
-- [ ] **`T-20261026-16`**｜**[優先級：低]** 建立 `templates/cinematic-storyboard-template.md` 標準化分鏡提示詞範本
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-16`**｜**[優先級：低]** 建立 `templates/cinematic-storyboard-template.md` 標準化分鏡提示詞範本
   - **目標範圍**：`templates/cinematic-storyboard-template.md`
   - **具體做法**：
     1. 提供結構化多鏡頭分鏡範本，包含 Shot 編號、秒數、畫面主體、鏡位景深、動態運鏡與調色參考鏈接。
     2. 附帶標準中英雙語對照範例。
   - **驗收標準（DoD）**：產出 `templates/cinematic-storyboard-template.md`，以 `Test-Path templates/cinematic-storyboard-template.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：templates/cinematic-storyboard-template.md（159 行）：鏡號、秒數、主體、鏡位景深、運鏡、調色連結欄位，附 3 鏡中英範例。獨立驗收（fresh-context 審查員，2026-10-26）通過。
 
 ---
 

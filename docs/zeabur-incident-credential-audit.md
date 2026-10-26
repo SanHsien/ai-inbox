@@ -31,7 +31,7 @@
 本次稽核針對 `C:\GitHub` 目錄下全部專案進行自動化清查，清查方法與結果如下：
 
 ### 2.1 掃描範圍涵蓋專案清單
-涵蓋 `C:\GitHub` 下 74+ 個本地專案倉庫與工作樹（包含公開專案如 `agent-relay`、`agent-cortex`、`ai-inbox`、`ai-quality-gates`、`cc-session-reader`、`harness-guard`、`rea` 等，以及 `[Private Repo: 環境審計工具]`、`[Private Repo: 個人指揮中心]`、`[Private Repo: 個人記憶庫]` 等私有倉庫）。
+涵蓋 `C:\GitHub` 下 74+ 個本地專案倉庫與工作樹（包含公開專案如 `agent-relay`、`agent-cortex`、`ai-inbox`、`ai-quality-gates`、`cc-session-reader`、`harness-guard`、`rea` 等，以及 `SanHsien/agent-environment-audits`（私有）、`SanHsien/personal-ai-os`（私有）、`SanHsien/xiaoke-claude-memory`（私有） 等私有倉庫）。
 
 ### 2.2 檢查項目與掃描日誌
 

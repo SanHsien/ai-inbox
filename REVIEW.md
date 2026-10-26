@@ -14,6 +14,7 @@
 
 - ✅ [高] `verify_inbox.py` 機密掃描只掃 README、notes、templates；`docs/`、`assets/*.html`、`tools/` 的金鑰抓不到 → 改為掃全部提交檔，副檔名補 `.html .js .ts .sh .ps1 .toml`
 - ✅ [中] `verify_inbox.py` 私有 repo 別名登記檢查漏掃 `docs/`、`assets/`（`docs/zeabur-incident-credential-audit.md` 因此藏了 3 個未登記別名）→ 納入檢查（`tools/`、`tests/` 除外）
+- ✅ [中] 私有 repo 別名機制（2026-10-26 廢除）：真名對照表只在本機，CI 抓不到真名；`agent-assets` 漏登記就外洩了 6 篇；讀者與 Agent 都要查表才知道是哪個 repo → 改寫真名加「（私有）」，刪除 `private-aliases.json` 與本機對照表；`verify_inbox.py` 改擋帶真實帳號的家目錄路徑（`C:\Users\<帳號>`、`/Users/<帳號>`、`/home/<帳號>`），既有 9 個檔案改成 `%USERPROFILE%`／`~`
 - ✅ [低] `verify_inbox.py` 掃描清單改用 `git ls-files`（含未加入 git 的新檔、排除 .gitignore），不再掃到 `.pytest_cache`、`node_modules` 等（覆核後補修）
 - ✅ [中] `build_index.py` 用子字串判斷「不做」，「🟡 進行中（等待關閉 PR）」會被誤判為不做而從佇列消失 → 只看狀態開頭
 - ✅ [中] `task_cli.py complete` 對已完成任務不擋，會靜默覆寫完成日期與證據 → 拒絕
@@ -113,7 +114,7 @@
 修復 commit：ai-inbox `0272f15`（2026-10-26，第一輪）、`b00b93d`（2026-10-26，第二輪：screen_privacy 漏抓）；agent-relay `e298031`、`cc5eff1`（fail-closed 與 CI）、`ab3380c`（降級路徑補 `max_lines`、SPEC 矛盾）。
 
 - ✅ [高] T-20261018-09（Mods）以「官方沒有這個 API、原貼文虛構」關閉，**結論錯誤** → 退回待辦。二進位掃描找的是 `~/.claude/mods/`、`defineMod`，但實際機制透過內建的 `plugin-authoring` 技能：外掛資料夾＋`hooks/hooks.json` 的 `modules`＋`register.tsx`，用 `ui.render` 畫 `AbovePrompt`、`$.state` 存值、支援熱重載（官方型別檔與 `examples/band.tsx` 可證）。掃描結果本身也顯示 `AbovePrompt` 76 筆、`$.state` 15 筆，且關鍵字清單列了 `plugin-authoring` 卻沒回報結果。`docs/claude-code-mods-windows-validation.md` 已加更正。之後依官方機制實作 mod `inbox-band`（`assets/inbox-band-mod/`），終端與桌面 app 皆實測渲染成功、熱重載即時生效且 `$.state` 保留（載入次數 1→2），2026-10-26 結案，紀錄見該文件第 6 節
-- ✅ [高] T-20261018-06（截圖隱私規範）標為完成，但 DoD「確保任何 Agent 流程遵循」沒有落地、「測試套件」是呼叫未定義函式的範例碼 → 新增參考實作 `tools/screen_privacy.py` 與 50 項測試；修正正則（漏抓 `github_pat_`、`sk-ant-` 被 `sk-` 吃掉、連線字串漏抓含 s 的帳號、`clinic`／`.pem` 誤擋一般網頁、變數名誤判為密碼）；身分證（含 8／9 開頭居留證）與卡號改為丟棄整張截圖；在本 repo `AGENTS.md` 第 4 節與 Claude 全域路由表加入引用。跨 AI 規則已加入 `agent-assets` `rules/GLOBAL_RULES.md` 第 12 條（`6327397`，2026-10-26），任務結案
+- ✅ [高] T-20261018-06（截圖隱私規範）標為完成，但 DoD「確保任何 Agent 流程遵循」沒有落地、「測試套件」是呼叫未定義函式的範例碼 → 新增參考實作 `tools/screen_privacy.py` 與 50 項測試；修正正則（漏抓 `github_pat_`、`sk-ant-` 被 `sk-` 吃掉、連線字串漏抓含 s 的帳號、`clinic`／`.pem` 誤擋一般網頁、變數名誤判為密碼）；身分證（含 8／9 開頭居留證）與卡號改為丟棄整張截圖；在本 repo `AGENTS.md` 第 4 節與 Claude 全域路由表加入引用。跨 AI 規則已加入 `SanHsien/agent-assets`（私有） `rules/GLOBAL_RULES.md` 第 12 條（`6327397`，2026-10-26），任務結案
 - ✅ [高] T-20261018-18（治理整合）部分達成：AGT 未載入時悄悄降級、危險指令掃描沒執行卻寫「通過」；`0d0655c` 在 GitHub CI 實際失敗 → agent-relay `e298031`／`cc5eff1` 改為 fail-closed 並修 CI（340 項、CI 綠）；Claude 全域 `verification-protocol` 技能補第 5 節（已備份）；文件更正「16 項治理測試」「無外部套件亦能安全運作」等。補齊後維持已做
 - ✅ [中] T-20261019-06（Android CLI）：文件寫 44 個檔案，清單只有 42 個；宣稱「無任何殘留」，實際在 `C:\Android` 留下 `.sdk`、`build`、`licenses`（自動接受 SDK 授權）→ 文件與筆記如實更正。殘留未刪除，⏸ 由維護者決定
 - ✅ [低] T-20261023-03（WebToApp）：SDK 版本與模擬器記錄時間對得上，實測可信；但 AVD 與 APK 產物事後已刪，無法重驗 → 文件補證據保存狀況，建議下次存 SHA-256 到 `docs/evidence/`
@@ -123,3 +124,13 @@
 - ✅ [中] 獨立審查（第二輪）找到 `tools/screen_privacy.py` 仍會放過常見機密：私鑰區塊、Stripe `sk_live_`／`rk_live_`、Slack `xapp-` 沒有規則；規則開頭的 `\b` 在緊貼中文時不成立（Python 把中文算成字元），「金鑰sk-ant-…」「身分證A123456789號」會漏抓；卡號只認 4-4-4-4 加分隔，無分隔與 Amex 漏抓，格式相同的訂單編號反被丟圖；中文「密碼：」不觸發；丟棄原因寫成「敏感關鍵字達門檻」 → 補三條規則、邊界改為英數前後判斷、卡號改 13～19 位數並加 Luhn 檢查、加中文密碼標籤與全形冒號、原因改列命中類別；6 個回歸測試在修正前全部失敗，共 56 項
 - ✅ [低] `verification-protocol` 第 5 節：`governance` 是收件端 `dispatch.verify` 的設定、不是寄件端參數；補上 `verification-failed` 與 `skipped`（relay 把 `skipped` 當通過，但那代表沒有閘門，不是證據）。全域路由表的工具路徑改為絕對路徑
 - ➖ 審查另稱 `C:\Android\.android\` 是這次測試的殘留：查建立時間為 2024-01-31，只是修改時間被更新，不列入殘留
+
+## 8. 批次實作 26 項待辦（2026-10-26）
+
+標準同第 5 節。產出交 fresh-context 審查員逐條對照 DoD，抽查 12 項外部事實、9 項指令輸出。
+
+- ✅ [中] T-20261026-06：第 5.3 節 MD5 無法重現 → 用第 3.4 節草稿重算更正（連跑兩次一致）
+- ✅ [中] T-20261026-28：Antigravity 的 `--kind` 寫成 `antigravity`（合法值是 `agy`）；`herdr status`「真實輸出」少 4 行沒標省略；Grok 讀 AGENTS.md 的規則標「未查證」，官方其實有專頁 → 全部更正
+- ✅ [高] T-20261026-30：引用了不存在的「AGENTS.md 互動 HTML 鐵律」當出處（派工說明裡的要求被寫成 repo 規則）→ 改標為文件自己的建議；錯誤章節互引改指 blender-mcp README
+- ✅ [低] T-20261026-08：`git-sign-nostr/src/lib.rs` 行號 `:9` → `:6`
+- ➖ T-20261026-09 不結案：`cargo check` 因本機缺 MSVC 連結器失敗（exit 101），不是程式問題；Job Object 只能用同 API 的 P/Invoke 實驗佐證，不算 DoD 的「編譯驗證」

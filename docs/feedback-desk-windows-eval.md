@@ -26,21 +26,21 @@ node:internal/child_process:1175
     result.error = new ErrnoException(result.error, 'spawnSync ' + options.file);
                    ^
 
-<ref *1> Error: spawnSync C:\Users\SanHsien\AppData\Local\Temp\fd-eval-test\repo\node_modules\.bin\tailwindcss ENOENT
+<ref *1> Error: spawnSync %USERPROFILE%\AppData\Local\Temp\fd-eval-test\repo\node_modules\.bin\tailwindcss ENOENT
     at Object.spawnSync (node:internal/child_process:1175:20)
     at spawnSync (node:child_process:976:24)
     at execFileSync (node:child_process:1019:15)
-    at file:///C:/Users/SanHsien/AppData/Local/Temp/fd-eval-test/repo/scripts/build.mjs:34:1
+    at file:///%USERPROFILE%/AppData/Local/Temp/fd-eval-test/repo/scripts/build.mjs:34:1
     at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
   errno: -4058,
   code: 'ENOENT',
-  syscall: 'spawnSync C:\\Users\\SanHsien\\AppData\\Local\\Temp\\fd-eval-test\\repo\\node_modules\\.bin\\tailwindcss',
-  path: 'C:\\Users\\SanHsien\\AppData\\Local\\Temp\\fd-eval-test\\repo\\node_modules\\.bin\\tailwindcss',
+  syscall: 'spawnSync %USERPROFILE%\\AppData\\Local\\Temp\\fd-eval-test\\repo\\node_modules\\.bin\\tailwindcss',
+  path: '%USERPROFILE%\\AppData\\Local\\Temp\\fd-eval-test\\repo\\node_modules\\.bin\\tailwindcss',
   spawnargs: [
     '-i',
-    'C:\\Users\\SanHsien\\AppData\\Local\\Temp\\fd-eval-test\\repo\\client\\app.css',
+    '%USERPROFILE%\\AppData\\Local\\Temp\\fd-eval-test\\repo\\client\\app.css',
     '-o',
-    'C:\\Users\\SanHsien\\AppData\\Local\\Temp\\fd-eval-test\\repo\\dist\\public\\assets\\app.css',
+    '%USERPROFILE%\\AppData\\Local\\Temp\\fd-eval-test\\repo\\dist\\public\\assets\\app.css',
     '--minify'
   ],
   error: [Circular *1],

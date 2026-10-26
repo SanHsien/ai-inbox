@@ -18,11 +18,11 @@
 ## 2. Windows 11 本機環境與 Claude CLI 檢查
 
 ### 2.1 執行檔規格與版本實測
-- **執行檔實體路徑**：`C:\Users\SanHsien\.local\bin\claude.exe`
+- **執行檔實體路徑**：`%USERPROFILE%\.local\bin\claude.exe`
 - **檔案大小**：`298,624,160` 位元組（約 284.79 MB，由 Bun 打包之單一自包含可執行檔）
 - **版本號檢查終端輸出**：
   ```powershell
-  PS C:\GitHub\ai-inbox> & "C:\Users\SanHsien\.local\bin\claude.exe" --version
+  PS C:\GitHub\ai-inbox> & "%USERPROFILE%\.local\bin\claude.exe" --version
   2.1.309 (Claude Code)
   ```
 
@@ -92,12 +92,12 @@ Guidelines:
 ## 4. 官方原生 `statusLine` 替代方案實測
 
 ### 4.1 本機原生配置現況
-查驗 `C:\Users\SanHsien\.claude\settings.json`：
+查驗 `%USERPROFILE%\.claude\settings.json`：
 ```json
 {
   "statusLine": {
     "type": "command",
-    "command": "C:/Windows/py.EXE C:/Users/SanHsien/.claude/agentdeck-statusline.py"
+    "command": "C:/Windows/py.EXE %USERPROFILE%/.claude/agentdeck-statusline.py"
   }
 }
 ```
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 ### 4.3 終端實測執行輸出
 
 ```powershell
-PS C:\GitHub\ai-inbox> "{}" | python C:\Users\SanHsien\.gemini\antigravity\brain\8b20a30c-b4d9-429e-bd33-68dc14d86e95\scratch\statusline_demo.py
+PS C:\GitHub\ai-inbox> "{}" | python %USERPROFILE%\.gemini\antigravity\brain\8b20a30c-b4d9-429e-bd33-68dc14d86e95\scratch\statusline_demo.py
 📥 ai-inbox: 3 待辦 | 📬 relay: 0 未讀 | Claude Code 2.1.309 [statusLine native]
 ```
 

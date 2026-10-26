@@ -60,7 +60,7 @@
 
 選定本機已安裝之真實 Electron 應用程式組件進行端到端解包與語意重建分析：
 
-- **目標目標檔案**：`C:\Users\SanHsien\AppData\Local\Programs\antigravity\resources\app.asar`
+- **目標目標檔案**：`%USERPROFILE%\AppData\Local\Programs\antigravity\resources\app.asar`
 - **檔案規格**：4,502,673 位元組（約 4.5 MB）
 - **SHA-256 雜湊**：`ad7fb1a177a11522490cba910c0970a117bec568cd9ad85233fa62873361ed05`
 

@@ -138,7 +138,7 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
   - **目標範圍**：本地 Claude Code 開發環境與外掛架構
   - **二進位查驗與實測結論（2026-10-25）**：
     1. 實測本機 `claude --version` 為 `2.1.309 (Claude Code)`，符合 `>= 2.1.287`。
-    2. 對官方執行檔 `C:\Users\SanHsien\.local\bin\claude.exe`（298 MB）進行位元組層級全文掃描，證實 `~/.claude/mods/` 為 0 筆匹配、`defineMod` 為 0 筆匹配，原貼文宣稱之 Mods 載入目錄與函式 API 在官方執行期完全不存在。
+    2. 對官方執行檔 `%USERPROFILE%\.local\bin\claude.exe`（298 MB）進行位元組層級全文掃描，證實 `~/.claude/mods/` 為 0 筆匹配、`defineMod` 為 0 筆匹配，原貼文宣稱之 Mods 載入目錄與函式 API 在官方執行期完全不存在。
     3. 查明官方原生狀態列機制為 `statusLine`（指令 `/statusline`，配置於 `~/.claude/settings.json`），本機已實測整合 `ai-inbox` 待辦數與 `agent-relay` 未讀信件數之動態腳本，成功輸出並記錄於驗證文檔。
   - **具體實作步驟**：
     1. 載入 `plugin-authoring` 技能，讀它的 `reference.md`、範例 `examples/band.tsx` 與 `band-state.d.ts`（提示框上方一條、含 `$.state` 契約）。

@@ -6,7 +6,7 @@ source_platform: "Threads / GitHub"
 author: "Threads 社群實戰者 / yetone & herdrdev"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
-status: in-progress # pending | in-progress | done | archived
+status: done # pending | in-progress | done | archived
 cluster: 1
 cluster_role: "終端派工"
 short_title: "Herdr 終端復用 + Magpie 統一網關"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[yetone/magpie (GitHub)](https://github.com/yetone/magpie) ｜ [herdrdev/herdr (GitHub)](https://github.com/herdrdev/herdr) ｜ [OrcaRouter](https://github.com/orcarouter)
 - **發布平台 / 作者**：`Threads 對話節錄` / `yetone & herdrdev 社群實戰者`
 - **分析日期**：`2026-10-18`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -138,15 +138,15 @@ tags:
 
 > ⚠️ 狀態變更時，請同步更新根目錄 [`README.md`](../README.md) 的總表。
 
-- [ ] **`T-20261026-28`**｜**[優先級：中]** 撰寫「Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範」收錄於 `docs/grok-herdr-agents-bootstrap.md`
-  - **狀態**：🟡 進行中
+- [x] **`T-20261026-28`**｜**[優先級：中]** 撰寫「Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範」收錄於 `docs/grok-herdr-agents-bootstrap.md`
   - **目標範圍**：`docs/grok-herdr-agents-bootstrap.md`
   - **具體做法**：
     1. 定義 Grok Bot 環境整合 Herdr 與 Coding CLI 的派工拓撲。
     2. 規範專案根目錄進入點標準，制定 Coding CLI 啟動時自動掛載 `AGENTS.md` 的前置起步協議。
     3. 實作進入點驗證腳本或檢查清單，確保任何 Agent 被啟動時均能自動解析當前專案之 SSOT 規範。
   - **驗收標準（DoD）**：產出 `docs/grok-herdr-agents-bootstrap.md`，內含派工架構圖、AGENTS.md 起步協議與驗證範例；以 `Test-Path docs/grok-herdr-agents-bootstrap.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-10-26
+  - **實作紀錄 / 證據**：docs/grok-herdr-agents-bootstrap.md（159 行）：派工架構圖、AGENTS.md 起步協議、herdr 0.9.1 實測輸出。獨立驗收（fresh-context 審查員，2026-10-26）通過；審查退回 4 點已修：Antigravity 的 --kind 更正為 agy、herdr status 補成完整輸出、章節互引更正、Grok 讀取規則改依官方 docs.x.ai/build/features/project-rules 查證。
 - [x] **`T-20261018-15`**｜**[優先級：高]** 調研並測試 `yetone/magpie`（統一 Agent 網關）與 `herdrdev/herdr`（Agent-Native 終端復用器）在 Windows 11 下的整合
   - **目標範圍**：`SanHsien/agent-cortex` ＋ `SanHsien/opencodex` ＋ `SanHsien/claude-code-projects-workflow`（**現有可用 Repo**：直接復用 `agent-cortex` 原生 Windows 控制平面、`opencodex` 通用代理網關，與 `claude-code-projects-workflow` Worktree 派工範圍檢查，免去 Linux 專用 tmux/Herdr 摩擦）
   - **具體做法**：
