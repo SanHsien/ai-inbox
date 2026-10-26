@@ -74,7 +74,7 @@ test shell::tests::timeout_fires ... ok
 test result: ok. 102 passed; 0 failed  （另 2 項整合測試也通過，exit 0）
 ```
 
-原因（讀碼確認）：`windows_resolver_tests` 會用 `env::set_var("BUZZ_SHELL", ...)` 指向假的或不存在的 shell，並用模組內的 `ENV_MUTEX` 互斥；但 `shell::tests` 建立 `SharedState` 時也會讀 `BUZZ_SHELL` 解析 shell，卻沒有拿同一把鎖。平行執行時剛好讀到假 shell，啟動失敗，回傳 `failed to spawn shell: …` 純文字，測試把它當 JSON 解析就壞了（`fai` 對不上 `false`，所以是第 3 欄報錯）。單獨跑或單執行緒跑都通過。這是 buzz 測試的隔離問題，只影響測試，不影響 Job Object 行為；本任務沒有修改 buzz（要修可讓 `shell::tests` 共用同一把鎖）。
+原因（讀碼確認）：`windows_resolver_tests` 會用 `env::set_var("BUZZ_SHELL", ...)` 指向假的或不存在的 shell，並用模組內的 `ENV_MUTEX` 互斥；但 `shell::tests` 建立 `SharedState` 時也會讀 `BUZZ_SHELL` 解析 shell，卻沒有拿同一把鎖。平行執行時剛好讀到假 shell，啟動失敗，回傳 `failed to spawn shell: …` 純文字，測試把它當 JSON 解析就壞了（`fai` 對不上 `false`，所以是第 3 欄報錯）。單獨跑或單執行緒跑都通過。這是 buzz 測試的隔離問題，只影響測試，不影響 Job Object 行為；後續已在 buzz `e3561ee`（2026-10-26）修正：把鎖改成 crate 共用的 `lock_shell_env()`，`shell::tests` 與 `read_file::tests` 建 `SharedState` 時也持鎖；預設平行跑 `cargo test -p buzz-dev-mcp` 連續 3 次 102/102 通過，rebase 到 `6b9d953` 後再跑一次也通過。
 
 `timeout_fires` 用 Git Bash 跑 `sleep 5`、逾時 150 ms：通過代表逾時路徑經 Job Object 把 bash 與 MSYS 子行程整棵終止，exit code 124、`timed_out = true`；若子行程沒被殺掉，測試會卡到 `sleep` 自己結束（約 5 秒）才回來，單獨跑這一項整個測試只花 0.27 秒，遠短於 5 秒，代表子行程確實被殺掉、沒有等 sleep 自己結束。
 
@@ -134,4 +134,4 @@ alive after killing root only: 2 of 3
 | 記錄執行日誌 | 達成：第 2 節（失敗紀錄）、第 2.1～2.2 節（重跑） |
 | Job Object 驗證結果 | 達成：原始碼定位（第 3 節）、buzz 自己的 `timeout_fires` 單執行緒通過（第 2.2 節）、同 API 實驗（第 4 節） |
 
-未做：spawn 與 AssignProcessToJobObject 之間的競態沒有實測；buzz 測試的環境變數競爭只記錄、沒有修。
+未做：spawn 與 AssignProcessToJobObject 之間的競態沒有實測；buzz 測試的環境變數競爭已於 buzz `e3561ee` 修正（見第 2.2 節）。
