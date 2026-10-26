@@ -486,5 +486,25 @@ class MultilineCliInputTest(unittest.TestCase):
         self.assertIn("見 notes 的比較表", parsed.tasks[1].archive_reason)
 
 
+class CompleteDateTest(unittest.TestCase):
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp = Path(self._tmp.name)
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    def test_complete_rejects_impossible_calendar_dates_and_leaves_the_file_alone(self):
+        # 格式對但日期不存在（月份 13、2 月 30 日）也會通過 \d{4}-\d{2}-\d{2}，卻不是真的日期
+        n = make_note(self.tmp, status="pending", box=" ", extra="")
+        before = n.path.read_text(encoding="utf-8")
+        for bad in ("2026-13-45", "2026-02-30", "0000-00-00"):
+            with self.subTest(date=bad):
+                with self.assertRaises(ValueError):
+                    tc.apply_complete(n.path, "T-20261020-01", "commit abc1234", bad)
+                self.assertEqual(n.path.read_text(encoding="utf-8"), before)
+        tc.apply_complete(n.path, "T-20261020-01", "commit abc1234", "2028-02-29")  # 閏日是真的日期
+
+
 if __name__ == "__main__":
     unittest.main()

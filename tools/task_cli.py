@@ -152,6 +152,10 @@ def apply_complete(note_path: Path, task_id: str, evidence: str, date_str: str) 
         raise ValueError("驗收證據不可為空或佔位文字")
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date_str):
         raise ValueError(f"完成日期需為 YYYY-MM-DD：{date_str}")
+    try:
+        dt.date.fromisoformat(date_str)  # 格式對但不是真的日期（2026-13-45、2026-02-30）
+    except ValueError:
+        raise ValueError(f"完成日期不是有效的日曆日期：{date_str}") from None
 
     text, nl = _read_note(note_path)
     lines = text.split("\n")
