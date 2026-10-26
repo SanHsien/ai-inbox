@@ -158,6 +158,7 @@ tags:
 以下任務已同步至主倉庫 `README.md` 待辦事項清單：
 
 - [ ] **`T-20261026-26`**｜**[優先級：高]** 擴充 `docs/reverse-engineering-pipeline-spec.md`：收錄 Clean Room 合規宣告 Prompt 範本與「GPT 靜態分析 + 本地未審查模型實操」雙軌逆向管線
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/reverse-engineering-pipeline-spec.md`
   - **具體做法**：
     1. 在流水線規格書增補「合規防線與審查避障規範」，提供宣告靜態分析、Call Graph、重建資料格式之標準 Clean Room Prompt 範本。

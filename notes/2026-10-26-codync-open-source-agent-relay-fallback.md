@@ -6,7 +6,7 @@ source_platform: "GitHub (leepokai/Codync) / Threads"
 author: "Kevin (leepokai) / it.oppa.twhk (@it.oppa.twhk)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: pending
+status: in-progress
 cluster: 1
 cluster_role: "遠端多Agent中繼與容錯"
 short_title: "Codync 開源 Agent 中繼"
@@ -26,7 +26,7 @@ tags:
 - **社群引介來源**：[Threads 貼文（it.oppa.twhk）](https://www.threads.com/@it.oppa.twhk/post/De1ubh6Cf8i) ｜ [分享短鏈](https://www.threads.com/share/BAHSEoL7uM/)
 - **分析主題**：商業遠端 Agent 機器人平替、ACP（Agent Client Protocol）通用橋接、自帶訂閱（BYOS/BYOA）、Rate Limit 配額容錯自動 Fallback 降級、多 Agent 群聊協同與 E2EE 端到端加密
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（模型燒額率評估與配額調度矩陣）
   - [`notes/2026-10-26-block-buzz-nostr-agent-workspace.md`](./2026-10-26-block-buzz-nostr-agent-workspace.md)（Block Buzz 協同工作區與 ACP/MCP 雙協議解耦）
@@ -125,6 +125,7 @@ Codync 提出 **BYOA（Bring Your Own Agent）** 與 **BYOS（Bring Your Own Sub
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261026-20`**｜**[優先級：高]** 撰寫「開源 Agent 中繼架構：ACP 通用橋接、Rate Limit 自動容錯降級與 E2EE 遠端審批工程指引」收錄於 `docs/codync-agent-fallback-and-mobile-relay-spec.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/codync-agent-fallback-and-mobile-relay-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳解 Codync 的 BYOS/BYOA 設計哲學，以及與商業閉源工具（Grok Bot, Dots, Muse）的技術對比。

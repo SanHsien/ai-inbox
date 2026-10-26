@@ -6,7 +6,7 @@ source_platform: "Threads"
 author: "一股GoodJob (@good_job_ai)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: pending
+status: in-progress
 cluster: 3
 cluster_role: "Skill生態評估"
 short_title: "GitHub 必裝 Skill 實測"
@@ -24,7 +24,7 @@ tags:
 - **來源貼文**：[Threads 貼文（一股GoodJob @good_job_ai）](https://www.threads.com/@good_job_ai/post/De22eZgE32F) ｜ [分享短鏈](https://www.threads.com/share/_pAJBrMYd/)
 - **分析主題**：GitHub 萬星熱門 Agent Skills 實機實測、Skill 膨脹與上下文污染、按需動態載入（JIT Loading）、8KB 預算門檻與工程治理
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-23-claude-plugin-security-guidance.md`](./2026-10-23-claude-plugin-security-guidance.md)（Claude Plugin 安全規範與 8KB 上下文預算）
   - [`notes/2026-10-18-claude-code-mods-self-extending-runtime.md`](./2026-10-18-claude-code-mods-self-extending-runtime.md)（Claude Code Mods 擴充機制與執行期架構）
@@ -119,6 +119,7 @@ tags:
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261026-17`**｜**[優先級：高]** 撰寫「Agent Skills 評選矩陣與上下文預算工程規範」收錄於 `docs/agent-skills-curation-and-context-budget-spec.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/agent-skills-curation-and-context-budget-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 整理 GitHub 熱門技能四大體系（工程紀律、元技能、前端規範、文件工程）的評選與取捨矩陣。

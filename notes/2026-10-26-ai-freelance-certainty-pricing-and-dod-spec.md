@@ -6,7 +6,7 @@ source_platform: "YouTube (Debug 土撥鼠)"
 author: "Debug 土撥鼠"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: pending
+status: in-progress
 cluster: 1
 cluster_role: "接案與商業化"
 short_title: "AI 接案確定性與價值報價工程"
@@ -26,7 +26,7 @@ tags:
 - **影片標題**：〈AI 199 元做網站？新手接案最容易踩的四個坑：客戶付錢買的從來不是 Code〉
 - **頻道作者**：Debug 土撥鼠
 - **分析主題**：AI 接案市場低價內捲剖析、需求解壓縮（為什麼不能對名詞報價）、三大報價法（薪水法/請人成本法/價值報價法）、Scope 防失控與前提時程、結不了案的 Bug vs 新需求界線、軟體公司真正賣的「確定性（Certainty）」
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md`](./2026-10-24-feedback-desk-client-ticket-ai-handoff.md)（客戶工單流轉與 AI 接案交接帳本）
   - [`notes/2026-10-23-web-to-app-android-packaging.md`](./2026-10-23-web-to-app-android-packaging.md)（Web-to-App 接案流程與毛利評估）
@@ -139,6 +139,7 @@ Debug 土撥鼠在本作中直擊了當前 AI 爆發期軟體外包與接案市�
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261026-32`**｜**[優先級：高]** 撰寫「需求解壓縮與名詞規格化提示詞範本」收錄於 `templates/client-requirement-decomposition-prompt.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`templates/client-requirement-decomposition-prompt.md`（範本文件；不修改其他專案程式）
   - **具體做法**：
     1. 針對客戶常見的抽象名詞（會員、電商、AI 客服、後台管理），設計三層解壓縮結構。

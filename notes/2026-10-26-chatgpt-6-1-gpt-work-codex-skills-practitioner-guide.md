@@ -6,7 +6,7 @@ source_platform: "YouTube (孔老師AI研習社)"
 author: "孔老師AI研習社 (@Teacher_Kong)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: pending
+status: in-progress
 cluster: 1
 cluster_role: "終端派工"
 short_title: "ChatGPT-6.1 全景實測與工具鏈映射"
@@ -28,7 +28,7 @@ tags:
 - **頻道作者**：孔老師AI研習社（@Teacher_Kong，80.4K 訂閱）
 - **發布日期**：`2026-10-01` ｜ 觀看次數：113,000+
 - **分析主題**：ChatGPT-6.1 桌面生態系（GPT Work 辦公協同、Codex 程式代理、Skills 模組化流程）、大眾化操作盲區破解、Session 實戰工具鏈（AGENTS.md 派工、Three.js 視覺工件、Buzz NAS 常駐、雲地雙軌實操、Cache 燃燒率矩陣）深度映射
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（Sol 6.1 vs Astra 6 燃燒率與 Cache 基準）
   - [`notes/2026-10-26-block-buzz-nostr-agent-workspace.md`](./2026-10-26-block-buzz-nostr-agent-workspace.md)（Buzz 類 Slack 聊天室與 NAS 常駐拓撲）
@@ -134,6 +134,7 @@ tags:
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261026-29`**｜**[優先級：高]** 撰寫「GPT Work / Codex 之 AGENTS.md 規範驅動起步與 Skill 預算控制手冊」收錄於 `docs/codex-skills-agents-bootstrap-guide.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/codex-skills-agents-bootstrap-guide.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳解專案根目錄 `AGENTS.md` 作為單一進入點的設計原理，徹底解決手動 `@Skill` 換專案失憶問題。

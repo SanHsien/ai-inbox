@@ -6,7 +6,7 @@ source_platform: "GitHub (Block, Inc.)"
 author: "Block, Inc."
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: pending
+status: in-progress
 cluster: 1
 cluster_role: "Nostr人機協同工作區"
 short_title: "Block Buzz 協同工作區"
@@ -26,7 +26,7 @@ tags:
 - **本地專案路徑**：`C:\GitHub\buzz`
 - **分析主題**：Nostr 協議中繼（Relay）、人機同室協同（Human-Agent Collaboration）、ACP/MCP 雙協議解耦、Windows Job Object 進程防線與不可篡改審計日誌
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md`](./2026-10-19-ai-shared-brain-multi-agent-architecture.md)（多 Agent 共同大腦與跨環境同步）
   - [`notes/2026-10-19-crossroad-a2a-agent-mail-relay.md`](./2026-10-19-crossroad-a2a-agent-mail-relay.md)（Agent-to-Agent 通訊與郵件中繼架構）
@@ -164,6 +164,7 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
   - **驗收標準（DoD）**：產出 `docs/buzz-nas-deployment-and-heartbeat-spec.md`，內含 NAS 部署拓撲、多頻道配置範例與心跳協議定義；以 `Test-Path docs/buzz-nas-deployment-and-heartbeat-spec.md` 驗證存在。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 - [ ] **`T-20261026-08`**｜**[優先級：高]** 撰寫「Block Buzz 架構解析與 Nostr+ACP/MCP 代理人協同設計指引」收錄於 `docs/buzz-nostr-agent-architecture.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/buzz-nostr-agent-architecture.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳解 Buzz 的 Nostr Relay 設計哲學、Kind 系統與 Postgres FTS 全文檢索結構。
@@ -174,6 +175,7 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-09`**｜**[優先級：中]** 在 `SanHsien/buzz`（`C:\GitHub\buzz`）驗證 Windows 11 下 `buzz-dev-mcp` 與 `buzz-agent` 之獨立編譯與 Job Object 殺進程機制
+  - **狀態**：🟡 進行中
   - **目標範圍**：`C:\GitHub\buzz\crates\buzz-dev-mcp` 與 `buzz-agent`
   - **具體做法**：
     1. 在 Windows 11 原生環境檢查 Rust 工具鏈（`cargo check -p buzz-dev-mcp -p buzz-agent`）。

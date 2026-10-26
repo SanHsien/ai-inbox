@@ -6,7 +6,7 @@ source_platform: "一線工程實測 (Empirical Benchmark)"
 author: "維護者 (Maintainer)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: pending
+status: in-progress
 cluster: 1
 cluster_role: "路由分流"
 short_title: "Sol/Astra/Luna 燒額與快取實測"
@@ -23,7 +23,7 @@ tags:
 - **資料來源**：`維護者一線連續開發實測數據（2026-10-26）`
 - **評測情境**：搭配 Tibo's Reset 後的多專案高強度連續開發、從零骨架建構與長程自主派工
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：[`notes/2026-10-17-model-routing-opusplan-advisor.md`](./2026-10-17-model-routing-opusplan-advisor.md)、[`notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md`](./2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)
 
 ---
@@ -120,6 +120,7 @@ tags:
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261026-01`**｜**[優先級：高]** 撰寫「長程並行開發模型選型與配額消耗速查表」收錄於 `docs/model-burn-rate-routing-matrix.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/model-burn-rate-routing-matrix.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳細對比 Sol 6.1 High（24H 50%）、Astra 6 High（4H 100%）、Luna 6 Max~High（2天 100%）之耗額速度與單位成本。
@@ -129,6 +130,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-02`**｜**[優先級：中]** 將「骨架搭建降級至 Sol 6.1、極限攻堅再開 Astra 6」與「Luna 6 避開 5H 限制」原則沉澱至 `agent-assets` 共用偏好庫
+  - **狀態**：⚪ 不做（不做：要寫入的是單篇文章作者的模型選擇建議與耗額倍數（Astra 6 為 Sol 6.1 的 12 倍等），不是維護者的偏好；agent-assets RUNBOOK 也明訂模型名、價格、額度這類動態資料不寫成永久事實。這些數據改附出處與日期收錄在 T-20261026-01 的 docs/model-burn-rate-routing-matrix.md。）
   - **目標範圍**：`C:\GitHub\agent-assets\knowledge\user_preferences.md`
   - **具體做法**：
     1. 在 `user_preferences.md` 的模型調度段落中，補充實測耗額數據警示（Astra 6 耗額為 Sol 6.1 的 12 倍）。

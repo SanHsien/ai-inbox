@@ -6,7 +6,7 @@ source_platform: "GitHub (wesbos/3d-model-anything) / Threads"
 author: "Wes Bos / 李昱翰 (@leeunhn)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: pending
+status: in-progress
 cluster: 2
 cluster_role: "LiDAR空間重建"
 short_title: "3D Model Anything"
@@ -26,7 +26,7 @@ tags:
 - **社群引介來源**：[Threads 貼文（李昱翰 @leeunhn）](https://www.threads.com/@leeunhn/post/De3ViwPkt0-) ｜ [分享短鏈](https://www.threads.com/share/BAPezaO6q6/)
 - **分析主題**：空間運算（Spatial Computing）、iPhone LiDAR + RoomPlan 數據捕獲、Three.js 程式化可編輯建模、AI Coding Agent 專屬技能（`scan-to-threejs`）與相機內參視覺對齊閉環
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-target-story-generative-ui-editor.md`](./2026-10-18-target-story-generative-ui-editor.md)（Generative UI 互動產品設計與狀態管理）
   - [`notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md`](./2026-10-26-answer-me-with-html-visual-agent-artifacts.md)（工件輸出與確定性版面計算）
@@ -133,6 +133,7 @@ Agent 透過 `agent-browser` 截取渲染畫面，調用 Python 腳本將虛擬�
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261026-11`**｜**[優先級：高]** 撰寫「空間運算 Agent 規範：物理 LiDAR 測量、Three.js 程式化建模與相機內參比對閉環」收錄於 `docs/scan-to-threejs-spatial-agent-spec.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/scan-to-threejs-spatial-agent-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳解 iOS RoomPlan 與 LiDAR 數據格式（空間幾何、門窗開口、定位照片與相機內參）。

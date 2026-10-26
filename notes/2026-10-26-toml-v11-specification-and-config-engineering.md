@@ -6,7 +6,7 @@ source_platform: "TOML 官方繁體中文規格書 / GitHub toml-lang/toml"
 author: "Tom Preston-Werner / miniasp 譯"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
-status: pending
+status: in-progress
 cluster: 3
 cluster_role: "設定工程"
 short_title: "TOML v1.1 規格與設定檔工程"
@@ -23,7 +23,7 @@ tags:
 - **官方倉庫**：[`toml-lang/toml`](https://github.com/toml-lang/toml)
 - **繁中規格首頁**：[TOML 繁體中文版規格（miniasp 譯）](https://toml.gh.miniasp.com/tw/index)
 - **分析日期**：`2026-10-26`
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：[`notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md`](./2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)
 
 ---
@@ -94,6 +94,7 @@ TOML（Tom's Obvious, Minimal Language，Tom 的明顯、最小化語言）由 G
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261026-04`**｜**[優先級：中]** 撰寫「TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引」收錄於 `docs/toml-config-engineering-spec.md`
+  - **狀態**：🟡 進行中
   - **目標範圍**：`docs/toml-config-engineering-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 整理 TOML v1.1 關鍵新特性（內嵌表格換行、`\e` 與 `\xHH`、Unicode 無引號鍵、尾隨逗號）。
