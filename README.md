@@ -39,14 +39,16 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 120 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
+> 共 123 項任務：🔴 未做 3／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| *（目前沒有未完成任務）* | - | - | - | - | - | - |
+| `T-20261028-01` | 🔴 未做 | 高 | 撰寫「Karpathy 四大原則工程加固指引：從 Prompt 到硬閘門」收錄於 `docs/karpathy-rules-mechanical-hardening-spec.md` | `docs/karpathy-rules-mechanical-hardening-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
+| `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
+| `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 
 ### 🟢 已做（Done）
 
@@ -241,6 +243,7 @@
 | 2026-10-26 | 🟢 | [GitHub 萬星熱門 Agent Skills 實測評估：從矽谷大神技能包到「按需載入」的工程治理防線](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | `agent-skills`, `skill-curation`, `context-optimization` | 3 / 3 |
 | 2026-10-26 | 🟢 | [多模型連續開發實測：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | `cost-control`, `model-routing`, `prompt-caching` | 1 / 1（+2 不做） |
 | 2026-10-26 | 🟢 | [TOML v1.1 繁中規格解析與 Agent 設定檔工程：從 YAML 陷阱走向無歧義強型別配置](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | `toml`, `configuration`, `standard-spec` | 2 / 2 |
+| 2026-10-28 | 🔴 | [Andrej Karpathy 版 CLAUDE.md 四大黃金準則解構：從軟性文字勸導到機械硬閘門的工程加固實踐](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | `karpathy-rules`, `claude-md`, `agents-md` | 0 / 3 |
 <!-- END GENERATED: index -->
 
 ---
@@ -264,6 +267,7 @@
 - 團隊共用記憶架構：[AI 共用記憶與三 Agent 全景](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md)
 - Nostr人機協同工作區：[Block Buzz 協同工作區](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md)
 - 遠端多Agent中繼與容錯：[Codync 開源 Agent 中繼](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md)
+- 規範工程：[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 展示錄製：[Reelbird 開源螢幕錄影](./notes/2026-10-17-reelbird-open-source-screen-recorder.md)
