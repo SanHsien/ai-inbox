@@ -54,7 +54,7 @@ class CheckTest(unittest.TestCase):
         self.m.index("a.md", "b.md")
         findings, stats = self.run_check()
         self.assertEqual(findings, [])
-        self.assertEqual(stats, {"index_entries": 2, "memory_files": 2})
+        self.assertEqual(stats, {"index_entries": 2, "sub_index_entries": 0, "memory_files": 2})
 
     def test_broken_link(self):
         self.m.write("a.md", fm("a"))
@@ -74,10 +74,62 @@ class CheckTest(unittest.TestCase):
         self.m.write("a.md", fm("a"))
         self.m.write("daily-log-1.md", "沒有 frontmatter，也有 [[死連結]]\n")
         self.m.index("a.md")
-        self.assertEqual(self.run_check()[0] != [], True)
+        self.assertNotEqual(self.run_check(ignore=[])[0], [])
         findings, stats = self.run_check(ignore=["daily-log-*.md"])
         self.assertEqual(findings, [])
         self.assertEqual(stats["memory_files"], 1)
+
+    def test_daily_log_ignored_by_default(self):
+        self.m.write("a.md", fm("a"))
+        self.m.write("daily-log-2026-10-27.md", "沒有 frontmatter\n")
+        self.m.index("a.md")
+        findings, stats = self.run_check()
+        self.assertEqual(findings, [])
+        self.assertEqual(stats["memory_files"], 1)
+
+    def test_insight_is_default_type(self):
+        self.m.write("a.md", fm("a", typ="insight"))
+        self.m.index("a.md")
+        self.assertEqual(self.run_check()[0], [])
+
+    def test_sub_index_entries_count_as_indexed(self):
+        self.m.write("a.md", fm("a"))
+        self.m.write("r1.md", fm("r1", typ="reference"))
+        self.m.write("old.md", fm("old", typ="project"))
+        self.m.write("archive/done.md", fm("done", typ="project"))
+        self.m.write("INDEX-reference.md", "# 子索引\n\n- [r1.md](r1.md) — x\n- [old](old.md) — y\n- [done](archive/done.md) — z\n")
+        self.m.index("a.md", "INDEX-reference.md", extra="- 參考 [[done]] 與 [[archive/done]]")
+        findings, stats = self.run_check(max_entries=2)
+        self.assertEqual(codes(findings), ["dead-wikilink"])  # [[done]] 不在頂層，只有 archive/done 算數
+        self.assertEqual(stats, {"index_entries": 2, "sub_index_entries": 3, "memory_files": 4})
+
+    def test_sub_index_problems_report_sub_index_file(self):
+        self.m.write("a.md", fm("a"))
+        self.m.write("INDEX-x.md", "- [a](a.md) — 重複\n- [g](ghost.md) — 壞\n- [o](../o.md) — 外\n")
+        self.m.index("a.md", "INDEX-x.md")
+        findings, _ = self.run_check()
+        self.assertEqual(
+            sorted((f.code, f.file) for f in findings),
+            [("broken-link", "INDEX-x.md"), ("duplicate", "INDEX-x.md"), ("outside-dir", "INDEX-x.md")],
+        )
+
+    def test_unlinked_sub_index_is_not_followed(self):
+        self.m.write("a.md", fm("a"))
+        self.m.write("r1.md", fm("r1"))
+        self.m.write("INDEX-orphan.md", "- [r1](r1.md)\n")
+        self.m.index("a.md")
+        findings, _ = self.run_check()
+        self.assertEqual(sorted((f.code, f.file) for f in findings), [("unindexed", "INDEX-orphan.md"), ("unindexed", "r1.md")])
+
+    def test_nested_and_cyclic_sub_indexes(self):
+        self.m.write("a.md", fm("a"))
+        self.m.write("b.md", fm("b"))
+        self.m.write("INDEX-one.md", "- [two](INDEX-two.md)\n")
+        self.m.write("INDEX-two.md", "- [b](b.md)\n- [one](INDEX-one.md)\n")
+        self.m.index("a.md", "INDEX-one.md")
+        findings, stats = self.run_check()
+        self.assertEqual(codes(findings), ["duplicate"])
+        self.assertEqual(stats["sub_index_entries"], 3)
 
     def test_skip_frontmatter_still_requires_index(self):
         self.m.write("a.md", "沒有 frontmatter\n")
