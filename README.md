@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 129 項任務：🔴 未做 9／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
+> 共 132 項任務：🔴 未做 12／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -49,12 +49,15 @@
 | `T-20261028-01` | 🔴 未做 | 高 | 撰寫「Karpathy 四大原則工程加固指引：從 Prompt 到硬閘門」收錄於 `docs/karpathy-rules-mechanical-hardening-spec.md` | `docs/karpathy-rules-mechanical-hardening-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-04` | 🔴 未做 | 高 | 撰寫「無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範」收錄於 `docs/irrefutable-evidence-and-invalid-patterns-spec.md` | `docs/irrefutable-evidence-and-invalid-patterns-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-07` | 🔴 未做 | 高 | 撰寫「feedback-desk 架構解構與跨 Agent 工單交接規範」收錄於 `docs/feedback-desk-architecture-and-handoff-spec.md` | `docs/feedback-desk-architecture-and-handoff-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
+| `T-20261028-10` | 🔴 未做 | 高 | 撰寫「四 Agent 平行派工協議與人類審核門檻規範」收錄於 `docs/multi-agent-parallel-dispatch-spec.md` | `docs/multi-agent-parallel-dispatch-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-multi-agent-team-dispatch-five-roads-going-li](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | 2026-10-28 |
 | `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-05` | 🔴 未做 | 中 | 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md` | `docs/blast-radius-code-review-guide.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-08` | 🔴 未做 | 中 | 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py` | `tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
+| `T-20261028-11` | 🔴 未做 | 中 | 實作「產出導向工具流矩陣與備援鏈設定驗證器」於 `tools/verify_tool_fallback_matrix.py` | `tools/verify_tool_fallback_matrix.py` 與 `tests/test_verify_tool_fallback_matrix.py` | [2026-10-28-multi-agent-team-dispatch-five-roads-going-li](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | 2026-10-28 |
 | `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-06` | 🔴 未做 | 低 | 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md` | `docs/agents-knowledge-ab-test-protocol.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-09` | 🔴 未做 | 低 | 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md` | `templates/feedback-desk-agent-prompt.md` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
+| `T-20261028-12` | 🔴 未做 | 低 | 產出標準化「多 Agent 拆單派工 Skill 範本（Team-Dispatch）」收錄於 `templates/team-dispatch-skill-template.md` | `templates/team-dispatch-skill-template.md` | [2026-10-28-multi-agent-team-dispatch-five-roads-going-li](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | 2026-10-28 |
 
 ### 🟢 已做（Done）
 
@@ -251,6 +254,7 @@
 | 2026-10-26 | 🟢 | [TOML v1.1 繁中規格解析與 Agent 設定檔工程：從 YAML 陷阱走向無歧義強型別配置](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | `toml`, `configuration`, `standard-spec` | 2 / 2 |
 | 2026-10-28 | 🔴 | [開源 AI Agent 工單與跨代理交接系統 feedback-desk：Cloudflare Workers 無伺服器架構、MCP 整合與客戶協同實踐](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | `feedback-desk`, `ai-ticketing`, `agent-handoff` | 0 / 3 |
 | 2026-10-28 | 🔴 | [Andrej Karpathy 版 CLAUDE.md 四大黃金準則解構：從軟性文字勸導到機械硬閘門的工程加固實踐](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | `karpathy-rules`, `claude-md`, `agents-md` | 0 / 3 |
+| 2026-10-28 | 🔴 | [四 Agent 雲端與本機派工協定：Claude 拆單、Antigravity 審查、Hermes 通訊與 GOBOT 雲端值守架構解構](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | `multi-agent`, `team-dispatch`, `claudecode` | 0 / 3 |
 | 2026-10-28 | 🔴 | [編譯器專家 Thorsten Ball 的 15 條 Agent 工作實戰哲學：無可辯駁證據、SDLC 端到端可視與爆破半徑審查解構](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | `thorsten-ball`, `agent-philosophy`, `irrefutable-evidence` | 0 / 3 |
 <!-- END GENERATED: index -->
 
@@ -275,7 +279,7 @@
 - 團隊共用記憶架構：[AI 共用記憶與三 Agent 全景](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md)
 - Nostr人機協同工作區：[Block Buzz 協同工作區](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md)
 - 遠端多Agent中繼與容錯：[Codync 開源 Agent 中繼](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md)
-- 開發流程：[feedback-desk 開源 Agent 工單系統](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)、[Thorsten Ball 15 條 Agent 實戰哲學](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)
+- 開發流程：[feedback-desk 開源 Agent 工單系統](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)、[Going Li 四 Agent 派工與五路工具流](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)、[Thorsten Ball 15 條 Agent 實戰哲學](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)
 - 規範工程：[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
