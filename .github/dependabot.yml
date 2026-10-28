@@ -1,4 +1,6 @@
 version: 2
+
+# fleet-waiver: freshness -- 沒有依賴宣告檔可比對：CI 只用標準函式庫；唯一的第三方依賴是選用工具 tools/video_transcript.py 延遲載入的 faster-whisper／ctranslate2，安裝指令寫在 docs/video-transcript-howto.md。新增 requirements／pyproject 時改加 dependency-freshness workflow 並移除本行
 updates:
   # 沒有 pip manifest（tools/ 僅選用工具延遲載入第三方套件，CI 不需要）；受管依賴只有 workflow 引用的 actions
   - package-ecosystem: "github-actions"
