@@ -130,3 +130,7 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
    - 截圖前用 `python tools/screen_privacy.py --title "<視窗標題>" --app <程式名>` 判斷：`blocked`／`nocap` 不可截圖。
    - 截圖後先 OCR，再用 `python tools/screen_privacy.py --ocr-file <OCR 文字檔>` 檢查：結果是 `drop_image`（含金鑰、身分證、卡號，或敏感關鍵字達門檻）就刪掉這張圖，不可送出、不可提交。
    - 規則以 `tools/screen_privacy.py` 為準；要改規則先在 `tests/test_screen_privacy.py` 補反例。
+
+## 路線圖
+
+- `ROADMAP.md` 是本 repo 後續工作的單一真相源。完成或新增工作時，在同一個 commit 更新它：做完的列刪掉、新工作加進去。不要在其他文件另列待辦。
