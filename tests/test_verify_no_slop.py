@@ -1,9 +1,11 @@
 """
 tests/test_verify_no_slop.py
 測試 verify_no_slop.py：
-1. 範例乾淨頁面 (assets/anti-slop-demo/index.html) 必須 0 違規回報 Pass。
+1. 範例乾淨頁面 (assets/anti-slop-demo/index.html) 與 assets/ 全目錄必須 0 違規回報 Pass。
 2. 故意包含罐頭特徵 (SLOP-01 ~ SLOP-05) 的 HTML 必須被準確抓到並回報 Fail。
 3. 註解中的說明文字不應被誤判為違規。
+4. CLI 預設無參數掃描 assets/ 全目錄返回 exit code 0。
+5. CLI 預設無參數掃描範圍必須涵蓋 assets/ 全目錄（包含 anti-slop-demo 以外的檔案）。
 """
 
 from __future__ import annotations
@@ -50,6 +52,21 @@ class TestVerifyNoSlop(unittest.TestCase):
             f"範例 HTML 不應有任何罐頭違規，但發現：{[v.rule_id + ': ' + v.matched_text for v in violations]}",
         )
 
+    def test_all_assets_pass_no_slop(self):
+        assets_dir = REPO_ROOT / "assets"
+        self.assertTrue(assets_dir.is_dir(), f"assets 目錄不存在: {assets_dir}")
+        html_css_files = [
+            f for f in sorted(assets_dir.rglob("*")) if f.suffix.lower() in (".html", ".htm", ".css")
+        ]
+        self.assertGreater(len(html_css_files), 0, "assets 目錄下應有 HTML/CSS 檔案")
+        for f in html_css_files:
+            violations = vns.scan_file(f)
+            self.assertEqual(
+                violations,
+                [],
+                f"{f.relative_to(REPO_ROOT)} 不應有任何罐頭違規，但發現：{[v.rule_id + ': ' + v.matched_text for v in violations]}",
+            )
+
     def test_sloppy_html_caught_all_rules(self):
         violations = vns.scan_text(SLOPPY_HTML, filename="sloppy.html")
         self.assertGreater(len(violations), 0, "罐頭 HTML 應該檢測出多項違規")
@@ -73,9 +90,36 @@ class TestVerifyNoSlop(unittest.TestCase):
         self.assertEqual(violations, [], "註解內的說明文字不應被誤判為違規")
 
     def test_main_cli_execution(self):
+        exit_code_default = vns.main([])
+        self.assertEqual(exit_code_default, 0, "CLI 預設無參數掃描 assets/ 全目錄應返回 exit code 0")
+
         demo_path = str(REPO_ROOT / "assets" / "anti-slop-demo" / "index.html")
         exit_code = vns.main([demo_path])
         self.assertEqual(exit_code, 0, "CLI 掃描乾淨範例應返回 exit code 0")
+
+    def test_main_cli_scans_all_assets_by_default(self):
+        """CLI 預設無參數掃描必須涵蓋 assets/ 全目錄，不能只掃 anti-slop-demo。"""
+        from unittest.mock import patch
+
+        scanned_files: list[Path] = []
+        original_scan_file = vns.scan_file
+
+        def record_scan(path):
+            scanned_files.append(Path(path).resolve())
+            return original_scan_file(path)
+
+        with patch.object(vns, "scan_file", side_effect=record_scan):
+            exit_code = vns.main([])
+
+        self.assertEqual(exit_code, 0, "CLI 預設無參數掃描應返回 exit code 0")
+        non_demo_files = [
+            p for p in scanned_files if "anti-slop-demo" not in p.parts
+        ]
+        self.assertGreater(
+            len(non_demo_files),
+            0,
+            f"CLI 預設掃描應包含 assets/ 底下 anti-slop-demo 以外的檔案，但實際只掃描了：{scanned_files}",
+        )
 
     def test_word_forms_are_caught(self):
         for word in ("delves", "Elevating", "seamless", "empowers", "unleashed", "revolutionized", "game-changer"):

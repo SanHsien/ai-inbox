@@ -153,11 +153,11 @@ def format_report(violations: list[SlopViolation]) -> str:
 def main(argv: list[str] | None = None) -> int:
     ensure_utf8_output()
     parser = argparse.ArgumentParser(description="靜態檢測 HTML / CSS 中的 AI 罐頭設計特徵")
-    parser.add_argument("paths", nargs="*", help="要掃描的 HTML 或 CSS 檔案路徑（預設: assets/anti-slop-demo/index.html）")
+    parser.add_argument("paths", nargs="*", help="要掃描的 HTML 或 CSS 檔案或目錄路徑（預設: assets/）")
     args = parser.parse_args(argv)
 
     target_paths = [Path(p) for p in args.paths] if args.paths else [
-        Path(__file__).resolve().parent.parent / "assets" / "anti-slop-demo" / "index.html"
+        Path(__file__).resolve().parent.parent / "assets"
     ]
 
     all_violations: list[SlopViolation] = []

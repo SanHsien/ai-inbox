@@ -43,7 +43,7 @@
 - ✅ [低] `verify_video_storyboard.py` 的 `lighting_score` 恆為 9.0，是假指標 → 移除該欄位（無任何測試或文件引用）（後續修正）
 - ⏸ [低] `verify_story_structure.py` 因果強弱靠關鍵字，`strength` 可自填「強」，等於自評
 - ✅ [低] 三伏三冒間距：`docs/target-story-generative-ui-spec.md` 寫「太緊 <2、剛好 3-4、太鬆 >5」（2 與 5 未定義），程式為 2-4 剛好、≥5 太鬆 → 將規格文件對齊為「太緊 <2 節點、剛好 2-4 節點、太鬆 ≥5 節點」
-- ⏸ [低] `verify_no_slop.py` 對 `assets/` 全目錄會報 3 處（box-shadow、animate-pulse）；目前只掃 anti-slop-demo
+- ✅ [低] `verify_no_slop.py` 掃描範圍擴展為 `assets/` 全目錄；修除既有違規（threejs-particle-galaxy 的 box-shadow 與 open-meteo 的 animate-pulse），全目錄 0 違規且 exit 0
 
 ## 3. 功能型工具
 
