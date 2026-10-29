@@ -11,7 +11,6 @@ public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`docs/`�
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
 | 重驗兩份評估文件的外部事實（Stars、版本、雜湊） | 文件引用的外部事實沒有重驗過，日期一過就可能誤導後續決策 | `docs/web-to-app-evaluation.md` 與 `docs/rea-sandbox-evaluation-evidence.md` 每個外部數字旁標註重驗日期與來源 URL；`python -m unittest discover -s tests` 與 `python tools/verify_inbox.py` 綠；`REVIEW.md:79` 該列改標 ✅ 並附 commit | Claude Sonnet | `REVIEW.md:79` |
-| 在 `SECRET_RULES` 補 `Authorization: Basic <token>` 標頭規則 | 深掃確認現有規則不涵蓋 Basic 標頭，視窗標題若含此標頭不會被遮 | `tools/screen_privacy.py` 的 `SECRET_RULES` 新增一條，`tests/` 內新測試：含 Basic 標頭的字串被遮蔽，普通英文句子不被誤遮；全部 unittest 綠 | Claude Sonnet | `tools/screen_privacy.py:189`；深掃報告（2026-10-26）「刻意不修」 |
 | 讓 `verify_no_slop.py` 掃描範圍與 `assets/` 一致，或把範圍寫成明確設定 | 目前只掃 anti-slop-demo，對全目錄會報 3 處（box-shadow、animate-pulse），範圍是隱性的 | 二擇一並在 `REVIEW.md:46` 回註：(a) 修掉 3 處並改掃全目錄，或 (b) 範圍寫成檔內常數＋測試釘住；`python tools/verify_no_slop.py` exit 0 | Claude Sonnet | `REVIEW.md:46` |
 
 ## 中期：等條件成立再做

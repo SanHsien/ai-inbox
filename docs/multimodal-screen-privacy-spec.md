@@ -303,6 +303,7 @@ class IncognitoDetector:
 | **Telegram Bot Token** | `(?<![A-Za-z0-9_])\d{8,10}:[A-Za-z0-9_-]{35}(?![A-Za-z0-9_])` | `[Telegram權杖]` | **Drop Image** |
 | **JSON Web Token (JWT)** | `(?<![A-Za-z0-9_])eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{4,}` | `[JWT]` | **Drop Image** |
 | **Bearer 授權標頭** | `(?i)(?<![A-Za-z0-9_])Bearer\s+[A-Za-z0-9._~+/\-]{16,}=*` | `Bearer [遮蔽]` | **Drop Image** |
+| **Basic 授權標頭** | `(?i)(?<![A-Za-z0-9_])(?:((?:Proxy-)?Authorization:\s+)Basic\s+[A-Za-z0-9._~+/\-]{4,}=*\|Basic\s+(?=[A-Za-z0-9._~+/\-]*[0-9+/=])[A-Za-z0-9._~+/\-]{8,}=*)` | `\g<1>Basic [遮蔽]` | **Drop Image** |
 | **帳密連線字串** | `(?i)(?<![A-Za-z0-9_])([a-z][a-z0-9+.\-]{1,20})://[^\s:@/]{1,64}:[^\s@/]{1,128}@[^\s'"]+` | `\1://[連線字串]` | **Drop Image** |
 | **明文密碼賦值（引號）** | `(?i)(?:password\|passwd\|pwd\|secret\|token\|api[_-]?key\|access[_-]?key\|密碼\|密鑰\|金鑰\|權杖\|口令)[A-Za-z0-9_]{0,40}['"]?\s{0,8}[:=：]\s{0,8}(['"])(?!(?:undefined\|null\|none\|true\|false\|string\|number\|process\|import\|require\|getenv)\b)[A-Za-z0-9!@#$%^&_\-+=/]{8,}\1` | `[遮蔽的祕密]` | **Drop Image** |
 | **明文密碼賦值** | `(?i)(?:password\|passwd\|pwd\|secret\|token\|api[_-]?key\|access[_-]?key\|密碼\|密鑰\|金鑰\|權杖\|口令)[A-Za-z0-9_]{0,40}['"]?\s{0,8}[:=：]\s{0,8}(?!(?:undefined\|null\|none\|true\|false\|string\|number\|process\|import\|require\|getenv)\b)(?=[A-Za-z0-9_\-]*[0-9!@#$%^&+=/])(?![a-z]+(?:_[a-z0-9]+)+(?:['"\s;,]\|$))[A-Za-z0-9!@#$%^&_\-+=/]{8,}(?=['"\s;,]\|$)` | `[遮蔽的祕密]` | **Drop Image** |

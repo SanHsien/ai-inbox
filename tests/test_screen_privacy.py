@@ -262,6 +262,40 @@ class SecretRuleRegressionTest(unittest.TestCase):
         out = sp.redact_text("Authorization: Bearer abcdefghijklmnop1234\\next-line")
         self.assertEqual(out, "Authorization: Bearer [遮蔽]\\next-line")
 
+    def test_basic_auth_header_is_redacted(self):
+        cases = [
+            ("Authorization: Basic " + fake("dXNlcjpw", "YXNzd29yZA=="), "Authorization: Basic [遮蔽]"),
+            ("Proxy-Authorization: Basic " + fake("dXNlcjpw", "YXNzd29yZA=="), "Proxy-Authorization: Basic [遮蔽]"),
+            ("authorization: basic " + fake("YWRtaW46", "YWRtaW4="), "authorization: Basic [遮蔽]"),
+            ("Basic " + fake("dXNlcjpw", "YXNzd29yZA=="), "Basic [遮蔽]"),
+            ("Basic " + fake("YWRtaW46", "MTIzNA=="), "Basic [遮蔽]"),
+            ("Authorization: Basic " + fake("dXNlcjpw", "YXNzd29yZA==") + "\\next-line",
+             "Authorization: Basic [遮蔽]\\next-line"),
+        ]
+        for raw, expected in cases:
+            with self.subTest(raw=raw):
+                self.assertEqual(sp.redact_text(raw), expected)
+                self.assertEqual(sp.inspect_ocr_text(raw), (True, "drop_image"))
+                self.assertIn("Basic 授權標頭", sp.scan_secrets(raw))
+
+    def test_ordinary_english_with_basic_is_not_redacted(self):
+        cases = [
+            "This is a basic tutorial.",
+            "Basic concepts of programming.",
+            "We need basic authentication here.",
+            "Basic knowledge is essential.",
+            "Basic English grammar rules.",
+            "Basic recommendations for beginners.",
+            "Basic institutionalization of practices.",
+            "The basic idea is simple.",
+            "Basic troubleshooting steps.",
+        ]
+        for text in cases:
+            with self.subTest(text=text):
+                self.assertEqual(sp.redact_text(text), text)
+                self.assertEqual(sp.inspect_ocr_text(text), (False, "pass"))
+                self.assertEqual(sp.scan_secrets(text), [])
+
     def test_pii_patterns_use_plain_pipe_not_markdown_escape(self):
         for _label, pattern, _repl in sp.PII_RULES + sp.SECRET_RULES:
             self.assertNotIn("\\|", pattern, pattern)
@@ -314,6 +348,7 @@ class OcrSpecTest(unittest.TestCase):
             "Telegram Bot Token": fake("123456789", ":", "A" * 35),
             "JSON Web Token (JWT)": fake("eyJ", "hbGciOiJI", ".", "eyJzdWIiOiIx", ".", "abcd1234"),
             "Bearer 授權標頭": fake("Bearer ", "abcdefghijklmnopqrstuvwxyz"),
+            "Basic 授權標頭": fake("Authorization: Basic ", "dXNlcjpw", "YXNzd29yZA=="),
         }
         for label, text in cases.items():
             with self.subTest(label=label):
