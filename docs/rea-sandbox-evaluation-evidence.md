@@ -1,6 +1,6 @@
 # REA（Reverse Engineer Anything）沙盒環境實測報告
 
-> 本報告記錄在 Windows 11 沙盒環境（`C:\GitHub\_sandbox\rea\`）下，對 `SanHsien/rea` 及 REA 工具鏈（v6.7.0）進行之實測驗證。  
+> 本報告記錄在 Windows 11 沙盒環境（`C:\GitHub\_sandbox\rea\`）下，對 `SanHsien/rea`（來源 URL: `https://github.com/SanHsien/rea`，上游 URL: `https://github.com/morluto/rea`）及 REA 工具鏈（實測版本 v6.7.0，發布於 2026-10-18；2026-10-30 重驗，來源 URL: `https://www.npmjs.com/package/rea-agents` 與 `https://registry.npmjs.org/rea-agents`，最新版本已發布 v6.8.0 於 2026-10-25）進行之實測驗證。  
 > 依據維護者安全邊界決策：  
 > 1. 允許在沙盒目錄下載可攜版 JDK 21 與 Ghidra 官方發行版（不寫入系統登錄檔、不更動系統 PATH、僅於進程內透過環境變數傳入路徑）；  
 > 2. 嚴格禁止執行改寫正式 Agent 配置的 `npx rea-agents setup`，改為在沙盒環境手動啟動 MCP Server 並透過協議驗證；  
@@ -14,8 +14,8 @@
 
 ### 1.1 Adoptium Eclipse Temurin JDK 21（可攜版）
 - **官方下載來源**：`https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_x64_windows_hotspot_21.0.12.1_1.zip`
-- **檔案名稱**：`OpenJDK21U-jdk_x64_windows_hotspot_21.0.12.1_1.zip`（195.6 MB）
-- **官方公布 SHA-256**：`f9d6e191ab098c0d416e7d588a24420a8621cd2f4720dab2459b8b7b2d2d8b4e`
+- **檔案名稱**：`OpenJDK21U-jdk_x64_windows_hotspot_21.0.12.1_1.zip`（195.6 MB，精確大小 205,073,461 位元組；2026-10-30 重驗，來源 URL: `https://api.github.com/repos/adoptium/temurin21-binaries/releases/tags/jdk-21.0.12.1%2B1`）
+- **官方公布 SHA-256**：`f9d6e191ab098c0d416e7d588a24420a8621cd2f4720dab2459b8b7b2d2d8b4e`（2026-10-30 重驗，來源 URL: `https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jdk_x64_windows_hotspot_21.0.12.1_1.zip.sha256.txt` 與 [`Release jdk-21.0.12.1+1`](https://github.com/adoptium/temurin21-binaries/releases/tag/jdk-21.0.12.1%2B1)）
 - **本地下載計算 SHA-256**：`f9d6e191ab098c0d416e7d588a24420a8621cd2f4720dab2459b8b7b2d2d8b4e`
 - **雜湊比對結果**：`MATCH`（完全一致）
 - **執行期驗證**：
@@ -28,8 +28,8 @@
 
 ### 1.2 NSA Ghidra 12.2 Public Build
 - **官方下載來源**：`https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.2_build/ghidra_12.2_PUBLIC_20261016.zip`
-- **檔案名稱**：`ghidra_12.2_PUBLIC_20261016.zip`（543.3 MB）
-- **官方公布 SHA-256**：`2c2cd776db3c1f6a097ba418922378ac3649cadd5e844a6f5f088ae628a7be67`
+- **檔案名稱**：`ghidra_12.2_PUBLIC_20261016.zip`（543.3 MB，精確大小 569,712,708 位元組；2026-10-30 重驗，來源 URL: `https://api.github.com/repos/NationalSecurityAgency/ghidra/releases/tags/Ghidra_12.2_build`）
+- **官方公布 SHA-256**：`2c2cd776db3c1f6a097ba418922378ac3649cadd5e844a6f5f088ae628a7be67`（2026-10-30 重驗，來源 URL: [`Release Ghidra_12.2_build`](https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.2_build) 官方 Release 內文標註）
 - **本地下載計算 SHA-256**：`2c2cd776db3c1f6a097ba418922378ac3649cadd5e844a6f5f088ae628a7be67`
 - **雜湊比對結果**：`MATCH`（完全一致）
 - **解包驗證**：成功解壓至 `C:\GitHub\_sandbox\rea\ghidra\ghidra_12.2_PUBLIC`，核心無頭分析腳本 `support\analyzeHeadless.bat` 存在可用。

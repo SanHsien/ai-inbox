@@ -5,12 +5,11 @@
 
 ## 現況
 
-public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`docs/`、`tools/`、`tests/`、`assets/`），維護者持續直推 main 新增筆記與任務。健康：2026-10-29 查到 open issue 0、open PR 0、Dependabot 與 Code scanning 告警各 0，`CI Contract Verification`、`CodeQL` 在 `main` 最近一次皆 success（2026-10-29 `gh` 查詢）；沒有 release。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
+public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`docs/`、`tools/`、`tests/`、`assets/`），維護者持續直推 main 新增筆記與任務。健康：2026-10-30 查到 open issue 0、open PR 0、Dependabot 與 Code scanning 告警各 0，`CI Contract Verification`、`CodeQL` 在 `main` 最近一次皆 success（2026-10-30 `gh` 查詢）；沒有 release。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
 
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 重驗兩份評估文件的外部事實（Stars、版本、雜湊） | 文件引用的外部事實沒有重驗過，日期一過就可能誤導後續決策 | `docs/web-to-app-evaluation.md` 與 `docs/rea-sandbox-evaluation-evidence.md` 每個外部數字旁標註重驗日期與來源 URL；`python -m unittest discover -s tests` 與 `python tools/verify_inbox.py` 綠；`REVIEW.md:79` 該列改標 ✅ 並附 commit | Claude Sonnet | `REVIEW.md:79` |
 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |

@@ -6,11 +6,11 @@
 
 ## 1. 專案基本規格與授權審查
 
-- **官方倉庫**：[`shiaho777/web-to-app`](https://github.com/shiaho777/web-to-app)
-- **最新版本**：`v2.8.2`（發布於 2026-10-24 17:28:18 UTC）
-- **發布產物**：`web-to-app-2.8.2.APK`（檔案大小 26,307,242 bytes，約 26.3 MB / 25.08 MB，SHA-256: `422b21ca1126def7453b655eb61da569f210e3ea8168baa1fd442cfa8f23855f`）
-- **社群指標**：GitHub Stars 約 7,028+、Forks 約 600+
-- **開源授權**：**The Unlicense**（公有領域專用授權）
+- **官方倉庫**：[`shiaho777/web-to-app`](https://github.com/shiaho777/web-to-app)（來源 URL: `https://github.com/shiaho777/web-to-app`）
+- **實測基準版本**：`v2.8.2`（發布於 2026-10-24 17:28:18 UTC；2026-10-30 重驗，來源 URL: [`Release v2.8.2`](https://github.com/shiaho777/web-to-app/releases/tag/v2.8.2)；2026-10-30 重驗時最新版本為 `v2.8.3`，發布於 2026-10-28 15:46:20 UTC，來源 URL: [`Release v2.8.3`](https://github.com/shiaho777/web-to-app/releases/tag/v2.8.3)）
+- **發布產物**：`web-to-app-2.8.2.APK`（檔案大小 26,307,242 bytes，約 26.3 MB / 25.08 MB，SHA-256: `422b21ca1126def7453b655eb61da569f210e3ea8168baa1fd442cfa8f23855f`；2026-10-30 重驗，來源 URL: [`Asset Download`](https://github.com/shiaho777/web-to-app/releases/download/v2.8.2/web-to-app-2.8.2.APK) 與 GitHub Release Asset API `https://api.github.com/repos/shiaho777/web-to-app/releases/assets/672867054`）
+- **社群指標**：GitHub Stars 約 7,028+、Forks 約 600+（2026-10-24 快照；2026-10-30 重驗為 Stars 7,129、Forks 1,112，來源 URL: [`GitHub Repo API`](https://api.github.com/repos/shiaho777/web-to-app)）
+- **開源授權**：**The Unlicense**（公有領域專用授權；2026-10-30 重驗，來源 URL: [`LICENSE`](https://github.com/shiaho777/web-to-app/blob/main/LICENSE)）
   - 允許自由複製、修改、散布、商業利用或重新編譯，無任何版權保留條款或專利限制。
   - 對於商用接案極具彈性，可作為白牌工具或自建封裝流水線的基礎。
 
