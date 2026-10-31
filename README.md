@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 174 項任務：🔴 未做 54／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
+> 共 177 項任務：🔴 未做 57／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -64,6 +64,7 @@
 | `T-20261031-28` | 🔴 未做 | 高 | 撰寫「海外一手副業案例拆解與一人商業 48 小時驗證手冊：從 Starter Story 獲客漏斗到 Noah Kagan 預售法則」收錄於 `docs/global-solopreneur-case-study-and-validation-guide.md` | `docs/global-solopreneur-case-study-and-validation-guide.md`（規範文檔；不修改其他專案程式） | [2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md) | 2026-10-31 |
 | `T-20261031-31` | 🔴 未做 | 高 | 撰寫「商業間諜軟體端點鑑識與離線掃描落地手冊：Pegasus / Predator 威脅模型、跨平台 IoC 匹配與備份分析規格」收錄於 `docs/mercenary-spyware-forensic-guide.md` | `docs/mercenary-spyware-forensic-guide.md`（規範文檔；不修改其他專案程式） | [2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md) | 2026-10-31 |
 | `T-20261031-34` | 🔴 未做 | 高 | 撰寫「NVIDIA Nemotron 3.5 Transcribe 次世代語音辨識與多說話人管線技術規格指南：MoE 4.3B 激活、Prompt 導引與端到端音訊 QA」收錄於 `docs/nvidia-nemotron-transcribe-pipeline-spec.md` | `docs/nvidia-nemotron-transcribe-pipeline-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md) | 2026-10-31 |
+| `T-20261031-37` | 🔴 未做 | 高 | 撰寫「OpenBot 本地優先多 Agent 桌面工作台架構手冊：ACP 協定、工作區實體隔離、A2A 跨代理協同與嵌入式瀏覽器操控」收錄於 `docs/openbot-local-first-multi-agent-workspace-spec.md` | `docs/openbot-local-first-multi-agent-workspace-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-openbot-local-first-multi-agent-desktop-workspace](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md) | 2026-10-31 |
 | `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-05` | 🔴 未做 | 中 | 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md` | `docs/blast-radius-code-review-guide.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-08` | 🔴 未做 | 中 | 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py` | `tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -82,6 +83,7 @@
 | `T-20261031-29` | 🔴 未做 | 中 | 實作「YouTube 影音字幕提取與商業案例精華結構化分析工具」於 `tools/extract_video_case_study.py` 與單元測試 | `tools/extract_video_case_study.py` 與 `tests/test_extract_video_case_study.py` | [2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md) | 2026-10-31 |
 | `T-20261031-32` | 🔴 未做 | 中 | 實作「端點鑑識日誌與 IoC 威脅指標離線比對審查工具」於 `tools/audit_forensic_ioc.py` 與單元測試 | `tools/audit_forensic_ioc.py` 與 `tests/test_audit_forensic_ioc.py` | [2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md) | 2026-10-31 |
 | `T-20261031-35` | 🔴 未做 | 中 | 實作「語音辨識輸出結構與多說話人時間戳校驗工具」於 `tools/verify_asr_diarization_output.py` 與單元測試 | `tools/verify_asr_diarization_output.py` 與 `tests/test_verify_asr_diarization_output.py` | [2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md) | 2026-10-31 |
+| `T-20261031-38` | 🔴 未做 | 中 | 實作「多 Agent 本地任務佇列與 A2A 訊息封包驗證工具」於 `tools/verify_openbot_agent_queue.py` 與單元測試 | `tools/verify_openbot_agent_queue.py` 與 `tests/test_verify_openbot_agent_queue.py` | [2026-10-31-openbot-local-first-multi-agent-desktop-workspace](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md) | 2026-10-31 |
 | `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-06` | 🔴 未做 | 低 | 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md` | `docs/agents-knowledge-ab-test-protocol.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-09` | 🔴 未做 | 低 | 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md` | `templates/feedback-desk-agent-prompt.md` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -100,6 +102,7 @@
 | `T-20261031-30` | 🔴 未做 | 低 | 產出標準化「一人公司 48 小時極速商業驗證與 Lean Canvas 評估範本」收錄於 `templates/solopreneur-48h-validation-canvas.md` | `templates/solopreneur-48h-validation-canvas.md` | [2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md) | 2026-10-31 |
 | `T-20261031-33` | 🔴 未做 | 低 | 產出標準化「個人與工程團隊端點資安防護與定期鑑識排程範本」收錄於 `templates/endpoint-forensic-audit-checklist.md` | `templates/endpoint-forensic-audit-checklist.md` | [2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md) | 2026-10-31 |
 | `T-20261031-36` | 🔴 未做 | 低 | 產出標準化「Nemotron 3.5 Transcribe 提示詞模板庫與本地 vLLM / HuggingFace 推論配置範本」收錄於 `templates/nemotron-transcribe-prompt-zoo.md` | `templates/nemotron-transcribe-prompt-zoo.md` | [2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md) | 2026-10-31 |
+| `T-20261031-39` | 🔴 未做 | 低 | 產出標準化「OpenBot 多 Agent 工作區配置與 Claude / Codex / Grok 本機聯動範本」收錄於 `templates/openbot-multi-agent-workspace-config.md` | `templates/openbot-multi-agent-workspace-config.md` | [2026-10-31-openbot-local-first-multi-agent-desktop-workspace](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md) | 2026-10-31 |
 
 ### 🟢 已做（Done）
 
@@ -308,6 +311,7 @@
 | 2026-10-31 | 🔴 | [海外一手副業與一人商業案例解構：Starter Story、Noah Kagan 48小時驗證、Justin Welsh複利矩陣與影音字幕情報萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md) | `solopreneur`, `side-hustle`, `starter-story` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Ann Cheng AI 似顏繪 16 宮格 LINE 貼圖 Prompt 工程：角色定裝、透明排列圖與自動切圖上架規格](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | `line-stickers`, `avatar-prompt-engineering`, `16-grid-layout` | 0 / 3 |
 | 2026-10-31 | 🔴 | [NVIDIA Nemotron 3.5 Transcribe 開源語音大模型解構：30B-A4B MoE 架構、提示詞導向 ASR、8 人搶話分離與端到端音訊問答實戰](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md) | `nvidia`, `nemotron`, `nemotron-transcribe` | 0 / 3 |
+| 2026-10-31 | 🔴 | [OpenBot 開源本地優先多 Agent 桌面工作台解構：Claude/Codex/Grok 協同調度、FIFO 任務佇列、A2A 通訊與嵌入式瀏覽器控制實戰](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md) | `openbot`, `local-first`, `multi-agent` | 0 / 3 |
 | 2026-10-31 | 🔴 | [VoiceStudio 本地開源聲音克隆與 Agent 語音合成管線：零樣本語音復刻、多引擎隔離架構與個人數位分身實踐](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md) | `voicestudio`, `voice-cloning`, `text-to-speech` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Zeabur 開源 PaaS 平台架構解構：zbpack 零配置打包、Wonder Mesh 邊緣網格、AI DevOps 整合與多租戶資安硬化反思](./notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md) | `zeabur`, `open-source-paas`, `zbpack` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Zeabur 商業關站全面轉向開源：Zeabur OSS Apache-2.0、Installer 一鍵安裝、K8s 無額外狀態架構與自建私有 PaaS 實戰](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md) | `zeabur`, `zeabur-oss`, `zeabur-installer` | 0 / 3 |
@@ -338,6 +342,7 @@
 - 開發流程：[feedback-desk 開源 Agent 工單系統](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)、[0xalpha 動態設計 Agent Harness 架構](./notes/2026-10-28-motion-design-agent-harness-opus-55.md)、[Going Li 四 Agent 派工與五路工具流](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)、[Thorsten Ball 15 條 Agent 實戰哲學](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)
 - 規範工程：[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)
 - 工作負載身分認證：[GitHub Apps S2S代理人身分認證](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md)
+- 本地多Agent工作台：[OpenBot本地優先Agent工作台](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 展示錄製：[Reelbird 開源螢幕錄影](./notes/2026-10-17-reelbird-open-source-screen-recorder.md)
