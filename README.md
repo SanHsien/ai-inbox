@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 144 項任務：🔴 未做 24／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
+> 共 147 項任務：🔴 未做 27／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -54,6 +54,7 @@
 | `T-20261028-16` | 🔴 未做 | 高 | 撰寫「代碼驅動 Motion Design Agent 工作室規範指南」收錄於 `docs/code-driven-motion-design-studio-spec.md` | `docs/code-driven-motion-design-studio-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
 | `T-20261031-01` | 🔴 未做 | 高 | 撰寫「AI 似顏繪 LINE 16 宮格貼圖 Prompt 工程與視覺規範」收錄於 `docs/line-sticker-16-grid-prompt-spec.md` | `docs/line-sticker-16-grid-prompt-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | 2026-10-31 |
 | `T-20261031-04` | 🔴 未做 | 高 | 撰寫「Zero-Build WebGL/Shader Hero Section 架構規範與視覺資產手冊」收錄於 `docs/zero-build-shader-hero-sections-spec.md` | `docs/zero-build-shader-hero-sections-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-dvk-lab-70-webgl-shader-hero-sections](./notes/2026-10-31-dvk-lab-70-webgl-shader-hero-sections.md) | 2026-10-31 |
+| `T-20261031-07` | 🔴 未做 | 高 | 撰寫「Cloudflare Agents SDK 與 Browser Run 整合架構規範手冊」收錄於 `docs/cloudflare-agents-browser-run-spec.md` | `docs/cloudflare-agents-browser-run-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop](./notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md) | 2026-10-31 |
 | `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-05` | 🔴 未做 | 中 | 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md` | `docs/blast-radius-code-review-guide.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-08` | 🔴 未做 | 中 | 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py` | `tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -62,6 +63,7 @@
 | `T-20261028-17` | 🔴 未做 | 中 | 實作「Playwright + seek(t) 動畫縮圖總覽與自審打分工具」於 `tools/audit_motion_storyboard.py` | `tools/audit_motion_storyboard.py` 與 `tests/test_audit_motion_storyboard.py` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
 | `T-20261031-02` | 🔴 未做 | 中 | 實作「LINE 16 宮格貼圖自動切圖與規格驗證工具」於 `tools/slice_line_stickers.py` | `tools/slice_line_stickers.py` 與 `tests/test_slice_line_stickers.py` | [2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | 2026-10-31 |
 | `T-20261031-05` | 🔴 未做 | 中 | 實作「零構建 WebGL 液態金屬與流體 Shader Hero Section 互動展示」於 `assets/shader-hero-demo/index.html` 與相關驗證器 | `assets/shader-hero-demo/index.html` 與 `tests/test_shader_hero_demo.py` | [2026-10-31-dvk-lab-70-webgl-shader-hero-sections](./notes/2026-10-31-dvk-lab-70-webgl-shader-hero-sections.md) | 2026-10-31 |
+| `T-20261031-08` | 🔴 未做 | 中 | 實作「AI Coding 網頁驗證閉環 Playwright / CDP 測試腳本與合規驗證器」於 `tools/verify_browser_coding_loop.py` 與單元測試 | `tools/verify_browser_coding_loop.py` 與 `tests/test_verify_browser_coding_loop.py` | [2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop](./notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md) | 2026-10-31 |
 | `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-06` | 🔴 未做 | 低 | 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md` | `docs/agents-knowledge-ab-test-protocol.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-09` | 🔴 未做 | 低 | 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md` | `templates/feedback-desk-agent-prompt.md` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -70,6 +72,7 @@
 | `T-20261028-18` | 🔴 未做 | 低 | 產出標準化「Motion Design Studio CLAUDE.md / Skill 範本」收錄於 `templates/motion-design-studio-skill.md` | `templates/motion-design-studio-skill.md` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
 | `T-20261031-03` | 🔴 未做 | 低 | 產出標準化「AI 似顏繪貼圖工廠 Skill 範本（Avatar-Sticker-Factory）」收錄於 `templates/avatar-sticker-factory-skill.md` | `templates/avatar-sticker-factory-skill.md` | [2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | 2026-10-31 |
 | `T-20261031-06` | 🔴 未做 | 低 | 產出標準化「Zero-Build Hero Section 快速注入 Skill 範本」收錄於 `templates/zero-build-hero-injector-skill.md` | `templates/zero-build-hero-injector-skill.md` | [2026-10-31-dvk-lab-70-webgl-shader-hero-sections](./notes/2026-10-31-dvk-lab-70-webgl-shader-hero-sections.md) | 2026-10-31 |
+| `T-20261031-09` | 🔴 未做 | 低 | 產出標準化「Cloudflare Durable Agent + Browser Run 部署範本」收錄於 `templates/cloudflare-durable-agent-browser-template.md` | `templates/cloudflare-durable-agent-browser-template.md` | [2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop](./notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md) | 2026-10-31 |
 
 ### 🟢 已做（Done）
 
@@ -270,6 +273,7 @@
 | 2026-10-28 | 🔴 | [代碼驅動 Motion Design Agent 架構：以 Harness 取代 Prompt、seek(t) 時間函式與分鏡自審循環](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | `motion-design`, `agent-harness`, `claude-code` | 0 / 3 |
 | 2026-10-28 | 🔴 | [四 Agent 雲端與本機派工協定：Claude 拆單、Antigravity 審查、Hermes 通訊與 GOBOT 雲端值守架構解構](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | `multi-agent`, `team-dispatch`, `claudecode` | 0 / 3 |
 | 2026-10-28 | 🔴 | [編譯器專家 Thorsten Ball 的 15 條 Agent 工作實戰哲學：無可辯駁證據、SDLC 端到端可視與爆破半徑審查解構](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | `thorsten-ball`, `agent-philosophy`, `irrefutable-evidence` | 0 / 3 |
+| 2026-10-31 | 🔴 | [Cloudflare Agents SDK 與 Browser Run 解構：Durable Objects 有狀態執行環境、CDP 瀏覽器操控與 AI Coding 自主驗證閉環](./notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md) | `cloudflare-agents`, `browser-rendering`, `browser-run` | 0 / 3 |
 | 2026-10-31 | 🔴 | [DVK Lab 70 款零構建 WebGL Shader Hero Section 解構：原生複製即用、Raymarching 著色器與 AI Agent Generative UI 落地](./notes/2026-10-31-dvk-lab-70-webgl-shader-hero-sections.md) | `dvk-lab`, `webgl-shader`, `zero-build` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Ann Cheng AI 似顏繪 16 宮格 LINE 貼圖 Prompt 工程：角色定裝、透明排列圖與自動切圖上架規格](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | `line-stickers`, `avatar-prompt-engineering`, `16-grid-layout` | 0 / 3 |
 <!-- END GENERATED: index -->
@@ -328,6 +332,7 @@
 - Prompt 與工作流方法論：[AI 野心四維框架與深度四問](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md)
 - Skill生態評估：[GitHub 必裝 Skill 實測](./notes/2026-10-26-github-trending-agent-skills-benchmark.md)
 - 設定工程：[TOML v1.1 規格與設定檔工程](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md)
+- 瀏覽器代理：[Cloudflare Agents與Browser驗證閉環](./notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 閱讀框架：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)
