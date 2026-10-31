@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 138 項任務：🔴 未做 18／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
+> 共 141 項任務：🔴 未做 21／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -52,18 +52,21 @@
 | `T-20261028-10` | 🔴 未做 | 高 | 撰寫「四 Agent 平行派工協議與人類審核門檻規範」收錄於 `docs/multi-agent-parallel-dispatch-spec.md` | `docs/multi-agent-parallel-dispatch-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-multi-agent-team-dispatch-five-roads-going-li](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | 2026-10-28 |
 | `T-20261028-13` | 🔴 未做 | 高 | 撰寫「SaaS 訂閱與 API 鑑權防繞過架構設計規範」收錄於 `docs/saas-subscription-and-api-defense-spec.md` | `docs/saas-subscription-and-api-defense-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-grok-oauth-subscription-proxy-api-bypass](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md) | 2026-10-28 |
 | `T-20261028-16` | 🔴 未做 | 高 | 撰寫「代碼驅動 Motion Design Agent 工作室規範指南」收錄於 `docs/code-driven-motion-design-studio-spec.md` | `docs/code-driven-motion-design-studio-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
+| `T-20261031-01` | 🔴 未做 | 高 | 撰寫「AI 似顏繪 LINE 16 宮格貼圖 Prompt 工程與視覺規範」收錄於 `docs/line-sticker-16-grid-prompt-spec.md` | `docs/line-sticker-16-grid-prompt-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | 2026-10-31 |
 | `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-05` | 🔴 未做 | 中 | 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md` | `docs/blast-radius-code-review-guide.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-08` | 🔴 未做 | 中 | 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py` | `tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
 | `T-20261028-11` | 🔴 未做 | 中 | 實作「產出導向工具流矩陣與備援鏈設定驗證器」於 `tools/verify_tool_fallback_matrix.py` | `tools/verify_tool_fallback_matrix.py` 與 `tests/test_verify_tool_fallback_matrix.py` | [2026-10-28-multi-agent-team-dispatch-five-roads-going-li](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | 2026-10-28 |
 | `T-20261028-14` | 🔴 未做 | 中 | 實作「本地 OAuth 憑證檔安全審查工具」於 `tools/audit_oauth_credentials.py` | `tools/audit_oauth_credentials.py` 與 `tests/test_audit_oauth_credentials.py` | [2026-10-28-grok-oauth-subscription-proxy-api-bypass](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md) | 2026-10-28 |
 | `T-20261028-17` | 🔴 未做 | 中 | 實作「Playwright + seek(t) 動畫縮圖總覽與自審打分工具」於 `tools/audit_motion_storyboard.py` | `tools/audit_motion_storyboard.py` 與 `tests/test_audit_motion_storyboard.py` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
+| `T-20261031-02` | 🔴 未做 | 中 | 實作「LINE 16 宮格貼圖自動切圖與規格驗證工具」於 `tools/slice_line_stickers.py` | `tools/slice_line_stickers.py` 與 `tests/test_slice_line_stickers.py` | [2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | 2026-10-31 |
 | `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-06` | 🔴 未做 | 低 | 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md` | `docs/agents-knowledge-ab-test-protocol.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-09` | 🔴 未做 | 低 | 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md` | `templates/feedback-desk-agent-prompt.md` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
 | `T-20261028-12` | 🔴 未做 | 低 | 產出標準化「多 Agent 拆單派工 Skill 範本（Team-Dispatch）」收錄於 `templates/team-dispatch-skill-template.md` | `templates/team-dispatch-skill-template.md` | [2026-10-28-multi-agent-team-dispatch-five-roads-going-li](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | 2026-10-28 |
 | `T-20261028-15` | 🔴 未做 | 低 | 產出標準化「Coding Agent 外部端點可用性與風控回退策略範本」收錄於 `templates/upstream-proxy-fallback-policy.md` | `templates/upstream-proxy-fallback-policy.md` | [2026-10-28-grok-oauth-subscription-proxy-api-bypass](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md) | 2026-10-28 |
 | `T-20261028-18` | 🔴 未做 | 低 | 產出標準化「Motion Design Studio CLAUDE.md / Skill 範本」收錄於 `templates/motion-design-studio-skill.md` | `templates/motion-design-studio-skill.md` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
+| `T-20261031-03` | 🔴 未做 | 低 | 產出標準化「AI 似顏繪貼圖工廠 Skill 範本（Avatar-Sticker-Factory）」收錄於 `templates/avatar-sticker-factory-skill.md` | `templates/avatar-sticker-factory-skill.md` | [2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | 2026-10-31 |
 
 ### 🟢 已做（Done）
 
@@ -264,6 +267,7 @@
 | 2026-10-28 | 🔴 | [代碼驅動 Motion Design Agent 架構：以 Harness 取代 Prompt、seek(t) 時間函式與分鏡自審循環](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | `motion-design`, `agent-harness`, `claude-code` | 0 / 3 |
 | 2026-10-28 | 🔴 | [四 Agent 雲端與本機派工協定：Claude 拆單、Antigravity 審查、Hermes 通訊與 GOBOT 雲端值守架構解構](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | `multi-agent`, `team-dispatch`, `claudecode` | 0 / 3 |
 | 2026-10-28 | 🔴 | [編譯器專家 Thorsten Ball 的 15 條 Agent 工作實戰哲學：無可辯駁證據、SDLC 端到端可視與爆破半徑審查解構](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | `thorsten-ball`, `agent-philosophy`, `irrefutable-evidence` | 0 / 3 |
+| 2026-10-31 | 🔴 | [Ann Cheng AI 似顏繪 16 宮格 LINE 貼圖 Prompt 工程：角色定裝、透明排列圖與自動切圖上架規格](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | `line-stickers`, `avatar-prompt-engineering`, `16-grid-layout` | 0 / 3 |
 <!-- END GENERATED: index -->
 
 ---
@@ -299,6 +303,7 @@
 - 視覺工件輸出：[answer-me-with-html 視覺工件](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md)
 - 鏡頭語言工程：[電影級 AI 影片管線](./notes/2026-10-26-cinematic-ai-video-reference-pipeline.md)
 - 系統架構：[Grok OAuth 訂閱轉 API 鑑權破綻解構](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md)
+- 貼圖工程：[Ann Cheng 16宮格似顏繪貼圖規格](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)
