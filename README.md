@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 180 項任務：🔴 未做 60／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
+> 共 183 項任務：🔴 未做 63／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -66,6 +66,7 @@
 | `T-20261031-34` | 🔴 未做 | 高 | 撰寫「NVIDIA Nemotron 3.5 Transcribe 次世代語音辨識與多說話人管線技術規格指南：MoE 4.3B 激活、Prompt 導引與端到端音訊 QA」收錄於 `docs/nvidia-nemotron-transcribe-pipeline-spec.md` | `docs/nvidia-nemotron-transcribe-pipeline-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md) | 2026-10-31 |
 | `T-20261031-37` | 🔴 未做 | 高 | 撰寫「OpenBot 本地優先多 Agent 桌面工作台架構手冊：ACP 協定、工作區實體隔離、A2A 跨代理協同與嵌入式瀏覽器操控」收錄於 `docs/openbot-local-first-multi-agent-workspace-spec.md` | `docs/openbot-local-first-multi-agent-workspace-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-openbot-local-first-multi-agent-desktop-workspace](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md) | 2026-10-31 |
 | `T-20261031-40` | 🔴 未做 | 高 | 撰寫「Claude Code 跨 Session 記憶架構評測指南：CLAUDE.md 手動規範、claude-mem 自動壓縮 Skill 與外部 Session 收割之三方權衡」收錄於 `docs/claude-code-cross-session-memory-evaluation-guide.md` | `docs/claude-code-cross-session-memory-evaluation-guide.md`（規範文檔；不修改其他專案程式） | [2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) | 2026-10-31 |
+| `T-20261031-43` | 🔴 未做 | 高 | 撰寫「微軟 TokenEconomizer 黑盒成本控制與 Agent 經驗沉澱手冊：Micro-Skill 注入、工具裁剪與死循環熔斷」收錄於 `docs/token-economizer-cost-control-spec.md` | `docs/token-economizer-cost-control-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 | `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-05` | 🔴 未做 | 中 | 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md` | `docs/blast-radius-code-review-guide.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-08` | 🔴 未做 | 中 | 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py` | `tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -86,6 +87,7 @@
 | `T-20261031-35` | 🔴 未做 | 中 | 實作「語音辨識輸出結構與多說話人時間戳校驗工具」於 `tools/verify_asr_diarization_output.py` 與單元測試 | `tools/verify_asr_diarization_output.py` 與 `tests/test_verify_asr_diarization_output.py` | [2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md) | 2026-10-31 |
 | `T-20261031-38` | 🔴 未做 | 中 | 實作「多 Agent 本地任務佇列與 A2A 訊息封包驗證工具」於 `tools/verify_openbot_agent_queue.py` 與單元測試 | `tools/verify_openbot_agent_queue.py` 與 `tests/test_verify_openbot_agent_queue.py` | [2026-10-31-openbot-local-first-multi-agent-desktop-workspace](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md) | 2026-10-31 |
 | `T-20261031-41` | 🔴 未做 | 中 | 實作「Agent 跨 Session 記憶品質與壓縮衰減率評測工具」於 `tools/audit_session_memory_compression.py` 與單元測試 | `tools/audit_session_memory_compression.py` 與 `tests/test_audit_session_memory_compression.py` | [2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) | 2026-10-31 |
+| `T-20261031-44` | 🔴 未做 | 中 | 實作「Agent 工具呼叫頻率審查與動態 Deny-list 產生工具」於 `tools/audit_agent_tool_pruning.py` 與單元測試 | `tools/audit_agent_tool_pruning.py` 與 `tests/test_audit_agent_tool_pruning.py` | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 | `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-06` | 🔴 未做 | 低 | 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md` | `docs/agents-knowledge-ab-test-protocol.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-09` | 🔴 未做 | 低 | 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md` | `templates/feedback-desk-agent-prompt.md` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -106,6 +108,7 @@
 | `T-20261031-36` | 🔴 未做 | 低 | 產出標準化「Nemotron 3.5 Transcribe 提示詞模板庫與本地 vLLM / HuggingFace 推論配置範本」收錄於 `templates/nemotron-transcribe-prompt-zoo.md` | `templates/nemotron-transcribe-prompt-zoo.md` | [2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md) | 2026-10-31 |
 | `T-20261031-39` | 🔴 未做 | 低 | 產出標準化「OpenBot 多 Agent 工作區配置與 Claude / Codex / Grok 本機聯動範本」收錄於 `templates/openbot-multi-agent-workspace-config.md` | `templates/openbot-multi-agent-workspace-config.md` | [2026-10-31-openbot-local-first-multi-agent-desktop-workspace](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md) | 2026-10-31 |
 | `T-20261031-42` | 🔴 未做 | 低 | 產出標準化「高保真跨 Session 記憶寫入 Prompt 模板與漸進式記憶清理手冊」收錄於 `templates/cross-session-memory-curation-spec.md` | `templates/cross-session-memory-curation-spec.md` | [2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) | 2026-10-31 |
+| `T-20261031-45` | 🔴 未做 | 低 | 產出標準化「多 Agent 專案 Token 預算上限與死循環熔斷檢核配置範本」收錄於 `templates/token-budget-and-loop-breaker.md` | `templates/token-budget-and-loop-breaker.md` | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 
 ### 🟢 已做（Done）
 
@@ -314,6 +317,7 @@
 | 2026-10-31 | 🔴 | [GitHub Copilot 支援 GitHub Apps Server-to-Server 服務端認證解構：解耦工程師個人 Token、Workload-Owned 系統身分、最小權限隔離與自主 Agent 無人值守 SDLC 實戰](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md) | `github-copilot`, `server-to-server`, `github-apps` | 0 / 3 |
 | 2026-10-31 | 🔴 | [海外一手副業與一人商業案例解構：Starter Story、Noah Kagan 48小時驗證、Justin Welsh複利矩陣與影音字幕情報萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md) | `solopreneur`, `side-hustle`, `starter-story` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Ann Cheng AI 似顏繪 16 宮格 LINE 貼圖 Prompt 工程：角色定裝、透明排列圖與自動切圖上架規格](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | `line-stickers`, `avatar-prompt-engineering`, `16-grid-layout` | 0 / 3 |
+| 2026-10-31 | 🔴 | [微軟 TokenEconomizer：編程 Agent 經驗驅動的黑盒 Token 成本控制架構解析、SWE-bench 18%~31% 節省與多 Agent 經濟學](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | `token-optimization`, `agent-cost-control`, `microsoft-research` | 0 / 3 |
 | 2026-10-31 | 🔴 | [NVIDIA Nemotron 3.5 Transcribe 開源語音大模型解構：30B-A4B MoE 架構、提示詞導向 ASR、8 人搶話分離與端到端音訊問答實戰](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md) | `nvidia`, `nemotron`, `nemotron-transcribe` | 0 / 3 |
 | 2026-10-31 | 🔴 | [OpenBot 開源本地優先多 Agent 桌面工作台解構：Claude/Codex/Grok 協同調度、FIFO 任務佇列、A2A 通訊與嵌入式瀏覽器控制實戰](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md) | `openbot`, `local-first`, `multi-agent` | 0 / 3 |
 | 2026-10-31 | 🔴 | [VoiceStudio 本地開源聲音克隆與 Agent 語音合成管線：零樣本語音復刻、多引擎隔離架構與個人數位分身實踐](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md) | `voicestudio`, `voice-cloning`, `text-to-speech` | 0 / 3 |
@@ -347,6 +351,7 @@
 - 規範工程：[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)
 - 記憶架構對決：[Claude Code跨Session記憶對決](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md)
 - 工作負載身分認證：[GitHub Apps S2S代理人身分認證](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md)
+- Token成本控制：[微軟TokenEconomizer黑盒成本控制](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)
 - 本地多Agent工作台：[OpenBot本地優先Agent工作台](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
