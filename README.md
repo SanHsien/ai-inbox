@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 186 項任務：🔴 未做 66／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
+> 共 189 項任務：🔴 未做 69／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -68,6 +68,7 @@
 | `T-20261031-40` | 🔴 未做 | 高 | 撰寫「Claude Code 跨 Session 記憶架構評測指南：CLAUDE.md 手動規範、claude-mem 自動壓縮 Skill 與外部 Session 收割之三方權衡」收錄於 `docs/claude-code-cross-session-memory-evaluation-guide.md` | `docs/claude-code-cross-session-memory-evaluation-guide.md`（規範文檔；不修改其他專案程式） | [2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) | 2026-10-31 |
 | `T-20261031-43` | 🔴 未做 | 高 | 撰寫「微軟 TokenEconomizer 黑盒成本控制與 Agent 經驗沉澱手冊：Micro-Skill 注入、工具裁剪與死循環熔斷」收錄於 `docs/token-economizer-cost-control-spec.md` | `docs/token-economizer-cost-control-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 | `T-20261031-46` | 🔴 未做 | 高 | 撰寫「Magpie 本地 AI 模型網關技術手冊：多 Agent 統一代理、Routing Groups、配額到期優先調度與快取感知路由」收錄於 `docs/magpie-local-ai-gateway-spec.md` | `docs/magpie-local-ai-gateway-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-yetone-magpie-local-ai-gateway-smart-routing](./notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md) | 2026-10-31 |
+| `T-20261031-49` | 🔴 未做 | 高 | 撰寫「Claude Code 與多 Agent 四級模型分工架構指南：Opus 主線、Sonnet 執行、Fable 裁判與 JEV 決策之職責劃分與設定手冊」收錄於 `docs/hierarchical-multi-model-orchestration-spec.md` | `docs/hierarchical-multi-model-orchestration-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-claude-code-hierarchical-multi-model-orchestration](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md) | 2026-10-31 |
 | `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-05` | 🔴 未做 | 中 | 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md` | `docs/blast-radius-code-review-guide.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-08` | 🔴 未做 | 中 | 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py` | `tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -90,6 +91,7 @@
 | `T-20261031-41` | 🔴 未做 | 中 | 實作「Agent 跨 Session 記憶品質與壓縮衰減率評測工具」於 `tools/audit_session_memory_compression.py` 與單元測試 | `tools/audit_session_memory_compression.py` 與 `tests/test_audit_session_memory_compression.py` | [2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) | 2026-10-31 |
 | `T-20261031-44` | 🔴 未做 | 中 | 實作「Agent 工具呼叫頻率審查與動態 Deny-list 產生工具」於 `tools/audit_agent_tool_pruning.py` 與單元測試 | `tools/audit_agent_tool_pruning.py` 與 `tests/test_audit_agent_tool_pruning.py` | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 | `T-20261031-47` | 🔴 未做 | 中 | 實作「Magpie 智慧路由演算法模擬器與配額到期優先排程校驗器」於 `tools/verify_magpie_routing_scheduler.py` 與單元測試 | `tools/verify_magpie_routing_scheduler.py` 與 `tests/test_verify_magpie_routing_scheduler.py` | [2026-10-31-yetone-magpie-local-ai-gateway-smart-routing](./notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md) | 2026-10-31 |
+| `T-20261031-50` | 🔴 未做 | 中 | 實作「多級模型分工調度模擬器與任務複雜度路由器」於 `tools/verify_hierarchical_model_router.py` 與單元測試 | `tools/verify_hierarchical_model_router.py` 與 `tests/test_verify_hierarchical_model_router.py` | [2026-10-31-claude-code-hierarchical-multi-model-orchestration](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md) | 2026-10-31 |
 | `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-06` | 🔴 未做 | 低 | 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md` | `docs/agents-knowledge-ab-test-protocol.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-09` | 🔴 未做 | 低 | 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md` | `templates/feedback-desk-agent-prompt.md` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -112,6 +114,7 @@
 | `T-20261031-42` | 🔴 未做 | 低 | 產出標準化「高保真跨 Session 記憶寫入 Prompt 模板與漸進式記憶清理手冊」收錄於 `templates/cross-session-memory-curation-spec.md` | `templates/cross-session-memory-curation-spec.md` | [2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) | 2026-10-31 |
 | `T-20261031-45` | 🔴 未做 | 低 | 產出標準化「多 Agent 專案 Token 預算上限與死循環熔斷檢核配置範本」收錄於 `templates/token-budget-and-loop-breaker.md` | `templates/token-budget-and-loop-breaker.md` | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 | `T-20261031-48` | 🔴 未做 | 低 | 產出標準化「多 Agent 本地開發環境 Magpie 路由群組配置範本」收錄於 `templates/magpie-routing-groups-config.md` | `templates/magpie-routing-groups-config.md` | [2026-10-31-yetone-magpie-local-ai-gateway-smart-routing](./notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md) | 2026-10-31 |
+| `T-20261031-51` | 🔴 未做 | 低 | 產出標準化「Claude Code / Codex 多級模型環境配置與權限隔離範本」收錄於 `templates/claude-code-multi-model-tiers.json` | `templates/claude-code-multi-model-tiers.json` | [2026-10-31-claude-code-hierarchical-multi-model-orchestration](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md) | 2026-10-31 |
 
 ### 🟢 已做（Done）
 
@@ -313,6 +316,7 @@
 | 2026-10-28 | 🔴 | [四 Agent 雲端與本機派工協定：Claude 拆單、Antigravity 審查、Hermes 通訊與 GOBOT 雲端值守架構解構](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | `multi-agent`, `team-dispatch`, `claudecode` | 0 / 3 |
 | 2026-10-28 | 🔴 | [編譯器專家 Thorsten Ball 的 15 條 Agent 工作實戰哲學：無可辯駁證據、SDLC 端到端可視與爆破半徑審查解構](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | `thorsten-ball`, `agent-philosophy`, `irrefutable-evidence` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Claude Code 跨 Session 記憶架構對決：CLAUDE.md 手動維護 vs claude-mem 自動壓縮 Skill、壓縮衰減陷阱與跨代理長效記憶實戰](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) | `claude-code`, `claude-mem`, `cross-session-memory` | 0 / 3 |
+| 2026-10-31 | 🔴 | [Claude Code 四級模型分工架構解構：Opus 主線規劃、Sonnet 執行實作、Fable 驗收打分與 JEV 快速決策的 Token 經濟學實踐](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md) | `claude-code`, `hierarchical-orchestration`, `model-selection` | 0 / 3 |
 | 2026-10-31 | 🔴 | [clearcam 開源智慧 NVR 架構解構：RTSP 串流、tinygrad YOLOv9/OC-SORT 邊緣追蹤與 Qwen3 VL 事件摘要管線](./notes/2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md) | `clearcam`, `smart-nvr`, `rtsp-stream` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Cloudflare Agents SDK 與 Browser Run 解構：Durable Objects 有狀態執行環境、CDP 瀏覽器操控與 AI Coding 自主驗證閉環](./notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md) | `cloudflare-agents`, `browser-rendering`, `browser-run` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Dan Koe「網紅已死，經驗時代來臨」數位匠人架構解構：思想博物館、5 視角切角重構與一人公司作品集閉環](./notes/2026-10-31-dan-koe-digital-artisan-body-of-work-framework.md) | `dan-koe`, `digital-artisan`, `body-of-work` | 0 / 3 |
@@ -354,6 +358,7 @@
 - 開發流程：[feedback-desk 開源 Agent 工單系統](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)、[0xalpha 動態設計 Agent Harness 架構](./notes/2026-10-28-motion-design-agent-harness-opus-55.md)、[Going Li 四 Agent 派工與五路工具流](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)、[Thorsten Ball 15 條 Agent 實戰哲學](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)
 - 規範工程：[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)
 - 記憶架構對決：[Claude Code跨Session記憶對決](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md)
+- 模型多級分工與階層調度：[Claude Code四級模型分工架構](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)
 - 工作負載身分認證：[GitHub Apps S2S代理人身分認證](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md)
 - Token成本控制：[微軟TokenEconomizer黑盒成本控制](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)
 - 本地多Agent工作台：[OpenBot本地優先Agent工作台](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md)
