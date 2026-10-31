@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 162 項任務：🔴 未做 42／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
+> 共 165 項任務：🔴 未做 45／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -60,6 +60,7 @@
 | `T-20261031-16` | 🔴 未做 | 高 | 撰寫「邊緣智慧 NVR 架構規範手冊：從 RTSP 流、tinygrad YOLOv9/OC-SORT 到 Qwen3 VL 事件摘要管線」收錄於 `docs/edge-smart-nvr-and-vlm-pipeline-spec.md` | `docs/edge-smart-nvr-and-vlm-pipeline-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl](./notes/2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md) | 2026-10-31 |
 | `T-20261031-19` | 🔴 未做 | 高 | 撰寫「Zeabur OSS 與 Installer 自建私有 PaaS 落地手冊：K3s 單機安裝、K8s 無狀態架構與資料備份遷移」收錄於 `docs/zeabur-oss-self-hosted-paas-guide.md` | `docs/zeabur-oss-self-hosted-paas-guide.md`（規範文檔；不修改其他專案程式） | [2026-10-31-zeabur-oss-installer-self-hosted-paas](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md) | 2026-10-31 |
 | `T-20261031-22` | 🔴 未做 | 高 | 撰寫「VoiceStudio 本地 AI 聲音克隆與 Agent 語音管線落地規範：多引擎隔離、零樣本取樣標準與 MCP 整合」收錄於 `docs/voicestudio-local-voice-cloning-spec.md` | `docs/voicestudio-local-voice-cloning-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md) | 2026-10-31 |
+| `T-20261031-25` | 🔴 未做 | 高 | 撰寫「GitHub Apps Server-to-Server 與 Copilot SDK 工作負載身分整合實戰指南：權限配置、短期 Token 交換與夜間無人值守 SDLC」收錄於 `docs/github-apps-s2s-copilot-workload-identity-guide.md` | `docs/github-apps-s2s-copilot-workload-identity-guide.md`（規範文檔；不修改其他專案程式） | [2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md) | 2026-10-31 |
 | `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-05` | 🔴 未做 | 中 | 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md` | `docs/blast-radius-code-review-guide.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-08` | 🔴 未做 | 中 | 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py` | `tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -74,6 +75,7 @@
 | `T-20261031-17` | 🔴 未做 | 中 | 實作「安防事件 Webhook 警報接收與 Qwen VL 結構化摘要驗證器」於 `tools/verify_nvr_event_webhook.py` 與單元測試 | `tools/verify_nvr_event_webhook.py` 與 `tests/test_verify_nvr_event_webhook.py` | [2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl](./notes/2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md) | 2026-10-31 |
 | `T-20261031-20` | 🔴 未做 | 中 | 實作「Zeabur OSS Kubernetes 資源合規與無狀態架構驗證工具」於 `tools/audit_zeabur_oss_k8s_spec.py` 與單元測試 | `tools/audit_zeabur_oss_k8s_spec.py` 與 `tests/test_audit_zeabur_oss_k8s_spec.py` | [2026-10-31-zeabur-oss-installer-self-hosted-paas](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md) | 2026-10-31 |
 | `T-20261031-23` | 🔴 未做 | 中 | 實作「本地聲音克隆音訊樣本特徵檢驗與合規審查工具」於 `tools/audit_voice_clone_sample.py` 與單元測試 | `tools/audit_voice_clone_sample.py` 與 `tests/test_audit_voice_clone_sample.py` | [2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md) | 2026-10-31 |
+| `T-20261031-26` | 🔴 未做 | 中 | 實作「GitHub App S2S 憑證規格檢驗與權限邊界審查工具」於 `tools/audit_github_app_s2s_spec.py` 與單元測試 | `tools/audit_github_app_s2s_spec.py` 與 `tests/test_audit_github_app_s2s_spec.py` | [2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md) | 2026-10-31 |
 | `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-06` | 🔴 未做 | 低 | 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md` | `docs/agents-knowledge-ab-test-protocol.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-09` | 🔴 未做 | 低 | 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md` | `templates/feedback-desk-agent-prompt.md` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -88,6 +90,7 @@
 | `T-20261031-18` | 🔴 未做 | 低 | 產出標準化「自託管 Smart NVR 與 Home Assistant / Agent 自動化整合範本」收錄於 `templates/smart-nvr-home-assistant-agent-template.md` | `templates/smart-nvr-home-assistant-agent-template.md` | [2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl](./notes/2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md) | 2026-10-31 |
 | `T-20261031-21` | 🔴 未做 | 低 | 產出標準化「Zeabur Installer 單機 K3s / Helm 一鍵部署腳本與 CLAUDE.md 運維範本」收錄於 `templates/zeabur-oss-installer-setup.md` | `templates/zeabur-oss-installer-setup.md` | [2026-10-31-zeabur-oss-installer-self-hosted-paas](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md) | 2026-10-31 |
 | `T-20261031-24` | 🔴 未做 | 低 | 產出標準化「VoiceStudio 本地語音合成 Agent Skill 範本與多角色有聲劇配置手冊」收錄於 `templates/voicestudio-agent-skill.md` | `templates/voicestudio-agent-skill.md` | [2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md) | 2026-10-31 |
+| `T-20261031-27` | 🔴 未做 | 低 | 產出標準化「GitHub App S2S 認證封裝腳本與無人值守 Agent GitHub Actions 工作流範本」收錄於 `templates/github-app-s2s-agent-workflow.md` | `templates/github-app-s2s-agent-workflow.md` | [2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md) | 2026-10-31 |
 
 ### 🟢 已做（Done）
 
@@ -292,6 +295,7 @@
 | 2026-10-31 | 🔴 | [Cloudflare Agents SDK 與 Browser Run 解構：Durable Objects 有狀態執行環境、CDP 瀏覽器操控與 AI Coding 自主驗證閉環](./notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md) | `cloudflare-agents`, `browser-rendering`, `browser-run` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Dan Koe「網紅已死，經驗時代來臨」數位匠人架構解構：思想博物館、5 視角切角重構與一人公司作品集閉環](./notes/2026-10-31-dan-koe-digital-artisan-body-of-work-framework.md) | `dan-koe`, `digital-artisan`, `body-of-work` | 0 / 3 |
 | 2026-10-31 | 🔴 | [DVK Lab 70 款零構建 WebGL Shader Hero Section 解構：原生複製即用、Raymarching 著色器與 AI Agent Generative UI 落地](./notes/2026-10-31-dvk-lab-70-webgl-shader-hero-sections.md) | `dvk-lab`, `webgl-shader`, `zero-build` | 0 / 3 |
+| 2026-10-31 | 🔴 | [GitHub Copilot 支援 GitHub Apps Server-to-Server 服務端認證解構：解耦工程師個人 Token、Workload-Owned 系統身分、最小權限隔離與自主 Agent 無人值守 SDLC 實戰](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md) | `github-copilot`, `server-to-server`, `github-apps` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Ann Cheng AI 似顏繪 16 宮格 LINE 貼圖 Prompt 工程：角色定裝、透明排列圖與自動切圖上架規格](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | `line-stickers`, `avatar-prompt-engineering`, `16-grid-layout` | 0 / 3 |
 | 2026-10-31 | 🔴 | [VoiceStudio 本地開源聲音克隆與 Agent 語音合成管線：零樣本語音復刻、多引擎隔離架構與個人數位分身實踐](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md) | `voicestudio`, `voice-cloning`, `text-to-speech` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Zeabur 開源 PaaS 平台架構解構：zbpack 零配置打包、Wonder Mesh 邊緣網格、AI DevOps 整合與多租戶資安硬化反思](./notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md) | `zeabur`, `open-source-paas`, `zbpack` | 0 / 3 |
@@ -321,6 +325,7 @@
 - 遠端多Agent中繼與容錯：[Codync 開源 Agent 中繼](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md)
 - 開發流程：[feedback-desk 開源 Agent 工單系統](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)、[0xalpha 動態設計 Agent Harness 架構](./notes/2026-10-28-motion-design-agent-harness-opus-55.md)、[Going Li 四 Agent 派工與五路工具流](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)、[Thorsten Ball 15 條 Agent 實戰哲學](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)
 - 規範工程：[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)
+- 工作負載身分認證：[GitHub Apps S2S代理人身分認證](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 展示錄製：[Reelbird 開源螢幕錄影](./notes/2026-10-17-reelbird-open-source-screen-recorder.md)
