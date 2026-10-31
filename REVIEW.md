@@ -3,7 +3,7 @@
 - **覆核日期**：2026-10-25
 - **範圍**：`tools/`、`tests/`、`docs/`、`templates/`、`assets/`、`notes/` 全部已提交內容（約 2.7 萬行），以及 75 項「已做」任務的證據
 - **方式**：分 5 批獨立覆核（核心工具、外部裁判驗證器、功能型工具、文件範本成品、筆記證據），逐項造反例或實跑驗證；互動頁面以瀏覽器實際開啟檢查主控台
-- **修復 commit**：`650f260`（2026-10-25，五批覆核修正）、`5593eb4`（2026-10-25，獨立審查回饋：標「覆核後補修」的項目）、`eee506d`（2026-10-25，依 DoD 退回 4 項任務）、`05254c2`（2026-10-25，標「後續修正」的項目：DoD 產出檔檢查、Windows CI、移除假指標）
+- **修復 commit**：`a13c7408`（2026-10-30，外部事實重驗）、`650f260`（2026-10-25，五批覆核修正）、`5593eb4`（2026-10-25，獨立審查回饋：標「覆核後補修」的項目）、`eee506d`（2026-10-25，依 DoD 退回 4 項任務）、`05254c2`（2026-10-25，標「後續修正」的項目：DoD 產出檔檢查、Windows CI、移除假指標）
 - **修後驗證**：`python -m unittest discover -s tests`（不加 `PYTHONUTF8`）全綠；`python tools/verify_inbox.py` 與所有 `tools/verify_*.py` exit 0
 
 狀態：✅ 已修｜⏸ 待維護者決定｜➖ 確認無問題
@@ -76,7 +76,7 @@
 - ✅ [低] `docs/claude-plugins-official-review.md`「實測指令」實為範例；`docs/reverse-engineering-pipeline-spec.md` 引用不存在的 `tools/media_watermark.py` → 標示
 - ✅ [低] 3 個 HTML 與 1 個範本的 Tailwind CDN 沒固定版本 → 固定 `3.4.1`
 - ➖ 6 個互動頁面皆以瀏覽器實跑，主控台零錯誤（修正後）；無真實個資或金鑰；Public APIs 462 筆／42 類、Cinetic 273、Motion Prompt 144、Android 33 個 Skills 數字一致
-- ✅ [低] `docs/web-to-app-evaluation.md`、`docs/rea-sandbox-evaluation-evidence.md` 的 Stars、版本、雜湊等外部事實已重驗（每個外部數字標註 2026-10-30 重驗日期與來源 URL；2026-10-30 修復，本次提交）
+- ✅ [低] `docs/web-to-app-evaluation.md`、`docs/rea-sandbox-evaluation-evidence.md` 的 Stars、版本、雜湊等外部事實已重驗（每個外部數字標註 2026-10-30 重驗日期與來源 URL；2026-10-30 修復，`a13c7408`）
 
 ## 5. 筆記與已做任務證據（75 項）
 
