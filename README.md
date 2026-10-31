@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 195 項任務：🔴 未做 75／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
+> 共 198 項任務：🔴 未做 78／🟡 進行中 0／🟢 已做 96／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -71,6 +71,7 @@
 | `T-20261031-49` | 🔴 未做 | 高 | 撰寫「Claude Code 與多 Agent 四級模型分工架構指南：Opus 主線、Sonnet 執行、Fable 裁判與 JEV 決策之職責劃分與設定手冊」收錄於 `docs/hierarchical-multi-model-orchestration-spec.md` | `docs/hierarchical-multi-model-orchestration-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-claude-code-hierarchical-multi-model-orchestration](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md) | 2026-10-31 |
 | `T-20261101-01` | 🔴 未做 | 高 | 撰寫「Claude Code 與多 Agent 四角色動態派工與執行期調用手冊：主 Session 拍板、里程碑檢查點與二元決策 API 規範」收錄於 `docs/agent-role-dispatch-runtime-spec.md` | `docs/agent-role-dispatch-runtime-spec.md`（規範文檔；不修改其他專案程式） | [2026-11-01-claude-code-four-role-dispatch-runtime-rules](./notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md) | 2026-11-01 |
 | `T-20261101-04` | 🔴 未做 | 高 | 撰寫「Claude Code 動態工作流與大規模子代理並行實戰手冊：Opus 5.5 主控、Haiku 5.5 工作馬配對與配額控制指南」收錄於 `docs/claude-code-dynamic-workflows-guide.md` | `docs/claude-code-dynamic-workflows-guide.md`（規範文檔；不修改其他專案程式） | [2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md) | 2026-11-01 |
+| `T-20261101-07` | 🔴 未做 | 高 | 撰寫「Code-as-Video 動態設計規格手冊：12 大純程式碼視覺特效數學原理、著色器實現與動畫參數指南」收錄於 `docs/code-as-video-motion-design-spec.md` | `docs/code-as-video-motion-design-spec.md`（規範文檔；不修改其他專案程式） | [2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos](./notes/2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md) | 2026-11-01 |
 | `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-05` | 🔴 未做 | 中 | 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md` | `docs/blast-radius-code-review-guide.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-08` | 🔴 未做 | 中 | 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py` | `tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -96,6 +97,7 @@
 | `T-20261031-50` | 🔴 未做 | 中 | 實作「多級模型分工調度模擬器與任務複雜度路由器」於 `tools/verify_hierarchical_model_router.py` 與單元測試 | `tools/verify_hierarchical_model_router.py` 與 `tests/test_verify_hierarchical_model_router.py` | [2026-10-31-claude-code-hierarchical-multi-model-orchestration](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md) | 2026-10-31 |
 | `T-20261101-02` | 🔴 未做 | 中 | 實作「四角色調用閘門控制器與二元/枚舉決策 API 輕量客戶端」於 `tools/verify_agent_dispatch_gate.py` 與單元測試 | `tools/verify_agent_dispatch_gate.py` 與 `tests/test_verify_agent_dispatch_gate.py` | [2026-11-01-claude-code-four-role-dispatch-runtime-rules](./notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md) | 2026-11-01 |
 | `T-20261101-05` | 🔴 未做 | 中 | 實作「大規模子代理動態扇出與 Token 配額消耗評估器」於 `tools/audit_dynamic_workflows_fanout.py` 與單元測試 | `tools/audit_dynamic_workflows_fanout.py` 與 `tests/test_audit_dynamic_workflows_fanout.py` | [2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md) | 2026-11-01 |
+| `T-20261101-08` | 🔴 未做 | 中 | 實作「純代碼動態設計特效展示組件（SDF 黏土球、流動山脊與剛體碰撞）」於 `assets/code-motion-demo/index.html` 與單元測試 | `assets/code-motion-demo/index.html` 與 `tests/test_verify_code_motion_assets.py` | [2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos](./notes/2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md) | 2026-11-01 |
 | `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-06` | 🔴 未做 | 低 | 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md` | `docs/agents-knowledge-ab-test-protocol.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-09` | 🔴 未做 | 低 | 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md` | `templates/feedback-desk-agent-prompt.md` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -121,6 +123,7 @@
 | `T-20261031-51` | 🔴 未做 | 低 | 產出標準化「Claude Code / Codex 多級模型環境配置與權限隔離範本」收錄於 `templates/claude-code-multi-model-tiers.json` | `templates/claude-code-multi-model-tiers.json` | [2026-10-31-claude-code-hierarchical-multi-model-orchestration](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md) | 2026-10-31 |
 | `T-20261101-03` | 🔴 未做 | 低 | 產出標準化「多 Agent 里程碑檢查點觸發條件與二元決策 Prompt 範本」收錄於 `templates/agent-dispatch-milestone-prompts.md` | `templates/agent-dispatch-milestone-prompts.md` | [2026-11-01-claude-code-four-role-dispatch-runtime-rules](./notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md) | 2026-11-01 |
 | `T-20261101-06` | 🔴 未做 | 低 | 產出標準化「Claude Code 大規模動態工作流配置與 UltraCode 模式啟動範本」收錄於 `templates/claude-dynamic-workflows-config.json` | `templates/claude-dynamic-workflows-config.json` | [2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md) | 2026-11-01 |
+| `T-20261101-09` | 🔴 未做 | 低 | 產出標準化「Code-as-Video 12 大特效 Prompt 模板庫與著色器生成規範」收錄於 `templates/code-motion-prompt-zoo.md` | `templates/code-motion-prompt-zoo.md` | [2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos](./notes/2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md) | 2026-11-01 |
 
 ### 🟢 已做（Done）
 
@@ -339,6 +342,7 @@
 | 2026-10-31 | 🔴 | [Zeabur 商業關站全面轉向開源：Zeabur OSS Apache-2.0、Installer 一鍵安裝、K8s 無額外狀態架構與自建私有 PaaS 實戰](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md) | `zeabur`, `zeabur-oss`, `zeabur-installer` | 0 / 3 |
 | 2026-10-31 | 🔴 | [Zero-Breach-Toolkit 開源傭兵間諜軟體鑑識工具解構：跨平台離線檢測、Pegasus/Predator IoC 比對、唯讀數位鑑識與端點防禦實戰](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md) | `zero-breach-toolkit`, `mercenary-spyware`, `digital-forensics` | 0 / 3 |
 | 2026-11-01 | 🔴 | [Claude Code 四角色動態調用原則解構：主 Session 拍板、規格驅動開工、里程碑檢查點與布林決策 API 實戰](./notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md) | `claude-code`, `agent-dispatch-rules`, `runtime-orchestration` | 0 / 3 |
+| 2026-11-01 | 🔴 | [設計師 Riven Claude Opus 5.5 動態設計解構：12 大純代碼視覺特效規格、Code-as-Video 與著色器/物理引擎實戰](./notes/2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md) | `code-as-video`, `motion-design`, `opus-55` | 0 / 3 |
 | 2026-11-01 | 🔴 | [Will 保哥 Claude Code 動態工作流實測解構：Opus 5.5 主控 + Haiku 5.5 驅動 283 個子代理、7 小時續航週配額消耗 <10% 的大規模並行工程學](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md) | `claude-code`, `dynamic-workflows`, `opus-5-5` | 0 / 3 |
 <!-- END GENERATED: index -->
 
@@ -387,6 +391,7 @@
 - 貼圖工程：[Ann Cheng 16宮格似顏繪貼圖規格](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md)
 - 次世代語音轉錄：[NVIDIA Nemotron 3.5語音轉錄大模型](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md)
 - 本地語音克隆：[VoiceStudio本地語音克隆管線](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md)
+- Code-as-Video 12大特效規格：[Riven Opus 5.5純代碼動態設計12大規格](./notes/2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)
