@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 210 項任務：🔴 未做 87／🟡 進行中 0／🟢 已做 99／⚪ 不做 24
+> 共 213 項任務：🔴 未做 90／🟡 進行中 0／🟢 已做 99／⚪ 不做 24
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -75,6 +75,7 @@
 | `T-20261101-10` | 🔴 未做 | 高 | 撰寫「面向非技術用戶的 Agent-Driven 開源專案安裝指引規範（AGENTS.md 最佳實踐與資安防線）」收錄於 `docs/agent-driven-onboarding-and-security-spec.md` | `docs/agent-driven-onboarding-and-security-spec.md`（規範文檔；不修改其他專案程式） | [2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md) | 2026-11-01 |
 | `T-20261102-01` | 🔴 未做 | 高 | 撰寫「長會話上下文膨脹告警與一鍵自動交接規格手冊（UserPromptSubmit Hook 與 Session 生命週期控制）」收錄於 `docs/long-chat-session-handoff-spec.md` | `docs/long-chat-session-handoff-spec.md`（規範文檔；不修改其他專案程式） | [2026-11-02-littlehole-claude-saver-long-chat-session-handoff](./notes/2026-11-02-littlehole-claude-saver-long-chat-session-handoff.md) | 2026-11-02 |
 | `T-20261102-04` | 🔴 未做 | 高 | 撰寫「大象-金魚架構（EGM）規格手冊：長上下文架構大腦、零記憶子代理審查與 CUJ 驅動設計流程」收錄於 `docs/elephant-goldfish-model-spec.md` | `docs/elephant-goldfish-model-spec.md`（規範文檔；不修改其他專案程式） | [2026-11-02-google-elephant-goldfish-model-software-design-review](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | 2026-11-02 |
+| `T-20261102-07` | 🔴 未做 | 高 | 撰寫「OpenCut 開源多軌剪輯架構手冊：Rust Core、WebCodecs 本地渲染與 MCP Server 整合規格」收錄於 `docs/opencut-video-editor-architecture-spec.md` | `docs/opencut-video-editor-architecture-spec.md`（規範文檔；不修改其他專案程式） | [2026-11-02-opencut-open-source-capcut-alternative-video-editor](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | 2026-11-02 |
 | `T-20261028-02` | 🔴 未做 | 中 | 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py` | `tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-05` | 🔴 未做 | 中 | 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md` | `docs/blast-radius-code-review-guide.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-08` | 🔴 未做 | 中 | 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py` | `tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -104,6 +105,7 @@
 | `T-20261101-11` | 🔴 未做 | 中 | 實作「LINE 家庭群組機器人意圖識別、圖片限流與防洗版核心邏輯驗證腳本」於 `tools/verify_line_bot_intent_flow.py` 與單元測試 | `tools/verify_line_bot_intent_flow.py`、`tests/test_verify_line_bot_intent_flow.py` | [2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md) | 2026-11-01 |
 | `T-20261102-02` | 🔴 未做 | 中 | 實作「會話 Token 上下文感知度量與語意換話題判定驗證腳本」於 `tools/verify_session_token_sentinel.py` 與單元測試 | `tools/verify_session_token_sentinel.py`、`tests/test_verify_session_token_sentinel.py` | [2026-11-02-littlehole-claude-saver-long-chat-session-handoff](./notes/2026-11-02-littlehole-claude-saver-long-chat-session-handoff.md) | 2026-11-02 |
 | `T-20261102-05` | 🔴 未做 | 中 | 實作「零記憶金魚審查員（Goldfish Reviewer）隔離上下文模擬與五階段審查驗證腳本」於 `tools/verify_egm_goldfish_review.py` 與單元測試 | `tools/verify_egm_goldfish_review.py`、`tests/test_verify_egm_goldfish_review.py` | [2026-11-02-google-elephant-goldfish-model-software-design-review](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | 2026-11-02 |
+| `T-20261102-08` | 🔴 未做 | 中 | 實作「OpenCut Headless 批次剪輯與時間軸 JSON 驗證腳本」於 `tools/verify_opencut_timeline.py` 與單元測試 | `tools/verify_opencut_timeline.py`、`tests/test_verify_opencut_timeline.py` | [2026-11-02-opencut-open-source-capcut-alternative-video-editor](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | 2026-11-02 |
 | `T-20261028-03` | 🔴 未做 | 低 | 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md` | `templates/karpathy-hardened-agents-md.md` | [2026-10-28-karpathy-claude-md-four-rules-engineering-hardening](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | 2026-10-28 |
 | `T-20261028-06` | 🔴 未做 | 低 | 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md` | `docs/agents-knowledge-ab-test-protocol.md` | [2026-10-28-thorsten-ball-how-i-work-with-agents-2026](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | 2026-10-28 |
 | `T-20261028-09` | 🔴 未做 | 低 | 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md` | `templates/feedback-desk-agent-prompt.md` | [2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | 2026-10-28 |
@@ -133,6 +135,7 @@
 | `T-20261101-12` | 🔴 未做 | 低 | 產出標準化「家庭群組情感陪伴、長輩問安與健康諮詢非診斷安全 Prompt 範本」收錄於 `templates/line-family-bot-prompts.md` | `templates/line-family-bot-prompts.md` | [2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md) | 2026-11-01 |
 | `T-20261102-03` | 🔴 未做 | 低 | 產出標準化「跨 Agent 桌面會話編號流水遞增與結構化交接 Brief Prompt 模板」收錄於 `templates/session-handoff-brief-prompt.md` | `templates/session-handoff-brief-prompt.md` | [2026-11-02-littlehole-claude-saver-long-chat-session-handoff](./notes/2026-11-02-littlehole-claude-saver-long-chat-session-handoff.md) | 2026-11-02 |
 | `T-20261102-06` | 🔴 未做 | 低 | 產出標準化「EGM 七大工作流技能（Brainstorm/Draft/Review/Resolve）Prompt 模板庫」收錄於 `templates/egm-workflow-prompts.md` | `templates/egm-workflow-prompts.md` | [2026-11-02-google-elephant-goldfish-model-software-design-review](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | 2026-11-02 |
+| `T-20261102-09` | 🔴 未做 | 低 | 產出標準化「AI Agent 驅動 OpenCut 自動粗剪、字幕生成與分鏡剪輯 Prompt 模板」收錄於 `templates/opencut-agent-editing-prompt.md` | `templates/opencut-agent-editing-prompt.md` | [2026-11-02-opencut-open-source-capcut-alternative-video-editor](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | 2026-11-02 |
 
 ### 🟢 已做（Done）
 
@@ -360,6 +363,7 @@
 | 2026-11-01 | 🔴 | [Will 保哥 Claude Code 動態工作流實測解構：Opus 5.5 主控 + Haiku 5.5 驅動 283 個子代理、7 小時續航週配額消耗 <10% 的大規模並行工程學](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md) | `claude-code`, `dynamic-workflows`, `opus-5-5` | 0 / 3 |
 | 2026-11-02 | 🔴 | [Google 官方開源 Elephant-Goldfish Model (EGM) 架構解構：大象長記憶規劃、金魚零上下文對抗審查與軟體設計工業化](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | `google`, `elephant-goldfish-model`, `egm` | 0 / 3 |
 | 2026-11-02 | 🔴 | [我的小樹洞 claude-saver 開源架構解構：UserPromptSubmit Hook 實時感知長對話 Token 門檻、新功能自動跳轉與一鍵交接封存](./notes/2026-11-02-littlehole-claude-saver-long-chat-session-handoff.md) | `claude-code`, `claude-saver`, `token-saver` | 0 / 3 |
+| 2026-11-02 | 🔴 | [OpenCut 開源 CapCut 替代品深度解析：97K Stars 多軌剪輯、Rust 跨端核心、MCP Server 與無頭自動化渲染架構](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | `opencut`, `capcut-alternative`, `video-editor` | 0 / 3 |
 <!-- END GENERATED: index -->
 
 ---
@@ -411,6 +415,7 @@
 - 次世代語音轉錄：[NVIDIA Nemotron 3.5語音轉錄大模型](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md)
 - 本地語音克隆：[VoiceStudio本地語音克隆管線](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md)
 - Code-as-Video 12大特效規格：[Riven Opus 5.5純代碼動態設計12大規格](./notes/2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md)
+- 開源CapCut替代品與AI視訊編輯器：[OpenCut開源視訊編輯器與AI Agents](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)
