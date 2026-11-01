@@ -30,6 +30,8 @@ tags:
 - **核心作者**：Chris Tate（Vercel Labs，`agent-browser` 與 `agent-desktop` 作者）
 - **核心分析者**：Renzhe Yu（@yrzheee）、LargitData 大數軟體（@largitdata）
 - **官方開源專案**：[vercel-labs/agent-desktop](https://github.com/vercel-labs/agent-desktop)（Rust 打造，跨 macOS / Windows / Linux 桌面操作工具）
+- **個人 Fork 倉庫**：[SanHsien/agent-desktop](https://github.com/SanHsien/agent-desktop)（本地路徑 `C:\GitHub\agent-desktop`，已配置 upstream 與個人預設遠端）
+- **辦理情形**：已正式建立獨立頂層 Session 實施 fork 成果移植、Windows UIA 驗證與全系統 Agent Skill 發布（`agent-assets` 與 CLI 整合）
 - **分析主題**：解構 Vercel Labs 正式開源的桌面級 Computer Use 工具 `agent-desktop`。剖析其如何揚棄 Anthropic 等傳統方案依賴「高畫質截圖、視覺辨識猜座標、動態像素匹配」的高成本脆弱模式（單張截圖 1,000~1,800 tokens），轉為直接讀取作業系統底層的 **Accessibility Tree（無障礙存取樹）**。深入剖析其 56 項純 Rust 高性能指令、結構化 JSON Snapshot、命名空間 Ref（`@<snapshot_id>:<ref_id>`）、預設 Headless 非搶佔操作、`STALE_REF` 防呆機制，以及可安全重試（Disposition Retry Contract）的生產級桌面代理工程架構。
 - **當前狀態**：`🔴 待辦處理中 (Pending)`
 - **相關交叉參照**：
@@ -143,7 +145,7 @@ tags:
     2. 詳解 Windows UI Automation（UIA）、macOS Accessibility API 與 Linux AT-SPI2 三大作業系統節點模型之對照映射。
     3. 規範命名空間 Ref 生成算法、過期檢測（`STALE_REF`）狀態機、以及「Safe to Retry vs Unsafe」處置合約（Disposition Contract）。
   - **驗收標準（DoD）**：產出 `docs/agent-desktop-computer-use-spec.md`，具備標準 Markdown 結構與繁體中文規範；以 `Test-Path docs/agent-desktop-computer-use-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已完成 Fork 建立 `SanHsien/agent-desktop`（本地目錄 `C:\GitHub\agent-desktop`），已開立專屬派工 Session 由專屬 Agent 接手推進規格書與架構設計。
 
 - [ ] **`T-20261101-14`**｜**[優先級：中]** 實作「Windows UI Automation 無障礙樹快照與 Ref 點擊驗證腳本」於 `tools/verify_a11y_tree_snapshot.py` 與單元測試
   - **目標範圍**：`tools/verify_a11y_tree_snapshot.py`、`tests/test_verify_a11y_tree_snapshot.py`
@@ -152,7 +154,7 @@ tags:
     2. 實作 Ref 解析器與狀態機，檢驗：命名空間格式合法性（包含 PowerShell 單引號跳脫檢查）、過期 Ref 攔截（回傳 `STALE_REF`）、以及重試安全標籤（`disposition.retry`）。
     3. 撰寫完整的單元測試套件 `tests/test_verify_a11y_tree_snapshot.py`，覆蓋有效 Ref 點擊、過期 Ref 檢測、多視窗歧義攔截與錯誤信封解析。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_a11y_tree_snapshot.py` 綠燈通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已完成 Fork 建立 `SanHsien/agent-desktop`（本地目錄 `C:\GitHub\agent-desktop`），已開立專屬派工 Session 由專屬 Agent 接手推進規格書與架構設計。
 
 - [ ] **`T-20261101-15`**｜**[優先級：低]** 產出標準化「Agent 桌面操控指令集與 STALE_REF 安全重試 Prompt 模板」收錄於 `templates/agent-desktop-skill-prompt.md`
   - **目標範圍**：`templates/agent-desktop-skill-prompt.md`
@@ -161,4 +163,4 @@ tags:
     2. 制定嚴格的防踩坑指令：強制要求 PowerShell 使用單引號包裹 `@ref`、遇到 `STALE_REF` 必須重新執行 `snapshot` 而非盲猜、遇到 `disposition.retry: "unsafe"` 必須立即暫停並回報使用者。
     3. 提供密集介面優化策略範例（`--skeleton` 與 `--root` 區域下鑽流程）。
   - **驗收標準（DoD）**：產出 `templates/agent-desktop-skill-prompt.md`，結構清晰且包含範例工作流；以 `Test-Path templates/agent-desktop-skill-prompt.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **實作紀錄 / 證據**：已完成 Fork 建立 `SanHsien/agent-desktop`（本地目錄 `C:\GitHub\agent-desktop`），已開立專屬派工 Session 由專屬 Agent 接手推進規格書與架構設計。
