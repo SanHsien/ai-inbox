@@ -6,7 +6,7 @@ source_platform: "Threads (@yrzheee & @largitdata)"
 author: "Renzhe Yu (@yrzheee) / LargitData 大數軟體 (@largitdata) / Chris Tate (Vercel Labs)"
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "OS級無障礙樹Computer Use與桌面操作"
 short_title: "Vercel Labs agent-desktop無障礙樹操作"
@@ -31,9 +31,8 @@ tags:
 - **核心分析者**：Renzhe Yu（@yrzheee）、LargitData 大數軟體（@largitdata）
 - **官方開源專案**：[vercel-labs/agent-desktop](https://github.com/vercel-labs/agent-desktop)（Rust 打造，跨 macOS / Windows / Linux 桌面操作工具）
 - **個人 Fork 倉庫**：[SanHsien/agent-desktop](https://github.com/SanHsien/agent-desktop)（本地路徑 `C:\GitHub\agent-desktop`，已配置 upstream 與個人預設遠端）
-- **辦理情形**：已正式建立獨立頂層 Session 實施 fork 成果移植、Windows UIA 驗證與全系統 Agent Skill 發布（`agent-assets` 與 CLI 整合）
-- **分析主題**：解構 Vercel Labs 正式開源的桌面級 Computer Use 工具 `agent-desktop`。剖析其如何揚棄 Anthropic 等傳統方案依賴「高畫質截圖、視覺辨識猜座標、動態像素匹配」的高成本脆弱模式（單張截圖 1,000~1,800 tokens），轉為直接讀取作業系統底層的 **Accessibility Tree（無障礙存取樹）**。深入剖析其 56 項純 Rust 高性能指令、結構化 JSON Snapshot、命名空間 Ref（`@<snapshot_id>:<ref_id>`）、預設 Headless 非搶佔操作、`STALE_REF` 防呆機制，以及可安全重試（Disposition Retry Contract）的生產級桌面代理工程架構。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **辦理情形**：已正式建立獨立頂層 Session 實施 fork 成果移植、Windows UIA 驗證與全系統 Agent Skill 發布（`agent-assets` 與 CLI 整合）；完成架構規格書 `docs/agent-desktop-computer-use-spec.md`、驗證工具與單元測試，全域 Skill 已部屬至 Antigravity、Claude Code、Codex、Hermes 共用環境並通過 `SanHsien/agent-assets` 登記與推送（SHA: `1c433eb`；agent-desktop SHA: `24a548cc`）。
+- **當前狀態**：`🟢 已結案 (Resolved)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（經驗驅動 Token 成本控制與上下文壓縮）
   - [`notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md`](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md)（Herdr 終端復用與統一網關調度）
@@ -138,29 +137,32 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261101-13`**｜**[優先級：高]** 撰寫「OS 級 Computer Use 架構規格書：Accessibility Tree 無障礙樹、命名空間 Ref 與無像素匹配設計手冊」收錄於 `docs/agent-desktop-computer-use-spec.md`
+- [x] **`T-20261101-13`**｜**[優先級：高]** 撰寫「OS 級 Computer Use 架構規格書：Accessibility Tree 無障礙樹、命名空間 Ref 與無像素匹配設計手冊」收錄於 `docs/agent-desktop-computer-use-spec.md`
   - **目標範圍**：`docs/agent-desktop-computer-use-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入對比視覺截圖方案（Pixel Matching）與語意無障礙樹方案（a11y Tree）在 Token 消耗、執行延遲、座標抗噪性與安全性之矩陣。
     2. 詳解 Windows UI Automation（UIA）、macOS Accessibility API 與 Linux AT-SPI2 三大作業系統節點模型之對照映射。
     3. 規範命名空間 Ref 生成算法、過期檢測（`STALE_REF`）狀態機、以及「Safe to Retry vs Unsafe」處置合約（Disposition Contract）。
   - **驗收標準（DoD）**：產出 `docs/agent-desktop-computer-use-spec.md`，具備標準 Markdown 結構與繁體中文規範；以 `Test-Path docs/agent-desktop-computer-use-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：已完成 Fork 建立 `SanHsien/agent-desktop`（本地目錄 `C:\GitHub\agent-desktop`），已開立專屬派工 Session 由專屬 Agent 接手推進規格書與架構設計。
+  - **完成日期**：2026-11-01
+  - **實作紀錄 / 證據**：已完成規格書撰寫，詳述 a11y 樹與截圖方案之五維對比矩陣、Windows UIA / WindowStation Desktop 隔離深層實證機制、命名空間 Ref 演算法與處置重試合約；以 `Test-Path docs/agent-desktop-computer-use-spec.md` 驗證為 True。同時同步納入 `SanHsien/agent-desktop` 倉庫 `docs/agent-desktop-computer-use-spec.md`（commit `24a548cc`）。
 
-- [ ] **`T-20261101-14`**｜**[優先級：中]** 實作「Windows UI Automation 無障礙樹快照與 Ref 點擊驗證腳本」於 `tools/verify_a11y_tree_snapshot.py` 與單元測試
+- [x] **`T-20261101-14`**｜**[優先級：中]** 實作「Windows UI Automation 無障礙樹快照與 Ref 點擊驗證腳本」於 `tools/verify_a11y_tree_snapshot.py` 與單元測試
   - **目標範圍**：`tools/verify_a11y_tree_snapshot.py`、`tests/test_verify_a11y_tree_snapshot.py`
   - **具體做法**：
     1. 實作純 Python 模擬與驗證工具 `tools/verify_a11y_tree_snapshot.py`，支援解析標準 `agent-desktop` JSON 快照結構。
     2. 實作 Ref 解析器與狀態機，檢驗：命名空間格式合法性（包含 PowerShell 單引號跳脫檢查）、過期 Ref 攔截（回傳 `STALE_REF`）、以及重試安全標籤（`disposition.retry`）。
     3. 撰寫完整的單元測試套件 `tests/test_verify_a11y_tree_snapshot.py`，覆蓋有效 Ref 點擊、過期 Ref 檢測、多視窗歧義攔截與錯誤信封解析。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_a11y_tree_snapshot.py` 綠燈通過。
-  - **實作紀錄 / 證據**：已完成 Fork 建立 `SanHsien/agent-desktop`（本地目錄 `C:\GitHub\agent-desktop`），已開立專屬派工 Session 由專屬 Agent 接手推進規格書與架構設計。
+  - **完成日期**：2026-11-01
+  - **實作紀錄 / 證據**：已實作 `tools/verify_a11y_tree_snapshot.py` 與 `tests/test_verify_a11y_tree_snapshot.py`，支援 Ref 格式校驗、PowerShell Splatting 防呆剝離、STALE_REF 狀態機、骨架折疊、Windows POLICY_DENIED 限制與 Disposition 合約。執行 `python -m unittest tests/test_verify_a11y_tree_snapshot.py` 13 項測試全數綠燈通過；`tests/test_cli_help_encoding.py` 通過驗證。
 
-- [ ] **`T-20261101-15`**｜**[優先級：低]** 產出標準化「Agent 桌面操控指令集與 STALE_REF 安全重試 Prompt 模板」收錄於 `templates/agent-desktop-skill-prompt.md`
+- [x] **`T-20261101-15`**｜**[優先級：低]** 產出標準化「Agent 桌面操控指令集與 STALE_REF 安全重試 Prompt 模板」收錄於 `templates/agent-desktop-skill-prompt.md`
   - **目標範圍**：`templates/agent-desktop-skill-prompt.md`
   - **具體做法**：
     1. 產出可直接置入 `AGENTS.md` 或 Agent Harness 系統提示詞的標準指南，規範 Agent 如何依序調用 `snapshot`、尋找目標、採取行動與二次觀察驗證。
     2. 制定嚴格的防踩坑指令：強制要求 PowerShell 使用單引號包裹 `@ref`、遇到 `STALE_REF` 必須重新執行 `snapshot` 而非盲猜、遇到 `disposition.retry: "unsafe"` 必須立即暫停並回報使用者。
     3. 提供密集介面優化策略範例（`--skeleton` 與 `--root` 區域下鑽流程）。
   - **驗收標準（DoD）**：產出 `templates/agent-desktop-skill-prompt.md`，結構清晰且包含範例工作流；以 `Test-Path templates/agent-desktop-skill-prompt.md` 驗證存在。
-  - **實作紀錄 / 證據**：已完成 Fork 建立 `SanHsien/agent-desktop`（本地目錄 `C:\GitHub\agent-desktop`），已開立專屬派工 Session 由專屬 Agent 接手推進規格書與架構設計。
+  - **完成日期**：2026-11-01
+  - **實作紀錄 / 證據**：已產出 `templates/agent-desktop-skill-prompt.md`，以 `Test-Path` 驗證為 True。同時已建立全系統跨 Agent 技能 `~/.gemini/config/skills/agent-desktop/SKILL.md`，並在 `SanHsien/agent-assets` 完成核准登記（`skills/agent-desktop/SKILL.md`、`knowledge/agent-desktop-os-accessibility-tree.md`），通過 90 項資產合約檢驗並完成推送（commit `1c433eb`）。
