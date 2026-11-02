@@ -49,6 +49,7 @@ class FrameInfo:
     pixel_delta: float | None = None
     seek_delta: float | None = None
     text_boxes: list = field(default_factory=list)
+    unmeasured: list = field(default_factory=list)
     issues: list = field(default_factory=list)
     scores: dict = field(default_factory=dict)
     total_score: float = 0.0
@@ -65,6 +66,7 @@ class AuditReport:
     frames: list
     anti_slop_violations: list
     errors: list
+    unmeasured: list = field(default_factory=list)
     contact_sheet_image: str = ''
     contact_sheet_html: str = ''
 
@@ -141,8 +143,12 @@ TEXT_METRICS = r"""() => {
    // 由瀏覽器把任何 CSS 色彩語法（rgb、oklch、color-mix 等）換成 sRGB 8 位元，避免自行剖析字串。
    cx.clearRect(0,0,1,1); cx.fillStyle='#000'; cx.fillStyle=s.color; cx.fillRect(0,0,1,1);
    const d=cx.getImageData(0,0,1,1).data;
+   // 行框中心點最上層元素若不是文字自己的元素（或其祖孫），文字被別的元素蓋住，對比量到的是蓋板而不是文字。
+   const px=r.x+r.width/2, py=r.y+r.height/2;
+   const top=(px>=0&&py>=0&&px<innerWidth&&py<innerHeight)?document.elementFromPoint(px,py):null;
+   const occluded=!!top && !(e.contains(top)||top.contains(e));
    boxes.push({nid,text:n.textContent.trim().slice(0,80),x:r.x,y:r.y,w:r.width,h:r.height,
-     color:s.color,rgba:[d[0],d[1],d[2],d[3]/255],alpha,clipped});
+     color:s.color,rgba:[d[0],d[1],d[2],d[3]/255],alpha,clipped,occluded});
   }
  }
  return boxes;
@@ -172,7 +178,37 @@ TIMER_PROBE = r"""(() => {
  w.setInterval=(...a)=>{log.interval++;return si(...a)};
  w.requestAnimationFrame=(...a)=>{log.raf++;return raf(...a)};
  w.setTimeout=(...a)=>{log.timeout++;return st(...a)};
+ // Canvas 文字畫成像素，DOM 量不到；計數 fillText/strokeText 以便在報告標示未量測。
+ w.__motionCanvasText=0;
+ for (const C of [w.CanvasRenderingContext2D, w.OffscreenCanvasRenderingContext2D]) {
+  if (!C) continue;
+  for (const m of ['fillText','strokeText']) {
+   const orig=C.prototype[m];
+   C.prototype[m]=function(...a){w.__motionCanvasText++;return orig.apply(this,a)};
+  }
+ }
 })();"""
+
+SVG_TEXT_COUNT = """() => [...document.querySelectorAll('svg text, svg tspan, svg textPath')]
+  .filter(e => e.textContent.trim() && e.getClientRects().length).length"""
+
+
+def summarize_unmeasured(frames):
+    """把各影格的未量測項目彙整成報告欄位：量不到不等於合格，必須讓讀報告的人看見。"""
+    summary = {}
+    for frame in frames:
+        for item in frame.unmeasured:
+            entry = summary.setdefault(item['kind'], {'kind': item['kind'], 'count': 0, 'frames': []})
+            entry['count'] = max(entry['count'], item['count'])
+            entry['frames'].append(frame.frame_index)
+    return [summary[k] for k in sorted(summary)]
+
+
+UNMEASURED_LABELS = {
+    'svg_text': 'SVG 文字（svg text/tspan）不在 DOM 文字量測內，對比與碰撞未量測',
+    'canvas_text': 'Canvas 文字（fillText/strokeText）畫成像素，對比與碰撞未量測',
+    'occluded_text': 'DOM 文字被其他元素蓋住，對比量到的是蓋板，未可靠量測',
+}
 
 IDLE_MS = 300
 IDLE_LIMIT = 3  # 本 repo 的取捨：閒置 300ms 內排程 >=3 次視為自走迴圈
@@ -279,7 +315,14 @@ def extract_keyframes_playwright(html_path, timestamps_ms, output_dir, viewport=
                 finally:
                     style.evaluate('(element) => element.remove()')
                 issues.extend(measure_text(boxes, background, viewport))
-                frames.append(FrameInfo(idx, t_ms, str(frame_file), mean, std, text_boxes=boxes, issues=issues))
+                unmeasured = []
+                svg_count = page.evaluate(SVG_TEXT_COUNT)
+                if svg_count:
+                    unmeasured.append({'kind': 'svg_text', 'count': svg_count})
+                occluded = sum(1 for box in boxes if box.get('occluded'))
+                if occluded:
+                    unmeasured.append({'kind': 'occluded_text', 'count': occluded})
+                frames.append(FrameInfo(idx, t_ms, str(frame_file), mean, std, text_boxes=boxes, unmeasured=unmeasured, issues=issues))
             # 逆序重訪每個 t，與先前正序影格比較。
             for frame in reversed(frames):
                 seek(frame.timestamp_ms)
@@ -293,6 +336,10 @@ def extract_keyframes_playwright(html_path, timestamps_ms, output_dir, viewport=
                 if frame.pixel_delta == 0:
                     frame.issues.append('static: 相鄰影格完全相同')
             errors.extend(check_idle_contract(page))
+            canvas_text = page.evaluate('() => window.__motionCanvasText || 0')
+            if canvas_text:
+                for frame in frames:
+                    frame.unmeasured.append({'kind': 'canvas_text', 'count': canvas_text})
         except BrowserTimeout as exc:
             raise IncompleteError('INCOMPLETE: 頁面操作逾時') from exc
         except Exception as exc:
@@ -371,6 +418,16 @@ def validate(duration, count, timestamps, min_score):
         raise ValueError('--timestamps 須有 2..120 個嚴格遞增有限值，位於 0..duration')
 
 
+def unmeasured_warnings(unmeasured):
+    return [f"{UNMEASURED_LABELS.get(item['kind'], item['kind'])}（{item['count']} 處，影格 {','.join(map(str, item['frames']))}）" for item in unmeasured]
+
+
+def warning_html(unmeasured):
+    if not unmeasured:
+        return ''
+    return '<h2>未量測（不代表合格，須人工檢查）</h2><ul>' + ''.join(f'<li>{html.escape(w)}</li>' for w in unmeasured_warnings(unmeasured)) + '</ul>'
+
+
 def audit_motion_storyboard(html_path, duration_ms=3000., frames_count=6, timestamps=None, output_dir=None, min_score=8., preferred_channel=None):
     validate(duration_ms, frames_count, timestamps, min_score)
     pillow()
@@ -397,11 +454,11 @@ def audit_motion_storyboard(html_path, duration_ms=3000., frames_count=6, timest
     passed = bool(frames) and not errors and not violations and not any(f.issues for f in frames) and min(scores) >= min_score
     report = AuditReport(str(html_path), passed, min_score, min(scores, default=0), round(sum(scores)/len(scores), 2) if scores else 0,
                          [asdict(f) for f in sorted(frames, key=lambda f: f.total_score)[:3]],
-                         [asdict(f) for f in frames], [asdict(v) for v in violations], errors, sheet)
+                         [asdict(f) for f in frames], [asdict(v) for v in violations], errors, summarize_unmeasured(frames), sheet)
     output_dir.mkdir(parents=True, exist_ok=True)
     report.contact_sheet_html = str(output_dir/'contact_sheet.html')
     body = ''.join(f'<figure><img width="320" src="{Path(f.file_path).name}"><figcaption>t={f.timestamp_ms:g}ms score={f.total_score:g} {html.escape(str(f.issues))}</figcaption></figure>' for f in frames)
-    Path(report.contact_sheet_html).write_text('<!doctype html><meta charset="utf-8"><title>Motion audit</title>'+f'<h1>{"PASS" if passed else "FAIL"}</h1>'+body+f'<pre>{html.escape(str(errors))}</pre>', encoding='utf-8')
+    Path(report.contact_sheet_html).write_text('<!doctype html><meta charset="utf-8"><title>Motion audit</title>'+f'<h1>{"PASS" if passed else "FAIL"}</h1>'+warning_html(report.unmeasured)+body+f'<pre>{html.escape(str(errors))}</pre>', encoding='utf-8')
     return report
 
 
@@ -426,7 +483,10 @@ def main(argv=None):
     except (DependencyError, ValueError, OSError) as exc:
         print(str(exc), file=sys.stderr)
         return 2
-    print(json.dumps(asdict(report), ensure_ascii=False, indent=2) if args.json else f'[{"PASS" if report.passed else "FAIL"}] min={report.lowest_score:g}\n{report.contact_sheet_html}')
+    for warning in unmeasured_warnings(report.unmeasured):
+        print(f'[WARN] 未量測，不代表合格，須人工檢查：{warning}', file=sys.stderr)
+    note = ' （含未量測項目）' if report.unmeasured else ''
+    print(json.dumps(asdict(report), ensure_ascii=False, indent=2) if args.json else f'[{"PASS" if report.passed else "FAIL"}] min={report.lowest_score:g}{note}\n{report.contact_sheet_html}')
     return 0 if report.passed else 1
 
 

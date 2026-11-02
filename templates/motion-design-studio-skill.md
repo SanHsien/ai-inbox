@@ -108,13 +108,26 @@ window.seek(0);
 
 ## 4. seek 逐幀輸出腳本
 
-將下列完整內容存成 `tools/render_frames.py`。此腳本依賴 Playwright，不需要 Node 或 ai-inbox 的 checkout；它是導出器，不取代 audit。每幀時間為 `i*1000/fps`，不重複最後端點；檔名從 `frame_0000.png` 開始。要求輸出目錄不存在或為空，防止舊序列混入。
+將下列完整內容存成 `tools/render_frames.py`。此腳本依賴 Playwright，不需要 Node 或 ai-inbox 的 checkout；它是導出器，不取代 audit。每幀時間為 `i*1000/fps`，不重複最後端點；檔名從 `frame_0000.png` 開始。要求輸出目錄不存在或為空，防止舊序列混入。每幀有整體逾時（`--frame-timeout` 秒，或環境變數 `MOTION_RENDER_FRAME_TIMEOUT_S`，預設 60），逾時印 INCOMPLETE 並 exit 3；exit 1 是導出失敗，exit 2 是缺依賴或瀏覽器；三者都代表序列不可交付。
 
 ```python
 import argparse
 import math
+import os
 from pathlib import Path
 import sys
+import threading
+
+
+def start_watchdog(seconds, index):
+    """page.evaluate 沒有逾時：seek 若是同步無窮迴圈會永遠卡住。逾時就以 exit 3 結束並說明是 INCOMPLETE。"""
+    def expire():
+        print(f'INCOMPLETE: 第 {index} 幀超過 {seconds:g} 秒仍未完成（可能是 seek 同步無窮迴圈）；已輸出的 PNG 不可交付', file=sys.stderr, flush=True)
+        os._exit(3)
+    timer = threading.Timer(seconds, expire)
+    timer.daemon = True
+    timer.start()
+    return timer
 
 
 def main():
@@ -124,9 +137,13 @@ def main():
     parser.add_argument('--fps', type=int, default=60)
     parser.add_argument('--output-dir', type=Path, default=Path('frames'))
     parser.add_argument('--channel', choices=['chrome', 'msedge'])
+    parser.add_argument('--frame-timeout', type=float, default=float(os.environ.get('MOTION_RENDER_FRAME_TIMEOUT_S', '60')),
+                        help='每幀（seek 加截圖）整體逾時秒數；預設取環境變數 MOTION_RENDER_FRAME_TIMEOUT_S，否則 60')
     args = parser.parse_args()
     if not math.isfinite(args.duration) or not 0 < args.duration <= 600000 or not 1 <= args.fps <= 120:
         parser.error('duration: 0 < 有限毫秒 <=600000；fps: 1..120')
+    if not math.isfinite(args.frame_timeout) or not 1 <= args.frame_timeout <= 3600:
+        parser.error('frame-timeout: 1..3600 秒')
     if not args.target.is_file():
         parser.error('目標 HTML 不存在')
     if args.output_dir.exists() and any(args.output_dir.iterdir()):
@@ -153,6 +170,7 @@ def main():
             if not page.evaluate("() => typeof window.seek === 'function'"):
                 raise RuntimeError('缺少 window.seek')
             for i in range(math.ceil(args.duration * args.fps / 1000)):
+                watchdog = start_watchdog(args.frame_timeout, i)
                 page.evaluate('''async t => {
                     let timer;
                     try { await Promise.race([Promise.resolve(window.seek(t)),
@@ -160,6 +178,7 @@ def main():
                     } finally {clearTimeout(timer)}
                 }''', i * 1000 / args.fps)
                 page.screenshot(path=str(args.output_dir / f'frame_{i:04d}.png'), timeout=15000)
+                watchdog.cancel()
                 if errors:
                     raise RuntimeError('; '.join(errors))
         except Exception as exc:
@@ -197,7 +216,7 @@ CRF 18 是有損起點，不保證視覺無失真；`+faststart` 搬移 moov met
                    render_frames -> FFmpeg -> 人工播放核對
 ```
 
-audit：exit 0 通過；1 頁面/像素/排版品質失敗；2 參數/依賴錯誤；3 INCOMPLETE。
+audit：exit 0 通過；1 頁面/像素/排版品質失敗；2 參數/依賴錯誤；3 INCOMPLETE。exit 0 但報告有 `unmeasured`（SVG 文字、Canvas 文字、被蓋住的文字）時，那些部分沒有被量過，須人工檢查，不能當作已合格。
 只檢查工具可量到的項目，人工仍須看品牌、資訊順序與剪輯；完整限制見複製後的規範第 4 節。
 局部修改使用平台已驗證的低成本路由；完整或多鏡頭任務先定規格再決定 review，不硬綁不存在的 effort 選項。
 

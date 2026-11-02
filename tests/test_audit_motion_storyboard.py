@@ -187,6 +187,33 @@ class UnitTests(unittest.TestCase):
             with self.assertRaises(motion.DependencyError):
                 motion.pixel_difference(self.root/'a.png',self.root/'b.png')
 
+    def test_unmeasured_is_reported_and_warned(self):
+        Image = self.require_pillow()
+        target = self.root/'page.html'; target.write_text(MOVING,encoding='utf-8')
+        image = Image.new('RGB',(40,40),'black'); image.paste('white',(0,0,20,20))
+        filename=self.root/'valid.png'; image.save(filename)
+        def frames():
+            return [motion.FrameInfo(i,i*100,str(filename),120,40,seek_delta=0,pixel_delta=None if i == 0 else 1,
+                                     unmeasured=[{'kind':'svg_text','count':2}] + ([{'kind':'canvas_text','count':5}] if i else []))
+                    for i in range(3)]
+        with patch.object(motion,'extract_keyframes_playwright',return_value=(frames(),[])):
+            report=motion.audit_motion_storyboard(target,frames_count=3,output_dir=self.root/'out')
+        kinds={item['kind']:item for item in report.unmeasured}
+        self.assertEqual(set(kinds),{'svg_text','canvas_text'})
+        self.assertEqual(kinds['svg_text']['frames'],[0,1,2])
+        self.assertEqual(kinds['canvas_text']['frames'],[1,2])
+        self.assertEqual(kinds['canvas_text']['count'],5)
+        self.assertIn('未量測',Path(report.contact_sheet_html).read_text(encoding='utf-8'))
+        with patch.object(motion,'extract_keyframes_playwright',return_value=(frames(),[])), contextlib.redirect_stderr(io.StringIO()) as stderr, contextlib.redirect_stdout(io.StringIO()) as stdout:
+            code=motion.main([str(target),'--frames','3','--output-dir',str(self.root/'out2'),'--json'])
+        self.assertEqual(code,0)  # 依指示：標示未量測並警告，不改變品質閘門
+        self.assertIn('[WARN] 未量測',stderr.getvalue())
+        self.assertIn('SVG 文字',stderr.getvalue())
+        self.assertEqual(len(json.loads(stdout.getvalue())['unmeasured']),2)
+        clean=[motion.FrameInfo(i,i*100,str(filename),120,40,seek_delta=0,pixel_delta=None if i == 0 else 1) for i in range(3)]
+        with patch.object(motion,'extract_keyframes_playwright',return_value=(clean,[])):
+            self.assertEqual(motion.audit_motion_storyboard(target,frames_count=3,output_dir=self.root/'out3').unmeasured,[])
+
     def test_total_timeout_watchdog_exits_three(self):
         calls=[]
         with patch.dict(os.environ,{'AI_INBOX_MOTION_TOTAL_TIMEOUT_S':'1'}), patch.object(motion.os,'_exit',side_effect=calls.append), contextlib.redirect_stderr(io.StringIO()) as stderr:
@@ -226,6 +253,7 @@ class BrowserTests(unittest.TestCase):
         cmd=[sys.executable,str(TOOL),str(target),'--frames','3','--duration','1000','--output-dir',str(out),'--json',*extra]
         if self.channel: cmd += ['--channel',self.channel]
         code,stdout,error=self.run_command(cmd,env)
+        self.last_error=error
         if expect_code is not None:
             self.assertEqual(code,expect_code,error)
             return code,error,out
@@ -236,7 +264,7 @@ class BrowserTests(unittest.TestCase):
         self.assertIn(code,(0,1),error)
         return code,json.loads(stdout.decode('utf-8-sig')),out
 
-    def run_command(self,cmd,env=None):
+    def run_command(self,cmd,env=None,timeout_fails=False):
         kwargs={} if os.name=='nt' else {'start_new_session':True}
         if env: kwargs['env']={**os.environ,**env}
         with subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,**kwargs) as process:
@@ -249,6 +277,9 @@ class BrowserTests(unittest.TestCase):
                 else:
                     os.killpg(process.pid,signal.SIGKILL)
                 process.communicate()
+                # 被測程式自己應該在逾時內結束（exit 3）；測試行程等不到就是被測程式的缺陷，不是機器忙
+                if timeout_fails:
+                    self.fail(f'被測程式在 {self.timeout}s 內沒有自行結束')
                 raise unittest.SkipTest(f'INCOMPLETE: 瀏覽器測試逾時 {self.timeout}s；不是通過或失敗')
         error=stderr.decode('utf-8',errors='replace')
         return process.returncode,stdout,error
@@ -315,6 +346,22 @@ class BrowserTests(unittest.TestCase):
                 self.assertGreaterEqual(len(report['frames'][0]['text_boxes']),1)
                 if name=='wrapped':
                     self.assertGreaterEqual(len(report['frames'][0]['text_boxes']),2,'換行標題要量到多個行框，否則通過沒有意義')
+
+    def test_unmeasured_text_is_reported(self):
+        # SVG 文字、Canvas 文字、被蓋住的文字工具量不到：不改變 exit code，但報告必須有「未量測」欄位並印警告
+        svg=MOVING.replace('<div id="box"','<svg width="600" height="100" style="position:absolute;left:80px;top:130px"><text x="10" y="60" font-size="40" fill="#123">svg text</text></svg><div id="box"')
+        canvas=MOVING.replace('<div id="box"','<canvas id="cv" width="600" height="100" style="position:absolute;left:80px;top:130px"></canvas><div id="box"').replace(
+            "window.seek=function(t){","const cx=document.getElementById('cv').getContext('2d');window.seek=function(t){cx.clearRect(0,0,600,100);cx.fillStyle='#123';cx.font='40px sans-serif';cx.fillText('canvas text',10,60);")
+        covered=MOVING.replace('<div id="box"','<h2 style="position:absolute;left:80px;top:150px;margin:0">Covered</h2><div style="position:absolute;left:60px;top:140px;width:500px;height:80px;background:#000"></div><div id="box"')
+        for name,source,kind in [('svg',svg,'svg_text'),('canvas',canvas,'canvas_text'),('covered',covered,'occluded_text')]:
+            with self.subTest(case=name):
+                code,report,_=self.run_page(source,'um_'+name)
+                self.assertEqual(code,0,report)
+                self.assertIn(kind,[item['kind'] for item in report['unmeasured']])
+                self.assertIn('[WARN] 未量測',self.last_error)
+        code,report,_=self.run_page(MOVING,'um_clean')
+        self.assertEqual(report['unmeasured'],[])
+        self.assertNotIn('[WARN]',self.last_error)
 
     def test_oklch_dark_text_fails_contrast(self):
         self.check_bad_cases([('oklch_dark',MOVING.replace('color:white','color:oklch(0.2 0.02 250)'),'contrast:')])
@@ -386,6 +433,19 @@ class BrowserTests(unittest.TestCase):
             self.assertIsNotNone(ImageChops.difference(a.convert('RGB'),b.convert('RGB')).getbbox())
         code,_,_=self.run_command(command)
         self.assertEqual(code,2)  # 非空目錄不可混入舊序列。
+
+    def test_export_frame_timeout_is_incomplete(self):
+        document=(ROOT/'templates/motion-design-studio-skill.md').read_text(encoding='utf-8')
+        exporter=self.root/'render_frames.py'; exporter.write_text(re.search(r'```python\n(.*?)```',document,re.S).group(1),encoding='utf-8')
+        target=self.root/'hang.html'; target.write_text(page(script='window.seek=function(t){if(t>0){while(true){}}};'),encoding='utf-8')
+        command=[sys.executable,str(exporter),str(target),'--duration','1000','--fps','4','--output-dir',str(self.root/'hang_frames'),'--frame-timeout','5']
+        if self.channel: command += ['--channel',self.channel]
+        code,_,error=self.run_command(command,timeout_fails=True)
+        self.assertEqual(code,3,error)
+        self.assertIn('INCOMPLETE',error)
+        bad=command[:-2]+['--frame-timeout','0']
+        bad[bad.index('--output-dir')+1]=str(self.root/'other')
+        self.assertEqual(self.run_command(bad)[0],2)
 
 
 if __name__=='__main__':

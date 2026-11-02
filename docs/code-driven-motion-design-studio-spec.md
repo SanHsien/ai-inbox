@@ -115,6 +115,12 @@ HTML/CSS 註解及獨立 JS 行註解會剝除；Emoji 與 elevate 不是 M05。
 
 限制：三點背景取樣不能代表整個字形；遮擋、混合模式、濾鏡、CSS 偽元素、SVG/Canvas 文字、旋轉後非矩形碰撞不在文字量測保證內。無 DOM 文字時 `text_boxes=[]` 表示沒有可測文字，不是文字檢查合格證明。工具不評構圖重心、文字語意、糊焦、物理自然度或美感。靜態停留、完全淡出也會被保守阻擋，應調整設計/抽樣覆蓋並人工覆核，不可用抽樣隱藏已知缺陷。
 
+量不到的文字不會被默默當成合格：偵測到 SVG 文字（`svg text/tspan/textPath`）、Canvas 文字（`fillText`／`strokeText` 被呼叫，載入前包住計數）、或被其他元素蓋住的 DOM 文字（行框中心點最上層元素不是文字自己的元素）時，報告多一個 `unmeasured` 欄位（`kind`、`count`、`frames`），stderr 印 `[WARN] 未量測`，Contact Sheet 加「未量測」段落。這不改變 exit code 與 `passed`，因為工具無法判斷這些文字好不好；它代表這部分的對比與碰撞沒有被量過，須人工檢查，不可引為通過證據。Canvas 計數只涵蓋主執行緒的 `fillText`／`strokeText`，用 `drawImage` 貼上已含文字的點陣圖偵測不到。
+
+已知誤報：
+- 漸層文字（`background-clip:text` 加 `color:transparent`）：隱藏文字後取樣到的背景就是漸層本身，文字色又是透明，對比會算成 1.0 而失敗。請改用實色文字讓工具能量；若堅持漸層文字，須人工目視確認該標題對比並在交付紀錄註明，不可為此放寬門檻或關閉檢查。
+- 文字從畫面外滑入（抽樣時文字框在視窗外，判為超出畫面）與動畫結尾的停格（相鄰影格完全相同，判為靜止）：兩者都是合法設計卻會被保守阻擋，應調整抽樣範圍（`--timestamps`）使其落在有動作且文字在畫面內的區間，並人工覆核被排除的時段。
+
 | 維度 | 最高分 | 實際扣分 |
 | --- | --- | --- |
 | layout | 2.5 | 每筆行框碰撞/裁切扣 1，最低 0 |
@@ -145,7 +151,7 @@ python tools/audit_motion_storyboard.py index.html --duration 3000 --frames 6 --
 
 ## 5. 導出與 effort 路由
 
-先通過分鏡檢查，再用範本的 `render_frames.py` 逐幀 seek 輸出 `frames/frame_0000.png` 起的序列。
+先通過分鏡檢查，再用範本的 `render_frames.py` 逐幀 seek 輸出 `frames/frame_0000.png` 起的序列。`render_frames.py` 每幀有可設定的整體逾時（`--frame-timeout` 或環境變數 `MOTION_RENDER_FRAME_TIMEOUT_S`，預設 60 秒），逾時印 INCOMPLETE 並 exit 3，已輸出的 PNG 不可交付。
 以下命令可在 PowerShell 與 bash 單行執行：
 
 ```bash
@@ -162,7 +168,7 @@ Effort 路由：局部文案/色票用既有低成本設定；完整短片先定
 
 - [Playwright Python BrowserType](https://playwright.dev/python/docs/api/class-browsertype)：`launch` 的 `channel` 選項列有 `chrome`、`msedge` 等值，另可用 `"chromium"` 選新 headless 模式。`channel` 只出現在這一頁，不在 Page API。
 - [Playwright Python Page](https://playwright.dev/python/docs/api/class-page)：有 `evaluate`、`screenshot`，以及 `pageerror`、`console` 事件，與工具的用法對應。
-- [FFmpeg n7.1 `doc/muxers.texi`](https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/muxers.texi)（tag `n7.1`，commit 507a51f）：第 387-388 行說明可在 `-movflags` 加 `+faststart` 把資料搬到檔案開頭以利播放；第 500-504 行說明 `faststart` 是第二遍把 moov atom 移到檔頭，耗時，且在 fragmented output 等情況不適用。官方渲染頁 ffmpeg-formats.html 本輪連線逾時，未讀。
+- [FFmpeg n7.1 `doc/muxers.texi`](https://raw.githubusercontent.com/FFmpeg/FFmpeg/n7.1/doc/muxers.texi)（tag `n7.1`；annotated tag 物件是 507a51f，指向的 commit 是 b08d796，以 `git ls-remote https://github.com/FFmpeg/FFmpeg refs/tags/n7.1 'refs/tags/n7.1^{}'` 於 2026-11-02 核對）：第 387-388 行說明可在 `-movflags` 加 `+faststart` 把資料搬到檔案開頭以利播放；第 500-504 行說明 `faststart` 是第二遍把 moov atom 移到檔頭，耗時，且在 fragmented output 等情況不適用。官方渲染頁 ffmpeg-formats.html 本輪連線逾時，未讀。
 - [FFmpeg H.264 編碼指南（Internet Archive 快照）](https://web.archive.org/web/2024/https://trac.ffmpeg.org/wiki/Encode/H.264)：原站目前回應反機器人驗證頁，改讀快照（頁尾 Last modified Dec 12, 2024，之後可能已有更新）。內容：CRF 範圍 0–51、預設 23，主觀合理範圍 17–28；17 或 18「visually lossless or nearly so」但 "isn't technically lossless"；真正無損要用 `-qp 0`（或特定 profile 的 `-crf 0`）；QuickTime 等播放器需要 `yuv420p`。因此本文把 CRF 18 稱為有損交付起點。
 - [Remotion `random()`](https://www.remotion.dev/docs/random)：以 seed 取得確定性的偽亂數；Remotion 以多執行緒渲染，`Math.random()` 在各執行緒結果不同。只佐證「亂數要有 seed」，不證明其他部分。
 - [Motion Canvas Introduction](https://motioncanvas.io/docs/)：TypeScript generator 動畫函式庫加即時預覽編輯器，頁尾版權 2023。只當同類工具參考，不證明本文的 seek 契約。
