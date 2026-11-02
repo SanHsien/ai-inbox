@@ -6,7 +6,7 @@ source_platform: "Threads (@magic.tw) / GitHub (thedotmack/claude-mem)"
 author: "梅橘克 (@magic.tw) / thedotmack"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "記憶架構對決"
 short_title: "Claude Code跨Session記憶對決"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@magic.tw)](https://www.threads.com/share/BAUyhOnUH9/) ｜ [貼文永久網址](https://www.threads.com/@magic.tw/post/DfEvkgEEtGp) ｜ [claude-mem 官方 GitHub](https://github.com/thedotmack/claude-mem)
 - **核心作者**：梅橘克（@magic.tw，AI 工具探索與技術實戰創作者）／ thedotmack（claude-mem 創始開發者）
 - **分析主題**：解構 Threads 上獲得熱烈迴響的技術議題——「Claude Code 跨 Session 記憶這個坑，目前最多人用的解法是 claude-mem（83k stars）」。深入剖析當前主流 AI Coding Agent 解決跨會話失憶的三大架構路線：**A. 手動維護 `CLAUDE.md`**、**B. 自動 Hook 背景壓縮與相關度注入（`claude-mem` Skill）**、**C. 外部非侵入會話收割（`cc-session` / `mission-log`）**。結合社群實測重點探討「記憶好不好用取決於壓縮品質，細節被壓掉等於沒記住」的**壓縮衰減現象（Compression Decay）**、額外 Token 開銷與記憶噪聲污染（Context Pollution），並提出適合多 Agent 工業化開發的混合記憶防禦矩陣。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-mem-autocompact-context.md`](./2026-10-17-claude-mem-autocompact-context.md)（早期 Claude-Mem 與 Autocompact 400K 理論分析）
   - [`notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md`](./2026-10-17-claude-code-idle-compaction-cc-session-reader.md)（Idle Compaction 與 cc-session-reader 零 Token 會話過濾）
@@ -149,16 +149,17 @@ flowchart TD
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261031-40`**｜**[優先級：高]** 撰寫「Claude Code 跨 Session 記憶架構評測指南：CLAUDE.md 手動規範、claude-mem 自動壓縮 Skill 與外部 Session 收割之三方權衡」收錄於 `docs/claude-code-cross-session-memory-evaluation-guide.md`
+- [x] **`T-20261031-40`**｜**[優先級：高]** 撰寫「Claude Code 跨 Session 記憶架構評測指南：CLAUDE.md 手動規範、claude-mem 自動壓縮 Skill 與外部 Session 收割之三方權衡」收錄於 `docs/claude-code-cross-session-memory-evaluation-guide.md`
   - **目標範圍**：`docs/claude-code-cross-session-memory-evaluation-guide.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳細對比三大記憶架構：A. 靜態顯式維護（CLAUDE.md / AGENTS.md）、B. 自動 Hook 壓縮注入（`claude-mem` Skill）、C. 外部非侵入會話收割（cc-session / mission-log）。
     2. 深度分析社群痛點「壓縮衰減（Compression Decay）」與「噪聲污染（Context Pollution）」之成因與解決策略。
     3. 規範跨平臺（Claude Code、Codex、Gemini、OpenClaw）記憶注入時的 Token 預算、相關度檢索演算法與敏感憑證過濾硬閘門。
   - **驗收標準（DoD）**：產出 `docs/claude-code-cross-session-memory-evaluation-guide.md`，具備標準 Markdown 結構與三方架構對比表；以 `Test-Path docs/claude-code-cross-session-memory-evaluation-guide.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/claude-code-cross-session-memory-evaluation-guide.md：三條路線比較（CLAUDE.md／auto memory、claude-mem、cc-session）；獨立審查逐項對照 code.claude.com 記憶文件、claude-mem @ 52a1dfea、cc-session-reader @ 7a60e5ce 相符。更正筆記：安裝指令、星數、8KB 不是官方數字；補上 claude-mem 登入後可能在託管伺服器壓縮。
 
-- [ ] **`T-20261031-41`**｜**[優先級：中]** 實作「Agent 跨 Session 記憶品質與壓縮衰減率評測工具」於 `tools/audit_session_memory_compression.py` 與單元測試
+- [x] **`T-20261031-41`**｜**[優先級：中]** 實作「Agent 跨 Session 記憶品質與壓縮衰減率評測工具」於 `tools/audit_session_memory_compression.py` 與單元測試
   - **目標範圍**：`tools/audit_session_memory_compression.py` 與 `tests/test_audit_session_memory_compression.py`
   - **具體做法**：
     1. 實作記憶壓縮品質評測 CLI 工具，輸入原始對話日誌（Transcript JSONL）與壓縮後之 Memory Markdown。
@@ -166,11 +167,14 @@ flowchart TD
     3. 檢查記憶條目中是否包含無效語氣詞或敏感資訊洩漏（API Key、本地絕對家目錄）。
     4. 產出結構化 Markdown / JSON 評測報告並給予 `[PASS]/[FAIL]` 判定，具備 CLI exit code 規範。
   - **驗收標準（DoD）**：產出 `tools/audit_session_memory_compression.py` 與對應測試；執行 `python -m unittest tests/test_audit_session_memory_compression.py` 全綠通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：tools/audit_session_memory_compression.py＋tests：依路徑、錯誤碼、測試結論、決策四類算遺失率，另有決策類別門檻；機密、真實家目錄、無依據事實會失敗，量不出來回 2。審查後修正除以零與決策因果全丟仍通過，整合者重現驗證通過。只用假資料。
 
-- [ ] **`T-20261031-42`**｜**[優先級：低]** 產出標準化「高保真跨 Session 記憶寫入 Prompt 模板與漸進式記憶清理手冊」收錄於 `templates/cross-session-memory-curation-spec.md`
+- [x] **`T-20261031-42`**｜**[優先級：低]** 產出標準化「高保真跨 Session 記憶寫入 Prompt 模板與漸進式記憶清理手冊」收錄於 `templates/cross-session-memory-curation-spec.md`
   - **目標範圍**：`templates/cross-session-memory-curation-spec.md`
   - **具體做法**：
     1. 提供防止壓縮失真（Anti-Decay）的結構化記憶生成 Prompt（包含「背景事實、根因分析、踩坑結論、待辦事項」四欄強制骨架）。
     2. 提供記憶庫過期清理（TTL Pruning）與衝突覆蓋（Reconciliation）之操作準則。
   - **驗收標準（DoD）**：產出 `templates/cross-session-memory-curation-spec.md`，具備標準 YAML frontmatter 與完整配置範例；以 `Test-Path templates/cross-session-memory-curation-spec.md` 驗證存在。
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：templates/cross-session-memory-curation-spec.md：四段式記憶寫入提示、條目格式、TTL 與唯讀的過期清單腳本；範例記憶由測試跑稽核工具，改錯一個事實就失敗。type 四值標明是範本自訂慣例，不是官方分類。
