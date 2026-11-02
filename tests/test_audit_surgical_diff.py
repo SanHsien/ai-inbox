@@ -430,6 +430,93 @@ class RegressionTests(GitRepoCase):
         self.assertNotIn("lib/old.py", out)
 
 
+class AncestryTests(GitRepoCase):
+    """head 是 base 祖先、無共同祖先、shallow clone：不能靜默通過。"""
+
+    def two_commits(self) -> str:
+        self.write("tools/foo.py", PY_LINES + "more = 1\n")
+        return self.commit_id("second")
+
+    def test_reversed_base_head_is_exit_2_not_a_green_light(self) -> None:
+        self.two_commits()
+        code, out, err = self.run_audit(base="HEAD", head="HEAD~1", scope=("a/",))
+        self.assertEqual(code, 2, out)
+        self.assertNotIn("[PASS]", out)
+        self.assertIn("祖先", err)
+        self.assertIn("寫反", err)
+
+    def test_reversed_with_explicit_shas_is_exit_2(self) -> None:
+        newer = self.two_commits()
+        code, _, err = self.run_audit(base=newer, head=self.base, scope=("tools/",))
+        self.assertEqual(code, 2)
+        self.assertIn("寫反", err)
+
+    def test_base_equals_head_still_passes(self) -> None:
+        self.two_commits()
+        code, out, _ = self.run_audit(base="HEAD", head="HEAD", scope=("a/",))
+        self.assertEqual(code, 0, out)
+        self.assertIn("[PASS]", out)
+
+    def test_normal_forward_range_unaffected(self) -> None:
+        self.two_commits()
+        code, out, _ = self.run_audit(base="HEAD~1", head="HEAD", scope=("tools/",))
+        self.assertEqual(code, 0, out)
+        self.assertIn("tools/foo.py", out)
+
+    def test_title_prints_merge_base_hash(self) -> None:
+        trunk = self.git("rev-parse", "--abbrev-ref", "HEAD")
+        self.git("checkout", "-q", "-b", "feat")
+        self.write("tools/foo.py", PY_LINES + "feat = 1\n")
+        self.commit("feat")
+        self.git("checkout", "-q", trunk)
+        self.write("lib/old.py", "x = 'moved'\n")
+        self.commit("trunk moves")
+        code, out, _ = self.run_audit(base=trunk, head="feat", scope=("tools/",))
+        self.assertEqual(code, 0, out)
+        title = out.splitlines()[0]
+        self.assertIn(f"merge-base {self.base[:12]}", title)
+        self.assertIn(f"{trunk}...feat", title)
+        data = json.loads(self.run_audit("--json", base=trunk, head="feat", scope=("tools/",))[1])
+        self.assertEqual(data["merge_base"], self.base)
+
+    def test_unrelated_histories_give_a_useful_error(self) -> None:
+        trunk = self.git("rev-parse", "--abbrev-ref", "HEAD")
+        self.git("checkout", "-q", "--orphan", "other")
+        self.git("rm", "-rq", "--cached", ".")
+        self.write("solo.txt", "x\n")
+        self.commit("orphan root")
+        code, out, err = self.run_audit(base=trunk, head="other", scope=("solo.txt",))
+        self.assertEqual(code, 2, out)
+        self.assertIn("共同祖先", err)
+        self.assertIn("fetch-depth: 0", err)
+        self.assertNotIn("失敗（exit 1）：\n", err)
+
+    def test_shallow_clone_gives_fetch_hint(self) -> None:
+        trunk = self.git("rev-parse", "--abbrev-ref", "HEAD")
+        self.git("checkout", "-q", "-b", "feat")
+        self.write("tools/foo.py", PY_LINES + "feat = 1\n")
+        self.commit("feat")
+        self.git("checkout", "-q", trunk)
+        self.write("lib/old.py", "x = 2\n")
+        self.commit("trunk 1")
+        self.write("lib/old.py", "x = 3\n")
+        self.commit("trunk 2")
+        shallow = os.path.join(self._tmp.name, "shallow")
+        subprocess.run(["git", "clone", "-q", "--depth", "1", "--no-single-branch", Path(self.repo).as_uri(), shallow],
+                       check=True, capture_output=True)
+        self.repo = shallow
+        code, out, err = self.run_audit(base=f"origin/{trunk}", head="origin/feat", scope=("tools/",))
+        self.assertEqual(code, 2, out)
+        self.assertIn("shallow", err)
+        self.assertIn("fetch-depth: 0", err)
+
+    def test_bad_ref_keeps_gits_own_message(self) -> None:
+        code, _, err = self.run_audit(base="no-such-rev", head="HEAD")
+        self.assertEqual(code, 2)
+        self.assertNotIn("共同祖先", err)
+        self.assertIn("no-such-rev", err)
+
+
 class WorktreeModeTests(GitRepoCase):
     def test_unstaged_staged_and_untracked(self) -> None:
         self.write("tools/foo.py", PY_LINES + "more = 1\n")  # 未暫存

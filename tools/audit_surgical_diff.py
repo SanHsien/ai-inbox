@@ -64,6 +64,10 @@ COMMENT_PREFIXES = ("//", "/*", "*/", "--", "<!--")
 class AuditError(Exception):
     """參數或 git 錯誤（對應結束碼 2）。"""
 
+    def __init__(self, message: str, returncode: int | None = None) -> None:
+        super().__init__(message)
+        self.returncode = returncode
+
 
 def _utf8_stdio() -> None:
     for stream in (sys.stdout, sys.stderr):
@@ -104,6 +108,7 @@ class Violation:
 class Report:
     base: str
     head: str | None
+    merge_base: str | None = None
     changes: list[Change] = field(default_factory=list)
     exempt: list[str] = field(default_factory=list)
     violations: list[Violation] = field(default_factory=list)
@@ -162,7 +167,7 @@ def _git(repo: str, *args: str) -> bytes:
         raise AuditError("找不到 git 指令") from exc
     if proc.returncode != 0:
         msg = proc.stderr.decode("utf-8", errors="replace").strip()
-        raise AuditError(f"git {' '.join(args[:2])} 失敗（exit {proc.returncode}）：{msg}")
+        raise AuditError(f"git {' '.join(args[:2])} 失敗（exit {proc.returncode}）：{msg}", proc.returncode)
     return proc.stdout
 
 
@@ -170,16 +175,35 @@ def _dec(b: bytes) -> str:
     return b.decode("utf-8", errors="replace")
 
 
-def _revs(repo: str, base: str, head: str | None) -> list[str]:
-    """傳給 git diff 的 rev 清單。base 換成它與 head（或 HEAD）的 merge-base：
+def _revs(repo: str, base: str, head: str | None) -> tuple[list[str], str]:
+    """回傳 (傳給 git diff 的 rev 清單, merge-base)。base 換成它與 head（或 HEAD）的 merge-base：
     base 分支在分出之後前進時，別人的改動不會被算成這次的越界（兩點 diff 會誤判）。"""
     for rev in (base, head):
         if rev is not None and rev.startswith("-"):
             raise AuditError(f"commit 參照不可以 - 開頭：{rev!r}")
     if head is None and base == "HEAD":  # merge-base(HEAD, HEAD) 就是 HEAD，省一次 git 呼叫
-        return ["HEAD"]
-    mb = _dec(_git(repo, "merge-base", base, head or "HEAD")).strip()
-    return [mb, head] if head else [mb]
+        return ["HEAD"], "HEAD"
+    try:
+        mb = _dec(_git(repo, "merge-base", base, head or "HEAD")).strip()
+    except AuditError as exc:
+        if exc.returncode == 1:  # merge-base 找不到共同祖先時 exit 1 且 stderr 是空的
+            raise AuditError(
+                f"{base} 與 {head or 'HEAD'} 找不到共同祖先；若是 shallow clone"
+                "（例如 GitHub Actions 預設 fetch-depth 為 1），請先 fetch 完整歷史"
+                "（git fetch --unshallow，或 actions/checkout 設 fetch-depth: 0）",
+                1,
+            ) from exc
+        raise
+    if head is not None:
+        head_sha = _dec(_git(repo, "rev-parse", "--verify", f"{head}^{{commit}}")).strip()
+        if mb == head_sha:
+            base_sha = _dec(_git(repo, "rev-parse", "--verify", f"{base}^{{commit}}")).strip()
+            if base_sha != head_sha:
+                raise AuditError(
+                    f"--head {head} 是 --base {base} 的祖先，比較範圍是空的（什麼都沒審）；"
+                    "--base 與 --head 是不是寫反了？"
+                )
+    return ([mb, head] if head else [mb]), mb
 
 
 def parse_raw_numstat(raw: bytes) -> tuple[list[Change], dict[str, tuple[int, int, bool]]]:
@@ -259,8 +283,8 @@ def _count_file_lines(repo: str, rel: str) -> tuple[int, bool]:
     return n, False
 
 
-def collect_changes(repo: str, base: str, head: str | None) -> list[Change]:
-    revs = _revs(repo, base, head)
+def collect_changes(repo: str, base: str, head: str | None) -> tuple[list[Change], str]:
+    revs, mb = _revs(repo, base, head)
     flags = ["-M", "--no-color", "--no-ext-diff", "--no-textconv"]
     changes, full = parse_raw_numstat(_git(repo, "diff", "--raw", "--numstat", "-z", *flags, *revs))
     nows = parse_numstat(_git(repo, "diff", "--numstat", "-z", "-w", "--ignore-blank-lines", *flags, *revs))
@@ -281,7 +305,7 @@ def collect_changes(repo: str, base: str, head: str | None) -> list[Change]:
             except OSError:
                 n, binary = 0, False
             changes.append(Change(status="A", path=rel, added=n, binary=binary))
-    return changes
+    return changes, mb
 
 
 # ---------------------------------------------------------------- 判定
@@ -293,12 +317,13 @@ def audit(
     *,
     base: str = DEFAULT_BASE,
     head: str | None = None,
+    merge_base: str | None = None,
     max_files: int = DEFAULT_MAX_FILES,
     max_lines: int = DEFAULT_MAX_LINES,
     max_ws_lines: int = DEFAULT_MAX_WS_LINES,
     max_comment_removed: int = DEFAULT_MAX_COMMENT_REMOVED,
 ) -> Report:
-    rep = Report(base=base, head=head)
+    rep = Report(base=base, head=head, merge_base=merge_base)
     audited: list[Change] = []
     for ch in changes:
         if all(matches_any(p, exempt) for p in ch.paths):
@@ -338,7 +363,12 @@ def audit(
 
 
 def render(rep: Report) -> str:
-    rng = f"{rep.base}..{rep.head}" if rep.head else f"{rep.base} -> 工作樹"
+    mb = rep.merge_base or rep.base
+    mb = mb[:12] if len(mb) == 40 else mb
+    if rep.head:
+        rng = f"{rep.base}...{rep.head}，比較起點 merge-base {mb}"
+    else:
+        rng = f"{rep.base} -> 工作樹，比較起點 {mb}" if mb != rep.base else f"{rep.base} -> 工作樹"
     out = [f"範圍審查（{rng}）：受審 {rep.total_files} 個檔案、{rep.total_lines} 行變更"]
     for c in rep.changes:
         old = f"{c.old_path} -> " if c.old_path else ""
@@ -374,7 +404,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         scope = [compile_pattern(s) for s in args.scope]
         exempt = [compile_pattern(s) for s in args.exempt]
-        changes = collect_changes(args.repo, args.base, args.head)
+        changes, merge_base = collect_changes(args.repo, args.base, args.head)
     except AuditError as exc:
         print(f"[ERROR] {exc}", file=sys.stderr)
         return 2
@@ -384,6 +414,7 @@ def main(argv: list[str] | None = None) -> int:
         exempt,
         base=args.base,
         head=args.head,
+        merge_base=merge_base,
         max_files=args.max_files,
         max_lines=args.max_lines,
         max_ws_lines=args.max_whitespace_lines,

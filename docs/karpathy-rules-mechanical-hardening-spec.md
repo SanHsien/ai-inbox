@@ -114,6 +114,8 @@
 
 **比較基準是 merge-base，不是 base 本身**：不論給不給 `--head`，`--base` 都先換成「它與 head（沒給則 HEAD）的 merge-base」再比較（等同 `git diff base...head`）。因此 `main` 在分支分出之後前進，別人合進 `main` 的改動不會被誤算成這個分支的越界。預設 `--base HEAD` 時 merge-base 就是 HEAD。
 
+兩種情況會回 exit 2，不會給綠燈：(1) `--head` 是 `--base` 的祖先（兩個參數多半寫反了，比較範圍是空的、什麼都沒審；`--base` 與 `--head` 指向同一個 commit 則正常通過）；(2) 兩者找不到共同祖先。第 (2) 種在 CI 很常見：GitHub Actions 的 `actions/checkout` 預設 `fetch-depth: 1`（淺層 clone），歷史不完整就算不出 merge-base，要在 checkout 步驟設 `fetch-depth: 0`（或先 `git fetch --unshallow`）。報告標題會印出實際使用的 merge-base hash。
+
 ```text
  宣告 --scope ──┐
                 ├─▶ git 實際變更（新增／修改／刪除／改名／未追蹤檔）──▶ 違規清單 + exit code
@@ -241,6 +243,7 @@ python tools/verify_inbox.py              # 必須 exit 0（CI 同款）
 - 四原則 `CLAUDE.md`：`https://github.com/forrestchang/andrej-karpathy-skills`（現轉址至 `multica-ai/andrej-karpathy-skills`）。第一個 commit `8462496b34419f20b32778610571ac723e91f94c`（2026-01-27 03:53 UTC，新增 `CLAUDE.md`、`README.md`）；查證用的 HEAD 為 `2c606141936f1eeef17fa3043a72095b4765b9c2`。README 的 "derived from Andrej Karpathy's observations" 寫法同在該 repo。
 - Claude Code 讀取 `CLAUDE.md` 與 `AGENTS.md` 的規則（含 v2.1.277 版本需求、`CLAUDE.local.md` 算進「有 CLAUDE.md」）：`https://code.claude.com/docs/en/memory`（"AGENTS.md" 段落，2026-11-02 核對）。
 - Claude Code hook 的 exit code 2 行為：`https://code.claude.com/docs/en/hooks`（"Exit code 2 behavior per event"）。
+- `actions/checkout` 的 `fetch-depth` 預設 1、0 代表全部歷史：`https://github.com/actions/checkout/blob/main/action.yml`（2026-11-02 以 GitHub API 讀取）。
 - Codex 讀取 `AGENTS.md`：`https://developers.openai.com/codex/guides/agents-md`。
 - Antigravity：`https://antigravity.google/docs/rules-workflows` 回應 200 但內容為前端渲染，未取得文字；相關說法一律標未驗證。
 - 本 repo：`tools/audit_surgical_diff.py`、`tests/test_audit_surgical_diff.py`、`tools/audit_skills_context_budget.py`、`tools/generate_dod_verifier.py`、`tools/verify_inbox.py`、`docs/external-judge-audit.md`。
