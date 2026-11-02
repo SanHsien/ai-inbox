@@ -6,7 +6,7 @@ source_platform: "Threads (@castlen3)"
 author: "HengYu Lin (@castlen3)"
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 4
 cluster_role: "Agent引導部署與LINE家庭Bot落地"
 short_title: "LINE家庭群組Bot與Agent引導部署"
@@ -27,7 +27,7 @@ tags:
 - **核心作者**：HengYu Lin（@castlen3）
 - **關聯開源專案**：[castlen3/line-family-comment-bot](https://github.com/castlen3/line-family-comment-bot)
 - **分析主題**：解構 HengYu Lin 開源之「LINE 家庭群組機器人（長輩的好朋友）」模板架構。剖析其如何透過高度結構化的 `AGENTS.md` 實現「**面向非技術者的 Agent-Driven 引導式部署**」，讓一般使用者只要將 GitHub 貼給 Coding Agent（Codex、Claude Code、Antigravity）即可由 Agent 一步步陪伴完成複雜的 n8n、Ngrok、LINE Developers 與 LLM 配置。深入探討其基於 n8n 的 27 節點視覺化編排、文字與視覺雙軌分流、健康意圖查證與防洗版降噪機制，以及開源交付時的最小權限與隱私資安硬閘門。
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 專案說明書四原則：從 Prompt 到硬閘門）
   - [`notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md`](./2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)（開源 Agent 工單系統與跨端交接架構）
@@ -159,14 +159,15 @@ HengYu Lin 提出的核心破局點為：**將開源專案的安裝文件直接�
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261101-10`**｜**[優先級：高]** 撰寫「面向非技術用戶的 Agent-Driven 開源專案安裝指引規範（AGENTS.md 最佳實踐與資安防線）」收錄於 `docs/agent-driven-onboarding-and-security-spec.md`
+- [x] **`T-20261101-10`**｜**[優先級：高]** 撰寫「面向非技術用戶的 Agent-Driven 開源專案安裝指引規範（AGENTS.md 最佳實踐與資安防線）」收錄於 `docs/agent-driven-onboarding-and-security-spec.md`
   - **目標範圍**：`docs/agent-driven-onboarding-and-security-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 梳理 Agent-Driven Onboarding 的 5 大核心設計模式：微步推進原則、白話名詞對照、情境偏好分流（本地隱私 vs 雲端開箱）、零密鑰接觸原則與驗證回饋閉環。
     2. 制定開源專案標準 `AGENTS.md` 模板架構，包含：溝通語言強制條款、使用者能力假定、工作原則、逐步安裝指南、嚴格禁止操作（禁止讀取私有 DB、禁止提交 token）、以及可驗證的測試完成標準。
     3. 定義進階 Agent 部署（n8n API / MCP / 遠端指令）的最小權限與安全撤銷協定，確保無資安疑慮。
   - **驗收標準（DoD）**：產出 `docs/agent-driven-onboarding-and-security-spec.md`，具備標準 Markdown 結構與繁體中文規範；以 `Test-Path docs/agent-driven-onboarding-and-security-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/agent-driven-onboarding-and-security-spec.md：對照原專案 castlen3/line-family-comment-bot @ 10be9bf 與 agents.md，官方、原專案、筆記歸納、本 repo 延伸四類分開標；10 條資安規則與可貼的 AGENTS.md 範本。自檢 regex 經審查改寫，整合者實跑 7 個危險寫法全中、3 個正常寫法不誤抓，並寫明 grep 無法判斷語境。
 
 - [ ] **`T-20261101-11`**｜**[優先級：中]** 實作「LINE 家庭群組機器人意圖識別、圖片限流與防洗版核心邏輯驗證腳本」於 `tools/verify_line_bot_intent_flow.py` 與單元測試
   - **狀態**：⚪ 不做（家庭群組機器人不是目前的工作，沒有實際服務可驗證；Agent 引導安裝的規範（T-20261101-10）保留。）

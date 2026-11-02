@@ -6,7 +6,7 @@ source_platform: "Threads (@it.oppa.twhk) / Hugging Face (nvidia/NVIDIA-Nemotron
 author: "it.oppa.twhk (@it.oppa.twhk) / NVIDIA Applied Research"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 2
 cluster_role: "次世代語音轉錄"
 short_title: "NVIDIA Nemotron 3.5語音轉錄大模型"
@@ -28,7 +28,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@it.oppa.twhk)](https://www.threads.com/share/BAaSbRIvmR/) ｜ [貼文永久網址](https://www.threads.com/@it.oppa.twhk/post/DfE-QUGCNJ1) ｜ [Hugging Face 官方開源模型庫 (nvidia/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B)](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Transcribe-30B-A4B) ｜ [NVIDIA NeMo 語音框架文檔](https://docs.nvidia.com/nemo-framework/)
 - **核心作者**：it.oppa.twhk（@it.oppa.twhk，軟體架構與 AI 實戰創作者）／ NVIDIA 語音與多模態 AI 研究團隊
 - **分析主題**：解構 NVIDIA 正式於 Hugging Face 商用開源釋出的震撼性語音多模態大模型——**Nemotron 3.5 Transcribe（`NVIDIA-Nemotron-3.5-Transcribe-30B-A4B`）**。深入剖析其如何徹底顛覆傳統 OpenAI Whisper 固化、死板的 Sequence-to-Sequence 轉錄範式，採用 **34B 混合專家（MoE）架構（僅激活 4.3B 參數）**，結合 Mamba-2 狀態空間模型與 Transformer 注意力機制，實現 65,536 超長上下文（支援單次輸入 1 小時音訊）、首創提示詞導向轉錄（Prompt-Guided ASR）、8 人重疊爭辯發言分離（Overlapping Speaker Diarization + Word-Level Timestamps）、專有名詞實體引導（Contextual Biasing）以及端到端免轉文字直接音訊問答（Direct Audio QA）。
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md`](./2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md)（VoiceStudio 本地語音合成與聲音克隆管線：TTS 與 ASR 的雙向多模態協同）
   - [`notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md`](./2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)（海外一手副業案例與影音情報萃取管線：會議長音訊情報化）
@@ -148,7 +148,7 @@ Nemotron 3.5 Transcribe 採用統一的語音-語言音訊模型（Speech-Langua
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261031-34`**｜**[優先級：高]** 撰寫「NVIDIA Nemotron 3.5 Transcribe 次世代語音辨識與多說話人管線技術規格指南：MoE 4.3B 激活、Prompt 導引與端到端音訊 QA」收錄於 `docs/nvidia-nemotron-transcribe-pipeline-spec.md`
+- [x] **`T-20261031-34`**｜**[優先級：高]** 撰寫「NVIDIA Nemotron 3.5 Transcribe 次世代語音辨識與多說話人管線技術規格指南：MoE 4.3B 激活、Prompt 導引與端到端音訊 QA」收錄於 `docs/nvidia-nemotron-transcribe-pipeline-spec.md`
   - **目標範圍**：`docs/nvidia-nemotron-transcribe-pipeline-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入對比傳統 OpenAI Whisper/WhisperX 與 Nemotron 3.5 Transcribe 30B-A4B 的核心差異（固定 Seq2Seq vs 提示詞導引 SALM）。
@@ -156,7 +156,8 @@ Nemotron 3.5 Transcribe 採用統一的語音-語言音訊模型（Speech-Langua
     3. 規範 8 人重疊語音分離（Overlapping Diarization）、字級時間戳與實體偏置注入（Entity Biasing）之工程調用參數。
     4. 定義音訊直接問答（Direct Audio QA）在會議紀要與長音訊情報萃取場景中的呼叫標準。
   - **驗收標準（DoD）**：產出 `docs/nvidia-nemotron-transcribe-pipeline-spec.md`，具備標準 Markdown 結構與 Whisper 對比基準表；以 `Test-Path docs/nvidia-nemotron-transcribe-pipeline-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/nvidia-nemotron-transcribe-pipeline-spec.md：對照 Hugging Face 模型卡（revision c176676）：34B 總參數／4.3B 激活、離線模型非串流、硬體表只列 RTX 5090 NVFP4；筆記的 RTX 4090、8 人分離與 Whisper 比較查無依據未採用（模型卡沒有 Whisper 數據，故無對比表）。結論：不適合即時聽寫，台灣繁中品質未驗證。
 
 - [ ] **`T-20261031-35`**｜**[優先級：中]** 實作「語音辨識輸出結構與多說話人時間戳校驗工具」於 `tools/verify_asr_diarization_output.py` 與單元測試
   - **狀態**：⚪ 不做（沒有實際跑這個模型的環境，輸出驗證器與推論配置範本都驗不了；規格文件（T-20261031-34）保留，供語音輸入專案評估。）

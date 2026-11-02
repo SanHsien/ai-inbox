@@ -6,7 +6,7 @@ source_platform: "Threads (@my.little.hole)"
 author: "我的小樹洞 (@my.little.hole / littlehole2025)"
 analyzed_at: 2026-11-02
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "長對話自動交接與Token節流外掛"
 short_title: "claude-saver長對話自動交接外掛"
@@ -27,7 +27,7 @@ tags:
 - **核心作者**：我的小樹洞（@my.little.hole / GitHub: littlehole2025）
 - **官方開源專案**：[littlehole2025/claude-saver](https://github.com/littlehole2025/claude-saver)（原名 `token-saver`，Claude Code 官方 Plugin 體系）
 - **分析主題**：解構開發者「我的小樹洞」開源之 Claude Code 節費與會話管理外掛 `claude-saver`。剖析其如何透過 `UserPromptSubmit` Hook 實時監聽 `transcript` 的 Token 消耗量（以 150k Tokens 為基礎門檻、每 50k 為階段步進），結合語意意圖判定（新功能 vs 做到一半的接續工作），在長對話下自動跳出「開新對話」原生按鈕；並深入解構單字指令「換」背後的標準化交接三步曲（流水號自動 +1、結構化 Brief 提取、舊會話安全封存），為多 Agent 長期執行環境提供低摩擦、防上下文發散與大幅節省 Token 的生產級範本。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md`](./2026-10-17-claude-code-idle-compaction-cc-session-reader.md)（Claude Code 閒置壓縮與 cc-session-reader 歷史會話提取）
   - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（經驗驅動成本控制與動態上下文壓縮）
@@ -131,16 +131,17 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261102-01`**｜**[優先級：高]** 撰寫「長會話上下文膨脹告警與一鍵自動交接規格手冊（UserPromptSubmit Hook 與 Session 生命週期控制）」收錄於 `docs/long-chat-session-handoff-spec.md`
+- [x] **`T-20261102-01`**｜**[優先級：高]** 撰寫「長會話上下文膨脹告警與一鍵自動交接規格手冊（UserPromptSubmit Hook 與 Session 生命週期控制）」收錄於 `docs/long-chat-session-handoff-spec.md`
   - **目標範圍**：`docs/long-chat-session-handoff-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入剖析長會話之 Token 遞增成本模型與「注意力發散」臨界點（150k Tokens 門檻依據與 50k 階梯步進演算法）。
     2. 規範 `UserPromptSubmit` Hook 的安全讀取機制（限制讀取末端 2MB、反向解析 usage、狀態暫存隔離）。
     3. 制定跨平台（Claude Desktop `start_session`/`archive_session` vs Antigravity `agentapi new-conversation`/`UpdateConversationAnnotations`）的統一會話生命週期控制介面與降級策略。
   - **驗收標準（DoD）**：產出 `docs/long-chat-session-handoff-spec.md`，具備標準 Markdown 結構與繁體中文規範；以 `Test-Path docs/long-chat-session-handoff-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/long-chat-session-handoff-spec.md：對照 littlehole2025/claude-saver @ 434750e（v1.2.0）與 code.claude.com hooks 官方頁；更正筆記把 token 成長寫成階乘級（實為平方級），分開每輪注入與給人看的提示；start_session 等工具名稱在官方文件查無，標未驗證。獨立審查逐項核對相符。
 
-- [ ] **`T-20261102-02`**｜**[優先級：中]** 實作「會話 Token 上下文感知度量與語意換話題判定驗證腳本」於 `tools/verify_session_token_sentinel.py` 與單元測試
+- [x] **`T-20261102-02`**｜**[優先級：中]** 實作「會話 Token 上下文感知度量與語意換話題判定驗證腳本」於 `tools/verify_session_token_sentinel.py` 與單元測試
   - **目標範圍**：`tools/verify_session_token_sentinel.py`、`tests/test_verify_session_token_sentinel.py`
   - **具體做法**：
     1. 實作純 Python 版本的 Token 哨兵驗證工具 `tools/verify_session_token_sentinel.py`，支援解析模擬 transcript JSONL 末端之 usage 數據。
@@ -148,13 +149,15 @@ tags:
     3. 實作任務連續性 vs 新功能語意啟發式規則判定（延續詞「繼續、修正、剛剛」vs 新話題詞「新增、換一個、另外想要」）。
     4. 撰寫單元測試套件 `tests/test_verify_session_token_sentinel.py`，覆蓋大檔案尾部讀取、損毀 JSON 容錯、階梯計算與提示抑制邏輯。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_session_token_sentinel.py` 綠燈通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：tools/verify_session_token_sentinel.py＋tests：只用 transcript 的 usage 計 token，量不到不通過（含 usage 為空物件）；hook 在任何參數或輸入錯誤下都回 1、從不回 2（避免擋掉使用者提問）。審查抓到參數錯誤回 2，已修正並由整合者實跑確認。
 
-- [ ] **`T-20261102-03`**｜**[優先級：低]** 產出標準化「跨 Agent 桌面會話編號流水遞增與結構化交接 Brief Prompt 模板」收錄於 `templates/session-handoff-brief-prompt.md`
+- [x] **`T-20261102-03`**｜**[優先級：低]** 產出標準化「跨 Agent 桌面會話編號流水遞增與結構化交接 Brief Prompt 模板」收錄於 `templates/session-handoff-brief-prompt.md`
   - **目標範圍**：`templates/session-handoff-brief-prompt.md`
   - **具體做法**：
     1. 產出適用於 Claude Code、Antigravity、Codex 的單字「換」觸發交接 Prompt 模板。
     2. 制定會話標題命名規則（自動提取結尾數字遞增，如「專案-1」→「專案-2」）。
     3. 規範四段式結構化 Brief 提取格式（已完工項目與 SHA、未完工卡點、下一步待辦清單、環境偏好與全域約束），確保新會話無縫接軌且舊會話可安全封存。
   - **驗收標準（DoD）**：產出 `templates/session-handoff-brief-prompt.md`，結構清晰且包含變數替換標記；以 `Test-Path templates/session-handoff-brief-prompt.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：templates/session-handoff-brief-prompt.md：共用提示核心加 Claude Code／Antigravity／Codex 附加段、命名規則（5 個範例由測試驗證）、四段式交接格式與檢查清單；各環境工具名稱已驗證與未驗證分開列。
