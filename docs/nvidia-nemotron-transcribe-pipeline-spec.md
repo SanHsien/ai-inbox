@@ -37,7 +37,9 @@
 | 「8 人重疊爭辯說話人分離」 | **不能當規格**。模型卡只在訓練資料說明「AuMix 合成最多 8 位說話人的對話」；推論用的官方提示詞只列 4 個標籤 `<spk:0>`–`<spk:3>`。沒有任何「最多辨識 8 人」的保證，也沒有 8 人的評測。 |
 | 「RTX 4090 / 5090 以 FP8／NVFP4 流暢運行」 | **不成立或未驗證**。官方硬體表只有 RTX 5090 + NVFP4（vLLM／Transformers／GGML）；RTX 4090 沒列；FP8 在消費級顯卡上沒有官方項目。「流暢」沒有任何量測。 |
 | 「Mamba 讓長錄音辨識速度獲得數倍提升」 | **無來源**。模型卡沒有與純 Transformer 的比較。不要引用。 |
-| 「顛覆 Whisper」「Whisper 多人搶話崩潰」「WhisperX 切片斷裂」及比較表 | **模型卡完全沒有提到 Whisper**。比較表的 Whisper 欄為筆記自行填寫，**未驗證**，本文不沿用。 |
+| 「顛覆 Whisper」「Whisper 多人搶話崩潰」「WhisperX 切片斷裂」及比較表 | **模型卡完全沒有提到 Whisper**。比較表的 Whisper 欄為筆記自行填寫，**未驗證**，本文不沿用。
+
+**為什麼本文沒有 Whisper 對比表**：任務 DoD 原要求 Whisper 對比基準表，但模型卡沒有任何 Whisper 數據，一手來源查無，硬做表只會是未驗證的數字；本文改列模型卡實際有的對照（Open ASR Leaderboard 上與 Qwen3-ASR-1.7B、Parakeet-TDT-0.6B-v3 的比較，見模型卡「Results at a Glance」）。若要 Whisper 對比，需自行用同一批錄音實測。 |
 | 「內建字級時間戳記」 | 成立但有條件：需 vLLM + NeMo 的 CTC 時間戳中介軟體，不是所有執行路徑都有（第 4.3 節）。 |
 | 「Contextual Entity Biasing 大幅降低 WER」 | 方向成立：用 `Context terms:` 提示可降低專有名詞錯誤，數字見第 4.2 節。 |
 | 「Direct Audio QA」 | 成立，但模型卡註明音訊理解**僅在英文評測**，其他語言「may not work reliably」。 |

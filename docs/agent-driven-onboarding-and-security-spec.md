@@ -183,7 +183,7 @@ Agent 會在使用者的電腦上執行指令；使用者看不懂指令，所�
 - [ ] 結束時已列出並關閉所有背景程序，並交代仍有效的金鑰與暫存檔。
 ````
 
-**模板自己要符合自己的標準**：模板中的 `curl <網址> | sh` 出現在「禁止」句中，不是要執行的指令；第 8 節的自檢會把這種「禁止句」與「真的叫人執行」區分開（見該節說明）。
+**模板自己要符合自己的標準**：模板「安全規則」第一條為了說明禁止什麼，內文含 `curl <網址> | sh` 這個字面寫法。第 8.1 節的 grep **沒有語境判斷能力**，會把這一行（禁止句本身）也抓出來；這是預期的命中，需要人工判讀它是「禁止句」而不是「請執行」。
 
 ---
 
@@ -219,14 +219,17 @@ Agent 會在使用者的電腦上執行指令；使用者看不懂指令，所�
 
 ### 8.1 AGENTS.md 與文件的機械檢查
 
-在你專案根目錄執行（Git Bash、Linux、macOS 皆可；`-E` 為 POSIX 延伸正則）。命中不一定是錯，但**每一筆都要人工看過**：
+在專案根目錄用 Git Bash、Linux 或 macOS 執行（`grep -E`，GNU 與 BSD 皆可）。grep 只比對文字，**沒有語境判斷能力**：禁止句裡寫的 `curl ... | sh` 也會被抓到，所以**命中的每一筆都要人工判讀**——在「不要／禁止」句中屬正常，在「請執行」的步驟中就是違規，要改成 R1 的三步。沒命中也不代表安全（見第 9 節）。
 
 ```bash
-# 1. 下載後直接執行的寫法
-grep -rnE '(curl|wget|irm|iwr)[^|#]*\|[[:space:]]*(sudo[[:space:]]+)?((ba|z)?sh|iex)([[:space:]]|$)|Invoke-Expression' AGENTS.md docs README.md
+# 1. 下載後直接執行的寫法：三個 pattern 合用
+P1='(curl|wget|irm|iwr|Invoke-WebRequest|Invoke-RestMethod)[^|]*\|[[:space:]]*(sudo([[:space:]]+-[^[:space:]]+)*[[:space:]]+)?(/[^[:space:]]*/)?(sh|bash|zsh|dash|python[0-9.]*|node|perl|ruby|iex|Invoke-Expression)([^[:alnum:]_-]|$)'
+P2='(sh|bash|zsh|dash)[[:space:]]+(-[a-z]+[[:space:]]+)*[^[:alnum:][:space:]<$]?(<|\$)\([[:space:]]*(curl|wget)'
+P3='(^|[^[:alnum:]_-])(iex|Invoke-Expression)[[:space:]]*[^[:alnum:][:space:]]?[[:space:]]*\(?[[:space:]]*(irm|iwr|curl|wget|Invoke-RestMethod|Invoke-WebRequest)'
+grep -rnE -e "$P1" -e "$P2" -e "$P3" AGENTS.md docs README.md
 
 # 2. 放寬系統防護的寫法
-grep -rniE 'Set-ExecutionPolicy[[:space:]]+(Unrestricted|Bypass)|chmod[[:space:]]+(-R[[:space:]]+)?777|--no-verify|setenforce[[:space:]]+0' AGENTS.md docs README.md
+grep -rniE 'Set-ExecutionPolicy[^#]*(Unrestricted|Bypass)|chmod[[:space:]]+(-R[[:space:]]+)?777|--no-verify|setenforce[[:space:]]+0' AGENTS.md docs README.md
 
 # 3. 必要章節是否齊全（缺任何一項就回頭補）
 for h in "安全規則" "嚴格禁止" "完成標準" "使用者是誰"; do
@@ -234,11 +237,32 @@ for h in "安全規則" "嚴格禁止" "完成標準" "使用者是誰"; do
 done
 ```
 
-判讀：命中 1、2 時，如果該行在「禁止」或「不要」的句子裡（例如模板的「不執行……`curl <網址> | sh`」），屬於正常；如果在「請執行」的步驟裡，就是違規，改成 R1 的三步。
+**實測結果**（2026-11-02，Git Bash，在 `mktemp -d` 建立的目錄逐行以 `grep -qE -e P1 -e P2 -e P3` 測試）。審查曾指出舊版 pattern 對下列第 1、2 列有假陰性，已修正並重測：
+
+| 輸入行 | 該不該抓 | 實測 |
+| :--- | :--- | :--- |
+| ``Install: `curl -fsSL https://x.sh \| sh` ``（行內程式碼，`sh` 後接反引號） | 抓 | 命中 |
+| `請執行 curl -fsSL https://x.sh \| bash。`（全形句號） | 抓 | 命中 |
+| `curl -fsSL https://x.sh \| sudo -E bash` | 抓 | 命中 |
+| `curl -s https://x.sh \| python3 -` | 抓 | 命中 |
+| `bash <(curl -fsSL https://x.sh)` | 抓 | 命中（P2） |
+| `sh -c "$(curl -fsSL https://x.sh)"` | 抓 | 命中（P2） |
+| `iex (irm https://x.ps1)` | 抓 | 命中（P3） |
+| `irm https://x.ps1 \| iex` | 抓 | 命中 |
+| `wget -qO- https://x \| sudo bash` | 抓 | 命中 |
+| `iwr https://x.ps1 -UseBasicParsing \| Invoke-Expression` | 抓 | 命中 |
+| `curl https://x \| /bin/sh` | 抓 | 命中 |
+| `see the index here` | 不抓 | 未命中 |
+| `curl -fsSL https://x.sh -o install.sh`（只下載存檔） | 不抓 | 未命中 |
+| `curl https://x/ssh-keys.txt -o keys.txt` | 不抓 | 未命中 |
+| `wget -O f https://x && sha256sum f` | 不抓 | 未命中 |
+| `ls \| sort` | 不抓 | 未命中 |
+
+（表中 `\|` 是 Markdown 表格的跳脫，實際輸入是單一 `|`。）第 2 類 pattern 另測：`Set-ExecutionPolicy -ExecutionPolicy Unrestricted` 與 `Set-ExecutionPolicy Bypass -Scope Process` 命中；`Set-ExecutionPolicy RemoteSigned` 未命中。
 
 ### 8.2 機密與個資掃描
 
-- 公開前用你自己的掃描工具或原專案的 `scripts/security-scan.sh` 做參考。**注意原專案腳本第 2 項（疑似金鑰字串）排除了 `*.md` 與腳本自身**，所以寫在 Markdown 文件裡的金鑰不會被抓到；請另外對文件做人工或獨立掃描。
+- 公開前可參考原專案 `scripts/security-scan.sh`（commit `10be9bf`）。其第 2 項（疑似金鑰字串）依原始碼：**有安裝 `rg` 時**加了 `--glob '!*.md'` 與 `--glob '!scripts/security-scan.sh'`，所以 Markdown 文件裡的金鑰不會被掃到；**沒有 `rg` 退回 `grep -RInE` 時沒有任何排除**，會掃 Markdown，也會掃到 `.git` 目錄與腳本自己。兩種環境結果不同，請確認你的環境走哪一支，並另外對文件做人工或獨立掃描。
 - 檢查 git 歷史，不只是目前工作樹。曾經 commit 過的金鑰，即使後來刪掉，仍在歷史裡，要撤銷金鑰而不是只改檔案。
 - 範例檔（如 `.env.example`）只放佔位字串，並確認真正的 `.env` 在 `.gitignore`。
 
@@ -259,7 +283,7 @@ done
 - agents.md 只說明格式與範例，沒有資安規範；第 5 節的規則是本 repo 的建議，**沒有在真實非技術用戶身上做過使用性測試**。
 - 原專案是否對 LINE webhook 驗簽：未驗證（只做了字串搜尋）。LINE 官方簽章規格：未查證。
 - 各 Agent 的權限模式名稱與設定方式：未逐一查證，故 5.3 不寫設定值。
-- `grep` 自檢只能抓字面寫法；改寫過的危險指令（例如先把網址存成變數再管道執行）抓不到，所以 8.1 說「每一筆都要人工看」且需要 R1、R2 的人工確認點。
+- `grep` 自檢只能抓字面寫法；改寫過的危險指令（例如先把網址存成變數再管道執行）抓不到，所以 8.1 說「命中的每一筆都要人工判讀」且需要 R1、R2 的人工確認點。
 - 原專案 `AGENTS.md` 與文件可能在 commit `10be9bf` 之後更新；本文的行為描述以該 commit 為準。
 
 ---
