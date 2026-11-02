@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>零構建 WebGL 液態金屬與流體 Hero Section 互動展示</title>
+  <style>
+    /*
+      Anti-Slop 規範檢核：
+      - SLOP-01: 零高擴散陰影，全採 1px 實色微邊框與深色表面分層。
+      - SLOP-02: 零俗套藍紫霓虹漸層，採用 Slate / Titanium 鈦金灰冷色調。
+      - SLOP-03: 零裝飾性 Emoji，採用幾何符號與結構化排版。
+      - SLOP-04: 零虛假動態呼吸燈與假 LIVE，顯示真實 WebGL 影格率與週期。
+      - SLOP-05: 零 AI 行銷黑話，全為具體技術規格與客觀指標。
+    */
+    :root {
+      --bg-base: #020617;
+      --bg-surface: rgba(15, 23, 42, 0.75);
+      --bg-surface-hover: rgba(30, 41, 59, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-active: rgba(255, 255, 255, 0.22);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10b981;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 底層 WebGL Canvas */
+    #gl-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      display: block;
+    }
+
+    /* 中層暗角與對比保護遮罩 */
+    .viewport-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 45%, rgba(2, 6, 23, 0.3) 0%, rgba(2, 6, 23, 0.85) 100%);
+    }
+
+    /* 頂層 Hero 內容佈局 */
+    .hero-layout {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100vh;
+      padding: 2.5rem 2rem;
+      pointer-events: none;
+    }
+
+    .interactive {
+      pointer-events: auto;
+    }
+
+    /* 頂部導覽列 */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-main);
+      text-transform: uppercase;
+    }
+
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-cyan);
+      border-radius: 50%;
+    }
+
+    .hud-metrics {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      backdrop-filter: blur(8px);
+    }
+
+    .metric-item span {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* 中間主要文字區 */
+    .hero-center {
+      max-width: 840px;
+      margin: auto;
+      text-align: center;
+      padding: 3rem 0;
+    }
+
+    .spec-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9999px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.25rem, 5vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      color: var(--text-main);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-desc {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      max-width: 640px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+
+    /* 按鈕與操作群組 */
+    .action-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--text-main);
+      color: #0f172a;
+      border: 1px solid var(--text-main);
+    }
+
+    .btn-primary:hover {
+      background-color: #e2e8f0;
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-surface-hover);
+      border-color: var(--border-active);
+    }
+
+    /* 底部控制台與狀態欄 */
+    .bottom-bar {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .controls-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .control-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .segment-group {
+      display: flex;
+      background: rgba(2, 6, 23, 0.5);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 2px;
+    }
+
+    .segment-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .segment-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+    }
+
+    .status-text {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+    }
+
+    @media (max-width: 768px) {
+      .hero-layout {
+        padding: 1.5rem 1rem;
+      }
+      .hud-metrics {
+        display: none;
+      }
+      .bottom-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .controls-panel {
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 原生 WebGL 畫布 -->
+  <canvas id="gl-canvas"></canvas>
+
+  <!-- 視覺對比遮罩 -->
+  <div class="viewport-overlay" aria-hidden="true"></div>
+
+  <!-- Hero 內容排版層 -->
+  <div class="hero-layout">
+    
+    <!-- 頂部資訊列 -->
+    <header class="top-nav">
+      <div class="brand-mark interactive">
+        <span class="brand-dot"></span>
+        <span>DVK Lab / WebGL Shader Zero-Build</span>
+      </div>
+      <div class="hud-metrics interactive">
+        <div class="metric-item">FPS: <span id="fps-display">60</span></div>
+        <div class="metric-item">解析度: <span id="res-display">1920x1080</span></div>
+        <div class="metric-item">架構: <span>Zero-Dependency</span></div>
+      </div>
+    </header>
+
+    <!-- 主標題區 -->
+    <main class="hero-center">
+      <div class="spec-pill interactive">
+        <span>規格：原生 WebGL 1.0 著色器 60 FPS 迴圈</span>
+      </div>
+      <h1 class="hero-title">高階商業視覺，零打包編譯。</h1>
+      <p class="hero-desc">
+        徹底擺脫龐大 npm 依賴與打包器束縛。直接將 Procedural WebGL 片段著色器注入單一 HTML，提供真實物理反射、液態金屬波動與完整生命週期管理。
+      </p>
+      <div class="action-group interactive">
+        <a href="#explore" class="btn btn-primary" id="btn-switch-mode">切換著色模式</a>
+        <button type="button" class="btn btn-secondary" id="btn-toggle-sim">觸發 Context 模擬測試</button>
+      </div>
+    </main>
+
+    <!-- 底部控制項與狀態報告 -->
+    <footer class="bottom-bar">
+      <div class="controls-panel interactive">
+        <span class="control-label">視覺維度</span>
+        <div class="segment-group" role="tablist">
+          <button type="button" class="segment-btn active" id="mode-metal">液態金屬</button>
+          <button type="button" class="segment-btn" id="mode-fluid">流體波動</button>
+        </div>
+      </div>
+      <div class="status-text interactive">
+        <span id="lifecycle-status">生命週期狀態：正常執行中 (Active)</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. 頂點與片段著色器原始碼 (GLSL ES 1.0)
+      const VS_SOURCE = [
+        'attribute vec2 a_position;',
+        'varying vec2 v_uv;',
+        'void main() {',
+        '  v_uv = (a_position + 1.0) * 0.5;',
+        '  gl_Position = vec4(a_position, 0.0, 1.0);',
+        '}'
+      ].join('\n');
+
+      const FS_SOURCE = [
+        'precision highp float;',
+        'varying vec2 v_uv;',
+        'uniform vec2 u_resolution;',
+        'uniform float u_time;',
+        'uniform vec2 u_mouse;',
+        'uniform int u_mode;',
+
+        'float hash(vec2 p) {',
+        '  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);',
+        '}',
+
+        'float noise(vec2 p) {',
+        '  vec2 i = floor(p);',
+        '  vec2 f = fract(p);',
+        '  vec2 u = f * f * (3.0 - 2.0 * f);',
+        '  return mix(mix(hash(i + vec2(0.0, 0.0)), hash(i + vec2(1.0, 0.0)), u.x),',
+        '             mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);',
+        '}',
+
+        'float fbm(vec2 p) {',
+        '  float v = 0.0;',
+        '  float a = 0.5;',
+        '  mat2 rot = mat2(0.877, 0.479, -0.479, 0.877);',
+        '  for (int i = 0; i < 4; i++) {',
+        '    v += a * noise(p);',
+        '    p = rot * p * 2.0 + vec2(0.1, 0.2);',
+        '    a *= 0.5;',
+        '  }',
+        '  return v;',
+        '}',
+
+        'void main() {',
+        '  vec2 st = (gl_FragCoord.xy * 2.0 - u_resolution) / min(u_resolution.x, u_resolution.y);',
+        '  vec2 m = (u_mouse * 2.0 - u_resolution) / min(u_resolution.x, u_resolution.y);',
+        '  float dist = length(st - m);',
+        '  float mouseWave = sin(dist * 14.0 - u_time * 4.5) * exp(-dist * 2.5) * 0.12;',
+
+        '  if (u_mode == 0) {',
+        '    vec2 q = vec2(fbm(st * 1.4 + vec2(0.0, u_time * 0.12)),',
+        '                  fbm(st * 1.4 + vec2(5.2, 1.3 - u_time * 0.10)));',
+        '    vec2 r = vec2(fbm(st * 1.8 + 4.0 * q + vec2(1.7, 9.2) + u_time * 0.08),',
+        '                  fbm(st * 1.8 + 4.0 * q + vec2(8.3, 2.8) - u_time * 0.06));',
+        '    float h = fbm(st * 1.6 + 3.0 * r) + mouseWave;',
+
+        '    vec2 eps = vec2(0.006, 0.0);',
+        '    float h_x = (fbm((st + eps.xy) * 1.6 + 3.0 * r) - fbm((st - eps.xy) * 1.6 + 3.0 * r)) * 7.0;',
+        '    float h_y = (fbm((st + eps.yx) * 1.6 + 3.0 * r) - fbm((st - eps.yx) * 1.6 + 3.0 * r)) * 7.0;',
+        '    vec3 N = normalize(vec3(-h_x, -h_y, 1.0));',
+
+        '    vec3 L = normalize(vec3(0.5, 0.7, 1.0));',
+        '    vec3 V = vec3(0.0, 0.0, 1.0);',
+        '    vec3 H = normalize(L + V);',
+
+        '    float diff = max(dot(N, L), 0.0);',
+        '    float spec = pow(max(dot(N, H), 0.0), 28.0);',
+        '    float fresnel = pow(1.0 - max(dot(N, V), 0.0), 3.0);',
+
+        '    vec3 baseCol = vec3(0.03, 0.05, 0.08);',
+        '    vec3 midCol = vec3(0.16, 0.20, 0.26);',
+        '    vec3 highCol = vec3(0.85, 0.90, 0.95);',
+
+        '    vec3 col = mix(baseCol, midCol, diff);',
+        '    col += highCol * (spec * 0.75 + fresnel * 0.35);',
+        '    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);',
+        '  } else {',
+        '    float t = u_time * 0.25;',
+        '    vec2 p = st * 1.8;',
+        '    float w1 = sin(p.x * 2.2 + t) * cos(p.y * 1.8 - t * 0.9);',
+        '    float w2 = sin(p.x * 1.5 - t * 1.1) * cos(p.y * 2.2 + t);',
+        '    float w3 = fbm(p + vec2(t * 0.15, -t * 0.12)) * 1.2;',
+        '    float wave = (w1 + w2 + w3) * 0.35 + mouseWave * 0.7;',
+
+        '    vec3 deepWater = vec3(0.02, 0.05, 0.08);',
+        '    vec3 oceanTeal = vec3(0.06, 0.22, 0.28);',
+        '    vec3 waveFoam = vec3(0.35, 0.75, 0.85);',
+
+        '    float foam = smoothstep(0.15, 0.55, wave);',
+        '    vec3 col = mix(deepWater, oceanTeal, wave + 0.3);',
+        '    col = mix(col, waveFoam, foam * 0.45);',
+        '    float vign = 1.0 - smoothstep(0.8, 1.8, length(st));',
+        '    col *= vign;',
+        '    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);',
+        '  }',
+        '}'
+      ].join('\n');
+
+      // 2. 應用狀態與全域變數
+      let canvas = null;
+      let gl = null;
+      let program = null;
+      let positionBuffer = null;
+      let vs = null;
+      let fs = null;
+      let animationFrameId = null;
+      let isVisible = true;
+      let isRunning = false;
+
+      let uResolutionLoc = null;
+      let uTimeLoc = null;
+      let uMouseLoc = null;
+      let uModeLoc = null;
+
+      let currentMode = 0; // 0: 液態金屬, 1: 流體波動
+      let targetMouseX = 0;
+      let targetMouseY = 0;
+      let currentMouseX = 0;
+      let currentMouseY = 0;
+      let startTime = performance.now();
+      let lastFpsTime = performance.now();
+      let frameCount = 0;
+
+      const fpsDisplay = document.getElementById('fps-display');
+      const resDisplay = document.getElementById('res-display');
+      const lifecycleStatus = document.getElementById('lifecycle-status');
+      const modeMetalBtn = document.getElementById('mode-metal');
+      const modeFluidBtn = document.getElementById('mode-fluid');
+      const btnSwitchMode = document.getElementById('btn-switch-mode');
+      const btnToggleSim = document.getElementById('btn-toggle-sim');
+
+      // 3. WebGL 初始化函式
+      function createShader(glCtx, type, source) {
+        const shader = glCtx.createShader(type);
+        glCtx.shaderSource(shader, source);
+        glCtx.compileShader(shader);
+        if (!glCtx.getShaderParameter(shader, glCtx.COMPILE_STATUS)) {
+          const info = glCtx.getShaderInfoLog(shader);
+          glCtx.deleteShader(shader);
+          throw new Error('著色器編譯失敗: ' + info);
+        }
+        return shader;
+      }
+
+      function initGL() {
+        canvas = document.getElementById('gl-canvas');
+        if (!canvas) return false;
+
+        gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (!gl) {
+          if (lifecycleStatus) {
+            lifecycleStatus.textContent = '環境不支援 WebGL，已降級處理';
+          }
+          return false;
+        }
+
+        // 編譯與連結 Program
+        vs = createShader(gl, gl.VERTEX_SHADER, VS_SOURCE);
+        fs = createShader(gl, gl.FRAGMENT_SHADER, FS_SOURCE);
+
+        program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+          const info = gl.getProgramInfoLog(program);
+          gl.deleteProgram(program);
+          throw new Error('Program 連結失敗: ' + info);
+        }
+
+        gl.useProgram(program);
+
+        // 快取 Uniform Locations
+        uResolutionLoc = gl.getUniformLocation(program, 'u_resolution');
+        uTimeLoc = gl.getUniformLocation(program, 'u_time');
+        uMouseLoc = gl.getUniformLocation(program, 'u_mouse');
+        uModeLoc = gl.getUniformLocation(program, 'u_mode');
+
+        // 全螢幕四邊形頂點 (Triangle Strip: 4 個頂點)
+        const vertices = new Float32Array([
+          -1.0, -1.0,
+           1.0, -1.0,
+          -1.0,  1.0,
+           1.0,  1.0
+        ]);
+
+        positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+        const aPositionLoc = gl.getAttribLocation(program, 'a_position');
+        gl.enableVertexAttribArray(aPositionLoc);
+        gl.vertexAttribPointer(aPositionLoc, 2, gl.FLOAT, false, 0, 0);
+
+        resizeCanvas();
+        return true;
+      }
+
+      // 4. 視窗適配與高解析度 (DPR) 處理
+      function resizeCanvas() {
+        if (!canvas || !gl) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2.0);
+        const displayWidth = Math.floor(window.innerWidth * dpr);
+        const displayHeight = Math.floor(window.innerHeight * dpr);
+
+        if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+          canvas.width = displayWidth;
+          canvas.height = displayHeight;
+          gl.viewport(0, 0, displayWidth, displayHeight);
+        }
+
+        if (resDisplay) {
+          resDisplay.textContent = window.innerWidth + 'x' + window.innerHeight;
+        }
+      }
+
+      // 5. 渲染動畫循環 (GC-Safe 60 FPS Loop)
+      function renderLoop(now) {
+        if (!isRunning || !isVisible || !gl || !program) {
+          animationFrameId = null;
+          return;
+        }
+
+        const elapsedSeconds = (now - startTime) * 0.001;
+
+        // 平滑內插滑鼠座標
+        currentMouseX += (targetMouseX - currentMouseX) * 0.08;
+        currentMouseY += (targetMouseY - currentMouseY) * 0.08;
+
+        gl.uniform2f(uResolutionLoc, canvas.width, canvas.height);
+        gl.uniform1f(uTimeLoc, elapsedSeconds);
+        gl.uniform2f(uMouseLoc, currentMouseX * (canvas.width / window.innerWidth),
+                              (window.innerHeight - currentMouseY) * (canvas.height / window.innerHeight));
+        gl.uniform1i(uModeLoc, currentMode);
+
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+        // 計算實際 FPS
+        frameCount++;
+        if (now - lastFpsTime >= 500) {
+          const fps = Math.round((frameCount * 1000) / (now - lastFpsTime));
+          if (fpsDisplay) fpsDisplay.textContent = fps;
+          frameCount = 0;
+          lastFpsTime = now;
+        }
+
+        animationFrameId = requestAnimationFrame(renderLoop);
+      }
+
+      function startLoop() {
+        if (!isRunning && gl && program) {
+          isRunning = true;
+          if (!animationFrameId) {
+            animationFrameId = requestAnimationFrame(renderLoop);
+          }
+          if (lifecycleStatus) lifecycleStatus.textContent = '生命週期狀態：正常執行中 (Active)';
+        }
+      }
+
+      function stopLoop(reason) {
+        isRunning = false;
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        if (lifecycleStatus && reason) {
+          lifecycleStatus.textContent = '生命週期狀態：' + reason;
+        }
+      }
+
+      // 6. 資源清理函式
+      function dispose() {
+        stopLoop('已卸載資源釋放 (Disposed)');
+        if (gl) {
+          if (positionBuffer) {
+            gl.deleteBuffer(positionBuffer);
+            positionBuffer = null;
+          }
+          if (vs) {
+            gl.deleteShader(vs);
+            vs = null;
+          }
+          if (fs) {
+            gl.deleteShader(fs);
+            fs = null;
+          }
+          if (program) {
+            gl.deleteProgram(program);
+            program = null;
+          }
+        }
+        window.removeEventListener('resize', resizeCanvas);
+        window.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+      }
+
+      // 7. 事件監聽配置
+      function onMouseMove(e) {
+        targetMouseX = e.clientX;
+        targetMouseY = e.clientY;
+      }
+
+      function onVisibilityChange() {
+        if (document.hidden) {
+          stopLoop('後台休眠節流 (Tab Hidden)');
+        } else {
+          startLoop();
+        }
+      }
+
+      function setMode(mode) {
+        currentMode = mode;
+        if (mode === 0) {
+          modeMetalBtn.classList.add('active');
+          modeFluidBtn.classList.remove('active');
+        } else {
+          modeFluidBtn.classList.add('active');
+          modeMetalBtn.classList.remove('active');
+        }
+      }
+
+      // 8. 啟動與綁定
+      window.addEventListener('DOMContentLoaded', function () {
+        if (initGL()) {
+          startLoop();
+
+          window.addEventListener('resize', resizeCanvas, false);
+          window.addEventListener('mousemove', onMouseMove, { passive: true });
+          document.addEventListener('visibilitychange', onVisibilityChange, false);
+
+          // 滾動離屏節流 (IntersectionObserver)
+          if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function (entries) {
+              entries.forEach(function (entry) {
+                isVisible = entry.isIntersecting;
+                if (isVisible) {
+                  startLoop();
+                } else {
+                  stopLoop('離屏節流暫停 (Offscreen)');
+                }
+              });
+            }, { threshold: 0.05 });
+            observer.observe(canvas);
+          }
+
+          // WebGL 上下文遺失與恢復防護
+          canvas.addEventListener('webglcontextlost', function (e) {
+            e.preventDefault();
+            stopLoop('WebGL Context Lost (等待恢復)');
+          }, false);
+
+          canvas.addEventListener('webglcontextrestored', function () {
+            initGL();
+            startLoop();
+          }, false);
+
+          // UI 互動按鈕綁定
+          if (modeMetalBtn) modeMetalBtn.addEventListener('click', function () { setMode(0); });
+          if (modeFluidBtn) modeFluidBtn.addEventListener('click', function () { setMode(1); });
+          if (btnSwitchMode) btnSwitchMode.addEventListener('click', function (e) {
+            e.preventDefault();
+            setMode(currentMode === 0 ? 1 : 0);
+          });
+
+          // 模擬 Context Lost 按鈕 (供手動與自動化檢測)
+          if (btnToggleSim) {
+            btnToggleSim.addEventListener('click', function () {
+              const ext = gl.getExtension('WEBGL_lose_context');
+              if (ext) {
+                ext.loseContext();
+                setTimeout(function () {
+                  ext.restoreContext();
+                }, 1000);
+              } else {
+                alert('當前瀏覽器環境不支援 WEBGL_lose_context 擴充');
+              }
+            });
+          }
+        }
+      });
+
+      // 暴露全域除錯與驗證介面
+      window.__SHADER_HERO_DEMO__ = {
+        initGL: initGL,
+        dispose: dispose,
+        setMode: setMode,
+        getGL: function () { return gl; },
+        getProgram: function () { return program; }
+      };
+
+    })();
+  </script>
+</body>
+</html>
