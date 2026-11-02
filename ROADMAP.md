@@ -1,11 +1,11 @@
 # 路線圖
 
 > 本 repo 後續工作的單一真相源。做完一項，就在同一個 commit 刪掉那一列；新工作只加在這裡。
-> 現況段的數字是 2026-10-29 依 `main` `20df187a8306` 查的快照，開工前先重查 GitHub。
+> 現況段的數字是 2026-11-02 依 `main` `40acd690d092` 查的快照，開工前先重查 GitHub。
 
 ## 現況
 
-public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`docs/`、`tools/`、`tests/`、`assets/`），維護者持續直推 main 新增筆記與任務。健康：2026-10-30 查到 open issue 0、open PR 0、Dependabot 與 Code scanning 告警各 0，`CI Contract Verification`、`CodeQL` 在 `main` 最近一次皆 success（2026-10-30 `gh` 查詢）；沒有 release。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
+public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`docs/`、`tools/`、`tests/`、`assets/`），維護者持續直推 main 新增筆記與任務。健康：2026-11-02 查到 open issue 0、open PR 0、Dependabot 與 Code scanning 告警各 0，`CI Contract Verification`、`CodeQL` 在 `40acd690` 皆 success（`gh` 查詢）；沒有 release。10-30 之後的 29 個 commit 多是維護者新增筆記與任務，唯一新工具是 `tools/verify_a11y_tree_snapshot.py`（有測試），沒有新增要排的路線圖項目。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
 
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
