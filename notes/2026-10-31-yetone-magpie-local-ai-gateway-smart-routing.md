@@ -130,7 +130,7 @@ Magpie 允許開發者將多個底層模型包裝為一個「虛擬模型組（R
 
 ### 3.1 與本庫現有多 Agent 架構的深度整合
 
-本庫已具備 `notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md`（OpenBot 桌面協同）與 `notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`（TokenEconomizer 成本控制）。引入 Magpie 後，形成完整的三層防禦矩陣：
+本庫已具備 `notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md`（OpenBot 桌面協同）與 TokenEconomizer 成本控制筆記（已移至 [`SanHsien/claude-context-audit`](https://github.com/SanHsien/claude-context-audit/blob/main/notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)）。引入 Magpie 後，形成完整的三層防禦矩陣：
 
 ```text
 ┌───────────────────────────────────────────────────────────────────┐
