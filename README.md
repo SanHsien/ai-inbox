@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 213 項任務：🔴 未做 14／🟡 進行中 0／🟢 已做 123／⚪ 不做 76
+> 共 213 項任務：🔴 未做 12／🟡 進行中 0／🟢 已做 125／⚪ 不做 76
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -52,18 +52,16 @@
 | `T-20261031-43` | 🔴 未做 | 高 | 撰寫「微軟 TokenEconomizer 黑盒成本控制與 Agent 經驗沉澱手冊：Micro-Skill 注入、工具裁剪與死循環熔斷」收錄於 `docs/token-economizer-cost-control-spec.md` | `docs/token-economizer-cost-control-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 | `T-20261101-10` | 🔴 未做 | 高 | 撰寫「面向非技術用戶的 Agent-Driven 開源專案安裝指引規範（AGENTS.md 最佳實踐與資安防線）」收錄於 `docs/agent-driven-onboarding-and-security-spec.md` | `docs/agent-driven-onboarding-and-security-spec.md`（規範文檔；不修改其他專案程式） | [2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md) | 2026-11-01 |
 | `T-20261102-01` | 🔴 未做 | 高 | 撰寫「長會話上下文膨脹告警與一鍵自動交接規格手冊（UserPromptSubmit Hook 與 Session 生命週期控制）」收錄於 `docs/long-chat-session-handoff-spec.md` | `docs/long-chat-session-handoff-spec.md`（規範文檔；不修改其他專案程式） | [2026-11-02-littlehole-claude-saver-long-chat-session-handoff](./notes/2026-11-02-littlehole-claude-saver-long-chat-session-handoff.md) | 2026-11-02 |
-| `T-20261102-04` | 🔴 未做 | 高 | 撰寫「大象-金魚架構（EGM）規格手冊：長上下文架構大腦、零記憶子代理審查與 CUJ 驅動設計流程」收錄於 `docs/elephant-goldfish-model-spec.md` | `docs/elephant-goldfish-model-spec.md`（規範文檔；不修改其他專案程式） | [2026-11-02-google-elephant-goldfish-model-software-design-review](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | 2026-11-02 |
 | `T-20261028-17` | 🔴 未做 | 中 | 實作「Playwright + seek(t) 動畫縮圖總覽與自審打分工具」於 `tools/audit_motion_storyboard.py` | `tools/audit_motion_storyboard.py` 與 `tests/test_audit_motion_storyboard.py` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
 | `T-20261031-44` | 🔴 未做 | 中 | 實作「Agent 工具呼叫頻率審查與動態 Deny-list 產生工具」於 `tools/audit_agent_tool_pruning.py` 與單元測試 | `tools/audit_agent_tool_pruning.py` 與 `tests/test_audit_agent_tool_pruning.py` | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 | `T-20261102-02` | 🔴 未做 | 中 | 實作「會話 Token 上下文感知度量與語意換話題判定驗證腳本」於 `tools/verify_session_token_sentinel.py` 與單元測試 | `tools/verify_session_token_sentinel.py`、`tests/test_verify_session_token_sentinel.py` | [2026-11-02-littlehole-claude-saver-long-chat-session-handoff](./notes/2026-11-02-littlehole-claude-saver-long-chat-session-handoff.md) | 2026-11-02 |
 | `T-20261028-18` | 🔴 未做 | 低 | 產出標準化「Motion Design Studio CLAUDE.md / Skill 範本」收錄於 `templates/motion-design-studio-skill.md` | `templates/motion-design-studio-skill.md` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
 | `T-20261031-27` | 🔴 未做 | 低 | 產出標準化「GitHub App S2S 認證封裝腳本與無人值守 Agent GitHub Actions 工作流範本」收錄於 `templates/github-app-s2s-agent-workflow.md` | `templates/github-app-s2s-agent-workflow.md` | [2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md) | 2026-10-31 |
 | `T-20261102-03` | 🔴 未做 | 低 | 產出標準化「跨 Agent 桌面會話編號流水遞增與結構化交接 Brief Prompt 模板」收錄於 `templates/session-handoff-brief-prompt.md` | `templates/session-handoff-brief-prompt.md` | [2026-11-02-littlehole-claude-saver-long-chat-session-handoff](./notes/2026-11-02-littlehole-claude-saver-long-chat-session-handoff.md) | 2026-11-02 |
-| `T-20261102-06` | 🔴 未做 | 低 | 產出標準化「EGM 七大工作流技能（Brainstorm/Draft/Review/Resolve）Prompt 模板庫」收錄於 `templates/egm-workflow-prompts.md` | `templates/egm-workflow-prompts.md` | [2026-11-02-google-elephant-goldfish-model-software-design-review](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | 2026-11-02 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 123 項）</summary>
+<details><summary>展開查看已完成任務（共 125 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -190,6 +188,8 @@
 | `T-20261101-13` | 2026-11-01 | 撰寫「OS 級 Computer Use 架構規格書：Accessibility Tree 無障礙樹、命名空間 Ref 與無像素匹配設計手冊」收錄於 `docs/agent-desktop-computer-use-spec.md` | 已完成規格書撰寫，詳述 a11y 樹與截圖方案之五維對比矩陣、Windows UIA / WindowStation Desktop 隔離深層實證機制、命名空間 Ref 演算法與處置重試合約；以 `Test-Path docs/agent-desktop-computer-use-spec.md` 驗證為 True。同時同步納入 `SanHsien/agent-desktop` 倉庫 `docs/agent-desktop-computer-use-spec.md`（commit `24a548cc`）。 | [2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md) |
 | `T-20261101-14` | 2026-11-01 | 實作「Windows UI Automation 無障礙樹快照與 Ref 點擊驗證腳本」於 `tools/verify_a11y_tree_snapshot.py` 與單元測試 | 已實作 `tools/verify_a11y_tree_snapshot.py` 與 `tests/test_verify_a11y_tree_snapshot.py`，支援 Ref 格式校驗、PowerShell Splatting 防呆剝離、STALE_REF 狀態機、骨架折疊、Windows POLICY_DENIED 限制與 Disposition 合約。執行 `python -m unittest tests/test_verify_a11y_tree_snapshot.py` 13 項測試全數綠燈通過；`tests/test_cli_help_encoding.py` 通過驗證。 | [2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md) |
 | `T-20261101-15` | 2026-11-01 | 產出標準化「Agent 桌面操控指令集與 STALE_REF 安全重試 Prompt 模板」收錄於 `templates/agent-desktop-skill-prompt.md` | 已產出 `templates/agent-desktop-skill-prompt.md`，以 `Test-Path` 驗證為 True。同時已建立全系統跨 Agent 技能 `~/.gemini/config/skills/agent-desktop/SKILL.md`，並在 `SanHsien/agent-assets` 完成核准登記（`skills/agent-desktop/SKILL.md`、`knowledge/agent-desktop-os-accessibility-tree.md`），通過 90 項資產合約檢驗並完成推送（commit `1c433eb`）。 | [2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md) |
+| `T-20261102-04` | 2026-11-02 | 撰寫「大象-金魚架構（EGM）規格手冊：長上下文架構大腦、零記憶子代理審查與 CUJ 驅動設計流程」收錄於 `docs/elephant-goldfish-model-spec.md` | docs/elephant-goldfish-model-spec.md：對照 google/elephant-goldfish-model @ 403d888（Apache-2.0；README 註明非 Google 官方支援產品）寫成 Stage 5–9 審查清單、CUJ 規則與收斂規則；更正筆記的五階段名稱、審查前不寫程式並非上游硬閘門、CUJ 不在上游審查提示。獨立審查逐條核對上游相符。 | [2026-11-02-google-elephant-goldfish-model-software-design-review](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) |
+| `T-20261102-06` | 2026-11-02 | 產出標準化「EGM 七大工作流技能（Brainstorm/Draft/Review/Resolve）Prompt 模板庫」收錄於 `templates/egm-workflow-prompts.md` | templates/egm-workflow-prompts.md＋tests/test_egm_workflow_prompts.py：五個提示（Brainstorm、Draft、零上下文金魚審查、Resolve、Drift），測試檢查變數宣告與使用一致、金魚提示不得含大象變數、Resolve 與審查指向同一份文件。審查抓到 Resolve 指向草稿，已修正並補測試。 | [2026-11-02-google-elephant-goldfish-model-software-design-review](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) |
 
 </details>
 
@@ -361,7 +361,7 @@
 | 2026-11-01 | ⚪ | [設計師 Riven Claude Opus 5.5 動態設計解構：12 大純代碼視覺特效規格、Code-as-Video 與著色器/物理引擎實戰](./notes/2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md) | `code-as-video`, `motion-design`, `opus-55` | 0 / 0（+3 不做） |
 | 2026-11-01 | 🟢 | [Vercel Labs agent-desktop 開源架構解構：告別截圖猜座標、作業系統無障礙樹（Accessibility Tree）操作與生產級 Computer Use](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md) | `agent-desktop`, `vercel-labs`, `computer-use` | 3 / 3 |
 | 2026-11-01 | ⚪ | [Will 保哥 Claude Code 動態工作流實測解構：Opus 5.5 主控 + Haiku 5.5 驅動 283 個子代理、7 小時續航週配額消耗 <10% 的大規模並行工程學](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md) | `claude-code`, `dynamic-workflows`, `opus-5-5` | 0 / 0（+3 不做） |
-| 2026-11-02 | 🔴 | [Google 官方開源 Elephant-Goldfish Model (EGM) 架構解構：大象長記憶規劃、金魚零上下文對抗審查與軟體設計工業化](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | `google`, `elephant-goldfish-model`, `egm` | 0 / 2（+1 不做） |
+| 2026-11-02 | 🟢 | [Google 官方開源 Elephant-Goldfish Model (EGM) 架構解構：大象長記憶規劃、金魚零上下文對抗審查與軟體設計工業化](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | `google`, `elephant-goldfish-model`, `egm` | 2 / 2（+1 不做） |
 | 2026-11-02 | 🔴 | [我的小樹洞 claude-saver 開源架構解構：UserPromptSubmit Hook 實時感知長對話 Token 門檻、新功能自動跳轉與一鍵交接封存](./notes/2026-11-02-littlehole-claude-saver-long-chat-session-handoff.md) | `claude-code`, `claude-saver`, `token-saver` | 0 / 3 |
 | 2026-11-02 | ⚪ | [OpenCut 開源 CapCut 替代品深度解析：97K Stars 多軌剪輯、Rust 跨端核心、MCP Server 與無頭自動化渲染架構](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | `opencut`, `capcut-alternative`, `video-editor` | 0 / 0（+3 不做） |
 <!-- END GENERATED: index -->

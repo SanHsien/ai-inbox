@@ -6,7 +6,7 @@ source_platform: "Threads (@whaleagent)"
 author: "WhaleAgent (@whaleagent) / Google (Dave Rensin 等)"
 analyzed_at: 2026-11-02
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "Google大象金魚模型與零記憶審查"
 short_title: "Google大象金魚模型EGM軟體設計審查"
@@ -30,7 +30,7 @@ tags:
 - **發明者與原創文獻**：Dave Rensin（Google 傑出工程師，《Elephants & Goldfish》設計論綱）
 - **官方開源專案**：[google/elephant-goldfish-model](https://github.com/google/elephant-goldfish-model)（官方網站 [egm.dev](https://egm.dev)，Star: 8,600+）
 - **分析主題**：解構 Google 正式開源之軟體工程 AI 協同外掛「**Elephant-Goldfish Model（EGM，大象-金魚模型）**」。剖析每日支撐數千名 Google 工程師的「設計先行（Design-first）」核心範式——由具備深厚歷史記憶的「**大象（Elephant）**」負責梳理需求、記錄決策並草擬系統規格，再派發多個**完全不帶對話歷史、純粹依據文件與源碼進行挑剔的「金魚（Goldfish）」零記憶子代理**進行對抗式盲審，嚴禁跳過設計直接寫代碼。深入解析其跨 Antigravity（`agy`）、Claude Code 與 Codex 的 7 大專用工作流技能（Brainstorm、Draft、Review、Resolve、Bootstrap、Review-loop、Drift-report），推導企業級 AI 研發架構的工程落地標準。
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md`](./2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)（Claude Code 四級模型分工架構解構）
   - [`notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md`](./2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)（四角色動態調用原則：架構師、實現者、審查員與除錯專家）
@@ -156,14 +156,15 @@ EGM 外掛支援目前三大主流 Agent 平台：
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261102-04`**｜**[優先級：高]** 撰寫「大象-金魚架構（EGM）規格手冊：長上下文架構大腦、零記憶子代理審查與 CUJ 驅動設計流程」收錄於 `docs/elephant-goldfish-model-spec.md`
+- [x] **`T-20261102-04`**｜**[優先級：高]** 撰寫「大象-金魚架構（EGM）規格手冊：長上下文架構大腦、零記憶子代理審查與 CUJ 驅動設計流程」收錄於 `docs/elephant-goldfish-model-spec.md`
   - **目標範圍**：`docs/elephant-goldfish-model-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳述 Google EGM 三方角色（Elephant、Goldfish、Human）的職責邊界、上下文可見性矩陣與權責分離協議。
     2. 制定五階段金魚盲審流程（完整性、清晰度、代碼適配、實作可行性、假設審查）之具體驗核清單（Checklist）。
     3. 規範從 `concepts_brief.md` → `design_draft.md` → `docs/designs/` 簽入的標準工程流轉標準。
   - **驗收標準（DoD）**：產出 `docs/elephant-goldfish-model-spec.md`，具備標準 Markdown 結構與繁體中文規範；以 `Test-Path docs/elephant-goldfish-model-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/elephant-goldfish-model-spec.md：對照 google/elephant-goldfish-model @ 403d888（Apache-2.0；README 註明非 Google 官方支援產品）寫成 Stage 5–9 審查清單、CUJ 規則與收斂規則；更正筆記的五階段名稱、審查前不寫程式並非上游硬閘門、CUJ 不在上游審查提示。獨立審查逐條核對上游相符。
 
 - [ ] **`T-20261102-05`**｜**[優先級：中]** 實作「零記憶金魚審查員（Goldfish Reviewer）隔離上下文模擬與五階段審查驗證腳本」於 `tools/verify_egm_goldfish_review.py` 與單元測試
   - **狀態**：⚪ 不做（零記憶審查已經是實際流程（未參與的審查員實跑），模擬腳本驗不到真實行為；規範與範本（T-20261102-04、06）保留。）
@@ -176,11 +177,12 @@ EGM 外掛支援目前三大主流 Agent 平台：
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_egm_goldfish_review.py` 綠燈通過。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
-- [ ] **`T-20261102-06`**｜**[優先級：低]** 產出標準化「EGM 七大工作流技能（Brainstorm/Draft/Review/Resolve）Prompt 模板庫」收錄於 `templates/egm-workflow-prompts.md`
+- [x] **`T-20261102-06`**｜**[優先級：低]** 產出標準化「EGM 七大工作流技能（Brainstorm/Draft/Review/Resolve）Prompt 模板庫」收錄於 `templates/egm-workflow-prompts.md`
   - **目標範圍**：`templates/egm-workflow-prompts.md`
   - **具體做法**：
     1. 產出適用於 Antigravity、Claude Code 與 Codex 的 EGM 核心 Prompt 範本庫。
     2. 包含大象起草指令（`egm-brainstorm` / `egm-draft`）、金魚零記憶審查員系統提示詞（嚴禁角色偏誤、強制以挑剔視角找茬）、以及意見收斂協議（`egm-resolve`）。
     3. 提供代碼-文檔漂移檢驗（`egm-drift-report`）的對比檢查 Prompt。
   - **驗收標準（DoD）**：產出 `templates/egm-workflow-prompts.md`，結構清晰且包含變數替換標記；以 `Test-Path templates/egm-workflow-prompts.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：templates/egm-workflow-prompts.md＋tests/test_egm_workflow_prompts.py：五個提示（Brainstorm、Draft、零上下文金魚審查、Resolve、Drift），測試檢查變數宣告與使用一致、金魚提示不得含大象變數、Resolve 與審查指向同一份文件。審查抓到 Resolve 指向草稿，已修正並補測試。
