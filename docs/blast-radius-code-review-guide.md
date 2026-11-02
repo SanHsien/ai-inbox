@@ -45,7 +45,7 @@
    │
    ├─ 刪除檔案／改動 CI／發佈流程／權限設定？ ──是──▶ 【T1 逐行審】
    │
-   ├─ 屬於專案列的「核心清單」（高扇入、全域共用）？ ──是──▶ 【T2 審結構與公開介面】
+   ├─ 屬於專案列的「核心清單」（高扇入、全域共用）？ ──是──▶ 【T1 逐行審（作者明說核心檔案要審）】
    │
    ├─ 公開介面（函式簽名、CLI 參數、輸出格式、檔案格式）有變？ ──是──▶ 【T2】
    │
@@ -58,17 +58,17 @@
 
 | 梯隊 | 審什麼 | 不審什麼 |
 | :--- | :--- | :--- |
-| T1 | 每一行；加上回滾方式 | 無，不省略 |
+| T1 | 每一行（授權／憑證／遷移／刪除／CI／核心清單）；遷移加回滾方式 | 無，不省略 |
 | T2 | 公開介面、依賴方向、錯誤處理、測試是否被削弱 | 命名、風格、內部寫法 |
 | T3 | 四個問題的答案與證據 | 其餘全部 |
 
-「高扇入」的判定：被多少其他檔案引用。可以用 `git grep` 數一個模組被引用的檔案數；超過專案自訂的數字（本 repo 建議起點：被 10 個以上檔案引用）就列為核心候選。範例：本 repo 的 `tools/_judge_common.py` 被 11 個 `tools/`、`tests/` 內的檔案引用（2026-11-02 以 `git grep -l -E "^(from|import) _judge_common|from tools import _judge_common|import _judge_common" -- tools tests` 數得，數字會隨 repo 變動），所以任何對它的改動都應走 T2 以上。
+「高扇入」的判定：被多少其他檔案引用。可以用 `git grep` 數一個模組被引用的檔案數；超過專案自訂的數字（本 repo 建議起點：被 10 個以上檔案引用）就列為核心候選。範例：本 repo 的 `tools/_judge_common.py` 被 11 個 `tools/`、`tests/` 內的檔案引用（2026-11-02 以 `git grep -l -E "^(from|import) _judge_common|from tools import _judge_common|import _judge_common" -- tools tests` 數得，數字會隨 repo 變動），所以它若列入核心清單，任何對它的改動都走 T1。
 
 ---
 
 ## 4. 用 `git diff` 劃分梯隊
 
-以下指令在 Git Bash、PowerShell 的 `git` 皆可用。`BASE` 是要比較的基準（例如 `origin/main`），三個點代表從共同祖先比較。
+以下指令預設用 Git Bash 語法；步驟 2、4、5、6 另附 PowerShell 版（2026-11-02 在 PowerShell 7 實跑：步驟 5、6 有命中結果；步驟 2、4 只確認語法可執行、無命中情境）。`BASE` 是要比較的基準（例如 `origin/main`），三個點代表從共同祖先比較。
 
 **步驟 1：看整體規模與涉及哪些檔案**
 
@@ -103,16 +103,35 @@ git diff --name-status --diff-filter=DR BASE...HEAD
 git diff BASE...HEAD -- tests/ | grep -E "^-.*(assert|self\.assert)|^\+.*(skip|xfail)"
 ```
 
+PowerShell 版：
+
+```powershell
+git diff BASE...HEAD -- tests/ | Select-String -Pattern '^-.*(assert|self\.assert)|^\+.*(skip|xfail)'
+```
+
 **步驟 5：變更量排序**（每檔增刪行數，大檔先看）
 
 ```bash
 git diff --numstat BASE...HEAD | sort -rn
 ```
 
-**步驟 6：核心清單命中**（把專案核心清單存成每行一個路徑的檔案，例如 `.review-core.txt`）
+PowerShell 版：
+
+```powershell
+git diff --numstat BASE...HEAD | Sort-Object { [int]($_ -split '\s+')[0] } -Descending
+```
+
+**步驟 6：核心清單命中，命中者為 T1**（把專案核心清單存成每行一個路徑的檔案，例如 `.review-core.txt`）
 
 ```bash
 git diff --name-only BASE...HEAD | grep -x -F -f .review-core.txt
+```
+
+PowerShell 版：
+
+```powershell
+$core = Get-Content .review-core.txt
+git diff --name-only BASE...HEAD | Where-Object { $core -contains $_ }
 ```
 
 > 這些指令只是**分流輔助**，不是判定：路徑名稱對不上不代表安全（例如把授權邏輯放在名為 `utils` 的檔案）。審查者仍要掃一遍 diff 的檔案清單。
@@ -158,7 +177,7 @@ git diff --name-only BASE...HEAD | grep -x -F -f .review-core.txt
 ### Blast Radius 審查：<PR / commit 範圍>
 
 - [ ] 已執行 `git diff --name-status BASE...HEAD`，列出所有檔案與梯隊
-- [ ] T1 檔案（授權／憑證／遷移／刪除／CI）：已逐行審
+- [ ] T1 檔案（授權／憑證／遷移／刪除／CI／核心清單）：已逐行審
   - [ ] 遷移附回滾方式，或已說明為何不可回滾
   - [ ] 沒有明文機密、token、家目錄真實路徑
 - [ ] T2 檔案：公開介面、依賴方向、錯誤處理已看

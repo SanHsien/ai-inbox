@@ -38,7 +38,7 @@
 
 所以 5 對 5 只能抓「幾乎全有 vs 幾乎全無」；4/5 對 1/5 這種看起來差很多的結果，也還不能下結論。因此本協議分兩階段：
 
-- **階段 1（快篩）**：照作者做法，5 對 5、單一任務，用來決定這份知識「值不值得花力氣做階段 2」，**不能用來做刪除決定**。
+- **階段 1（快篩）**：照作者做法，5 對 5、單一任務，用來決定這份知識「值不值得花力氣做階段 2」，**不能用來做刪除決定**。進入階段 2 的門檻見第 8 節末的階段 1 判準。
 - **階段 2（正式）**：多個任務、每任務重複多次，才能做保留或刪除的決定。
 
 ---
@@ -84,7 +84,7 @@
 
 | 參數 | 值 | 理由 |
 | :--- | :--- | :--- |
-| 任務數 N | 10（正式）；階段 1 為 1 | 任務層級的配對比較（第 6 節）至少要有 8 個「有勝負」的任務才有可能達到顯著；10 題留出平手的空間 |
+| 任務數 N | 10（正式）；階段 1 為 1 | 任務層級的配對比較（第 6 節）：n=5 且全勝（5/5）就能達 p<0.05，但只要輸一題就不顯著；n=8 才第一次容許輸一題（7/8）仍顯著。本協議要求 n≥8 作為穩定下限（第 7 節第 5 條），10 題留出平手的空間 |
 | 每題每組重複 r | 3 | 模型輸出有隨機性，單次結果不能代表該題；3 次是成本與雜訊之間的折衷 |
 | 總執行次數 | N × 2 × r = 60 | 先估 token 成本再開跑 |
 | 誘餌任務 | 另加 2 題與 K 無關的任務 | 檢查 K 有沒有「拖累」不相關任務（注意力稀釋），不列入勝負統計，單獨報告 |
@@ -162,7 +162,7 @@ Agent 本身無法對「自己手上有沒有這份知識」盲：它看得到�
 
 ## 7. 何時判這次實驗無效
 
-任一條成立，這次結果**作廢**，不能用來做決定，要修正後重做：
+下列 1～9 任一條成立，這次結果**作廢**，不能用來做決定，要修正後重做：
 
 | # | 無效條件 | 怎麼偵測 |
 | :-: | :--- | :--- |
@@ -175,7 +175,8 @@ Agent 本身無法對「自己手上有沒有這份知識」盲：它看得到�
 | 7 | 裁判本身有問題：把裁判的實作弄壞時它仍通過，或對正確解答判失敗 | 實驗前拿一份已知正確的解、一份已知錯誤的解各跑一次裁判（參考 [`irrefutable-evidence-and-invalid-patterns-spec.md`](./irrefutable-evidence-and-invalid-patterns-spec.md) 支柱 B） |
 | 8 | 實驗途中改了閾值、換了任務、換了裁判 | 與預先登記的紀錄比對 |
 | 9 | 實驗途中模型被服務商更新（版本字串改變） | 每次執行記錄模型識別字串，全部相同才有效 |
-| 10 | 誘餌任務顯示 T 組明顯比 C 組差（成功率差超過 20 個百分點） | 這不是無效，而是「K 拖累不相關任務」的證據；單獨記為發現，並在結論註記 |
+
+誘餌任務的結果不屬於無效條件，而是獨立發現：若 T 組在誘餌任務上的成功率比 C 組低超過 20 個百分點，表示 K 拖累不相關任務（注意力稀釋）。單獨記錄，並在結論註記；此時即使主要指標過關，也應降級（縮短）而非原樣保留。
 
 ---
 
@@ -188,6 +189,7 @@ Agent 本身無法對「自己手上有沒有這份知識」盲：它看得到�
 ```bash
 #!/usr/bin/env bash
 # 用法：make_arm.sh <repo> <commit> <輸出目錄> <ablate|keep> <K 的路徑...>
+# 以 git archive 匯出，再 git init：全新歷史，Agent 無法用 git log 看到 K
 set -euo pipefail
 repo=$1; commit=$2; out=$3; mode=$4; shift 4
 mkdir -p "$out"
@@ -200,41 +202,72 @@ git -C "$out" add -A
 git -C "$out" -c user.name=exp -c user.email=exp@example.invalid commit -q -m base
 ```
 
-**排程：隨機順序與中性代號**
+**排程：隨機順序、中性代號、每次執行獨立暫存目錄**
 
 ```bash
 #!/usr/bin/env bash
-# 用法：run_experiment.sh <repo> <commit> <任務目錄> <K 路徑>
+# 用法：AGENT_CMD='<Agent 非互動指令>' run_experiment.sh <repo> <commit> <任務目錄> <K 路徑> <輸出目錄> [make_arm.sh 路徑]
 # 任務目錄內每題一個資料夾：prompt.txt（給 Agent 的提示）、judge.sh（外部裁判，exit 0 = 通過）
-set -euo pipefail
-repo=$1; commit=$2; tasks=$3; k=$4
-r=3
+# 輸出目錄（含 mapping.private.csv、logs/）請放在 Agent 的工作目錄之外
+set -uo pipefail
+: "${AGENT_CMD:?請用環境變數 AGENT_CMD 指定 Agent 的非互動指令}"
+[ $# -ge 5 ] || { echo "參數不足" >&2; exit 2; }
+repo=$(cd "$1" && pwd); commit=$2; tasks=$(cd "$3" && pwd); k=$4
+mkdir -p "$5/logs"; out=$(cd "$5" && pwd)
+make_arm=$(cd "$(dirname "${6:-$0}")" && pwd)/$(basename "${6:-make_arm.sh}")
+[ -f "$make_arm" ] || { echo "找不到 make_arm.sh：$make_arm" >&2; exit 2; }
+r=${R:-3}   # 每題每組重複次數；階段 1 用 R=5
 mapfile -t jobs < <(
   for t in "$tasks"/*/; do
     for arm in C T; do for i in $(seq 1 "$r"); do echo "$(basename "$t") $arm $i"; done; done
   done | shuf
 )
-: > mapping.private.csv      # 組別對應表：執行與統計前不要打開
+[ "${#jobs[@]}" -gt 0 ] || { echo "任務目錄內沒有任務" >&2; exit 2; }
+: > "$out/mapping.private.csv"   # 組別對應表：解盲前不要打開
+total=0; infra=0
 for job in "${jobs[@]}"; do
   read -r task arm i <<<"$job"
   id="run-$(head -c6 /dev/urandom | od -An -tx1 | tr -d ' \n')"
   mode=keep; [ "$arm" = C ] && mode=ablate
-  bash make_arm.sh "$repo" "$commit" "work/$id" "$mode" "$k"
-  echo "$id,$task,$arm,$i" >> mapping.private.csv
-  # AGENT_CMD 要換成你的 Agent 非互動指令；提示詞只能來自 prompt.txt，不要加任何組別資訊
-  ( cd "work/$id" && AGENT_CMD < "../../$tasks/$task/prompt.txt" > "../../logs/$id.log" 2>&1 ) || echo "agent_rc=$?" >> "logs/$id.meta"
-  # 裁判獨立於 Agent，在其結束後才跑
-  jrc=0
-  ( cd "work/$id" && bash "../../$tasks/$task/judge.sh" ) > "logs/$id.judge" 2>&1 || jrc=$?
-  echo "judge_rc=$jrc" >> "logs/$id.meta"
+  # 每次執行用 repo 外、獨立的暫存目錄，跑完立刻刪：Agent 從 .. 往上找不到其他次執行
+  work=$(mktemp -d)
+  total=$((total+1))
+  echo "$id,$task,$arm,$i" >> "$out/mapping.private.csv"
+  if ! bash "$make_arm" "$repo" "$commit" "$work" "$mode" "$k" >"$out/logs/$id.setup" 2>&1; then
+    echo "setup_failed" >> "$out/logs/$id.meta"; infra=$((infra+1)); rm -rf "$work"; continue
+  fi
+  # 提示詞只來自 prompt.txt，不加任何組別資訊；裁判在 Agent 結束後才以絕對路徑呼叫
+  arc=0; ( cd "$work" && bash -c "$AGENT_CMD" < "$tasks/$task/prompt.txt" > "$out/logs/$id.log" 2>&1 ) || arc=$?
+  jrc=0; ( cd "$work" && bash "$tasks/$task/judge.sh" ) > "$out/logs/$id.judge" 2>&1 || jrc=$?
+  git -C "$work" add -A >/dev/null 2>&1; git -C "$work" diff --cached --numstat HEAD > "$out/logs/$id.diff" 2>&1
+  printf 'agent_rc=%s\njudge_rc=%s\n' "$arc" "$jrc" > "$out/logs/$id.meta"
+  # Agent 非零結束、或裁判無法執行（126/127）都算基礎設施失敗，不算 Agent 失敗
+  if [ "$arc" -ne 0 ] || [ "$jrc" -eq 126 ] || [ "$jrc" -eq 127 ]; then infra=$((infra+1)); fi
+  rm -rf "$work"
 done
+echo "執行 $total 次，基礎設施失敗 $infra 次" >&2
+# 失敗超過 20% 依第 7 節第 6 條視為無效實驗，以非零結束
+if [ $((infra*5)) -gt "$total" ]; then echo "基礎設施失敗超過 20%，本次實驗無效" >&2; exit 1; fi
+exit 0
 ```
 
-> 這支腳本是範本骨架：`AGENT_CMD`、token 與回合數的擷取、`logs/` 目錄建立都要依你的環境補。這份文件沒有附可直接執行的 Agent 指令，因為不同 Agent 的非互動參數我沒有查證。腳本以 `bash -n` 檢查過語法。
+> 範本骨架：`AGENT_CMD` 以環境變數傳入（例如 `AGENT_CMD='<你的 Agent 非互動指令>'`），其參數我沒有查證；token 與回合數的擷取要依你的 Agent 補。
+
+**破盲防護與其限制**（2026-11-02 以假 Agent 實跑驗證，見下）：
+
+- 每次執行在 `mktemp -d` 建立的獨立目錄進行，跑完立刻刪除；Agent 從 `..` 往上找不到其他次執行的 `run-*` 或 K。
+- 對應表、日誌、任務與裁判都放在輸出目錄與任務目錄（絕對路徑），不在 Agent 工作目錄的相對路徑內；裁判在 Agent 結束後才以絕對路徑呼叫。
+- 驗證方式：用一個假 Agent 在每次執行裡嘗試 `find ..`、`grep -r K的特徵字串 ..`、`ls ../../mapping.private.csv ../../tasks`、`git log`。結果：12 次執行（2 題 × 2 組 × 3 次）全部找不到對應表與任務目錄，找不到其他次執行的 K，`git log` 只有 1 個 commit。
+- **限制**：這只擋相對路徑的探索。Agent 若知道輸出目錄的絕對路徑，或用 `find /` 全磁碟搜尋，仍可能找到。要嚴格隔離，請把 Agent 放在容器或另一個作業系統帳號下執行，並只掛載其工作目錄；這個範本沒有做到。
+- 失敗處理：任務目錄無論給相對或絕對路徑都會先轉成絕對路徑；`logs/` 由腳本建立；Agent 非零結束或裁判無法執行（126、127）算基礎設施失敗，超過 20%（第 7 節第 6 條）時腳本以 exit 1 結束，不再假裝成功。假 Agent 指令為 `false` 時 12 次全數失敗、exit 1；指令為 `true` 時 exit 0（皆實跑）。
 
 **解盲與統計**：收齊 `logs/*.meta`（裁判 exit code）後，才讀 `mapping.private.csv`，依第 6 節計算 W、L、n 與 p。
 
-**階段 1（快篩）**：只取 1 題、`r = 5`，同上，但不做決策，只決定要不要進階段 2。
+**階段 1（快篩）**：只取 1 題，執行時加 `R=5`（每組 5 次），其餘同上。判準預先寫定（**設計估計，無經驗依據**）：
+- 實驗組成功次數減對照組成功次數 ≥ 3（例如 4/5 對 1/5）→ 進階段 2。這個門檻對應的單尾 p 約 0.10（見第 2 節表），所以它只是「值得花成本再測」的判準，不是結論。
+- 對照組比實驗組多成功 ≥ 3 → 也進階段 2（懷疑有害）。
+- 其餘（差距 < 3）→ 不進階段 2，這份知識暫列「低優先」，不代表沒用。
+- 對照組 5/5 或 0/5（天花板或地板）→ 這題沒有鑑別力，換題重做階段 1。
 
 ---
 
@@ -253,7 +286,7 @@ done
 - 預先登記的閾值：p < 0.05、ΔS ≥ +15 pp、R_tok ≤ 1.3（如有調整，寫明理由，且在看到資料前）
 - 裁判驗證（已知正確解／已知錯誤解各一次）：
 - 結果（解盲後）：S(C)=  S(T)=  W=  L=  n=  p=  R_tok=  ΔTurns=  P(C)=  P(T)=
-- 有效性檢查（第 7 節 1～10 逐條）：
+- 有效性檢查（第 7 節 1～9 逐條）：
 - 結論：保留 / 降級 / 移除 / 無結論
 ```
 
@@ -264,6 +297,7 @@ done
 - 本協議沒有實際跑過，所有閾值（15 個百分點、1.3 倍、20% 失敗率等）都是設計時的估計，沒有經驗數據。第一次實際跑完後，應回頭檢討並修訂。
 - 配對檢定假設各題獨立；若多題共用同一段程式碼，勝負會相關，p 值會偏樂觀。
 - 該實驗測的是「這份知識在這批任務上、這個模型版本下」的價值；模型更新後結論可能改變，建議每次換主要模型後對保留下來的知識做抽樣複測。
+- `run_experiment.sh` 與 `make_arm.sh` 只用假 Agent 驗證過流程，沒有用任何真實 Agent CLI 跑過。
 - 60 次執行有 token 成本；知識很多時，先用階段 1 篩，再對值得的做階段 2。
 - 作者原文只提到五個盲 Agent，沒有說明對照方式與統計；本文的多任務設計是延伸，不代表作者的做法。
 
