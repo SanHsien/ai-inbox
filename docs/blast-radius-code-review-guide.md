@@ -118,7 +118,7 @@ git diff --numstat BASE...HEAD | sort -rn
 PowerShell 版：
 
 ```powershell
-git diff --numstat BASE...HEAD | Sort-Object { [int]($_ -split '\s+')[0] } -Descending
+git diff --numstat BASE...HEAD | Sort-Object { ($_ -split '\s+')[0] -as [int] } -Descending
 ```
 
 **步驟 6：核心清單命中，命中者為 T1**（把專案核心清單存成每行一個路徑的檔案，例如 `.review-core.txt`）

@@ -171,7 +171,7 @@ Agent 本身無法對「自己手上有沒有這份知識」盲：它看得到�
 | 3 | 兩組不只差 K：模型版本、提示詞、工具集合、溫度設定、起始 commit 有差異 | 把設定存檔並逐項比對 |
 | 4 | 天花板或地板：控制組成功率 ≥ 95% 或 ≤ 5% | 計算 `S(C)` |
 | 5 | 有勝負的題數 `n < 8` | 計算 n |
-| 6 | 基礎設施失敗的執行（逾時、API 錯誤、環境壞掉）超過總執行的 20%，或兩組失敗率差 10 個百分點以上 | 失敗原因分類統計；失敗的執行不能直接當「Agent 失敗」 |
+| 6 | 基礎設施失敗的執行（逾時、API 錯誤、環境壞掉）超過總執行的 20%，或兩組失敗率差 10 個百分點以上 | 失敗原因分類統計；失敗的執行不能直接當「Agent 失敗」。範本腳本兩項都會算，任一成立就 exit 1 |
 | 7 | 裁判本身有問題：把裁判的實作弄壞時它仍通過，或對正確解答判失敗 | 實驗前拿一份已知正確的解、一份已知錯誤的解各跑一次裁判（參考 [`irrefutable-evidence-and-invalid-patterns-spec.md`](./irrefutable-evidence-and-invalid-patterns-spec.md) 支柱 B） |
 | 8 | 實驗途中改了閾值、換了任務、換了裁判 | 與預先登記的紀錄比對 |
 | 9 | 實驗途中模型被服務商更新（版本字串改變） | 每次執行記錄模型識別字串，全部相同才有效 |
@@ -208,12 +208,17 @@ git -C "$out" -c user.name=exp -c user.email=exp@example.invalid commit -q -m ba
 #!/usr/bin/env bash
 # 用法：AGENT_CMD='<Agent 非互動指令>' run_experiment.sh <repo> <commit> <任務目錄> <K 路徑> <輸出目錄> [make_arm.sh 路徑]
 # 任務目錄內每題一個資料夾：prompt.txt（給 Agent 的提示）、judge.sh（外部裁判，exit 0 = 通過）
+# 選用環境變數 AGENT_TASK_FAIL_RCS：以空白分隔的 Agent 結束碼，表示「任務沒做完」（真實失敗，不算基礎設施失敗）
 # 輸出目錄（含 mapping.private.csv、logs/）請放在 Agent 的工作目錄之外
 set -uo pipefail
 : "${AGENT_CMD:?請用環境變數 AGENT_CMD 指定 Agent 的非互動指令}"
 [ $# -ge 5 ] || { echo "參數不足" >&2; exit 2; }
-repo=$(cd "$1" && pwd); commit=$2; tasks=$(cd "$3" && pwd); k=$4
-mkdir -p "$5/logs"; out=$(cd "$5" && pwd)
+shopt -s nullglob   # 空目錄時 for 不會把字面的 */ 當成任務
+repo=$(cd "$1" && pwd) || { echo "找不到 repo：$1" >&2; exit 2; }
+tasks=$(cd "$3" && pwd) || { echo "找不到任務目錄：$3" >&2; exit 2; }
+commit=$2; k=$4
+mkdir -p "$5/logs" || exit 2
+out=$(cd "$5" && pwd) || exit 2
 make_arm=$(cd "$(dirname "${6:-$0}")" && pwd)/$(basename "${6:-make_arm.sh}")
 [ -f "$make_arm" ] || { echo "找不到 make_arm.sh：$make_arm" >&2; exit 2; }
 r=${R:-3}   # 每題每組重複次數；階段 1 用 R=5
@@ -224,31 +229,43 @@ mapfile -t jobs < <(
 )
 [ "${#jobs[@]}" -gt 0 ] || { echo "任務目錄內沒有任務" >&2; exit 2; }
 : > "$out/mapping.private.csv"   # 組別對應表：解盲前不要打開
-total=0; infra=0
+total_C=0; total_T=0; infra_C=0; infra_T=0
 for job in "${jobs[@]}"; do
   read -r task arm i <<<"$job"
   id="run-$(head -c6 /dev/urandom | od -An -tx1 | tr -d ' \n')"
   mode=keep; [ "$arm" = C ] && mode=ablate
   # 每次執行用 repo 外、獨立的暫存目錄，跑完立刻刪：Agent 從 .. 往上找不到其他次執行
   work=$(mktemp -d)
-  total=$((total+1))
+  eval "total_$arm=\$((total_$arm+1))"
   echo "$id,$task,$arm,$i" >> "$out/mapping.private.csv"
   if ! bash "$make_arm" "$repo" "$commit" "$work" "$mode" "$k" >"$out/logs/$id.setup" 2>&1; then
-    echo "setup_failed" >> "$out/logs/$id.meta"; infra=$((infra+1)); rm -rf "$work"; continue
+    echo "setup_failed" >> "$out/logs/$id.meta"; eval "infra_$arm=\$((infra_$arm+1))"; rm -rf "$work"; continue
   fi
   # 提示詞只來自 prompt.txt，不加任何組別資訊；裁判在 Agent 結束後才以絕對路徑呼叫
   arc=0; ( cd "$work" && bash -c "$AGENT_CMD" < "$tasks/$task/prompt.txt" > "$out/logs/$id.log" 2>&1 ) || arc=$?
   jrc=0; ( cd "$work" && bash "$tasks/$task/judge.sh" ) > "$out/logs/$id.judge" 2>&1 || jrc=$?
   git -C "$work" add -A >/dev/null 2>&1; git -C "$work" diff --cached --numstat HEAD > "$out/logs/$id.diff" 2>&1
   printf 'agent_rc=%s\njudge_rc=%s\n' "$arc" "$jrc" > "$out/logs/$id.meta"
-  # Agent 非零結束、或裁判無法執行（126/127）都算基礎設施失敗，不算 Agent 失敗
-  if [ "$arc" -ne 0 ] || [ "$jrc" -eq 126 ] || [ "$jrc" -eq 127 ]; then infra=$((infra+1)); fi
+  # Agent 非零結束（結束碼不在 AGENT_TASK_FAIL_RCS 內）、或裁判無法執行（126/127）算基礎設施失敗
+  is_infra=0
+  if [ "$arc" -ne 0 ]; then
+    is_infra=1
+    for c in ${AGENT_TASK_FAIL_RCS:-}; do [ "$arc" -eq "$c" ] && is_infra=0; done
+  fi
+  if [ "$jrc" -eq 126 ] || [ "$jrc" -eq 127 ]; then is_infra=1; fi
+  [ "$is_infra" -eq 1 ] && eval "infra_$arm=\$((infra_$arm+1))"
   rm -rf "$work"
 done
-echo "執行 $total 次，基礎設施失敗 $infra 次" >&2
-# 失敗超過 20% 依第 7 節第 6 條視為無效實驗，以非零結束
-if [ $((infra*5)) -gt "$total" ]; then echo "基礎設施失敗超過 20%，本次實驗無效" >&2; exit 1; fi
-exit 0
+total=$((total_C+total_T)); infra=$((infra_C+infra_T))
+echo "執行 $total 次，基礎設施失敗 $infra 次（C：$infra_C/$total_C，T：$infra_T/$total_T）" >&2
+bad=0
+# 第 7 節第 6 條：整體失敗超過 20%，或兩組失敗率差 10 個百分點以上，本次實驗無效
+if [ $((infra*5)) -gt "$total" ]; then echo "基礎設施失敗超過 20%，本次實驗無效" >&2; bad=1; fi
+if [ "$total_C" -gt 0 ] && [ "$total_T" -gt 0 ]; then
+  d=$(( infra_C*100/total_C - infra_T*100/total_T )); [ "$d" -lt 0 ] && d=$((-d))
+  if [ "$d" -ge 10 ]; then echo "兩組失敗率差 $d 個百分點（>=10），本次實驗無效" >&2; bad=1; fi
+fi
+exit "$bad"
 ```
 
 > 範本骨架：`AGENT_CMD` 以環境變數傳入（例如 `AGENT_CMD='<你的 Agent 非互動指令>'`），其參數我沒有查證；token 與回合數的擷取要依你的 Agent 補。
@@ -259,7 +276,9 @@ exit 0
 - 對應表、日誌、任務與裁判都放在輸出目錄與任務目錄（絕對路徑），不在 Agent 工作目錄的相對路徑內；裁判在 Agent 結束後才以絕對路徑呼叫。
 - 驗證方式：用一個假 Agent 在每次執行裡嘗試 `find ..`、`grep -r K的特徵字串 ..`、`ls ../../mapping.private.csv ../../tasks`、`git log`。結果：12 次執行（2 題 × 2 組 × 3 次）全部找不到對應表與任務目錄，找不到其他次執行的 K，`git log` 只有 1 個 commit。
 - **限制**：這只擋相對路徑的探索。Agent 若知道輸出目錄的絕對路徑，或用 `find /` 全磁碟搜尋，仍可能找到。要嚴格隔離，請把 Agent 放在容器或另一個作業系統帳號下執行，並只掛載其工作目錄；這個範本沒有做到。
-- 失敗處理：任務目錄無論給相對或絕對路徑都會先轉成絕對路徑；`logs/` 由腳本建立；Agent 非零結束或裁判無法執行（126、127）算基礎設施失敗，超過 20%（第 7 節第 6 條）時腳本以 exit 1 結束，不再假裝成功。假 Agent 指令為 `false` 時 12 次全數失敗、exit 1；指令為 `true` 時 exit 0（皆實跑）。
+- 路徑與空任務：repo、任務目錄、輸出目錄不存在時直接 exit 2（不會把空字串當成 `/*/` 去列舉）；任務目錄內沒有任務也 exit 2（使用 `shopt -s nullglob`）。實跑：不存在的任務路徑、不存在的 repo、空任務目錄皆 exit 2，且空任務目錄沒有產生任何日誌。
+- 失敗處理：任務目錄無論給相對或絕對路徑都會先轉成絕對路徑；`logs/` 由腳本建立；Agent 非零結束或裁判無法執行（126、127）算基礎設施失敗。腳本分組計數，整體超過 20%，或兩組失敗率相差 10 個百分點以上（第 7 節第 6 條）時以 exit 1 結束；實跑一組「控制組全失敗、實驗組全成功」，兩項都觸發、exit 1。
+- **Agent 結束碼的分類要依你的 CLI 調整**：預設任何非零結束碼都算基礎設施失敗。若你的 CLI 用特定非零碼表示「任務沒做完」（這是真實失敗，不該排除），用環境變數 `AGENT_TASK_FAIL_RCS='3 4'` 列出那些碼，它們就不算基礎設施失敗（實跑：碼 3 宣告後 exit 0，未宣告則 12/12 算基礎設施失敗、exit 1）。我沒有查證任何真實 CLI 的結束碼語意，所以預設值是保守的，使用前要自己查。假 Agent 指令為 `false` 時 12 次全數失敗、exit 1；指令為 `true` 時 exit 0（皆實跑）。
 
 **解盲與統計**：收齊 `logs/*.meta`（裁判 exit code）後，才讀 `mapping.private.csv`，依第 6 節計算 W、L、n 與 p。
 
@@ -267,7 +286,7 @@ exit 0
 - 實驗組成功次數減對照組成功次數 ≥ 3（例如 4/5 對 1/5）→ 進階段 2。這個門檻對應的單尾 p 約 0.10（見第 2 節表），所以它只是「值得花成本再測」的判準，不是結論。
 - 對照組比實驗組多成功 ≥ 3 → 也進階段 2（懷疑有害）。
 - 其餘（差距 < 3）→ 不進階段 2，這份知識暫列「低優先」，不代表沒用。
-- 對照組 5/5 或 0/5（天花板或地板）→ 這題沒有鑑別力，換題重做階段 1。
+- **判斷順序**（由上而下，第一個符合者生效）：① 兩組**都**是 5/5 或**都**是 0/5（都觸頂或都觸底）→ 這題沒有鑑別力，換題重做階段 1；② 差距 ≥ 3（任一方向）→ 進階段 2；③ 其餘 → 不進階段 2。所以 5/5 對 0/5 屬於②，進階段 2，不換題。
 
 ---
 
