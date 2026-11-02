@@ -2,7 +2,7 @@
 
 測試從範本的程式碼區塊現場取出腳本與 YAML，實際執行：
 - Python 腳本：用現場產生的假 RSA 金鑰簽 JWT，對本機模擬伺服器換 token（伺服器用公鑰驗簽，所以簽章錯誤會失敗）。
-- 爆破半徑關卡（工作流內的 bash 片段）：有 bash 與 git 才跑，否則明確 skipTest。
+- 工作流內的 bash 步驟（產生 patch、爆破半徑關卡、停用 hook 的 commit）：在暫存 git repo 實跑，含 Agent 寫 .git/hooks 偷權杖的攻擊重現；沒有 bash 或 git 就明確 skipTest。
 - 工作流 YAML：沒有 YAML 解析器可用，只做結構檢查（釘 SHA、run 區塊不含 ${{ }}、最小 permissions），
   並附反例證明檢查函式抓得到壞輸入。
 不連真的 GitHub、不含任何真實金鑰；假金鑰的 PEM 標頭在執行時才組字串。
@@ -459,6 +459,22 @@ class PythonScriptTests(TemplateCase):
 
 # ---------- 工作流 YAML ----------
 
+AGENT_RUN = "Run agent (Copilot token only; no repo write credentials here)"
+MINT_COPILOT = "Mint Copilot-only installation token"
+MINT_REPO = "Mint repo-scoped installation token"
+MAKE_PATCH = "Create patch (worktree changes only)"
+GATE = "Apply patch and blast radius gate"
+COMMIT = "Commit with hooks disabled"
+PUSH = "Push branch and open draft PR"
+
+
+def split_jobs(yml):
+    """回傳 {job 名稱: 該 job 的文字}。只認 jobs: 底下縮排兩格的鍵。"""
+    body = yml.split("\njobs:\n", 1)[1]
+    parts = re.split(r"(?m)^  ([a-z][\w-]*):\n", body)
+    return {parts[i]: parts[i + 1] for i in range(1, len(parts), 2)}
+
+
 def split_steps(yml):
     return re.split(r"(?m)^(?=      - name: )", yml)[1:]
 
@@ -517,16 +533,26 @@ def expressions_in_run_blocks(yml):
     return found
 
 
+def steps_of(yml, job):
+    return {step_name(s): s for s in split_steps(split_jobs(yml)[job])}
+
+
+def step_order(yml, job):
+    return [step_name(s) for s in split_steps(split_jobs(yml)[job])]
+
+
 class WorkflowTests(TemplateCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         cls.yml = cls.blocks["nightly-maintenance-agent.yml"]
-        cls.steps = {step_name(s): s for s in split_steps(cls.yml)}
+        cls.jobs = split_jobs(cls.yml)
+        cls.agent = steps_of(cls.yml, "agent")
+        cls.publish = steps_of(cls.yml, "publish")
 
     def test_all_actions_are_pinned_to_full_sha_with_version_comment(self):
         self.assertEqual(unpinned_actions(self.yml), [])
-        self.assertEqual(len(re.findall(r"uses:", self.yml)), 2)
+        self.assertEqual(len(re.findall(r"uses:", self.yml)), 5)
 
     def test_pin_checker_catches_bad_inputs(self):
         self.assertEqual(unpinned_actions("      - uses: actions/checkout@v4"), ["actions/checkout@v4"])
@@ -542,104 +568,288 @@ class WorkflowTests(TemplateCase):
         self.assertNotEqual(evil, self.yml)
         self.assertEqual(expressions_in_run_blocks(evil), ["Select issue"])
 
-    def test_top_level_permissions_are_minimal_and_no_dangerous_trigger(self):
-        top = re.search(r"(?m)^permissions:\n((?:  .*\n)+)", self.yml).group(1)
-        self.assertEqual(top.split(), ["contents:", "read", "issues:", "read"])
+    def test_top_level_permissions_empty_and_jobs_are_least_privilege(self):
+        self.assertRegex(self.yml, r"(?m)^permissions: \{\}$")
+        for job in ("agent", "publish"):
+            perms = re.search(r"(?m)^    permissions:\n((?:      .*\n)+)", self.jobs[job]).group(1)
+            self.assertNotIn("write", perms, job)
         self.assertNotIn("pull_request_target", self.yml)
         self.assertNotIn("pull_request:", self.yml)
 
-    def test_checkout_does_not_persist_credentials(self):
-        self.assertIn("persist-credentials: false", self.steps["Check out (read-only, no persisted credentials)"])
+    def test_agent_and_publish_are_separate_jobs(self):
+        self.assertEqual(sorted(self.jobs), ["agent", "publish"])
+        self.assertIn("needs: agent", self.jobs["publish"])
+        self.assertIn(AGENT_RUN, self.agent)
+        self.assertNotIn(AGENT_RUN, self.publish)
+        self.assertIn(PUSH, self.publish)
+        self.assertNotIn(PUSH, self.agent)
+        for forbidden in ("git push", "gh pr create", "create-github-app-token", "repo-token", "permission-"):
+            self.assertNotIn(forbidden, self.jobs["agent"], forbidden)
+        for forbidden in ("Run agent", "INSTALLATION_TOKEN", "app_installation_token.py", "copilot_token"):
+            self.assertNotIn(forbidden, self.jobs["publish"], forbidden)
 
-    def test_agent_step_sees_only_the_copilot_token(self):
-        agent = self.steps["Run agent (Copilot token only; no repo write credentials here)"]
-        self.assertIn("INSTALLATION_TOKEN", agent)
-        for forbidden in ("APP_PRIVATE_KEY", "repo-token", "GH_TOKEN", "github.token"):
-            self.assertNotIn(forbidden, agent)
-        keyed = [n for n, s in self.steps.items() if "APP_PRIVATE_KEY" in s]
-        self.assertEqual(sorted(keyed), ["Mint Copilot-only installation token", "Mint repo-scoped installation token"])
+    def test_agent_job_has_no_write_token_and_private_key_only_before_the_agent_runs(self):
+        keyed = [n for n, s in self.agent.items() if "APP_PRIVATE_KEY" in s]
+        self.assertEqual(keyed, [MINT_COPILOT])
+        order = step_order(self.yml, "agent")
+        self.assertLess(order.index(MINT_COPILOT), order.index(AGENT_RUN))
+        agent_step = self.agent[AGENT_RUN]
+        self.assertIn("INSTALLATION_TOKEN", agent_step)
+        for forbidden in ("APP_PRIVATE_KEY", "GH_TOKEN", "github.token", "secrets."):
+            self.assertNotIn(forbidden, agent_step)
+        # 領 Copilot 權杖只要求 organization_copilot_requests: read，不含任何 repo 寫入權限
+        script = run_script(self.agent[MINT_COPILOT])
+        self.assertEqual(re.findall(r'"(\w+)":"(\w+)"', script), [("organization_copilot_requests", "read")])
 
-    def test_placeholder_steps_fail_closed(self):
-        for name in ("Run agent (Copilot token only; no repo write credentials here)",
-                     "Quality gate (tests / lint / typecheck)"):
-            self.assertRegex(run_script(self.steps[name]), r"(?m)^exit 1$", name)
+    def test_publish_job_private_key_only_in_the_mint_step_after_gate_and_commit(self):
+        keyed = [n for n, s in self.publish.items() if "APP_PRIVATE_KEY" in s]
+        self.assertEqual(keyed, [MINT_REPO])
+        order = step_order(self.yml, "publish")
+        self.assertLess(order.index(GATE), order.index(COMMIT))
+        self.assertLess(order.index(COMMIT), order.index(MINT_REPO))
+        self.assertLess(order.index(MINT_REPO), order.index(PUSH))
+        for name in order[:order.index(MINT_REPO)]:
+            for secretish in ("secrets.", "GH_TOKEN", "repo-token", "x-access-token"):
+                self.assertNotIn(secretish, self.publish[name], (name, secretish))
 
-    def test_repo_token_is_least_privilege_and_minted_after_the_gates(self):
-        order = list(self.steps)
-        self.assertLess(order.index("Blast radius gate"), order.index("Mint repo-scoped installation token"))
-        self.assertLess(order.index("Quality gate (tests / lint / typecheck)"),
-                        order.index("Mint repo-scoped installation token"))
-        mint = self.steps["Mint repo-scoped installation token"]
-        grants = re.findall(r"permission-([a-z-]+): (\w+)", mint)
+    def test_publish_job_runs_no_repo_code(self):
+        runners = r"(?m)(^|[;&|]\s*)(python3?|node|npm|npx|pip|pytest|make|\./|bash\s+\S|sh\s+\S|source\s|\.\s+\S)"
+        for name, step in self.publish.items():
+            script = run_script(step) or ""
+            self.assertIsNone(re.search(runners, script), name)
+        self.assertNotIn(".github/scripts", self.jobs["publish"])
+
+    def test_commit_disables_hooks_and_push_sets_hookspath(self):
+        script = run_script(self.publish[COMMIT])
+        self.assertIn("-c core.hooksPath=/dev/null commit --no-verify", script)
+        push = run_script(self.publish[PUSH])
+        self.assertIn('GIT_CONFIG_KEY_1="core.hooksPath"', push)
+        self.assertIn('GIT_CONFIG_VALUE_1="/dev/null"', push)
+        self.assertIn("GIT_CONFIG_COUNT=2", push)
+
+    def test_checkouts_do_not_persist_credentials(self):
+        for job in ("agent", "publish"):
+            self.assertIn("persist-credentials: false", list(steps_of(self.yml, job).values())[0])
+
+    def test_placeholder_agent_step_fails_closed(self):
+        self.assertRegex(run_script(self.agent[AGENT_RUN]), r"(?m)^exit 1$")
+
+    def test_repo_token_is_least_privilege(self):
+        grants = re.findall(r"permission-([a-z-]+): (\w+)", self.publish[MINT_REPO])
         self.assertEqual(sorted(grants), [("contents", "write"), ("issues", "write"), ("pull-requests", "write")])
 
     def test_copilot_mint_arguments_pass_the_scripts_own_validation(self):
         mod = load_module(self.py_path)
-        script = run_script(self.steps["Mint Copilot-only installation token"])
+        script = run_script(self.agent[MINT_COPILOT])
         raw = re.search(r"--permissions '(\{.*?\})'", script).group(1)
         self.assertEqual(mod.parse_permissions(raw), {"organization_copilot_requests": "read"})
         self.assertIn("--github-output copilot_token", script)
         self.assertIn(".github/scripts/app_installation_token.py", script)
 
     def test_pr_is_created_as_draft(self):
-        self.assertIn("gh pr create --draft", run_script(self.steps["Push branch and open draft PR"]))
+        self.assertIn("gh pr create --draft", run_script(self.publish[PUSH]))
+
+    def test_structure_checks_catch_a_merged_job_and_leaked_secrets(self):
+        # 反例：把 push 步驟搬回 agent job，或讓 agent job 帶著私鑰與寫入權杖，前述斷言用的條件必須成立
+        merged = self.yml.replace("  publish:\n", "  agent_tail:\n", 1)
+        self.assertNotEqual(sorted(split_jobs(merged)), ["agent", "publish"])
+        leaky = self.yml.replace('INSTALLATION_TOKEN: ${{ steps.copilot.outputs.copilot_token }}',
+                                 'INSTALLATION_TOKEN: ${{ steps.copilot.outputs.copilot_token }}\n          GH_TOKEN: ${{ secrets.APP_PRIVATE_KEY }}', 1)
+        self.assertNotEqual(leaky, self.yml)
+        agent_step = steps_of(leaky, "agent")[AGENT_RUN]
+        self.assertIn("APP_PRIVATE_KEY", agent_step)
+        self.assertEqual([n for n, s in steps_of(leaky, "agent").items() if "APP_PRIVATE_KEY" in s],
+                         [MINT_COPILOT, AGENT_RUN])
 
 
-@unittest.skipUnless(find_bash() and shutil.which("git"), "需要 bash 與 git 才能實跑爆破半徑關卡")
-class BlastRadiusGateTests(TemplateCase):
+HOOK = "#!/bin/sh\nprintf 'STOLEN=%s' \"$GH_TOKEN\" > \"$STOLEN_FILE\"\n"
+
+
+@unittest.skipUnless(find_bash() and shutil.which("git"), "需要 bash 與 git 才能實跑 patch 產生、關卡與 commit 步驟")
+class PublishPipelineTests(TemplateCase):
+    """在暫存目錄裡模擬 agent job（會被 Agent 動手腳的 clone）與 publish job（新的 clone），實跑範本裡的步驟腳本。"""
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        step = {step_name(s): s for s in split_steps(cls.blocks["nightly-maintenance-agent.yml"])}["Blast radius gate"]
-        cls.script = run_script(step)
-        cls.gate_env = step_env(step)
+        steps = {n: s for job in ("agent", "publish") for n, s in steps_of(cls.blocks["nightly-maintenance-agent.yml"], job).items()}
+        cls.patch_script = run_script(steps[MAKE_PATCH])
+        cls.gate_script = run_script(steps[GATE])
+        cls.gate_env = {k: v for k, v in step_env(steps[GATE]).items() if "${{" not in v}
+        cls.commit_script = run_script(steps[COMMIT])
 
-    def run_gate(self, changes, max_files=None):
-        """changes: {相對路徑: 內容}；先建立含一個檔案的 repo，再套用 changes，最後執行關卡腳本。"""
-        with tempfile.TemporaryDirectory() as tmp:
-            git = lambda *a: subprocess.run(["git", *a], cwd=tmp, check=True, capture_output=True, text=True)
-            git("init", "-q")
-            git("config", "user.email", "t@example.com")
-            git("config", "user.name", "t")
-            git("config", "core.autocrlf", "false")
-            (Path(tmp) / "keep.txt").write_text("base\n", encoding="utf-8")
-            git("add", "-A")
-            git("commit", "-q", "-m", "base")
-            for rel, content in changes.items():
-                target = Path(tmp) / rel
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_text(content, encoding="utf-8")
-            env = clean_env(**self.gate_env)
-            if max_files is not None:
-                env["MAX_FILES"] = str(max_files)
-            return subprocess.run([find_bash(), "-c", self.script], cwd=tmp, env=env, capture_output=True,
-                                  text=True, encoding="utf-8", timeout=60)
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.origin = self.root / "origin"
+        self.git(self.root, "init", "-q", str(self.origin))
+        self.config(self.origin)
+        (self.origin / "keep.txt").write_text("base\n", encoding="utf-8")
+        self.git(self.origin, "add", "-A")
+        self.git(self.origin, "commit", "-q", "-m", "base")
 
-    def test_gate_env_was_parsed(self):
-        self.assertEqual(self.gate_env["MAX_FILES"], "10")
-        self.assertIn(r"\.github/", self.gate_env["DENY_REGEX"])
+    def git(self, cwd, *args, check=True):
+        return subprocess.run(["git", *args], cwd=str(cwd), check=check, capture_output=True, text=True,
+                              encoding="utf-8")
 
+    def config(self, repo):
+        for key, value in (("user.email", "t@example.com"), ("user.name", "t"), ("core.autocrlf", "false"),
+                           ("commit.gpgsign", "false")):
+            self.git(repo, "config", key, value)
+
+    def clone(self, name):
+        self.clones = getattr(self, "clones", 0) + 1
+        path = self.root / ("%s_%d" % (name, self.clones))
+        self.git(self.root, "clone", "-q", str(self.origin), str(path))
+        self.config(path)
+        return path
+
+    def bash(self, script, cwd, **env):
+        return subprocess.run([find_bash(), "-c", script], cwd=str(cwd), env=clean_env(**env),
+                              capture_output=True, text=True, encoding="utf-8", timeout=60)
+
+    def make_patch(self, agent, changes):
+        for rel, content in changes.items():
+            target = agent / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(content, encoding="utf-8")
+        out = self.root / "gh_output"
+        out.write_text("", encoding="utf-8")
+        result = self.bash(self.patch_script, agent, RUNNER_TEMP=str(self.root), GITHUB_OUTPUT=str(out))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return self.root / "agent.patch", out.read_text(encoding="utf-8")
+
+    def run_gate(self, publish, patch_file, max_files=None):
+        env = dict(self.gate_env, PATCH_FILE=str(patch_file))
+        if max_files is not None:
+            env["MAX_FILES"] = str(max_files)
+        return self.bash(self.gate_script, publish, **env)
+
+    def pipeline(self, changes, max_files=None):
+        agent = self.clone("agent")
+        patch, outputs = self.make_patch(agent, changes)
+        publish = self.clone("publish")
+        return self.run_gate(publish, patch, max_files), outputs, publish
+
+    # ----- 爆破半徑關卡 -----
     def test_ordinary_changes_pass(self):
-        self.assertEqual(self.run_gate({"src/a.py": "x\n"}).returncode, 0)
-        self.assertEqual(self.run_gate({"keep.txt": "changed\n", "docs/n.md": "n\n"}).returncode, 0)
+        for changes in ({"src/a.py": "x\n"}, {"keep.txt": "changed\n", "docs/n.md": "n\n"}):
+            result, outputs, publish = self.pipeline(changes)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("has_patch=true", outputs)
+            self.assertTrue((publish / list(changes)[0]).exists())
 
     def test_forbidden_paths_fail(self):
         for rel in (".github/workflows/x.yml", ".github/scripts/app_installation_token.py", "Dockerfile",
                     "services/api/Dockerfile", "docker-compose.yml", "deploy/docker-compose.prod.yaml",
-                    "infra/main.tf", "prod.tfvars"):
+                    "infra/main.tf", "prod.tfvars", ".gitattributes", "sub/.gitattributes", ".gitmodules"):
             with self.subTest(rel):
-                result = self.run_gate({"src/ok.py": "x\n", rel: "x\n"})
+                result, _outputs, _publish = self.pipeline({"src/ok.py": "x\n", rel: "x\n"})
                 self.assertEqual(result.returncode, 1, (rel, result.stderr))
 
-    def test_no_changes_fails(self):
-        self.assertEqual(self.run_gate({}).returncode, 1)
+    def test_no_changes_means_no_patch_and_gate_refuses_empty_patch(self):
+        agent = self.clone("agent")
+        patch, outputs = self.make_patch(agent, {})
+        self.assertIn("has_patch=false", outputs)
+        result = self.run_gate(self.clone("publish"), patch)
+        self.assertEqual(result.returncode, 1)
 
-    def test_too_many_files_fails(self):
-        self.assertEqual(self.run_gate({"f%d.txt" % i: "x\n" for i in range(10)}).returncode, 0)
-        self.assertEqual(self.run_gate({"f%d.txt" % i: "x\n" for i in range(11)}).returncode, 1)
+    def test_too_many_files_and_oversized_patch_fail(self):
+        self.assertEqual(self.pipeline({"f%d.txt" % i: "x\n" for i in range(10)})[0].returncode, 0)
+        self.assertEqual(self.pipeline({"f%d.txt" % i: "x\n" for i in range(11)})[0].returncode, 1)
+        agent = self.clone("agent")
+        patch, _ = self.make_patch(agent, {"big.txt": "x" * 2000 + "\n"})
+        result = self.run_gate(self.clone("publish"), patch, max_files=10)
+        self.assertEqual(result.returncode, 0)
+        env = dict(self.gate_env, PATCH_FILE=str(patch), MAX_PATCH_BYTES="100")
+        self.assertEqual(self.bash(self.gate_script, self.clone("publish2"), **env).returncode, 1)
 
     def test_lookalike_names_are_not_false_positives(self):
-        self.assertEqual(self.run_gate({"src/github_notes.md": "x\n", "docs/Dockerfile.md": "x\n"}).returncode, 0)
+        result, _o, _p = self.pipeline({"src/github_notes.md": "x\n", "docs/Dockerfile.md": "x\n"})
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_handwritten_patch_touching_dot_git_is_refused_and_nothing_lands(self):
+        template = ("diff --git a/{p} b/{p}\nnew file mode 100755\nindex 0000000..e69de29\n"
+                    "--- /dev/null\n+++ b/{p}\n@@ -0,0 +1 @@\n+#!/bin/sh\n")
+        for rel in (".git/hooks/pre-commit", "sub/.git/config", ".git/config"):
+            with self.subTest(rel):
+                publish = self.clone("publish_" + rel.replace("/", "_").replace(".", ""))
+                patch = self.root / "evil.patch"
+                patch.write_text(template.format(p=rel), encoding="utf-8", newline="\n")
+                result = self.run_gate(publish, patch)
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertFalse((publish / ".git" / "hooks" / "pre-commit").exists())
+
+    @unittest.skipIf(sys.platform == "win32", "Windows 預設無法建立符號連結，無法驗證模式 120000")
+    def test_symlink_patch_is_refused(self):
+        patch = self.root / "link.patch"
+        patch.write_text("diff --git a/link b/link\nnew file mode 120000\nindex 0000000..d6d8c3c\n"
+                         "--- /dev/null\n+++ b/link\n@@ -0,0 +1 @@\n+/etc/passwd\n\\ No newline at end of file\n",
+                         encoding="utf-8", newline="\n")
+        self.assertEqual(self.run_gate(self.clone("publish"), patch).returncode, 1)
+
+    # ----- 審查員重現的攻擊：Agent 寫 .git/hooks/pre-commit 偷 repo 權杖 -----
+    def attack(self, agent):
+        hook = agent / ".git" / "hooks" / "pre-commit"
+        hook.write_text(HOOK, encoding="utf-8", newline="\n")
+        hook.chmod(0o755)
+
+    def test_hook_attack_is_real_in_the_old_single_job_flow(self):
+        """對照組：舊流程（同一個 clone 先讓 Agent 動手，再用 git add／diff 做關卡，再帶 token commit）確實會洩漏。"""
+        agent = self.clone("agent")
+        (agent / "src").mkdir()
+        (agent / "src" / "a.py").write_text("x\n", encoding="utf-8")
+        self.attack(agent)
+        self.git(agent, "add", "-A")
+        names = self.git(agent, "diff", "--cached", "--name-only").stdout.split()
+        self.assertEqual(names, ["src/a.py"])  # 關卡看不到 .git/ 裡的 hook
+        stolen = self.root / "stolen_old"
+        env = clean_env(GH_TOKEN="ghs_FAKE_REPO_TOKEN", STOLEN_FILE=str(stolen))
+        subprocess.run(["git", "commit", "-q", "-m", "x"], cwd=str(agent), env=env, check=True,
+                       capture_output=True)
+        self.assertEqual(stolen.read_text(encoding="utf-8"), "STOLEN=ghs_FAKE_REPO_TOKEN")
+
+    def test_hook_attack_gets_no_token_in_the_two_job_flow(self):
+        agent = self.clone("agent")
+        self.attack(agent)
+        patch, outputs = self.make_patch(agent, {"src/a.py": "x\n"})
+        self.assertIn("has_patch=true", outputs)
+        text = patch.read_text(encoding="utf-8")
+        self.assertIn("src/a.py", text)
+        self.assertNotIn("hooks", text)  # patch 只含工作樹變更，.git/ 不會跟過去
+        publish = self.clone("publish")
+        self.assertEqual(self.run_gate(publish, patch).returncode, 0)
+        self.assertFalse((publish / ".git" / "hooks" / "pre-commit").exists())
+        stolen = self.root / "stolen_new"
+        # 連 commit 步驟的環境變數裡放 token 都拿不到：此步驟在真實流程中本來就沒有 token，這裡刻意加上以加強對照
+        result = self.bash(self.commit_script, publish, ISSUE_NUMBER="7", RUN_ID="9", RUN_URL="http://x",
+                           GH_TOKEN="ghs_FAKE_REPO_TOKEN", STOLEN_FILE=str(stolen))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(stolen.exists())
+        shown = self.git(publish, "show", "--name-only", "--pretty=format:%s", "HEAD").stdout.split("\n")
+        self.assertEqual(shown[0], "fix: automated change for issue #7")
+        self.assertEqual([x for x in shown[1:] if x], ["src/a.py"])
+        self.assertEqual(self.git(publish, "branch", "--show-current").stdout.strip(), "ai-agent/issue-7-9")
+
+    def test_commit_step_alone_neutralizes_an_installed_hook(self):
+        """即使 publish 這邊的 .git/hooks 被裝了 hook（假設有別的漏洞），停用 hook 的 commit 也不會執行它。"""
+        publish = self.clone("publish")
+        self.attack(publish)
+        (publish / "src").mkdir()
+        (publish / "src" / "a.py").write_text("x\n", encoding="utf-8")
+        self.git(publish, "add", "-A")
+        stolen = self.root / "stolen_commit"
+        result = self.bash(self.commit_script, publish, ISSUE_NUMBER="7", RUN_ID="9", RUN_URL="http://x",
+                           GH_TOKEN="ghs_FAKE_REPO_TOKEN", STOLEN_FILE=str(stolen))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(stolen.exists())
+
+    def test_commit_step_rejects_non_numeric_issue(self):
+        publish = self.clone("publish")
+        result = self.bash(self.commit_script, publish, ISSUE_NUMBER="7; echo pwned", RUN_ID="9", RUN_URL="x")
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn("pwned", result.stdout)
 
 
 if __name__ == "__main__":

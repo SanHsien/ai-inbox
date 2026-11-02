@@ -269,7 +269,19 @@ if __name__ == "__main__":
 
 ## 3. 檔案二：`.github/workflows/nightly-maintenance-agent.yml`
 
-流程：挑一個 `ai-ready` issue → 只用 Copilot 專用 token 跑 Agent → 有變更才進關卡 → 通過後才領有寫入權限的 repo token → 推分支、開 Draft PR。
+流程分成兩個 job，中間只傳一個 patch 檔：
+
+```text
+ job agent（視為不可信）                         job publish（新 runner、乾淨 checkout）
+ ┌────────────────────────────────┐   patch    ┌──────────────────────────────────────────┐
+ │ 領 Copilot 專用權杖（私鑰只在這  │  (artifact) │ git apply 套用 patch（不執行 repo 程式碼）│
+ │ 一步，Agent 啟動前已結束）       │ ─────────► │ 爆破半徑關卡（檔數、禁止路徑、.git、連結） │
+ │ 跑 Agent（改工作目錄）           │  只含工作樹 │ 停用 hook 的 commit（此時沒有任何 token） │
+ │ git diff --binary 產 patch      │  變更的資料 │ 才領寫入權杖 → 推分支 → 開 Draft PR       │
+ └────────────────────────────────┘            └──────────────────────────────────────────┘
+```
+
+**品質關卡（測試、lint）不在這個工作流裡跑。** 在有寫入憑證的環境裡執行 Agent 改過的程式碼，等於把憑證交給 Agent；所以測試改由 PR 觸發的 CI 跑（用 App token 開的 PR 會觸發 CI），並在主分支保護規則把那個 CI 設為必要檢查。若想在開 PR 前先跑，請另開一個 job：只給 `contents: read`、不放任何 secret、`needs: agent`、自己下載 patch 套用後跑測試，結果不影響 publish 以外的權限。
 
 ```yaml nightly-maintenance-agent.yml
 name: nightly-maintenance-agent
@@ -284,19 +296,24 @@ on:
         required: false
         type: string
 
-permissions:
-  contents: read
-  issues: read
+permissions: {}
 
 concurrency:
   group: nightly-maintenance-agent
   cancel-in-progress: false
 
 jobs:
+  # ---- Job 1：Agent 在這裡跑。它被視為不可信：只拿得到 Copilot 專用權杖，沒有 repo 寫入權杖 ----
   agent:
     if: github.repository == 'YOUR_ORG/YOUR_REPO'
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: read
+    outputs:
+      has_patch: ${{ steps.patch.outputs.has_patch }}
+      issue_number: ${{ steps.issue.outputs.number }}
     steps:
       - name: Check out (read-only, no persisted credentials)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -327,6 +344,8 @@ jobs:
           echo "found=true" >> "$GITHUB_OUTPUT"
           echo "number=$number" >> "$GITHUB_OUTPUT"
 
+      # 私鑰只出現在這一步的環境變數，而且這一步在任何 Agent 程式碼執行之前就結束。
+      # 之後的步驟（含 Agent）拿不到私鑰；Agent 啟動時這一步的行程已經不存在。
       - name: Mint Copilot-only installation token
         id: copilot
         if: steps.issue.outputs.found == 'true'
@@ -350,41 +369,78 @@ jobs:
           echo "尚未設定 Agent 指令：請替換這一步" >&2
           exit 1
 
-      - name: Detect changes
-        id: detect
+      # 這一步仍在 Agent 的 job 裡，.git/ 可能已被 Agent 動過手腳，所以只把輸出當「資料」：
+      # 關掉 fsmonitor、外部 diff 與 textconv。這一步沒有任何 secret；patch 到了 publish job 仍會被當成不可信輸入重新檢查。
+      - name: Create patch (worktree changes only)
+        id: patch
         if: steps.issue.outputs.found == 'true'
         run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          git -c core.fsmonitor=false add -A
+          git -c core.fsmonitor=false diff --cached --binary --no-ext-diff --no-textconv > "$RUNNER_TEMP/agent.patch"
+          if [ -s "$RUNNER_TEMP/agent.patch" ]; then
+            echo "has_patch=true" >> "$GITHUB_OUTPUT"
           else
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "has_patch=false" >> "$GITHUB_OUTPUT"
             echo "Agent 沒有產生變更，結束"
           fi
 
-      - name: Quality gate (tests / lint / typecheck)
-        if: steps.detect.outputs.changed == 'true'
-        run: |
-          # 換成你專案的指令，例如：python -m unittest discover -s tests && python -m ruff check .
-          # 任何一個非 0 都讓這一步失敗，後面的 push 與 PR 都不會執行。
-          echo "尚未設定品質關卡指令：請替換這一步" >&2
-          exit 1
+      - name: Upload patch
+        if: steps.patch.outputs.has_patch == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: agent-patch
+          path: ${{ runner.temp }}/agent.patch
+          if-no-files-found: error
+          retention-days: 3
 
-      - name: Blast radius gate
-        if: steps.detect.outputs.changed == 'true'
+  # ---- Job 2：新的 runner、乾淨 checkout。只處理 patch 這份「資料」，不執行 repo 裡的任何程式碼 ----
+  publish:
+    needs: agent
+    if: needs.agent.outputs.has_patch == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out clean copy (no persisted credentials)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download patch
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: agent-patch
+          path: ${{ runner.temp }}/patch
+
+      - name: Apply patch and blast radius gate
         env:
+          PATCH_FILE: ${{ runner.temp }}/patch/agent.patch
           MAX_FILES: "10"
-          # 本範本的取捨：碰到這些路徑就拒絕；請依專案調整
-          DENY_REGEX: '^\.github/|(^|/)Dockerfile$|(^|/)docker-compose[^/]*\.ya?ml$|\.tf$|\.tfvars$'
+          MAX_PATCH_BYTES: "1048576"
+          # 本範本的取捨：碰到這些路徑就拒絕；請依專案調整。.git 與 .gitattributes 任何層級都擋
+          DENY_REGEX: '^\.github/|(^|/)\.git(/|$)|(^|/)\.gitattributes$|(^|/)\.gitmodules$|(^|/)Dockerfile$|(^|/)docker-compose[^/]*\.ya?ml$|\.tf$|\.tfvars$'
         run: |
           set -euo pipefail
-          git add -A
-          mapfile -t files < <(git diff --cached --name-only)
+          size=$(wc -c < "$PATCH_FILE")
+          if [ "$size" -eq 0 ] || [ "$size" -gt "$MAX_PATCH_BYTES" ]; then
+            echo "::error::patch 大小 $size 位元組不在 1..$MAX_PATCH_BYTES 範圍內" >&2
+            exit 1
+          fi
+          # git apply 只寫工作樹與 index，不執行 hook，也不執行任何 repo 程式碼
+          git apply --index "$PATCH_FILE"
+          mapfile -d '' -t files < <(git diff --cached --no-renames --name-only -z)
           if [ "${#files[@]}" -eq 0 ]; then
-            echo "::error::沒有任何變更" >&2
+            echo "::error::套用後沒有任何變更" >&2
             exit 1
           fi
           if [ "${#files[@]}" -gt "$MAX_FILES" ]; then
             echo "::error::變更 ${#files[@]} 個檔案，超過上限 $MAX_FILES" >&2
+            exit 1
+          fi
+          if git diff --cached --no-renames --raw | grep -E '^:[0-7]+ (120000|160000) |^:(120000|160000) '; then
+            echo "::error::patch 含符號連結或 submodule" >&2
             exit 1
           fi
           bad=$(printf '%s\n' "${files[@]}" | grep -E "$DENY_REGEX" || true)
@@ -395,9 +451,24 @@ jobs:
           fi
           echo "關卡通過：${#files[@]} 個檔案"
 
+      # commit 不需要任何 token，所以這一步沒有 secret；並用 core.hooksPath=/dev/null 停用所有 hook
+      - name: Commit with hooks disabled
+        env:
+          ISSUE_NUMBER: ${{ needs.agent.outputs.issue_number }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          [[ "$ISSUE_NUMBER" =~ ^[0-9]+$ ]] || { echo "issue 編號必須是數字" >&2; exit 1; }
+          git config user.name "nightly-maintenance-agent"
+          git config user.email "nightly-maintenance-agent@users.noreply.github.com"
+          git checkout -b "ai-agent/issue-${ISSUE_NUMBER}-${RUN_ID}"
+          git -c core.hooksPath=/dev/null commit --no-verify \
+            -m "fix: automated change for issue #${ISSUE_NUMBER}" -m "Generated by workflow run ${RUN_URL}"
+
+      # 到這裡為止沒有領任何寫入權杖。以下才領 repo 範圍的權杖，之後不再執行任何來自 patch 的內容。
       - name: Mint repo-scoped installation token
         id: repo-token
-        if: steps.detect.outputs.changed == 'true'
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           client-id: ${{ vars.APP_CLIENT_ID }}
@@ -407,45 +478,46 @@ jobs:
           permission-issues: write
 
       - name: Push branch and open draft PR
-        if: steps.detect.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ steps.repo-token.outputs.token }}
           GH_REPO: ${{ github.repository }}
-          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
+          ISSUE_NUMBER: ${{ needs.agent.outputs.issue_number }}
           RUN_ID: ${{ github.run_id }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
           branch="ai-agent/issue-${ISSUE_NUMBER}-${RUN_ID}"
           base=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
-          git config user.name "nightly-maintenance-agent"
-          git config user.email "nightly-maintenance-agent@users.noreply.github.com"
-          git checkout -b "$branch"
-          git commit -m "fix: automated change for issue #${ISSUE_NUMBER}" -m "Generated by workflow run ${RUN_URL}"
-          # 用環境變數給 git 認證標頭，不把 token 放進命令列或 .git/config
-          export GIT_CONFIG_COUNT=1
+          # 用環境變數給 git 認證標頭並停用 hook，token 不出現在命令列或 .git/config
+          export GIT_CONFIG_COUNT=2
           export GIT_CONFIG_KEY_0="http.https://github.com/.extraheader"
           export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+          export GIT_CONFIG_KEY_1="core.hooksPath"
+          export GIT_CONFIG_VALUE_1="/dev/null"
           git push origin "HEAD:refs/heads/$branch"
           gh label create ai-agent-generated --color BFD4F2 --description "Draft PR opened by the nightly agent" --force
           pr_url=$(gh pr create --draft --base "$base" --head "$branch" \
             --title "[AI-Agent-Generated] automated change for issue #${ISSUE_NUMBER}" \
             --label ai-agent-generated \
-            --body "Refs #${ISSUE_NUMBER}. Opened as a draft by ${RUN_URL}. A human must review before merge; revert with git revert on the merge commit if needed.")
+            --body "Refs #${ISSUE_NUMBER}. Opened as a draft by ${RUN_URL}. Tests have NOT run in this workflow; CI on this PR must pass and a human must review before merge. Revert with git revert on the merge commit if needed.")
           gh issue comment "$ISSUE_NUMBER" --body "Draft PR: ${pr_url}"
           echo "$pr_url"
 ```
 
 ### 3.1 設計重點
 
-- **兩顆 token，各管一件事。** `actions/create-github-app-token` 目前的輸入沒有 Copilot Requests 這個權限（v3.3.0 的 `action.yml` 查不到），所以 Copilot 用的 token 由檔案一直接呼叫 REST API 領，且只要 `organization_copilot_requests: read`；寫入 repo 用的 token 由官方 action 領，且只要 `contents`、`pull-requests`、`issues` 的 write。Agent 那一步拿不到寫入權限，通過關卡後才領 repo token。
+- **為什麼要拆兩個 job（一個已重現的漏洞）。** 若 Agent 與推送在同一個 job，Agent 可以寫入 `.git/hooks/pre-commit`；`git status` 與 `git diff --cached` 都看不到 `.git/` 內的變更，關卡照樣通過，之後帶著寫入權杖執行 `git commit` 時 hook 就跑起來，把環境變數裡的權杖寫走。拆開後 publish 在新的 runner 乾淨 checkout，`.git/` 不可能被 Agent 動過；patch 只是一份資料。測試用暫存 repo 重現了這個攻擊（見測試 `test_hook_attack_*`），並證明新流程拿不到權杖。
+- **兩顆 token，各管一件事。** `actions/create-github-app-token` 目前的輸入沒有 Copilot Requests 這個權限（v3.3.0 的 `action.yml` 查不到），所以 Copilot 用的 token 由檔案一直接呼叫 REST API 領，且只要 `organization_copilot_requests: read`；寫入 repo 用的 token 由官方 action 領，且只要 `contents`、`pull-requests`、`issues` 的 write。
+- **私鑰出現的位置。** publish job 的領權杖那一步一定有私鑰。agent job 也要領 Copilot 權杖，所以 agent job 的**第一個 Agent 之前的步驟**會用到私鑰；這一步是範本自己的腳本、在 Agent 程式碼啟動前就結束，之後的步驟（含 Agent）拿不到私鑰。官方 Workflow syntax 頁（2026-11-02 核對）寫明含機密的 job output 會在 runner 上被遮蔽、不會送給 GitHub Actions（本次未實際跑一次驗證），所以沒辦法再多拆一個只領權杖的 job。若你的威脅模型連這一步都不接受，請改用「Actions 內建 `GITHUB_TOKEN` 加 `copilot-requests: write`」那條路（指南第 5 節），它不需要私鑰。
 - **issue 內容是不受信任的輸入。** 只存成檔案放在 `$RUNNER_TEMP`，不內插進 shell 或指令；`run:` 區塊內不使用 `${{ }}`，所有值都經 `env:` 傳入（GitHub 的安全強化文件建議用中間環境變數）。
-- **兩個預留的失敗點。** 「Run agent」與「Quality gate」兩步預設 `exit 1`，沒替換就不會有 PR。這是刻意的：預設成功會讓空殼工作流看起來像在運作。
-- **爆破半徑關卡**：變更檔數超過 `MAX_FILES`、碰到 `DENY_REGEX` 的路徑（預設含 `.github/`、Dockerfile、Terraform）、或根本沒有變更，都失敗。上限與路徑是本範本的取捨，不是 GitHub 的規定。
-- **推送認證**：用 `GIT_CONFIG_*` 環境變數帶 `http.extraheader`，token 不出現在命令列或 `.git/config`；checkout 時 `persist-credentials: false`，Agent 那一步的工作目錄裡沒有任何憑證。
+- **預留的失敗點。** 「Run agent」預設 `exit 1`，沒替換就不會有 PR。這是刻意的：預設成功會讓空殼工作流看起來像在運作。
+- **爆破半徑關卡**（publish job；`git apply` 本身也會拒絕寫進 `.git/` 的路徑，這裡是第二層）：patch 大小上限、變更檔數超過 `MAX_FILES`、碰到 `DENY_REGEX` 的路徑（預設含 `.github/`、任何層級的 `.git`、`.gitattributes`、`.gitmodules`、Dockerfile、docker-compose、Terraform）、符號連結或 submodule、或套用後沒有變更，都失敗。上限與路徑是本範本的取捨，不是 GitHub 的規定。
+- **停用 hook**：commit 用 `git -c core.hooksPath=/dev/null commit --no-verify`，推送時也用環境變數把 `core.hooksPath` 設成 `/dev/null`；git 官方文件（git-config，`core.hooksPath`）就是用 `/dev/null` 說明如何停用 hook。commit 那一步沒有任何 token。
+- **agent job 產生 patch 那一步**仍在 Agent 的 job 裡，`.git/config` 可能被改過（例如設定 filter 或 fsmonitor 讓 `git add` 執行指令）。範本關掉 fsmonitor、外部 diff、textconv，但不宣稱能完全擋住；這一步沒有任何 secret，最壞結果是 Agent 自己的 job 被它自己影響，patch 到 publish 仍會被重新檢查。
+- **推送認證**：用 `GIT_CONFIG_*` 環境變數帶 `http.extraheader`，token 不出現在命令列或 `.git/config`；兩個 job 的 checkout 都是 `persist-credentials: false`。
 - **用 App token 開 PR 的原因**：用 `GITHUB_TOKEN` 觸發的事件不會再觸發新的 workflow run（`workflow_dispatch`、`repository_dispatch` 例外），所以以 `GITHUB_TOKEN` 開的 PR 不會自動跑 CI；用 App token 開則會。
-- **action 版本釘 SHA**：`actions/checkout` 釘在 v7.0.1 的 commit，`actions/create-github-app-token` 釘在 v3.3.0 的 commit（2026-11-02 以 `gh api repos/.../commits/<tag>` 核對）。升級時重新核對 SHA，不要只改註解。
-- **還需要在 repo 設定做的事**（工作流本身做不到）：主分支的保護規則要求 PR 與至少一位真人 review，且不要把這個 App 加進 bypass 名單；Actions 設定把 workflow 權限預設調成唯讀。
+- **action 版本釘 SHA**：`actions/checkout` v7.0.1、`actions/create-github-app-token` v3.3.0、`actions/upload-artifact` v7.0.2、`actions/download-artifact` v8.0.2，皆釘在 commit SHA（2026-11-02 以 `gh api repos/.../commits/<tag>` 核對）。升級時重新核對 SHA，不要只改註解。
+- **還需要在 repo 設定做的事**（工作流本身做不到）：主分支的保護規則要求 PR、至少一位真人 review 與 CI 必要檢查，且不要把這個 App 加進 bypass 名單；Actions 設定把 workflow 權限預設調成唯讀。
 
 ## 4. 本機乾跑（假私鑰，不連網）
 
@@ -464,7 +536,7 @@ Windows PowerShell 沒有 `openssl` 時，可以在 Git Bash 裡跑上面這段�
 ## 5. 這個範本沒有做到的事
 
 - **Agent 本體不在範本內。** 「Run agent」是預留步驟。官方文件（查證日 2026-11-02）只給出建立 `CopilotClient` 並傳入 `gitHubToken`／`github_token` 與 `useLoggedInUser: false` 的範例；建立 session、送 prompt 的 API 本範本沒有逐一核對，請照 SDK 的 README 寫，標為**未驗證**。
-- **工作流沒有在真實的 GitHub 上跑過。** 本範本的測試（`tests/test_github_app_s2s_template.py`）實跑了兩支腳本（簽 JWT、對本機模擬伺服器換 token）與爆破半徑關卡；整份 YAML 只做結構檢查（action 釘 SHA、`run:` 內無 `${{`、頂層 permissions 最小），沒有在 Actions 上執行。第一次使用請先 `workflow_dispatch` 手動跑。
+- **工作流沒有在真實的 GitHub 上跑過。** 本範本的測試（`tests/test_github_app_s2s_template.py`）實跑了交換腳本（簽 JWT、對本機模擬伺服器換 token）、patch 產生、爆破半徑關卡與停用 hook 的 commit；整份 YAML 只做結構檢查（action 釘 SHA、`run:` 內無 `${{`、頂層 permissions 為空、agent 與 publish 分屬兩個 job、agent job 沒有寫入權杖），沒有在 Actions 上執行。第一次使用請先 `workflow_dispatch` 手動跑。
 - **沒有提供 Bash 版。** 用 `openssl` 簽 JWT 時，私鑰要不落地就得靠行程替換（`<(...)`）；在我查證的 Windows Git Bash 環境，原生 openssl 讀不到 `/proc/<pid>/fd/*`，而本範本作者沒有 Linux 環境可實跑驗證，所以不放未跑過的腳本。Python 版同時支援 Linux、macOS、Windows。
 - **純 Python RSA 簽章不是常數時間**，只適合一次性 runner；長駐服務請改用成熟的函式庫或雲端 KMS。
 - **通知**：工作流失敗只會變紅燈；要推到 Slack、Telegram 等，請自行加步驟。
@@ -483,3 +555,6 @@ Windows PowerShell 沒有 `openssl` 時，可以在 Git Bash 裡跑上面這段�
 - [Security hardening for GitHub Actions（中間環境變數、釘 SHA）](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions)
 - [actions/create-github-app-token v3.3.0](https://github.com/actions/create-github-app-token/tree/64ab729a6294000f5aa4a4bc0b73d1f32bc45510)（`action.yml` 與 README 於該 commit 讀取）
 - [actions/checkout v7.0.1](https://github.com/actions/checkout/tree/3d3c42e5aac5ba805825da76410c181273ba90b1)
+- [actions/upload-artifact v7.0.2](https://github.com/actions/upload-artifact/tree/cf430e030ddbb5b0abf93d22962f4752f3646cd9)、[actions/download-artifact v8.0.2](https://github.com/actions/download-artifact/tree/9000827ccba6bdab643e8b6fd33ac0654aef8333)
+- [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)（含機密的 job output 不會傳遞）
+- [git-config：core.hooksPath](https://git-scm.com/docs/git-config)（以 `/dev/null` 停用 hook 的說明）、[git-apply](https://git-scm.com/docs/git-apply)

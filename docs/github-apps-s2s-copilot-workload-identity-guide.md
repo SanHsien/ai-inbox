@@ -181,34 +181,39 @@ client = CopilotClient(
  排程／手動觸發
       │
       ▼
- 領 Copilot 專用權杖（1h）──► Agent 在 Actions 一次性 runner 上改工作目錄（沒有 repo 寫入憑證）
-      │
-      ▼
- 有變更？──否──► 結束（綠燈，無 PR）
-      │是
-      ▼
- 品質關卡（測試／lint／型別）──紅燈──► 失敗終止，不推送
-      │綠燈
-      ▼
- 爆破半徑關卡（檔數上限、禁止路徑、不可無變更）──違規──► 失敗終止
-      │通過
-      ▼
- 才領 repo 權杖（contents/PR/issues write，只限這個 repo）
-      │
-      ▼
- 推 ai-agent/issue-N-<run id> 分支 ─► 開 **Draft** PR，標籤 ai-agent-generated，issue 留言連結
-      │
-      ▼
- 隔日由真人 review ─► merge 或關閉（絕不自動 merge）
+ ┌─ job: agent（視為不可信）────────────────────────────────────────────────┐
+ │ 領 Copilot 專用權杖（1h；私鑰只在這一步，Agent 啟動前就結束）            │
+ │ Agent 在一次性 runner 上改工作目錄（沒有 repo 寫入權杖）                  │
+ │ git diff --binary 產生 patch（只含工作樹變更）──► 上傳 artifact          │
+ └───────────────────────────────┬──────────────────────────────────────────┘
+                                 │ patch 是「資料」，.git/ 不會跟過去
+                                 ▼
+ 沒有變更？──是──► 結束（綠燈，無 PR）
+                                 │否
+ ┌─ job: publish（新 runner、乾淨 checkout）───────────────────────────────┐
+ │ git apply 套用 patch（不執行 repo 裡任何程式碼）                          │
+ │ 爆破半徑關卡：patch 大小、檔數、禁止路徑（含 .git/、.github/）、連結     │──違規──► 失敗終止
+ │ 停用 hook 的 commit（此時沒有任何 token）                                 │
+ │ 才領 repo 權杖（contents/PR/issues write，只限這個 repo）                  │
+ │ 推 ai-agent/issue-N-<run id> 分支 ─► 開 Draft PR（標籤、issue 留言連結）  │
+ └───────────────────────────────┬──────────────────────────────────────────┘
+                                 ▼
+ PR 觸發的 CI 跑測試／lint／型別（主分支保護設為必要檢查）──► 隔日真人 review ─► merge 或關閉（絕不自動 merge）
 ```
 
-四條防線與落地方式（以下是本 repo 的設計準則，不是 GitHub 官方規定；範本已把前三項做進工作流）：
+**為什麼是兩個 job。** 早先的設計把 Agent 與推送放在同一個 job，並在推送前用 `git status`／`git diff --cached` 做關卡，這有一個已實際重現的漏洞：Agent 可以改一個檔案，同時寫入 `.git/hooks/pre-commit`；`.git/` 的內容不會出現在 `git status` 或 `git diff --cached`，關卡照樣通過，之後帶著 repo 寫入權杖執行 `git commit` 時 hook 就會執行並取走環境變數裡的權杖。同一個 job 裡所有步驟共用工作目錄與 `.git/`，在同一個 job 內加關卡無法解決，必須讓「Agent 動過的目錄」與「帶著權杖的步驟」不在同一個 runner。因此範本拆成兩個 job，中間只傳 patch 檔；範本測試用暫存 repo 重現了這個攻擊，並證明拆分後取不到權杖。
 
-1. **主分支保護不可繞過**：主分支啟用保護規則，要求 PR 與至少一位真人核准；**不要把這個 App 放進任何 bypass 名單**。工作流本身無法替你設定，這是 repo 設定。
-2. **一律 Draft PR**：`gh pr create --draft`，標題加 `[AI-Agent-Generated]`、掛 `ai-agent-generated` 標籤，內文連到工作流 run。範本用 `Refs #N` 而不是 `Closes #N`，避免 merge 時自動關閉 issue 而跳過人的判斷。
-3. **爆破半徑封鎖**：預設最多 10 個檔案，且拒絕碰 `.github/`、`Dockerfile`、`docker-compose*.yml`、`*.tf`、`*.tfvars`。這些門檻是本範本的取捨，請依專案調整；有測試覆蓋好、壞兩種輸入（見範本測試）。
+**品質關卡改由 PR 的 CI 負責。** 在有寫入憑證的 job 裡執行 Agent 改過的程式碼（跑測試、lint）等於把憑證交給 Agent，所以範本不在 publish 裡跑測試。用 App 權杖開的 PR 會觸發 CI（`GITHUB_TOKEN` 開的不會，見第 5 節），請在主分支保護把該 CI 設為必要檢查。若想在開 PR 前先跑測試，另開一個只有 `contents: read`、沒有任何 secret 的 job 自行套用 patch 後測試。
+
+五條防線與落地方式（以下是本 repo 的設計準則，不是 GitHub 官方規定；範本已把第 2、3 項與 job 拆分做進工作流，第 1 項要在 repo 設定做）：
+
+1. **主分支保護不可繞過**：主分支啟用保護規則，要求 PR、至少一位真人核准與 CI 必要檢查；**不要把這個 App 放進任何 bypass 名單**。工作流本身無法替你設定，這是 repo 設定。
+2. **一律 Draft PR**：`gh pr create --draft`，標題加 `[AI-Agent-Generated]`、掛 `ai-agent-generated` 標籤，內文連到工作流 run，並註明測試尚未在本工作流跑。範本用 `Refs #N` 而不是 `Closes #N`，避免 merge 時自動關閉 issue 而跳過人的判斷。
+3. **爆破半徑封鎖**（在 publish job，對 patch 重新檢查）：patch 上限 1 MiB、最多 10 個檔案，拒絕碰 `.github/`、任何層級的 `.git`、`.gitattributes`、`.gitmodules`、`Dockerfile`、`docker-compose*.yml`、`*.tf`、`*.tfvars`，以及符號連結與 submodule。這些門檻是本範本的取捨，請依專案調整；測試涵蓋好、壞兩種輸入，包含手寫的 `.git/hooks/pre-commit` patch。commit 與推送另外用 `core.hooksPath=/dev/null` 停用 hook（git 官方文件以此寫法說明停用 hook）。
 4. **回滾**：Agent 的變更在一條分支、一次 commit 內，merge 後要撤回就對 merge commit 做 `git revert`；若 PR 尚未 merge，直接關閉 PR 並刪分支即可。**範本沒有自動回滾機制**——「自動」回滾需要部署與監控資訊，超出本範本範圍。
-5. **不受信任輸入**：issue 內容可能含提示注入。範本把它存成檔案、不內插進 shell 或 prompt 指令，Agent 那一步拿不到 repo 寫入權杖，最壞情況是產生一個會被關卡擋下或被真人拒絕的 Draft PR。這降低風險但不能消除：Agent 仍可能把惡意內容寫進程式碼，所以第 1、2 項的真人 review 不可省。
+5. **不受信任輸入與殘餘風險**：issue 內容可能含提示注入。範本把它存成檔案、不內插進 shell 或 prompt 指令；Agent 所在的 job 沒有 repo 寫入權杖，也沒有私鑰（唯一例外見下），最壞情況是產生一個會被關卡擋下或被真人拒絕的 Draft PR。這降低風險但不能消除：Agent 仍可能把惡意內容寫進一般程式碼檔案，所以第 1、2 項的真人 review 與 CI 不可省。已知的殘餘點：
+   - agent job 為了領 Copilot 權杖，會在 Agent 啟動**之前**的一個步驟用到私鑰（該步驟是範本自己的腳本，結束後行程消失）。官方 Workflow syntax 頁（2026-11-02 核對）寫明含機密的 job output 會在 runner 上被遮蔽、不會送給 GitHub Actions（本次未實際跑一次驗證），所以沒辦法再拆出獨立的領權杖 job。若不接受這一點，改用第 5 節的 `GITHUB_TOKEN` + `copilot-requests: write` 路線，它不需要私鑰。
+   - 產生 patch 的步驟在 Agent 的 job 內執行，`.git/config` 可能被改過；範本關閉 fsmonitor、外部 diff 與 textconv 但不宣稱能完全擋住。該步驟沒有 secret，patch 在 publish 仍被當成不可信資料重新檢查。
 
 ---
 
@@ -226,6 +231,8 @@ client = CopilotClient(
 - [Registering a GitHub App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app)、[Choosing permissions for a GitHub App](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/choosing-permissions-for-a-github-app)
 - [Rate limits for GitHub Apps](https://docs.github.com/en/apps/creating-github-apps/setting-up-a-github-app/rate-limits-for-github-apps) 與 [Rate limits for the REST API](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api)（5,000／15,000／12,500 的數字取自後者）
 - [REST API endpoints for pull requests](https://docs.github.com/en/rest/pulls/pulls)（Create a pull request 需要 Pull requests: write）
+- [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)（job outputs 含機密會被略過）
+- [git-config：core.hooksPath](https://git-scm.com/docs/git-config)、[git-apply](https://git-scm.com/docs/git-apply)
 - [Triggering a workflow](https://docs.github.com/en/actions/using-workflows/triggering-a-workflow)（`GITHUB_TOKEN` 事件不觸發新 run）
 - [Security hardening for GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions)（中間環境變數、釘 SHA）
 - npm registry `@github/copilot-sdk`、PyPI `github-copilot-sdk`（確認套件存在與版本號）
