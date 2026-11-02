@@ -97,6 +97,53 @@ _BRACE_RE = re.compile(r"\{[^}\n]*\}")
 _DOLLAR_RE = re.compile(r"\$[A-Za-z_{(]")
 _SNAKE_RE = re.compile(r"(?<![\w])[A-Za-z][A-Za-z0-9]*_[A-Za-z0-9_]+(?![\w])")
 _CALL_RE = re.compile(r"(?<![\w])[A-Za-z_][\w.]*\(\s*[^)]{0,40}\)")
+_CJK_RE = re.compile("[぀-ヿ㐀-䶿一-鿿가-힯]")
+# 函式呼叫的括號內若出現逗號、引號、等號、點，或完全沒有空白，才當成引數；
+# 括號內有中日韓字元（Google(谷歌)）或只是帶空白的註記（iPhone(iOS 17)）不算。
+_ARG_HINT_RE = re.compile(r"[,;'\"=.>]")
+_HTML_TAG_RE = re.compile(r"</?[A-Za-z][A-Za-z0-9-]*(?:\s[^<>\n]*)?/?>")
+_CAMEL_RE = re.compile(r"(?<![A-Za-z0-9])[A-Za-z][A-Za-z0-9]*[a-z0-9][A-Z][A-Za-z0-9]*(?![A-Za-z0-9])")
+# 常見品牌字（有大小寫混合但不是程式識別字）。清單是本 repo 的取捨，不完整；沒列到的品牌只會得到 WARN。
+_BRANDS = frozenset(
+    "iPhone iPad iPod iOS iPadOS macOS tvOS watchOS iCloud iMessage iTunes iMac MacBook AirPods FaceTime "
+    "GitHub GitLab YouTube LinkedIn PayPal WordPress WhatsApp TikTok OpenAI ChatGPT JavaScript TypeScript "
+    "PowerPoint OneDrive SharePoint PlayStation DeepL WeChat WooCommerce PostgreSQL MySQL MongoDB eBay "
+    "LibreOffice OpenClaw WebP DevOps".split()
+)
+_CODE_SUFFIXES = (
+    "Controller", "Handler", "Service", "Manager", "Provider", "Factory", "Repository", "Component", "Module",
+    "Utils", "Util", "Helper", "Hook", "Store", "Reducer", "Middleware", "Router", "Model", "View", "Context",
+    "Props", "State", "Config", "Client", "Adapter", "Listener", "Wrapper", "Builder",
+)
+_VERB_PREFIX_RE = re.compile(r"^(?:handle|get|set|on|use|is|has|fetch|render|validate|update|create|delete|submit|parse|init|load|save|toggle)[A-Z]")
+
+
+def find_code_call(text: str) -> Optional[str]:
+    """回傳第一個像函式呼叫的片段；括號內是中文或帶空白註記的不算。"""
+    for m in _CALL_RE.finditer(text):
+        raw = m.group(0)
+        inner = raw[raw.index("(") + 1:-1]
+        if _CJK_RE.search(inner):
+            continue
+        if inner.strip() and re.search(r"\s", inner.strip()) and not _ARG_HINT_RE.search(inner):
+            continue
+        return raw
+    return None
+
+
+def camel_identifiers(text: str) -> "tuple[List[str], List[str]]":
+    """回傳 (確定是程式識別字, 疑似但可能是品牌字)。品牌清單內的略過。"""
+    sure: List[str] = []
+    maybe: List[str] = []
+    for m in _CAMEL_RE.finditer(text):
+        tok = m.group(0)
+        if tok in _BRANDS:
+            continue
+        if tok.endswith(_CODE_SUFFIXES) or _VERB_PREFIX_RE.match(tok):
+            sure.append(tok)
+        else:
+            maybe.append(tok)
+    return sure, maybe
 _TRACE_RE = re.compile(r"(Traceback \(most recent call last\)|\bat [\w.$<>]+\(.+:\d+(:\d+)?\)|\bException\b|\bNullPointer\w*|\bNPE\b)")
 # [本 repo] 對客說明常見的內部詞，只警告。
 _JARGON = ("重構", "依賴注入", "refactor", "commit", "merge", "endpoint", "stack trace", "null pointer", "race condition", "regex")
@@ -218,9 +265,17 @@ def slop_findings(note: str) -> List[Finding]:
         m = rx.search(stripped)
         if m:
             findings.append(Finding("ERROR", code, "", f"調整說明含{label}：{m.group(0)}"))
-    m = _CALL_RE.search(stripped)
+    call = find_code_call(stripped)
+    if call:
+        findings.append(Finding("ERROR", "slop-code-call", "", f"調整說明含函式呼叫寫法：{call}"))
+    m = _HTML_TAG_RE.search(stripped)
     if m:
-        findings.append(Finding("ERROR", "slop-code-call", "", f"調整說明含函式呼叫寫法：{m.group(0)}"))
+        findings.append(Finding("ERROR", "slop-html-tag", "", f"調整說明含 HTML 標籤：{m.group(0)}"))
+    sure, maybe = camel_identifiers(stripped)
+    if sure:
+        findings.append(Finding("ERROR", "slop-camelcase", "", "調整說明含程式識別字（類別、函式或元件名）：" + "、".join(sure)))
+    if maybe:
+        findings.append(Finding("WARN", "slop-camelcase-maybe", "", "調整說明含大小寫混合的詞，若不是品牌字請改成白話：" + "、".join(maybe)))
     m = _TRACE_RE.search(stripped)
     if m:
         findings.append(Finding("ERROR", "slop-error-trace", "", f"調整說明含錯誤堆疊或例外名稱：{m.group(0)}"))

@@ -214,6 +214,36 @@ class Slop(unittest.TestCase):
     def test_plain_money_and_english_words_pass(self):
         self.assertEqual(self.bad("總價顯示 $100 與 NT$1,200，品牌 Google Chrome 都正確"), [])
 
+    def test_brand_names_with_parentheses_are_not_calls(self):
+        for phrase in ("請用 iPhone(iOS 17) 開啟", "請用 Google(谷歌) 搜尋", "請用 Chrome(新版) 開啟", "請用 Safari (iOS) 開啟"):
+            self.assertEqual(self.bad(phrase), [], phrase)
+
+    def test_real_calls_still_fail(self):
+        for phrase in ("呼叫 save() 修正", "呼叫 handleSubmit(event) 修正", "呼叫 render(a, b) 修正", "呼叫 set('x') 修正", "呼叫 obj.run(x) 修正"):
+            self.assertIn("slop-code-call", self.bad(phrase), phrase)
+
+    def test_camelcase_identifiers(self):
+        for phrase in ("修正 OrderController 的空值檢查", "改了 handleSubmit 流程", "新增 UserService 與 AuthProvider", "調整 useAuthState"):
+            self.assertIn("slop-camelcase", self.bad(phrase), phrase)
+
+    def test_brand_words_are_not_errors(self):
+        for phrase in ("請用 iPhone 或 iPad 開啟", "請到 GitHub 查看", "請在 YouTube 觀看", "請用 ChatGPT 與 macOS", "支援 LINE 與 Gmail"):
+            rec = adjustment(note=GOOD_NOTE.replace("確認會看到綠色成功訊息", phrase))
+            self.assertEqual(codes(rec), [], phrase)
+            self.assertEqual(codes(rec, "WARN"), [], phrase)
+
+    def test_unknown_mixed_case_word_warns_only(self):
+        rec = adjustment(note=GOOD_NOTE.replace("確認會看到綠色成功訊息", "確認 FooBar 顯示正常"))
+        self.assertEqual(codes(rec), [])
+        self.assertEqual(codes(rec, "WARN"), ["slop-camelcase-maybe"])
+
+    def test_html_tags(self):
+        for phrase in ("加了 <div> 區塊", "移除 </span>", "改成 <img src=a.png>", "使用 <br/> 換行"):
+            self.assertIn("slop-html-tag", self.bad(phrase), phrase)
+
+    def test_angle_brackets_in_plain_text_pass(self):
+        self.assertEqual(self.bad("金額 <3 筆時不顯示，1 < 2 成立，<專案名稱> 請替換"), [])
+
     def test_zero_width_cannot_hide_filename(self):
         self.assertIn("slop-filename", self.bad("改了 auth\u200b.ts"))
 
@@ -360,7 +390,7 @@ class DocAndTemplateExamples(unittest.TestCase):
 
     def test_template_bad_examples_would_fail(self):
         # 範本「不合格」表格裡的寫法，換成調整說明後驗證器要抓得到
-        for bad in ("修正 OrderController.php 的空值檢查", "已重構 submit_handler 並調整 API 回傳", "見 src/pages/order.tsx"):
+        for bad in ("修正 OrderController 的空值檢查", "已重構 submit_handler 並調整 API 回傳", "見 src/pages/order.tsx"):
             self.assertTrue(codes(adjustment(note=GOOD_NOTE + " " + bad)), bad)
 
 
