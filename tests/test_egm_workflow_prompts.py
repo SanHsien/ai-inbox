@@ -88,6 +88,19 @@ def check_consistency(table: dict[str, bool], prompts: dict[str, str]) -> list[s
     return errors
 
 
+def check_resolve_matches_review(prompts: dict[str, str]) -> list[str]:
+    p3 = set(VAR_RE.findall(prompts["P3"]))
+    p4 = set(VAR_RE.findall(prompts["P4"]))
+    errors: list[str] = []
+    if "TARGET_FILE" not in p3:
+        errors.append("P3 沒有 TARGET_FILE")
+    if "TARGET_FILE" not in p4:
+        errors.append("P4 沒有以 TARGET_FILE 指定被處理的設計文件")
+    if "DRAFT_PATH" in p4:
+        errors.append("P4 指向起草中的 DRAFT_PATH，修正會套到過時草稿")
+    return errors
+
+
 def render(body: str, table: dict[str, bool]) -> str:
     return VAR_RE.sub(lambda m: f"<{m.group(1).lower()}-sample>" if m.group(1) in table else m.group(0), body)
 
@@ -139,6 +152,16 @@ class WorkflowPromptsTest(unittest.TestCase):
         for i, part in enumerate(parts, start=5):
             part = re.split(r"(?m)^## ", part)[0]
             self.assertGreaterEqual(len(re.findall(r"(?m)^- \[ \] ", part)), 2, f"Stage {i} 驗核項過少")
+
+    def test_resolve_targets_same_file_as_review(self) -> None:
+        """P4 處理的文件必須是 P3 審查的同一個變數（TARGET_FILE），不是起草中的草稿。"""
+        self.assertEqual(check_resolve_matches_review(self.prompts), [])
+
+    def test_resolve_pointing_at_draft_fails(self) -> None:
+        prompts = dict(self.prompts)
+        prompts["P4"] = prompts["P4"].replace("{{TARGET_FILE}}", "{{DRAFT_PATH}}")
+        errs = check_resolve_matches_review(prompts)
+        self.assertTrue(errs, errs)
 
     # --- 壞輸入：檢查函式必須真的會失敗 ---
 

@@ -115,7 +115,7 @@
 | 4 | `egm-review` | 設計文件路徑、選填 `GoldfishContext`、選填 `Step`（`interactive`／`uninterrupted`／`feature_spec`／`implementation` 或單一階段 5–9） | 各階段報告（`zoom_out_report.md`、`comprehension_report.md`、`critic_report.md`、`intermediate_zoom_out_report.md`、`implementation_readiness_report.md`）；全程模式另有 `consolidated_review_report.md` | 人選擇處理的發現；每階段最多重審 1 次（manual 修改路徑）；Stage 之間依賴順序 5→6→7→8→9 |
 | 5 | `egm-resolve` | 發現清單 | `goldfish_review_report.md`，標註 `CONTEST`／`ESCALATE`／`PROPOSE FIX`／`DECLINE` | 人回覆後才套用修改 |
 | 6 | 人工審查 | 設計文件 PR | 核准 | 由你的團隊流程決定（上游不規定） |
-| 7 | 實作與漂移檢查 | 已核准設計文件 | 程式碼；`{YYYY-MM-DD}_DRIFT_REPORT.md` | `egm-drift-report` 建議每週跑一次，差異由人決定改文件還是改程式 |
+| 7 | 實作與漂移檢查 | 已核准設計文件 | 程式碼；`{YYYY-MM-DD}_DRIFT_REPORT.md` | `egm-drift-report` 的每週執行是 `docs/getting_started.md` 的建議（SKILL.md 沒有寫頻率），差異由人決定改文件還是改程式 |
 
 設計文件的段落骨架（上游 `skills/egm-draft/references/design_doc.md`）：Overview、The Problem、Goals、Non-Goals、Open Questions、Critical User Journeys (CUJs)、Technical Plan (Architecture)、Alternatives Considered、Non-Functional Requirements、Additional Resources、Future Improvements、Detailed Implementation Plan（含 Target Files to Create/Modify 與 Verification Plan）。可直接貼用的空白版在本手冊第 5.2 節。
 
