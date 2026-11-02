@@ -138,16 +138,19 @@ C_eff(i) = w_u·N_u + w_c·N_c + w_o·N_o + H_i
 
 ### 5.3 哪些工具不建議拒絕
 
-論文只保證「shell、讀、寫、編輯」永遠保留。外掛另外保護真人會用的工具（`AskUserQuestion`、規劃模式、子 agent、網路，PLUGIN.md 第 2 節的 Pruning candidates 列）。本工具的 `PROTECTED_TOOLS` 取兩者聯集，**遇到就略過並在報告裡說明原因**，不會默默不列：
+論文只保證「shell、讀、寫、編輯」永遠保留。外掛實際使用的保護名單是 `tokeneconomizer/plugin/adapter.py` 的 `INTERACTIVE_PROTECTED`（commit 85a8247，與 `toolprune/tools.py` 的 `PROTECTED_TOOLS` 取聯集後使用）。本工具的 `PROTECTED_TOOLS` 照抄其中的 Claude Code 名稱，**遇到就略過並在報告裡說明原因**，不會默默不列：
 
 | 工具 | 為什麼保護 |
 | :--- | :--- |
-| `Bash`、`Read`、`Edit`、`MultiEdit`、`Write`、`Grep`、`Glob` | 基本工作面；拒絕後 agent 幾乎做不了事 |
-| `AskUserQuestion`、`EnterPlanMode`、`ExitPlanMode` | 真人 session 會用來提問與規劃 |
-| `Agent` | 委派子 agent；子 agent 用到的工具也算「有在用」 |
-| `WebFetch`、`WebSearch` | 真人工作常需要上網；無頭 benchmark 才可以預設拿掉 |
+| `Bash`、`Read`、`Edit`、`MultiEdit`、`Write`、`Grep`、`Glob`、`LS`、`NotebookRead` | 基本工作面；拒絕後 agent 幾乎做不了事 |
+| `BashOutput`、`KillShell`、`KillBash` | 背景 shell 控制；擋掉會讓已啟動的背景指令失控 |
+| `AskUserQuestion`、`EnterPlanMode`、`ExitPlanMode`、`TodoWrite` | 真人 session 會用來提問、規劃、列待辦 |
+| `TaskCreate`、`TaskUpdate`、`TaskGet`、`TaskList`、`TaskOutput`、`TaskStop`、`Agent`、`Task` | 任務與子 agent 管理；子 agent 用到的工具也算「有在用」 |
+| `Skill`、`SlashCommand`、`Monitor` | 真人 session 的擴充入口 |
+| `ToolSearch` | 延遲載入工具的入口；擋掉會讓所有延遲載入的工具載不到 |
+| `WebFetch`、`WebSearch` | 上游明寫永不建議：一段時間沒用不代表下個任務不需要 |
 
-這個名單是本 repo 的保守取捨，依 TokenEconomizer 的名單與外掛文件整理，不是 Claude Code 官方的建議。
+`NotebookEdit` 不在保護名單，但上游視為高風險，要三倍證據（`HIGH_RISK`、`HIGH_RISK_FACTOR = 3`）。上游還允許使用者自訂保護樣式（如 `mcp__headroom__*`），本工具沒有這個功能。這個名單是上游的取捨，不是 Claude Code 官方的建議。
 
 ### 5.4 為什麼不能隨時寫入拒絕清單
 
@@ -161,12 +164,14 @@ PLUGIN.md 在 Claude Code 2.1.307 等版本實測（對本機假 API，未花真
 ```text
 python tools/audit_agent_tool_pruning.py S1.jsonl S2.jsonl ... --catalog catalog.json
 python tools/audit_agent_tool_pruning.py S*.jsonl --catalog catalog.json --json
-python tools/audit_agent_tool_pruning.py S*.jsonl --catalog catalog.json --deny-out deny.json
+python tools/audit_agent_tool_pruning.py S*.jsonl --catalog catalog.json --deny-out deny.json   # deny.json 不能已存在
+
+# S*.jsonl 只列主 transcript；每個 S1.jsonl 旁邊的 S1/subagents/*.jsonl 會自動併入同一個 session，不要另外傳
 ```
 
 輸入：
 
-- 每個 transcript JSONL 算一個 session。解析規則對照 TokenEconomizer 的 Claude Code 讀取器（`tokeneconomizer/trace/claude.py`，同一個 commit）：只讀 `assistant`、`user` 條目（其他類型如 `api-request-blob` 會重複呼叫）；`tool_use` 以 `id` 去重（互動 transcript 一個內容區塊一個條目）；真人 prompt 要排除 `tool_result`、`isMeta`、`isSidechain`、`isCompactSummary`、本地指令輸出、中斷標記。
+- 每個 transcript JSONL 算一個 session；同名目錄 `<檔名>/subagents/*.jsonl`（子 agent 的紀錄）自動併入該 session，其呼叫與請求會計入，但 prompt 只算主檔。同一個檔案傳兩次、或把已自動併入的子 agent 檔再傳一次，都回結束碼 2，因為重複會灌水證據。解析規則對照 TokenEconomizer 的 Claude Code 讀取器（`tokeneconomizer/trace/claude.py`，同一個 commit）：只讀 `assistant`、`user` 條目（其他類型如 `api-request-blob` 會重複呼叫）；`tool_use` 以 `id` 去重（互動 transcript 一個內容區塊一個條目）；真人 prompt 要排除 `tool_result`、`isMeta`、`isSidechain`、`isCompactSummary`、本地指令輸出、中斷標記。
 - `--catalog`：JSON 物件 `{"工具名": schema_token 數或 null}`。**transcript 只記錄呼叫過的工具、不記錄 session 載入了哪些工具**（PLUGIN.md：「An interactive transcript does not record the tool list a session loaded」），所以沒有目錄就不知道哪些工具「從沒被呼叫」；此時只輸出統計，不產生拒絕清單。schema token 數要自己量，工具不編造；填 `null` 代表未量測，節省估算會明說這部分沒算。
 
 建議規則與門檻（具名參數，預設值借自 TokenEconomizer 外掛的預設，**不是本 repo 量測**）：
@@ -181,7 +186,7 @@ python tools/audit_agent_tool_pruning.py S*.jsonl --catalog catalog.json --deny-
 
 以上三個條件取 (`min_prompts` 且 `min_sessions`) 或 `fallback_sessions`；`NotebookEdit` 的 `min_prompts` 與 `fallback_sessions` 乘 3。工具在整批紀錄裡呼叫過一次，就永遠不建議。
 
-失敗行為（結束碼 2，不輸出報告）：空檔、純空白、壞 JSON（錯誤訊息帶檔名與行號）、不是 UTF-8、行不是物件、條目缺 `type`、`assistant`/`user` 缺 `message.content`、`tool_use` 缺字串 `name`、整批沒有任何真人 prompt、目錄格式錯誤（含工具名帶括號或 `*`，那會變成別的規則）、門檻不是 ≥ 1 的整數。「沒有任何建議」是正常結果，結束碼 0。
+失敗行為（結束碼 2，不輸出報告）：同一檔案重複傳入、`--deny-out` 目標已存在、空檔、純空白、壞 JSON（錯誤訊息帶檔名與行號）、不是 UTF-8、行不是物件、條目缺 `type`、`assistant`/`user` 缺 `message.content`、`tool_use` 缺字串 `name`、整批沒有任何真人 prompt、目錄格式錯誤（含工具名帶括號或 `*`，那會變成別的規則）、門檻不是 ≥ 1 的整數。「沒有任何建議」是正常結果，結束碼 0。
 
 範例（假資料；2 個 session、共 10 個 prompt，目錄如 `{"Read": 640, "Bash": 1100, "Edit": 700, "NotebookEdit": 520, "WebSearch": 300, "mcp__github__create_issue": 420, "mcp__playwright__browser_click": 380}`）：
 
@@ -190,7 +195,7 @@ python tools/audit_agent_tool_pruning.py S*.jsonl --catalog catalog.json --deny-
 - `NotebookEdit` 需要 30 個 prompt，只有 10 個，略過並說明證據不足。
 - 預估：每次請求省 800 schema tokens，窗口內 10 次請求約省 8,000 tokens（上限，未計快取折扣）。
 
-產生的片段（`--deny-out`，已有同名檔不會合併，請自行合併進 `.claude/settings.local.json` 的 `permissions.deny`）：
+產生的片段（`--deny-out`，目標檔已存在時工具拒絕覆寫並回結束碼 2，不會合併，請自行合併進 `.claude/settings.local.json` 的 `permissions.deny`）：
 
 ```json
 {
@@ -275,7 +280,7 @@ python tools/audit_agent_tool_pruning.py S*.jsonl --catalog catalog.json --deny-
 - 論文 Table 4 的 γ、λ 符號對應（第 4.2 節）：文字擷取後無法確認。
 - Claude Code 對「中途新增 deny」的實際行為（第 5.4 節）：兩份來源描述不同層面，未自行驗證。
 - 本工具的 token 占比用「輸入 JSON 字元數 ÷ 4」估算（`chars_per_token`＝4，啟發式，本 repo 取捨），只反映呼叫輸入，不含工具回傳內容，也不是計費 token。
-- 本工具沒有處理 subagent 另存的 transcript 檔；若子 agent 檔案要算，請把它們一起傳入（它們會被當成各自的 session，且沒有 prompt 的 session 不計入證據）。
+- 子 agent 檔只認 `<主檔名>/subagents/*.jsonl` 這個上游慣例路徑；放在別處的不會被併入。
 - 論文與外掛都是 2026-10 的新資料，repo 持續更新；以上以固定 commit 為準。
 
 ## 9. 來源

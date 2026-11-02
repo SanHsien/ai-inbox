@@ -360,6 +360,98 @@ class DenyRuleTest(BaseTest):
                     self.analyze(self.sessions(2, 5), {"Foo": 1}, **kw)
 
 
+UPSTREAM_PROTECTED = (
+    "Bash", "Read", "Edit", "MultiEdit", "Write", "Grep", "Glob", "LS", "NotebookRead",
+    "BashOutput", "KillShell", "KillBash",
+    "AskUserQuestion", "EnterPlanMode", "ExitPlanMode", "TodoWrite",
+    "TaskCreate", "TaskUpdate", "TaskGet", "TaskList", "TaskOutput", "TaskStop",
+    "Agent", "Task", "Skill", "ToolSearch", "SlashCommand", "Monitor", "WebFetch", "WebSearch",
+)
+
+
+class UpstreamProtectedTest(BaseTest):
+    """名單照 microsoft/TokenEconomizer@85a8247 的 INTERACTIVE_PROTECTED。"""
+
+    def test_every_upstream_protected_tool_is_protected(self):
+        self.assertEqual(set(UPSTREAM_PROTECTED) - set(a.PROTECTED_TOOLS), set())
+
+    def test_five_sessions_never_deny_protected_tools(self):
+        ss = [self.parse(session(2, ["Zzz"], start=i * 10)) for i in range(5)]
+        catalog = {name: 50 for name in UPSTREAM_PROTECTED}
+        catalog["mcp__x__unused"] = 50
+        res = self.analyze(ss, catalog)
+        self.assertEqual(res["deny"]["rules"], ["mcp__x__unused"])
+        self.assertEqual({s["tool"] for s in res["deny"]["skipped"]}, set(UPSTREAM_PROTECTED))
+
+    def test_toolsearch_is_never_denied_via_cli(self):
+        paths = [self.w.transcript(session(2, ["Zzz"], start=i * 10)) for i in range(5)]
+        cat = self.w.catalog({"ToolSearch": 10, "Skill": 10, "TodoWrite": 10, "Foo": 10})
+        code, out, _ = run_cli(*paths, "--catalog", cat, "--json")
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out)["permissions"], {"deny": ["Foo"]})
+
+
+class DuplicateAndSubagentTest(BaseTest):
+    def test_same_file_twice_is_rejected(self):
+        p = self.w.transcript(session(5, ["Read"]))
+        code, out, err = run_cli(p, p)
+        self.assertEqual((code, out), (2, ""))
+        self.assertIn("重複", err)
+
+    def test_same_file_five_times_cannot_inflate_evidence(self):
+        p = self.w.transcript(session(1, ["Read"]))
+        cat = self.w.catalog({"Read": 10, "Foo": 10})
+        code, _, _ = run_cli(*([p] * 5), "--catalog", cat)
+        self.assertEqual(code, 2)
+
+    def test_same_file_via_different_spelling_is_rejected(self):
+        p = self.w.transcript(session(5, ["Read"]))
+        alias = p.parent / "." / p.name
+        code, _, _ = run_cli(p, alias)
+        self.assertEqual(code, 2)
+
+    def make_session_with_subagent(self, sub_entries):
+        main = self.w.transcript(session(2, ["Read"]))
+        subdir = main.with_suffix("") / "subagents"
+        subdir.mkdir(parents=True)
+        sub = subdir / "agent-1.jsonl"
+        sub.write_text(sub_entries if isinstance(sub_entries, str) else jsonl(sub_entries), encoding="utf-8")
+        return main, sub
+
+    def test_subagent_tool_use_counts_as_in_use(self):
+        sub_entries = [user("子任務", isSidechain=True)] + assistant("sm1", ("st1", "mcp__ctx7__get_docs", {}))
+        main, _ = self.make_session_with_subagent(sub_entries)
+        others = [self.w.transcript(session(2, ["Read"], start=i * 10 + 100)) for i in range(4)]
+        cat = self.w.catalog({"mcp__ctx7__get_docs": 100, "Foo": 100})
+        code, out, _ = run_cli(main, *others, "--catalog", cat, "--json")
+        self.assertEqual(code, 0)
+        res = json.loads(out)
+        self.assertEqual(res["permissions"], {"deny": ["Foo"]})
+        by = {t["name"]: t for t in res["tools"]}
+        self.assertEqual(by["mcp__ctx7__get_docs"]["calls"], 1)
+        self.assertEqual(by["mcp__ctx7__get_docs"]["sessions_used"], 1)
+
+    def test_subagent_merges_into_one_session_and_adds_no_prompts(self):
+        sub_entries = [user("子任務 prompt")] + assistant("sm1", ("st1", "Grep", {}))
+        main, _ = self.make_session_with_subagent(sub_entries)
+        s = a.load_session(main)
+        self.assertEqual(s["prompts"], 2)  # 子 agent 的 user 條目不算 prompt 之外的 session
+        self.assertEqual(s["calls"], {"Read": 1, "Grep": 1})
+        self.assertEqual(s["requests"], 2)
+
+    def test_subagent_file_passed_explicitly_is_rejected(self):
+        main, sub = self.make_session_with_subagent([user("x", isSidechain=True)])
+        code, _, err = run_cli(main, sub)
+        self.assertEqual(code, 2)
+        self.assertIn("子 agent", err)
+
+    def test_broken_subagent_file_is_exit_2(self):
+        main, _ = self.make_session_with_subagent("{nope\n")
+        code, _, err = run_cli(main)
+        self.assertEqual(code, 2)
+        self.assertIn("subagents", err)
+
+
 class StatsTest(BaseTest):
     def test_frequencies_and_shares(self):
         s = self.parse(session(4, ["Read", "Read", "Read", "Grep"]))
@@ -407,6 +499,16 @@ class CliTest(BaseTest):
         code, _, _ = run_cli(*t, "--catalog", cat, "--deny-out", dest)
         self.assertEqual(code, 0)
         self.assertEqual(json.loads(dest.read_text(encoding="utf-8")), {"permissions": {"deny": ["Foo"]}})
+
+    def test_deny_out_refuses_to_overwrite_existing_file(self):
+        t = self.two_sessions()
+        cat = self.w.catalog({"Read": 600, "Foo": 300})
+        dest = self.w.root / "deny.json"
+        dest.write_text("原本的內容", encoding="utf-8")
+        code, _, err = run_cli(*t, "--catalog", cat, "--deny-out", dest)
+        self.assertEqual(code, 2)
+        self.assertIn("不覆寫", err)
+        self.assertEqual(dest.read_text(encoding="utf-8"), "原本的內容")
 
     def test_deny_out_refuses_when_nothing_to_write(self):
         t = self.two_sessions()

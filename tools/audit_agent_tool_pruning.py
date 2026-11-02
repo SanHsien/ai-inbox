@@ -38,24 +38,25 @@ DEFAULT_MIN_SESSIONS = 2  # TokenEconomizer: toolprune_min_sessions (m)
 DEFAULT_FALLBACK_SESSIONS = 5  # TokenEconomizer: toolprune_sessions (s)
 DEFAULT_CHARS_PER_TOKEN = 4.0  # 呼叫輸入的 token 估算：字元數 / 4，啟發式，不是 tokenizer 實測
 
-# 永遠不建議 deny 的工具。內容來自 TokenEconomizer 的 tools.PROTECTED_TOOLS（Claude Code 命名）
-# 與其 docs/PLUGIN.md 第 2 節「a person's tools — AskUserQuestion, plan mode, sub-agents, the web」。
-# 這是本 repo 的保守選擇：寧可少建議，也不要讓人類少了提問、規劃、委派的能力。
-PROTECTED_TOOLS = {
-    "Bash": "基本工作面（shell）",
-    "Edit": "基本工作面（編輯）",
-    "MultiEdit": "基本工作面（編輯）",
-    "Write": "基本工作面（寫檔）",
-    "Read": "基本工作面（讀檔）",
-    "Grep": "基本工作面（搜尋）",
-    "Glob": "基本工作面（搜尋）",
-    "AskUserQuestion": "人類互動工具：真人會用它回答問題",
-    "EnterPlanMode": "人類互動工具：規劃模式",
-    "ExitPlanMode": "人類互動工具：規劃模式",
-    "Agent": "委派子 agent，真人 session 常用",
-    "WebFetch": "網路工具：真人 session 的工作常需要上網",
-    "WebSearch": "網路工具：真人 session 的工作常需要上網",
-}
+# 永遠不建議 deny 的工具。內容照抄 TokenEconomizer 外掛實際使用的 INTERACTIVE_PROTECTED
+# （tokeneconomizer/plugin/adapter.py，commit 85a8247），外掛再與 toolprune.tools.PROTECTED_TOOLS 取聯集，
+# 後者的 Claude Code 名稱（Bash、Edit、Write、Read、Grep、Glob、MultiEdit）已含在下面。
+# 這是保守選擇：寧可少建議，也不要讓人類少了提問、規劃、委派、延遲載入工具的能力。
+_PROTECTED_GROUPS = (
+    ("基本工作面（shell、讀寫編輯、搜尋）",
+     ("Bash", "Read", "Edit", "MultiEdit", "Write", "Grep", "Glob", "LS", "NotebookRead")),
+    ("背景 shell 控制（BashOutput、KillShell、KillBash）：擋掉會讓已啟動的背景指令失控",
+     ("BashOutput", "KillShell", "KillBash")),
+    ("人類互動工具：提問、規劃模式、待辦清單",
+     ("AskUserQuestion", "EnterPlanMode", "ExitPlanMode", "TodoWrite")),
+    ("任務與子 agent 管理（Task 系列、Agent）：真人 session 常用，子 agent 也依賴",
+     ("TaskCreate", "TaskUpdate", "TaskGet", "TaskList", "TaskOutput", "TaskStop", "Agent", "Task")),
+    ("Skill、SlashCommand、Monitor：真人 session 的擴充入口",
+     ("Skill", "SlashCommand", "Monitor")),
+    ("ToolSearch：延遲載入工具的入口，擋掉會讓所有延遲載入的工具載不到", ("ToolSearch",)),
+    ("網路工具：真人 session 的工作常需要上網（上游明寫永不建議）", ("WebFetch", "WebSearch")),
+)
+PROTECTED_TOOLS = {name: reason for reason, names in _PROTECTED_GROUPS for name in names}
 # 證據門檻倍率：TokenEconomizer 對 NotebookEdit 要求三倍證據。
 EVIDENCE_MULTIPLIER = {"NotebookEdit": 3}
 
@@ -92,6 +93,49 @@ def _is_prompt(ev: dict) -> bool:
     return isinstance(content, str) and content.strip() != "" and not content.startswith(
         ("<local-command", "[Request interrupted")
     )
+
+
+def subagent_files(path: Path) -> list[Path]:
+    """子 agent 的 transcript：<session 檔名去掉副檔名>/subagents/*.jsonl（TokenEconomizer
+    trace/claude.py 的 claude_subagent_files）。它們用到的工具算「有在用」，擋掉子 agent 也會失去。"""
+    return sorted((path.with_suffix("") / "subagents").glob("*.jsonl"))
+
+
+def merge_sessions(parts: list[dict]) -> dict:
+    """把主 transcript 與其子 agent 檔合成一個 session：呼叫與請求相加，prompt 只算主檔。"""
+    main, subs = parts[0], parts[1:]
+    out = {"prompts": main["prompts"], "requests": main["requests"],
+           "calls": dict(main["calls"]), "input_chars": dict(main["input_chars"])}
+    for sub in subs:
+        out["requests"] += sub["requests"]
+        for key in ("calls", "input_chars"):
+            for name, n in sub[key].items():
+                out[key][name] = out[key].get(name, 0) + n
+    return out
+
+
+def check_unique(paths: list[Path]) -> list[Path]:
+    """同一個檔案（含已被某 session 自動併入的子 agent 檔）重複傳入會灌水證據，直接拒絕。"""
+    seen: dict[Path, Path] = {}
+    for p in paths:
+        key = p.resolve()
+        if key in seen:
+            raise InputError(f"重複的 transcript：{p}（與 {seen[key]} 是同一個檔案），重複會灌水證據")
+        seen[key] = p
+    for p in paths:
+        for sub in subagent_files(p):
+            key = sub.resolve()
+            if key in seen:
+                raise InputError(f"{seen[key]} 是 {p} 的子 agent 檔，會自動併入，請不要另外傳入")
+    return paths
+
+
+def load_session(path: Path) -> dict:
+    """主 transcript 加上它的 subagents/*.jsonl，合成一個 session。"""
+    parts = [parse_transcript(path)]
+    for sub in subagent_files(path):
+        parts.append(parse_transcript(sub))
+    return merge_sessions(parts)
 
 
 def parse_transcript(path: Path) -> dict:
@@ -385,13 +429,13 @@ def _positive_int(s: str) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description="審查 Agent 工具呼叫頻率並建議 permissions.deny（唯讀）。")
-    ap.add_argument("transcripts", nargs="+", help="Claude Code transcript JSONL；一個檔案算一個 session")
+    ap.add_argument("transcripts", nargs="+", help="Claude Code transcript JSONL；一個檔案算一個 session；同名目錄 <檔名>/subagents/*.jsonl 會自動併入該 session")
     ap.add_argument("--catalog", help='工具目錄 JSON：{"工具名": schema_tokens 或 null}')
     ap.add_argument("--min-prompts", type=_positive_int, default=DEFAULT_MIN_PROMPTS)
     ap.add_argument("--min-sessions", type=_positive_int, default=DEFAULT_MIN_SESSIONS)
     ap.add_argument("--fallback-sessions", type=_positive_int, default=DEFAULT_FALLBACK_SESSIONS)
     ap.add_argument("--json", action="store_true", help="輸出完整 JSON（含 permissions.deny 片段）")
-    ap.add_argument("--deny-out", help="把 {\"permissions\": {\"deny\": [...]}} 片段寫到這個檔案（不會改既有設定）")
+    ap.add_argument("--deny-out", help="把 {\"permissions\": {\"deny\": [...]}} 片段寫到這個新檔案（已存在則 exit 2，不覆寫）")
     return ap
 
 
@@ -400,16 +444,19 @@ def main(argv: list[str] | None = None) -> int:
     # argparse 的用法錯誤本來就是結束碼 2
     args = build_parser().parse_args(argv)
     try:
-        sessions = [parse_transcript(Path(p)) for p in args.transcripts]
+        paths = check_unique([Path(p) for p in args.transcripts])
+        sessions = [load_session(p) for p in paths]
         catalog = load_catalog(Path(args.catalog)) if args.catalog else None
         res = analyze(sessions, catalog, min_prompts=args.min_prompts, min_sessions=args.min_sessions,
                       fallback_sessions=args.fallback_sessions)
         if args.deny_out:
             if res["deny"]["status"] != "ok":
                 raise InputError(f"沒有可寫的 deny 規則（狀態：{res['deny']['status']}），不寫 --deny-out")
-            Path(args.deny_out).write_text(
-                json.dumps({"permissions": res["permissions"]}, ensure_ascii=False, indent=2) + "\n",
-                encoding="utf-8")
+            try:
+                with open(args.deny_out, "x", encoding="utf-8") as fh:  # 拒絕覆寫既有檔
+                    fh.write(json.dumps({"permissions": res["permissions"]}, ensure_ascii=False, indent=2) + "\n")
+            except FileExistsError as exc:
+                raise InputError(f"--deny-out 已存在，不覆寫：{args.deny_out}（請換檔名或先自行處理）") from exc
     except InputError as exc:
         print(f"錯誤：{exc}", file=sys.stderr)
         return 2
