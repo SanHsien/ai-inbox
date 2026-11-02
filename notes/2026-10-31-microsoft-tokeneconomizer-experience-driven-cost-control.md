@@ -6,7 +6,7 @@ source_platform: "Threads (@paul009th) / Microsoft Research (TokenEconomizer)"
 author: "Paul Ho (@paul009th) / Microsoft Research"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "Token成本控制"
 short_title: "微軟TokenEconomizer黑盒成本控制"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@paul009th)](https://www.threads.com/share/BAXuXeQPq9/) ｜ [貼文永久網址](https://www.threads.com/@paul009th/post/DfH0wcMkhQt) ｜ [微軟官方研究專案 (microsoft/TokenEconomizer)](https://github.com/microsoft/TokenEconomizer)
 - **核心作者**：Paul Ho（@paul009th，AI 工程與前沿研究觀察者）／ Microsoft Research & UC Berkeley 聯合研究團隊
 - **分析主題**：微軟研究院與 UC Berkeley 聯手發布的最新開源研究專案 **TokenEconomizer**（論文標題："TokenEconomizer: Experience-Driven Black-Box Cost Control for Coding Agents"）。深入解構在主流 AI Coding Agent（如 Claude Code、Codex、GitHub Copilot CLI 等）落地工業化時，Token 消耗呈指數暴增的三大微觀病因：**重複探索（Repeated Discovery）**、**工具 Schema 載入臃腫（Unused Tool Schemas）** 與 **無效嘗試死循環（Failure Loops）**。詳細探討 TokenEconomizer 如何透過「外置黑盒控制器（Black-Box Controller）」架構，在**不侵入底層模型權重與 Agent 本體代碼**的前提下，結合 **Micro-Skill 經驗沉澱**、**動態 Tool Pruning** 與 **語意死循環熔斷（Circuit Breaker）**，在 SWE-bench 上達到維持相等解決率並**節省 18.4% 至 30.9% Token 與 API 費用**的突破性成果，並推導對本地端多 Agent 協同體系的經濟防線設計。
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（LLM 燒錢率、Cache 命中率與智慧路由 Benchmark）
   - [`notes/2026-10-17-claude-mem-autocompact-context.md`](./2026-10-17-claude-mem-autocompact-context.md)（早期 Claude-Mem 與 Autocompact 400K 理論分析）
@@ -152,23 +152,25 @@ TokenEconomizer 的突破性在於**「黑盒（Black-Box）」**哲學：不依
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261031-43`**｜**[優先級：高]** 撰寫「微軟 TokenEconomizer 黑盒成本控制與 Agent 經驗沉澱手冊：Micro-Skill 注入、工具裁剪與死循環熔斷」收錄於 `docs/token-economizer-cost-control-spec.md`
+- [x] **`T-20261031-43`**｜**[優先級：高]** 撰寫「微軟 TokenEconomizer 黑盒成本控制與 Agent 經驗沉澱手冊：Micro-Skill 注入、工具裁剪與死循環熔斷」收錄於 `docs/token-economizer-cost-control-spec.md`
   - **目標範圍**：`docs/token-economizer-cost-control-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入分析三大 Token 浪費根因（重複探索、工具 Schema 臃腫、死循環無效嘗試）的數學模型與實測代價。
     2. 規範離線 Micro-Skill 經驗沉澱管線（從 trace 提取 2~4 行高密度微技能），並定義動態注入機制。
     3. 制定動態 Tool Pruning 兩階段暴露協定與語意死循環熔斷閥值（Circuit Breaker）規則。
   - **驗收標準（DoD）**：產出 `docs/token-economizer-cost-control-spec.md`，具備標準 Markdown 結構與架構流程圖；以 `Test-Path docs/token-economizer-cost-control-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/token-economizer-cost-control-spec.md：對照 arXiv:2610.22732v1 與 microsoft/TokenEconomizer @ 85a8247，成本算式、浪費來源（23 個工具 schema 有 16 個沒用過等）、micro-skill、工具裁剪與 loop guard 數字獨立審查逐項相符；筆記 6 類查無依據的說法未採用（含與論文相反的同錯 2 次就停）。
 
-- [ ] **`T-20261031-44`**｜**[優先級：中]** 實作「Agent 工具呼叫頻率審查與動態 Deny-list 產生工具」於 `tools/audit_agent_tool_pruning.py` 與單元測試
+- [x] **`T-20261031-44`**｜**[優先級：中]** 實作「Agent 工具呼叫頻率審查與動態 Deny-list 產生工具」於 `tools/audit_agent_tool_pruning.py` 與單元測試
   - **目標範圍**：`tools/audit_agent_tool_pruning.py` 與 `tests/test_audit_agent_tool_pruning.py`
   - **具體做法**：
     1. 實作工具呼叫審核 CLI，解析 Agent 會話日誌（Transcript JSONL），統計每輪對話各 Tool 的呼叫頻率與 Token 佔比。
     2. 針對長期未被呼叫的工具產生動態 Deny-list 配置，評估裁減後的 Token 節省效益（Expected Token Savings）。
     3. 實作單元測試驗證解析邏輯、Deny-list 產生與邊界條件處理。
   - **驗收標準（DoD）**：產出 `tools/audit_agent_tool_pruning.py` 與對應測試；執行 `python -m unittest tests/test_audit_agent_tool_pruning.py` 全綠通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：tools/audit_agent_tool_pruning.py＋tests（67 測試）：依 transcript 統計工具呼叫並只對從未用過的工具建議 Claude Code permissions.deny；保護名單照上游 INTERACTIVE_PROTECTED，自動併入 subagents 紀錄，重複檔案與已存在的輸出檔都回 2，只建議不寫設定。審查抓到漏保護 ToolSearch 等與證據灌水，整合者重現驗證通過。
 
 - [ ] **`T-20261031-45`**｜**[優先級：低]** 產出標準化「多 Agent 專案 Token 預算上限與死循環熔斷檢核配置範本」收錄於 `templates/token-budget-and-loop-breaker.md`
   - **狀態**：⚪ 不做（預算與熔斷的實際設定要看平台，靜態範本幫助有限；保留成本手冊與工具呼叫審查（T-20261031-43、44）。）

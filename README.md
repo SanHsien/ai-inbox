@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 213 項任務：🔴 未做 5／🟡 進行中 0／🟢 已做 132／⚪ 不做 76
+> 共 213 項任務：🔴 未做 3／🟡 進行中 0／🟢 已做 134／⚪ 不做 76
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -47,14 +47,12 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261028-16` | 🔴 未做 | 高 | 撰寫「代碼驅動 Motion Design Agent 工作室規範指南」收錄於 `docs/code-driven-motion-design-studio-spec.md` | `docs/code-driven-motion-design-studio-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
-| `T-20261031-43` | 🔴 未做 | 高 | 撰寫「微軟 TokenEconomizer 黑盒成本控制與 Agent 經驗沉澱手冊：Micro-Skill 注入、工具裁剪與死循環熔斷」收錄於 `docs/token-economizer-cost-control-spec.md` | `docs/token-economizer-cost-control-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 | `T-20261028-17` | 🔴 未做 | 中 | 實作「Playwright + seek(t) 動畫縮圖總覽與自審打分工具」於 `tools/audit_motion_storyboard.py` | `tools/audit_motion_storyboard.py` 與 `tests/test_audit_motion_storyboard.py` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
-| `T-20261031-44` | 🔴 未做 | 中 | 實作「Agent 工具呼叫頻率審查與動態 Deny-list 產生工具」於 `tools/audit_agent_tool_pruning.py` 與單元測試 | `tools/audit_agent_tool_pruning.py` 與 `tests/test_audit_agent_tool_pruning.py` | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | 2026-10-31 |
 | `T-20261028-18` | 🔴 未做 | 低 | 產出標準化「Motion Design Studio CLAUDE.md / Skill 範本」收錄於 `templates/motion-design-studio-skill.md` | `templates/motion-design-studio-skill.md` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 132 項）</summary>
+<details><summary>展開查看已完成任務（共 134 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -181,6 +179,8 @@
 | `T-20261031-40` | 2026-11-02 | 撰寫「Claude Code 跨 Session 記憶架構評測指南：CLAUDE.md 手動規範、claude-mem 自動壓縮 Skill 與外部 Session 收割之三方權衡」收錄於 `docs/claude-code-cross-session-memory-evaluation-guide.md` | docs/claude-code-cross-session-memory-evaluation-guide.md：三條路線比較（CLAUDE.md／auto memory、claude-mem、cc-session）；獨立審查逐項對照 code.claude.com 記憶文件、claude-mem @ 52a1dfea、cc-session-reader @ 7a60e5ce 相符。更正筆記：安裝指令、星數、8KB 不是官方數字；補上 claude-mem 登入後可能在託管伺服器壓縮。 | [2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) |
 | `T-20261031-41` | 2026-11-02 | 實作「Agent 跨 Session 記憶品質與壓縮衰減率評測工具」於 `tools/audit_session_memory_compression.py` 與單元測試 | tools/audit_session_memory_compression.py＋tests：依路徑、錯誤碼、測試結論、決策四類算遺失率，另有決策類別門檻；機密、真實家目錄、無依據事實會失敗，量不出來回 2。審查後修正除以零與決策因果全丟仍通過，整合者重現驗證通過。只用假資料。 | [2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) |
 | `T-20261031-42` | 2026-11-02 | 產出標準化「高保真跨 Session 記憶寫入 Prompt 模板與漸進式記憶清理手冊」收錄於 `templates/cross-session-memory-curation-spec.md` | templates/cross-session-memory-curation-spec.md：四段式記憶寫入提示、條目格式、TTL 與唯讀的過期清單腳本；範例記憶由測試跑稽核工具，改錯一個事實就失敗。type 四值標明是範本自訂慣例，不是官方分類。 | [2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) |
+| `T-20261031-43` | 2026-11-02 | 撰寫「微軟 TokenEconomizer 黑盒成本控制與 Agent 經驗沉澱手冊：Micro-Skill 注入、工具裁剪與死循環熔斷」收錄於 `docs/token-economizer-cost-control-spec.md` | docs/token-economizer-cost-control-spec.md：對照 arXiv:2610.22732v1 與 microsoft/TokenEconomizer @ 85a8247，成本算式、浪費來源（23 個工具 schema 有 16 個沒用過等）、micro-skill、工具裁剪與 loop guard 數字獨立審查逐項相符；筆記 6 類查無依據的說法未採用（含與論文相反的同錯 2 次就停）。 | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) |
+| `T-20261031-44` | 2026-11-02 | 實作「Agent 工具呼叫頻率審查與動態 Deny-list 產生工具」於 `tools/audit_agent_tool_pruning.py` 與單元測試 | tools/audit_agent_tool_pruning.py＋tests（67 測試）：依 transcript 統計工具呼叫並只對從未用過的工具建議 Claude Code permissions.deny；保護名單照上游 INTERACTIVE_PROTECTED，自動併入 subagents 紀錄，重複檔案與已存在的輸出檔都回 2，只建議不寫設定。審查抓到漏保護 ToolSearch 等與證據灌水，整合者重現驗證通過。 | [2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) |
 | `T-20261101-10` | 2026-11-02 | 撰寫「面向非技術用戶的 Agent-Driven 開源專案安裝指引規範（AGENTS.md 最佳實踐與資安防線）」收錄於 `docs/agent-driven-onboarding-and-security-spec.md` | docs/agent-driven-onboarding-and-security-spec.md：對照原專案 castlen3/line-family-comment-bot @ 10be9bf 與 agents.md，官方、原專案、筆記歸納、本 repo 延伸四類分開標；10 條資安規則與可貼的 AGENTS.md 範本。自檢 regex 經審查改寫，整合者實跑 7 個危險寫法全中、3 個正常寫法不誤抓，並寫明 grep 無法判斷語境。 | [2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md) |
 | `T-20261101-13` | 2026-11-01 | 撰寫「OS 級 Computer Use 架構規格書：Accessibility Tree 無障礙樹、命名空間 Ref 與無像素匹配設計手冊」收錄於 `docs/agent-desktop-computer-use-spec.md` | 已完成規格書撰寫，詳述 a11y 樹與截圖方案之五維對比矩陣、Windows UIA / WindowStation Desktop 隔離深層實證機制、命名空間 Ref 演算法與處置重試合約；以 `Test-Path docs/agent-desktop-computer-use-spec.md` 驗證為 True。同時同步納入 `SanHsien/agent-desktop` 倉庫 `docs/agent-desktop-computer-use-spec.md`（commit `24a548cc`）。 | [2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md) |
 | `T-20261101-14` | 2026-11-01 | 實作「Windows UI Automation 無障礙樹快照與 Ref 點擊驗證腳本」於 `tools/verify_a11y_tree_snapshot.py` 與單元測試 | 已實作 `tools/verify_a11y_tree_snapshot.py` 與 `tests/test_verify_a11y_tree_snapshot.py`，支援 Ref 格式校驗、PowerShell Splatting 防呆剝離、STALE_REF 狀態機、骨架折疊、Windows POLICY_DENIED 限制與 Disposition 合約。執行 `python -m unittest tests/test_verify_a11y_tree_snapshot.py` 13 項測試全數綠燈通過；`tests/test_cli_help_encoding.py` 通過驗證。 | [2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md) |
@@ -348,7 +348,7 @@
 | 2026-10-31 | 🟢 | [GitHub Copilot 支援 GitHub Apps Server-to-Server 服務端認證解構：解耦工程師個人 Token、Workload-Owned 系統身分、最小權限隔離與自主 Agent 無人值守 SDLC 實戰](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md) | `github-copilot`, `server-to-server`, `github-apps` | 2 / 2（+1 不做） |
 | 2026-10-31 | ⚪ | [海外一手副業與一人商業案例解構：Starter Story、Noah Kagan 48小時驗證、Justin Welsh複利矩陣與影音字幕情報萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md) | `solopreneur`, `side-hustle`, `starter-story` | 0 / 0（+3 不做） |
 | 2026-10-31 | 🟢 | [Ann Cheng AI 似顏繪 16 宮格 LINE 貼圖 Prompt 工程：角色定裝、透明排列圖與自動切圖上架規格](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) | `line-stickers`, `avatar-prompt-engineering`, `16-grid-layout` | 3 / 3 |
-| 2026-10-31 | 🔴 | [微軟 TokenEconomizer：編程 Agent 經驗驅動的黑盒 Token 成本控制架構解析、SWE-bench 18%~31% 節省與多 Agent 經濟學](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | `token-optimization`, `agent-cost-control`, `microsoft-research` | 0 / 2（+1 不做） |
+| 2026-10-31 | 🟢 | [微軟 TokenEconomizer：編程 Agent 經驗驅動的黑盒 Token 成本控制架構解析、SWE-bench 18%~31% 節省與多 Agent 經濟學](./notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md) | `token-optimization`, `agent-cost-control`, `microsoft-research` | 2 / 2（+1 不做） |
 | 2026-10-31 | 🟢 | [NVIDIA Nemotron 3.5 Transcribe 開源語音大模型解構：30B-A4B MoE 架構、提示詞導向 ASR、8 人搶話分離與端到端音訊問答實戰](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md) | `nvidia`, `nemotron`, `nemotron-transcribe` | 1 / 1（+2 不做） |
 | 2026-10-31 | ⚪ | [OpenBot 開源本地優先多 Agent 桌面工作台解構：Claude/Codex/Grok 協同調度、FIFO 任務佇列、A2A 通訊與嵌入式瀏覽器控制實戰](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md) | `openbot`, `local-first`, `multi-agent` | 0 / 0（+3 不做） |
 | 2026-10-31 | ⚪ | [VoiceStudio 本地開源聲音克隆與 Agent 語音合成管線：零樣本語音復刻、多引擎隔離架構與個人數位分身實踐](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md) | `voicestudio`, `voice-cloning`, `text-to-speech` | 0 / 0（+3 不做） |
