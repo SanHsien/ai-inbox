@@ -1,334 +1,257 @@
 # Zero-Build WebGL/Shader Hero Section 架構規範與視覺資產手冊
 
-> 本規範收錄於 `docs/zero-build-shader-hero-sections-spec.md`，為 AI Coding Agent（Antigravity、Claude Code、Codex 等）在開發現代高奢商業 Landing Page、獨立 Portfolio 與 Generative UI 時，提供零依賴（Zero-Build）、零打包（No-Bundler）、高效能（60 FPS）的 WebGL/Canvas 視覺組件注入規範與資產指南。
+> 對象：要在網頁首屏放 WebGL 全螢幕著色器背景的開發者與 AI Coding Agent（Antigravity、Claude Code、Codex 等）。
+> 讀完能做的事：判斷原作（Hacktemplates／dvklab）哪些東西可以直接拿、哪些要自己補；用本 repo 的範本把一段著色器背景注入網頁，並用腳本驗證它真的會動、會回應游標、context 遺失後能恢復。
+> 對應檔案：自製示範 [`assets/shader-hero-demo/index.html`](../assets/shader-hero-demo/index.html)、注入範本 [`templates/zero-build-hero-injector-skill.md`](../templates/zero-build-hero-injector-skill.md)。
 
 ---
 
-## 1. 概述與問題背景（Executive Summary）
+## 0. 來源、版本與授權（先讀）
 
-在現代前端開發與 AI Agent 生成網頁的場景中，首頁頂部首屏（Hero Section）承載著 80% 以上的使用者第一視覺印象。然而，傳統 3D/著色器視覺開發與現行大型語言模型（LLM）的介面生成普遍存在兩大結構性痛點：
-
-1. **依賴地獄與環境構建負擔（Bundler & NPM Hell）**：
-   - 現代 WebGL/3D 動效生態（如 Three.js、React Three Fiber、Spline、Babylon.js）高度仰賴 Node.js、Vite/Webpack、Babel/SWC 以及各式 loader（如 `vite-plugin-glsl`、`raw-loader`）。
-   - 在 AI Agent 快速搭建原型（PoC）、產出單檔 HTML 展示或嵌入 Generative UI（如 Antigravity sidecar、iframe 預覽）時，繁重的構建配置極易導致依賴丟失、版本漂移（Version Drift）或跨框架打包失敗。
-2. **AI 生成介面的「塑膠感」與同質化（Visual Slop）**：
-   - LLM 直接生成的網頁介面常陷入套版陷阱：千篇一律的 Slate/Zinc 深色卡片、藍紫/粉紅漸層（`from-indigo-500 to-purple-600`）、浮誇的高擴散模糊陰影（`shadow-2xl`）以及裝飾性 Emoji。
-   - 缺乏物理深度、光學折射與有機運動，使得介面呈現廉價且無質感的 AI 罐頭特徵（詳見 [`docs/anti-ai-slop-frontend.md`](./anti-ai-slop-frontend.md)）。
-
-印度前端開發者 Manas 開發並開源的 **DVK Lab**（收錄 70 款動態 Hero Section）展示了「**Zero-Build（零構建免配置）**」的極致實踐：將 GLSL 頂點與片段著色器（Vertex & Fragment Shaders）、Canvas 生命週期迴圈與響應式 DOM 排版完全封裝於自包含的單檔結構中，在無需任何外部 npm 套件的情況下，直接透過瀏覽器原生 WebGL 1.0/2.0 API 實現 60 FPS 的光影流體、3D Raymarching 與液態金屬渲染。
-
-本手冊將 DVK Lab 核心架構解構為標準化的 Agent 開發規範，確保 Agent 能精確、安全且穩健地產出無罐頭特徵的頂級 Hero Section。
+| 項目 | 內容（皆於 2026-11-02 實際開啟或呼叫 API 確認） |
+| :--- | :--- |
+| 原作 repo | [`diiviikk5/Hacktemplates`](https://github.com/diiviikk5/Hacktemplates)；本文所有「原作」事實都對照 commit [`7b019b5debdf0b2b0e92eb475c8d76793162103f`](https://github.com/diiviikk5/Hacktemplates/tree/7b019b5debdf0b2b0e92eb475c8d76793162103f)（2026-10-27 15:50:28 UTC，訊息 `analytics: Microsoft Clarity on the gallery page (not in templates)`）。repo 之後的變動不在本文範圍。 |
+| 名稱 | README 標題是 `dvklab`，repo 名稱是 `Hacktemplates`。本 repo 的筆記寫作 DVK Lab。 |
+| 授權 | `LICENSE` 為 MIT，`Copyright (c) 2026 diiviikk5`。README 另聲明：MIT 只涵蓋程式碼（HTML、CSS、JS、GLSL），圖片模板所用的參考圖不在授權範圍，商用前要換成自己有權利的圖。 |
+| 作者 | 筆記寫「印度開發者 Manas（@Menace_thakur）」。**查不到這個說法的依據**：repo 的 contributors API 只有一位 `diiviikk5`（157 次提交），其 GitHub 公開資料顯示名稱 `Divik Arora`。`diiviikk5` 與 Manas／@Menace_thakur 是否為同一人、國籍為何，本文一律視為**未確定**，不採用筆記的說法。 |
+| 展示站 | `https://dvklab.vercel.app` 與 `/templates/vermilion/` 於 2026-11-02 回傳 404（`DEPLOYMENT_NOT_FOUND`）。README 的「Copy hero」流程（貼上後資源從託管站載入）目前走不通，原作的線上效果本文**未驗證**。 |
+| 本 repo 的程式碼 | demo 與範本的 GLSL／JS 都是本 repo 自行撰寫，沒有複製原作任何檔案。若你改為直接複製原作檔案，要保留其 MIT 授權聲明。 |
 
 ---
 
-## 2. Zero-Build 原生 WebGL 架構拓撲與生命週期管理
+## 1. 「Zero-Build」在原作裡實際是什麼
 
-### 2.1 零依賴自包含封裝標準（Zero-Dependency Standard）
-
-Zero-Build 的核心原則在於：**任何產出的 HTML 檔案必須在任意標準瀏覽器中雙擊即開，不發起任何非安全跨域請求，不依賴本機構建工具**。
+原作 README 的說法是 `No build, no install. Each hero is one HTML file plus one bg.js.`，也就是**不是單檔**，雙擊也不一定能開。依實際檢查，可以分成四種交付形態：
 
 ```text
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        Zero-Build WebGL Hero Section 生命週期狀態機                    │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                        │
-│   [ 初始化階段 Init ]                                                                  │
-│   ├─ 取得 WebGL 上下文 (gl = getContext('webgl') || getContext('experimental-webgl'))   │
-│   ├─ 編譯頂點著色器 (Vertex Shader: 全螢幕 Quad)                                       │
-│   ├─ 編譯片段著色器 (Fragment Shader: Procedural GLSL)                                 │
-│   ├─ 連結 Program 並快取 Uniform Locations (u_resolution, u_time, u_mouse)             │
-│   └─ 配置視窗 Resize 監聽器 (計算 DevicePixelRatio, 鋪滿容器)                           │
-│           │                                                                            │
-│           ▼                                                                            │
-│   [ 渲染循環 Render Loop ] ◄─────────────────────────────────────────────┐             │
-│   ├─ 檢查可見性 (IntersectionObserver isIntersecting && !document.hidden) │             │
-│   ├─ 傳遞 Uniform 變數 (累加時間、滑鼠座標平滑內插)                      │ 60 FPS      │
-│   ├─ 呼叫 gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)                         │ 動畫迭代    │
-│   └─ 註冊下一幀 requestAnimationFrame(loop) ─────────────────────────────┘             │
-│           │                                                                            │
-│           ├──────────────────────────────────────┬───────────────────────────────────┐ │
-│           ▼                                      ▼                                   ▼ │
-│   [ 節流休眠 Throttle ]                 [ 上下文丟失 Context Loss ]         [ 資源釋放 Dispose ]
-│   ├─ 滾動出可見範圍 (IO 觸發)           ├─ 監聽 webglcontextlost            ├─ 主動移除事件監聽
-│   ├─ 分頁切換 (visibilitychange)        ├─ cancelAnimationFrame             ├─ gl.deleteProgram
-│   └─ 暫停 rAF，待可見時主動喚醒         └─ 於 webglcontextrestored 重建     └─ gl.deleteShader
-│                                                                                        │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+  形態 1  單檔內嵌            ← 本 repo 的 demo 與範本：一個 HTML，著色器寫在內嵌 <script>
+          雙擊（file://）可開，沒有外部請求
+
+  形態 2  HTML + bg.js         ← 原作的 10 個純程式生成模板（bg.js 內沒有圖檔路徑）
+          同目錄放兩個檔；file:// 實測可跑（mercury）
+
+  形態 3  HTML + bg.js + 圖檔   ← 原作其餘 60 個（bg.js 內有 .jpg／.png 路徑）
+          必須 http(s)://；file:// 會被瀏覽器的 CORS 規則擋掉貼圖
+
+  形態 4  形態 3 + CDN          ← 原作的 ashborne、vermilion：另外從 jsdelivr 載入
+          GSAP 3.12.5、ScrollTrigger 3.12.5、Lenis 1.1.13（捲動型體驗）
 ```
 
-#### GLSL 模板字串內嵌標準
-跳過 Webpack/Vite 插件，片段著色器代碼直接以 JavaScript Template Literals（ES6 模板字串）寫入：
+形態 3 的實測（Edge 無頭模式，2026-11-02，檔案取自上述 commit）：`abyss/bg.html` 以 `file://` 開啟，console 出現 `Access to image at 'file:///…/scene.jpg' from origin 'null' has been blocked by CORS policy`；同一份檔案經 `python -m http.server` 以 `http://127.0.0.1` 開啟則沒有錯誤。`mercury/bg.html`（形態 2）兩種方式都正常。其餘圖片模板沒有逐一實測，只依 README 與 bg.js 載入圖檔的方式推論。
 
-```javascript
-const VS_SOURCE = `
-  attribute vec2 a_position;
-  varying vec2 v_uv;
-  void main() {
-    v_uv = (a_position + 1.0) * 0.5;
-    gl_Position = vec4(a_position, 0.0, 1.0);
-  }
-`;
-
-const FS_SOURCE = `
-  precision highp float;
-  varying vec2 v_uv;
-  uniform vec2 u_resolution;
-  uniform float u_time;
-  uniform vec2 u_mouse;
-
-  void main() {
-    vec2 st = (gl_FragCoord.xy * 2.0 - u_resolution) / min(u_resolution.x, u_resolution.y);
-    // 著色運算...
-    gl_FragColor = vec4(color, 1.0);
-  }
-`;
-```
-
-### 2.2 穩健生命週期管理的五大防線
-
-1. **雙重適應視窗縮放與高解析度適配（Responsive Resize & Retina DPR）**：
-   - 必須兼顧 CSS 物理尺寸與 Canvas 內部畫素緩衝區尺寸。
-   - 避免直接使用 `window.devicePixelRatio` 導致 4K/Retina 螢幕 GPU 負載爆炸，一律設定安全上限：`Math.min(window.devicePixelRatio || 1, 2.0)`。
-   - 視窗大小改變時，同步更新 `gl.viewport(0, 0, canvas.width, canvas.height)` 與 `u_resolution` uniform。
-
-2. **60 FPS 記憶體與垃圾回收優化（GC-Safe Render Loop）**：
-   - 嚴禁在 `requestAnimationFrame` 迴圈內動態配置陣列、物件或宣告大型臨時變數。
-   - Uniform 位置（`gl.getUniformLocation`）必須在初始化（Init）階段一次性取得並快取至物件中，禁止在逐幀渲染時重複呼叫。
-
-3. **離屏與後台效能節流（IntersectionObserver & VisibilityChange）**：
-   - 當 Hero Section 滾動出可視範圍（如使用者向下閱讀文章內容）時，透過 `IntersectionObserver` 暫停 `requestAnimationFrame`。
-   - 監聽 `document.addEventListener('visibilitychange')`，當分頁切換至後台（`document.hidden === true`）時立刻休眠，完全釋放 GPU 運算與電池功耗。
-
-4. **WebGL 上下文丟失守護機制（Context Loss & Restoration Protocol）**：
-   - 行動端記憶體不足或桌機睡眠喚醒時，WebGL 可能觸發 `webglcontextlost` 事件。
-   - 必須於 Canvas 上掛載事件防護：
-     ```javascript
-     canvas.addEventListener('webglcontextlost', (event) => {
-       event.preventDefault(); // 阻止預設行為，允許後續恢復
-       cancelAnimationFrame(animationFrameId);
-     }, false);
-
-     canvas.addEventListener('webglcontextrestored', () => {
-       initGL(); // 重建 Shader Program 與緩衝區
-       startLoop();
-     }, false);
-     ```
-
-5. **確定性資源釋放（Explicit Disposal）**：
-   - 在單頁應用（SPA）路由切換或組件卸載時，主動呼叫 `dispose()`：
-     - 取消 `cancelAnimationFrame`。
-     - 呼叫 `gl.deleteProgram(program)`、`gl.deleteShader(vs)`、`gl.deleteShader(fs)` 與 `gl.deleteBuffer(buffer)`。
-     - 移除全域 `window` 與 `document` 監聽器。
+因此本規範的 Zero-Build 定義是：**沒有 npm、沒有打包器、沒有框架；網頁是否單檔、是否需要 http:// 要明說，不可一概宣稱「雙擊即開」**。
 
 ---
 
-## 3. 70 款動態視覺之五大分類與 Shader 算法矩陣
+## 2. 原作 repo 的可驗證結構
 
-DVK Lab 中收錄之 70 款組件涵蓋現代創意編程（Creative Coding）的五大核心視覺領域：
+在 commit `7b019b5` 的 `templates/` 下有 **70 個目錄**（遞迴列出整棵樹共 520 個檔案，未被截斷）。每個目錄固定有 `index.html`（完整 hero）、`bg.html`（只有動態背景）、`bg.js`（背景本體，掛載在 `canvas[data-bg]`）與縮圖；圖片模板另有 `scene.jpg`、`maps.png` 等。
 
-| 分類維度 | 核心算法與數學運算元 | 代表作品 | GPU 負載級別 | 推薦商業場景 |
-| :--- | :--- | :--- | :---: | :--- |
-| **1. 流體光影著色器 (Fluids & Aurora)** | Simplex Noise / Perlin Noise 疊加 Fractional Brownian Motion (fBM)、Domain Warping 座標擾動 | Vermilion, Currents, Seascape, Aurora | 中 (Medium) | 設計工作室、品牌行銷、創意藝術、音樂串流 |
-| **2. 3D Raymarching (Distance Fields)** | Signed Distance Functions (SDF)、Sphere Tracing 步進演算法、數值梯度法線 (Gradient Normal)、軟陰影 | Relic, Geometric Void, Monolith | 高 (High) | 旗艦硬體、高階資安、深度運算、前沿研究展示 |
-| **3. 液態金屬波動 (Liquid Metal)** | 法線擾動 (Normal Perturbation)、Matcap 環境光貼圖採樣、菲涅爾反射 (Fresnel Effect)、高光 Blinn-Phong | Chrome Ripple, Mercury Waves, Cyber Platinum | 中 (Medium) | 金融科技 (FinTech)、Web3、奢華精品、硬核工程 |
-| **4. 互動式粒子場 (Particle Fields)** | 點圖元 (GL_POINTS) 渲染、滑鼠徑向引力/斥力場 (Radial Force Field)、軌跡阻尼物理衰減 | Cyber Swarm, Starfield Drift, Gravity Well | 低~中 (Low-Med) | AI 模型平台、大數據分析、雲端基礎設施 |
-| **5. ASCII Art 動態字符矩陣 (ASCII Shaders)** | 畫面灰階亮度 (Luminance `dot(c, vec3(0.299,0.587,0.114))`)、等寬字符密度映射 (Char-Density Ramp) | Matrix Terminal, ASCII Fluid, Retro Cyber | 極低 (Very Low) | 開發者工具、命令列 CLI 工具、開源專案、極客風格 |
+以下數字是**對 70 個 `bg.js` 做文字搜尋**得到的，不是逐檔人工閱讀：
 
-### 3.1 分類一：流體光影著色器（Fluids & Aurora Shaders）
-- **數學原理**：透過多倍頻（Octaves）疊加噪聲函數：
-  $$\text{fBM}(p) = \sum_{i=0}^{n-1} a^i \cdot \text{noise}(2^i \cdot p)$$
-  搭配 Domain Warping（以噪聲輸出再作為下一層噪聲輸入）：
-  $$q = \text{vec2}(\text{fBM}(p), \text{fBM}(p + \text{vec2}(5.2, 1.3)))$$
-  $$r = \text{vec2}(\text{fBM}(p + 4.0 \cdot q + \text{vec2}(1.7, 9.2)), \text{fBM}(p + 4.0 \cdot q + \text{vec2}(8.3, 2.8)))$$
-  $$\text{color} = \text{fBM}(p + 4.0 \cdot r)$$
-- **視覺效果**：有機的液體流動、極光變幻、大氣煙霧與海洋波浪。
+| 項目 | 結果 |
+| :--- | :--- |
+| 含 `getContext('webgl2')` | 60 個 |
+| 只用 WebGL 1（`getContext('webgl')`） | 10 個：cloudline、currents、event-horizon、fold、furnace、mercury、orbit-globe、prism-glass、seascape、signal |
+| 掛載點 `canvas[data-bg]`、支援 `?preview` 低解析度 | 70 / 70 |
+| 含 `prefers-reduced-motion` | 70 / 70 |
+| 含 `IntersectionObserver`（離屏暫停） | 64 個；沒有的 6 個：ashborne、halftone、orbit-ascii、relic、vapor、vermilion |
+| 含 `webglcontextlost` / `webglcontextrestored` | **0 個** |
+| 含 `dispose` 或 `deleteProgram` | **0 個** |
+| 檢查 `COMPILE_STATUS` | 70 / 70；檢查 `LINK_STATUS` 的是 **0 個** |
+| bg.js 含圖檔路徑（形態 3、4） | 60 個；不含的 10 個即上列 WebGL 1 那組 |
 
-### 3.2 分類二：3D Raymarching 空間著色器（Raymarching Distance Fields）
-- **數學原理**：在片段著色器中模擬光線從相機出發，沿著視線向量 $R_d$ 步進：
-  $$p = R_o + t \cdot R_d$$
-  以幾何體的符號距離函數 $d = \text{SDF}(p)$ 作為步長，若 $d < \epsilon$ 即判定擊中物體表面；表面法線透過微小步長偏移 $\delta$ 計算數值梯度：
-  $$N = \text{normalize}(\text{vec3}(d(p+\delta_x) - d(p-\delta_x), d(p+\delta_y) - d(p-\delta_y), d(p+\delta_z) - d(p-\delta_z)))$$
-- **視覺效果**：即時旋轉的立體幾何多面體、無限折疊分形、極致光影折射與景深霧化。
+抽查 `mercury/bg.js`：取不到 WebGL 時把 canvas 的 CSS `background` 設成漸層並結束；著色器編譯失敗只 `console.error` info log，沒有畫面提示（全部 70 個都沒有檢查 program 的連結狀態，見上表）。
 
-### 3.3 分類三：液態金屬波動（Liquid Metal Surfaces）
-- **數學原理**：將 2D 平面視為動態高度場（Heightmap）$h(u, v)$，利用三角函數與時間波形疊加：
-  $$h(u, v, t) = \sum_{k} A_k \sin(\vec{K}_k \cdot \vec{u} + \omega_k t + \phi_k)$$
-  表面反射率由視角與法線夾角決定，使用菲涅爾近似公式（Schlick's approximation）：
-  $$F \approx F_0 + (1 - F_0)(1 - \vec{N} \cdot \vec{V})^5$$
-- **視覺效果**：如水銀或液態鉻金屬般的流光波浪，對滑鼠軌跡產生即時漣漪反應。
-
-### 3.4 分類四：互動式粒子場（Interactive Particle Fields）
-- **數學原理**：每個粒子擁有原始位置、速度向量與受力加速度。滑鼠游標產生向量場 $\vec{F} = \frac{G \cdot (\vec{M} - \vec{P})}{|\vec{M} - \vec{P}|^2 + \epsilon}$，驅使粒子產生排斥或聚集迴旋。
-- **視覺效果**：數千顆具備引力軌跡的微光粒子，兼具高響應性與絲滑運動。
-
-### 3.5 分類五：ASCII Art 動態字符矩陣（Dynamic ASCII Shaders）
-- **數學原理**：將空間劃分為字元單元格（如 $8 \times 16$ px），計算單元格內背景亮度，並查表映射至等寬字符密度集：
-  $$\text{Characters} = \text{" .:-=+*#%@"}$$
-- **視覺效果**：復古賽博龐克終端、高科技資訊流與駭客代碼瀑布。
+**結論：** context 遺失恢復、Dispose、編譯與連結錯誤回報，在原作 bg.js 裡搜尋不到，是本 repo 第 4 節額外要求的工程品質，不是原作的做法。
 
 ---
 
-## 4. AI Coding Agent 呼叫與生成規格（AI Agent Spec）
+## 3. 原作的分類與名單（照 README，不自編）
 
-為防止 Agent 產出同質化的「AI 罐頭設計」，本節制定明確的 HTML/CSS 排版結構、調色盤規範與 Prompt 注入標準。
+### 3.1 README「What's inside」的五個家族
 
-### 4.1 DOM 與 CSS 層疊結構規範（Layering Protocol）
+README 只為每個家族列出 3 個範例，**沒有給 70 個作品的完整歸屬**。下表逐字對應 README（作品名即 README 所列）：
 
-Hero Section 必須採用標準的三層架構（Three-Tier Layering）：
+| 家族（README 原文） | README 對家族的描述 | README 所列範例 |
+| :--- | :--- | :--- |
+| Experiences | 多房間捲動故事：Lenis＋GSAP ScrollTrigger 驅動一個 WebGL 場景，房間之間有鏡頭俯衝 | Vermilion、Ashborne |
+| Shaders & 3D | 光線步進與光線追蹤場景，全程式生成：黑洞、液態鉻、海洋、雲、玻璃 | Event Horizon、Mercury、Currents |
+| Living artwork | 讓插畫動起來：景深視差、骨架翅膀、流動火焰、風、天氣 | Desert Dragon、Starmind、Respite |
+| ASCII & print | 以字元或半色調網點呈現的即時 3D 與模擬 | Orbit ASCII、Vapor、Halftone |
+| Gradients & glass | 顆粒漸層、條紋玻璃、絲綢摺痕、穿過條紋玻璃的火光 | Fold、Furnace、Fluted |
 
-```html
-<!-- 最外層容器：限制視窗高度與隱藏溢出 -->
-<header class="hero-container">
-  <!-- 第一層 (z-index: 0)：原生 WebGL 動態畫布，填滿視窗 -->
-  <canvas id="gl-canvas" class="hero-canvas"></canvas>
+其他 README 明列的作品：Featured 區的 Relic、Ronin、Signal、Event Horizon、Fold、Orbit ASCII、Sentinel、Vapor、Mercury；Build log 的批次說明（Batch 3 full-motion heroes、Batch 4 experiences：Vermilion 與 Relic、Batch 5 ASCII family＋Ember experience：Orbit ASCII、Halftone、Vapor、Ashborne、Ronin、Respite）。另外 `seascape`、`cloudline`、`orbit-globe`、`prism-glass` 四個目錄存在，但 README 全文沒有提到。
 
-  <!-- 第二層 (z-index: 1)：CSS 漸層遮罩與暗角疊加層，屏蔽滑鼠事件 -->
-  <div class="hero-overlay-mask" aria-hidden="true"></div>
+### 3.2 70 個目錄清單（commit `7b019b5`）
 
-  <!-- 第三層 (z-index: 2)：語意化文字、CTA 按鈕與 HUD 狀態面板 -->
-  <div class="hero-content">
-    <nav class="hero-nav">...</nav>
-    <div class="hero-body">
-      <span class="hero-kicker">客觀規格標記</span>
-      <h1 class="hero-title">高階商業主標題</h1>
-      <p class="hero-desc">精確具體的產品描述與數值指標</p>
-      <div class="hero-actions">
-        <a href="#action" class="btn btn-primary">立即體驗</a>
-        <a href="#docs" class="btn btn-secondary">架構手冊</a>
-      </div>
-    </div>
-    <div class="hero-footer-status">...</div>
-  </div>
-</header>
-```
+依 bg.js 是否含圖檔路徑分兩組（分組是本文依檔案內容的機械分類，**不是 README 的家族**）：
 
-```css
-/* 標準 CSS 樣式規範 */
-.hero-container {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  overflow: hidden;
-  background-color: #020617; /* 預設 Slate-950 底色，防止 WebGL 載入前白屏 */
-}
+- **不含圖檔路徑（10）**：cloudline、currents、event-horizon、fold、furnace、mercury、orbit-globe、prism-glass、seascape、signal。
+- **含圖檔路徑（60）**：abyss、ash-king、ashborne、aura、aurora、aurora-horizon、beam、bokeh、canyon-blue、canyon-magenta、canyon-violet、daybreak、desert-dragon、dusk、eclipse、ember、evergreen、fluted、fuji、glitch、grotto、halftone、ink-dragon、meadow、nimbus、orbit-ascii、pixel-sword、pocket、prism、red-dragon、redwood、reed-crimson、reed-ember、reed-flame、reed-rose、reed-spectrum、relic、respite、riptide、ronin、ruins、sandstorm、savanna、sentinel、silk、smoke-dragon、solstice、spectrum、starmind、static、stipple、stratosphere、sunset-ridge、thermal、tidewave、twilight、ukiyo、ultraviolet、vapor、vermilion。
 
-.hero-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  display: block;
-}
+README 說明 `Currents` 是「Robert Beatty 的《Currents》封面外觀的 shader 重建」、`Starmind` 的海報作者是 Dogan Ural；`Signal` 的風格參考圖帶浮水印，所以只重建效果不用圖。
 
-.hero-overlay-mask {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none; /* 關鍵：確保滑鼠軌跡能穿透至底層 Canvas */
-  background: radial-gradient(circle at 50% 50%, rgba(2, 6, 23, 0.2) 0%, rgba(2, 6, 23, 0.85) 100%);
-}
+### 3.3 勘誤：筆記與上一版規範寫的作品名
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: 100vh;
-  padding: 2.5rem 2rem;
-  pointer-events: none; /* 預設穿透 */
-}
+筆記與本文上一版引用了下列作品名。在 commit `7b019b5` 的目錄樹、README 與全部 `bg.js`／`index.html` 中**都查無**：Geometric Void、Monolith、Chrome Ripple、Mercury Waves、Cyber Platinum、Cyber Swarm、Starfield Drift、Gravity Well、Matrix Terminal、ASCII Fluid、Retro Cyber。本文不再使用這些名稱。
 
-.hero-content a,
-.hero-content button,
-.hero-content input {
-  pointer-events: auto; /* 互動元素恢復點擊響應 */
-}
-```
+筆記的「五大分類」（流體光影、3D Raymarching、液態金屬、粒子星系、ASCII）也不是原作的分類：README 沒有「粒子」家族，Vermilion 與 Relic 在 README 屬於 Experiences 而不是「流體光影」，Currents 屬於 Shaders & 3D。概念上相近的原作作品只能這樣對照，**它們並不是同一件作品**：
 
-### 4.2 Anti-Slop 視覺美學硬閘門（嚴格檢驗）
-
-產出物必須嚴格通過 [`tools/verify_no_slop.py`](../tools/verify_no_slop.py) 外部裁判檢驗：
-
-1. **拒絕浮誇無腦陰影 (SLOP-01)**：
-   - 嚴禁使用 `shadow-2xl` 或大半徑模糊陰影（`box-shadow: 0 25px 50px rgba(0,0,0,0.5)`）。
-   - 一律採用 `1px` 實色微邊框（如 `border: 1px solid rgba(255, 255, 255, 0.1)`）與深淺表面階層（Surface Elevation）襯托層次。
-2. **拒絕俗套藍紫漸層 (SLOP-02)**：
-   - 嚴禁使用 `from-indigo-500 to-purple-600` 或霓虹粉紫色彩。
-   - 採用極簡深階單色調（Slate/Zinc/Titanium）搭配冷調金屬銀灰、琥珀褐（Amber）或深邃翠綠（Emerald）。
-3. **拒絕裝飾性 Emoji (SLOP-03)**：
-   - 標題與按鈕中嚴禁出現 `🚀`、`💡`、`🔥`、`✨`、`🎉`、`🔮`、`🪄`、`🌟`。
-   - 使用幾何符號（`·`、`›`、`—`）或純 CSS/SVG 幾何圖示。
-4. **拒絕虛假動態徽章 (SLOP-04)**：
-   - 嚴禁使用 `animate-ping`、`animate-pulse` 或無實際數據串流的 `[LIVE]` 假呼吸燈。
-   - 標註具體更新頻率（如 `更新頻率：60Hz WebGL Loop`）。
-5. **拒絕 AI 罐頭黑話文案 (SLOP-05)**：
-   - 嚴禁使用 `delve`、`elevate`、`seamlessly`、`revolutionize`、`tapestry`、`empower`、`unleash`、`game-changer`。
-   - 以真實客觀功能、技術參數與業務價值陳述。
+| 筆記的概念 | 原作中概念相近的作品（README 描述） |
+| :--- | :--- |
+| 液態金屬 | Mercury（liquid chrome that takes any shape）、Currents（chrome sphere in op-art streamlines） |
+| ASCII 字符矩陣 | Orbit ASCII（ASCII 引擎：scene → cell buffer → JetBrains Mono 字型圖集）、Vapor（可用游標攪動的 ASCII 煙霧） |
+| 粒子 | README 沒有對應家族；Ronin 的描述有 `wisps stream`，但那不是粒子系統的證據 |
 
 ---
 
-## 5. 可讀性、效能優化指標與 Mobile 降級策略
+## 4. 本 repo 的 Zero-Build 生命週期規範
 
-### 5.1 效能指標與量化門檻
-1. **桌機端（Desktop）**：
-   - 渲染影格率：穩定在 **58 ~ 60 FPS**（16.6ms / frame）。
-   - GPU 負載率：持續佔用率 $< 15\%$。
-   - 初始化 Compile & Link 耗時：$< 120\text{ ms}$。
-2. **行動端（Mobile）**：
-   - 渲染影格率：$\ge 45\text{ FPS}$。
-   - 記憶體消耗峰值：$< 50\text{ MB}$。
-
-### 5.2 行動裝置自動降級階梯（Graceful Degradation）
+下表是本 repo 對**自行撰寫**的 hero 背景的要求（原作做到的部分已在第 2 節標明）。每一項都有對應的瀏覽器實測，見第 7 節。
 
 ```text
-  [ 裝置能力評估 ]
-  ├─ 檢查 navigator.hardwareConcurrency (核心數 <= 4 ?)
-  ├─ 檢查 window.innerWidth (< 768px ?)
-  └─ 檢查 GPU 渲染器字串 (WEBGL_debug_renderer_info)
-          │
-          ├── [ 高效能桌機 High-End Desktop ]
-          │   └─ DPR = 2.0, Raymarching 步進 64 次, 完整 fBM 5 倍頻
-          │
-          ├── [ 標準行動端 / 平板 Mobile / Tablet ]
-          │   └─ DPR = 1.0 ~ 1.5, Raymarching 步進降為 32 次, fBM 降為 3 倍頻
-          │
-          └── [ 極低階裝置 / WebGL 不支援 Fallback ]
-              └─ 自動平滑降級為 CSS 靜態微漸變與輕量 Canvas 2D 粒子
+          ┌─────────────┐  取不到 WebGL
+          │    init     ├──────────────────────────▶ nowebgl（隱藏 canvas，露出 CSS 漸層）
+          └──────┬──────┘  編譯／連結失敗
+                 │         ─────────────────────────▶ error  （同上，console.error 含 info log）
+                 ▼
+   ┌──▶ ┌─────────────┐  分頁在背景／畫布離開可視範圍
+   │    │   running   ├──────────────────────────▶ paused ──(恢復可見)──┐
+   │    └──────┬──────┘                                                  │
+   │           │ webglcontextlost                                        │
+   │           ▼                                                         │
+   │    ┌─────────────┐  webglcontextrestored：重新 compile → link →     │
+   │    │    lost     ├──────────────────────────  建緩衝區 → 取 uniform ─┘
+   │    └─────────────┘          位置，再重啟迴圈
+   └─────────────────────────────────────────────────────────────────────
+   prefers-reduced-motion: reduce → static（只畫一幀，不跑迴圈）；dispose() → disposed
 ```
 
-降級程式碼片段實作：
-```javascript
-const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
-const maxDpr = isMobile ? 1.25 : 2.0;
-const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+1. **取得 context 與降級**：`getContext('webgl')` 取不到時，隱藏 canvas、露出容器的 CSS 漸層，狀態標為 `nowebgl`；不要留下空白畫布，也不要在畫面上寫「執行中」。
+2. **編譯與連結錯誤回報**：對每個 shader 檢查 `COMPILE_STATUS`，對 program 檢查 `LINK_STATUS`，失敗時取 `getShaderInfoLog`／`getProgramInfoLog`，用 `console.error` 輸出並顯示在畫面狀態上，同時釋放已建立的半成品。
+3. **Resize 與 DPR**：畫布像素尺寸 = CSS 尺寸 × `min(devicePixelRatio, 2.0)`，並同步 `gl.viewport`。`2.0` 是本 repo 的取捨，不是外部標準。
+4. **渲染迴圈**：由一個 `sync()` 函式依「是否已釋放、是否 context 遺失、是否出錯、是否 reduced-motion、分頁是否可見、是否在可視範圍」決定要不要跑 `requestAnimationFrame`，並把原因寫進狀態。游標平滑用 `1 - exp(-dt/τ)`，與影格率無關。
+5. **離屏與背景節流**：`IntersectionObserver` 與 `visibilitychange`（W3C Page Visibility）。
+6. **Context 遺失與恢復**：依 Khronos WebGL 規範，`webglcontextlost` 必須呼叫 `event.preventDefault()` 才會收到 `webglcontextrestored`；恢復後 context 遺失前建立的 WebGL 資源（紋理、緩衝區、program 等）都已失效。所以：
+   - 遺失時**只丟掉參考，不要對失效物件呼叫 `delete*`**（會產生 `INVALID_OPERATION: delete: object does not belong to this context`）；
+   - 恢復時**整條管線重建**，只重啟動畫迴圈會持續出現 `INVALID_OPERATION: no valid shader program in use`（上一版範本就是這個問題）。
+7. **Dispose**：取消 rAF、斷開兩個 observer、移除 `resize`／`pointermove`／`visibilitychange`／context 兩個事件／媒體查詢的監聽，再 `deleteBuffer`、`deleteShader`×2、`deleteProgram`；重複呼叫不可出錯。
+8. **prefers-reduced-motion**：開頁時為 `reduce` 只畫一幀固定時間點的畫面、不跑迴圈、不隨游標重畫；執行中切換偏好要跟著變（`matchMedia(...).addEventListener('change', …)`）。原作 70 個 bg.js 都有處理此項，是少數與原作一致的地方。
+9. **游標互動必須進得了像素**：只在著色器裡算出變數但沒有接到輸出顏色，等於沒有互動（上一版液態金屬模式就是這樣）。本 repo 的做法是讓游標漣漪同時進入高度場，法線由高度場差分而來，所以高光會隨游標改變。
+10. **狀態文字不可寫死**：FPS、解析度與生命週期狀態都來自實際執行結果；著色器壞掉時不可顯示「正常執行中」。
 
-// 著色器內根據 u_quality 參數調整迴圈上限：
-// uniform int u_quality; // 0: mobile (32 steps), 1: desktop (64 steps)
+可執行的實作在範本的注入腳本與 demo 內；範本附的 `verify_hero.py` 把上述 3～10 項做成可跑的檢查。
+
+---
+
+## 5. 本 repo 提供的模板與它們的限制
+
+| 模板 | 內容 | 與原作的關係 | 限制 |
+| :--- | :--- | :--- | :--- |
+| A 液態金屬 | 域扭曲 fBM 高度場＋游標漣漪，由高度場差分求法線，Blinn-Phong 高光與近似菲涅爾項 | 概念與 Mercury 相近；程式碼自寫 | 不是光線追蹤，沒有環境反射 |
+| B 流體 | 正弦波疊加 fBM，游標周圍有漣漪 | 無對應 | 純色階，沒有物理模擬 |
+| C 點狀粒子場 | 片段著色器內每格一顆點，上飄、閃爍，游標附近的點被推開並變亮 | README 沒有粒子家族 | **不是 `GL_POINTS` 粒子系統**；點被限制在自己的格子內 |
+| D 字元密度風 | 亮度場量化成 6 級，每級對應 `空白 . : + # @` 的手繪形狀 | 概念與 Orbit ASCII／Vapor 相近 | **不是字型文字**，沒有字型圖集，也不需要圖檔 |
+
+沒有提供：3D Raymarching 場景、需要圖檔／深度圖的模板、GSAP＋Lenis 捲動體驗。需要這些時請使用原作並遵守其授權（第 0 節）。
+
+fBM 與 domain warping 是通用技法，可參考 The Book of Shaders 第 13 章；fBM 定義為多個倍頻的雜訊相加，每過一個倍頻頻率乘 2、振幅乘 0.5：
+
+```text
+fBM(p) = Σ_{i=0..n-1}  a^i · noise(2^i · p)      本 repo 的實作：n = 4、a = 0.5，每層再旋轉座標
 ```
 
 ---
 
-## 6. 一手來源查證與引用（Primary Sources）
+## 6. AI Agent 呼叫規格
 
-本手冊內容由執行 Agent 於 **2026-11-02** 完成一手官方規格與來源查證，所引述之專案、API 與演算法皆具備客觀真實性：
+### 6.1 DOM 三層結構
 
-1. **DVK Lab 專案與展示**：
-   - 專案官方展示站：[DVK Lab (dvklab.vercel.app)](https://dvklab.vercel.app)
-   - 原文作者與推薦來源：Ethan（pizza的存錢日記＆＆自我成長，`@ethansavemoneydairy`）與原始作者 Manas（`@Menace_thakur`，[X 個人頁面](https://x.com/Menace_thakur)）。
-   - 貼文永久出處：[Threads 分享貼文](https://www.threads.com/@ethansavemoneydairy/post/DfEsaOXgBNx)（查證日期：2026-10-31 / 2026-11-02）。
-2. **Khronos Group 官方 WebGL 規範**：
-   - [WebGL 1.0 Specification (Khronos Group)](https://registry.khronos.org/webgl/specs/latest/1.0/)：頂點/片段著色器管線、Shader 編譯與 Program 連結 API。
-   - [WebGL 2.0 Specification (Khronos Group)](https://registry.khronos.org/webgl/specs/latest/2.0/)：GLSL ES 3.00 與浮點數紋理支援。
-   - [WEBGL_lose_context Extension Specification](https://registry.khronos.org/webgl/extensions/WEBGL_lose_context/)：上下文遺失與恢復標準介面。
-3. **W3C 網頁效能與標準 API**：
-   - [W3C Intersection Observer API Specification](https://www.w3.org/TR/intersection-observer/)：視窗可視性非同步觀察與節流。
-   - [W3C Page Visibility Level 2 (document.visibilitychange)](https://www.w3.org/TR/page-visibility-2/)：分頁背景休眠標準。
-4. **數學與著色器算法原始文獻**：
-   - Inigo Quilez (IQ)：[Distance Functions and Raymarching](https://iquilezles.org/articles/distfunctions/)（SDF 距離場公式庫與數值梯度法線）。
-   - Stefan Gustavson：[Simplex Noise Demystified](http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf)（Procedural Noise 數學原理）。
+```text
+  <header>        容器：CSS 漸層底色（canvas 被隱藏時露出的降級畫面）
+    ├─ <canvas>   底層：WebGL，aria-hidden，不攔截任何互動
+    ├─ <div>      中層：暗角與對比保護遮罩，pointer-events: none
+    └─ <div>      頂層：標題、說明、CTA；外層 pointer-events: none，只有連結與按鈕設為 auto
+```
+
+滑鼠監聽掛在 `window`，所以不會被遮罩或內容層擋住。完整 HTML 在範本的步驟 2。
+
+### 6.2 Prompt 範本（填空即可交給 Agent）
+
+```text
+任務：在 <專案路徑/index.html> 的 <body> 開頭加入 Shader Hero 背景。
+依據：templates/zero-build-hero-injector-skill.md（若不在這個 repo，請改用我提供的範本檔）。
+專案調性：<金融科技／設計工作室／資料平台／開發者工具／其他：____>
+指定模板：<A 液態金屬 | B 流體 | C 點狀粒子場 | D 字元密度風>   （不確定就依範本步驟 1 的建議）
+文案：kicker=<____>  title=<____>  description=<____>  CTA 文字=<____>  CTA 連結=<____>
+品牌色：<#rrggbb，沒有就沿用範本預設>
+限制：不得新增 npm 相依與外部腳本；不得刪除既有內容；著色器失敗時要降級成 CSS 漸層。
+驗收：執行 verify_hero.py 並貼出完整輸出；結束碼必須是 0。結束碼 2（環境問題）不算通過，要回報原因。
+```
+
+### 6.3 Anti-Slop 靜態檢查
+
+在 ai-inbox 內可跑 `python tools/verify_no_slop.py <檔案>` 掃描高擴散陰影、藍紫漸層、裝飾 Emoji 等特徵（規則見 [`anti-ai-slop-frontend.md`](./anti-ai-slop-frontend.md)）。它只存在於本 repo，且只看靜態樣式，**不能**證明背景會動；動態行為以第 7 節的驗證為準。
+
+---
+
+## 7. 驗證方式（可重現）
+
+```bash
+python -m unittest discover -s tests          # 全套；沒有 Playwright 時瀏覽器測試會明確 skip
+python -m unittest tests.test_shader_hero_demo tests.test_zero_build_hero_injector_template -v
+```
+
+| 驗證項目 | 作法 | 對應測試 |
+| :--- | :--- | :--- |
+| 畫面不是空白、迴圈持續繪製、FPS 是實測值 | 真實 Edge/Chrome，間諜統計 `drawArrays` 次數、`readPixels` 取樣 | `test_shader_hero_demo.py` |
+| 游標有效 | 真實 `mouse.move` 兩個位置，凍結 `u_time` 後比對像素；液態金屬與流體兩種模式都測 | 同上 |
+| context 恢復 | 按頁面按鈕呼叫 `WEBGL_lose_context`，檢查遺失期間不繪製、恢復後 `linkProgram` 多一次、`gl.isProgram` 為真、畫面與遺失前一致、console 無警告 | 同上；範本以 `verify_hero.py` 驗 |
+| Dispose | 間諜統計 `deleteProgram`／`deleteShader`／`deleteBuffer`，並確認之後不再繪製、`pointermove` 不再更新狀態 | 同上 |
+| reduced-motion | `reduced_motion='reduce'` 開頁與執行中切換 | 同上 |
+| 失敗狀態如實顯示 | 無 WebGL、GLSL 被弄壞時，狀態文字、`role=alert`、CSS 降級、`console.error` | 同上 |
+| 測試抓得到壞實作 | 突變測試：把 index.html 與注入腳本刻意改壞（GLSL 打爛、迴圈不啟動、`drawArrays` 停用、游標不進 uniform、刪掉 `contextlost` 監聽、恢復不重建 Program、dispose 不釋放、reduced-motion 被忽略…），同一組 probe 必須報錯，存活者使測試失敗 | 同上 |
+| 範本內的程式真的能跑 | 測試從 Markdown 抽出骨架、注入腳本、模板 A～D 與 `verify_hero.py` 組成 HTML，真的跑；壞輸入（GLSL 打爛、佔位字串沒填、著色器不用 `u_mouse`）必須 exit 1 | `test_zero_build_hero_injector_template.py` |
+
+瀏覽器測試需要 `pip install playwright`，以及 Edge、Chrome 或 `python -m playwright install chromium` 安裝的 Chromium；沒有時整個類別 `skipTest` 並寫明原因，不會讓全套變紅，也不會靜默當作通過。畫面標準差、像素差比例等門檻是本 repo 對 320×180 軟體渲染（SwiftShader）畫面的自訂取捨，不是外部標準。
+
+---
+
+## 8. 效能與降級：只寫有依據的部分
+
+上一版寫的 GPU 使用率、編譯耗時、行動端記憶體等門檻數字，沒有來源也沒有量測，已刪除。本 repo 目前**只有軟體渲染（SwiftShader）下的觀測，沒有實體 GPU 的量測**，因此不訂 FPS、GPU 使用率或記憶體的硬門檻。要訂門檻請在目標裝置上量測後寫進該專案，並標明量測條件。
+
+可以直接採用的降級策略（皆為 feature detection，不靠 User-Agent 判斷）：
+
+| 情境 | 做法 | 是否已實測 |
+| :--- | :--- | :--- |
+| 沒有 WebGL | 隱藏 canvas，露出 CSS 漸層 | 是（無頭瀏覽器強制 `getContext` 回傳 null） |
+| 著色器編譯／連結失敗 | 同上，並回報 info log | 是 |
+| 偏好減少動態 | 單幀靜態畫面 | 是 |
+| 分頁在背景、畫布離開可視範圍 | 暫停迴圈 | 離屏與背景狀態未做自動化實測（邏輯與其他條件同一個 `sync()`） |
+| 高 DPR 螢幕 | DPR 上限 2.0（本 repo 取捨） | 上限已寫進程式；測試只在 DPR=1 驗證畫布尺寸，上限本身未測 |
+| 行動裝置較弱的 GPU | `mediump` 退回；也可再降低 DPR 上限或迴圈次數 | 未在實體手機驗證 |
+
+原作 README 另提到 `?preview` 參數可得半解析度渲染，這是原作的功能，本 repo 範本沒有實作。
+
+---
+
+## 9. 來源與查證（查證日期 2026-11-02）
+
+已實際開啟並確認內容的：
+
+- 原作 repo `diiviikk5/Hacktemplates` @ `7b019b5`：`README.md`、`LICENSE`、整棵樹（Git Trees API，遞迴 591 筆，`truncated: false`，其中 `templates/` 下 70 個目錄）、70 個 `bg.js` 與 `index.html` 的原始檔、contributors API（1 位，`diiviikk5`）、`users/diiviikk5` 公開資料；`abyss`、`mercury` 兩個模板以 `file://` 與 `http://` 實際載入比較。
+- [WebGL 1.0 規範（Khronos）](https://registry.khronos.org/webgl/specs/latest/1.0/)：`webglcontextlost` 需 `preventDefault()` 才送 `webglcontextrestored`；恢復後遺失前建立的資源失效。
+- [WEBGL_lose_context 擴充（Khronos）](https://registry.khronos.org/webgl/extensions/WEBGL_lose_context/)：`loseContext()`／`restoreContext()` 模擬遺失與恢復。
+- [Media Queries Level 5（W3C）](https://www.w3.org/TR/mediaqueries-5/#prefers-reduced-motion)、[MDN prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)。
+- [Intersection Observer（W3C）](https://www.w3.org/TR/intersection-observer/)、[Page Visibility Level 2（W3C）](https://www.w3.org/TR/page-visibility-2/)。
+- [The Book of Shaders 第 13 章（Fractal Brownian Motion）](https://thebookofshaders.com/13/)。
+
+**未驗證或已移除**：
+
+- Threads 貼文與 X（@Menace_thakur）頁面：本次未重新開啟，筆記裡關於貼文的敘述不在本文範圍。
+- `https://dvklab.vercel.app`：404，無法確認任何線上展示內容。
+- iquilezles.org（SDF 與 domain warping 文章）：同日整站回傳 404，上一版的引用已刪除，不再作為來源。
+- Stefan Gustavson 的 Simplex Noise PDF：審查時連不上，本文不使用。
+- 上一版規範的「首屏佔第一印象八成以上」說法、「五大分類」、「16 個代表作品」、GPU／編譯／記憶體門檻：無來源或與原作不符，已移除。
