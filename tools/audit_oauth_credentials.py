@@ -4,10 +4,12 @@ tools/audit_oauth_credentials.py
 審查本機 AI 工具（Grok CLI、Codex、Claude Code）的 OAuth 憑證檔「放得安不安全」。唯讀，不改任何檔案。
 
 只看 metadata：檔案位置、權限／ACL、是否被 git 追蹤或未被忽略、有哪些「憑證欄位名稱」存在、
-設定檔是否讓本機代理監聽在外部網卡。**絕不輸出 token、金鑰、密碼的內容**：
+設定檔是否讓本機代理監聽在外部網卡。**絕不輸出 token、金鑰、密碼的內容**（但檔案路徑會照印：家目錄底下顯示成 ~/...，
+其他位置顯示完整路徑；貼出報告前，請自行檢查路徑裡有沒有不想公開的帳號或資料夾名稱）：
   - 內容只用來判斷「某欄位是否有非空的明文值」，值在判斷完就丟棄，不進任何 Finding；
   - 輸出只會出現固定詞彙的欄位類別（refresh_token、access_token、api_key……），不回顯檔案裡原本的鍵名；
-  - 監聽位址只在能被解析成 IP 時才印出，其餘一律印固定說明文字。
+  - 監聽位址只在能被解析成 IP 時才印出（IPv6 的 %scope 先去掉），其餘一律印固定說明文字。
+檔案編碼：依 BOM 解碼 UTF-8／UTF-16／UTF-32（PowerShell 5 的 > 預設寫 UTF-16）。
 本工具也不讀取或呼叫任何遠端服務，不嘗試使用憑證。
 
 預設掃描（各目錄的第一層檔案，加上 oauth-proxy/ 子資料夾；不遞迴 sessions 之類的大目錄）：
@@ -16,7 +18,7 @@ tools/audit_oauth_credentials.py
 
 檢查項目（ERROR 一定失敗；WARN 預設只提醒，加 --strict 才失敗；INFO 不影響結束碼）：
     ERROR  perm-loose        POSIX：含明文憑證欄位的檔案，群組或其他人有任何權限（應為 0600 或更嚴）
-    ERROR  acl-broad         Windows：含明文憑證欄位的檔案，ACL 授權給 Everyone／Users／Authenticated Users
+    ERROR  acl-broad         Windows：含明文憑證欄位的檔案，ACL 授權給 Everyone／Users／Guests／Authenticated Users／Domain Users 等
     ERROR  git-tracked       憑證檔已被 git 追蹤（在 git 工作樹內且已 add／commit）
     ERROR  listen-exposed    設定檔的 bind／listen 設成萬用位址（0.0.0.0、::、空主機）或非 loopback IP
     ERROR  git-tracked-credential  --repo 指定的 repo 裡，追蹤了含明文憑證欄位的 auth.json 之類檔案
@@ -25,6 +27,7 @@ tools/audit_oauth_credentials.py
     WARN   git-not-ignored   憑證檔在 git 工作樹內，沒被追蹤但也沒被 .gitignore 忽略（git add -A 就會收進去）
     WARN   backup-copy       憑證檔的備份副本（.bak、.old、~ 之類）仍含明文欄位
     WARN   listen-unknown-host  bind／listen 是非 IP 的主機名稱（非 localhost），無法判斷是否對外
+    WARN   listen-port-only  bind／listen 只有連接埠、沒指定主機
     WARN   git-tracked-credential  --repo 內追蹤了名稱像憑證檔的檔案，但沒找到明文欄位
     INFO   git-unknown / skipped-large / acl-unreadable  無法判斷或略過的原因
 
@@ -69,16 +72,17 @@ _PLACEHOLDER_WORDS = {"null", "none", "true", "false", "nil", "undefined", "reda
 _LISTEN_A = re.compile(r"(?:^|_)(?:bind|listen)(?:_?(?:addr|address|host|ip))?$")
 _LISTEN_B = re.compile(r"^(?:host|hostname|proxy_host)$")
 
-# icacls 輸出裡代表「很多人」的主體（英文名稱與 well-known SID）。
-BROAD_PRINCIPALS = {
-    "everyone",
-    "builtin\\users",
-    "nt authority\\authenticated users",
-    "s-1-1-0",
-    "s-1-5-32-545",
-    "s-1-5-11",
-}
-_ACE = re.compile(r"(?P<who>[^\r\n:()]+?):(?P<rights>(?:\([^)\r\n]*\))+)")
+# icacls 輸出裡代表「很多人」的主體（英文名稱與 well-known SID）：Everyone、Users、Guests、Authenticated Users、
+# Anonymous Logon、<網域>\Domain Users／Domain Guests，以及對應的 SID。非英文版 Windows 的本地化名稱不在清單內（已知限制），
+# 但 SID 形式的輸出仍會比對到。
+_BROAD_WHO = (
+    r"everyone|builtin\\users|builtin\\guests|nt authority\\authenticated users|nt authority\\anonymous logon"
+    r"|[\w.-]+\\domain users|[\w.-]+\\domain guests"
+    r"|s-1-1-0|s-1-5-7|s-1-5-11|s-1-5-32-54[56]|s-1-5-21-[\d-]+-51[34]"
+)
+# 不去猜「檔案路徑在哪裡結束」：直接找「很多人」的主體後面緊接 :(權限)。
+# icacls 第一行是「路徑 主體:(權限)」；路徑含中文時，輸出編碼若沒解對，路徑前綴會是亂碼，但不影響這個比對。
+_BROAD_ACE = re.compile(r"(?<![\w\\.-])(?P<who>" + _BROAD_WHO + r")[ \t]*:(?P<rights>(?:\([^)\r\n]*\))+)", re.I)
 
 
 def _utf8_stdio() -> None:
@@ -100,6 +104,24 @@ class Finding:
 
 
 # ---------------------------------------------------------------- 內容解析（只回傳類別與旗標，不回傳值）
+
+
+def decode_text(raw: bytes) -> str:
+    """依 BOM 解碼（UTF-8／UTF-16／UTF-32）；沒有 BOM 但空位元組很多時當成 UTF-16；其餘當 UTF-8（壞位元組換成替代字元）。
+    PowerShell 5 的 > 與 Out-File 預設寫 UTF-16LE 加 BOM，若當 UTF-8 讀，每個字元中間都夾著空字元，什麼都比對不到。"""
+    if raw.startswith((b"\xff\xfe\x00\x00", b"\x00\x00\xfe\xff")):
+        return raw.decode("utf-32", "replace")
+    if raw.startswith((b"\xff\xfe", b"\xfe\xff")):
+        return raw.decode("utf-16", "replace")
+    if raw.startswith(b"\xef\xbb\xbf"):
+        return raw.decode("utf-8-sig", "replace")
+    if len(raw) >= 4:
+        quarter = len(raw) // 4
+        if raw[1::2].count(0) > quarter:
+            return raw.decode("utf-16-le", "replace")
+        if raw[0::2].count(0) > quarter:
+            return raw.decode("utf-16-be", "replace")
+    return raw.decode("utf-8", "replace")
 
 
 def _normalize_key(key: str) -> str:
@@ -145,11 +167,17 @@ def _host_part(value: str) -> str | None:
     return v
 
 
+def _without_comment_lines(text: str) -> str:
+    """去掉整行註解（# 、// 、; 開頭）。只用在監聽設定：被註解掉的 bind 不是現行設定。
+    憑證欄位不套用——註解掉的明文 token 一樣躺在磁碟上。"""
+    return "\n".join(ln for ln in text.splitlines() if not ln.lstrip().startswith(("#", "//", ";")))
+
+
 def listen_issues(text: str) -> list[tuple[str, str, str]]:
-    """回傳 [(level, code, 說明)]。說明只含固定文字，或能被 ipaddress 解析的 IP。"""
+    """回傳 [(level, code, 說明)]。說明只含固定文字，或能被 ipaddress 解析的 IP（不含 IPv6 的 %scope）。"""
     out: list[tuple[str, str, str]] = []
     seen: set[tuple[str, str]] = set()
-    for m in _KV.finditer(text):
+    for m in _KV.finditer(_without_comment_lines(text)):
         key = _normalize_key(m.group("key"))
         family_a = bool(_LISTEN_A.search(key))
         if not family_a and not _LISTEN_B.match(key):
@@ -159,9 +187,17 @@ def listen_issues(text: str) -> list[tuple[str, str, str]]:
             continue
         label: str | None = None
         level, code = "ERROR", "listen-exposed"
+        if "%" in host:  # IPv6 zone id（fe80::1%eth0）：scope 是任意字串，一律丟掉，只留位址本身
+            host = host.split("%", 1)[0]
+            if not host:
+                continue
         if host == "":
             if family_a:
                 label = "未指定主機（多數執行環境等同監聽所有網卡）"
+        elif host.isdigit():
+            if family_a:
+                level, code = "WARN", "listen-port-only"
+                label = "只指定了連接埠、沒有指定主機；是否綁定所有網卡取決於程式，請確認"
         else:
             try:
                 ip = ipaddress.ip_address(host)
@@ -184,19 +220,33 @@ def listen_issues(text: str) -> list[tuple[str, str, str]]:
 # ---------------------------------------------------------------- Windows ACL
 
 
-def broad_principals_in_icacls(text: str, path: str) -> list[str]:
-    """從 icacls 輸出找出被授權（非 DENY）的「很多人」主體。path 用來剝掉第一行開頭的檔案路徑。"""
-    idx = text.lower().find(path.lower())
-    if idx >= 0:
-        text = text[:idx] + text[idx + len(path):]
+def broad_principals_in_icacls(text: str, path: str = "") -> list[str]:
+    """從 icacls 輸出找出被授權（非 DENY）的「很多人」主體。path 若出現在輸出裡會先剝掉（沒找到也沒關係）。"""
+    if path:
+        idx = text.lower().find(path.lower())
+        if idx >= 0:
+            text = text[:idx] + " " + text[idx + len(path):]
     found: list[str] = []
-    for m in _ACE.finditer(text):
-        who = m.group("who").strip()
+    for m in _BROAD_ACE.finditer(text):
         if "(deny)" in m.group("rights").lower():
             continue
-        if who.lower() in BROAD_PRINCIPALS and who not in found:
+        who = m.group("who")
+        if who.lower() not in (f.lower() for f in found):
             found.append(who)
     return found
+
+
+def oem_encoding() -> str:
+    """icacls 等主控台程式用 OEM 碼頁輸出（zh-TW 是 cp950）。取不到就退回 utf-8。"""
+    try:
+        import ctypes
+
+        cp = ctypes.windll.kernel32.GetOEMCP()  # type: ignore[attr-defined]
+        name = f"cp{cp}"
+        "".encode(name)
+        return name
+    except Exception:  # 非 Windows、ctypes 不可用、碼頁 Python 不認得
+        return "utf-8"
 
 
 def _read_icacls(path: Path) -> str | None:
@@ -206,7 +256,7 @@ def _read_icacls(path: Path) -> str | None:
         return None
     if proc.returncode != 0:
         return None
-    return proc.stdout.decode("utf-8", "replace")
+    return proc.stdout.decode(oem_encoding(), "replace")
 
 
 # ---------------------------------------------------------------- git
@@ -301,7 +351,7 @@ def audit_file(
         st = path.stat()
         if st.st_size > MAX_BYTES:
             return [Finding("INFO", "skipped-large", shown, f"檔案超過 {MAX_BYTES // 1024} KB，略過內容檢查")], info
-        text = path.read_bytes().decode("utf-8", "replace")
+        text = decode_text(path.read_bytes())
     except OSError as exc:
         return [Finding("INFO", "unreadable", shown, f"讀不到檔案（{type(exc).__name__}）")], info
 
@@ -359,7 +409,7 @@ def audit_repo(repo: Path) -> list[Finding]:
         kinds: list[str] = []
         try:
             if target.is_file() and target.stat().st_size <= MAX_BYTES:
-                kinds = token_kinds(target.read_bytes().decode("utf-8", "replace"))
+                kinds = token_kinds(decode_text(target.read_bytes()))
         except OSError:
             pass
         if kinds:
@@ -420,7 +470,12 @@ def main(argv: list[str] | None = None) -> int:
     else:
         home = Path.home()
         env = dict(os.environ)
-    dirs = candidate_dirs(home, env) + [Path(d) for d in args.dir]
+    extra_dirs = [Path(d) for d in args.dir]
+    for d in extra_dirs:
+        if not d.is_dir():
+            print(f"錯誤：--dir 不是資料夾：{d}", file=sys.stderr)
+            return 2
+    dirs = candidate_dirs(home, env) + extra_dirs
     repos = [Path(r) for r in args.repo]
     for r in repos:
         if not r.is_dir():

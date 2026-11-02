@@ -28,7 +28,8 @@ S_ID = "SENTINEL-IDTOKEN-0e5c77d1a3b94f68"
 S_SECRET = "SENTINEL-CLIENTSECRET-4a6b8c0d2e1f"
 S_KEYNAME = "SENTINEL-KEYNAME-c3d4e5f6a7b8c9d0"
 S_HOSTVAL = "SENTINEL-HOSTVAL-1122334455667788"
-SENTINELS = [S_ACCESS, S_REFRESH, S_ID, S_SECRET, S_KEYNAME, S_HOSTVAL]
+S_SCOPE = "SENTINEL-SCOPE-99aabbccddeeff00"
+SENTINELS = [S_ACCESS, S_REFRESH, S_ID, S_SECRET, S_KEYNAME, S_HOSTVAL, S_SCOPE]
 
 CODEX_AUTH = json.dumps({"auth_mode": "chatgpt", "tokens": {"id_token": S_ID, "access_token": S_ACCESS, "refresh_token": S_REFRESH}})
 
@@ -44,6 +45,12 @@ class FakeHome:
         p.write_text(text, encoding="utf-8", newline="\n")
         if mode is not None and not IS_WIN:
             os.chmod(p, mode)
+        return p
+
+    def write_bytes(self, rel, data):
+        p = self.root / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(data)
         return p
 
     def close(self):
@@ -90,6 +97,9 @@ class TokenKindsTest(unittest.TestCase):
     def test_unrelated_keys_do_not_count(self):
         self.assertEqual(a.token_kinds('{"max_tokens": "1234567890123456", "model": "grok-something-long-name"}'), [])
 
+    def test_commented_out_token_still_counts_because_it_is_still_on_disk(self):
+        self.assertEqual(a.token_kinds(f'# api_key = "{S_ACCESS}"'), ["api_key"])
+
     def test_very_long_value_is_still_detected(self):
         self.assertEqual(a.token_kinds('{"access_token": "' + "A" * 5000 + '"}'), ["access_token"])
 
@@ -98,6 +108,32 @@ class TokenKindsTest(unittest.TestCase):
         for s in SENTINELS:
             self.assertNotIn(s, " ".join(kinds))
         self.assertEqual(kinds, ["access_token", "api_key", "id_token", "refresh_token"])
+
+
+class DecodeTextTest(unittest.TestCase):
+    TEXT = json.dumps({"tokens": {"refresh_token": S_REFRESH}}, ensure_ascii=False) + "\n# 備註：帳號"
+
+    def test_encodings_all_round_trip(self):
+        for name, raw in (
+            ("utf-8", self.TEXT.encode("utf-8")),
+            ("utf-8-bom", b"\xef\xbb\xbf" + self.TEXT.encode("utf-8")),
+            ("utf-16-bom-le", b"\xff\xfe" + self.TEXT.encode("utf-16-le")),
+            ("utf-16-bom-be", b"\xfe\xff" + self.TEXT.encode("utf-16-be")),
+            ("utf-16-no-bom-le", self.TEXT.encode("utf-16-le")),
+            ("utf-16-no-bom-be", self.TEXT.encode("utf-16-be")),
+            ("utf-32-bom", self.TEXT.encode("utf-32")),
+        ):
+            with self.subTest(enc=name):
+                self.assertEqual(a.decode_text(raw), self.TEXT)
+                self.assertEqual(a.token_kinds(a.decode_text(raw)), ["refresh_token"])
+
+    def test_invalid_bytes_do_not_raise(self):
+        self.assertIsInstance(a.decode_text(b'{"access_token": "' + b"\xff\xfe\x80" * 10), str)
+        self.assertEqual(a.decode_text(b""), "")
+        self.assertEqual(a.decode_text(b"ab"), "ab")
+
+    def test_plain_ascii_with_few_nulls_stays_utf8(self):
+        self.assertEqual(a.decode_text(b"hello\x00world, plain text file"), "hello\x00world, plain text file")
 
 
 class ListenTest(unittest.TestCase):
@@ -135,6 +171,35 @@ class ListenTest(unittest.TestCase):
     def test_bind_hostname_that_is_not_localhost_is_a_warning(self):
         self.assertEqual(self.levels('bind = "myproxy.lan:80"'), [("WARN", "listen-unknown-host")])
 
+    def test_ipv6_zone_id_is_never_echoed(self):
+        for text in (f'listen = "fe80::1%{S_SCOPE}"', f'bind = "[fe80::1%{S_SCOPE}]:8080"', f'{{"bind": "http://[fe80::1%{S_SCOPE}]:80/v1"}}'):
+            with self.subTest(text=text[:20]):
+                issues = a.listen_issues(text)
+                self.assertEqual([i[:2] for i in issues], [("ERROR", "listen-exposed")])
+                self.assertIn("fe80::1", issues[0][2])
+                self.assertNotIn("SENTINEL", issues[0][2])
+                self.assertNotIn("%", issues[0][2])
+
+    def test_zone_id_on_loopback_and_empty_address(self):
+        self.assertEqual(self.levels('bind = "::1%lo"'), [])
+        self.assertEqual(self.levels('bind = "%lo"'), [])
+
+    def test_port_only_is_not_described_as_a_hostname(self):
+        for text in ('{"listen": 8080}', "bind = 8080", 'listen = "8080"'):
+            with self.subTest(text=text):
+                issues = a.listen_issues(text)
+                self.assertEqual([i[:2] for i in issues], [("WARN", "listen-port-only")])
+                self.assertNotIn("名稱", issues[0][2])
+        self.assertEqual(self.levels("host = 8080"), [], "host 欄位的純數字不當成監聽設定")
+
+    def test_commented_out_listen_lines_are_not_current_settings(self):
+        for text in ('# bind = "0.0.0.0"', '  // "bind": "0.0.0.0"', '; listen = ":8080"', '#bind=0.0.0.0'):
+            with self.subTest(text=text):
+                self.assertEqual(self.levels(text), [])
+        self.assertEqual(self.levels('# bind = "0.0.0.0"\nbind = "127.0.0.1"'), [])
+        self.assertEqual(self.levels('# bind = "127.0.0.1"\nbind = "0.0.0.0"'), [("ERROR", "listen-exposed")])
+        self.assertEqual(self.levels('bind = "0.0.0.0"  # all interfaces'), [("ERROR", "listen-exposed")])
+
     def test_message_never_echoes_non_ip_values(self):
         issues = a.listen_issues(f'bind = "{S_HOSTVAL}"')
         self.assertEqual([i[:2] for i in issues], [("WARN", "listen-unknown-host")])
@@ -163,6 +228,58 @@ class IcaclsParseTest(unittest.TestCase):
     def test_well_known_sids_are_flagged(self):
         self.assertEqual(self.broad("   S-1-1-0:(R)\n"), ["S-1-1-0"])
         self.assertEqual(self.broad("   S-1-5-32-545:(RX)\n"), ["S-1-5-32-545"])
+
+    def test_guests_domain_users_and_anonymous_are_flagged(self):
+        for line, expected in (
+            (r"   BUILTIN\Guests:(R)", r"BUILTIN\Guests"),
+            (r"   CORP\Domain Users:(I)(M)", r"CORP\Domain Users"),
+            (r"   CORP\Domain Guests:(R)", r"CORP\Domain Guests"),
+            (r"   NT AUTHORITY\ANONYMOUS LOGON:(R)", r"NT AUTHORITY\ANONYMOUS LOGON"),
+            ("   S-1-5-32-546:(R)", "S-1-5-32-546"),
+            ("   S-1-5-21-111-222-333-513:(R)", "S-1-5-21-111-222-333-513"),
+            ("   S-1-5-7:(R)", "S-1-5-7"),
+            (r"   everyone:(r)", "everyone"),
+        ):
+            with self.subTest(line=line):
+                self.assertEqual(self.broad(line + "\n"), [expected])
+
+    def test_domain_admins_and_ordinary_groups_are_not_flagged(self):
+        for line in (r"   CORP\Domain Admins:(F)", r"   BUILTIN\Power Users:(M)", r"   MYPC\SomeoneEveryone:(F)", "   S-1-5-21-111-222-333-512:(F)"):
+            with self.subTest(line=line):
+                self.assertEqual(self.broad(line + "\n"), [])
+
+    def test_deny_on_guests_and_domain_users_is_not_exposure(self):
+        self.assertEqual(self.broad(r"   BUILTIN\Guests:(DENY)(R)" + "\n"), [])
+        self.assertEqual(self.broad(r"   CORP\Domain Users:(DENY)(RX)" + "\n"), [])
+
+    def test_garbled_or_unstrippable_path_prefix_does_not_hide_the_first_entry(self):
+        # 路徑含中文、icacls 輸出編碼沒解對時，第一行是「亂碼路徑 主體:(權限)」；之前會因此漏報
+        garbled = "C:\\Users\\\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\\.codex\\auth.json"
+        for first in ("Everyone:(R)", r"BUILTIN\Users:(I)(RX)", r"NT AUTHORITY\Authenticated Users:(M)"):
+            with self.subTest(first=first):
+                text = f"{garbled} {first}\n   BUILTIN\\Administrators:(I)(F)\n"
+                self.assertEqual(len(a.broad_principals_in_icacls(text, r"C:\somewhere\else.json")), 1)
+                self.assertEqual(len(a.broad_principals_in_icacls(text, "")), 1)
+                self.assertEqual(len(a.broad_principals_in_icacls(text)), 1)
+
+    def test_chinese_path_with_spaces_in_the_prefix(self):
+        path = r"C:\Users\帳號王小明 測試\.codex\auth.json"
+        self.assertEqual(a.broad_principals_in_icacls(f"{path} Everyone:(R)\n", path), ["Everyone"])
+        self.assertEqual(a.broad_principals_in_icacls(f"{path} NT AUTHORITY\\SYSTEM:(F)\n", path), [])
+
+    def test_read_icacls_decodes_with_the_oem_code_page(self):
+        path = r"C:\Users\帳號王小明\.codex\auth.json"
+        raw = (path + " Everyone:(R)\r\n").encode("cp950")
+        fake = subprocess.CompletedProcess([], 0, stdout=raw, stderr=b"")
+        with mock.patch.object(a.subprocess, "run", return_value=fake), mock.patch.object(a, "oem_encoding", return_value="cp950"):
+            text = a._read_icacls(Path(path))
+        self.assertIn("帳號王小明", text)
+        self.assertEqual(a.broad_principals_in_icacls(text, path), ["Everyone"])
+
+    def test_oem_encoding_returns_a_codec_python_knows(self):
+        import codecs
+
+        codecs.lookup(a.oem_encoding())
 
     def test_deny_entry_is_not_exposure(self):
         self.assertEqual(self.broad(r"   Everyone:(DENY)(R)" + "\n"), [])
@@ -229,7 +346,7 @@ class AuditTest(unittest.TestCase):
 
     @unittest.skipIf(IS_WIN, "POSIX 權限位元在 Windows 沒有意義；Windows 走 ACL 檢查")
     def test_loose_permissions_are_errors_when_tokens_present(self):
-        for mode in (0o644, 0o640, 0o604, 0o666, 0o660):
+        for mode in (0o644, 0o640, 0o604, 0o666, 0o660, 0o601, 0o610, 0o701, 0o710):
             with self.subTest(mode=oct(mode)):
                 self.h.write(".codex/auth.json", CODEX_AUTH, mode)
                 findings, _ = run_audit(self.h)
@@ -260,7 +377,7 @@ class AuditTest(unittest.TestCase):
         return findings
 
     def test_posix_mode_logic_with_faked_stat(self):
-        for mode in (0o644, 0o640, 0o604, 0o666, 0o660, 0o777):
+        for mode in (0o644, 0o640, 0o604, 0o666, 0o660, 0o777, 0o601, 0o610, 0o701, 0o710):
             with self.subTest(loose=oct(mode)):
                 self.assertEqual(codes(self.audit_with_fake_mode(mode), "ERROR"), ["perm-loose"])
         for mode in (0o600, 0o400, 0o700):
@@ -300,6 +417,59 @@ class AuditTest(unittest.TestCase):
         subprocess.run(["icacls", str(p), "/grant", "Everyone:R"], capture_output=True, check=True)
         findings, _ = run_audit(self.h, is_windows=True)
         self.assertEqual(codes(findings, "ERROR"), ["acl-broad"])
+
+    @unittest.skipUnless(IS_WIN, "需要真的 icacls")
+    def test_live_icacls_with_chinese_path_and_spaces(self):
+        p = self.h.write("帳號王小明 測試/.codex/auth.json", CODEX_AUTH)
+        d = [self.h.root / "帳號王小明 測試" / ".codex"]
+        findings, _ = a.audit(self.h.root, d, is_windows=True, git_check=lambda x: "no-repo")
+        self.assertEqual(codes(findings, "ERROR"), [], "未授權前不該有 ERROR")
+        subprocess.run(["icacls", str(p), "/grant", "Everyone:R"], capture_output=True, check=True)
+        findings, _ = a.audit(self.h.root, d, is_windows=True, git_check=lambda x: "no-repo")
+        self.assertEqual(codes(findings, "ERROR"), ["acl-broad"], "中文路徑下 Everyone 授權必須被抓到")
+
+    @unittest.skipUnless(IS_WIN, "需要真的 icacls")
+    def test_live_chinese_path_cli_exit_code(self):
+        p = self.h.write("帳號王小明/.codex/auth.json", CODEX_AUTH)
+        subprocess.run(["icacls", str(p), "/grant", "Everyone:R"], capture_output=True, check=True)
+        proc = subprocess.run([sys.executable, str(TOOL), "--home", str(self.h.root / "帳號王小明")], capture_output=True)
+        self.assertEqual(proc.returncode, 1, proc.stdout.decode("utf-8", "replace"))
+        self.assertIn("acl-broad", proc.stdout.decode("utf-8"))
+
+    # ---- UTF-16 檔案（PowerShell 5 的 > 預設）
+
+    def test_utf16_files_are_scanned(self):
+        self.h.write_bytes(".codex/auth.json", CODEX_AUTH.encode("utf-16"))  # 含 BOM
+        self.h.write_bytes(".grok/oauth-proxy/state.json", b"\xff\xfe" + '{"host": "0.0.0.0"}'.encode("utf-16-le"))
+        settings = '{"env": {"ANTHROPIC_AUTH_TOKEN": "%s"}}' % S_ACCESS
+        self.h.write_bytes(".claude/settings.json", settings.encode("utf-16-be"))
+        findings, stats = run_audit(self.h)
+        self.assertEqual(stats["files_with_token_fields"], 2)
+        got = sorted((f.file, f.code) for f in findings if f.code != "perm-loose")
+        self.assertEqual(
+            got,
+            [
+                ("~/.claude/settings.json", "plaintext-token"),
+                ("~/.codex/auth.json", "plaintext-token"),
+                ("~/.grok/oauth-proxy/state.json", "listen-exposed"),
+            ],
+        )
+
+    def test_utf8_bom_file_is_scanned(self):
+        self.h.write_bytes(".codex/auth.json", b"\xef\xbb\xbf" + CODEX_AUTH.encode("utf-8"))
+        findings, _ = run_audit(self.h)
+        self.assertIn("plaintext-token", codes(findings))
+
+    @unittest.skipUnless(HAS_GIT, "需要 git")
+    def test_repo_option_reads_utf16_tracked_credentials(self):
+        repo = self.h.root / "proj"
+        repo.mkdir()
+        self.git("init", "-q", cwd=repo)
+        (repo / "auth.json").write_bytes(CODEX_AUTH.encode("utf-16"))
+        self.git("add", "-A", cwd=repo)
+        with mock.patch.dict(os.environ, {"GIT_CEILING_DIRECTORIES": str(self.h.root.parent)}):
+            findings = a.audit_repo(repo)
+        self.assertEqual([(f.level, f.code) for f in findings], [("ERROR", "git-tracked-credential")])
 
     # ---- 監聽設定
 
@@ -404,6 +574,9 @@ class NoLeakCliTest(unittest.TestCase):
         broken = self.h.write(".grok/broken.json", "", mode)
         broken.write_bytes(b'{"access_token": "' + S_ACCESS.encode() + b'\xff\xfe\x00 not json')
         self.h.write(".codex/auth.yaml", f"refresh_token: {S_REFRESH}\n", mode)
+        self.h.write_bytes(".codex/auth16.json", CODEX_AUTH.encode("utf-16"))
+        self.h.write_bytes(".grok/proxy16.json", f'{{"listen": "fe80::1%{S_SCOPE}", "access_token": "{S_ACCESS}"}}'.encode("utf-16"))
+        self.h.write(".grok/scope.toml", f'bind = "[fe80::2%{S_SCOPE}]:8080"\nlisten = 8080\n')
 
     def run_cli(self, *args):
         env = {**os.environ, "PYTHONIOENCODING": "cp950", "PYTHONUTF8": "0", "GIT_CEILING_DIRECTORIES": str(self.h.root.parent)}
@@ -442,6 +615,10 @@ class NoLeakCliTest(unittest.TestCase):
         self.assertIn("~/.grok/oauth-proxy/state.json", files_by_code["listen-exposed"])
         self.assertIn("~/.grok/broken.json", files_by_code["plaintext-token"], "壞掉的檔案也要能偵測，且不洩漏")
         self.assertIn("~/.codex/auth.json.bak", files_by_code["backup-copy"])
+        self.assertIn("~/.codex/auth16.json", files_by_code["plaintext-token"], "UTF-16 檔案也要掃到")
+        self.assertIn("~/.grok/proxy16.json", files_by_code["listen-exposed"])
+        self.assertIn("~/.grok/scope.toml", files_by_code["listen-exposed"])
+        self.assertIn("~/.grok/scope.toml", files_by_code["listen-port-only"])
         if not IS_WIN:
             self.assertIn("~/.codex/auth.json", files_by_code["perm-loose"])
 
@@ -472,6 +649,17 @@ class CliTest(unittest.TestCase):
         self.assertEqual(self.run_cli("--home", str(h.root / "nope")).returncode, 2)
         self.assertEqual(self.run_cli("--home", str(h.root), "--repo", str(h.root / "nope")).returncode, 2)
         self.assertEqual(self.run_cli("--bogus").returncode, 2)
+
+    def test_dir_typo_exits_2_instead_of_silently_passing(self):
+        h = FakeHome()
+        self.addCleanup(h.close)
+        proc = self.run_cli("--home", str(h.root), "--dir", str(h.root / "typo-dir"))
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("--dir", proc.stderr.decode("utf-8", "replace"))
+        (h.root / "a-file").write_text("x", encoding="utf-8")
+        self.assertEqual(self.run_cli("--home", str(h.root), "--dir", str(h.root / "a-file")).returncode, 2, "檔案不是資料夾")
+        (h.root / "real").mkdir()
+        self.assertEqual(self.run_cli("--home", str(h.root), "--dir", str(h.root / "real")).returncode, 0)
 
     def test_extra_dir_option(self):
         h = FakeHome()

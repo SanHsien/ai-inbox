@@ -33,10 +33,10 @@
 | 類別 | 動作 | 典型情況（查證自官方文件） |
 | :--- | :--- | :--- |
 | `TRANSIENT` | 同一端點指數退避重試（有 `Retry-After` 就照它）；超過次數後換下一個端點 | 逾時、網路錯誤；500、504、529 overloaded（Anthropic）；503 model overloaded（OpenAI，文件要求照 Retry-After）；429 速率限制且有 `Retry-After`；xAI 超過 RPS／TPM 回 429 |
-| `BUDGET_STOP` | 不重試、不換端點；通知人 | 402 billing（Anthropic）；OpenAI 429 `credit_balance_exhausted`、`insufficient_quota`（文件寫明：重試帳務或配額錯誤不會恢復存取）；Anthropic 的支出上限 429（文件：沒有 `retry-after`，會一直失敗到恢復） |
+| `BUDGET_STOP` | 不重試、不換端點；通知人 | 402 billing（Anthropic）；OpenAI 429 `credit_balance_exhausted`、`insufficient_quota`（文件寫明：重試帳務或配額錯誤不會恢復存取）；Anthropic 的支出上限 429（文件：沒有 `retry-after`，會一直失敗到恢復）；Anthropic 達到你設定的組織或工作區支出上限時回 **400**（文件只說回 400，沒有列專屬錯誤碼，所以**只能靠錯誤訊息文字判斷**，見下方 `BUDGET_MESSAGE_HINTS`） |
 | `AUTH_DISABLE` | 端點進 `AUTH_DISABLED`，通知人；本次請求可交給下一個端點 | 401（金鑰錯誤、失效、組織不符） |
 | `POLICY_STOP` | 停止；通知人 | 403（權限不足；OpenAI 另有「地區不支援」的 403） |
-| `REQUEST_STOP` | 不重試、不換端點；錯誤回給呼叫端 | 400、404、413、422 等請求本身有問題的錯誤（Anthropic 也會在達到你設定的組織支出上限時回 400，遇到時依 `BUDGET_STOP` 處理） |
+| `REQUEST_STOP` | 不重試、不換端點；錯誤回給呼叫端 | 400、404、413、422 等請求本身有問題的錯誤（400 的訊息若符合 `BUDGET_MESSAGE_HINTS`，則改判 `BUDGET_STOP`） |
 
 兩個容易踩的坑：
 
@@ -45,19 +45,25 @@
 
 ### 2.1 參考實作（分類函式）
 
-這段是第 2 節表格的最小實作，已用單元斷言驗證過各列（TRANSIENT／BUDGET_STOP／AUTH_DISABLE／POLICY_STOP／REQUEST_STOP 的典型輸入）。貼進你的路由層即可，語言不同就照邏輯改寫。
+這段是第 2 節表格的最小實作。下面附上斷言（同一份程式碼區塊接在函式後面，複製整段到檔案執行，沒有輸出就代表全部通過）。語言不同就照邏輯改寫。
+
+**400 要看訊息**：Anthropic 的文件說達到支出上限會回 400，但沒有給專屬錯誤碼（一般的格式錯誤也是 400），函式只能比對訊息文字。`BUDGET_MESSAGE_HINTS` 的關鍵字是**範本的猜測，沒有對照過實際的錯誤訊息**；請用你自己遇到的真實訊息校準，否則可能漏判（當成請求錯誤，沒人被通知）或誤判（把一般錯誤當成帳務問題）。
 
 ```python
 BUDGET_CODES = {"credit_balance_exhausted", "insufficient_quota"}
+# 達到支出上限的 400 沒有專屬錯誤碼，只能比對訊息文字。這些關鍵字是猜測，請用實際訊息校準。
+BUDGET_MESSAGE_HINTS = ("spend limit", "spending limit", "usage limit", "credit balance", "billing")
 
 
-def classify(status=None, code=None, retry_after=False, timeout=False,
+def classify(status=None, code=None, retry_after=False, timeout=False, message="",
              streak_429_no_retry_after=0, streak_limit=3):
     """回傳 TRANSIENT｜BUDGET_STOP｜AUTH_DISABLE｜POLICY_STOP｜REQUEST_STOP。"""
     if timeout or status is None:            # 逾時、連線錯誤
         return "TRANSIENT"
     if status == 402 or code in BUDGET_CODES:
         return "BUDGET_STOP"
+    if status == 400 and any(h in (message or "").lower() for h in BUDGET_MESSAGE_HINTS):
+        return "BUDGET_STOP"                 # 只對 400 比對訊息，429 走下面的連續次數規則
     if status == 429:
         if retry_after:
             return "TRANSIENT"
@@ -70,6 +76,28 @@ def classify(status=None, code=None, retry_after=False, timeout=False,
     if status in (500, 502, 503, 504, 529):
         return "TRANSIENT"
     return "REQUEST_STOP"
+
+
+# ---- 斷言（每一類至少一個正例、一個反例）----
+assert classify(timeout=True) == "TRANSIENT"
+assert classify(status=None) == "TRANSIENT"
+for st in (500, 502, 503, 504, 529):
+    assert classify(st) == "TRANSIENT", st
+assert classify(429, retry_after=True) == "TRANSIENT"                        # 速率限制，照 Retry-After 等
+assert classify(429) == "TRANSIENT"                                          # 第一次沒有 Retry-After，先當速率限制
+assert classify(429, streak_429_no_retry_after=2) == "BUDGET_STOP"           # 連續第 3 次，升級
+assert classify(429, retry_after=True, streak_429_no_retry_after=9) == "TRANSIENT"
+assert classify(429, code="credit_balance_exhausted", retry_after=True) == "BUDGET_STOP"
+assert classify(402) == "BUDGET_STOP"
+assert classify(400, message="Your organization has reached its spend limit") == "BUDGET_STOP"  # 400 + 訊息
+assert classify(400, message="monthly Usage Limit reached for this workspace") == "BUDGET_STOP"       # 不分大小寫
+assert classify(400, code="invalid_request_error", message="messages: field required") == "REQUEST_STOP"
+assert classify(400) == "REQUEST_STOP"                                       # 沒有訊息就無從判斷，當請求錯誤
+assert classify(429, message="spend limit") == "TRANSIENT"                   # 訊息比對只對 400
+assert classify(401) == "AUTH_DISABLE"
+assert classify(403) == "POLICY_STOP"
+for st in (404, 413, 422):
+    assert classify(st) == "REQUEST_STOP", st
 ```
 
 ## 3. 容錯狀態機
@@ -137,7 +165,7 @@ policy:
   budget_guard:
     streak_429_no_retry_after: 3              # 連續幾次無 Retry-After 的 429 升級為 BUDGET_STOP
     monthly_cap_usd: <MONTHLY_CAP>            # 自己設的軟上限，超過就 HELD
-  notify: { channel: <YOUR_CHANNEL>, on: [BUDGET_STOP, POLICY_STOP, AUTH_DISABLE, EXHAUSTED] }
+  notify: { channel: <YOUR_CHANNEL>, events: [BUDGET_STOP, POLICY_STOP, AUTH_DISABLE, EXHAUSTED] }   # 不要用 on 當鍵：YAML 1.1 會把它讀成布林
   log: { path: <LOG_PATH>, include_prompt: false }
 
 endpoints:
