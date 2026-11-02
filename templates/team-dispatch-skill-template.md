@@ -54,11 +54,11 @@ pending-handoff.json 格式：`{"split_version": "v2", "rows": [{"item": "1. 重
 
 ### Stop hook：把 pending-handoff.json 追加進 HANDOFF.md
 
-存成 `append_handoff.py`（只用標準函式庫）。沒有 pending 檔就什麼都不做；內容不合格就印錯誤、保留 pending 檔、結束碼 1（不用 2：官方文件說 Stop 事件的 exit 2 會要求 Claude 繼續）。
+存成 `append_handoff.py`（只用標準函式庫）。沒有 pending 檔就略過（stderr 印出查過的位置）；專案根目錄用 `CLAUDE_PROJECT_DIR`，找不到再從 cwd 往上找；內容不合格就印錯誤、保留 pending 檔、結束碼 1（不用 2：官方文件說 Stop 事件的 exit 2 會要求 Claude 繼續）。
 
 ```python
 #!/usr/bin/env python3
-import json, sys, datetime
+import json, os, sys, datetime
 from pathlib import Path
 
 STATES = ("完成", "完成但有疑慮", "需要資料", "卡住")
@@ -70,19 +70,35 @@ def main():
         payload = json.loads(sys.stdin.read() or "{}")
     except ValueError:
         payload = {}
-    root = Path(payload.get("cwd") or ".")
-    pending = root / ".team-dispatch" / "pending-handoff.json"
+    # 專案根目錄：優先 CLAUDE_PROJECT_DIR（session 啟動處，不隨 cd 改變）；cwd 會跟著 Claude cd，只當備援
+    cwd = Path(payload.get("cwd") or ".").resolve()
+    env = os.environ.get("CLAUDE_PROJECT_DIR")
+    root = Path(env) if env else cwd
+    rel = Path(".team-dispatch") / "pending-handoff.json"
+    pending = root / rel
     if not pending.is_file():
-        return 0
+        for parent in (cwd, *cwd.parents):  # 沒找到就從 cwd 往上找，找到就用並提示
+            if (parent / rel).is_file():
+                root, pending = parent, parent / rel
+                print("append_handoff: 在 %s 找到 pending，專案根目錄與 CLAUDE_PROJECT_DIR/cwd 不一致" % parent, file=sys.stderr)
+                break
+        else:
+            print("append_handoff: 沒有 pending-handoff.json（查過 %s 與 %s 的上層），略過" % (root, cwd), file=sys.stderr)
+            return 0
     try:
         data = json.loads(pending.read_text(encoding="utf-8"))
         rows = data["rows"]
         if not rows:
             raise ValueError("rows 是空的")
         for r in rows:
+            for k in ("item", "owner", "status", "evidence"):
+                if not isinstance(r[k], str):  # null、[]、0 都不是字串，不可被 str() 轉成 "None"
+                    raise ValueError("%s 必須是字串，收到 %r" % (k, r[k]))
+            if not isinstance(r.get("pitfall", "無"), str):
+                raise ValueError("pitfall 必須是字串")
             if r["status"] not in STATES:
                 raise ValueError("status 不是四態之一: %r" % r["status"])
-            if r["status"] == "完成" and not str(r["evidence"]).strip():
+            if r["status"] == "完成" and not r["evidence"].strip():
                 raise ValueError("狀態完成但沒有證據: %s" % r["item"])
         lines = ["", "## 派工沉澱 %s %s" % (data["split_version"], datetime.datetime.now().isoformat(timespec="seconds")), ""]
         for r in rows:

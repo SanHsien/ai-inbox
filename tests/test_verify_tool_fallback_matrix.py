@@ -306,8 +306,20 @@ class CliTest(unittest.TestCase):
     def test_empty_object_exit_1(self):
         self.assertEqual(run_main([self.write("{}")])[0], 1)
 
-    def test_json_null_exit_1(self):
-        self.assertEqual(run_main([self.write("null")])[0], 1)
+    def test_top_level_not_an_object_exit_2(self):
+        # 文件寫「頂層不是物件 = 輸入無法使用 = 2」；曾經實際回 1。
+        for text in ("null", "[]", '"x"', "5", "true", "[{}]"):
+            with self.subTest(text=text):
+                rc, out, err = run_main([self.write(text)])
+                self.assertEqual(rc, 2)
+                self.assertIn("JSON 物件", err)
+                self.assertNotIn("[PASS]", out)
+
+    def test_top_level_not_an_object_exit_2_via_subprocess(self):
+        for text in ("[]", '"x"', "5"):
+            with self.subTest(text=text):
+                p = self.write(text)
+                self.assertEqual(subprocess.run([sys.executable, str(TOOL), p], capture_output=True, timeout=60).returncode, 2)
 
     def test_invalid_config_exit_1_and_reports_fail(self):
         d = good()
@@ -364,7 +376,7 @@ class SpecDocConsistencyTest(unittest.TestCase):
 
     def test_doc_exit_code_claim_matches_behavior(self):
         text = self.DOC.read_text(encoding="utf-8")
-        self.assertIn("0 通過、1 有錯、2 用法錯誤", text)
+        self.assertIn("0 通過、1 有錯、2 輸入無法使用（沒給檔、讀不到、非 JSON、頂層不是物件）", text)
         self.assertEqual(run_main(["--print-example"])[0], 0)
         self.assertEqual(run_main([])[0], 2)
 

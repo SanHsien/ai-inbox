@@ -10,7 +10,7 @@ tools/verify_tool_fallback_matrix.py
 需要範例：python tools/verify_tool_fallback_matrix.py --print-example
 
 檢查項目（全部是 ERROR；沒有「警告就放過」這一級）：
-    file-*          檔案不存在／不是 UTF-8／不是 JSON／頂層不是物件／內容是空物件
+    file-empty      頂層是物件但內容是空物件（結束碼 1；檔案不存在、不是 UTF-8、不是 JSON、頂層不是物件則是無法使用的輸入，結束碼 2）
     duplicate-key   JSON 同一層出現重複鍵（後者會悄悄蓋掉前者）
     unknown-key     出現規格之外的鍵（常見成因：fallbacks 打成 fallback／fallbak，會附 did-you-mean 建議）
     missing-key     缺必填鍵
@@ -29,7 +29,7 @@ tools/verify_tool_fallback_matrix.py
 用法：
     python tools/verify_tool_fallback_matrix.py <設定檔.json> [--json]
     python tools/verify_tool_fallback_matrix.py --print-example
-結束碼：0 通過；1 有 ERROR；2 用法錯誤（沒給檔、讀不到檔、不是合法 JSON、不是物件）。
+結束碼：0 通過；1 有 ERROR；2 輸入無法使用（沒給檔、讀不到檔、不是 UTF-8、不是合法 JSON、頂層不是 JSON 物件）。
 只使用 Python 標準函式庫。
 """
 
@@ -310,6 +310,9 @@ def main(argv: list[str] | None = None) -> int:
         data, dup = load_config(text)
     except json.JSONDecodeError as e:
         print(f"錯誤：不是合法 JSON：{e}", file=sys.stderr)
+        return 2
+    if not isinstance(data, dict):
+        print(f"錯誤：頂層必須是 JSON 物件，收到 {type(data).__name__}", file=sys.stderr)
         return 2
     findings = check(data)
     if dup is not None:

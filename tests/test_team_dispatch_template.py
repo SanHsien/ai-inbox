@@ -1,6 +1,7 @@
 """templates/team-dispatch-skill-template.md 的測試：frontmatter 預算稽核、放行正規式、內附 append_handoff.py 實跑。"""
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -105,9 +106,12 @@ class HandoffScriptTest(unittest.TestCase):
         self.pending = self.root / ".team-dispatch" / "pending-handoff.json"
         self.handoff = self.root / "HANDOFF.md"
 
-    def run_hook(self, payload=None, raw=None):
+    def run_hook(self, payload=None, raw=None, project_dir=None):
         stdin = raw if raw is not None else json.dumps(payload if payload is not None else {"cwd": str(self.root)})
-        return subprocess.run([sys.executable, str(self.script)], input=stdin, capture_output=True, text=True, encoding="utf-8", timeout=60)
+        env = {k: v for k, v in os.environ.items() if k != "CLAUDE_PROJECT_DIR"}  # 測試不可受外層 Claude Code 的環境變數影響
+        if project_dir is not None:
+            env["CLAUDE_PROJECT_DIR"] = str(project_dir)
+        return subprocess.run([sys.executable, str(self.script)], input=stdin, capture_output=True, text=True, encoding="utf-8", timeout=60, env=env)
 
     def row(self, **kw):
         base = {"item": "1. 重構匯入", "owner": "本機主控", "status": "完成", "evidence": "pytest exit 0; abc1234", "pitfall": "無"}
@@ -172,6 +176,60 @@ class HandoffScriptTest(unittest.TestCase):
 
     def test_corrupt_pending_is_rejected(self):
         self.assert_rejected(raw_pending="{broken")
+
+    def test_non_string_evidence_is_rejected_not_stringified(self):
+        # 回歸：str(None) == "None" 曾讓「完成＋證據 null」假通過並寫進「證據：None」。
+        for bad in (None, [], 0, {}, False, ["x"]):
+            for status in ("完成", "需要資料"):
+                with self.subTest(evidence=bad, status=status):
+                    self.assert_rejected([self.row(status=status, evidence=bad)])
+
+    def test_non_string_other_fields_are_rejected(self):
+        for key in ("item", "owner", "status", "pitfall"):
+            with self.subTest(key=key):
+                self.assert_rejected([self.row(**{key: None})])
+
+    def test_row_that_is_not_an_object_is_rejected(self):
+        self.assert_rejected(["完成"])
+
+    def test_subdirectory_cwd_still_finds_pending_and_says_so(self):
+        # session 在子目錄時 hook 的 cwd 會變成子目錄；不能靜默什麼都不做。
+        sub = self.root / "pkg" / "inner"
+        sub.mkdir(parents=True)
+        self.put([self.row()])
+        r = self.run_hook({"cwd": str(sub)})
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("派工沉澱", self.handoff.read_text(encoding="utf-8"))
+        self.assertFalse((sub / "HANDOFF.md").exists())
+        self.assertFalse(self.pending.exists())
+        self.assertIn("找到 pending", r.stderr)
+
+    def test_claude_project_dir_wins_over_cwd_without_notice(self):
+        sub = self.root / "pkg"
+        sub.mkdir()
+        self.put([self.row()])
+        r = self.run_hook({"cwd": str(sub)}, project_dir=self.root)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertTrue(self.handoff.exists())
+        self.assertNotIn("不一致", r.stderr)
+
+    def test_wrong_claude_project_dir_falls_back_to_cwd_with_notice(self):
+        other = self.root / "elsewhere"
+        other.mkdir()
+        self.put([self.row()])
+        r = self.run_hook({"cwd": str(self.root)}, project_dir=other)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertTrue(self.handoff.exists())
+        self.assertIn("不一致", r.stderr)
+
+    def test_nothing_anywhere_is_noop_but_explains_where_it_looked(self):
+        sub = self.root / "pkg"
+        sub.mkdir()
+        r = self.run_hook({"cwd": str(sub)}, project_dir=self.root)
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("沒有 pending-handoff.json", r.stderr)
+        self.assertIn(str(self.root), r.stderr)
+        self.assertFalse(self.handoff.exists())
 
     def test_non_done_state_may_have_empty_evidence_only_if_state_is_not_done(self):
         self.put([self.row(status="需要資料", evidence="缺：客戶名單欄位定義")])

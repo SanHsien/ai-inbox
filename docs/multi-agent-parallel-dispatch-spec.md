@@ -8,7 +8,9 @@
 
 ## 1. 來源可信度（先讀這一節）
 
-原作者是 Going Li（李國印），貼文發在 Facebook 社團 Claude Taiwan，連結見文末〈來源〉。2026-11-02 實際開啟該連結，**未登入只拿得到分享預覽（Open Graph 描述）的前段，貼文全文沒有取得**。能對照原文的只有下列三點：
+原作者是 Going Li（李國印），貼文發在 Facebook 社團 Claude Taiwan，連結見文末〈來源〉。2026-11-02 實際開啟該連結，**未登入只拿得到分享預覽（Open Graph 描述）的前段，貼文全文沒有取得**。預覽所見的只有下列三點（皆標【未登入預覽所見】，不是已驗證的事實）：
+
+預覽原文摘錄：「第四個隊員是 Grok Bot，我幫它取名 GOBOT。它跑在雲端自己的電腦上，就算我的 Mac 關機也在做。因為它的 GitHub 連線只能讀不能寫，所以我開了一把只限一個 repo 的...」
 
 - 團隊多了第四名隊員 Grok Bot，作者取名 GOBOT；
 - 它跑在雲端自己的電腦上，作者的 Mac 關機也繼續做；
@@ -20,7 +22,7 @@
 
 | 標記 | 意思 |
 | :--- | :--- |
-| 【預覽已證實】 | 上面三點，對得上分享預覽的文字 |
+| 【未登入預覽所見】 | 2026-11-02 未登入時，連結回傳的分享預覽文字所見（當天取得兩次，內容一致）；審查者未必能重現，Facebook 可能改變預覽內容，**無法重新驗證**，只當線索 |
 | 【筆記轉述】 | 筆記這樣寫，原文未取得，未驗證 |
 | 【本 repo 設計】 | 本文自己訂的規則，是取捨，不是外部標準 |
 
@@ -177,7 +179,7 @@ Antigravity 的派工守則【本 repo 設計，依維護者政策】：只透�
 
 1. **開一個專用的私有 repo**，只放派工檔與回報檔。不放程式碼、金鑰、客戶資料。公開 repo 任何人都能讀，派工內容不該放在那。
 2. **簽發 fine-grained token**：Repository access 選 Only select repositories，只選這一個 repo；Repository permissions 只開 **Contents**。
-3. **預設唯讀，回填才給寫**：GOBOT 只輪詢時 Contents 用 read。要它回填「完成」狀態才把 Contents 升到 write；其他權限（Actions、Administration 等）一律不開。【預覽已證實】原作者的雲端隊員預設就是只讀。
+3. **預設唯讀，回填才給寫**：GOBOT 只輪詢時 Contents 用 read。要它回填「完成」狀態才把 Contents 升到 write；其他權限（Actions、Administration 等）一律不開。【未登入預覽所見】原作者的雲端隊員預設就是只讀。
 4. **設到期日**並寫進行事曆輪替；不使用沒有到期日的憑證（deploy key 因此只在能接受永不過期時才選）。
 5. **token 只放在 GOBOT 那台雲端機器的秘密儲存區**，不寫進派工 repo、不貼進對話。外洩或懷疑外洩就立刻撤銷，再重簽。
 6. **回填與派工分檔**：人類／主控寫 `dispatch/`，GOBOT 只寫 `reports/`。GitHub 的 token 無法限制只能寫某個目錄（本文未查證此限制，保守假設不能），所以這個分檔是約定，靠第 4 節的「GOBOT 只執行放行資訊齊全的項目」與 git 紀錄事後稽核，不是強制隔離。
@@ -197,7 +199,7 @@ Antigravity 的派工守則【本 repo 設計，依維護者政策】：只透�
 
 ```bash
 python tools/verify_tool_fallback_matrix.py --print-example > matrix.json   # 取得會通過的範例
-python tools/verify_tool_fallback_matrix.py matrix.json                      # 檢查；0 通過、1 有錯、2 用法錯誤
+python tools/verify_tool_fallback_matrix.py matrix.json                      # 檢查；0 通過、1 有錯、2 輸入無法使用（沒給檔、讀不到、非 JSON、頂層不是物件）
 ```
 
 檢查內容與其針對的失敗：
