@@ -29,6 +29,8 @@ C:\GitHub\ai-inbox\
 ```
 
 > 健康存摺解析器與 Code-as-Video 影片工具已於 2026-10-25 獨立成 [`SanHsien/health-bank-toolkit`](https://github.com/SanHsien/health-bank-toolkit) 與 [`SanHsien/code-as-video-studio`](https://github.com/SanHsien/code-as-video-studio)，相關筆記與任務一併移出；要改那些工具請到對應 repo。
+>
+> 2026-11-02 再移出三組：動態設計影格審查與電影感影片提示詞併入 [`SanHsien/code-as-video-studio`](https://github.com/SanHsien/code-as-video-studio)；LINE 16 宮格貼圖切圖併入 [`SanHsien/sticker-forge`](https://github.com/SanHsien/sticker-forge)；Claude Code context／token 稽核工具（工具裁剪、記憶壓縮、token 哨兵、記憶索引健檢）獨立成 [`SanHsien/claude-context-audit`](https://github.com/SanHsien/claude-context-audit)。
 
 **資料流（單一資料來源）**：任務的優先級、範圍、狀態、證據**只寫在筆記裡**；README 的
 `<!-- BEGIN GENERATED -->` 區塊一律由腳本產生，禁止手改。

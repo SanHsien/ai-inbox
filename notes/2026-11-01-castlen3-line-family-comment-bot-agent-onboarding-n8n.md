@@ -32,7 +32,7 @@ tags:
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 專案說明書四原則：從 Prompt 到硬閘門）
   - [`notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md`](./2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)（開源 Agent 工單系統與跨端交接架構）
   - [`notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md`](./2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)（本地 AI 網關與多模型智慧路由）
-  - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（對話上下文壓縮與 Token 成本控制）
+  - [`2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](https://github.com/SanHsien/claude-context-audit/blob/main/notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（對話上下文壓縮與 Token 成本控制）
 
 ---
 

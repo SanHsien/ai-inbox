@@ -27,7 +27,7 @@ tags:
 - **分析主題**：解構在 Threads 上引發廣泛共鳴的 AI Coding Agent 配置範式——「這個 Claude Code 設定，終於不用再拿最強的模型去做雜事了。Opus 5.5 專心顧主線開發，Sonnet 負責執行，Fable 打分數看進度，JEV 則處理那些又快又固定的決策判斷。分工分清楚，強模型就該花在刀口上 🔪」。針對業界在落地自主編程 Agent 時普遍陷入的**「一竿子頂級模型到底（Monolithic Frontier LLM Trap）」**引發的 Token 暴增、速率限制（Rate Limit）快速枯竭與注意力失焦問題，深入剖析**四級職責解耦模型（Opus 頂層主線 + Sonnet 工程實作 + Fable 獨立裁判 + JEV 輕量決策）**的架構拓撲、邊界界定、通訊契約與在本地多 Agent 開發管線中的工程落地實踐。
 - **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
-  - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
+  - [`2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](https://github.com/SanHsien/claude-context-audit/blob/main/notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
   - [`notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md`](./2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)（Magpie 本地 AI 模型網關智慧路由）
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（LLM 燒錢率、Cache 命中率與智慧路由 Benchmark）
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 專案規範四大硬閘門）

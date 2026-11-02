@@ -30,7 +30,7 @@ tags:
 - **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（LLM 燒錢率、Cache 命中率與智慧路由 Benchmark）
-  - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
+  - [`2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](https://github.com/SanHsien/claude-context-audit/blob/main/notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
   - [`notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md`](./2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md)（OpenBot 本地優先多 Agent 桌面工作台）
   - [`notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md`](./2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)（跨 CLI 子代理編排與路由分發）
 

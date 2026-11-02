@@ -118,7 +118,7 @@ OpenBot 扮演一個純本地的**「AI 代理人桌面管弦樂團調度器」*
 - **Agent 中繼與容錯切換**：
   - [Codync 開源 Agent 中繼與容錯](./2026-10-26-codync-open-source-agent-relay-fallback.md) ｜ 關聯任務：`T-20261026-03`
 - **瀏覽器 CDP 操控與驗證閉環**：
-  - [Cloudflare Agents SDK 與 Browser Run](./2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md) ｜ 關聯任務：`T-20261031-01`、`T-20261031-02`
+  - [Cloudflare Agents SDK 與 Browser Run](./2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md) ｜ 關聯任務：`T-20261031-07`、`T-20261031-08`、`T-20261031-09`
 
 ---
 

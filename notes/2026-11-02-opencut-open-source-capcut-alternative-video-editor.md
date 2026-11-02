@@ -31,8 +31,8 @@ tags:
 - **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-reelbird-open-source-screen-recorder.md`](./2026-10-17-reelbird-open-source-screen-recorder.md)（Reelbird 開源螢幕錄影：輕量流暢錄製與展示）
-  - [`notes/2026-10-28-motion-design-agent-harness-opus-55.md`](./2026-10-28-motion-design-agent-harness-opus-55.md)（代碼驅動 Motion Design Agent：Harness、seek(t) 與分鏡自審循環）
-  - [`notes/2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md`](./2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md)（設計師 Riven Claude Opus 5.5 動態設計 12 大純代碼視覺特效規格）
+  - [`2026-10-28-motion-design-agent-harness-opus-55.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md)（代碼驅動 Motion Design Agent：Harness、seek(t) 與分鏡自審循環）
+  - [`2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-11-01-designer-riven-claude-opus-55-code-motion-design-12-demos.md)（設計師 Riven Claude Opus 5.5 動態設計 12 大純代碼視覺特效規格）
   - [`notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md`](./2026-10-26-answer-me-with-html-visual-agent-artifacts.md)（Visual Artifacts 與 Generative UI 互動展示規範）
 
 ---

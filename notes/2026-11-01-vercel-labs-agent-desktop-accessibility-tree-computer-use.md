@@ -34,7 +34,7 @@ tags:
 - **辦理情形**：已正式建立獨立頂層 Session 實施 fork 成果移植、Windows UIA 驗證與全系統 Agent Skill 發布（`agent-assets` 與 CLI 整合）；完成架構規格書 `docs/agent-desktop-computer-use-spec.md`、驗證工具與單元測試，全域 Skill 已部署至 Antigravity、Claude Code、Codex、Hermes 共用環境並通過 `SanHsien/agent-assets` 登記與推送（SHA: `1c433eb`）。頂層派工會話（`2b43ab20-6ed7-468f-8a01-09e6b959ce23`）已全面結案回報：完成雙語 README（中英對齊）與 Repo About、分支與 Release/Tag 收斂（v1.0.2 正式版附帶 Windows 二進制產物）、Supply Chain / CodeQL / Fork Maintenance / CI 4 項 GitHub Actions 100% 綠燈通過、以及全面 Bug 修復（Windows 11 桌面隔離 attach_input_desktop、剪貼簿競態、特殊 SID DACL 白名單、FFI 指標安全、CachePolicy 斷言與 400 行源碼規範，3,400+ 測試全數通過，最新 commit `a67bf683`）。
 - **當前狀態**：`🟢 已結案 (Resolved)`
 - **相關交叉參照**：
-  - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（經驗驅動 Token 成本控制與上下文壓縮）
+  - [`2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](https://github.com/SanHsien/claude-context-audit/blob/main/notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（經驗驅動 Token 成本控制與上下文壓縮）
   - [`notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md`](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md)（Herdr 終端復用與統一網關調度）
   - [`notes/2026-10-19-android-official-skills-google-coding-agent.md`](./2026-10-19-android-official-skills-google-coding-agent.md)（Android 官方節點樹與 UI 結構層檢驗）
   - [`notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md`](./2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)（四 Agent 平行派工與五路工具流整合）

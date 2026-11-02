@@ -31,7 +31,7 @@ tags:
 - **相關交叉參照**：
   - [`notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md`](./2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)（Claude Code 四級模型分工架構解構）
   - [`notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md`](./2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)（Claude Code 四角色動態調用原則）
-  - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
+  - [`2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](https://github.com/SanHsien/claude-context-audit/blob/main/notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
   - [`notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md`](./2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)（Magpie 本地 AI 模型網關智慧路由）
 
 ---

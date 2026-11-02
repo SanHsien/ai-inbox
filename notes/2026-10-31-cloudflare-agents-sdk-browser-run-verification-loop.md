@@ -30,7 +30,7 @@ tags:
 - **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（編譯器專家 Thorsten Ball 15 條哲學：無可辯駁證據與為 Agent 打造試錯工具）
-  - [`notes/2026-10-28-motion-design-agent-harness-opus-55.md`](./2026-10-28-motion-design-agent-harness-opus-55.md)（代碼驅動 Motion Design：seek(t) 與分鏡自審循環）
+  - [`2026-10-28-motion-design-agent-harness-opus-55.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md)（代碼驅動 Motion Design：seek(t) 與分鏡自審循環）
   - [`notes/2026-10-17-agent-reach-social-intelligence.md`](./2026-10-17-agent-reach-social-intelligence.md)（Agent-Reach 16 平台連網與情報感知規範）
 
 ---
@@ -168,6 +168,6 @@ Cloudflare 發布的 **Agents SDK (`cloudflare/agents`)** 與 **Browser Renderin
 - **確定性交付與試錯工具**：
   - [Thorsten Ball 15 條 Agent 實戰哲學](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) ｜ 關聯任務：`T-20261028-04`、`T-20261028-05`
 - **代碼驅動動效與分鏡自審**：
-  - [0xalpha 代碼驅動 Motion Design Agent Harness 解構](./2026-10-28-motion-design-agent-harness-opus-55.md) ｜ 關聯任務：`T-20261028-16`、`T-20261028-17`
+  - [0xalpha 代碼驅動 Motion Design Agent Harness 解構](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md) ｜ 關聯任務已隨筆記移至 code-as-video-studio
 - **外部環境感知與連網規格**：
   - [Agent-Reach 16 平台連網與情報感知規範](./2026-10-17-agent-reach-social-intelligence.md) ｜ 關聯任務：`T-20261017-01`、`T-20261017-02`

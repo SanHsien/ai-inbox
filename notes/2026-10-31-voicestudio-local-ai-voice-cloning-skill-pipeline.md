@@ -30,8 +30,8 @@ tags:
 - **分析主題**：解構 Threads 創作者 Jenjen 實測推薦的開源本地 AI 語音工作台 **VoiceStudio（`debpalash/VoiceStudio`）**。探討其如何作為商業雲端語音服務（如 ElevenLabs）的開源本地化替代方案，透過「零樣本聲音克隆（Zero-Shot Voice Cloning）」、「虛擬環境行程隔離（Subprocess Engine Registry）」、「多引擎動態適配（OmniVoice、CosyVoice、WhisperX 等 16+ TTS / 11+ ASR）」與「Agent Skill 自然語言提示詞驅動」，實現零雲端 API 成本、數據 100% 本地留存、高還原度音色資產化，並與視覺 IP（如 Ann Cheng 16 宮格貼圖）結合打通完整的 AI 數位分身（Avatar）多模態管線。
 - **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
-  - [`notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md`](./2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md)（Ann Cheng 16 宮格似顏繪貼圖規格：視覺 IP 資產與音色克隆的數位分身整合）
-  - [`notes/2026-10-28-motion-design-agent-harness-opus-55.md`](./2026-10-28-motion-design-agent-harness-opus-55.md)（Remotion / WebGL 代碼驅動動效與語音自動配音管線）
+  - [`2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md`](https://github.com/SanHsien/sticker-forge/blob/main/docs/research/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md)（Ann Cheng 16 宮格似顏繪貼圖規格：視覺 IP 資產與音色克隆的數位分身整合）
+  - [`2026-10-28-motion-design-agent-harness-opus-55.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md)（Remotion / WebGL 代碼驅動動效與語音自動配音管線）
   - [`notes/2026-10-17-agent-reach-social-intelligence.md`](./2026-10-17-agent-reach-social-intelligence.md)（Agent-Reach 多平台情報感知探針與社群實戰採掘）
   - [`notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md`](./2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)（多 Agent 協同與非同步任務封裝調度）
 
@@ -166,9 +166,9 @@ sequenceDiagram
 
 | 模態面向 | 核心工具 / 規格 | 產出成果 | 筆記交叉參照 |
 | :--- | :--- | :--- | :--- |
-| **視覺形象** | Ann Cheng 16 宮格 AI 似顏繪 Prompt | 統一風格的 3D Q版多表情大頭貼與動態貼圖 | [`2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md`](./2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) |
+| **視覺形象** | Ann Cheng 16 宮格 AI 似顏繪 Prompt | 統一風格的 3D Q版多表情大頭貼與動態貼圖 | [`2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md`](https://github.com/SanHsien/sticker-forge/blob/main/docs/research/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) |
 | **音色復刻** | VoiceStudio 零樣本聲音克隆 | 100% 個人專屬的高還原度離線聲音模型 | **本筆記（VoiceStudio 管線）** |
-| **動態演繹** | WebGL Shader / Remotion Code-as-Video | 根據音訊波形自動唇形同步（Lip-sync）與動態演繹 | [`2026-10-28-motion-design-agent-harness-opus-55.md`](./2026-10-28-motion-design-agent-harness-opus-55.md) |
+| **動態演繹** | WebGL Shader / Remotion Code-as-Video | 根據音訊波形自動唇形同步（Lip-sync）與動態演繹 | [`2026-10-28-motion-design-agent-harness-opus-55.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md) |
 | **大腦決策** | Claude Code / Antigravity Agent Skill | 自動撰寫講稿、排程發布與互動回應 | [`2026-10-17-cross-cli-subagent-orchestration-space-bunny.md`](./2026-10-17-cross-cli-subagent-orchestration-space-bunny.md) |
 
 ---
@@ -212,9 +212,9 @@ sequenceDiagram
 ## 7. 關聯任務與知識拓撲（Task & Knowledge Relations）
 
 - **視覺資產與多模態 IP 整合**：
-  - [Ann Cheng 16 宮格 AI 似顏繪貼圖規格](./2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) ｜ 關聯任務：`T-20261031-07`、`T-20261031-08`
+  - [Ann Cheng 16 宮格 AI 似顏繪貼圖規格](https://github.com/SanHsien/sticker-forge/blob/main/docs/research/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) ｜ 關聯任務：`T-20261031-07`、`T-20261031-08`
 - **動態視覺演繹與音訊整合**：
-  - [Remotion / WebGL 代碼驅動動效與語音配音管線](./2026-10-28-motion-design-agent-harness-opus-55.md) ｜ 關聯任務：`T-20261028-01`、`T-20261028-02`
+  - [Remotion / WebGL 代碼驅動動效與語音配音管線](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md) ｜ 關聯任務：`T-20261028-01`、`T-20261028-02`
 - **社群情報採掘與環境感知**：
   - [Agent-Reach 多平台情報感知探針](./2026-10-17-agent-reach-social-intelligence.md) ｜ 關聯任務：`T-20261017-08`
 - **多代理協同調度與非同步管線**：

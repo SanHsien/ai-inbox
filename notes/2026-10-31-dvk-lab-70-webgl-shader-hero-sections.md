@@ -29,8 +29,8 @@ tags:
 - **分析主題**：解構收錄 70 款高質感動態 Hero Section 的開源專案 **DVK Lab**。深入剖析其「Zero Build（零構建免配置、複製即用）」架構哲學、WebGL Shader（Vermilion、Relic、Currents、Seascape 流體光影）、3D Raymarching、液態金屬波動（Liquid Metal）與 ASCII Art 字符流特效，並探討 AI Coding Agent（Antigravity、Claude Code）如何在無需外部 npm 依賴的情況下直接將高奢視覺組件注入落地網頁與 Generative UI 中。
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
-  - [`notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md`](./2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md)（Ann Cheng 視覺資產生成與 Prompt 規範）
-  - [`notes/2026-10-28-motion-design-agent-harness-opus-55.md`](./2026-10-28-motion-design-agent-harness-opus-55.md)（0xalpha 代碼驅動動效與視覺 Anti-Slop 規範）
+  - [`2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md`](https://github.com/SanHsien/sticker-forge/blob/main/docs/research/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md)（Ann Cheng 視覺資產生成與 Prompt 規範）
+  - [`2026-10-28-motion-design-agent-harness-opus-55.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md)（0xalpha 代碼驅動動效與視覺 Anti-Slop 規範）
   - [`notes/2026-10-18-target-story-generative-ui-editor.md`](./2026-10-18-target-story-generative-ui-editor.md)（Target Story Generative UI 動態組件規範）
 
 ---
@@ -162,8 +162,8 @@ DVK Lab 收錄之組件可歸納為五大標誌性視覺分類：
 ## 5. 關聯筆記與相關任務（Related Notes & Tasks）
 
 - **視覺資產與 Prompt 規格**：
-  - [Ann Cheng AI 似顏繪 16 宮格 LINE 貼圖 Prompt 工程](./2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) ｜ 關聯任務：`T-20261031-01`、`T-20261031-02`、`T-20261031-03`
+  - [Ann Cheng AI 似顏繪 16 宮格 LINE 貼圖 Prompt 工程](https://github.com/SanHsien/sticker-forge/blob/main/docs/research/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) ｜ 關聯任務已隨筆記移至 sticker-forge
 - **動效與代碼驅動 Anti-Slop 規範**：
-  - [0xalpha 代碼驅動 Motion Design Agent Harness 解構](./2026-10-28-motion-design-agent-harness-opus-55.md) ｜ 關聯任務：`T-20261028-16`、`T-20261028-17`
+  - [0xalpha 代碼驅動 Motion Design Agent Harness 解構](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md) ｜ 關聯任務已隨筆記移至 code-as-video-studio
 - **Generative UI 與動態組件**：
   - [Target Story Generative UI 動態組件規範](./2026-10-18-target-story-generative-ui-editor.md) ｜ 關聯任務：`T-20261018-04`、`T-20261018-05`

@@ -166,3 +166,14 @@
 - ✅ [低] T-20261028-08、T-20261028-11、T-20261102-06、T-20261102-03、T-20261028-16：誤判與漏判、結束碼與文件不符、Resolve 指向草稿、章節編號、FFmpeg tag 與 commit 混淆
 - ✅ 既有文件 `docs/feedback-desk-vs-agent-relay.md` 的狀態名稱與「硬閘門」說法和上游不符，一併改正
 - 尚未驗證：github-apps 的 workflow 未在真實 GitHub Actions 執行（actionlint 尚不認得 `copilot-requests`）；各瀏覽器測試只在本機 Edge 跑，CI 不跑。
+
+## 12. 再移出三組成果（2026-11-02）
+
+判斷標準照 2026-10-25 前例：可以脫離收件匣單獨使用、有自己的工具與測試，而且主題集中的成果才搬；只是研究筆記、外部裁判，或跟其他任務綁在一起的檔案留下。
+
+- 動態設計影格審查（`audit_motion_storyboard.py`）、電影感 AI 影片提示詞與 3 篇筆記，併入既有的 `SanHsien/code-as-video-studio`。
+- LINE 16 宮格切圖（`slice_line_stickers.py`）、規格、Skill 範本與筆記，併入既有的 `SanHsien/sticker-forge`。主程式已經能切任意格數，兩邊的差異（4x4 規格、空白與假透明檢查）列在該 repo 的 ROADMAP。
+- 工具裁剪、記憶壓縮遺失率、token 哨兵、記憶索引健檢 4 支工具與對應文件、3 篇筆記，新建 `SanHsien/claude-context-audit`。
+- 留下不搬：`screen_privacy.py`（全域規則與 agent-assets 第 12 條直接引用本 repo 路徑）；`audit_skills_context_budget.py`（team-dispatch 範本的測試會呼叫它）；shader-hero 與其他網頁展示。
+- 引用修正：11 篇留下的筆記改連到新 repo 的網址，已搬走任務的引用比照前例改寫成「已隨筆記移至」；順手修正 openbot 筆記把 Cloudflare 筆記的任務寫成 T-20261031-01、-02 的錯誤（應為 -07～-09）。
+- 都用 git-filter-repo 保留原檔歷史。

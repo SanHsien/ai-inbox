@@ -32,7 +32,7 @@ tags:
 - **相關交叉參照**：
   - [`notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md`](./2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md)（VoiceStudio 本地語音合成與聲音克隆管線：TTS 與 ASR 的雙向多模態協同）
   - [`notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md`](./2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)（海外一手副業案例與影音情報萃取管線：會議長音訊情報化）
-  - [`notes/2026-10-28-motion-design-agent-harness-opus-55.md`](./2026-10-28-motion-design-agent-harness-opus-55.md)（Remotion / WebGL 動效與音訊精確字級對齊）
+  - [`2026-10-28-motion-design-agent-harness-opus-55.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md)（Remotion / WebGL 動效與音訊精確字級對齊）
   - [`notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md`](./2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md)（超長上下文處理與非同步模型調度矩陣）
 
 ---
@@ -125,7 +125,7 @@ Nemotron 3.5 Transcribe 採用統一的語音-語言音訊模型（Speech-Langua
 | :--- | :--- | :--- | :--- |
 | **影音案例採掘** | 長篇 YouTube 專訪提取依賴多段字幕拼裝 | 單次載入 1 小時影片，直接下 Prompt 輸出 5W1H 商業畫布 | [`2026-10-31-global-solopreneur`](./2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md) |
 | **本地語音合成** | VoiceStudio 克隆前需手動裁切並用 WhisperX 前處理 | 用 Nemotron 提示詞一鍵過濾口吃贅字，提取高純度乾淨音訊 | [`2026-10-31-voicestudio`](./2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md) |
-| **動效字級對齊** | Remotion 動畫字幕對齊遇到重疊語音時時間戳錯位 | 原生提供字級高精時間戳與多說話人標籤，實現精確排版 | [`2026-10-28-motion-design`](./2026-10-28-motion-design-agent-harness-opus-55.md) |
+| **動效字級對齊** | Remotion 動畫字幕對齊遇到重疊語音時時間戳錯位 | 原生提供字級高精時間戳與多說話人標籤，實現精確排版 | [`2026-10-28-motion-design`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md) |
 
 ---
 
@@ -136,7 +136,7 @@ Nemotron 3.5 Transcribe 採用統一的語音-語言音訊模型（Speech-Langua
 - **海外一手案例與影音情報萃取**：
   - [海外一手副業案例與影音情報萃取管線](./2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md) ｜ 關聯任務：`T-20261031-28`、`T-20261031-29`
 - **代碼驅動動效與精準字幕對齊**：
-  - [Remotion / WebGL 代碼驅動動效與語音配音管線](./2026-10-28-motion-design-agent-harness-opus-55.md) ｜ 關聯任務：`T-20261028-01`
+  - [Remotion / WebGL 代碼驅動動效與語音配音管線](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md) ｜ 關聯任務：`T-20261028-01`
 - **長上下文模型調度與多 Agent 協同**：
   - [0x Alpha (GLM-5.3-Flash) 1M 長上下文調度](./2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) ｜ 關聯任務：`T-20261021-01`
 

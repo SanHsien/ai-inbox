@@ -145,7 +145,7 @@ tags:
 - **採納與落地行動**：
   1. **跨平台記憶索引檢查工具（移植至 Python）**：
      - 原範本的 `check_index.sh` 依賴 bash/grep/sed，在 Windows 原生環境執行不便。
-     - 在本 repo 中以 Python 3.11+ 實作跨平台的 `tools/check_memory_index.py`，支援掃描壞連結、未登錄檔案與索引過長門檻（>60 條）。
+     - 以 Python 3.11+ 實作跨平台的 check_memory_index.py（2026-11-02 起在 [`SanHsien/claude-context-audit`](https://github.com/SanHsien/claude-context-audit)），支援掃描壞連結、未登錄檔案與索引過長門檻（>60 條）。
   2. **在 `SanHsien/agent-assets`（私有） 引入「糾正審查佇列（`correction-queue.jsonl`）」**：
      - 目前多個 Agent 在記錄 `lessons.md` 時均直接寫檔。引入 jsonl 格式的審核佇列，能使各 Session 的除錯反思先非同步排隊，再由主 Session 批次精煉收錄，杜絕規則主表混亂。
   3. **吸收三跳查詢協議至全域指引**：
@@ -173,9 +173,9 @@ tags:
     1. 以純 Python 3.11+ 實作索引健全性檢查器，完美相容 Windows 11 原生環境。
     2. 自動驗證：(1) 索引指向不存在檔案的壞連結、(2) 未編入索引的同層文檔、(3) 索引行數超過 60 條的過長警示。
     3. 撰寫單元測試覆蓋正常索引、壞連結、漏編檔案與過長條目。
-  - **驗收標準（DoD）**：產出 `tools/check_memory_index.py` 與 `tests/test_check_memory_index.py`，通過 `python -m unittest discover -s tests -p "test_check_memory_index.py"`。
+  - **驗收標準（DoD）**：產出 tools/check_memory_index.py 與 tests/test_check_memory_index.py，通過 `python -m unittest discover -s tests -p "test_check_memory_index.py"`。
   - **完成日期**：2026-10-26
-  - **實作紀錄 / 證據**：tools/check_memory_index.py＋tests/test_check_memory_index.py：22 tests OK，含 60 條上限邊界、壞連結、漏編索引、CRLF／BOM。獨立驗收（fresh-context 審查員，2026-10-26）通過。
+  - **實作紀錄 / 證據**：tools/check_memory_index.py＋tests/test_check_memory_index.py：22 tests OK，含 60 條上限邊界、壞連結、漏編索引、CRLF／BOM。獨立驗收（fresh-context 審查員，2026-10-26）通過。**搬移註記（2026-11-02）**：工具與測試已移至 [`SanHsien/claude-context-audit`](https://github.com/SanHsien/claude-context-audit)（保留 git 歷史）。
 
 - [x] **`T-20261026-25`**｜**[優先級：低]** 在 `C:\GitHub\agent-assets`（私有） 評估引進「糾正審查佇列（`correction-queue.jsonl`）」架構
   - **目標範圍**：`C:\GitHub\agent-assets\knowledge\`（私有） 與擴充評估文檔
