@@ -1,241 +1,204 @@
 ---
 name: motion-design-studio
-description: 代碼驅動 Motion Design Agent 工作室規範與 Skill 範本。以 Node.js + Playwright + FFmpeg 為 Harness，強制時間函式 Frame = f(t) 與 seek(t) 介面、Anti-Slop 視覺黑名單、Contact Sheet 8 分門檻自審循環，以及 Effort 分層路由。
-triggers:
-  - "motion-design"
-  - "代碼驅動動效"
-  - "seek(t)"
-  - "contact-sheet"
-  - "anti-slop"
-  - "分鏡自審"
-  - "playwright ffmpeg"
+description: 以 seek(t)、分鏡像素與文字量測、PNG 序列及 FFmpeg 製作動態設計。
 ---
 
-# Motion Design Studio Agent Skill (代碼驅動動態設計工作室技能規格)
+# Motion Design Studio 可攜範本
 
-> 本技能規格收錄於 `templates/motion-design-studio-skill.md`，定義 Coding Agent 在動態設計專案中以確定性 Harness 取代虛浮 Prompt 的標準實踐 SOP。  
-> 適用技術棧：**Node.js (Canvas 2D / SVG / GSAP / Spring) + Playwright + FFmpeg**。  
-> 核心規範對照：[`docs/code-driven-motion-design-studio-spec.md`](../docs/code-driven-motion-design-studio-spec.md)。
+本範本配合 ai-inbox 的 `docs/code-driven-motion-design-studio-spec.md`。
+分鏡工具是有限度的機械檢查，不是美感裁判。複製到其他專案時，先完成下列安裝，再填入品牌資料。
 
----
+## 1. 安裝到其他專案
 
-## 1. 工作室核心原則與邊界契約
+從同一份 ai-inbox checkout **一起複製**這些檔案，不只複製本文：
 
 ```text
-┌────────────────────────────────────────────────────────┐
-│ 動態設計工作室四大不妥協原則                            │
-├────────────────────────────────────────────────────────┤
-│ 1. Harness 勝於 Prompt：以可執行的程式碼定義動畫       │
-│ 2. 影片即純時間函式：Frame = f(t)，實作 seek(t) 介面    │
-│ 3. 嚴格杜絕視覺罐頭：明文禁止老套 AI 藍紫漸層與齊頭淡入 │
-│ 4. 8 分門檻自審循環：縮圖總覽未達 8.0 分禁止渲染視訊    │
-└────────────────────────────────────────────────────────┘
+ai-inbox/tools/audit_motion_storyboard.py --> 新專案/tools/audit_motion_storyboard.py
+ai-inbox/docs/code-driven-motion-design-studio-spec.md --> 新專案/docs/code-driven-motion-design-studio-spec.md
+本文第 4 節 Python 區塊 --> 新專案/tools/render_frames.py
+本文第 3 節 HTML 區塊 --> 新專案/index.html
 ```
 
-1. **零隨機漂移（Zero Generative Drift）**：所有動畫元素的位置、透明度、縮放與旋轉必須透過確定性程式碼計算，禁止使用不可控的生成式影片擴散模型。
-2. **純時間函式（Frame = f(t)）**：所有畫面狀態均為傳入時間 $t$（毫秒）的確定性映射，支援任意隨機時間跳轉（`window.seek(t)`），嚴禁內部狀態隨影格累加。
-3. **客觀機械外部裁判**：正式編碼前，必須透過 `tools/audit_motion_storyboard.py` 生成縮圖總覽（Contact Sheet）並通過 8.0 分門檻自審。
+從新專案根目錄執行；跨平台使用相同 Python 指令：
 
----
+```bash
+python -m venv .venv
+```
 
-## 2. 專案根目錄 CLAUDE.md 工作室規範範本
+啟用環境：PowerShell 用 `.venv\Scripts\Activate.ps1`，bash 用 `source .venv/bin/activate`。
 
-動態設計專案可直接將以下內容複製至專案根目錄的 `CLAUDE.md`：
+```bash
+python -m pip install Pillow playwright
+python -m playwright install chromium
+ffmpeg -version
+```
 
-````markdown
-# Motion Design Studio Rules (CLAUDE.md)
+FFmpeg 必須另外安裝並放入 PATH；可從 [官方下載入口](https://ffmpeg.org/download.html) 選擇作業系統套件。
+記錄 `python -m pip freeze` 與 `ffmpeg -version`，讓驗收可重現；不要自行聲稱未實測版本相容。
+沒有瀏覽器/套件回 exit 2，不能視為通過。若使用已安裝的 Edge 或 Chrome，audit 與 export 都帶相同 `--channel`。
 
-## 核心開發原則
-- 動畫即純時間函式：所有動畫邏輯必須封裝為 `renderFrame(tInMs)` 並暴露 `window.seek(tInMs)`。
-- 禁止使用 `setInterval` 或依賴遞推的狀態累加（如 `x += v * dt`）；必須使用絕對時間公式 `x = f(t)`。
-- 所有樣式禁止引入外部未授權 CDN，資產必須內聯或存放於 `assets/`。
+## 2. 品牌提取與 CLAUDE.md 填空
 
-## 視覺禁制清單（Negative Constraints 黑名單）
-- ❌ SLOP-M01: 禁止漸層背景 ＋ 置中粗體標題。改用單色高對比表面（如 `#090d16`）與清晰網格排版。
-- ❌ SLOP-M02: 禁止全體元素同一時間淡入。多元素進場強制使用 40ms~80ms 錯落延遲（Stagger Delay）。
-- ❌ SLOP-M03: 禁止浮誇無腦陰影（`shadow-2xl`）與生硬圓角徽章。改用 1px 細緻邊框（`#1e293b`）。
-- ❌ SLOP-M04: 禁止荒謬線性運動與無阻尼彈跳。位移動畫必須基於物理彈簧（Spring Physics）。
-- ❌ SLOP-M05: 禁止虛假隨機數字跳動與罐頭裝飾 Emoji（🚀✨🔥）。
-
-## 渲染前自審硬閘門
-- 正式調用 FFmpeg 導出前，必須在終端執行：
-  ```bash
-  python tools/audit_motion_storyboard.py index.html --output-dir artifacts/storyboard
-  ```
-- 若評分低於 8.0 分，檢視輸出的 Worst-3 分鏡並針對性修正，直到全數通過。
-````
-
----
-
-## 3. 品牌色與向量資產注入流程
-
-在開始動態編程前，Agent 必須先完成品牌資產提取與變數注入：
+先取得官方品牌規範或獲授權的設計稿。從其 CSS 自訂屬性、設計 token 或開發者工具的 computed style 記錄實際色值；下載官方 SVG 並確認使用授權。沒有官方色票時，人工採樣後註明「從素材取樣，非官方規範」。不可拿範例配色冒充品牌色。
 
 ```text
-  [ 輸入品牌網址 / 設計稿 ] ──► 抽取 Brand Identity (Hex / Fonts / SVGs)
-                                  │
-                                  ▼
-               ┌──────────────────────────────────────┐
-               │ 注入動效常數表 (Brand Theme Tokens)   │
-               │                                      │
-               │ BG_PRIMARY:    '#090d16'             │
-               │ BG_SURFACE:    '#111827'             │
-               │ BORDER_SUBTLE: '#1f2937'             │
-               │ TEXT_PRIMARY:  '#f9fafb'             │
-               │ ACCENT_BRAND:  '#0ea5e9'             │
-               │ LOGO_VECTOR:   '<svg ...></svg>'     │
-               └──────────────────────────────────────┘
+品牌/產品：________
+來源 URL / 本機授權素材：________
+查證日期與頁面元素：________
+BG_PRIMARY（#RRGGBB，對應 --bg-primary）：________
+TEXT_PRIMARY（#RRGGBB，對應 --text-primary）：________
+ACCENT_BRAND（#RRGGBB，對應 --accent-brand）：________
+Logo SVG 路徑與授權：________
+字型與授權：________
+文字/背景最差對比（>=4.5）：________
 ```
 
-- **真實向量圖標優先**：優先使用乾淨的 SVG 代碼直接繪入 DOM 或 Canvas，禁止使用模糊的低解析度點陣截圖。
-- **等寬數字防抖動**：若畫面有倒數計時或數據變化，字型必須指定等寬特徵（`font-family: monospace` 或 `font-variant-numeric: tabular-nums`），防止數值躍遷時版面寬度抖動。
+檢查來源記錄後，只改第 3 節 `:root` 的三個變數，再重新跑量測；對比不足的組合由 audit 擋下，不要靠調低 `--min-score` 或刪規則通過。以下可複製至根目錄 `CLAUDE.md`：
 
----
+```markdown
+# 動態工作室規則
+- 規範：docs/code-driven-motion-design-studio-spec.md；品牌資料先填完並留來源。
+- window.seek(t 毫秒) 完成時必須已繪製；任意順序同 t 像素相同。不累加狀態，不使用未設種子的隨機數、setInterval 或持續的 rAF/setTimeout 迴圈；CSS 動畫須 paused，由 seek 設 currentTime。
+- 本專案偏好 zeta 0.7..0.85 的欠阻尼彈簧、40..80ms 錯落進場；不得把過阻尼套成臨界阻尼。
+- SLOP-M01 漸層置中、M02 全體同步淡入、M03 浮誇陰影/標籤、M04 生硬線性/無阻尼、M05 假數字/隨機粒子都需避免。
+- audit 會保守標記原始碼候選，必須查明問題；Emoji 不屬 M05。不可降低門檻或關閉檢查求通過。
+- 正式文字用 DOM；SVG/Canvas 文字、遮擋與複雜混色另人工檢查，不能宣稱工具已量過。
+- 執行 python tools/audit_motion_storyboard.py index.html --duration 3000 --frames 6 --output-dir artifacts/storyboard --json。
+- 全部影格 >=8 且無 issues/errors/Anti-Slop 才通過。缺依賴、逾時、壞圖均不可導出；先修 Worst-3。
+- 通過後才執行 tools/render_frames.py 並用 FFmpeg 合成；保留原始 PNG。
+```
 
-## 4. `window.seek(t)` 標準代碼實作範本
+## 3. 可執行 seek 範例
 
-以下為可直接取用的單檔 Canvas 動效範本（包含物理彈簧阻尼算法與 `seek(t)` 介面契約）：
+這是與規範一致的中性驗證 fixture。品牌顏色只在 `:root` 三個變數填空；初始畫面保留內容，不用全透明影格。
 
 ```html
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-  <meta charset="utf-8">
-  <title>Motion Design Component</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #090d16; overflow: hidden; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-    #viewport { width: 1280px; height: 720px; background: #090d16; position: relative; }
-    canvas { width: 100%; height: 100%; display: block; }
-  </style>
-</head>
-<body>
-  <div id="viewport">
-    <canvas id="stage" width="1280" height="720"></canvas>
-  </div>
-
-  <script>
-    const canvas = document.getElementById('stage');
-    const ctx = canvas.getContext('2d');
-
-    // 1. 物理彈簧解析解公式（欠阻尼震盪，無歷史累積）
-    function spring(tSec, stiffness = 120, damping = 14, mass = 1) {
-      if (tSec <= 0) return 0;
-      const omega0 = Math.sqrt(stiffness / mass);
-      const zeta = damping / (2 * Math.sqrt(stiffness * mass));
-      if (zeta < 1) {
-        const omegaD = omega0 * Math.sqrt(1 - zeta * zeta);
-        const decay = Math.exp(-zeta * omega0 * tSec);
-        return 1 - decay * (Math.cos(omegaD * tSec) + (zeta * omega0 / omegaD) * Math.sin(omegaD * tSec));
-      }
-      return 1 - Math.exp(-omega0 * tSec) * (1 + omega0 * tSec);
-    }
-
-    // 2. 確定性純時間渲染：Frame = f(t)
-    function render(tMs) {
-      const t = Math.max(0, tMs / 1000);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 背景深色基底
-      ctx.fillStyle = '#090d16';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // 錯落進場元素 A：標題（延遲 80ms）
-      const p1 = spring(t - 0.08, 140, 16);
-      ctx.save();
-      ctx.fillStyle = '#f8fafc';
-      ctx.font = '700 44px -apple-system, sans-serif';
-      ctx.globalAlpha = Math.min(1, Math.max(0, p1));
-      ctx.fillText('確定性動效工作室', 100, 240 + (1 - p1) * 30);
-      ctx.restore();
-
-      // 錯落進場元素 B：數據卡片（延遲 160ms）
-      const p2 = spring(t - 0.16, 110, 13);
-      ctx.save();
-      ctx.fillStyle = '#111827';
-      ctx.strokeStyle = '#1f2937';
-      ctx.lineWidth = 1;
-      ctx.globalAlpha = Math.min(1, Math.max(0, p2));
-      const cardY = 300 + (1 - p2) * 50;
-      ctx.fillRect(100, cardY, 520, 200);
-      ctx.strokeRect(100, cardY, 520, 200);
-
-      ctx.fillStyle = '#38bdf8';
-      ctx.font = '600 24px monospace';
-      ctx.fillText(`STATUS: ACTIVE (t=${Math.round(tMs)}ms)`, 130, cardY + 60);
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '400 18px -apple-system, sans-serif';
-      ctx.fillText('零隨機漂移 · 像素級渲染 · 物理彈簧阻尼', 130, cardY + 110);
-      ctx.restore();
-    }
-
-    // 3. 暴露時間跳轉介面契約
-    window.seek = function(tMs) {
-      render(tMs);
-      return Promise.resolve();
-    };
-
-    // 初始渲染
-    window.seek(0);
-  </script>
-</body>
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<title>Motion fixture</title>
+<style>
+:root{--bg-primary:#112233;--text-primary:#ffffff;--accent-brand:#ffb703} /* 填空：換成第 2 節取得的品牌色票 */
+body{margin:0;background:var(--bg-primary);color:var(--text-primary);font:32px sans-serif}
+h1,p{position:absolute;margin:0;left:80px}
+h1{top:80px;font-size:48px}p{top:230px}
+#card{position:absolute;left:80px;top:380px;width:240px;height:120px;background:var(--accent-brand)}
+</style>
+<h1 id="title">Motion Studio</h1>
+<p id="subtitle">Deterministic frames</p>
+<div id="card"></div>
+<script>
+function spring(t,k=16,c=6,m=1){
+  const z=c/(2*Math.sqrt(k*m));
+  if(!(k>0 && m>0 && z>0 && z<1)) throw new Error('underdamped only');
+  if(t<=0) return 0;
+  const w=Math.sqrt(k/m), d=w*Math.sqrt(1-z*z);
+  return 1-Math.exp(-z*w*t)*(Math.cos(d*t)+z*w/d*Math.sin(d*t));
+}
+window.seek=function(ms){
+  const t=Math.max(0,ms)/1000;
+  document.getElementById('title').style.transform=`translateX(${80*spring(t/3)}px)`;
+  document.getElementById('subtitle').style.transform=`translateX(${80*spring((t-.06)/3)}px)`;
+  document.getElementById('card').style.transform=`translateX(${80*spring((t-.12)/3)}px)`;
+};
+window.seek(0);
+</script>
 </html>
 ```
 
----
+## 4. seek 逐幀輸出腳本
 
-## 5. FFmpeg 壓縮與導出參數矩陣
+將下列完整內容存成 `tools/render_frames.py`。此腳本依賴 Playwright，不需要 Node 或 ai-inbox 的 checkout；它是導出器，不取代 audit。每幀時間為 `i*1000/fps`，不重複最後端點；檔名從 `frame_0000.png` 開始。要求輸出目錄不存在或為空，防止舊序列混入。
 
-當動態分鏡自審通過後，調用 FFmpeg 進行終端導出：
+```python
+import argparse
+import math
+from pathlib import Path
+import sys
 
-| 交付目標 | 編碼格式 | 完整 FFmpeg 命令列範本 | 關鍵參數說明 |
-| :--- | :--- | :--- | :--- |
-| **網頁交付 (MP4)** | `libx264` | `ffmpeg -y -framerate 60 -i frames/f_%04d.png -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart output.mp4` | `crf 18` 視覺無失真；`pix_fmt yuv420p` 通用相容；`+faststart` 網頁秒開。 |
-| **廣播後期 (ProRes)**| `prores_ks` | `ffmpeg -y -framerate 60 -i frames/f_%04d.png -c:v prores_ks -profile:v 3 -pix_fmt yuv422p10le master.mov` | `profile:v 3`（ProRes 422 HQ），10-bit 色深無失真母帶。 |
-| **高畫質動圖 (GIF)** | `gif` | `ffmpeg -y -i output.mp4 -vf "fps=20,scale=800:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" demo.gif` | 兩階段調色盤優化（palettegen + paletteuse），消除雜色斑點。 |
-| **音畫對齊合成** | `aac` | `ffmpeg -y -i video.mp4 -i audio.wav -c:v copy -c:a aac -b:a 256k -shortest final.mp4` | `-c:v copy` 視訊流直接直通複製，精確音畫對齊。 |
 
----
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('target', type=Path)
+    parser.add_argument('--duration', type=float, default=3000)
+    parser.add_argument('--fps', type=int, default=60)
+    parser.add_argument('--output-dir', type=Path, default=Path('frames'))
+    parser.add_argument('--channel', choices=['chrome', 'msedge'])
+    args = parser.parse_args()
+    if not math.isfinite(args.duration) or not 0 < args.duration <= 600000 or not 1 <= args.fps <= 120:
+        parser.error('duration: 0 < 有限毫秒 <=600000；fps: 1..120')
+    if not args.target.is_file():
+        parser.error('目標 HTML 不存在')
+    if args.output_dir.exists() and any(args.output_dir.iterdir()):
+        parser.error('輸出目錄必須為空，請指定新目錄')
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print('缺少 Playwright；python -m pip install playwright', file=sys.stderr)
+        return 2
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    with sync_playwright() as p:
+        try:
+            browser = p.chromium.launch(headless=True, channel=args.channel, timeout=15000)
+        except Exception as exc:
+            print(f'瀏覽器不可用：{exc}', file=sys.stderr)
+            return 2
+        try:
+            page = browser.new_page(viewport={'width': 1280, 'height': 720}, device_scale_factor=1)
+            errors = []
+            page.on('pageerror', lambda e: errors.append(str(e)))
+            page.on('console', lambda m: errors.append(m.text) if m.type == 'error' else None)
+            page.goto(args.target.resolve().as_uri(), timeout=15000)
+            page.evaluate('() => document.fonts.ready')
+            if not page.evaluate("() => typeof window.seek === 'function'"):
+                raise RuntimeError('缺少 window.seek')
+            for i in range(math.ceil(args.duration * args.fps / 1000)):
+                page.evaluate('''async t => {
+                    let timer;
+                    try { await Promise.race([Promise.resolve(window.seek(t)),
+                        new Promise((_, reject) => {timer=setTimeout(()=>reject(new Error('seek timeout')),15000)})]);
+                    } finally {clearTimeout(timer)}
+                }''', i * 1000 / args.fps)
+                page.screenshot(path=str(args.output_dir / f'frame_{i:04d}.png'), timeout=15000)
+                if errors:
+                    raise RuntimeError('; '.join(errors))
+        except Exception as exc:
+            print(f'導出失敗（部分 PNG 不可交付）：{exc}', file=sys.stderr)
+            return 1
+        finally:
+            browser.close()
+    return 0
 
-## 6. 8 分門檻自檢指令與循環 SOP
 
-### 6.1 自檢指令呼叫
-在專案目錄下執行：
-```bash
-python tools/audit_motion_storyboard.py path/to/index.html \
-  --duration 3000 \
-  --frames 6 \
-  --output-dir artifacts/audit_output \
-  --min-score 8.0
+if __name__ == '__main__':
+    sys.exit(main())
 ```
 
-### 6.2 評審循環 SOP（三步閉環）
-1. **讀取終端報告**：檢查每幀的四維得分（構圖、對比度、物理運動、Anti-Slop）。
-2. **定位 Worst-3 分鏡**：
-   - 若有幀數得分 $< 8.0$：定位該時間點 $t$，檢視對應的截圖。
-   - 依扣分項修訂代碼（例如：加長進場延遲以避免重疊、調高文字對比度、移除違規 Emoji）。
-3. **重新驗證至綠燈**：
-   - 重新執行審查工具，直到終端顯示 `[PASS]` 且 Exit Code 為 0。
+## 5. 自審、序列與影片的完整命令
 
----
+在新專案根目錄執行下列單行命令（PowerShell 7 / bash）：
 
-## 7. Effort 路由決策樹
+```bash
+python tools/audit_motion_storyboard.py index.html --duration 3000 --frames 6 --output-dir artifacts/storyboard --json && python tools/render_frames.py index.html --duration 3000 --fps 60 --output-dir frames && ffmpeg -y -framerate 60 -start_number 0 -i frames/frame_%04d.png -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart output.mp4
+```
+
+命名全程使用 `frame_%04d.png`，不是 `f_%04d.png`；Contact Sheet 是抽樣，不可直接當完整影片序列。
+CRF 18 是有損起點，不保證視覺無失真；`+faststart` 搬移 moov metadata，不保證秒開；不在未驗證時稱任何編碼格式為無損母帶。
+舊序列或部分失敗輸出須保留診斷，重新導出到新目錄，不能混用。
+若要更換 fps，同時修改輸出腳本參數與 ffmpeg 的 framerate。
+
+## 6. 驗收循環、路由與來源
 
 ```text
-                             [ 新的動態設計任務 ]
-                                      │
-                                      ▼
-                      ┌───────────────────────────────┐
-                      │ 評估任務規模與鏡頭複雜度      │
-                      └───────────────┬───────────────┘
-                                      │
-            ┌─────────────────────────┼─────────────────────────┐
-            ▼                         ▼                         ▼
-      [ 局部調整 ]              [ 單一場景短片 ]          [ 旗艦多鏡頭大片 ]
-      - 微調 50ms 延遲          - 5~15 秒功能動效         - 品牌旗艦宣傳片
-      - 修改 Hex 色票           - 產品 Hero Section       - 複雜數據動態可視化
-      - 抽換文案標題            - 包含彈簧與錯落進場      - 跨場景轉場與音畫合流
-            │                         │                         │
-            ▼                         ▼                         ▼
-     Effort: medium             Effort: xhigh              Effort: max
+品牌填空 -> 實作 seek -> audit
+                        | FAIL -> 看 Worst-3 / issues -> 修正 -> audit
+                        | INCOMPLETE -> 停止交付，排除依賴/逾時
+                        v PASS
+                   render_frames -> FFmpeg -> 人工播放核對
 ```
+
+audit：exit 0 通過；1 頁面/像素/排版品質失敗；2 參數/依賴錯誤；3 INCOMPLETE。
+只檢查工具可量到的項目，人工仍須看品牌、資訊順序與剪輯；完整限制見複製後的規範第 4 節。
+局部修改使用平台已驗證的低成本路由；完整或多鏡頭任務先定規格再決定 review，不硬綁不存在的 effort 選項。
+
+查證日期 2026-11-02：Playwright 的 launch/channel 與 Page 事件、FFmpeg n7.1 faststart、H.264 指南（Internet Archive 快照，原站被反機器人頁擋下）、Remotion random、Motion Canvas、Threads 貼文的逐項內容及未能開啟的 ffmpeg-formats.html，均見規範第 6 節。本文的門檻都是本 repo 的取捨，不是這些來源給的數字。
