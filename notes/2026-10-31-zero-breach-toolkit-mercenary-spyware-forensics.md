@@ -6,7 +6,7 @@ source_platform: "Threads (@leeunhn) / GitHub (interplains/Zero-Breach-Toolkit)"
 author: "李昀翰 (@leeunhn) / interplains (Zero-Breach-Toolkit)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 3
 cluster_role: "端點資安與間諜軟體鑑識"
 short_title: "Zero-Breach-Toolkit間諜軟體鑑識"
@@ -28,7 +28,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@leeunhn)](https://www.threads.com/share/BAa4BXlFwW/) ｜ [貼文永久網址](https://www.threads.com/@leeunhn/post/DfFLV0EmppX) ｜ [Zero-Breach-Toolkit 官方 GitHub](https://github.com/interplains/Zero-Breach-Toolkit) ｜ [Amnesty MVT 開源鑑識工具 (mvt.re)](https://mvt.re/) ｜ [Citizen Lab 威脅情報研究](https://citizenlab.ca/)
 - **核心作者**：李昀翰（@leeunhn，數位資安與科技探索者）／ interplains 開源團隊
 - **分析主題**：解構在 GitHub 迅速收穫 3,200+ 顆星的熱門開源數位鑑識工具 **Zero-Breach-Toolkit（`interplains/Zero-Breach-Toolkit`）**。深入剖析其如何打破過往「檢測高階間諜軟體必須付費送專業資安實驗室」的高門檻，提供一套完全**「本地離線運行（Offline-First）」**、**「嚴格唯讀（Strictly Read-Only）」**且支援 **Windows、macOS、Linux、Android 設備與 iOS 備份檔**的鑑識掃描器。詳細探討針對國家級/商業傭兵間諜軟體（Mercenary Spyware，如 NSO Group Pegasus、Cytrox Predator、Candiru、Graphite）的侵害指標（IoC）比對機制、鑑識限制與端點安全縱深防禦實戰。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-23-zeabur-october-2026-security-incident.md`](./2026-10-23-zeabur-october-2026-security-incident.md)（Zeabur 資安事件反思：憑證生命週期、多租戶隔離與滲透防護）
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 專案規範四大硬閘門：最小特權原則與環境隔離）
@@ -140,6 +140,7 @@ Zero-Breach-Toolkit 採用多層解耦的跨平台鑑識架構，核心聚焦於
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261031-31`**｜**[優先級：高]** 撰寫「商業間諜軟體端點鑑識與離線掃描落地手冊：Pegasus / Predator 威脅模型、跨平台 IoC 匹配與備份分析規格」收錄於 `docs/mercenary-spyware-forensic-guide.md`
+  - **狀態**：⚪ 不做（間諜軟體鑑識應直接用上游維護的工具與最新 IoC；自寫比對器沒有持續更新的 IoC 來源，反而會給人錯誤的安全感。）
   - **目標範圍**：`docs/mercenary-spyware-forensic-guide.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入分析知名傭兵級間諜軟體（Pegasus、Predator、Candiru、Subzero）的攻擊鏈（零點擊漏洞 Zero-Click、記憶體常駐、Log 自動清除特徵）。
@@ -149,6 +150,7 @@ Zero-Breach-Toolkit 採用多層解耦的跨平台鑑識架構，核心聚焦於
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-32`**｜**[優先級：中]** 實作「端點鑑識日誌與 IoC 威脅指標離線比對審查工具」於 `tools/audit_forensic_ioc.py` 與單元測試
+  - **狀態**：⚪ 不做（間諜軟體鑑識應直接用上游維護的工具與最新 IoC；自寫比對器沒有持續更新的 IoC 來源，反而會給人錯誤的安全感。）
   - **目標範圍**：`tools/audit_forensic_ioc.py` 與 `tests/test_audit_forensic_ioc.py`
   - **具體做法**：
     1. 實作離線 IoC 威脅比對 CLI 工具，支援讀取 STIX2 / JSON / YARA 格式之公開威脅指標。
@@ -158,6 +160,7 @@ Zero-Breach-Toolkit 採用多層解耦的跨平台鑑識架構，核心聚焦於
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-33`**｜**[優先級：低]** 產出標準化「個人與工程團隊端點資安防護與定期鑑識排程範本」收錄於 `templates/endpoint-forensic-audit-checklist.md`
+  - **狀態**：⚪ 不做（間諜軟體鑑識應直接用上游維護的工具與最新 IoC；自寫比對器沒有持續更新的 IoC 來源，反而會給人錯誤的安全感。）
   - **目標範圍**：`templates/endpoint-forensic-audit-checklist.md`
   - **具體做法**：
     1. 產出供個人開發者、遠端工作者與團隊運營的端點設備安全自檢手冊（包含 iOS/Android 備份產生、離線工具執行、瀏覽器歷史審查）。

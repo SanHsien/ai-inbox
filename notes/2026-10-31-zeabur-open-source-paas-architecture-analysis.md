@@ -6,7 +6,7 @@ source_platform: "Threads (@cab_late) / GitHub (zeabur/zeabur)"
 author: "CabLate (AI 實戰分享, @cab_late) / Zeabur"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 3
 cluster_role: "PaaS架構分析"
 short_title: "Zeabur開源PaaS架構與資安反思"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@cab_late)](https://www.threads.com/share/BAW6t_9fzD/) ｜ [貼文永久網址](https://www.threads.com/@cab_late/post/DfELWgMHyAw) ｜ [GitHub (zeabur/zeabur)](https://github.com/zeabur/zeabur) ｜ [GitHub (zeabur/zbpack)](https://github.com/zeabur/zbpack) ｜ [Zeabur 官方文檔](https://zeabur.com/docs)
 - **核心作者**：CabLate（AI 實戰分享，@cab_late 評論推薦）／ Zeabur 官方團隊
 - **分析主題**：解構雲原生 PaaS 部署平台 **Zeabur** 開源其平台與周邊工具鏈（`zeabur/zeabur`、`zbpack`、`openab`、`agent-skills`）引發的架構反思。跳脫社群單純圍繞資安事件的情緒化攻防，深入剖析其「zbpack 零 Dockerfile 智慧構建」、「Wonder Mesh（WireGuard 邊緣計算網格）」、「AI-Native DevOps（Claude Code Plugin / MCP / zbplan 自動修復）」與「多租戶隔離／構建沙盒資安硬化」等現代雲端部署平台的工程設計精髓，提煉為個人開發者或團隊自建 PaaS 與產品落地的架構參考。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-23-zeabur-october-2026-security-incident.md`](./2026-10-23-zeabur-october-2026-security-incident.md)（Zeabur 遭黑客攻擊事件反思：本地 OAuth 憑證、專案隔離與微服務架構）
   - [`notes/2026-10-26-github-trending-agent-skills-benchmark.md`](./2026-10-26-github-trending-agent-skills-benchmark.md)（GitHub 必裝 Skill 實測與部署工具鏈生態）
@@ -125,6 +125,7 @@ Zeabur 的核心架構亮點在於**「降低認知負載（Low Cognitive Load�
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261031-13`**｜**[優先級：高]** 撰寫「現代輕量級 PaaS 架構手冊：從 Zeabur 開源解構到自建雲原生部署平台設計」收錄於 `docs/lightweight-paas-architecture-and-security-spec.md`
+  - **狀態**：⚪ 不做（目前沒有自建 PaaS 的需求，工具也沒有真實叢集可驗；原專案文件比二手手冊可靠。兩篇 Zeabur 筆記內容重疊，一起關閉，筆記留作參考。）
   - **目標範圍**：`docs/lightweight-paas-architecture-and-security-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳細剖析 zbpack 智慧構建、WireGuard 邊緣網格（Wonder Mesh）與 Kubernetes 叢集排程架構。
@@ -135,6 +136,7 @@ Zeabur 的核心架構亮點在於**「降低認知負載（Low Cognitive Load�
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-14`**｜**[優先級：中]** 實作「自建 PaaS 建置環境資安硬化與多租戶沙盒安全檢驗工具」於 `tools/audit_paas_sandbox_security.py` 與單元測試
+  - **狀態**：⚪ 不做（目前沒有自建 PaaS 的需求，工具也沒有真實叢集可驗；原專案文件比二手手冊可靠。兩篇 Zeabur 筆記內容重疊，一起關閉，筆記留作參考。）
   - **目標範圍**：`tools/audit_paas_sandbox_security.py` 與 `tests/test_audit_paas_sandbox_security.py`
   - **具體做法**：
     1. 實作靜態審查 CLI 工具，掃描 Dockerfile、Compose 檔與 Kubernetes 部署配置。
@@ -145,6 +147,7 @@ Zeabur 的核心架構亮點在於**「降低認知負載（Low Cognitive Load�
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-15`**｜**[優先級：低]** 產出標準化「AI-Native PaaS 部署與 MCP / Skill 整合參考範本」收錄於 `templates/ai-native-paas-deployment-template.md`
+  - **狀態**：⚪ 不做（目前沒有自建 PaaS 的需求，工具也沒有真實叢集可驗；原專案文件比二手手冊可靠。兩篇 Zeabur 筆記內容重疊，一起關閉，筆記留作參考。）
   - **目標範圍**：`templates/ai-native-paas-deployment-template.md`
   - **具體做法**：
     1. 產出可直接供 Claude Code、Antigravity 或其他 Agent 引入的部署整合範本。

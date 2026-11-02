@@ -27,7 +27,7 @@ tags:
 - **核心作者**：HengYu Lin（@castlen3）
 - **關聯開源專案**：[castlen3/line-family-comment-bot](https://github.com/castlen3/line-family-comment-bot)
 - **分析主題**：解構 HengYu Lin 開源之「LINE 家庭群組機器人（長輩的好朋友）」模板架構。剖析其如何透過高度結構化的 `AGENTS.md` 實現「**面向非技術者的 Agent-Driven 引導式部署**」，讓一般使用者只要將 GitHub 貼給 Coding Agent（Codex、Claude Code、Antigravity）即可由 Agent 一步步陪伴完成複雜的 n8n、Ngrok、LINE Developers 與 LLM 配置。深入探討其基於 n8n 的 27 節點視覺化編排、文字與視覺雙軌分流、健康意圖查證與防洗版降噪機制，以及開源交付時的最小權限與隱私資安硬閘門。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 專案說明書四原則：從 Prompt 到硬閘門）
   - [`notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md`](./2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)（開源 Agent 工單系統與跨端交接架構）
@@ -169,6 +169,7 @@ HengYu Lin 提出的核心破局點為：**將開源專案的安裝文件直接�
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261101-11`**｜**[優先級：中]** 實作「LINE 家庭群組機器人意圖識別、圖片限流與防洗版核心邏輯驗證腳本」於 `tools/verify_line_bot_intent_flow.py` 與單元測試
+  - **狀態**：⚪ 不做（家庭群組機器人不是目前的工作，沒有實際服務可驗證；Agent 引導安裝的規範（T-20261101-10）保留。）
   - **目標範圍**：`tools/verify_line_bot_intent_flow.py`、`tests/test_verify_line_bot_intent_flow.py`
   - **具體做法**：
     1. 實作純 Python 版本的 LINE 訊息意圖與防噪流轉邏輯模擬器，包含 Gatekeeper（貼圖跳過、閒聊降噪）、Image Throttle（突發限流）與 Intent Router（長輩關懷、健康常識）。
@@ -177,6 +178,7 @@ HengYu Lin 提出的核心破局點為：**將開源專案的安裝文件直接�
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261101-12`**｜**[優先級：低]** 產出標準化「家庭群組情感陪伴、長輩問安與健康諮詢非診斷安全 Prompt 範本」收錄於 `templates/line-family-bot-prompts.md`
+  - **狀態**：⚪ 不做（家庭群組機器人不是目前的工作，沒有實際服務可驗證；Agent 引導安裝的規範（T-20261101-10）保留。）
   - **目標範圍**：`templates/line-family-bot-prompts.md`
   - **具體做法**：
     1. 產出 3 套針對家庭長輩群組優化的 System Prompt 範本：日常長輩問候（Normal Care）、健康諮詢與網路傳言非診斷回應（Health Guard，強制附帶就醫免責警語）、長輩圖與生活照視覺解讀（Vision Compassion）。

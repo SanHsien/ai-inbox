@@ -6,7 +6,7 @@ source_platform: "Threads (@inxtool)"
 author: "臺大玩AI (@inxtool)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 4
 cluster_role: "一手案例研讀與影音萃取"
 short_title: "海外一手副業案例與影音萃取管線"
@@ -29,7 +29,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@inxtool)](https://www.threads.com/share/BAXj9ByWpM/) ｜ [貼文永久網址](https://www.threads.com/@inxtool/post/DfETUMDEoFO) ｜ [Starter Story 官方案例庫 (starterstory.com)](https://www.starterstory.com/) ｜ [Noah Kagan YouTube 頻道](https://www.youtube.com/@noahkagan) ｜ [Justin Welsh 個人站 (justinwelsh.me)](https://www.justinwelsh.me/)
 - **核心作者**：臺大玩AI（@inxtool，專注 AI 工具探索、數位遊牧與一人副業案例實戰）
 - **分析主題**：解構 Threads 獲得 62,000+ 瀏覽、1,100+ 轉發收藏的高價值分享——「一般人做副業，別看國內互相洗腦的付費課，直接走向全球一手案例與影音情報萃取體系」。深入剖析四大國際級一人商業（Solopreneurship）指標人物與平台（**Starter Story、Noah Kagan、Justin Welsh、Brett Malinowski**）的核心商業模型與冷啟動路徑；同時梳理基於 **沉浸式翻譯（Immersive Translate）**、**Glasp**、**Litit** 與 YouTube Transcript 轉錄技術的自動化影音情報採掘管線，將非結構化長影片轉化為可執行的 48 小時商業驗證畫布。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-dan-koe-digital-artisan-body-of-work-framework.md`](./2026-10-31-dan-koe-digital-artisan-body-of-work-framework.md)（Dan Koe 數位匠人一人公司：作品集閉環與思想博物館）
   - [`notes/2026-10-17-agent-reach-social-intelligence.md`](./2026-10-17-agent-reach-social-intelligence.md)（Agent-Reach 多平台情報採掘與跨網探針）
@@ -141,6 +141,7 @@ flowchart TD
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261031-28`**｜**[優先級：高]** 撰寫「海外一手副業案例拆解與一人商業 48 小時驗證手冊：從 Starter Story 獲客漏斗到 Noah Kagan 預售法則」收錄於 `docs/global-solopreneur-case-study-and-validation-guide.md`
+  - **狀態**：⚪ 不做（商業案例手冊無法機械驗證，容易流於空泛；影片字幕已有 tools/video_transcript.py，經營診斷已有 business-diagnosis skill。）
   - **目標範圍**：`docs/global-solopreneur-case-study-and-validation-guide.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入解構 Starter Story 5,000+ 案例中 Micro-SaaS 與數位產品的獲客閉環（SEO 長尾關鍵字、內容飛輪與冷啟動策略）。
@@ -150,6 +151,7 @@ flowchart TD
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-29`**｜**[優先級：中]** 實作「YouTube 影音字幕提取與商業案例精華結構化分析工具」於 `tools/extract_video_case_study.py` 與單元測試
+  - **狀態**：⚪ 不做（商業案例手冊無法機械驗證，容易流於空泛；影片字幕已有 tools/video_transcript.py，經營診斷已有 business-diagnosis skill。）
   - **目標範圍**：`tools/extract_video_case_study.py` 與 `tests/test_extract_video_case_study.py`
   - **具體做法**：
     1. 實作影音字幕（SRT / VTT / JSON）或純文本轉錄稿的解析與結構化抽取工具。
@@ -159,6 +161,7 @@ flowchart TD
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-30`**｜**[優先級：低]** 產出標準化「一人公司 48 小時極速商業驗證與 Lean Canvas 評估範本」收錄於 `templates/solopreneur-48h-validation-canvas.md`
+  - **狀態**：⚪ 不做（商業案例手冊無法機械驗證，容易流於空泛；影片字幕已有 tools/video_transcript.py，經營診斷已有 business-diagnosis skill。）
   - **目標範圍**：`templates/solopreneur-48h-validation-canvas.md`
   - **具體做法**：
     1. 產出專為個人開發者設計的 48 小時極速驗證畫布（包含目標族群痛點、零代碼 MVP 規格、預售價格錨定、3 個種子客戶承諾記錄）。

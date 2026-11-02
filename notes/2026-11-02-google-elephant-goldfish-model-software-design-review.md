@@ -30,7 +30,7 @@ tags:
 - **發明者與原創文獻**：Dave Rensin（Google 傑出工程師，《Elephants & Goldfish》設計論綱）
 - **官方開源專案**：[google/elephant-goldfish-model](https://github.com/google/elephant-goldfish-model)（官方網站 [egm.dev](https://egm.dev)，Star: 8,600+）
 - **分析主題**：解構 Google 正式開源之軟體工程 AI 協同外掛「**Elephant-Goldfish Model（EGM，大象-金魚模型）**」。剖析每日支撐數千名 Google 工程師的「設計先行（Design-first）」核心範式——由具備深厚歷史記憶的「**大象（Elephant）**」負責梳理需求、記錄決策並草擬系統規格，再派發多個**完全不帶對話歷史、純粹依據文件與源碼進行挑剔的「金魚（Goldfish）」零記憶子代理**進行對抗式盲審，嚴禁跳過設計直接寫代碼。深入解析其跨 Antigravity（`agy`）、Claude Code 與 Codex 的 7 大專用工作流技能（Brainstorm、Draft、Review、Resolve、Bootstrap、Review-loop、Drift-report），推導企業級 AI 研發架構的工程落地標準。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md`](./2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)（Claude Code 四級模型分工架構解構）
   - [`notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md`](./2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)（四角色動態調用原則：架構師、實現者、審查員與除錯專家）
@@ -166,6 +166,7 @@ EGM 外掛支援目前三大主流 Agent 平台：
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261102-05`**｜**[優先級：中]** 實作「零記憶金魚審查員（Goldfish Reviewer）隔離上下文模擬與五階段審查驗證腳本」於 `tools/verify_egm_goldfish_review.py` 與單元測試
+  - **狀態**：⚪ 不做（零記憶審查已經是實際流程（未參與的審查員實跑），模擬腳本驗不到真實行為；規範與範本（T-20261102-04、06）保留。）
   - **目標範圍**：`tools/verify_egm_goldfish_review.py`、`tests/test_verify_egm_goldfish_review.py`
   - **具體做法**：
     1. 實作純 Python 版本的金魚審查檢驗工具 `tools/verify_egm_goldfish_review.py`，支援讀取設計文檔草稿與原始碼路徑。

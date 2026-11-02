@@ -6,7 +6,7 @@ source_platform: "Threads (@0xalpha.ai)"
 author: "0xalpha.ai (@0xalpha.ai)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 1
 cluster_role: "模型多級分工與階層調度"
 short_title: "Claude Code四級模型分工架構"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@0xalpha.ai)](https://www.threads.com/@0xalpha.ai/post/DeO8nihElfh)
 - **核心作者**：0xalpha.ai（@0xalpha.ai，AI 前沿工具與工程化架構探索者）
 - **分析主題**：解構在 Threads 上引發廣泛共鳴的 AI Coding Agent 配置範式——「這個 Claude Code 設定，終於不用再拿最強的模型去做雜事了。Opus 5.5 專心顧主線開發，Sonnet 負責執行，Fable 打分數看進度，JEV 則處理那些又快又固定的決策判斷。分工分清楚，強模型就該花在刀口上 🔪」。針對業界在落地自主編程 Agent 時普遍陷入的**「一竿子頂級模型到底（Monolithic Frontier LLM Trap）」**引發的 Token 暴增、速率限制（Rate Limit）快速枯竭與注意力失焦問題，深入剖析**四級職責解耦模型（Opus 頂層主線 + Sonnet 工程實作 + Fable 獨立裁判 + JEV 輕量決策）**的架構拓撲、邊界界定、通訊契約與在本地多 Agent 開發管線中的工程落地實踐。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
   - [`notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md`](./2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)（Magpie 本地 AI 模型網關智慧路由）
@@ -143,6 +143,7 @@ tags:
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261031-49`**｜**[優先級：高]** 撰寫「Claude Code 與多 Agent 四級模型分工架構指南：Opus 主線、Sonnet 執行、Fable 裁判與 JEV 決策之職責劃分與設定手冊」收錄於 `docs/hierarchical-multi-model-orchestration-spec.md`
+  - **狀態**：⚪ 不做（多 Agent 分工主題已由 docs/multi-agent-parallel-dispatch-spec.md 與 agent-advisor 路由涵蓋，再寫一份只會重複；內容是另一篇文章的配置，沒有新的可驗證產出。）
   - **目標範圍**：`docs/hierarchical-multi-model-orchestration-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳盡剖析四級模型分工架構的設計原理、階層通訊契約（Hand-off Packet）與職責防火牆。
@@ -152,6 +153,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-50`**｜**[優先級：中]** 實作「多級模型分工調度模擬器與任務複雜度路由器」於 `tools/verify_hierarchical_model_router.py` 與單元測試
+  - **狀態**：⚪ 不做（多 Agent 分工主題已由 docs/multi-agent-parallel-dispatch-spec.md 與 agent-advisor 路由涵蓋，再寫一份只會重複；內容是另一篇文章的配置，沒有新的可驗證產出。）
   - **目標範圍**：`tools/verify_hierarchical_model_router.py` 與 `tests/test_verify_hierarchical_model_router.py`
   - **具體做法**：
     1. 實作任務複雜度分析與多級路由模擬器，輸入開發任務需求與檔案清單。
@@ -162,6 +164,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-51`**｜**[優先級：低]** 產出標準化「Claude Code / Codex 多級模型環境配置與權限隔離範本」收錄於 `templates/claude-code-multi-model-tiers.json`
+  - **狀態**：⚪ 不做（多 Agent 分工主題已由 docs/multi-agent-parallel-dispatch-spec.md 與 agent-advisor 路由涵蓋，再寫一份只會重複；內容是另一篇文章的配置，沒有新的可驗證產出。）
   - **目標範圍**：`templates/claude-code-multi-model-tiers.json`
   - **具體做法**：
     1. 提供支援 Claude Code、Codex 的標準多級模型配置文件範本（JSON/YAML）。

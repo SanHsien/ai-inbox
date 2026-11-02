@@ -6,7 +6,7 @@ source_platform: "Threads (@christmasguus) / GitHub (roryclear/clearcam)"
 author: "Guus Beckham (@christmasguus) / Rory Clear"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 3
 cluster_role: "邊緣環境感知"
 short_title: "clearcam開源智慧NVR與VLM摘要"
@@ -28,7 +28,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@christmasguus)](https://www.threads.com/share/BAW6t_9fzD/) ｜ [貼文永久網址](https://www.threads.com/@christmasguus/post/DfFA4Qyj9N2) ｜ [GitHub (roryclear/clearcam)](https://github.com/roryclear/clearcam) ｜ [MeekShark 評測](https://meekshark.cn/967.html) ｜ [官方網站 (clearcam.org)](https://clearcam.org/)
 - **核心作者**：Guus Beckham（@christmasguus 推薦）／ Rory Clear（專案作者）
 - **分析主題**：解構在 GitHub 斬獲 2,200+ Stars、累計超過 1,600 次 Commits 的開源邊緣智慧 NVR 專案 **clearcam**。深入剖析其「RTSP 任意攝像頭無縫相容」、「tinygrad 極致輕量邊緣推論引擎」、「YOLOv9 物件檢測 + OC-SORT 多目標連續軌跡追蹤」、「Qwen3 VL 視覺語言模型生成自然語言事件摘要」、以及「錄像不出家門的 100% 本地自託管與開放 Webhook 智慧家居／Agent 聯動」架構。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md`](./2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md)（Cloudflare Agents SDK 與瀏覽器環境感知驗證閉環）
   - [`notes/2026-10-17-agent-reach-social-intelligence.md`](./2026-10-17-agent-reach-social-intelligence.md)（Agent-Reach 16 平台連網與情報感知規範）
@@ -139,6 +139,7 @@ tags:
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261031-16`**｜**[優先級：高]** 撰寫「邊緣智慧 NVR 架構規範手冊：從 RTSP 流、tinygrad YOLOv9/OC-SORT 到 Qwen3 VL 事件摘要管線」收錄於 `docs/edge-smart-nvr-and-vlm-pipeline-spec.md`
+  - **狀態**：⚪ 不做（維護者沒有 NVR 攝影機與部署需求，規範和驗證器都無法對真實環境驗證。）
   - **目標範圍**：`docs/edge-smart-nvr-and-vlm-pipeline-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳細剖析 RTSP 串流解碼取樣、tinygrad 輕量推論調度與 GPU 加速參數（CUDA/ROCm/Metal）。
@@ -149,6 +150,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-17`**｜**[優先級：中]** 實作「安防事件 Webhook 警報接收與 Qwen VL 結構化摘要驗證器」於 `tools/verify_nvr_event_webhook.py` 與單元測試
+  - **狀態**：⚪ 不做（維護者沒有 NVR 攝影機與部署需求，規範和驗證器都無法對真實環境驗證。）
   - **目標範圍**：`tools/verify_nvr_event_webhook.py` 與 `tests/test_verify_nvr_event_webhook.py`
   - **具體做法**：
     1. 實作事件接收與合規驗證工具，模擬接收 Smart NVR 派發之 Webhook 酬載（Payload）。
@@ -159,6 +161,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-18`**｜**[優先級：低]** 產出標準化「自託管 Smart NVR 與 Home Assistant / Agent 自動化整合範本」收錄於 `templates/smart-nvr-home-assistant-agent-template.md`
+  - **狀態**：⚪ 不做（維護者沒有 NVR 攝影機與部署需求，規範和驗證器都無法對真實環境驗證。）
   - **目標範圍**：`templates/smart-nvr-home-assistant-agent-template.md`
   - **具體做法**：
     1. 產出可直接供 Home Assistant、n8n 或本地 Agent 引入的自動化整合範本。

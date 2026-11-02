@@ -6,7 +6,7 @@ source_platform: "Threads (@0xalpha.ai)"
 author: "0xalpha.ai (@0xalpha.ai)"
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 1
 cluster_role: "階層式派工原則與調用觸發策略"
 short_title: "Claude Code四角色動態調用原則"
@@ -26,7 +26,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@0xalpha.ai)](https://www.threads.com/@0xalpha.ai/post/DeQTEQwE7Gz)
 - **核心作者**：0xalpha.ai（@0xalpha.ai，AI 前沿工具與自主編程架構探索者）
 - **分析主題**：解構 0xalpha.ai 針對 Claude Code 四級分工配置進一步公開的實戰動態派工與執行期（Runtime）調用觸發原則——「很多人留言求設定，整理一下我實際在跑的分工 🧵 影片裡的四個角色可以這樣對應：・Opus：主 session，負責規劃、拆工作、最後拍板 ・Sonnet：拿到明確規格就開工實作 ・Fable：關鍵時刻的檢查點，不是每步都叫 ・Jev：只回答『是／否、選哪個』的決策 API。核心觀念就一句：強模型不要拿去做雜事」。深度剖析如何將粗粒度的模型選型轉化為**嚴格的狀態機觸發機制**，防止多 Agent 開發中常見的「過度評審（Over-Reviewing）延遲爆炸」與「決策介面發散（Unstructured Decision Hallucination）」問題，並建立標準化執行期閘門規範。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md`](./2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)（Claude Code 四級模型分工架構理念與拓撲總論）
   - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
@@ -142,6 +142,7 @@ tags:
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261101-01`**｜**[優先級：高]** 撰寫「Claude Code 與多 Agent 四角色動態派工與執行期調用手冊：主 Session 拍板、里程碑檢查點與二元決策 API 規範」收錄於 `docs/agent-role-dispatch-runtime-spec.md`
+  - **狀態**：⚪ 不做（多 Agent 分工主題已由 docs/multi-agent-parallel-dispatch-spec.md 與 agent-advisor 路由涵蓋，再寫一份只會重複；內容是另一篇文章的配置，沒有新的可驗證產出。）
   - **目標範圍**：`docs/agent-role-dispatch-runtime-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入定義四角色的執行期狀態機（Runtime State Machine）與狀態躍遷條件。
@@ -151,6 +152,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261101-02`**｜**[優先級：中]** 實作「四角色調用閘門控制器與二元/枚舉決策 API 輕量客戶端」於 `tools/verify_agent_dispatch_gate.py` 與單元測試
+  - **狀態**：⚪ 不做（多 Agent 分工主題已由 docs/multi-agent-parallel-dispatch-spec.md 與 agent-advisor 路由涵蓋，再寫一份只會重複；內容是另一篇文章的配置，沒有新的可驗證產出。）
   - **目標範圍**：`tools/verify_agent_dispatch_gate.py` 與 `tests/test_verify_agent_dispatch_gate.py`
   - **具體做法**：
     1. 實作輕量閘門控制 CLI，評估傳入任務的規格完整度（是否允許 Sonnet 開工）。
@@ -161,6 +163,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261101-03`**｜**[優先級：低]** 產出標準化「多 Agent 里程碑檢查點觸發條件與二元決策 Prompt 範本」收錄於 `templates/agent-dispatch-milestone-prompts.md`
+  - **狀態**：⚪ 不做（多 Agent 分工主題已由 docs/multi-agent-parallel-dispatch-spec.md 與 agent-advisor 路由涵蓋，再寫一份只會重複；內容是另一篇文章的配置，沒有新的可驗證產出。）
   - **目標範圍**：`templates/agent-dispatch-milestone-prompts.md`
   - **具體做法**：
     1. 提供 Fable 里程碑驗收 Prompt 範本（強調只看 DoD 與爆破半徑，不做無謂細節挑剔）。

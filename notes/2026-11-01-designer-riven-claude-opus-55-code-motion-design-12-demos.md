@@ -6,7 +6,7 @@ source_platform: "Threads (@designer.riven)"
 author: "設計師 Riven (廖曜霆 / @designer.riven)"
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 2
 cluster_role: "Code-as-Video 12大特效規格"
 short_title: "Riven Opus 5.5純代碼動態設計12大規格"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@designer.riven)](https://www.threads.com/@designer.riven/post/Dd1ZqRtk90T) ｜ [短網址](https://www.threads.com/@designer.riven/post/Dd1ZqRtk90T/claude-opus-55-%E7%B5%95%E5%B0%8D%E7%9B%AE%E5%89%8D%E6%9C%80%E8%A2%AB%E4%BD%8E%E4%BC%B0%E7%9A%84%E5%8B%95%E6%85%8B%E8%A8%AD%E8%A8%88%E5%B7%A5%E5%85%B7/)
 - **核心作者**：設計師 Riven（廖曜霆，知名設計師、數位創作講師與使用者體驗設計專家）
 - **分析主題**：解構設計師 Riven 針對 Claude Opus 5.5 震撼發布的實戰評測——「**Claude Opus 5.5 絕對目前最被低估的動態設計工具 💽**。所有特效與動畫都是一行一行程式碼組成的」。詳細拆解展示影片中由 Opus 5.5 端到端以純代碼（HTML/Canvas/WebGL/Three.js/matter.js/GLSL Shaders）實現的 **12 大動態設計核心技術規格**，剖析動態設計從 After Effects、Blender 等傳統 GUI 軟體走向「**Code-as-Video**（代碼即影片）」的範式轉移，並推導高擬真視覺動效在 Agent 互動介面（Generative UI）與自動化影片產製中的工程落地規格。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-motion-design-agent-harness-opus-55.md`](./2026-10-28-motion-design-agent-harness-opus-55.md)（代碼驅動 Motion Design Agent 架構：Harness、seek(t) 與分鏡自審循環）
   - [`notes/2026-10-17-reelbird-open-source-screen-recorder.md`](./2026-10-17-reelbird-open-source-screen-recorder.md)（Reelbird 開源螢幕錄影：展示錄製與產品 Demo）
@@ -127,6 +127,7 @@ tags:
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261101-07`**｜**[優先級：高]** 撰寫「Code-as-Video 動態設計規格手冊：12 大純程式碼視覺特效數學原理、著色器實現與動畫參數指南」收錄於 `docs/code-as-video-motion-design-spec.md`
+  - **狀態**：⚪ 不做（與 docs/code-driven-motion-design-studio-spec.md、assets/shader-hero-demo 重疊，再做一份特效手冊沒有新價值。）
   - **目標範圍**：`docs/code-as-video-motion-design-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳盡剖析 12 大動態設計技術（SDF 黏土/液態玻璃、可變字體呼吸、GPGPU 粒子、Gray-Scott 反應擴散、剛體物理）的數學公式與著色器邏輯。
@@ -136,6 +137,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261101-08`**｜**[優先級：中]** 實作「純代碼動態設計特效展示組件（SDF 黏土球、流動山脊與剛體碰撞）」於 `assets/code-motion-demo/index.html` 與單元測試
+  - **狀態**：⚪ 不做（與 docs/code-driven-motion-design-studio-spec.md、assets/shader-hero-demo 重疊，再做一份特效手冊沒有新價值。）
   - **目標範圍**：`assets/code-motion-demo/index.html` 與 `tests/test_verify_code_motion_assets.py`
   - **具體做法**：
     1. 實作單一 HTML 互動展示頁，內嵌 Canvas 2D / WebGL 著色器，展示第 01（時間彈跳球）、第 04（SDF 黏土球）與第 06（Perlin 噪聲山脊）的核心動效。
@@ -145,6 +147,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261101-09`**｜**[優先級：低]** 產出標準化「Code-as-Video 12 大特效 Prompt 模板庫與著色器生成規範」收錄於 `templates/code-motion-prompt-zoo.md`
+  - **狀態**：⚪ 不做（與 docs/code-driven-motion-design-studio-spec.md、assets/shader-hero-demo 重疊，再做一份特效手冊沒有新價值。）
   - **目標範圍**：`templates/code-motion-prompt-zoo.md`
   - **具體做法**：
     1. 提供 12 大動效的精確 Prompt 指令庫，引導 Claude Opus / Sonnet 生成零 Bug 的著色器與物理模擬代碼。

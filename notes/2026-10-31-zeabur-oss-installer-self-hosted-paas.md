@@ -6,7 +6,7 @@ source_platform: "Threads (@_xox._.xox._.xox._.xox._.xox_) / Zeabur OSS (oss.zea
 author: "‎ǼǾՖ唯一ی‎ (@_xox._.xox._.xox._.xox._.xox_) / 林沅霖 (Zeabur)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 3
 cluster_role: "自架PaaS生態"
 short_title: "Zeabur OSS開源與Installer自建"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@_xox._.xox._.xox._.xox._.xox_)](https://www.threads.com/share/BAjeqlHOXc/) ｜ [貼文永久網址](https://www.threads.com/@_xox._.xox._.xox._.xox._.xox_/post/DfD8l9vAX0L) ｜ [Zeabur OSS 官方文檔 (oss.zeabur.com)](https://oss.zeabur.com/) ｜ [Zeabur GitHub 倉庫](https://github.com/zeabur/zeabur) ｜ [Zeabur 官方公告：Next chapter of Zeabur](https://zeabur.com/blog/next-chapter-of-zeabur)
 - **核心作者**：‎ǼǾՖ唯一ی‎（@_xox._.xox._.xox._.xox._.xox_）／ 林沅霖（Zeabur 創辦人）
 - **分析主題**：解構知名雲端部署平台 Zeabur 在歷經資安風波後，官方正式宣佈商業雲端服務將於 2026 年底逐步結束營運，並將平台核心資產全面重構、以 **Apache-2.0 協議開源為「Zeabur OSS」**，同時推出 **Zeabur Installer** 一鍵安裝套件。深入探討其「No Extra State（無內部資料庫、無自定義 CRD、純 K8s 原生投影）」極簡架構、WebAuthn/Passkey 安全驗證、K3s 單機與 Helm 叢集三大部署模式，以及開發者如何藉此擺脫公有雲綁定、搭建 100% 數據自主的私有 Sovereign PaaS。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md`](./2026-10-31-zeabur-open-source-paas-architecture-analysis.md)（Zeabur 開源 PaaS 架構解構：zbpack 打包與多租戶資安反思）
   - [`notes/2026-10-23-zeabur-october-2026-security-incident.md`](./2026-10-23-zeabur-october-2026-security-incident.md)（Zeabur 遭黑客攻擊事件反思：本地 OAuth 憑證、專案隔離與微服務架構）
@@ -129,6 +129,7 @@ tags:
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261031-19`**｜**[優先級：高]** 撰寫「Zeabur OSS 與 Installer 自建私有 PaaS 落地手冊：K3s 單機安裝、K8s 無狀態架構與資料備份遷移」收錄於 `docs/zeabur-oss-self-hosted-paas-guide.md`
+  - **狀態**：⚪ 不做（目前沒有自建 PaaS 的需求，工具也沒有真實叢集可驗；原專案文件比二手手冊可靠。兩篇 Zeabur 筆記內容重疊，一起關閉，筆記留作參考。）
   - **目標範圍**：`docs/zeabur-oss-self-hosted-paas-guide.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳細整理 Zeabur 商業版關站時程（12/1 暫停、12/31 停運）與資料備份/金鑰輪替指南。
@@ -139,6 +140,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-20`**｜**[優先級：中]** 實作「Zeabur OSS Kubernetes 資源合規與無狀態架構驗證工具」於 `tools/audit_zeabur_oss_k8s_spec.py` 與單元測試
+  - **狀態**：⚪ 不做（目前沒有自建 PaaS 的需求，工具也沒有真實叢集可驗；原專案文件比二手手冊可靠。兩篇 Zeabur 筆記內容重疊，一起關閉，筆記留作參考。）
   - **目標範圍**：`tools/audit_zeabur_oss_k8s_spec.py` 與 `tests/test_audit_zeabur_oss_k8s_spec.py`
   - **具體做法**：
     1. 實作靜態檢查 CLI 工具，讀取 Kubernetes Manifests（YAML/JSON）檔案。
@@ -149,6 +151,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-21`**｜**[優先級：低]** 產出標準化「Zeabur Installer 單機 K3s / Helm 一鍵部署腳本與 CLAUDE.md 運維範本」收錄於 `templates/zeabur-oss-installer-setup.md`
+  - **狀態**：⚪ 不做（目前沒有自建 PaaS 的需求，工具也沒有真實叢集可驗；原專案文件比二手手冊可靠。兩篇 Zeabur 筆記內容重疊，一起關閉，筆記留作參考。）
   - **目標範圍**：`templates/zeabur-oss-installer-setup.md`
   - **具體做法**：
     1. 產出可直接供個人 VPS 一鍵安裝 Zeabur OSS 的 Shell 腳本範本與 Helm values.yaml。

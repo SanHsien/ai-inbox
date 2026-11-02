@@ -6,7 +6,7 @@ source_platform: "GitHub (OpenCut-app/OpenCut) & 社群推薦"
 author: "OpenCut 團隊 (@opencutapp / OpenCut-app)"
 analyzed_at: 2026-11-02
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 2
 cluster_role: "開源CapCut替代品與AI視訊編輯器"
 short_title: "OpenCut開源視訊編輯器與AI Agents"
@@ -28,7 +28,7 @@ tags:
 - **核心團隊**：OpenCut 團隊（X: @opencutapp）
 - **贊助與生態夥伴**：fal.ai（生成式多模態 AI）、Vercel OSS Program
 - **分析主題**：解構在 GitHub 斬獲 **97,000+ Stars**、被譽為「開源無浮水印 CapCut 替代品」的現象級視訊編輯器專案 **OpenCut**。深入剖析其針對 CapCut 付費牆與雲端隱私問題提出的「本機優先（Local-first）多軌剪輯」架構，解析其最新底層重構亮點——以 **Rust Core** 統一 Web、Desktop 與 Mobile 渲染核心、提供專為 AI Agents 設計的 **MCP Server**、支援批次自媒體管線的 **Headless 無頭渲染模式**、以及外掛優先（Plugin-first）與編輯器內嵌腳本標籤頁（In-Editor Scripting），推導新一代「AI Agent 驅動全自動視訊剪輯」的工程架構標準。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-reelbird-open-source-screen-recorder.md`](./2026-10-17-reelbird-open-source-screen-recorder.md)（Reelbird 開源螢幕錄影：輕量流暢錄製與展示）
   - [`notes/2026-10-28-motion-design-agent-harness-opus-55.md`](./2026-10-28-motion-design-agent-harness-opus-55.md)（代碼驅動 Motion Design Agent：Harness、seek(t) 與分鏡自審循環）
@@ -135,6 +135,7 @@ OpenCut 內建 **Headless Mode（無頭渲染模式）**，為自媒體矩陣提
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261102-07`**｜**[優先級：高]** 撰寫「OpenCut 開源多軌剪輯架構手冊：Rust Core、WebCodecs 本地渲染與 MCP Server 整合規格」收錄於 `docs/opencut-video-editor-architecture-spec.md`
+  - **狀態**：⚪ 不做（維護者不用 OpenCut 剪片，上游也在快速變動；時間軸驗證器與 Prompt 範本沒有實際使用情境。）
   - **目標範圍**：`docs/opencut-video-editor-architecture-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入剖析 OpenCut 雙層架構（Next.js 前端 + `crates/media` Rust GPU 合成器）與 WASM 渲染管線。
@@ -144,6 +145,7 @@ OpenCut 內建 **Headless Mode（無頭渲染模式）**，為自媒體矩陣提
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261102-08`**｜**[優先級：中]** 實作「OpenCut Headless 批次剪輯與時間軸 JSON 驗證腳本」於 `tools/verify_opencut_timeline.py` 與單元測試
+  - **狀態**：⚪ 不做（維護者不用 OpenCut 剪片，上游也在快速變動；時間軸驗證器與 Prompt 範本沒有實際使用情境。）
   - **目標範圍**：`tools/verify_opencut_timeline.py`、`tests/test_verify_opencut_timeline.py`
   - **具體做法**：
     1. 實作純 Python 版本的 OpenCut 時間軸驗證工具 `tools/verify_opencut_timeline.py`，支援解析 OpenCut 標準時間軸 JSON 格式。
@@ -154,6 +156,7 @@ OpenCut 內建 **Headless Mode（無頭渲染模式）**，為自媒體矩陣提
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261102-09`**｜**[優先級：低]** 產出標準化「AI Agent 驅動 OpenCut 自動粗剪、字幕生成與分鏡剪輯 Prompt 模板」收錄於 `templates/opencut-agent-editing-prompt.md`
+  - **狀態**：⚪ 不做（維護者不用 OpenCut 剪片，上游也在快速變動；時間軸驗證器與 Prompt 範本沒有實際使用情境。）
   - **目標範圍**：`templates/opencut-agent-editing-prompt.md`
   - **具體做法**：
     1. 產出適用於 Claude Code、Codex 與 Antigravity 的視訊自動化剪輯 Prompt 範本。

@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@paul009th)](https://www.threads.com/share/BAXuXeQPq9/) ｜ [貼文永久網址](https://www.threads.com/@paul009th/post/DfH0wcMkhQt) ｜ [微軟官方研究專案 (microsoft/TokenEconomizer)](https://github.com/microsoft/TokenEconomizer)
 - **核心作者**：Paul Ho（@paul009th，AI 工程與前沿研究觀察者）／ Microsoft Research & UC Berkeley 聯合研究團隊
 - **分析主題**：微軟研究院與 UC Berkeley 聯手發布的最新開源研究專案 **TokenEconomizer**（論文標題："TokenEconomizer: Experience-Driven Black-Box Cost Control for Coding Agents"）。深入解構在主流 AI Coding Agent（如 Claude Code、Codex、GitHub Copilot CLI 等）落地工業化時，Token 消耗呈指數暴增的三大微觀病因：**重複探索（Repeated Discovery）**、**工具 Schema 載入臃腫（Unused Tool Schemas）** 與 **無效嘗試死循環（Failure Loops）**。詳細探討 TokenEconomizer 如何透過「外置黑盒控制器（Black-Box Controller）」架構，在**不侵入底層模型權重與 Agent 本體代碼**的前提下，結合 **Micro-Skill 經驗沉澱**、**動態 Tool Pruning** 與 **語意死循環熔斷（Circuit Breaker）**，在 SWE-bench 上達到維持相等解決率並**節省 18.4% 至 30.9% Token 與 API 費用**的突破性成果，並推導對本地端多 Agent 協同體系的經濟防線設計。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（LLM 燒錢率、Cache 命中率與智慧路由 Benchmark）
   - [`notes/2026-10-17-claude-mem-autocompact-context.md`](./2026-10-17-claude-mem-autocompact-context.md)（早期 Claude-Mem 與 Autocompact 400K 理論分析）
@@ -171,6 +171,7 @@ TokenEconomizer 的突破性在於**「黑盒（Black-Box）」**哲學：不依
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-45`**｜**[優先級：低]** 產出標準化「多 Agent 專案 Token 預算上限與死循環熔斷檢核配置範本」收錄於 `templates/token-budget-and-loop-breaker.md`
+  - **狀態**：⚪ 不做（預算與熔斷的實際設定要看平台，靜態範本幫助有限；保留成本手冊與工具呼叫審查（T-20261031-43、44）。）
   - **目標範圍**：`templates/token-budget-and-loop-breaker.md`
   - **具體做法**：
     1. 提供多 Agent 專案層級的 Token 預算管理範本（包含單輪 Token 上限、單任務預算上限與預警閾值）。

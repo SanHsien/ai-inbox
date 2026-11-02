@@ -6,7 +6,7 @@ source_platform: "Facebook / Developer Community (Will 保哥)"
 author: "Will 保哥 (黃保翕) / 多奇數位創意"
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 1
 cluster_role: "動態工作流與大規模子代理並行"
 short_title: "保哥Opus+Haiku動態工作流實測"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Will 保哥的技術交流粉絲專頁](https://www.facebook.com/will.fanpage) ｜ 社群實測交流討論串
 - **核心作者**：Will 保哥（黃保翕，多奇數位創意技術總監、微軟最有價值專家 MVP、資深軟體架構講師）
 - **分析主題**：解構台灣技術社群領袖 Will 保哥在實際長程代碼維護與重構任務中的重磅實測分享——「我昨晚用 Opus 5.5 當主代理，然後指定 Haiku 5.5 當子代理，接著把 Dynamic workflows 開下去，已經開了 283 個子代理，跑了 7 個多小時 (還沒跑完)，週用量不到 10%，真的超能打，速度還比 GPT-6-Luna 快很多，表現十分亮眼，這應該是我最新的 "工作馬" (workhorse) 模型了！😍」。深入剖析 Claude Code **動態工作流（Dynamic Workflows）**如何透過動態生成 JavaScript 編排腳本與隔離 Runtime，達成破百子代理高並發調度，並解答社群關切的「UltraCode 模式、`--model` 與 `--subagent-model` 分離配置、Prompt 約束」之落地細節。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md`](./2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)（Claude Code 四級模型分工架構解構）
   - [`notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md`](./2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)（Claude Code 四角色動態調用原則）
@@ -163,6 +163,7 @@ Will 保哥所分享的實測數據展現了極致的工程震撼力：
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261101-04`**｜**[優先級：高]** 撰寫「Claude Code 動態工作流與大規模子代理並行實戰手冊：Opus 5.5 主控、Haiku 5.5 工作馬配對與配額控制指南」收錄於 `docs/claude-code-dynamic-workflows-guide.md`
+  - **狀態**：⚪ 不做（多 Agent 分工主題已由 docs/multi-agent-parallel-dispatch-spec.md 與 agent-advisor 路由涵蓋，再寫一份只會重複；內容是另一篇文章的配置，沒有新的可驗證產出。）
   - **目標範圍**：`docs/claude-code-dynamic-workflows-guide.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入剖析 Claude Code Dynamic Workflows 的底層編排腳本生成原理與隔離 Runtime 機制。
@@ -172,6 +173,7 @@ Will 保哥所分享的實測數據展現了極致的工程震撼力：
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261101-05`**｜**[優先級：中]** 實作「大規模子代理動態扇出與 Token 配額消耗評估器」於 `tools/audit_dynamic_workflows_fanout.py` 與單元測試
+  - **狀態**：⚪ 不做（多 Agent 分工主題已由 docs/multi-agent-parallel-dispatch-spec.md 與 agent-advisor 路由涵蓋，再寫一份只會重複；內容是另一篇文章的配置，沒有新的可驗證產出。）
   - **目標範圍**：`tools/audit_dynamic_workflows_fanout.py` 與 `tests/test_audit_dynamic_workflows_fanout.py`
   - **具體做法**：
     1. 實作動態工作流模擬 CLI，輸入任務清單規模（如 50 ~ 300 個檔案），估算 Opus 主控與 Haiku 子代理之個別 Token 消耗與並行耗時。
@@ -181,6 +183,7 @@ Will 保哥所分享的實測數據展現了極致的工程震撼力：
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261101-06`**｜**[優先級：低]** 產出標準化「Claude Code 大規模動態工作流配置與 UltraCode 模式啟動範本」收錄於 `templates/claude-dynamic-workflows-config.json`
+  - **狀態**：⚪ 不做（多 Agent 分工主題已由 docs/multi-agent-parallel-dispatch-spec.md 與 agent-advisor 路由涵蓋，再寫一份只會重複；內容是另一篇文章的配置，沒有新的可驗證產出。）
   - **目標範圍**：`templates/claude-dynamic-workflows-config.json`
   - **具體做法**：
     1. 提供完整的 Claude Code `settings.json` 範本，內建 `model: "claude-opus-5-5"`、`subagentModel: "claude-haiku-5-5"`、`effortLevel: "high"` 與並行池設定。

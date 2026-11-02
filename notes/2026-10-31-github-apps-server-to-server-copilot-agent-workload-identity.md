@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@it.oppa.twhk)](https://www.threads.com/share/_juQRw3Bl/) ｜ [貼文永久網址](https://www.threads.com/@it.oppa.twhk/post/DfEikz9DWOv) ｜ [GitHub Changelog 官方公告 (2026-10-27)](https://github.blog/changelog/2026-10-27-github-copilot-supports-server-to-server-authentication/) ｜ [GitHub Apps 認證官方文檔](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app)
 - **核心作者**：it.oppa.twhk（@it.oppa.twhk，軟體架構與 AI 實戰創作者）／ GitHub Copilot 產品架構團隊
 - **分析主題**：解構 GitHub 於 2026 年 10 月 27 日正式發布的重大架構更新——**GitHub Copilot 正式支援 Organization GitHub Apps 的「Server-to-Server (S2S)」服務端認證機制（Public Preview）**。深入剖析此項功能如何徹底打破過去 AI Coding Agent（如 Copilot SDK、背景修蟲 Bot、CI/CD 掃描器）必須寄生於「個別工程師個人帳號與 Personal Access Token (PAT)」的結構性瓶頸，賦予 AI 代理人專屬的 **Workload-Owned 系統組織身分**。結合社群架構師（@alicken、@ginsengtrycatch）的深度討論，探討最小權限隔離（Least-Privilege）、短期動態 Token 交換（1 小時 TTL）、企業稽核追蹤（`app_client_id`）與夜間自主「無人值守 SDLC（Unattended SDLC）」的安全防護與回滾邊界。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 專案規範四大硬閘門：最小權限、環境隔離與確定性防線）
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（Thorsten Ball 15 條實戰哲學：爆破半徑審查、不可反駁證據與人類最終裁決）
@@ -201,6 +201,7 @@ sequenceDiagram
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-26`**｜**[優先級：中]** 實作「GitHub App S2S 憑證規格檢驗與權限邊界審查工具」於 `tools/audit_github_app_s2s_spec.py` 與單元測試
+  - **狀態**：⚪ 不做（目前 Agent 不用 GitHub App 身分，沒有真實 App 設定可檢驗，這支工具只會是空轉；規範與範本（T-20261031-25、27）保留。）
   - **目標範圍**：`tools/audit_github_app_s2s_spec.py` 與 `tests/test_audit_github_app_s2s_spec.py`
   - **具體做法**：
     1. 實作靜態配置與 Manifest 檢查 CLI 工具，讀取 GitHub App Manifest 設定檔（JSON / YAML）或 App 權限清單。

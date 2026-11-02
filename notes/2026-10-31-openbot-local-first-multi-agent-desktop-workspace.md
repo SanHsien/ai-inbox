@@ -6,7 +6,7 @@ source_platform: "Threads (@easyanythinghk) / GitHub (nightly-labs/openbot)"
 author: "dev (@easyanythinghk) / nightly-labs (OpenBot)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 1
 cluster_role: "本地多Agent工作台"
 short_title: "OpenBot本地優先Agent工作台"
@@ -28,7 +28,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@easyanythinghk)](https://www.threads.com/share/BAdzgpvI45/) ｜ [貼文永久網址](https://www.threads.com/@easyanythinghk/post/DfEiAKjgD91) ｜ [OpenBot 官方 GitHub (nightly-labs/openbot)](https://github.com/nightly-labs/openbot)
 - **核心作者**：dev（@easyanythinghk，開源 AI 工具與開發者生態採掘者）／ nightly-labs 開源團隊
 - **分析主題**：解構在 GitHub Trending 竄升、單日狂增 1,054+ 顆星的熱門開源 AI Agent 桌面工作台——**OpenBot（`nightly-labs/openbot`）**。深入剖析其如何打造「資料 100% 留存本地電腦（Local-First）」的自主代理協作環境，透過統一的桌面工作台整合 **Claude Code、Codex App Server、Grok CLI、Gemini 以及本機 Ollama / LM Studio** 等多種 Agent 執行期（Runtime）。詳細探討其「獨立工作區目錄隔離」、「持久化 FIFO 任務佇列」、「Agent-to-Agent（A2A）跨代理通訊與檔案交接」、「內建持久化 Chromium 瀏覽器控制」與「上下文自動壓縮防溢出」等核心機制，為本專案在多 Agent 協同與桌面工程化上提供強大的本地化借鑑。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md`](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md)（Magpie 統一網關與 Herdr 終端復用：終端級多 Agent 調度矩陣）
   - [`notes/2026-10-19-crossroad-a2a-agent-mail-relay.md`](./2026-10-19-crossroad-a2a-agent-mail-relay.md)（Crossroad A2A 跨機器寄信協議：異構 Agent 通訊契約）
@@ -129,6 +129,7 @@ OpenBot 扮演一個純本地的**「AI 代理人桌面管弦樂團調度器」*
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261031-37`**｜**[優先級：高]** 撰寫「OpenBot 本地優先多 Agent 桌面工作台架構手冊：ACP 協定、工作區實體隔離、A2A 跨代理協同與嵌入式瀏覽器操控」收錄於 `docs/openbot-local-first-multi-agent-workspace-spec.md`
+  - **狀態**：⚪ 不做（工作台與模型路由已由 agent-relay、opencodex 承擔，不打算換；針對未採用產品寫驗證器與設定範本沒有實際讀者。）
   - **目標範圍**：`docs/openbot-local-first-multi-agent-workspace-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 深入剖析 OpenBot 基於 Electron + SolidJS + SQLite 的「Local-First」極簡與高私密性架構。
@@ -139,6 +140,7 @@ OpenBot 扮演一個純本地的**「AI 代理人桌面管弦樂團調度器」*
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-38`**｜**[優先級：中]** 實作「多 Agent 本地任務佇列與 A2A 訊息封包驗證工具」於 `tools/verify_openbot_agent_queue.py` 與單元測試
+  - **狀態**：⚪ 不做（工作台與模型路由已由 agent-relay、opencodex 承擔，不打算換；針對未採用產品寫驗證器與設定範本沒有實際讀者。）
   - **目標範圍**：`tools/verify_openbot_agent_queue.py` 與 `tests/test_verify_openbot_agent_queue.py`
   - **具體做法**：
     1. 實作靜態模擬與校驗 CLI 工具，讀取 Agent 任務佇列 JSON / SQLite dump 或 A2A 訊息封包。
@@ -149,6 +151,7 @@ OpenBot 扮演一個純本地的**「AI 代理人桌面管弦樂團調度器」*
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-39`**｜**[優先級：低]** 產出標準化「OpenBot 多 Agent 工作區配置與 Claude / Codex / Grok 本機聯動範本」收錄於 `templates/openbot-multi-agent-workspace-config.md`
+  - **狀態**：⚪ 不做（工作台與模型路由已由 agent-relay、opencodex 承擔，不打算換；針對未採用產品寫驗證器與設定範本沒有實際讀者。）
   - **目標範圍**：`templates/openbot-multi-agent-workspace-config.md`
   - **具體做法**：
     1. 提供開箱即用的 OpenBot 設定檔範本（包含 Claude Code CLI、Codex App Server 與本地 Ollama 的端點映射與 Token 上限防線）。

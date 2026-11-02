@@ -6,7 +6,7 @@ source_platform: "Facebook (@elderengineer) / GitHub (yetone/magpie)"
 author: "大齡工程師 (@elderengineer) / yetone"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 1
 cluster_role: "本地模型網關與智慧路由"
 short_title: "Magpie本地多Agent模型網關"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Facebook 原文分享 (@elderengineer)](https://www.facebook.com/share/p/1DUcM7oeus/) ｜ [大齡工程師粉絲專頁](https://www.facebook.com/elderengineer) ｜ [yetone/magpie 官方 GitHub](https://github.com/yetone/magpie) ｜ [Magpie 官方網站 (usemagpie.ai)](https://usemagpie.ai)
 - **核心作者**：大齡工程師（Alan Ho / @elderengineer，資深矽谷架構師與技術專欄作者）／ yetone（知名開源開發者，avante.nvim 與 magpie 創始作者）
 - **分析主題**：解構近期在社群與開源圈獲得高度矚目的本地 AI 模型網關專案 **Magpie（`yetone/magpie`）**。深入剖析現代開發者在本地同時驅動多款 AI Coding Agent（如 Claude Code、Codex、Crush、OpenCode、Gemini CLI）時，所面臨的「多供應商帳號零散、Token 限流（429）頻發、月費訂閱配額重置前浪費、Prompt Cache 命中失效」等核心痛點。詳細拆解 Magpie 本地環回代理（`127.0.0.1:3425`）、**Routing Groups 虛擬群組抽象**、獨創的 **Smart 配額到期優先調度演算法（Allowance Renewal Prioritization）**、**快取親和力感知（Cache-Aware Stickiness）** 與 **代理端零感知故障轉移（Zero-Error Resilient Failover）** 機制，並推導對本地工業化多代理開發管線的防禦整合方案。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（LLM 燒錢率、Cache 命中率與智慧路由 Benchmark）
   - [`notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](./2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
@@ -154,6 +154,7 @@ Magpie 允許開發者將多個底層模型包裝為一個「虛擬模型組（R
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261031-46`**｜**[優先級：高]** 撰寫「Magpie 本地 AI 模型網關技術手冊：多 Agent 統一代理、Routing Groups、配額到期優先調度與快取感知路由」收錄於 `docs/magpie-local-ai-gateway-spec.md`
+  - **狀態**：⚪ 不做（工作台與模型路由已由 agent-relay、opencodex 承擔，不打算換；針對未採用產品寫驗證器與設定範本沒有實際讀者。）
   - **目標範圍**：`docs/magpie-local-ai-gateway-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳盡剖析 Magpie 本地代理中樞架構、HTTP 反向代理轉發流程與客戶端配置標準。
@@ -163,6 +164,7 @@ Magpie 允許開發者將多個底層模型包裝為一個「虛擬模型組（R
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-47`**｜**[優先級：中]** 實作「Magpie 智慧路由演算法模擬器與配額到期優先排程校驗器」於 `tools/verify_magpie_routing_scheduler.py` 與單元測試
+  - **狀態**：⚪ 不做（工作台與模型路由已由 agent-relay、opencodex 承擔，不打算換；針對未採用產品寫驗證器與設定範本沒有實際讀者。）
   - **目標範圍**：`tools/verify_magpie_routing_scheduler.py` 與 `tests/test_verify_magpie_routing_scheduler.py`
   - **具體做法**：
     1. 實作純 Python 版 Magpie Smart 路由排程模擬器，輸入多組模型帳號的餘額、重置時間（TTL）、目前水位與健康狀態。
@@ -172,6 +174,7 @@ Magpie 允許開發者將多個底層模型包裝為一個「虛擬模型組（R
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-48`**｜**[優先級：低]** 產出標準化「多 Agent 本地開發環境 Magpie 路由群組配置範本」收錄於 `templates/magpie-routing-groups-config.md`
+  - **狀態**：⚪ 不做（工作台與模型路由已由 agent-relay、opencodex 承擔，不打算換；針對未採用產品寫驗證器與設定範本沒有實際讀者。）
   - **目標範圍**：`templates/magpie-routing-groups-config.md`
   - **具體做法**：
     1. 提供支援 Claude Code、Codex、Gemini CLI、Cursor、OpenCode 的標準 Magpie 配置文件範本（YAML/JSON）。
