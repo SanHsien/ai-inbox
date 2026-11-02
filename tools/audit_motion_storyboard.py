@@ -472,7 +472,10 @@ def main(argv=None):
     parser.add_argument('--output-dir', type=Path)
     parser.add_argument('--channel', choices=['chrome', 'msedge'])
     parser.add_argument('--json', action='store_true')
-    args = parser.parse_args(argv)
+    try:
+        args = parser.parse_args(argv)
+    except SystemExit as exc:  # Python 3.11 把 `-1,100` 這類值當成選項，直接 exit 而不是回傳
+        return exc.code
     try:
         timestamps = [float(t) for t in args.timestamps.split(',')] if args.timestamps is not None else None
         with Watchdog():
