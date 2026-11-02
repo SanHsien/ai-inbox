@@ -6,7 +6,7 @@ source_platform: "Facebook (大齡工程師 elderengineer)"
 author: "大齡工程師 (elderengineer)"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 2
 cluster_role: "系統架構"
 short_title: "Grok OAuth 訂閱轉 API 鑑權破綻解構"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[Facebook 粉專分享 (大齡工程師)](https://www.facebook.com/share/p/1DUcM7oeus/) ｜ [貼文原始永久連結](https://www.facebook.com/elderengineer/posts/1948273733284720/) ｜ [社群開源代表專案 (kimws/grok-oauth)](https://github.com/kimws/grok-oauth)
 - **核心作者**：大齡工程師（elderengineer，資深軟體架構師，專注於系統工程、商業軟體架構與資安機制評析）
 - **分析主題**：SaaS 軟體商業計價機制與 API 鑑權機制的結構性破綻、Grok 訂閱（SuperGrok / X Premium+）透過 Client OAuth 檔頭偽裝繞過官方付費 API、本地代理（grok-oauth proxy）轉為 OpenAI 相容介面驅動全體 Coding Agent 的運作機制、以及由此帶來的憑證外洩、服務條款封號、端點脆弱性與防禦架構（Client Attestation / mTLS）
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md`](./2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)（Going Li 四 Agent 派工協定：雲端 GOBOT 與最小權限專用 Token）
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（Thorsten Ball 15 條 Agent 實戰哲學：工具配備與爆破半徑審查）
@@ -137,31 +137,34 @@ Facebook 知名技術專頁「大齡工程師」於 2026 年 10 月發文感嘆�
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261028-13`**｜**[優先級：高]** 撰寫「SaaS 訂閱與 API 鑑權防繞過架構設計規範」收錄於 `docs/saas-subscription-and-api-defense-spec.md`
+- [x] **`T-20261028-13`**｜**[優先級：高]** 撰寫「SaaS 訂閱與 API 鑑權防繞過架構設計規範」收錄於 `docs/saas-subscription-and-api-defense-spec.md`
   - **目標範圍**：`docs/saas-subscription-and-api-defense-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 分析 Header-based 鑑權之脆弱性成因與攻防案例。
     2. 制定現代 API 雙軌架構防禦指引：Client Attestation（客戶端認證）、設備綁定、OAuth Token Audience 嚴格校驗與異常併發風控模型。
     3. 針對 Coding Agent 調用場景，提出健康、透明且可持續的商業計費與驗證模式。
   - **驗收標準（DoD）**：產出 `docs/saas-subscription-and-api-defense-spec.md`，內含防禦架構拓撲、OAuth Token Scope 隔離規則與檢驗清單；以 `Test-Path docs/saas-subscription-and-api-defense-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/saas-subscription-and-api-defense-spec.md：Token 隔離規則 R1～R10 對應 RFC 條款，DPoP／mTLS／Play Integrity 的能與不能，未驗證項目分開列；獨立審查抽查 RFC 9700、8252、6749、6750 與廠商文件相符，未含繞過或偽裝客戶端細節。
 
-- [ ] **`T-20261028-14`**｜**[優先級：中]** 實作「本地 OAuth 憑證檔安全審查工具」於 `tools/audit_oauth_credentials.py`
+- [x] **`T-20261028-14`**｜**[優先級：中]** 實作「本地 OAuth 憑證檔安全審查工具」於 `tools/audit_oauth_credentials.py`
   - **目標範圍**：`tools/audit_oauth_credentials.py` 與 `tests/test_audit_oauth_credentials.py`
   - **具體做法**：
     1. 實作安全審查 CLI，掃描常見 AI 工具目錄（`~/.grok/`、`~/.codex/`、`~/.claude/`）之憑證檔案權限與存儲狀態。
     2. 檢查規則：檢測是否以明文形式存儲未受保護的 Refresh Token、檔案權限是否過於寬鬆（非 0600）、是否包含可被外部網卡存取之代理監聽設定。
     3. 撰寫單元測試覆蓋安全與高風險組態。
   - **驗收標準（DoD）**：產出 `tools/audit_oauth_credentials.py` 與單元測試，執行 `python -m unittest discover -s tests` 全綠通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：tools/audit_oauth_credentials.py＋tests/test_audit_oauth_credentials.py：只查權限、ACL、git 追蹤、欄位種類，不輸出 token 值。獨立審查兩輪修正中文路徑 ACL 漏報、UTF-16、NUL 填充、IPv6 scope 回顯；zh-TW 機器實測授權 Everyone 報 acl-broad。已知限制：非英文 Windows 主體名稱、無 BOM 的非 ASCII UTF-16。
 
-- [ ] **`T-20261028-15`**｜**[優先級：低]** 產出標準化「Coding Agent 外部端點可用性與風控回退策略範本」收錄於 `templates/upstream-proxy-fallback-policy.md`
+- [x] **`T-20261028-15`**｜**[優先級：低]** 產出標準化「Coding Agent 外部端點可用性與風控回退策略範本」收錄於 `templates/upstream-proxy-fallback-policy.md`
   - **目標範圍**：`templates/upstream-proxy-fallback-policy.md`
   - **具體做法**：
     1. 撰寫模型路由層的容錯切換策略（Fallback Policy）：當非官方內部代理出現 401/403/429 或網路逾時時，自動平滑降階切換至官方標準 API 或本機模型。
     2. 明確標示各供應商（xAI、Anthropic、OpenAI）之合規紅線與風控特徵。
   - **驗收標準（DoD）**：產出 `templates/upstream-proxy-fallback-policy.md`，具備完整配置範例與容錯狀態機；以 `Test-Path templates/upstream-proxy-fallback-policy.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：templates/upstream-proxy-fallback-policy.md：依維護者政策偏離筆記，只在官方 API 與本機模型間切換、不寫風控特徵。classify() 依 Anthropic rate-limits 頁的 400 訊息前綴與 enforced_spend_limit_reached 判斷，22 條斷言隨文件可執行，審查後實跑通過。
 
 ---
 

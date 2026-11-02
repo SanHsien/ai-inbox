@@ -6,7 +6,7 @@ source_platform: "Threads (dev @easyanythinghk)"
 author: "Andrej Karpathy / dev (@easyanythinghk)"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "規範工程"
 short_title: "Karpathy 四大原則工程加固"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[Threads 貼文 (@easyanythinghk)](https://www.threads.com/share/BAa3ZgQnJW/)
 - **核心來源**：Andrej Karpathy 對大型語言模型（LLM）寫代碼痛點的觀察與 GitHub 社群爆紅的 `CLAUDE.md` 準則
 - **分析主題**：Karpathy 程式碼行為四大黃金原則（Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Verification）、軟性提示詞衰減（Prompt Decay）防線、由文字勸導升級為機械硬閘門（Mechanical Invariants）之工程實務
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md`](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md)（AGENTS.md 規範驅動起步機制）
   - [`notes/2026-10-26-ai-shared-memory-template-team-collaboration.md`](./2026-10-26-ai-shared-memory-template-team-collaboration.md)（三跳索引與動詞寫入契約）
@@ -128,32 +128,35 @@ AI 領域權威 Andrej Karpathy 在長期的 AI Coding 實踐中，指出了大�
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261028-01`**｜**[優先級：高]** 撰寫「Karpathy 四大原則工程加固指引：從 Prompt 到硬閘門」收錄於 `docs/karpathy-rules-mechanical-hardening-spec.md`
+- [x] **`T-20261028-01`**｜**[優先級：高]** 撰寫「Karpathy 四大原則工程加固指引：從 Prompt 到硬閘門」收錄於 `docs/karpathy-rules-mechanical-hardening-spec.md`
   - **目標範圍**：`docs/karpathy-rules-mechanical-hardening-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 系統性解構 Karpathy 四大原則（Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Verification）的背景與底層痛點。
     2. 定義對應的機械化防線：SELECTIVE ROUTE 前置宣告、8KB 預算上限、Surgical Diff 邊界審查與客觀 DoD 外部裁判。
     3. 提供多 Agent 協同（Claude Code, Codex, Antigravity）的統一整合實例。
   - **驗收標準（DoD）**：產出 `docs/karpathy-rules-mechanical-hardening-spec.md`，內含四大原則架構拓撲、硬閘門對照矩陣與範例說明；以 `Test-Path docs/karpathy-rules-mechanical-hardening-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/karpathy-rules-mechanical-hardening-spec.md：分清 Karpathy 貼文原話與 forrestchang repo 的整理（commit 8462496、2c60614），筆記的 token 衰減數字標未驗證；獨立審查逐字核對貼文與 commit 相符。
 
-- [ ] **`T-20261028-02`**｜**[優先級：中]** 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py`
+- [x] **`T-20261028-02`**｜**[優先級：中]** 實作「外科手術式修改（Surgical Changes）Git 變更範圍審查工具」於 `tools/audit_surgical_diff.py`
   - **目標範圍**：`tools/audit_surgical_diff.py` 與 `tests/test_audit_surgical_diff.py`
   - **具體做法**：
     1. 讀取 `git diff` 輸出，比對當前修改的檔案列表是否超出任務授權的目標範圍（Scope）。
     2. 檢查非預期的周邊空白重排、註解抹除或跨目錄越界改動，超過閾值回傳非 0 並列出越界檔案。
     3. 撰寫單元測試覆蓋正常小範圍修改、越界檔案攔截與大範圍無效重構偵測。
   - **驗收標準（DoD）**：產出 `tools/audit_surgical_diff.py` 與單元測試，執行測試全綠通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：tools/audit_surgical_diff.py＋tests/test_audit_surgical_diff.py：以真實 git repo 測範圍、改名、刪除、子模組、空白、註解抹除；給 --head 用 merge-base，head 是 base 祖先時 exit 2。審查兩輪修正 SQL 註解、子模組越界、main 前進誤報、參數寫反假綠，重現步驟重跑全過。
 
-- [ ] **`T-20261028-03`**｜**[優先級：低]** 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md`
+- [x] **`T-20261028-03`**｜**[優先級：低]** 產出標準化「Karpathy-Style CLAUDE.md / AGENTS.md 範本」收錄於 `templates/karpathy-hardened-agents-md.md`
   - **目標範圍**：`templates/karpathy-hardened-agents-md.md`
   - **具體做法**：
     1. 融合 Karpathy 四大原則與本 repo 實戰硬閘門，打造標準化 Markdown 範本。
     2. 範本內含清晰的專案進入點宣告、Scope 限制清單、DoD 定義區塊與反模式警示。
     3. 相容 Claude Code、Antigravity 與 Codex CLI。
   - **驗收標準（DoD）**：產出 `templates/karpathy-hardened-agents-md.md`，內含完整結構與中英雙語註解；以 `Test-Path templates/karpathy-hardened-agents-md.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：templates/karpathy-hardened-agents-md.md：可填空的 AGENTS.md 範本，每條行為規則附機械後盾；出處放在範本本體，授權現況照實寫（README 寫 MIT、該 commit 無 LICENSE 檔）。獨立審查 PASS。
 
 ---
 

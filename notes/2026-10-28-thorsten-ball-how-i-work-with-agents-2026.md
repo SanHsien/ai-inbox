@@ -6,7 +6,7 @@ source_platform: "Facebook (ChatGPT 生活運用) / X (@thorstenball)"
 author: "Thorsten Ball (Amp /《Writing An Interpreter In Go》作者) / Maple Kuo (翻譯)"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "開發流程"
 short_title: "Thorsten Ball 15 條 Agent 實戰哲學"
@@ -26,7 +26,7 @@ tags:
 - **核心作者**：Thorsten Ball（知名開源技術書籍《Writing An Interpreter In Go》與《Writing A Compiler In Go》作者，現任 AI Coding Agent 團隊 **Amp** 核心工程師）
 - **中文編譯**：Maple Kuo
 - **分析主題**：2026 年 10 月前沿主線代碼完全由 Agent 接管後的思維範式轉變、無可辯駁證據（Irrefutable Evidence）、爆破半徑審查（Blast Radius Review）、讓整個 SDLC 對 Agent 透明可視、知識庫 A/B 盲測實驗
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 四大黃金原則工程加固）
   - [`notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md`](./2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)（SpaceX 首席工程師 pstack 方法論）
@@ -113,32 +113,35 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261028-04`**｜**[優先級：高]** 撰寫「無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範」收錄於 `docs/irrefutable-evidence-and-invalid-patterns-spec.md`
+- [x] **`T-20261028-04`**｜**[優先級：高]** 撰寫「無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範」收錄於 `docs/irrefutable-evidence-and-invalid-patterns-spec.md`
   - **目標範圍**：`docs/irrefutable-evidence-and-invalid-patterns-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 定義「無可辯駁證據」的三大支柱：端到端真實進程日誌、外部裁判 Exit Code 0、前後指標對比。
     2. 制定「無效證據黑名單（Invalid Evidence Blacklist）」，嚴格定義口頭承諾、吞例外、註解測試、假資料與截斷日誌等不可作為完成依據的反模式。
     3. 提供可在 `AGENTS.md` 一鍵引入的防衰減規則片段。
   - **驗收標準（DoD）**：產出 `docs/irrefutable-evidence-and-invalid-patterns-spec.md`，內含有效證據契約、黑名單列表與 AGENTS.md 整合範例；以 `Test-Path docs/irrefutable-evidence-and-invalid-patterns-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/irrefutable-evidence-and-invalid-patterns-spec.md：證據分級、14 條黑名單與可貼的 AGENTS.md 片段；對照 Thorsten Ball 原文，作者說的與本 repo 延伸分開，黑名單依據區分 REVIEW.md 有紀錄與常見模式整理。獨立審查核對引述與紀錄行號。
 
-- [ ] **`T-20261028-05`**｜**[優先級：中]** 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md`
+- [x] **`T-20261028-05`**｜**[優先級：中]** 撰寫「爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南」收錄於 `docs/blast-radius-code-review-guide.md`
   - **目標範圍**：`docs/blast-radius-code-review-guide.md`
   - **具體做法**：
     1. 定義高風險爆破半徑模組（核心架構 <= 5 檔、資料庫遷移檔、授權憑證層）。
     2. 制定低風險業務代碼的「免微觀審查四條件」（正常運行、架構清晰、端到端測試通過、可維護性）。
     3. 結合 `git diff --stat` 提供自動劃分審查梯隊的評估手冊。
   - **驗收標準（DoD）**：產出 `docs/blast-radius-code-review-guide.md`，內含爆破半徑評估樹與審查檢查清單；以 `Test-Path docs/blast-radius-code-review-guide.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/blast-radius-code-review-guide.md：T1／T2／T3 評估樹與 git diff 指令（bash、PowerShell 皆實跑），核心檔案統一判 T1；「核心 5 檔」標明是本 repo 取捨，不是原文主張。獨立審查 PASS。
 
-- [ ] **`T-20261028-06`**｜**[優先級：低]** 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md`
+- [x] **`T-20261028-06`**｜**[優先級：低]** 撰寫「AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議」收錄於 `docs/agents-knowledge-ab-test-protocol.md`
   - **目標範圍**：`docs/agents-knowledge-ab-test-protocol.md`
   - **具體做法**：
     1. 設計多 Agent 對照組（無 Skill/規則）與實驗組（掛載 Skill/規則）的平行盲測流水線。
     2. 制定評估指標：任務成功率、Token 消耗比、修正回合數（Turns）與代碼純淨度。
     3. 建立淘汰冗餘規則與過期 Skills 的客觀標準，防止知識庫腐蝕。
   - **驗收標準（DoD）**：產出 `docs/agents-knowledge-ab-test-protocol.md`，涵蓋實驗流程圖、評估指標公式與盲測指令範本；以 `Test-Path docs/agents-knowledge-ab-test-protocol.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/agents-knowledge-ab-test-protocol.md：10 任務 60 次的盲測設計、精確二項與 Fisher 檢定（審查獨立重算相符）、作廢條件與兩支 bash 範本。用假 Agent 實跑確認破盲已堵、路徑錯與空任務 exit 2、基礎設施失敗超標 exit 1。門檻標為設計估計，尚未用真實 Agent 跑過。
 
 ---
 
