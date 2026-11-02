@@ -33,10 +33,10 @@
 | 類別 | 動作 | 典型情況（查證自官方文件） |
 | :--- | :--- | :--- |
 | `TRANSIENT` | 同一端點指數退避重試（有 `Retry-After` 就照它）；超過次數後換下一個端點 | 逾時、網路錯誤；500、504、529 overloaded（Anthropic）；503 model overloaded（OpenAI，文件要求照 Retry-After）；429 速率限制且有 `Retry-After`；xAI 超過 RPS／TPM 回 429 |
-| `BUDGET_STOP` | 不重試、不換端點；通知人 | 402 billing（Anthropic）；OpenAI 429 `credit_balance_exhausted`、`insufficient_quota`（文件寫明：重試帳務或配額錯誤不會恢復存取）；Anthropic 的支出上限 429（文件：沒有 `retry-after`，會一直失敗到恢復）；Anthropic 達到你設定的組織或工作區支出上限時回 **400**（文件只說回 400，沒有列專屬錯誤碼，所以**只能靠錯誤訊息文字判斷**，見下方 `BUDGET_MESSAGE_HINTS`） |
+| `BUDGET_STOP` | 不重試、不換端點；通知人 | 402 billing（Anthropic）；OpenAI 429 `credit_balance_exhausted`、`insufficient_quota`（文件寫明：重試帳務或配額錯誤不會恢復存取）；Anthropic 達到組織用量層級（tier）上限時回 429，`error.details.error_code` 為 `enforced_spend_limit_reached`、**沒有** `retry-after`，重試（含 SDK 自動重試）到恢復前都會失敗；Anthropic 達到**你自己設定**的支出上限時回 **400**（`invalid_request_error`），訊息開頭固定是 `You have reached your specified API usage limits`，工作區上限則是 `You have reached your specified workspace API usage limits`（來源：Anthropic Rate limits 文件，見文末） |
 | `AUTH_DISABLE` | 端點進 `AUTH_DISABLED`，通知人；本次請求可交給下一個端點 | 401（金鑰錯誤、失效、組織不符） |
 | `POLICY_STOP` | 停止；通知人 | 403（權限不足；OpenAI 另有「地區不支援」的 403） |
-| `REQUEST_STOP` | 不重試、不換端點；錯誤回給呼叫端 | 400、404、413、422 等請求本身有問題的錯誤（400 的訊息若符合 `BUDGET_MESSAGE_HINTS`，則改判 `BUDGET_STOP`） |
+| `REQUEST_STOP` | 不重試、不換端點；錯誤回給呼叫端 | 400、404、413、422 等請求本身有問題的錯誤（400 的訊息若符合 `BUDGET_MESSAGE_PREFIXES`，則改判 `BUDGET_STOP`；只比對訊息開頭） |
 
 兩個容易踩的坑：
 
@@ -47,12 +47,21 @@
 
 這段是第 2 節表格的最小實作。下面附上斷言（同一份程式碼區塊接在函式後面，複製整段到檔案執行，沒有輸出就代表全部通過）。語言不同就照邏輯改寫。
 
-**400 要看訊息**：Anthropic 的文件說達到支出上限會回 400，但沒有給專屬錯誤碼（一般的格式錯誤也是 400），函式只能比對訊息文字。`BUDGET_MESSAGE_HINTS` 的關鍵字是**範本的猜測，沒有對照過實際的錯誤訊息**；請用你自己遇到的真實訊息校準，否則可能漏判（當成請求錯誤，沒人被通知）或誤判（把一般錯誤當成帳務問題）。
+**400 與 429 怎麼認**：Anthropic 的 Rate limits 文件明確寫了兩種帳務類回應，函式照著判斷：
+
+- 你自己設的支出上限 → HTTP 400、`invalid_request_error`，訊息以固定前綴開頭（上述兩個，一般與工作區各一）。400 本身有很多種原因，所以**只比對訊息開頭**，不做「訊息裡含 billing／limit」這類寬鬆比對（那樣會把 `unknown field billing_address` 之類的格式錯誤誤判成帳務問題）。
+- 用量層級上限 → HTTP 429，`error.details.error_code == "enforced_spend_limit_reached"`，用這個欄位和一般速率限制區分。呼叫時把這個欄位值傳進 `code`（OpenAI 則傳 `error.code`）。
+
+文件提到的例外：Claude Code 工作區超過上限時，可能改回**帶有 `retry-after`** 的 429；這種回應在下面函式會被當成 `TRANSIENT`（照 `Retry-After` 重試），不會停下來。你的流量若包含該工作區，請在呼叫端另外處理。前綴字串若日後文件改版，函式會漏判成 `REQUEST_STOP`，所以要定期對照來源頁。
 
 ```python
-BUDGET_CODES = {"credit_balance_exhausted", "insufficient_quota"}
-# 達到支出上限的 400 沒有專屬錯誤碼，只能比對訊息文字。這些關鍵字是猜測，請用實際訊息校準。
-BUDGET_MESSAGE_HINTS = ("spend limit", "spending limit", "usage limit", "credit balance", "billing")
+# 帳務類錯誤碼：OpenAI 的 error.code；Anthropic 的 error.details.error_code（用量層級上限的 429）
+BUDGET_CODES = {"credit_balance_exhausted", "insufficient_quota", "enforced_spend_limit_reached"}
+# Anthropic：達到自己設定的支出上限時回 400，訊息以這兩個前綴之一開頭（小寫比對）。只比對開頭，不比對關鍵字。
+BUDGET_MESSAGE_PREFIXES = (
+    "you have reached your specified api usage limits",
+    "you have reached your specified workspace api usage limits",
+)
 
 
 def classify(status=None, code=None, retry_after=False, timeout=False, message="",
@@ -62,8 +71,8 @@ def classify(status=None, code=None, retry_after=False, timeout=False, message="
         return "TRANSIENT"
     if status == 402 or code in BUDGET_CODES:
         return "BUDGET_STOP"
-    if status == 400 and any(h in (message or "").lower() for h in BUDGET_MESSAGE_HINTS):
-        return "BUDGET_STOP"                 # 只對 400 比對訊息，429 走下面的連續次數規則
+    if status == 400 and (message or "").strip().lower().startswith(BUDGET_MESSAGE_PREFIXES):
+        return "BUDGET_STOP"                 # 只對 400 比對訊息開頭，429 走下面的規則
     if status == 429:
         if retry_after:
             return "TRANSIENT"
@@ -89,11 +98,17 @@ assert classify(429, streak_429_no_retry_after=2) == "BUDGET_STOP"           # �
 assert classify(429, retry_after=True, streak_429_no_retry_after=9) == "TRANSIENT"
 assert classify(429, code="credit_balance_exhausted", retry_after=True) == "BUDGET_STOP"
 assert classify(402) == "BUDGET_STOP"
-assert classify(400, message="Your organization has reached its spend limit") == "BUDGET_STOP"  # 400 + 訊息
-assert classify(400, message="monthly Usage Limit reached for this workspace") == "BUDGET_STOP"       # 不分大小寫
+assert classify(400, code="invalid_request_error",
+                message="You have reached your specified API usage limits. You will regain access on 2026-09-01 at 00:00 UTC.") == "BUDGET_STOP"
+assert classify(400, message="  you have reached your specified workspace api usage limits ...") == "BUDGET_STOP"  # 工作區版、不分大小寫
+assert classify(429, code="enforced_spend_limit_reached") == "BUDGET_STOP"                        # tier 上限，第一次就停
+assert classify(429, code="enforced_spend_limit_reached", retry_after=True) == "BUDGET_STOP"      # 錯誤碼優先於 retry-after
+assert classify(400, message="tools.0: unknown field billing_address") == "REQUEST_STOP"          # 含 billing 的格式錯誤不是帳務
+assert classify(400, message="max_tokens: usage limit for this model is 8192") == "REQUEST_STOP"  # 含 usage limit 的格式錯誤也不是
+assert classify(400, message="Error: You have reached your specified API usage limits") == "REQUEST_STOP"  # 只認開頭
 assert classify(400, code="invalid_request_error", message="messages: field required") == "REQUEST_STOP"
 assert classify(400) == "REQUEST_STOP"                                       # 沒有訊息就無從判斷，當請求錯誤
-assert classify(429, message="spend limit") == "TRANSIENT"                   # 訊息比對只對 400
+assert classify(429, message="You have reached your specified API usage limits") == "TRANSIENT"  # 訊息比對只對 400
 assert classify(401) == "AUTH_DISABLE"
 assert classify(403) == "POLICY_STOP"
 for st in (404, 413, 422):
@@ -275,6 +290,7 @@ routes:
 ## 來源（查證日期 2026-11-02）
 
 - Anthropic，API 錯誤碼：<https://platform.claude.com/docs/en/api/errors>
+- Anthropic，Rate limits（支出上限的 400 訊息前綴、`enforced_spend_limit_reached`；2026-11-02 查證）：<https://platform.claude.com/docs/en/api/rate-limits>
 - Anthropic，API 概覽（基底網址 `https://api.anthropic.com`）：<https://platform.claude.com/docs/en/api/overview>
 - Anthropic，Claude Code「Legal and compliance」：<https://code.claude.com/docs/en/legal-and-compliance>
 - OpenAI，API 錯誤碼：<https://developers.openai.com/api/docs/guides/error-codes>

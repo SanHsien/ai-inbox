@@ -10,6 +10,9 @@ tools/audit_oauth_credentials.py
   - 輸出只會出現固定詞彙的欄位類別（refresh_token、access_token、api_key……），不回顯檔案裡原本的鍵名；
   - 監聽位址只在能被解析成 IP 時才印出（IPv6 的 %scope 先去掉），其餘一律印固定說明文字。
 檔案編碼：依 BOM 解碼 UTF-8／UTF-16／UTF-32（PowerShell 5 的 > 預設寫 UTF-16）。
+  無 BOM 時：UTF-8 內容夾帶大量 NUL（尾端、前端皆可）仍會掃到；無 BOM 的 UTF-16 只在欄位名稱與值是 ASCII 時掃得到。
+  **已知限制（會漏報）**：無 BOM 的 UTF-16 若內容以中文等非 ASCII 字元為主（NUL 不到四分之一），或無 BOM 的 UTF-32，
+  都會被當成 UTF-8 而掃不到憑證欄位；PowerShell 5 的 > 與 Out-File 會寫 BOM，不屬於這種情況。
 本工具也不讀取或呼叫任何遠端服務，不嘗試使用憑證。
 
 預設掃描（各目錄的第一層檔案，加上 oauth-proxy/ 子資料夾；不遞迴 sessions 之類的大目錄）：
@@ -107,7 +110,10 @@ class Finding:
 
 
 def decode_text(raw: bytes) -> str:
-    """依 BOM 解碼（UTF-8／UTF-16／UTF-32）；沒有 BOM 但空位元組很多時當成 UTF-16；其餘當 UTF-8（壞位元組換成替代字元）。
+    """依 BOM 解碼（UTF-8／UTF-16／UTF-32）。沒有 BOM、但空位元組（NUL）很多時無法確定是 UTF-16 還是夾了 NUL 的 UTF-8，
+    所以不猜，直接把 NUL 全部拿掉再當 UTF-8 讀：
+    UTF-8 內容後面接了一大段 NUL（預先配置或寫入中斷的檔案）、前面墊了二進位垃圾，都仍然掃得到；
+    無 BOM 的 UTF-16 只要欄位名稱與值是 ASCII，拿掉 NUL 後就是原文，也掃得到。其餘當 UTF-8（壞位元組換成替代字元）。
     PowerShell 5 的 > 與 Out-File 預設寫 UTF-16LE 加 BOM，若當 UTF-8 讀，每個字元中間都夾著空字元，什麼都比對不到。"""
     if raw.startswith((b"\xff\xfe\x00\x00", b"\x00\x00\xfe\xff")):
         return raw.decode("utf-32", "replace")
@@ -115,13 +121,10 @@ def decode_text(raw: bytes) -> str:
         return raw.decode("utf-16", "replace")
     if raw.startswith(b"\xef\xbb\xbf"):
         return raw.decode("utf-8-sig", "replace")
-    if len(raw) >= 4:
-        quarter = len(raw) // 4
-        if raw[1::2].count(0) > quarter:
-            return raw.decode("utf-16-le", "replace")
-        if raw[0::2].count(0) > quarter:
-            return raw.decode("utf-16-be", "replace")
-    return raw.decode("utf-8", "replace")
+    text = raw.decode("utf-8", "replace")
+    if len(raw) >= 4 and (raw[1::2].count(0) > len(raw) // 4 or raw[0::2].count(0) > len(raw) // 4):
+        return text.replace("\x00", "")
+    return text
 
 
 def _normalize_key(key: str) -> str:

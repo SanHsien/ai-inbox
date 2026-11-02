@@ -119,13 +119,40 @@ class DecodeTextTest(unittest.TestCase):
             ("utf-8-bom", b"\xef\xbb\xbf" + self.TEXT.encode("utf-8")),
             ("utf-16-bom-le", b"\xff\xfe" + self.TEXT.encode("utf-16-le")),
             ("utf-16-bom-be", b"\xfe\xff" + self.TEXT.encode("utf-16-be")),
-            ("utf-16-no-bom-le", self.TEXT.encode("utf-16-le")),
-            ("utf-16-no-bom-be", self.TEXT.encode("utf-16-be")),
             ("utf-32-bom", self.TEXT.encode("utf-32")),
         ):
             with self.subTest(enc=name):
                 self.assertEqual(a.decode_text(raw), self.TEXT)
                 self.assertEqual(a.token_kinds(a.decode_text(raw)), ["refresh_token"])
+
+    def test_utf16_without_bom_is_still_scanned_when_ascii_dominates(self):
+        for name, raw in (("le", self.TEXT.encode("utf-16-le")), ("be", self.TEXT.encode("utf-16-be"))):
+            with self.subTest(enc=name):
+                self.assertEqual(a.token_kinds(a.decode_text(raw)), ["refresh_token"])
+
+    PAYLOAD = b'{"refresh_token":"FAKEVALSENT1NEL1122334455", "bind": "0.0.0.0"}'
+
+    def test_utf8_content_with_many_nul_bytes_is_not_mistaken_for_utf16(self):
+        # 預先配置或寫入中斷的檔案：內容後面（或前面）是一大段 NUL，之前整份被當成 UTF-16 而漏報
+        for name, raw in (
+            ("trailing-nuls", self.PAYLOAD + b"\0" * 5000),
+            ("leading-nuls", b"\0" * 5000 + self.PAYLOAD),
+            ("leading-junk-pairs", b"\x00\xff" * 2000 + self.PAYLOAD),
+            ("trailing-junk-pairs", self.PAYLOAD + b"\xff\x00" * 2000),
+            ("middle-nuls", self.PAYLOAD[:20] + b"\0" * 300 + self.PAYLOAD[20:]),
+            ("nuls-both-sides", b"\0" * 3000 + self.PAYLOAD + b"\0" * 3000),
+        ):
+            with self.subTest(case=name):
+                text = a.decode_text(raw)
+                self.assertEqual(a.token_kinds(text), ["refresh_token"])
+                self.assertEqual([i[:2] for i in a.listen_issues(text)], [("ERROR", "listen-exposed")])
+
+    def test_nul_padded_file_is_reported_by_the_audit(self):
+        h = FakeHome()
+        self.addCleanup(h.close)
+        h.write_bytes(".codex/auth.json", self.PAYLOAD + b"\0" * 5000)
+        findings, _ = run_audit(h)
+        self.assertIn("plaintext-token", codes(findings))
 
     def test_invalid_bytes_do_not_raise(self):
         self.assertIsInstance(a.decode_text(b'{"access_token": "' + b"\xff\xfe\x80" * 10), str)
