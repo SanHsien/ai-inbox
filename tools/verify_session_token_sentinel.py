@@ -23,10 +23,10 @@ tools/verify_session_token_sentinel.py
 結束碼：
     0  通過（check 量得到；simulate/--expect 全符合；classify/title/cost 成功；hook 正常）
     1  驗證失敗或量不到：transcript 缺檔、空檔、沒有有效 usage、整份壞掉、--expect 不符、
-       hook 收到壞 stdin／缺欄位／不安全的 session_id／壞門檻
+       hook 收到壞參數（含 argparse 錯誤）、壞 stdin／缺欄位／不安全的 session_id／壞門檻
        （hook 預設對「量不到」寬容：缺檔或還沒有 usage 時 exit 0 並在 stderr 說明，加 --strict 才 exit 1；
         整份壞掉、壞 stdin 永遠 exit 1）
-    2  命令列參數錯誤（argparse）
+    2  命令列參數錯誤（argparse；hook 子命令例外，一律 1）
 hook 絕不使用 exit 2：官方文件規定 UserPromptSubmit 的 exit 2 會擋掉使用者的提問。
 只使用 Python 標準函式庫。
 """
@@ -75,8 +75,10 @@ def read_tail(path: Path, max_bytes: int = DEFAULT_TAIL_BYTES) -> tuple[bytes, b
 
 
 def _usage_tokens(usage: object) -> int | None:
-    """三個欄位加總；欄位缺少當 0，型別不對（字串、布林、負數、小數）回 None。"""
+    """三個欄位加總；單一欄位缺少當 0，但三欄都缺（如 `{}`）視為量不到；型別不對（字串、布林、負數、小數）回 None。"""
     if not isinstance(usage, dict):
+        return None
+    if all(usage.get(key) is None for key in USAGE_KEYS):
         return None
     total = 0
     for key in USAGE_KEYS:
@@ -489,7 +491,14 @@ def _cmd_cost(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     _utf8_stdio()
-    args = build_parser().parse_args(argv)
+    raw = list(sys.argv[1:] if argv is None else argv)
+    try:
+        args = build_parser().parse_args(raw)
+    except SystemExit as exc:
+        # hook 的參數錯誤不可回 2：UserPromptSubmit 的 exit 2 會擋掉使用者的每一則提問
+        if raw and raw[0] == "hook" and exc.code not in (0, None):
+            return 1
+        raise
     try:
         if args.cmd == "check":
             return _cmd_check(args)

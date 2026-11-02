@@ -109,14 +109,26 @@ class TailAndUsageTests(unittest.TestCase):
         for bad in ('"150000"', "true", "-5", "1.5", "[1]", "null"):
             line = '{"message":{"usage":{"input_tokens":%s}}}' % bad
             if bad == "null":
-                # null 視為 0，是合法的缺值
+                # 單一欄位 null 當缺值；三欄都缺則量不到
                 write_lines(self.path, [line])
-                self.assertEqual(S.measure_file(self.path).tokens, 0)
+                self.assertEqual(S.measure_file(self.path).status, "no_usage")
                 continue
             write_lines(self.path, [line])
             r = S.measure_file(self.path)
             self.assertEqual(r.status, "no_usage", bad)
             self.assertEqual(r.bad_usage, 1, bad)
+
+    def test_empty_usage_object_is_unmeasurable(self):
+        for body in ("{}", '{"input_tokens":null}', '{"other":5}'):
+            write_lines(self.path, ['{"message":{"usage":%s}}' % body])
+            r = S.measure_file(self.path)
+            self.assertEqual((r.status, r.tokens, r.bad_usage), ("no_usage", None, 1), body)
+        # 空 usage 不可蓋掉更早的有效讀數以外的結論：只往前找到有效行
+        write_lines(self.path, [usage_line(77), '{"message":{"usage":{}}}'])
+        self.assertEqual(S.measure_file(self.path).tokens, 77)
+        self.assertEqual(run_tool("check", str(self.path)).returncode, 0)
+        write_lines(self.path, ['{"message":{"usage":{}}}'])
+        self.assertEqual(run_tool("check", str(self.path)).returncode, 1)
 
     def test_usage_not_a_dict_is_skipped(self):
         write_lines(self.path, [usage_line(10), '{"message":{"usage":"lots"}}'])
@@ -360,6 +372,19 @@ class HookSubprocessTests(unittest.TestCase):
         self.assertFalse((self.dir / "evil.txt").exists())
         self.assertFalse(list(self.dir.glob("claude-long-chat-*")))
 
+    def test_hook_never_exits_2_for_any_argument_or_input(self):
+        write_lines(self.transcript, [usage_line(0, 160000, 0)])
+        arg_sets = [["--limit", "150k"], ["--foo"], ["--limit"], ["--step", "0"], ["--step", "-1"], ["--limit", "0"],
+                    ["extra"], ["--state-dir"], ["--strict", "--bogus"]]
+        for extra in arg_sets:
+            r = run_tool("hook", *extra, stdin=json.dumps(self.payload()).encode())
+            self.assertEqual(r.returncode, 1, extra)
+            self.assertTrue(r.stderr.strip(), extra)
+            self.assertEqual(r.stdout, b"", extra)
+        for raw in (b"", b"{x", b"[]", b"\xff"):
+            self.assertNotEqual(run_tool("hook", stdin=raw).returncode, 2, raw)
+        self.assertEqual(run_tool("hook", "--help", stdin=b"").returncode, 0)
+
     def test_corrupt_transcript_fails(self):
         write_lines(self.transcript, ["{x", "y"])
         self.assertEqual(self.hook(self.payload()).returncode, 1)
@@ -377,7 +402,7 @@ class HookSubprocessTests(unittest.TestCase):
 
     def test_bad_thresholds_fail(self):
         write_lines(self.transcript, [usage_line(0, 160000, 0)])
-        self.assertEqual(self.hook(self.payload(), "--limit", "0").returncode, 2)  # argparse
+        self.assertEqual(self.hook(self.payload(), "--limit", "0").returncode, 1)  # argparse 錯誤在 hook 也是 1
         for env in ({"LONG_CHAT_TOKENS": "abc"}, {"LONG_CHAT_TOKENS": "0"}, {"LONG_CHAT_STEP": "-3"}, {"LONG_CHAT_STEP": "x"}):
             r = self.hook(self.payload(), env=env)
             self.assertEqual(r.returncode, 1, env)

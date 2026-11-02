@@ -122,7 +122,8 @@ continue_total=4170000 handoff_total=1190000 saving=2980000 (raw input tokens, �
 | 中間夾雜壞 JSON 行 | 略過並計數 | 仍可讀到最新 usage |
 | 整份都不是 JSON | 視為壞檔 | `corrupt` → hook exit 1 |
 | usage 欄位型別不對（字串、布林、負數、小數、非物件） | **跳過該行**，不把字串相加（JS 會把數字串接成字串） | 計入 `bad_usage`，繼續往前找 |
-| 缺欄位（如沒有 `cache_creation_input_tokens`） | 當 0 | 照加總 |
+| 單一欄位缺少（如沒有 `cache_creation_input_tokens`） | 當 0 | 照加總 |
+| 三個欄位全缺（`usage: {}`） | **量不到**，不當成 0 token | 計入 `bad_usage`，繼續往前找 |
 | 檔案不存在、空檔、尚無任何回覆 | 量不到 | `check`：exit 1；`hook`：預設 exit 0 並在 stderr 說明（新 session 第一個提問本來就量不到），加 `--strict` 才 exit 1 |
 | 位元組不是合法 UTF-8 | 以取代字元解碼，不崩潰 | 照常解析其餘行 |
 
@@ -282,7 +283,7 @@ $ python tools/verify_session_token_sentinel.py title "SEO 調整"      -> SEO �
 
 - [ ] 門檻、步進是正整數，且門檻小於你模型的自動壓縮邊界
 - [ ] `session_id` 在拼路徑前有白名單驗證
-- [ ] 壞 stdin、缺欄位、整份壞檔都是非 0 結束碼，且不是 2
+- [ ] 壞 stdin、缺欄位、整份壞檔、錯誤的命令列參數（包含 argparse 錯誤）都是 exit 1，絕不是 2
 - [ ] 量不到 usage 時工具不會回報通過
 - [ ] 級距邊界用 `simulate --expect` 驗過（至少含：門檻前一刻、剛好門檻、同級距內、下一級起點）
 - [ ] 封存永遠排在「確認新會話已建立」之後
