@@ -51,6 +51,7 @@
 
 - 授權 Apache-2.0。生命週期 Hook 有六種：SessionStart、UserPromptSubmit、PreToolUse、PostToolUse、Stop、SessionEnd。元件是本機 worker（HTTP API，Bun 管理）、SQLite（存 session、觀察、摘要）、Chroma 向量庫（語意加關鍵字的混合搜尋）、`mem-search` skill。
 - 預設設定（`src/shared/SettingsDefaultsManager.ts`）：壓縮用的 provider 為 `claude`、model 為 `haiku`；SessionStart 注入的觀察數 `CLAUDE_MEM_CONTEXT_OBSERVATIONS` 為 50、`CLAUDE_MEM_CONTEXT_SESSION_COUNT` 為 10（變數名稱看似是 session 數，實際用途未逐行查證）；注入範圍預設只含目前專案（`CLAUDE_MEM_CONTEXT_PROJECTS=current`）；worker 預設綁 `127.0.0.1`。設定檔在 `~/.claude-mem/settings.json`。
+- **壓縮可能在對方伺服器執行**：README 第 149 行寫明，登入後會配發 memory key，並啟用託管的 **claude-mem observer**（30 天免費試用，到期自動退回你的 Anthropic 方案），之後可選 observer、自己的 OpenRouter 或 Gemini key、或 Anthropic 方案作為記憶 provider。也就是說，選託管 observer 時，工具輸出的壓縮不在你的機器上做；機密過濾必須在資料離開本機之前完成（見 3.4），並在登入後的 provider 選項裡確認你選的是哪一個。
 - 搜尋是三層：`search`（回傳含 ID 的精簡索引）、`timeline`（前後脈絡）、`get_observations`（只對篩選過的 ID 取全文）。README 自述每筆索引約 50 至 100 Token、全文約 500 至 1,000 Token、可省約 10 倍；**這是廠商自述的數字，本文沒有獨立量測**。
 - 隱私：README 說可用 `<private>` 標籤排除內容。原始碼 `src/utils/tag-stripping.ts` 實際處理的標籤有六種：`private`、`claude-mem-context`、`system_instruction`、`system-instruction`、`persisted-output`、`system-reminder`。
 - **資料外送面要先讀**：README 說安裝程式會引導登入 claude-mem 帳號；要略過可傳明確的 `--provider`、設 `CLAUDE_MEM_ONLINE_OPTIN=false` 或在非互動環境安裝。同一個 commit 的訊息寫到，先前瀏覽器版 setup 會掃本機各 agent 歷史並在載入頁面時上傳近 30 天的 prompt 全文，該 commit 改成需明確同意才上傳。結論：把它裝到有機密的機器前，要看你裝的版本是否已含這個修正，並實際確認 provider 與同意選項。
@@ -93,7 +94,7 @@ claude-mem 的壓縮由模型完成（預設 haiku），所以只要是模型改
 | 錯誤固化 | 每條事實附出處（commit、transcript 位置），查不到就寫「未驗證」；寫入前後各跑一次檢查 | 工具的 `unsupported`：記憶有、原始紀錄找不到的事實會直接 FAIL |
 | 越積越舊 | 條目有到期日與覆蓋規則 | 範本第 4、5 節 |
 
-量測做法與限制見工具檔頭。重點是：資訊損失率 = 1 - 保留事實數 / 事實總數，由輸入現場計算；它只量「可抽取的」四類事實，`decisions` 用詞元重疊近似，所以換句話說會被算成損失、關鍵字拼湊可能被算成保留，**這一類要人工抽查**。預設門檻（總體損失率 0.4 等）是本 repo 的取捨，沒有外部基準，請用自己的 transcript 校準。
+量測做法與限制見工具檔頭。因果丟失在總體損失率裡會被其他類別稀釋，所以工具對 decisions 另設類別門檻 `--max-decision-loss`（預設 0.5，本 repo 取捨）。重點是：資訊損失率 = 1 - 保留事實數 / 事實總數，由輸入現場計算；它只量「可抽取的」四類事實，`decisions` 用詞元重疊近似，所以換句話說會被算成損失、關鍵字拼湊可能被算成保留，**這一類要人工抽查**。預設門檻（總體損失率 0.4 等）是本 repo 的取捨，沒有外部基準，請用自己的 transcript 校準。
 
 ### 2.3 噪聲污染
 
@@ -177,7 +178,7 @@ claude-mem 的壓縮由模型完成（預設 haiku），所以只要是模型改
 - [S1] Anthropic，How Claude remembers your project：<https://code.claude.com/docs/en/memory>（讀全頁，引用：auto memory 與 CLAUDE.md 對照表、載入上限、AGENTS.md、`@` 匯入、`/compact` 後行為）。
 - [S2] claude-mem：<https://github.com/thedotmack/claude-mem/tree/52a1dfea2556e126c959c26d8e25f6fa7da14521>（讀 `README.md`、`src/shared/SettingsDefaultsManager.ts`、`src/utils/tag-stripping.ts`，以及該 commit 的提交訊息；星數與授權用 GitHub API 查）。
 - [S3] cc-session-reader：<https://github.com/Mapleeeeeeeeeee/cc-session-reader/tree/7a60e5ce4a2be191db2f93bdd6caec8696cd0639>（讀 `README.md`；僅讀文件，**沒有執行該工具**）。
-- [S4] OpenAI，Custom instructions with AGENTS.md：<https://developers.openai.com/codex/guides/agents-md>
+- [S4] OpenAI，Custom instructions with AGENTS.md：<https://learn.chatgpt.com/docs/agent-configuration/agents-md>（原 `developers.openai.com/codex/guides/agents-md` 已 308 轉址至此；2026-11-02 重新開啟確認仍寫 `project_doc_max_bytes` 預設 32 KiB）
 - [S5] Gemini CLI，Provide context with GEMINI.md files：<https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/gemini-md.md>（該檔最後修改的 commit 為 `93844dfa10f6d71edc09be40dfde205edfbcc939`）。
 - [S6] OpenClaw，Memory：<https://docs.openclaw.ai/concepts/memory>
 - 未驗證項目：`claude skill install thedotmack/claude-mem` 指令、`mission-log`、子目錄 CLAUDE.md 的單檔上限、Gemini CLI 與 OpenClaw 的數值上限、claude-mem 的 FTS5 實作細節與所有 Token 節省數字（廠商自述）。

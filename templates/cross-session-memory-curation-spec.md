@@ -93,7 +93,7 @@ supersedes: none
 
 | 欄位 | 必填 | 說明 |
 | :--- | :---: | :--- |
-| `name` / `description` / `type` | 是 | `type` 建議用 `user`、`feedback`、`project`、`reference`（與 Claude Code auto memory 的檔案分類一致，見規範第 1.1 節） |
+| `name` / `description` / `type` | 是 | `type` 的值是本範本的約定：`user`、`feedback`、`project`、`reference`（官方 auto memory 文件只用 `user_role.md`、`feedback_testing.md` 當主題檔命名範例，並沒有規定 type 清單，見規範第 1.1 節） |
 | `status` | 是 | `active`、`unverified`、`superseded`、`expired`。只有 `active` 可以被自動注入 |
 | `created` / `last_verified` | 是 | `YYYY-MM-DD`。`last_verified` 是最後一次對照當前程式碼或檔案確認的日子，不是最後編輯日 |
 | `expires` | 是 | `YYYY-MM-DD`。依第 3 節預設天數從 `last_verified` 算起 |

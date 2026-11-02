@@ -7,7 +7,8 @@ tools/audit_session_memory_compression.py
 用法：
     python tools/audit_session_memory_compression.py --transcript T.jsonl --memory M.md
         [--format md|json] [--output FILE] [--max-loss 0.4] [--decision-overlap 0.5]
-        [--max-filler 0] [--max-unsupported 0] [--min-facts 3]
+        [--max-filler 0] [--max-unsupported 0] [--min-facts 3] [--max-decision-loss 0.5] [--fail-not-compressed]
+    （--min-facts 最低 1；抽不到任何事實一律結束碼 2。decisions 另有類別門檻，因為總體損失率擋不住因果丟失。）
 
 結束碼：0 [PASS]；1 [FAIL]（損失率超標，或有 FAIL 級發現）；2 輸入或參數錯誤、或量不出來（不是通過，也不是 assertion 失敗）。
 只使用 Python 標準函式庫。
@@ -62,7 +63,7 @@ SECRET_PATTERNS = {
 _SECRET_RES = {label: re.compile(p) for label, p in SECRET_PATTERNS.items()}
 
 HOME_PATH = re.compile(
-    r"(?i)(?:\b[a-z]:|/[a-z](?=[\\/]))?(?:\\{1,2}|/)(?:users|home)(?:\\{1,2}|/)([^\\/\s'\"`<>|*?:、，。（）)]+)"
+    r"(?i)(?<![A-Za-z0-9_.-])(?:\b[a-z]:|/[a-z](?=[\\/]))?(?:\\{1,2}|/)(?:users|home)(?:\\{1,2}|/)([^\\/\s'\"`<>|*?:、，。（）)]+)"
 )
 PLACEHOLDER_ACCOUNTS = {"username", "user", "admin", "test", "me", "x", "you", "public", "default", "all users", "...", "…"}
 
@@ -326,6 +327,8 @@ def audit(
     max_filler: int,
     max_unsupported: int,
     min_facts: int,
+    max_decision_loss: float = 0.5,
+    fail_not_compressed: bool = False,
 ) -> dict:
     all_text = "\n".join(t for _, t in segments)
     prose = [t for k, t in segments if k == "text"]
@@ -368,10 +371,10 @@ def audit(
         if re.search(r"(?<![A-Za-z0-9_./~-])" + re.escape(p.rsplit("/", 1)[-1]) + r"(?![A-Za-z0-9_])", memory, re.I)
     )
     total_facts = sum(totals.values())
-    if total_facts < min_facts:
+    if total_facts == 0 or total_facts < min_facts:
         raise InputError(
-            f"transcript 只抽得 {total_facts} 個事實（< --min-facts {min_facts}），樣本不足，無法量測損失率；"
-            "這不是通過。請確認 transcript 內容，或調低 --min-facts。"
+            f"transcript 只抽得 {total_facts} 個事實（--min-facts {min_facts}，且至少要 1 個），樣本不足，無法量測損失率；"
+            "這不是通過。請確認 transcript 內容，或調低 --min-facts（最低 1）。"
         )
     total_lost = sum(len(v) for v in lost.values())
     overall = total_lost / total_facts
@@ -392,6 +395,10 @@ def audit(
         add("empty-memory", "FAIL", "記憶沒有任何內容（去掉 HTML 註解後為空）")
     if overall > max_loss:
         add("loss-over-threshold", "FAIL", f"資訊損失率 {overall:.3f} > --max-loss {max_loss}")
+    dec_rate = cats["decisions"]["loss_rate"]
+    if dec_rate is not None and dec_rate > max_decision_loss:
+        add("decision-loss-over-threshold", "FAIL",
+            f"decisions（含原因的決策句）損失率 {dec_rate:.3f} > --max-decision-loss {max_decision_loss}；總體損失率不會反映因果丟失，所以單獨設門檻")
     mem_secrets = secret_labels(memory_raw)
     if mem_secrets:
         add("leak-secret", "FAIL", "記憶含疑似機密：" + "、".join(mem_secrets))
@@ -407,7 +414,7 @@ def audit(
     t_len, m_len = len(all_text), len(memory_raw)
     ratio = m_len / t_len if t_len else None
     if ratio is not None and ratio >= 1.0:
-        add("not-compressed", "WARN", f"記憶字元數 {m_len} 不小於 transcript 文字 {t_len}，這不算壓縮，損失率可能只是複製貼上的結果")
+        add("not-compressed", "FAIL" if fail_not_compressed else "WARN", f"記憶字元數 {m_len} 不小於 transcript 文字 {t_len}，這不算壓縮，損失率可能只是複製貼上的結果")
 
     failed = any(f["severity"] == "FAIL" for f in findings)
     return {
@@ -424,12 +431,15 @@ def audit(
         "thresholds": {
             "max_loss": max_loss, "decision_overlap": decision_overlap, "max_filler": max_filler,
             "max_unsupported": max_unsupported, "min_facts": min_facts,
+            "max_decision_loss": max_decision_loss, "fail_not_compressed": fail_not_compressed,
         },
         "limitations": [
             "字面與詞元比對，不理解語意：換句話說的決策原因會被算損失，關鍵字拼湊可能被算保留；decisions 需人工抽查",
             "抽取規則是啟發式，損失率只代表『可抽取事實』的保留比例",
             "transcript 結構為假設的 Claude Code 本機 JSONL 形狀，無官方格式保證",
             "預設門檻是本 repo 的取捨，沒有外部基準",
+            "記憶整份複製原文時預設只出 not-compressed 警告（短樣本的記憶本來就可能比原文長）；要擋就加 --fail-not-compressed",
+            "家目錄路徑偵測會略過 URL 內的 /users/、/home/ 片段，但不會偵測沒有固定路徑格式的帳號名稱",
         ],
     }
 
@@ -499,6 +509,13 @@ def _nonneg(value: str) -> int:
     return n
 
 
+def _pos(value: str) -> int:
+    n = _nonneg(value)
+    if n < 1:
+        raise argparse.ArgumentTypeError(f"至少要 1：{value}")
+    return n
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description="稽核壓縮後的跨 Session 記憶相對於原始 transcript 的資訊損失（唯讀）。")
     ap.add_argument("--transcript", required=True, help="原始對話日誌（JSONL，UTF-8）")
@@ -509,7 +526,10 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--decision-overlap", type=_ratio, default=0.5, help="decisions 詞元涵蓋率下限，0~1，預設 0.5")
     ap.add_argument("--max-filler", type=_nonneg, default=0, help="允許以客套話開頭的行數，預設 0")
     ap.add_argument("--max-unsupported", type=_nonneg, default=0, help="允許 transcript 找不到的記憶事實數，預設 0")
-    ap.add_argument("--min-facts", type=_nonneg, default=3, help="transcript 至少要抽得幾個事實才量測，預設 3")
+    ap.add_argument("--min-facts", type=_pos, default=3, help="transcript 至少要抽得幾個事實才量測，預設 3，最低 1")
+    ap.add_argument("--max-decision-loss", type=_ratio, default=0.5,
+                    help="decisions 類別損失率上限，0~1，預設 0.5（本 repo 取捨）；總體門檻擋不住因果丟失，所以另設")
+    ap.add_argument("--fail-not-compressed", action="store_true", help="記憶字元數不小於 transcript 時判 FAIL（預設只警告）")
     return ap
 
 
@@ -527,6 +547,8 @@ def main(argv: list[str] | None = None) -> int:
             max_filler=args.max_filler,
             max_unsupported=args.max_unsupported,
             min_facts=args.min_facts,
+            max_decision_loss=args.max_decision_loss,
+            fail_not_compressed=args.fail_not_compressed,
         )
     except InputError as exc:
         print(f"錯誤：{exc}", file=sys.stderr)

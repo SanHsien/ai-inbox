@@ -241,6 +241,42 @@ class LossDetection(Base):
         c_high, _, _ = self.report(mem, "--max-loss", "0.2")
         self.assertEqual((c_low, c_high), (1, 0))
 
+    def test_all_decisions_lost_fails_even_when_overall_loss_is_low(self):
+        # 審查重現案例：總體損失率 1/3 < 0.4，但唯一一則決策（含原因）全丟
+        recs = [{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text":
+                 "UnicodeDecodeError 出現在 src/reader.py，因為 Windows 用 CRLF 讓正則失效，所以改用 splitlines"}]}},
+                {"type": "user", "message": {"role": "user", "content": "Ran 2 tests\nOK"}}]
+        mem = "- src/reader.py\n- UnicodeDecodeError\n- Ran 2 tests\nOK\n- 改用 splitlines 處理\n"
+        code, rep, _ = self.report(mem, records=recs)
+        self.assertEqual(rep["categories"]["decisions"]["loss_rate"], 1.0)
+        self.assertLess(rep["information_loss_rate"], 0.4)
+        self.assertEqual(code, 1)
+        self.assertIn("decision-loss-over-threshold", self.codes(rep))
+        self.assertNotIn("loss-over-threshold", self.codes(rep))
+        # 門檻放寬到 1 就不再因此失敗；方向不能寫反
+        code2, rep2, _ = self.report(mem, "--max-decision-loss", "1", records=recs)
+        self.assertEqual(code2, 0, rep2["findings"])
+        # 決策保留時通過
+        code3, _, _ = self.report(mem + "- 因為 Windows 用 CRLF 讓正則失效，所以改用 splitlines\n", records=recs)
+        self.assertEqual(code3, 0)
+
+    def test_decision_threshold_skipped_when_no_decisions_exist(self):
+        recs = [{"type": "user", "message": {"role": "user", "content": "ENOENT\nexit code 1\nRan 3 tests"}}]
+        code, rep, _ = self.report("ENOENT exit code 1 Ran 3 tests\n", records=recs)
+        self.assertEqual(code, 0, rep["findings"])
+        self.assertIsNone(rep["categories"]["decisions"]["loss_rate"])
+
+    def test_memory_line_without_reason_marker_cannot_retain_decision(self):
+        # 詞元幾乎都在，但該行沒有任何原因／決定標記：不算保留
+        recs = [{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text":
+                 "因為 Windows 用 CRLF 讓正則失效，所以改用 splitlines"}]}},
+                {"type": "user", "message": {"role": "user", "content": "ENOENT\nexit code 1\nRan 3 tests"}}]
+        base = "ENOENT exit code 1 Ran 3 tests\n"
+        _, rep, _ = self.report(base + "Windows CRLF 正則失效 splitlines\n", "--max-loss", "1", records=recs)
+        self.assertEqual(rep["categories"]["decisions"]["lost"], 1)
+        _, rep2, _ = self.report(base + "Windows CRLF 正則失效，改用 splitlines\n", "--max-loss", "1", records=recs)
+        self.assertEqual(rep2["categories"]["decisions"]["lost"], 0)
+
     def test_tool_output_sentences_are_not_decisions(self):
         _, rep, _ = self.report(GOOD_MEMORY)
         self.assertEqual(rep["categories"]["decisions"]["total"], 2)  # tool_result 內的 because 沒被算進去
@@ -327,6 +363,32 @@ class LeakChecks(Base):
         self.assertEqual(code, 0)
         self.assertNotIn(secret, json.dumps(rep, ensure_ascii=False))
 
+    def test_secret_and_home_path_hidden_in_html_comment_still_fail(self):
+        secret = "ghp_" + "k" * 30
+        code, rep, _ = self.report(GOOD_MEMORY + "\n<!-- " + secret + " -->\n")
+        self.assertEqual(code, 1)
+        self.assertIn("leak-secret", self.codes(rep))
+        code2, rep2, _ = self.report(GOOD_MEMORY + "\n<!-- 見 " + FAKE_HOME + "\\x.txt -->\n")
+        self.assertEqual(code2, 1)
+        self.assertIn("leak-home-path", self.codes(rep2))
+
+    def test_url_with_users_segment_is_not_a_home_path_but_real_ones_are(self):
+        for text in ("https://github.com/users/octo", "see github.com/home/octo/repo"):
+            self.assertEqual(a.real_home_accounts(text), [], text)
+        for text in ("/home/bob/x", "C:\\Users\\bob\\x", "(/Users/bob/x)", "/c/Users/bob/x"):
+            self.assertEqual(a.real_home_accounts(text), ["bob"], text)
+        code, rep, _ = self.report(GOOD_MEMORY + "\n- 參考 https://github.com/users/octo\n", "--max-unsupported", "5")
+        self.assertNotIn("leak-home-path", self.codes(rep))
+
+    def test_fail_not_compressed_flag_turns_warning_into_failure(self):
+        recs = [{"type": "user", "message": {"role": "user", "content": "Ran 3 tests\nOK\nexit code 0\nENOENT\n"}}]
+        mem = "Ran 3 tests\nOK\nexit code 0\nENOENT\n" + "備註" * 40
+        code, rep, _ = self.report(mem, records=recs)
+        self.assertEqual(code, 0)
+        code2, rep2, _ = self.report(mem, "--fail-not-compressed", records=recs)
+        self.assertEqual(code2, 1)
+        self.assertEqual([f["severity"] for f in rep2["findings"] if f["code"] == "not-compressed"], ["FAIL"])
+
     def test_unsupported_error_code_fails(self):
         code, rep, _ = self.report(GOOD_MEMORY + "\n- 另見 EACCES 與 HTTP 503\n")
         self.assertEqual(code, 1)
@@ -379,6 +441,20 @@ class BadInputs(Base):
         for memory_text in (GOOD_MEMORY, ""):
             err = self.expect_exit2(t, self.env.memory(memory_text))
             self.assertIn("樣本不足", err)
+
+    def test_min_facts_zero_rejected_and_zero_facts_never_divides_by_zero(self):
+        t = self.env.transcript([{"message": {"content": "hello there"}}])
+        m = self.env.memory("hello there\n")
+        code, out, err = run("--transcript", t, "--memory", m, "--min-facts", "0")
+        self.assertEqual(code, 2, err)
+        self.assertNotIn("Traceback", err)
+        self.assertIn("至少要 1", err)  # 參數層就擋下，不是靠後面的保險
+        # 直接呼叫 audit() 繞過參數檢查也要回 InputError，而不是 ZeroDivisionError
+        with self.assertRaises(a.InputError):
+            a.audit([("text", "hello there")], "hello there", max_loss=0.4, decision_overlap=0.5,
+                    max_filler=0, max_unsupported=0, min_facts=0)
+        code2, _, err2 = run("--transcript", t, "--memory", m)
+        self.assertEqual(code2, 2, err2)
 
     def test_min_facts_is_configurable(self):
         recs = [{"type": "user", "message": {"role": "user", "content": "exit code 2"}}]
