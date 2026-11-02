@@ -1,9 +1,9 @@
 # Karpathy 風格加固版 AGENTS.md 範本
 
 > 規範：[`docs/karpathy-rules-mechanical-hardening-spec.md`](../docs/karpathy-rules-mechanical-hardening-spec.md)｜範圍審查工具：`tools/audit_surgical_diff.py`
-> 用法：複製下方「範本本體」整段到你專案根目錄的 `AGENTS.md`，把所有 `{大括號}` 換成實際內容；改完刪掉本引言與最後的「範本使用說明」。
+> 用法：複製下方「範本本體」整段到你專案根目錄的 `AGENTS.md`，把所有 `{大括號}` 換成實際內容；改完刪掉本引言與最後的「範本使用說明」。**第 2 節開頭的出處說明在範本本體內，要保留。**
 > 檔名：repo 只放 `AGENTS.md`，不另建 `CLAUDE.md`／`GEMINI.md`。Claude Code 預設只在**沒有** `CLAUDE.md` 時才讀 `AGENTS.md`；專案若已有 `CLAUDE.md`，在其中放一行 `@AGENTS.md` 匯入（見規範第 6 節）。
-> 出處提醒：四條規則的標題與口號是 forrestchang 的 `andrej-karpathy-skills` 整理的，衍生自 Karpathy 的觀察，不是 Karpathy 本人撰寫（見規範第 1 節）。
+> 出處與授權（2026-11-02 查證）：第 2 節的四條規則，標題、口號與條列內容大致逐條改寫自 forrestchang 的 [`andrej-karpathy-skills`](https://github.com/forrestchang/andrej-karpathy-skills) 的 `CLAUDE.md`（查證用 commit `2c606141936f1eeef17fa3043a72095b4765b9c2`），該文件衍生自 Karpathy 2026-01-26 貼文的觀察，不是 Karpathy 本人撰寫（見規範第 1 節）。授權狀況：該 repo 的 README 寫 `MIT`，但上述 commit 的檔案樹裡**沒有 LICENSE 檔**，GitHub API 也沒有辨識出授權；因此「授權條款全文與版權人聲明」無從附上，本範本只能保留出處與連結。若你要在對外發布的產品中大量沿用其條文，請先向原作者確認授權。
 
 ---
 
@@ -30,6 +30,8 @@ English: Read these first instead of scanning the whole tree.
 - 本檔以外的規範：{連結或「無」}
 
 ## 2. 行為規則 / Behavior rules
+
+> 出處 / Attribution：本節四條規則改寫自 forrestchang/andrej-karpathy-skills 的 `CLAUDE.md`（https://github.com/forrestchang/andrej-karpathy-skills ，commit 2c60614，README 標示 MIT，repo 內無 LICENSE 檔），其觀察來自 Andrej Karpathy 的 2026-01-26 貼文；機械防線與範圍／DoD 區塊為本 repo 加入。 / Adapted from the above `CLAUDE.md`, which derives from Karpathy's 2026-01-26 post; the mechanical backstops and the scope/DoD blocks are added by this repo.
 
 <!--
 中文：以下四條是檢查清單，不是保證。每條後面標了機械防線；沒有機械防線的，靠你自己遵守並在回報中說明。
@@ -157,4 +159,5 @@ English: Each item must be checkable by an independent process; items with no co
 2. 第 3 節的範圍每次派工都重填；長期不變的部分（絕對不碰的路徑）可以留在檔內。
 3. 第 4、5 節的指令必須真的能在你的專案跑；先實際執行一次再交付。`tools/audit_surgical_diff.py` 在本 repo；複製到其他專案時連同它的測試一起複製，並保持只用標準函式庫、需要系統有 git。
 4. 相容性：本範本只用 Markdown 與 HTML 註解，不含任何特定 Agent 的專屬語法。各 Agent 讀取 `AGENTS.md` 的行為見規範第 6 節（Antigravity 的行為尚未驗證，因此機械檢查放在指令與 CI，不依賴它讀檔）。
-5. 規則文字不要越寫越長：能用腳本量測的，移進第 4、5 節的指令，這裡只留判斷類規則。
+5. 第 2 節開頭的出處說明請保留；若你改寫得與原文差異很大、不再是衍生作品，才可以改寫該行，並仍要說明靈感來源。
+6. 規則文字不要越寫越長：能用腳本量測的，移進第 4、5 節的指令，這裡只留判斷類規則。

@@ -10,6 +10,7 @@ import contextlib
 import io
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -21,18 +22,58 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 import audit_surgical_diff as asd  # noqa: E402
 
-_ENV_KEYS = ("GIT_CONFIG_GLOBAL", "GIT_CONFIG_NOSYSTEM")
+_ENV = {
+    "GIT_CONFIG_GLOBAL": os.devnull,
+    "GIT_CONFIG_NOSYSTEM": "1",
+    "GIT_AUTHOR_NAME": "t",
+    "GIT_AUTHOR_EMAIL": "t@example.invalid",
+    "GIT_COMMITTER_NAME": "t",
+    "GIT_COMMITTER_EMAIL": "t@example.invalid",
+}
 _saved_env: dict[str, str | None] = {}
+_template: dict[str, str] = {}
+
+
+def _run_git(repo: str, *args: str) -> str:
+    proc = subprocess.run(["git", "-C", repo, *args], capture_output=True, text=True, encoding="utf-8")
+    if proc.returncode != 0:
+        raise RuntimeError(proc.stderr)
+    return proc.stdout.strip()
 
 
 def setUpModule() -> None:
-    for k in _ENV_KEYS:
+    for k, v in _ENV.items():
         _saved_env[k] = os.environ.get(k)
-    os.environ["GIT_CONFIG_GLOBAL"] = os.devnull
-    os.environ["GIT_CONFIG_NOSYSTEM"] = "1"
+        os.environ[k] = v
+    # 範本 repo 只建一次；每個測試複製它（含 .git，commit hash 相同），比每次重建快很多
+    tmp = tempfile.TemporaryDirectory()
+    _template["tmp"] = tmp
+    repo = os.path.join(tmp.name, "tpl")
+    os.makedirs(repo)
+    _run_git(repo, "init", "-q")
+    _run_git(repo, "config", "commit.gpgsign", "false")
+    _run_git(repo, "config", "core.autocrlf", "false")
+    files = {
+        "tools/foo.py": PY_LINES,
+        "tests/test_foo.py": "import unittest\n",
+        "docs/a.md": "# A\n\ntext\n",
+        "README.md": "# readme\n",
+        "src/legacy.py": COMMENTED,
+        "lib/old.py": "x = 1\n",
+    }
+    for rel, text in files.items():
+        p = Path(repo, rel)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p, "w", encoding="utf-8", newline="\n") as fh:
+            fh.write(text)
+    _run_git(repo, "add", "-A")
+    _run_git(repo, "commit", "-q", "-m", "base")
+    _template["repo"] = repo
+    _template["base"] = _run_git(repo, "rev-parse", "HEAD")
 
 
 def tearDownModule() -> None:
+    _template["tmp"].cleanup()
     for k, v in _saved_env.items():
         if v is None:
             os.environ.pop(k, None)
@@ -51,19 +92,9 @@ class GitRepoCase(unittest.TestCase):
     def setUp(self) -> None:
         self._tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self._tmp.cleanup)
-        self.repo = self._tmp.name
-        self.git("init", "-q")
-        self.git("config", "user.name", "t")
-        self.git("config", "user.email", "t@example.invalid")
-        self.git("config", "commit.gpgsign", "false")
-        self.git("config", "core.autocrlf", "false")
-        self.write("tools/foo.py", PY_LINES)
-        self.write("tests/test_foo.py", "import unittest\n")
-        self.write("docs/a.md", "# A\n\ntext\n")
-        self.write("README.md", "# readme\n")
-        self.write("src/legacy.py", COMMENTED)
-        self.write("lib/old.py", "x = 1\n")
-        self.base = self.commit("base")
+        self.repo = os.path.join(self._tmp.name, "r")
+        shutil.copytree(_template["repo"], self.repo)
+        self.base = _template["base"]
 
     # -- helpers
     def git(self, *args: str) -> str:
@@ -77,9 +108,12 @@ class GitRepoCase(unittest.TestCase):
         with open(p, "w", encoding="utf-8", newline=newline) as fh:
             fh.write(text)
 
-    def commit(self, msg: str) -> str:
+    def commit(self, msg: str) -> None:
         self.git("add", "-A")
         self.git("commit", "-q", "-m", msg)
+
+    def commit_id(self, msg: str) -> str:
+        self.commit(msg)
         return self.git("rev-parse", "HEAD")
 
     def run_audit(self, *extra: str, base: str | None = None, head: str | None = "HEAD", scope=("tools/foo.py", "tests/test_foo.py")):
@@ -292,6 +326,110 @@ class ThresholdTests(GitRepoCase):
         self.assertEqual(code, 0, out)
 
 
+class RegressionTests(GitRepoCase):
+    """審查回報的漏洞：每條都要有會失敗的反例。"""
+
+    def test_sql_double_dash_comments_removed_are_detected(self) -> None:
+        self.write("lib/q.sql", "".join(f"-- note {i}\n" for i in range(8)) + "select 1;\n")
+        before = self.commit_id("sql")
+        self.write("lib/q.sql", "select 1;\n")
+        self.commit("sql strip")
+        code, out, _ = self.run_audit(base=before, scope=("lib/",))
+        self.assertEqual(code, 1, out)
+        self.assertIn("[comment-erasure] lib/q.sql", out)
+        self.assertIn("淨少 8", out)
+
+    def test_comment_threshold_boundary(self) -> None:
+        # src/legacy.py 有 5 行註解；刪 3 行剛好等於門檻 -> 通過，刪 4 行 -> 違規
+        three = "# 說明四\n# 說明五\ndef f():\n    return 1\n"
+        self.write("src/legacy.py", three)
+        self.commit("remove 3")
+        code, out, _ = self.run_audit(scope=("src/",))
+        self.assertEqual(code, 0, out)
+        self.write("src/legacy.py", "# 說明五\ndef f():\n    return 1\n")
+        self.commit("remove 4")
+        code, out, _ = self.run_audit(scope=("src/",))
+        self.assertEqual(code, 1, out)
+        self.assertIn("淨少 4", out)
+
+    def test_markdown_heading_removal_beyond_threshold_still_passes(self) -> None:
+        self.write("docs/h.md", "".join(f"# h{i}\n" for i in range(6)) + "body\n")
+        before = self.commit_id("md headings")
+        self.write("docs/h.md", "body\n")
+        self.commit("md strip")
+        code, out, _ = self.run_audit(base=before, scope=("docs/",))
+        self.assertEqual(code, 0, out)  # .md 不做註解檢查：若被誤查，6 行會超過門檻 3
+
+    def test_blank_line_padding_is_whitespace_only(self) -> None:
+        self.write("tools/foo.py", PY_LINES + "\n" * 40)
+        self.commit("pad blanks")
+        code, out, _ = self.run_audit()
+        self.assertEqual(code, 1, out)
+        self.assertIn("[whitespace-only] tools/foo.py", out)
+
+    def test_blank_lines_mixed_with_real_change_count_as_noise(self) -> None:
+        self.write("tools/foo.py", PY_LINES.replace("line_1 = 1", "line_1 = 'x'") + "\n" * 20)
+        self.commit("pad + edit")
+        code, out, _ = self.run_audit()
+        self.assertEqual(code, 1, out)
+        self.assertIn("[whitespace-noise] tools/foo.py", out)
+
+    def test_submodule_pointer_bump_out_of_scope_is_detected(self) -> None:
+        sub_src = os.path.join(self._tmp.name, "subsrc")
+        os.makedirs(sub_src)
+        _run_git(sub_src, "init", "-q")
+        Path(sub_src, "f.txt").write_text("1\n", encoding="utf-8")
+        _run_git(sub_src, "add", "-A")
+        _run_git(sub_src, "commit", "-q", "-m", "s1")
+        self.git("-c", "protocol.file.allow=always", "submodule", "add", "-q", sub_src, "vendor/sub")
+        before = self.commit_id("add submodule")
+        inner = os.path.join(self.repo, "vendor", "sub")
+        Path(inner, "f.txt").write_text("2\n", encoding="utf-8")
+        _run_git(inner, "add", "-A")
+        _run_git(inner, "commit", "-q", "-m", "s2")
+        self.git("add", "vendor/sub")
+        self.commit("bump submodule")
+        code, out, _ = self.run_audit(base=before, scope=("tools/",))
+        self.assertEqual(code, 1, out)
+        self.assertIn("[out-of-scope] vendor/sub", out)
+        code, out, _ = self.run_audit(base=before, scope=("vendor/",))
+        self.assertEqual(code, 0, out)
+
+    def test_head_mode_uses_merge_base_not_two_dot_diff(self) -> None:
+        trunk = self.git("rev-parse", "--abbrev-ref", "HEAD")
+        self.git("checkout", "-q", "-b", "feat")
+        self.write("tools/foo.py", PY_LINES + "feat = 1\n")
+        self.commit("feat work")
+        self.git("checkout", "-q", trunk)
+        self.write("lib/old.py", "x = 'trunk moved on'\n")
+        self.commit("trunk advances")
+        code, out, _ = self.run_audit("--head", "feat", base=trunk, head=None, scope=("tools/",))
+        self.assertEqual(code, 0, out)
+        self.assertNotIn("lib/old.py", out)
+        # feat 自己越界仍要抓得到
+        self.git("checkout", "-q", "feat")
+        self.write("README.md", "# touched on feat\n")
+        self.commit("feat strays")
+        code, out, _ = self.run_audit("--head", "feat", base=trunk, head=None, scope=("tools/",))
+        self.assertEqual(code, 1, out)
+        self.assertIn("[out-of-scope] README.md", out)
+        self.assertNotIn("lib/old.py", out)
+
+    def test_worktree_mode_also_uses_merge_base(self) -> None:
+        trunk = self.git("rev-parse", "--abbrev-ref", "HEAD")
+        self.git("checkout", "-q", "-b", "feat")
+        self.write("tools/foo.py", PY_LINES + "feat = 1\n")
+        self.commit("feat work")
+        self.git("checkout", "-q", trunk)
+        self.write("lib/old.py", "x = 'trunk moved on'\n")
+        self.commit("trunk advances")
+        self.git("checkout", "-q", "feat")
+        self.write("tests/test_foo.py", "import unittest\n# edit\n")
+        code, out, _ = self.run_audit(base=trunk, head=None, scope=("tools/", "tests/"))
+        self.assertEqual(code, 0, out)
+        self.assertNotIn("lib/old.py", out)
+
+
 class WorktreeModeTests(GitRepoCase):
     def test_unstaged_staged_and_untracked(self) -> None:
         self.write("tools/foo.py", PY_LINES + "more = 1\n")  # 未暫存
@@ -345,6 +483,14 @@ class PatternTests(unittest.TestCase):
         self.assertTrue(self.match("docs/**/*.md", "docs/sub/deep/a.md"))
         self.assertTrue(self.match("docs/**/*.md", "docs/a.md"))
         self.assertFalse(self.match("docs/**/*.md", "other/a.md"))
+
+    def test_double_star_trailing_and_leading(self) -> None:
+        self.assertTrue(self.match("docs/**", "docs/a/b/c.md"))
+        self.assertFalse(self.match("docs/**", "other/a.md"))
+        self.assertTrue(self.match("**/x.py", "a/b/x.py"))
+        self.assertTrue(self.match("**/x.py", "x.py"))
+        self.assertFalse(self.match("**/x.py", "a/y.py"))
+        self.assertFalse(self.match("docs/*", "docs/a/b.md"))
 
     def test_directory_prefix(self) -> None:
         self.assertTrue(self.match("docs/", "docs/sub/a.md"))

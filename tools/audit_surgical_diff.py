@@ -8,11 +8,13 @@ tools/audit_surgical_diff.py
 
     比較範圍   預設：工作樹（含已暫存、未暫存、未追蹤檔）對 --base（預設 HEAD）
                給 --head：只比 --base 與 --head 兩個 commit（不看工作樹）
+               兩種模式都先把 --base 換成「它與 head（或 HEAD）的 merge-base」再比較（等同 git diff base...head），
+               所以 base 分支（例如 main）在分出後前進，別人的改動不會被算成越界。
     違規種類
       out-of-scope        變更（新增、修改、刪除、改名的舊路徑或新路徑）不在任何 --scope 內
       too-many-files      受審檔案數超過 --max-files
       too-many-lines      受審檔案新增＋刪除行數超過 --max-lines
-      whitespace-only     檔案變更忽略空白後是 0 行（純重排、縮排、換行符改動）
+      whitespace-only     檔案變更忽略空白與空白行後是 0 行（純重排、縮排、換行符、增刪空行）
       whitespace-noise    檔案有實質變更，但另外夾帶超過 --max-whitespace-lines 行（新增＋刪除合計）的空白雜訊
       comment-erasure     非刪除檔案中，被刪的註解行比新增的註解行多出超過 --max-comment-removed 行
     --exempt 路徑：不檢查範圍、不計入檔數與行數、也不做上列各項檢查（例如由腳本產生的 README、lockfile），
@@ -29,7 +31,7 @@ tools/audit_surgical_diff.py
       .md／.markdown／.txt／.rst 不做註解檢查；C 系列副檔名的 # 開頭視為前處理指令而非註解。
     - 它判斷「改了哪裡、改了多少」，不判斷「改得對不對」；範圍內的壞改動它看不出來。
     - 工作樹模式下，未暫存的改名會被 git 看成「刪除＋未追蹤新檔」，兩個路徑都會各自檢查範圍。
-    - 子模組、符號連結只按 git 回報的路徑檢查範圍，不展開內容。
+    - 子模組指標、符號連結各算一個檔案、只按路徑檢查範圍，不展開內容；子模組內部的改動要到子模組 repo 另外審。
 
 用法：
     python tools/audit_surgical_diff.py --scope tools/foo.py --scope tests/test_foo.py
@@ -168,24 +170,32 @@ def _dec(b: bytes) -> str:
     return b.decode("utf-8", errors="replace")
 
 
-def _revs(base: str, head: str | None) -> list[str]:
-    return [base, head] if head else [base]
+def _revs(repo: str, base: str, head: str | None) -> list[str]:
+    """傳給 git diff 的 rev 清單。base 換成它與 head（或 HEAD）的 merge-base：
+    base 分支在分出之後前進時，別人的改動不會被算成這次的越界（兩點 diff 會誤判）。"""
+    for rev in (base, head):
+        if rev is not None and rev.startswith("-"):
+            raise AuditError(f"commit 參照不可以 - 開頭：{rev!r}")
+    if head is None and base == "HEAD":  # merge-base(HEAD, HEAD) 就是 HEAD，省一次 git 呼叫
+        return ["HEAD"]
+    mb = _dec(_git(repo, "merge-base", base, head or "HEAD")).strip()
+    return [mb, head] if head else [mb]
 
 
-def parse_name_status(raw: bytes) -> list[Change]:
+def parse_raw_numstat(raw: bytes) -> tuple[list[Change], dict[str, tuple[int, int, bool]]]:
+    """解析 `git diff --raw --numstat -z`：前段是 :mode mode sha sha 狀態\0路徑...，後段是 numstat。"""
     parts = raw.split(b"\0")
     changes: list[Change] = []
     i = 0
-    while i < len(parts) and parts[i]:
-        status = _dec(parts[i])
-        code = status[0]
+    while i < len(parts) and parts[i].startswith(b":"):
+        code = _dec(parts[i]).split(" ")[-1][0]
         if code in "RC":
             changes.append(Change(status=code, old_path=_dec(parts[i + 1]), path=_dec(parts[i + 2])))
             i += 3
         else:
             changes.append(Change(status=code, path=_dec(parts[i + 1])))
             i += 2
-    return changes
+    return changes, parse_numstat(b"\0".join(parts[i:]))
 
 
 def parse_numstat(raw: bytes) -> dict[str, tuple[int, int, bool]]:
@@ -227,8 +237,12 @@ def count_comment_lines(repo: str, revs: list[str], change: Change) -> tuple[int
     pathspecs = [change.path] + ([change.old_path] if change.old_path else [])
     raw = _git(repo, "diff", "-M", "-U0", "--no-color", "--no-ext-diff", "--no-textconv", *revs, "--", *pathspecs)
     removed = added = 0
+    in_hunk = False  # 第一個 @@ 之前是檔頭（---／+++ 是路徑）；之後 "---" 開頭的行是內容（例如被刪的 "-- 註解"）
     for line in _dec(raw).split("\n"):
-        if line.startswith("---") or line.startswith("+++"):
+        if line.startswith("@@"):
+            in_hunk = True
+            continue
+        if not in_hunk:
             continue
         if line.startswith("-") and _is_comment(line[1:], ext):
             removed += 1
@@ -246,15 +260,10 @@ def _count_file_lines(repo: str, rel: str) -> tuple[int, bool]:
 
 
 def collect_changes(repo: str, base: str, head: str | None) -> list[Change]:
-    revs = _revs(base, head)
-    for rev in revs:
-        if rev.startswith("-"):
-            raise AuditError(f"commit 參照不可以 - 開頭：{rev!r}")
-        _git(repo, "rev-parse", "--verify", "--quiet", f"{rev}^{{commit}}")
-    flags = ["-M", "--no-color", "--no-ext-diff", "--no-textconv", "--ignore-submodules"]
-    changes = parse_name_status(_git(repo, "diff", "--name-status", "-z", *flags, *revs))
-    full = parse_numstat(_git(repo, "diff", "--numstat", "-z", *flags, *revs))
-    nows = parse_numstat(_git(repo, "diff", "--numstat", "-z", "-w", *flags, *revs))
+    revs = _revs(repo, base, head)
+    flags = ["-M", "--no-color", "--no-ext-diff", "--no-textconv"]
+    changes, full = parse_raw_numstat(_git(repo, "diff", "--raw", "--numstat", "-z", *flags, *revs))
+    nows = parse_numstat(_git(repo, "diff", "--numstat", "-z", "-w", "--ignore-blank-lines", *flags, *revs))
     for ch in changes:
         a, d, binary = full.get(ch.path, (0, 0, False))
         ch.added, ch.deleted, ch.binary = a, d, binary

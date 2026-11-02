@@ -39,6 +39,8 @@
 
 四個標題、每條的粗體口號、條列規則、"The test: Every changed line should trace directly to the user's request." 都出自 `forrestchang/andrej-karpathy-skills`（現在 GitHub 網址已轉到 `multica-ai/andrej-karpathy-skills`）。查證時的 `CLAUDE.md` 是 HEAD `2c606141936f1eeef17fa3043a72095b4765b9c2` 上的版本（blob `daced9bd64f25908ebedeb4701fb406985dc8366`）。
 
+授權：該 repo 的 README 寫 `MIT`，但上述 HEAD 的檔案樹裡沒有 LICENSE 檔，GitHub API 也沒有辨識出授權。本 repo 的 `templates/karpathy-hardened-agents-md.md` 第 2 節是逐條改寫該 `CLAUDE.md`，因此在範本內保留了出處與這個授權狀況的說明。
+
 ### 1.3 筆記裡說法與查證結果不一致之處
 
 | 筆記的說法 | 查證結果 |
@@ -108,7 +110,9 @@
 
 ### 4.1 它做什麼
 
-讀真實的 `git diff --name-status`、`--numstat`（含 `-w` 忽略空白版本）與 `-U0`，對照開工前宣告的 `--scope`，回報違規。唯讀，不改檔、不改 git 狀態。
+讀真實的 `git diff --raw --numstat`（另跑一次加 `-w --ignore-blank-lines` 的版本）與 `-U0`，對照開工前宣告的 `--scope`，回報違規。唯讀，不改檔、不改 git 狀態。
+
+**比較基準是 merge-base，不是 base 本身**：不論給不給 `--head`，`--base` 都先換成「它與 head（沒給則 HEAD）的 merge-base」再比較（等同 `git diff base...head`）。因此 `main` 在分支分出之後前進，別人合進 `main` 的改動不會被誤算成這個分支的越界。預設 `--base HEAD` 時 merge-base 就是 HEAD。
 
 ```text
  宣告 --scope ──┐
@@ -120,8 +124,8 @@
 | :--- | :--- |
 | `out-of-scope` | 任一變更路徑不在 `--scope`（改名時，舊路徑與新路徑都要在範圍內） |
 | `too-many-files` / `too-many-lines` | 受審檔數或新增＋刪除行數超過門檻（預設 10 檔、400 行） |
-| `whitespace-only` | 檔案變更忽略空白後是 0 行（整份重排縮排、換行符改動） |
-| `whitespace-noise` | 有實質變更，但夾帶超過 10 行（新增＋刪除合計）的空白雜訊 |
+| `whitespace-only` | 檔案變更忽略空白與空白行後是 0 行（整份重排縮排、換行符改動、只增刪空行） |
+| `whitespace-noise` | 有實質變更，但夾帶超過 10 行（新增＋刪除合計）的空白或空行雜訊 |
 | `comment-erasure` | 非刪除檔案中，被刪的註解行比新增的多出超過 3 行 |
 
 `--exempt` 指定的路徑（例如由腳本產生的 `README.md`、lockfile）不檢查範圍、不計入檔數與行數，但會列在「豁免」清單，不會悄悄消失。
@@ -134,19 +138,21 @@
 # 工作樹（含已暫存與未追蹤檔）對 HEAD，提交前檢查
 python tools/audit_surgical_diff.py --scope tools/foo.py --scope tests/test_foo.py
 
-# 兩個 commit 之間（例如 PR 整體檢查），README 由腳本產生所以豁免
+# 分支對 main 的整體檢查（以 merge-base 為基準，main 前進不影響結果），README 由腳本產生所以豁免
 python tools/audit_surgical_diff.py --base main --head HEAD --scope docs/ --exempt README.md --json
 ```
 
-實際跑出的輸出（本 repo 工作樹，故意只宣告一個檔案）：
+實際跑出的輸出（在本 repo 的工作樹執行，故意只宣告一個檔案並把行數上限壓低；行數會隨工作樹內容變動）：
 
 ```text
-範圍審查（HEAD -> 工作樹）：受審 2 個檔案、813 行變更
-  A  tests/test_audit_surgical_diff.py  (+420 -0)
-  A  tools/audit_surgical_diff.py  (+393 -0)
-[FAIL] 2 項違規：
-  [out-of-scope] tests/test_audit_surgical_diff.py - 新增了不在宣告範圍內的路徑
-  [too-many-lines] - - 新增＋刪除共 813 行，上限 400
+範圍審查（HEAD -> 工作樹）：受審 3 個檔案、246 行變更
+  M  docs/karpathy-rules-mechanical-hardening-spec.md  (+10 -7)
+  M  tests/test_audit_surgical_diff.py  (+164 -18)
+  M  tools/audit_surgical_diff.py  (+28 -19)
+[FAIL] 3 項違規：
+  [out-of-scope] docs/karpathy-rules-mechanical-hardening-spec.md - 修改了不在宣告範圍內的路徑
+  [out-of-scope] tests/test_audit_surgical_diff.py - 修改了不在宣告範圍內的路徑
+  [too-many-lines] - - 新增＋刪除共 246 行，上限 100
 ```
 
 提交前的串接寫法（遵守「驗證與提交之間用 `&&`」）：
@@ -161,6 +167,7 @@ python tools/audit_surgical_diff.py --scope tools/foo.py --scope tests/test_foo.
 
 - 註解判斷是依行首符號的啟發式，不解析語言語法。`.md`、`.txt`、`.rst` 不做註解檢查；C 系列副檔名的 `#` 開頭視為前處理指令。
 - 它回答「改了哪裡、改了多少」，不回答「改得對不對」。範圍內的壞改動它看不出來。
+- 子模組指標與符號連結各算一個檔案，只按路徑檢查範圍；子模組內部的改動要到子模組 repo 另外審。
 - 工作樹模式下，尚未 `git add` 的改名會被 git 當成「刪除＋未追蹤新檔」，兩個路徑各自檢查範圍。
 - 範圍是呼叫者自己宣告的。如果 Agent 同時控制宣告與被審的變更，這道閘門只防「疏忽」，不防「刻意」；要防刻意，範圍必須由任務來源（人、任務單）提供，不由執行的 Agent 自己決定。
 
@@ -204,7 +211,7 @@ python tools/verify_inbox.py              # 必須 exit 0（CI 同款）
 
 | Agent | 讀規則檔的方式（官方文件） | 可掛的機械攔截 |
 | :--- | :--- | :--- |
-| Claude Code | 預設讀 `CLAUDE.md`；**只有在工作目錄與其上層都沒有 `CLAUDE.md` 時才讀 `AGENTS.md`**。要共用一份，在 `CLAUDE.md` 放一行 `@AGENTS.md` 匯入；Windows 上官方建議用匯入而非符號連結。 | Hook：`PreToolUse` 的 hook 以 exit code 2 阻擋該次工具呼叫；`Stop` 的 hook 以 exit code 2 阻止 Claude 結束、讓對話繼續。 |
+| Claude Code | 直接讀 `AGENTS.md` 需要 v2.1.277 以上。預設讀 `CLAUDE.md`；**只有在工作目錄與其上層都沒有 `CLAUDE.md`（含 `.claude/CLAUDE.md`、`CLAUDE.local.md`）時才讀 `AGENTS.md`**，所以只要有人放了 `CLAUDE.local.md`，`AGENTS.md` 就不會被讀。要共用一份，在 `CLAUDE.md` 放一行 `@AGENTS.md` 匯入；Windows 上官方建議用匯入而非符號連結。 | Hook：`PreToolUse` 的 hook 以 exit code 2 阻擋該次工具呼叫；`Stop` 的 hook 以 exit code 2 阻止 Claude 結束、讓對話繼續。 |
 | Codex | 開工前讀 `AGENTS.md`：先讀全域（`~/.codex`），再從專案根往下到目前目錄逐層尋找（各層細節與覆寫檔規則見官方頁面，本文未逐項驗證）。 | 本次沒有查 Codex 的 hook 或等價機制，**未驗證**。用 git 層與 CI 層的檢查。 |
 | Antigravity | 官方文件頁面是前端渲染，本次無法讀到內容，**未驗證**它是否原生讀 `AGENTS.md`。 | 同上，**未驗證**；用 git 層與 CI 層的檢查。 |
 
@@ -213,7 +220,7 @@ python tools/verify_inbox.py              # 必須 exit 0（CI 同款）
 1. repo 根目錄只放一份 `AGENTS.md`（維護者規定 repo 不另建 `CLAUDE.md`、`GEMINI.md`）。若某個 Agent 已知不讀 `AGENTS.md`，才依其官方文件加匯入檔，並向維護者說明理由。範本見 `templates/karpathy-hardened-agents-md.md`。
 2. 派工時在任務單寫明 `--scope`（要改的檔案）與驗收指令。範圍由派工者給，不由執行者自己決定。
 3. 執行者每次準備提交前跑 `audit_surgical_diff.py`、測試與 `verify_inbox.py`，三個都 exit 0 才提交。
-4. 整合者（人或另一個 Agent）在合併前，用 `--base main --head <分支>` 再跑一次，不採信執行者的自述。
+4. 整合者（人或另一個 Agent）在合併前，用 `--base main --head <分支>` 再跑一次（以 merge-base 比較，main 在分支之後前進不會造成誤報），不採信執行者的自述。
 5. 若使用的 Agent 支援阻擋式 hook（例如 Claude Code 的 `PreToolUse` 或 `Stop`），可讓 hook 呼叫同一支腳本，把 exit code 傳回。hook 的設定格式請依官方文件現行版本撰寫；本文不提供未驗證的設定片段。
 
 ---
@@ -232,7 +239,7 @@ python tools/verify_inbox.py              # 必須 exit 0（CI 同款）
 
 - Karpathy 2026-01-26 貼文：`https://x.com/karpathy/status/2015883857489522876`。本次是透過 `https://api.fxtwitter.com/karpathy/status/2015883857489522876` 這個第三方鏡像取得全文（貼文時間 2026-01-26 20:25 UTC），沒有直接從 x.com 讀取；鏡像是否與原貼文逐字一致，未獨立比對。
 - 四原則 `CLAUDE.md`：`https://github.com/forrestchang/andrej-karpathy-skills`（現轉址至 `multica-ai/andrej-karpathy-skills`）。第一個 commit `8462496b34419f20b32778610571ac723e91f94c`（2026-01-27 03:53 UTC，新增 `CLAUDE.md`、`README.md`）；查證用的 HEAD 為 `2c606141936f1eeef17fa3043a72095b4765b9c2`。README 的 "derived from Andrej Karpathy's observations" 寫法同在該 repo。
-- Claude Code 讀取 `CLAUDE.md` 與 `AGENTS.md` 的規則：`https://code.claude.com/docs/en/memory`（"AGENTS.md" 段落）。
+- Claude Code 讀取 `CLAUDE.md` 與 `AGENTS.md` 的規則（含 v2.1.277 版本需求、`CLAUDE.local.md` 算進「有 CLAUDE.md」）：`https://code.claude.com/docs/en/memory`（"AGENTS.md" 段落，2026-11-02 核對）。
 - Claude Code hook 的 exit code 2 行為：`https://code.claude.com/docs/en/hooks`（"Exit code 2 behavior per event"）。
 - Codex 讀取 `AGENTS.md`：`https://developers.openai.com/codex/guides/agents-md`。
 - Antigravity：`https://antigravity.google/docs/rules-workflows` 回應 200 但內容為前端渲染，未取得文字；相關說法一律標未驗證。
