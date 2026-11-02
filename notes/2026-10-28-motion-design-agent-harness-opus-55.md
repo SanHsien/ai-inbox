@@ -6,7 +6,7 @@ source_platform: "Threads (@0xalpha.ai)"
 author: "0xalpha.ai"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "開發流程"
 short_title: "0xalpha 動態設計 Agent Harness 架構"
@@ -26,7 +26,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@0xalpha.ai)](https://www.threads.com/share/LYKSz64yr/) ｜ [貼文永久網址 (Threads @0xalpha.ai)](https://www.threads.net/@0xalpha.ai/post/DeMLz-KD1EE)
 - **核心作者**：0xalpha.ai（AI 生成動效與 Agent Harness 工程實踐者）
 - **分析主題**：Opus 5.5 / Claude Code 在動態設計（Motion Design）領域的工程躍遷、以確定性 Harness 取代虛浮 Prompt、將影片視為純時間函式 $\text{Frame} = f(t)$ 與 `seek(t)` 任意時點快照、工作室 CLAUDE.md 禁用老套罐頭（Anti-Slop）、渲染前縮圖總覽（Contact Sheet）自審打分循環、以及 Effort 等級分層策略
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md`](./2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)（Going Li 五路工具流：ROAD 01 影片工廠與多比例輸出）
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（Thorsten Ball 15 條 Agent 實戰哲學：為 Agent 打造試錯工具與無可辯駁證據）
@@ -135,7 +135,7 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261028-16`**｜**[優先級：高]** 撰寫「代碼驅動 Motion Design Agent 工作室規範指南」收錄於 `docs/code-driven-motion-design-studio-spec.md`
+- [x] **`T-20261028-16`**｜**[優先級：高]** 撰寫「代碼驅動 Motion Design Agent 工作室規範指南」收錄於 `docs/code-driven-motion-design-studio-spec.md`
   - **目標範圍**：`docs/code-driven-motion-design-studio-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 定義 Node + Playwright + ffmpeg 三位一體 Harness 執行環境標準。
@@ -143,24 +143,27 @@ tags:
     3. 列出視覺設計 Anti-Slop 黑名單（禁用漸層置中、齊頭淡入等）與專業動效標準（彈簧物理、錯落時序）。
     4. 制定渲染前 Contact Sheet 評分協議與 Effort 分層路由指南。
   - **驗收標準（DoD）**：產出 `docs/code-driven-motion-design-studio-spec.md`，內含 Harness 架構圖、seek 介面規格、Anti-Slop 檢查表與分鏡自審流程；以 `Test-Path docs/code-driven-motion-design-studio-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/code-driven-motion-design-studio-spec.md：seek(t) 契約、Anti-Slop 清單、自審打分與門檻；來源改引 Playwright launch API、FFmpeg n7.1 muxers.texi（tag 507a51f 指向 commit b08d796）、H.264 指南（CRF 18 是視覺無損但非無損），範例阻尼比 0.75、延遲 60ms 符合自訂標準。原交付被退回後由 Codex 改寫、Claude 完成。
 
-- [ ] **`T-20261028-17`**｜**[優先級：中]** 實作「Playwright + seek(t) 動畫縮圖總覽與自審打分工具」於 `tools/audit_motion_storyboard.py`
+- [x] **`T-20261028-17`**｜**[優先級：中]** 實作「Playwright + seek(t) 動畫縮圖總覽與自審打分工具」於 `tools/audit_motion_storyboard.py`
   - **目標範圍**：`tools/audit_motion_storyboard.py` 與 `tests/test_audit_motion_storyboard.py`
   - **具體做法**：
     1. 實作命令列工具，透過 Playwright 載入 HTML/Canvas 動效檔，調用 `seek(t)` 抽取關鍵影格。
     2. 生成 Contact Sheet 縮圖總覽並進行基礎對比度、排版重疊度與 Anti-Slop 特徵機械檢測。
     3. 撰寫單元測試驗證 seek(t) 調用與縮圖生成合規性。
   - **驗收標準（DoD）**：產出 `tools/audit_motion_storyboard.py` 與單元測試，執行 `python -m unittest discover -s tests` 全綠通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：tools/audit_motion_storyboard.py＋tests：真的量測（相鄰影格逐像素差、正逆序 seek 比對、文字碰撞與超出畫面、對比、頁面錯誤、自走計時器），缺依賴回 2、逾時回 3；量不到的 SVG／Canvas／被遮住文字列為未量測並警告。上一輪全部壞輸入經獨立審查重跑都失敗；瀏覽器測試 30 個整合者實跑通過（設 AI_INBOX_BROWSER_TESTS=1 才跑）。
 
-- [ ] **`T-20261028-18`**｜**[優先級：低]** 產出標準化「Motion Design Studio CLAUDE.md / Skill 範本」收錄於 `templates/motion-design-studio-skill.md`
+- [x] **`T-20261028-18`**｜**[優先級：低]** 產出標準化「Motion Design Studio CLAUDE.md / Skill 範本」收錄於 `templates/motion-design-studio-skill.md`
   - **目標範圍**：`templates/motion-design-studio-skill.md`
   - **具體做法**：
     1. 產出可直接供專案引入的動態設計專案 CLAUDE.md 與 Skill 定義。
     2. 內含工作室執行規則、品牌色注入流程、ffmpeg 壓縮參數與 8 分門檻自檢指令。
   - **驗收標準（DoD）**：產出 `templates/motion-design-studio-skill.md`，具備完整中文說明與程式碼範本；以 `Test-Path templates/motion-design-studio-skill.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：templates/motion-design-studio-skill.md：可複製到其他專案的流程（安裝步驟、品牌色填空、render_frames.py 匯出 frame_%04d.png，每幀逾時回 3）；獨立審查照範本在新專案實跑 audit、匯出與 ffmpeg 合成，180 幀 1280x720 yuv420p。
 
 ---
 

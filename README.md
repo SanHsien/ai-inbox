@@ -39,20 +39,18 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 213 項任務：🔴 未做 3／🟡 進行中 0／🟢 已做 134／⚪ 不做 76
+> 共 213 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 137／⚪ 不做 76
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261028-16` | 🔴 未做 | 高 | 撰寫「代碼驅動 Motion Design Agent 工作室規範指南」收錄於 `docs/code-driven-motion-design-studio-spec.md` | `docs/code-driven-motion-design-studio-spec.md`（規範文檔；不修改其他專案程式） | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
-| `T-20261028-17` | 🔴 未做 | 中 | 實作「Playwright + seek(t) 動畫縮圖總覽與自審打分工具」於 `tools/audit_motion_storyboard.py` | `tools/audit_motion_storyboard.py` 與 `tests/test_audit_motion_storyboard.py` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
-| `T-20261028-18` | 🔴 未做 | 低 | 產出標準化「Motion Design Studio CLAUDE.md / Skill 範本」收錄於 `templates/motion-design-studio-skill.md` | `templates/motion-design-studio-skill.md` | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | 2026-10-28 |
+| *（目前沒有未完成任務）* | - | - | - | - | - | - |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 134 項）</summary>
+<details><summary>展開查看已完成任務（共 137 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -167,6 +165,9 @@
 | `T-20261028-13` | 2026-11-02 | 撰寫「SaaS 訂閱與 API 鑑權防繞過架構設計規範」收錄於 `docs/saas-subscription-and-api-defense-spec.md` | docs/saas-subscription-and-api-defense-spec.md：Token 隔離規則 R1～R10 對應 RFC 條款，DPoP／mTLS／Play Integrity 的能與不能，未驗證項目分開列；獨立審查抽查 RFC 9700、8252、6749、6750 與廠商文件相符，未含繞過或偽裝客戶端細節。 | [2026-10-28-grok-oauth-subscription-proxy-api-bypass](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md) |
 | `T-20261028-14` | 2026-11-02 | 實作「本地 OAuth 憑證檔安全審查工具」於 `tools/audit_oauth_credentials.py` | tools/audit_oauth_credentials.py＋tests/test_audit_oauth_credentials.py：只查權限、ACL、git 追蹤、欄位種類，不輸出 token 值。獨立審查兩輪修正中文路徑 ACL 漏報、UTF-16、NUL 填充、IPv6 scope 回顯；zh-TW 機器實測授權 Everyone 報 acl-broad。已知限制：非英文 Windows 主體名稱、無 BOM 的非 ASCII UTF-16。 | [2026-10-28-grok-oauth-subscription-proxy-api-bypass](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md) |
 | `T-20261028-15` | 2026-11-02 | 產出標準化「Coding Agent 外部端點可用性與風控回退策略範本」收錄於 `templates/upstream-proxy-fallback-policy.md` | templates/upstream-proxy-fallback-policy.md：依維護者政策偏離筆記，只在官方 API 與本機模型間切換、不寫風控特徵。classify() 依 Anthropic rate-limits 頁的 400 訊息前綴與 enforced_spend_limit_reached 判斷，22 條斷言隨文件可執行，審查後實跑通過。 | [2026-10-28-grok-oauth-subscription-proxy-api-bypass](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md) |
+| `T-20261028-16` | 2026-11-02 | 撰寫「代碼驅動 Motion Design Agent 工作室規範指南」收錄於 `docs/code-driven-motion-design-studio-spec.md` | docs/code-driven-motion-design-studio-spec.md：seek(t) 契約、Anti-Slop 清單、自審打分與門檻；來源改引 Playwright launch API、FFmpeg n7.1 muxers.texi（tag 507a51f 指向 commit b08d796）、H.264 指南（CRF 18 是視覺無損但非無損），範例阻尼比 0.75、延遲 60ms 符合自訂標準。原交付被退回後由 Codex 改寫、Claude 完成。 | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) |
+| `T-20261028-17` | 2026-11-02 | 實作「Playwright + seek(t) 動畫縮圖總覽與自審打分工具」於 `tools/audit_motion_storyboard.py` | tools/audit_motion_storyboard.py＋tests：真的量測（相鄰影格逐像素差、正逆序 seek 比對、文字碰撞與超出畫面、對比、頁面錯誤、自走計時器），缺依賴回 2、逾時回 3；量不到的 SVG／Canvas／被遮住文字列為未量測並警告。上一輪全部壞輸入經獨立審查重跑都失敗；瀏覽器測試 30 個整合者實跑通過（設 AI_INBOX_BROWSER_TESTS=1 才跑）。 | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) |
+| `T-20261028-18` | 2026-11-02 | 產出標準化「Motion Design Studio CLAUDE.md / Skill 範本」收錄於 `templates/motion-design-studio-skill.md` | templates/motion-design-studio-skill.md：可複製到其他專案的流程（安裝步驟、品牌色填空、render_frames.py 匯出 frame_%04d.png，每幀逾時回 3）；獨立審查照範本在新專案實跑 audit、匯出與 ffmpeg 合成，180 幀 1280x720 yuv420p。 | [2026-10-28-motion-design-agent-harness-opus-55](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) |
 | `T-20261031-01` | 2026-11-02 | 撰寫「AI 似顏繪 LINE 16 宮格貼圖 Prompt 工程與視覺規範」收錄於 `docs/line-sticker-16-grid-prompt-spec.md` | docs/line-sticker-16-grid-prompt-spec.md：尺寸、1MB、60MB ZIP、留白原句對照 LINE 官方準則；原貼文「純白背景」與「透明」的內部矛盾照實揭露，查證範圍限登出可見內容，16 組文案標為本 repo 擴充。原交付被審查退回兩輪後改由 Claude 接手。 | [2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) |
 | `T-20261031-02` | 2026-11-02 | 實作「LINE 16 宮格貼圖自動切圖與規格驗證工具」於 `tools/slice_line_stickers.py` | tools/slice_line_stickers.py＋tests/test_slice_line_stickers.py（33 測試）：依可見像素比例與安全區覆蓋率擋空白、實心、假透明，不合格不打包，舊 ZIP 先刪；重現步驟實跑（實心白框、每格 1 像素 exit 1 且無 ZIP，正常圖通過），47 種突變全紅。CI 已裝 Pillow，測試實際執行。門檻為本 repo 取捨，深色棋盤格抓不到（文件已寫）。 | [2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) |
 | `T-20261031-03` | 2026-11-02 | 產出標準化「AI 似顏繪貼圖工廠 Skill 範本（Avatar-Sticker-Factory）」收錄於 `templates/avatar-sticker-factory-skill.md` | templates/avatar-sticker-factory-skill.md：端到端流程與檢查清單，每項標明工具可查或要人工看；無來源的模型能力說法改標未驗證，刪除放寬邊距的建議。 | [2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec](./notes/2026-10-31-line-sticker-16-grid-ai-avatar-prompt-spec.md) |
@@ -336,7 +337,7 @@
 | 2026-10-28 | 🟢 | [開源 AI Agent 工單與跨代理交接系統 feedback-desk：Cloudflare Workers 無伺服器架構、MCP 整合與客戶協同實踐](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | `feedback-desk`, `ai-ticketing`, `agent-handoff` | 3 / 3 |
 | 2026-10-28 | 🟢 | [軟體計價機制繞過與 Client OAuth 鑑權破綻：Grok 訂閱轉本地 OpenAI 相容 API 的技術解構與資安防禦](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md) | `grok-oauth`, `api-billing-bypass`, `oauth-pkce` | 3 / 3 |
 | 2026-10-28 | 🟢 | [Andrej Karpathy 版 CLAUDE.md 四大黃金準則解構：從軟性文字勸導到機械硬閘門的工程加固實踐](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | `karpathy-rules`, `claude-md`, `agents-md` | 3 / 3 |
-| 2026-10-28 | 🔴 | [代碼驅動 Motion Design Agent 架構：以 Harness 取代 Prompt、seek(t) 時間函式與分鏡自審循環](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | `motion-design`, `agent-harness`, `claude-code` | 0 / 3 |
+| 2026-10-28 | 🟢 | [代碼驅動 Motion Design Agent 架構：以 Harness 取代 Prompt、seek(t) 時間函式與分鏡自審循環](./notes/2026-10-28-motion-design-agent-harness-opus-55.md) | `motion-design`, `agent-harness`, `claude-code` | 3 / 3 |
 | 2026-10-28 | 🟢 | [四 Agent 雲端與本機派工協定：Claude 拆單、Antigravity 審查、Hermes 通訊與 GOBOT 雲端值守架構解構](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | `multi-agent`, `team-dispatch`, `claudecode` | 3 / 3 |
 | 2026-10-28 | 🟢 | [編譯器專家 Thorsten Ball 的 15 條 Agent 工作實戰哲學：無可辯駁證據、SDLC 端到端可視與爆破半徑審查解構](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | `thorsten-ball`, `agent-philosophy`, `irrefutable-evidence` | 3 / 3 |
 | 2026-10-31 | 🟢 | [Claude Code 跨 Session 記憶架構對決：CLAUDE.md 手動維護 vs claude-mem 自動壓縮 Skill、壓縮衰減陷阱與跨代理長效記憶實戰](./notes/2026-10-31-claude-code-cross-session-memory-claudemem-vs-claudemd.md) | `claude-code`, `claude-mem`, `cross-session-memory` | 3 / 3 |

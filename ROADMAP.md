@@ -28,4 +28,4 @@ public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`docs/`�
 
 ## 維護方式
 
-自有 repo，直推 `main`，無 release 節奏；改動前跑 `python -m unittest discover -s tests` 與 `python tools/verify_inbox.py`（與 CI 相同）。動到 `assets/shader-hero-demo/` 或 `templates/zero-build-hero-injector-skill.md` 時，另外設 `AI_INBOX_BROWSER_TESTS=1` 跑瀏覽器端到端測試（需 Playwright；CI 不跑這部分）。GitHub Actions 版本由 Dependabot 追蹤；新筆記照 `AGENTS.md` 流程進 `notes/`。
+自有 repo，直推 `main`，無 release 節奏；改動前跑 `python -m unittest discover -s tests` 與 `python tools/verify_inbox.py`（與 CI 相同）。動到 `assets/shader-hero-demo/`、`templates/zero-build-hero-injector-skill.md` 或 `tools/audit_motion_storyboard.py` 時，另外設 `AI_INBOX_BROWSER_TESTS=1` 跑瀏覽器端到端測試（需 Playwright；CI 不跑這部分）。GitHub Actions 版本由 Dependabot 追蹤；新筆記照 `AGENTS.md` 流程進 `notes/`。
