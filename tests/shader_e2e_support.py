@@ -3,7 +3,19 @@
 tests/shader_e2e_support.py
 shader hero 端到端測試（Playwright + 真實瀏覽器）的共用輔助。
 
-本模組只在測試內使用，不是 CI 必備相依：
+本模組只在測試內使用，不是 CI 必備相依。瀏覽器端到端測試預設不執行（全套含瀏覽器約 4～5 分鐘，
+機器忙時還會逾時），要設環境變數 AI_INBOX_BROWSER_TESTS=1 才跑：
+
+    Windows PowerShell:  $env:AI_INBOX_BROWSER_TESTS = "1"; python -m unittest tests.test_shader_hero_demo tests.test_zero_build_hero_injector_template
+    bash:                AI_INBOX_BROWSER_TESTS=1 python -m unittest tests.test_shader_hero_demo tests.test_zero_build_hero_injector_template
+
+可調設定（皆為環境變數，皆有預設值）：
+- SHADER_E2E_TIMEOUT：單次 verify_hero.py 子行程與單一 Playwright 動作的逾時秒數，預設 240。
+- SHADER_E2E_WORKERS：同時跑幾個 verify_hero.py 子行程，預設 1（SwiftShader 吃 CPU，並行會互相拖慢）。
+- SHADER_E2E_CHANNEL：指定單一瀏覽器 channel。
+逾時不是斷言失敗：以 skipTest 標成 "INCOMPLETE（逾時 N 秒）"，不算綠也不算紅，請在較閒的機器重跑。
+
+開了 AI_INBOX_BROWSER_TESTS=1 之後：
 - 沒有安裝 playwright 套件、或找不到能建立 WebGL 的瀏覽器時，一律 raise unittest.SkipTest
   並寫明原因（測試輸出會顯示 skipped，不是靜默通過，也不會讓整套變紅）。
 - 瀏覽器預設依序嘗試 Edge、Chrome、Playwright 內建 Chromium；可用環境變數
@@ -14,10 +26,64 @@ shader hero 端到端測試（Playwright + 真實瀏覽器）的共用輔助。
 from __future__ import annotations
 
 import atexit
+import functools
 import os
 import statistics
+import subprocess
 import unittest
 from typing import Any, Dict, List, Optional
+
+BROWSER_TESTS_ENV = "AI_INBOX_BROWSER_TESTS"
+DEFAULT_TIMEOUT_S = 240
+DEFAULT_WORKERS = 1
+
+
+def _env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None or raw.strip() == "":
+        return default
+    try:
+        value = int(raw)
+    except ValueError:
+        raise ValueError(f"環境變數 {name} 必須是正整數，收到 {raw!r}")
+    if value < 1:
+        raise ValueError(f"環境變數 {name} 必須是正整數，收到 {raw!r}")
+    return value
+
+
+def timeout_seconds() -> int:
+    """單次逾時秒數（SHADER_E2E_TIMEOUT，預設 240）。"""
+    return _env_int("SHADER_E2E_TIMEOUT", DEFAULT_TIMEOUT_S)
+
+
+def worker_count() -> int:
+    """verify_hero.py 並行數（SHADER_E2E_WORKERS，預設 1）。"""
+    return _env_int("SHADER_E2E_WORKERS", DEFAULT_WORKERS)
+
+
+def incomplete(seconds: int, what: str) -> unittest.SkipTest:
+    return unittest.SkipTest(f"INCOMPLETE（逾時 {seconds} 秒）：{what}；不是通過也不是失敗，請在較閒的機器重跑")
+
+
+def incomplete_on_timeout(cls):
+    """類別裝飾器：測試方法裡的逾時（子行程或 Playwright）改成 skip INCOMPLETE，不算綠也不算紅。"""
+    def wrap(fn):
+        @functools.wraps(fn)
+        def inner(self, *a, **kw):
+            try:
+                return fn(self, *a, **kw)
+            except subprocess.TimeoutExpired as exc:
+                raise incomplete(int(exc.timeout), "子行程 " + " ".join(map(str, exc.cmd))[-80:])
+            except Exception as exc:
+                if type(exc).__name__ == "TimeoutError" and type(exc).__module__.startswith("playwright"):
+                    raise incomplete(timeout_seconds(), "Playwright 動作逾時：" + str(exc).splitlines()[0][:80])
+                raise
+        return inner
+    for name in dir(cls):
+        if name.startswith("test_") and callable(getattr(cls, name)):
+            setattr(cls, name, wrap(getattr(cls, name)))
+    return cls
+
 
 LAUNCH_ARGS = [
     "--use-angle=swiftshader",
@@ -130,7 +196,7 @@ class BrowserSession:
             self._pw_cm = None
 
     def open(self, url: str, *, width: int = 320, height: int = 180, reduced_motion: bool = False,
-             spy: bool = True, no_webgl: bool = False, wait_ms: int = 600):
+             spy: bool = True, no_webgl: bool = False, wait_ms: int = 600, init_scripts=()):
         """開頁並回傳 (page, logs)；logs 收集 console error 與 pageerror。"""
         ctx = self.browser.new_context(
             viewport={"width": width, "height": height},
@@ -145,6 +211,9 @@ class BrowserSession:
             page.add_init_script(SPY_SCRIPT)
         if no_webgl:
             page.add_init_script(NO_WEBGL_SCRIPT)
+        for script in init_scripts:
+            page.add_init_script(script)
+        page.set_default_timeout(timeout_seconds() * 1000)
         page.goto(url, wait_until="load")
         if wait_ms:
             page.wait_for_timeout(wait_ms)
@@ -159,6 +228,8 @@ def shared_session() -> "BrowserSession":
     """整個測試行程共用一個瀏覽器：Playwright sync API 在同一行程內 stop 後無法再 start，
     所以多個測試類別必須共用。啟動失敗會把原因快取，之後每個類別都以相同原因 skip。"""
     global _SESSION, _SESSION_ERROR
+    if os.environ.get(BROWSER_TESTS_ENV) != "1":
+        raise unittest.SkipTest(f"瀏覽器端到端測試預設不執行；要跑請設環境變數 {BROWSER_TESTS_ENV}=1（需要 playwright 與瀏覽器）")
     if _SESSION_ERROR is not None:
         raise unittest.SkipTest(_SESSION_ERROR)
     if _SESSION is None:

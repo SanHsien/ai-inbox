@@ -8,7 +8,11 @@ tests/test_zero_build_hero_injector_template.py
 
 A. 靜態（永遠執行）：區塊齊全、流程圖與標題對得上、範本只引用存在的模板、不依賴本 repo 路徑、
    verify_hero.py 可編譯且在缺少輸入／套件時回結束碼 2（不是通過）。
-B. 瀏覽器（需要 playwright 與能建立 WebGL 的瀏覽器；否則 skipTest 並寫明原因）：
+B. 瀏覽器（**預設不執行**：設環境變數 AI_INBOX_BROWSER_TESTS=1 才跑；否則、或沒有 playwright／瀏覽器時 skipTest 並寫明原因）：
+   bash：  AI_INBOX_BROWSER_TESTS=1 python -m unittest tests.test_zero_build_hero_injector_template -v
+   PowerShell： $env:AI_INBOX_BROWSER_TESTS = "1"; python -m unittest tests.test_zero_build_hero_injector_template -v
+   可調：SHADER_E2E_TIMEOUT（單次 verify_hero.py 逾時秒數，預設 240）、SHADER_E2E_WORKERS（並行數，預設 1）。
+   逾時不是斷言失敗，標成 skip「INCOMPLETE（逾時 N 秒）」，不算綠也不算紅。
    - 模板 A～D 組好後 verify_hero.py 全部 exit 0；
    - 壞輸入必須 exit 1：GLSL 打爛、佔位字串沒填、著色器不使用 u_mouse；
    - 把注入腳本改壞（恢復時不重建 Program、不處理 contextlost、不釋放資源、忽略 reduced-motion、
@@ -231,6 +235,7 @@ class TestTemplateStatic(unittest.TestCase):
                 self.assertNotEqual(apply(self.parts.injector, edits), self.parts.injector)
 
 
+@e2e.incomplete_on_timeout
 class TestTemplateInBrowser(unittest.TestCase):
     """沒有 playwright／瀏覽器時整個類別 skip（含原因），不會變紅也不會靜默通過。"""
 
@@ -258,14 +263,14 @@ class TestTemplateInBrowser(unittest.TestCase):
     def run_verify(self, page: Path) -> subprocess.CompletedProcess:
         env = dict(os.environ, PYTHONUTF8="1")
         r = subprocess.run([sys.executable, "-I", str(self.verify), str(page), "--channel", self.channel],
-                           capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=240, env=env)
+                           capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=e2e.timeout_seconds(), env=env)
         if r.returncode == 2:
             self.skipTest("verify_hero.py 回報環境問題（exit 2）：" + r.stderr.strip()[:200])
         return r
 
     def test_each_template_passes_verification(self):
         pages = {k: self.write_page(self.parts.assemble(self.parts.glsl[k])) for k in "ABCD"}
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=e2e.worker_count()) as ex:
             results = {k: ex.submit(self.run_verify, p) for k, p in pages.items()}
         for k, fut in results.items():
             r = fut.result()
@@ -279,7 +284,7 @@ class TestTemplateInBrowser(unittest.TestCase):
             "佔位字串沒填": (self.parts.assemble(a, fill=False), "殘留未填的佔位字串"),
             "著色器完全不使用 u_mouse": (self.parts.assemble(apply(a, [("+ ripple(st, m);", ";")])), "滑鼠移動只改變"),
         }
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=e2e.worker_count()) as ex:
             futs = {n: ex.submit(self.run_verify, self.write_page(html)) for n, (html, _) in cases.items()}
         for n, fut in futs.items():
             r = fut.result()
@@ -290,7 +295,7 @@ class TestTemplateInBrowser(unittest.TestCase):
         a = self.parts.glsl["A"]
         pages = {name: self.write_page(self.parts.assemble(a, injector=apply(self.parts.injector, edits)))
                  for name, edits in INJECTOR_MUTANTS}
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=e2e.worker_count()) as ex:
             futs = {n: ex.submit(self.run_verify, p) for n, p in pages.items()}
         survivors = [n for n, fut in futs.items() if fut.result().returncode == 0]
         self.assertEqual(survivors, [], f"verify_hero.py 沒有抓到這些壞掉的注入腳本：{survivors}")

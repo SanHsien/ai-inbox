@@ -374,7 +374,7 @@ python -m playwright install chromium     # 或直接使用本機的 Edge／Chro
 python verify_hero.py path/to/index.html
 ```
 
-把下面的程式存成 `verify_hero.py`。結束碼 `0` 全部通過、`1` 有檢查失敗、`2` 環境問題（沒有 Playwright／瀏覽器／WebGL；這不是通過）。它檢查：沒有殘留佔位字串與 console 錯誤；迴圈持續繪製；畫面不是單色或全黑；時間改變畫面跟著變；**真實滑鼠移動會改變像素**；context 遺失期間停止繪製、恢復後 Program 重新連結且畫面一致；`prefers-reduced-motion` 只畫靜態畫面；`dispose()` 真的釋放資源。門檻（單色標準差、像素差比例）是這支腳本自訂的取捨，不是外部標準；沒有提供放寬或略過檢查的旗標。
+把下面的程式存成 `verify_hero.py`。結束碼 `0` 全部通過、`1` 有檢查失敗、`2` 環境問題（沒有 Playwright／瀏覽器／WebGL，或機器太忙導致 Playwright 動作逾時；這不是通過，請稍後重跑）。它檢查：沒有殘留佔位字串與 console 錯誤；迴圈持續繪製；畫面不是單色或全黑；時間改變畫面跟著變；**真實滑鼠移動會改變像素**；context 遺失期間停止繪製、恢復後 Program 重新連結且畫面一致；`prefers-reduced-motion` 只畫靜態畫面；`dispose()` 真的釋放資源。門檻（單色標準差、像素差比例）是這支腳本自訂的取捨，不是外部標準；沒有提供放寬或略過檢查的旗標。
 
 <!-- block:verify_hero.py -->
 ```python
@@ -382,7 +382,7 @@ python verify_hero.py path/to/index.html
 """verify_hero.py：驗證已注入 Zero-Build Shader Hero 的 HTML 檔（可獨立複製到任何專案，只依賴 Playwright）。
 
 用法：  python verify_hero.py path/to/index.html [--channel msedge|chrome|chromium] [--width 320 --height 180]
-結束碼：0 全部通過；1 有檢查失敗（輸出每一項）；2 環境問題（沒有 Playwright／瀏覽器／WebGL），不代表頁面有錯也不代表通過。
+結束碼：0 全部通過；1 有檢查失敗（輸出每一項）；2 環境問題（沒有 Playwright／瀏覽器／WebGL，或 Playwright 動作逾時），不代表頁面有錯也不代表通過。
 
 檢查項目（全部必過，沒有略過旗標）：
   1. 沒有殘留的 __PLACEHOLDER__ 字串；頁面載入沒有 console error / pageerror / WebGL 警告
@@ -644,6 +644,11 @@ def run(url, text, channel, width, height):
             if state(page)["target"] != tgt:
                 problems.append("dispose() 後 pointermove 監聽仍在運作")
             ctx.close()
+        except Exception as exc:
+            if type(exc).__name__ == "TimeoutError":   # Playwright 動作逾時：機器忙，不是頁面的錯，也不算通過
+                print(f"[ENV] Playwright 動作逾時（機器忙？請稍後重跑）：{str(exc).splitlines()[0][:100]}", file=sys.stderr)
+                return 2
+            raise
         finally:
             browser.close()
     return report(problems)

@@ -198,14 +198,24 @@ fBM(p) = Σ_{i=0..n-1}  a^i · noise(2^i · p)      本 repo 的實作：n = 4�
 
 ## 7. 驗證方式（可重現）
 
+**瀏覽器端到端測試預設不執行**（含瀏覽器約 4～5 分鐘，機器忙時會逾時），要設環境變數 `AI_INBOX_BROWSER_TESTS=1` 才跑：
+
 ```bash
-python -m unittest discover -s tests          # 全套；沒有 Playwright 時瀏覽器測試會明確 skip
-python -m unittest tests.test_shader_hero_demo tests.test_zero_build_hero_injector_template -v
+# 預設：只跑靜態檢查，瀏覽器測試以明確原因 skip（CI 與一般 agent 跑這個）
+python -m unittest discover -s tests
+
+# 開啟瀏覽器測試（bash）
+AI_INBOX_BROWSER_TESTS=1 python -m unittest tests.test_shader_hero_demo tests.test_zero_build_hero_injector_template -v
+# 開啟瀏覽器測試（PowerShell）
+$env:AI_INBOX_BROWSER_TESTS = "1"; python -m unittest tests.test_shader_hero_demo tests.test_zero_build_hero_injector_template -v
 ```
+
+可調的環境變數：`SHADER_E2E_TIMEOUT`（單次逾時秒數，預設 240）、`SHADER_E2E_WORKERS`（同時跑幾個 `verify_hero.py`，預設 1）、`SHADER_E2E_CHANNEL`（指定 `msedge`／`chrome`／`chromium`）。**逾時不是斷言失敗**：測試以 skip 標成 `INCOMPLETE（逾時 N 秒）`，不算綠也不算紅，請在較閒的機器重跑。
 
 | 驗證項目 | 作法 | 對應測試 |
 | :--- | :--- | :--- |
-| 畫面不是空白、迴圈持續繪製、FPS 是實測值 | 真實 Edge/Chrome，間諜統計 `drawArrays` 次數、`readPixels` 取樣 | `test_shader_hero_demo.py` |
+| 畫面不是空白、迴圈持續繪製 | 真實 Edge/Chrome，間諜統計 `drawArrays` 次數、`readPixels` 取樣 | `test_shader_hero_demo.py` |
+| FPS 顯示值是實測值 | 把 `requestAnimationFrame` 節流到約 17 FPS，用頁面的 `drawnFrames` 差除以經過時間，與 HUD 顯示值比對（容許 ±30% 或 ±3 fps）；寫死 60 的突變必須被抓到 | 同上 |
 | 游標有效 | 真實 `mouse.move` 兩個位置，凍結 `u_time` 後比對像素；液態金屬與流體兩種模式都測 | 同上 |
 | context 恢復 | 按頁面按鈕呼叫 `WEBGL_lose_context`，檢查遺失期間不繪製、恢復後 `linkProgram` 多一次、`gl.isProgram` 為真、畫面與遺失前一致、console 無警告 | 同上；範本以 `verify_hero.py` 驗 |
 | Dispose | 間諜統計 `deleteProgram`／`deleteShader`／`deleteBuffer`，並確認之後不再繪製、`pointermove` 不再更新狀態 | 同上 |
@@ -214,7 +224,7 @@ python -m unittest tests.test_shader_hero_demo tests.test_zero_build_hero_inject
 | 測試抓得到壞實作 | 突變測試：把 index.html 與注入腳本刻意改壞（GLSL 打爛、迴圈不啟動、`drawArrays` 停用、游標不進 uniform、刪掉 `contextlost` 監聽、恢復不重建 Program、dispose 不釋放、reduced-motion 被忽略…），同一組 probe 必須報錯，存活者使測試失敗 | 同上 |
 | 範本內的程式真的能跑 | 測試從 Markdown 抽出骨架、注入腳本、模板 A～D 與 `verify_hero.py` 組成 HTML，真的跑；壞輸入（GLSL 打爛、佔位字串沒填、著色器不用 `u_mouse`）必須 exit 1 | `test_zero_build_hero_injector_template.py` |
 
-瀏覽器測試需要 `pip install playwright`，以及 Edge、Chrome 或 `python -m playwright install chromium` 安裝的 Chromium；沒有時整個類別 `skipTest` 並寫明原因，不會讓全套變紅，也不會靜默當作通過。畫面標準差、像素差比例等門檻是本 repo 對 320×180 軟體渲染（SwiftShader）畫面的自訂取捨，不是外部標準。
+瀏覽器測試需要 `pip install playwright`，以及 Edge、Chrome 或 `python -m playwright install chromium` 安裝的 Chromium；沒有時（或沒設 `AI_INBOX_BROWSER_TESTS=1` 時）整個類別 `skipTest` 並寫明原因，不會讓全套變紅，也不會靜默當作通過。畫面標準差、像素差比例等門檻是本 repo 對 320×180 軟體渲染（SwiftShader）畫面的自訂取捨，不是外部標準。
 
 ---
 

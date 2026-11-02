@@ -7,13 +7,18 @@ tests/test_shader_hero_demo.py
 A. 靜態檢查（永遠執行，只用標準函式庫）：檔案基礎結構、零外部依賴、Anti-Slop、突變測試的目標字串仍存在。
    這一層只能證明「檔案長什麼樣」，不能證明「會動」，所以不是主要證據。
 B. 瀏覽器端到端（Playwright + 真實 Edge/Chrome/Chromium，SwiftShader 軟體渲染）：
-   - 逐幀繪製、畫面非空白、FPS 為實測值；
+   - 逐幀繪製、畫面非空白、FPS 顯示值與頁面實際繪製幀數／經過時間相符（把 rAF 節流到約 17 FPS 再比，
+     所以寫死 60 之類的假值必定不符）；
    - 預設液態金屬模式與流體模式的游標互動：用像素差證明（真實 mouse.move，不是直接塞 uniform）；
    - 透過頁面按鈕模擬 WEBGL_lose_context：遺失期間停止繪製，恢復後 Program 必須重建，畫面與遺失前一致；
    - dispose 後 delete* 真的被呼叫、迴圈停止、監聽器移除；
    - prefers-reduced-motion（開頁時與執行中切換）；
    - 無 WebGL、著色器編譯失敗時畫面上如實顯示錯誤，而不是仍寫「正常執行中」。
-   沒有 playwright 套件或沒有能建立 WebGL 的瀏覽器時，整個 B 層 skipTest 並寫明原因（不是靜默通過）。
+   **預設不執行**（含瀏覽器的全套約 4～5 分鐘，機器忙時會逾時）：設環境變數 AI_INBOX_BROWSER_TESTS=1 才跑，
+   例如 bash：  AI_INBOX_BROWSER_TESTS=1 python -m unittest tests.test_shader_hero_demo -v
+   PowerShell： $env:AI_INBOX_BROWSER_TESTS = "1"; python -m unittest tests.test_shader_hero_demo -v
+   沒設、沒有 playwright 套件、或沒有能建立 WebGL 的瀏覽器時，整個 B 層 skipTest 並寫明原因（不是靜默通過）。
+   逾時（SHADER_E2E_TIMEOUT 秒，預設 240）不算斷言失敗，標成 skip「INCOMPLETE（逾時 N 秒）」。
 C. 突變測試（需要瀏覽器）：把 index.html 刻意改壞（GLSL 打爛、渲染迴圈不啟動、drawArrays 停用、游標效果移除、
    contextlost 監聽刪除、恢復時不重建 Program、dispose 不釋放、reduced-motion 被忽略、錯誤被顯示成成功等），
    同一組 probe 必須全部報錯。若有突變存活，測試失敗。
@@ -47,6 +52,10 @@ MIN_LUMA_MAX = 20.0         # 最亮點低於此值視為全黑
 MIN_MOUSE_CHANGE = 0.02     # 游標移動後至少 2% 取樣點的顏色改變
 MIN_TIME_CHANGE = 0.02      # 時間改變後至少 2% 取樣點的顏色改變
 MAX_NOISE = 0.01            # 同狀態重畫的雜訊上限（超過代表量測不可靠）
+FPS_REL_TOL = 0.30          # FPS 顯示值與實測值的相對容許誤差（顯示值是最近 500ms 的平均，實測是整段平均）
+FPS_ABS_TOL = 3.0           # 或絕對容許誤差（fps），取兩者較大
+# 把 requestAnimationFrame 節流成每次延遲 40ms，讓實際 FPS 落在約 17 左右，遠離常見的 60
+THROTTLE_RAF = "(() => { const raf = window.requestAnimationFrame.bind(window); window.requestAnimationFrame = cb => setTimeout(() => raf(cb), 40); })();"
 
 
 # --------------------------------------------------------------------------- probes
@@ -70,7 +79,7 @@ def probe_render(session: e2e.BrowserSession, url: str) -> List[str]:
             problems.append(f"渲染迴圈沒有持續繪製：700ms 內 drawArrays 只增加 {d2 - d1} 次")
         fps_text = page.inner_text("#fps-display").strip()
         if not (fps_text.isdigit() and int(fps_text) > 0):
-            problems.append(f"FPS 顯示不是實測數字：'{fps_text}'")
+            problems.append(f"FPS 顯示不是正整數（是否與實測相符由 probe_fps 檢查）：'{fps_text}'")
         page.evaluate(f"() => window['{API}'].freezeTime(5.0)")
         frame = e2e.sample(page, API)
         if frame is None:
@@ -97,6 +106,31 @@ def probe_render(session: e2e.BrowserSession, url: str) -> List[str]:
             problems.append("頁面沒有標示這是自製示範")
         if logs:
             problems.append(f"console 有錯誤或警告：{logs[:2]}")
+    finally:
+        page.context.close()
+    return problems
+
+
+def probe_fps(session: e2e.BrowserSession, url: str) -> List[str]:
+    """顯示的 FPS 必須等於頁面實際繪製速率：用 drawnFrames 差除以經過時間，與 HUD 顯示值比對。"""
+    problems: List[str] = []
+    page, logs = session.open(url, wait_ms=1500, init_scripts=[THROTTLE_RAF])
+    try:
+        grab = f"() => ({{ frames: window['{API}'].getState().drawnFrames, now: performance.now() }})"
+        a = page.evaluate(grab)
+        page.wait_for_timeout(2000)
+        b = page.evaluate(grab)
+        shown_text = page.inner_text("#fps-display").strip()
+        measured = (b["frames"] - a["frames"]) * 1000.0 / (b["now"] - a["now"])
+        if not (10 <= measured <= 30):
+            problems.append(f"節流後實測 FPS {measured:.1f} 不在預期的 10～30，無法比對顯示值")
+        elif not shown_text.isdigit():
+            problems.append(f"FPS 顯示不是數字：'{shown_text}'")
+        else:
+            shown = float(shown_text)
+            tol = max(FPS_ABS_TOL, FPS_REL_TOL * measured)
+            if abs(shown - measured) > tol:
+                problems.append(f"FPS 顯示 {shown:g} 與實測 {measured:.1f} 相差超過容許 {tol:.1f}（顯示值不是實測？）")
     finally:
         page.context.close()
     return problems
@@ -348,6 +382,8 @@ MUTANTS: List[Tuple[str, List[Tuple[str, str]], str]] = [
     ("GLSL 語法打爛", [GLSL_BREAK], "render"),
     ("渲染迴圈不啟動", [("            rafId = requestAnimationFrame(renderLoop);\n          }\n        } else {",
                           "            rafId = null;\n          }\n        } else {")], "render"),
+    ("FPS 顯示寫死 60", [("if (fpsDisplay) fpsDisplay.textContent = fps;", "if (fpsDisplay) fpsDisplay.textContent = 60;")], "fps"),
+    ("FPS 以固定時間窗誤算（影格數永遠算 60）", [("const fps = Math.round((frameCount * 1000) / (now - lastFpsTime));", "const fps = Math.round((60 * 1000) / (now - lastFpsTime));")], "fps"),
     ("drawArrays 停用", [("        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);\n        drawnFrames++;",
                           "        drawnFrames++;")], "render"),
     ("initGL 不執行", [("        initGL();\n\n        window.addEventListener('resize'",
@@ -381,6 +417,7 @@ MUTANTS: List[Tuple[str, List[Tuple[str, str]], str]] = [
 
 PROBES: Dict[str, Callable[[e2e.BrowserSession, str], List[str]]] = {
     "render": probe_render,
+    "fps": probe_fps,
     "mouse": probe_mouse,
     "restore": probe_restore,
     "dispose": probe_dispose,
@@ -451,6 +488,7 @@ class TestShaderHeroDemoStatic(unittest.TestCase):
 
 # --------------------------------------------------------------------------- B/C. browser
 
+@e2e.incomplete_on_timeout
 class TestShaderHeroDemoBrowser(unittest.TestCase):
     """端到端：沒有 playwright 或瀏覽器時整個類別 skip，並寫明原因。"""
 
@@ -474,6 +512,9 @@ class TestShaderHeroDemoBrowser(unittest.TestCase):
 
     def test_renders_continuously_and_honestly(self):
         self.assertEqual(probe_render(self.session, self.url), [])
+
+    def test_fps_display_matches_actual_draw_rate(self):
+        self.assertEqual(probe_fps(self.session, self.url), [])
 
     def test_mouse_changes_pixels_in_both_modes(self):
         self.assertEqual(probe_mouse(self.session, self.url), [])
