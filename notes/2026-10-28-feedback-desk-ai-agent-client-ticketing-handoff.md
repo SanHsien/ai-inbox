@@ -6,7 +6,7 @@ source_platform: "Facebook (OpenClaw /Hermes Agent中文社群) / GitHub"
 author: "王士麟 (Alex Wang, @aixwangtw)"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "開發流程"
 short_title: "feedback-desk 開源 Agent 工單系統"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[Facebook 社團分享 (OpenClaw /Hermes Agent中文社群)](https://www.facebook.com/share/p/1ACT6hqcPh/) ｜ [作者專文 (aixwang.dev)](https://aixwang.dev/blog/feedback-desk/) ｜ [官方 GitHub Repo (aixwangtw/feedback-desk)](https://github.com/aixwangtw/feedback-desk) ｜ [展示站 (feedback.aixwang.dev)](https://feedback.aixwang.dev/)
 - **核心作者**：王士麟（Alex Wang，全端獨立開發者，專注於 Vibe Coding、Cloudflare Serverless 與 AI Agent 協同架構）
 - **分析主題**：給多 Agent（Claude Code、Codex、Hermes Agent、OpenClaw）與非技術客戶協同的開源工單交接中樞、Cloudflare Workers + D1 + R2 零伺服器極簡架構、Streamable HTTP MCP 介面、狀態流轉硬閘門（AI 只推到待審核）、防撞單認領（Claim）與交接紀錄（Handoff Notes）、去模型黑話（De-AI-Slop）調整說明規範
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（Thorsten Ball 15 條 Agent 實戰哲學：無可辯駁證據與排程喚醒）
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 四大黃金原則工程加固：精確定位與防盲目嘗試）
@@ -131,7 +131,7 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261028-07`**｜**[優先級：高]** 撰寫「feedback-desk 架構解構與跨 Agent 工單交接規範」收錄於 `docs/feedback-desk-architecture-and-handoff-spec.md`
+- [x] **`T-20261028-07`**｜**[優先級：高]** 撰寫「feedback-desk 架構解構與跨 Agent 工單交接規範」收錄於 `docs/feedback-desk-architecture-and-handoff-spec.md`
   - **目標範圍**：`docs/feedback-desk-architecture-and-handoff-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 繪製完整的 Cloudflare Workers (Hono) + D1 + R2 無伺服器架構圖與資料模型。
@@ -139,18 +139,20 @@ tags:
     3. 詳細定義 Claim 認領與 Handoff Notes 結構化欄位（做到哪、改了哪些檔案、下一步、注意事項）。
     4. 納入 Prompt 注入防禦條款與審計標籤規範（記錄使用者與 AI 工具名）。
   - **驗收標準（DoD）**：產出 `docs/feedback-desk-architecture-and-handoff-spec.md`，內含架構拓撲、狀態轉換表、CLI/MCP 契約與防注入規範；以 `Test-Path docs/feedback-desk-architecture-and-handoff-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/feedback-desk-architecture-and-handoff-spec.md：對照上游 aixwangtw/feedback-desk @ 0061f8c（MIT）的 migrations、status.ts、reports.ts、patrol.ts 寫成；更正筆記兩處：AI 不能結案只是提醒不是硬閘門、handoff 是單一自由文字 body。獨立審查逐項核對上游原始碼相符。
 
-- [ ] **`T-20261028-08`**｜**[優先級：中]** 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py`
+- [x] **`T-20261028-08`**｜**[優先級：中]** 實作「feedback-desk 工單合規與交接契約外部裁判驗證器」於 `tools/verify_feedback_desk_contract.py`
   - **目標範圍**：`tools/verify_feedback_desk_contract.py` 與 `tests/test_verify_feedback_desk_contract.py`
   - **具體做法**：
     1. 實作命令列驗證工具，驗證 JSON 工單紀錄或交接日誌是否符合規範。
     2. 檢查規則：AI Agent 執行結果嚴禁直接設為 `completed`、交接紀錄必須包含「做到哪」與「下一步」、調整說明嚴禁包含程式碼區塊（```）與檔名等 AI Slop 違規特徵。
     3. 撰寫全套單元測試覆蓋合法與違規案例。
   - **驗收標準（DoD）**：產出 `tools/verify_feedback_desk_contract.py` 與單元測試，執行 `python -m unittest discover -s tests` 全綠通過。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：tools/verify_feedback_desk_contract.py＋tests（60 測試）：檢查 AI 結案、認領與釋放、交接必填段、機密、給客戶說明的程式碼痕跡（含 camelCase 識別字、HTML 標籤），括號內含中文或空白的品牌寫法不誤判。審查後修正誤判與漏判，整合者重現驗證通過；剩下的誤判寫在規範第 7 節。順手更正 docs/feedback-desk-vs-agent-relay.md 的狀態名與閘門說法。
 
-- [ ] **`T-20261028-09`**｜**[優先級：低]** 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md`
+- [x] **`T-20261028-09`**｜**[優先級：低]** 產出標準化「跨 Agent 工單認領與 De-AI-Slop 調整說明標準 Prompt 範本」收錄於 `templates/feedback-desk-agent-prompt.md`
   - **目標範圍**：`templates/feedback-desk-agent-prompt.md`
   - **具體做法**：
     1. 撰寫適用於 Claude Code、Codex、Hermes Agent、Antigravity 的通用排程掃單與認領 Prompt。
@@ -158,7 +160,8 @@ tags:
     3. 規範白話調整說明格式、驗收步驟導引與截圖附件標準。
     4. 提供交接中斷時之 Handoff 寫入與釋放認領模板。
   - **驗收標準（DoD）**：產出 `templates/feedback-desk-agent-prompt.md`，具備完整中文說明與多 Agent 整合範例；以 `Test-Path templates/feedback-desk-agent-prompt.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：templates/feedback-desk-agent-prompt.md：可直接貼的 Agent 提示、給客戶的調整說明格式、交接與釋放範本、各 Agent 接法（依上游 README）；範例由測試實際跑驗證器，正例通過、反例失敗。Antigravity 段不含 agy -p 或轉送。
 
 ---
 
