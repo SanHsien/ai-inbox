@@ -46,6 +46,8 @@
 
 重點：**兩種權杖用途不同，權限也分開領**。一顆權杖要同時能花 Copilot 額度又能寫 repo，外洩時的損失就是兩者相加；分開領，Agent 本體（會吃不受信任的 issue 內容）只拿得到 Copilot 那顆。
 
+**但「分開領」不等於「Agent 拿不到私鑰」**：只要領 Copilot 權杖的那一步和 Agent 在同一個 job，該 job 引用的 secret（包含 App 私鑰）就應視為 Agent 讀得到（第 7 節）。所以本指南的預設做法是：Copilot 走內建 `GITHUB_TOKEN`（agent job 完全不引用 secret），App 與私鑰只出現在 publish job；上圖的「Copilot 用權杖由 App 領」是 Actions 以外的服務，或第 7 節明確接受風險的選用路線。
+
 ---
 
 ## 2. 建立 Organization GitHub App 與最小權限
@@ -64,7 +66,7 @@
 
 | 權限 | 等級 | 層級 | 為什麼 |
 | :--- | :--- | :--- | :--- |
-| Copilot Requests | Read-only | 組織 | 讓安裝權杖能呼叫 Copilot。官方定義的 App 認證必要權限。注意它仍會消耗組織的 AI credits |
+| Copilot Requests | Read-only | 組織 | 讓安裝權杖能呼叫 Copilot（官方定義的 App 認證權限）。**只有「Actions 以外的服務」或第 7 節的選用路線才需要**；範本預設的 Actions 路線 Copilot 走 `GITHUB_TOKEN`，App 不要勾這個權限。注意它仍會消耗組織的 AI credits |
 | Contents | Read and write | repository | 推 `ai-agent/...` 分支。官方 `actions/create-github-app-token` 對此權限的描述是「repository contents, commits, branches, downloads, releases, and merges」 |
 | Pull requests | Read and write | repository | 開 Draft PR（官方 Create a pull request 端點要求 Pull requests: write） |
 | Issues | Read and write | repository | 在 issue 留言回報 PR 連結（同一份 action 描述涵蓋 issues 及其留言、標籤） |
@@ -161,7 +163,7 @@ client = CopilotClient(
 | Actions 以外的服務（自架主機、雲端排程、容器） | GitHub App | 這是官方文件列為「其他服務與 CI 系統」的路線 |
 | 個人帳號或 enterprise 層級安裝 | 本方式不可用 | 官方：只支援安裝在組織的 App |
 
-夜間 Agent 同時需要「開 PR 觸發 CI」與「Copilot」，所以範本用 App：Copilot 權杖與 repo 權杖分開領。
+夜間 Agent 同時需要「開 PR 觸發 CI」與「Copilot」，範本採**混合路線**：agent job 用 `GITHUB_TOKEN` + `copilot-requests: write` 呼叫 Copilot，整個 job 不引用任何 secret；publish job 用 App 領寫入權杖開 PR（PR 才會觸發 CI）。前提是組織擁有的 repo，且組織開啟「Allow use of Copilot CLI billed to the organization」政策。要注意：改用 `GITHUB_TOKEN` 只是讓 **agent job** 不需要私鑰，**publish job 仍然需要 App 與私鑰**。
 
 ---
 
@@ -182,8 +184,8 @@ client = CopilotClient(
       │
       ▼
  ┌─ job: agent（視為不可信）────────────────────────────────────────────────┐
- │ 領 Copilot 專用權杖（1h；私鑰只在這一步，Agent 啟動前就結束）            │
- │ Agent 在一次性 runner 上改工作目錄（沒有 repo 寫入權杖）                  │
+ │ Copilot 靠內建 GITHUB_TOKEN + copilot-requests: write（整個 job 沒有任何 secret） │
+ │ Agent 在一次性 runner 上改工作目錄（沒有 repo 寫入權杖、沒有 App 私鑰）   │
  │ git diff --binary 產生 patch（只含工作樹變更）──► 上傳 artifact          │
  └───────────────────────────────┬──────────────────────────────────────────┘
                                  │ patch 是「資料」，.git/ 不會跟過去
@@ -194,7 +196,7 @@ client = CopilotClient(
  │ git apply 套用 patch（不執行 repo 裡任何程式碼）                          │
  │ 爆破半徑關卡：patch 大小、檔數、禁止路徑（含 .git/、.github/）、連結     │──違規──► 失敗終止
  │ 停用 hook 的 commit（此時沒有任何 token）                                 │
- │ 才領 repo 權杖（contents/PR/issues write，只限這個 repo）                  │
+ │ 才用 App 私鑰領 repo 權杖（contents/PR/issues write，只限這個 repo）       │
  │ 推 ai-agent/issue-N-<run id> 分支 ─► 開 Draft PR（標籤、issue 留言連結）  │
  └───────────────────────────────┬──────────────────────────────────────────┘
                                  ▼
@@ -211,8 +213,10 @@ client = CopilotClient(
 2. **一律 Draft PR**：`gh pr create --draft`，標題加 `[AI-Agent-Generated]`、掛 `ai-agent-generated` 標籤，內文連到工作流 run，並註明測試尚未在本工作流跑。範本用 `Refs #N` 而不是 `Closes #N`，避免 merge 時自動關閉 issue 而跳過人的判斷。
 3. **爆破半徑封鎖**（在 publish job，對 patch 重新檢查）：patch 上限 1 MiB、最多 10 個檔案，拒絕碰 `.github/`、任何層級的 `.git`、`.gitattributes`、`.gitmodules`、`Dockerfile`、`docker-compose*.yml`、`*.tf`、`*.tfvars`，以及符號連結與 submodule。這些門檻是本範本的取捨，請依專案調整；測試涵蓋好、壞兩種輸入，包含手寫的 `.git/hooks/pre-commit` patch。commit 與推送另外用 `core.hooksPath=/dev/null` 停用 hook（git 官方文件以此寫法說明停用 hook）。
 4. **回滾**：Agent 的變更在一條分支、一次 commit 內，merge 後要撤回就對 merge commit 做 `git revert`；若 PR 尚未 merge，直接關閉 PR 並刪分支即可。**範本沒有自動回滾機制**——「自動」回滾需要部署與監控資訊，超出本範本範圍。
-5. **不受信任輸入與殘餘風險**：issue 內容可能含提示注入。範本把它存成檔案、不內插進 shell 或 prompt 指令；Agent 所在的 job 沒有 repo 寫入權杖，也沒有私鑰（唯一例外見下），最壞情況是產生一個會被關卡擋下或被真人拒絕的 Draft PR。這降低風險但不能消除：Agent 仍可能把惡意內容寫進一般程式碼檔案，所以第 1、2 項的真人 review 與 CI 不可省。已知的殘餘點：
-   - agent job 為了領 Copilot 權杖，會在 Agent 啟動**之前**的一個步驟用到私鑰（該步驟是範本自己的腳本，結束後行程消失）。官方 Workflow syntax 頁（2026-11-02 核對）寫明含機密的 job output 會在 runner 上被遮蔽、不會送給 GitHub Actions（本次未實際跑一次驗證），所以沒辦法再拆出獨立的領權杖 job。若不接受這一點，改用第 5 節的 `GITHUB_TOKEN` + `copilot-requests: write` 路線，它不需要私鑰。
+5. **不受信任輸入與殘餘風險**：issue 內容可能含提示注入。範本把它存成檔案、不內插進 shell 或 prompt 指令；Agent 所在的 job 沒有 repo 寫入權杖，也完全不引用任何 secret（沒有 App 私鑰），最壞情況是產生一個會被關卡擋下或被真人拒絕的 Draft PR，以及消耗組織的 Copilot 額度（`copilot-requests: write` 的本質）。這降低風險但不能消除：Agent 仍可能把惡意內容寫進一般程式碼檔案，所以第 1、2 項的真人 review 與 CI 不可省。已知的殘餘點：
+   - **為什麼 agent job 不可以引用任何 secret（含 App 私鑰）。** 官方 GitHub Advisory（CVE-2025-30066，tj-actions/changed-files，2025-03）描述惡意腳本以 `sudo python3` 讀取 Runner Worker 行程記憶體、取出 secrets 並印進 log；官方 GitHub-hosted runner 文件寫明 Linux 與 macOS 的虛擬機以免密碼 sudo 執行。所以在 GitHub 代管的 ubuntu runner 上，**同一個 job 裡的任何程式碼（包含被提示注入的 Agent）都應被視為讀得到該 job 引用的 secret**。「引用的 secret 會留在 Worker 記憶體到 job 結束」是由這些事實推論，官方文件沒有逐字這樣寫。因此「私鑰只在 Agent 之前的一個步驟使用、之後行程消失」**不是**有效的保護，本指南不再這樣宣稱。
+   - **不能用「再拆一個只領權杖的 job」解決。** job output 這條路被擋：官方 Workflow syntax 頁（2026-11-02 核對）寫明含機密的 job output 會在 runner 上被遮蔽、不會送給 GitHub Actions。artifact 這條路擋不住：可以把權杖寫進 artifact 讓 agent job 下載，但那等於把 Copilot 權杖放進任何能下載該 run artifact 的人都拿得到的儲存區，也沒有 output 那種自動遮蔽（依官方行為的推論，未實測），本指南不採用。所以 Copilot 認證預設改走不需私鑰的 `GITHUB_TOKEN` 路線。
+   - **明確接受的風險（選用路線）：** 若你一定要在 agent job 用 App 領 Copilot 權杖（repo 不是組織擁有、組織不開 billed-to-organization 政策，或要以 App 身分歸帳），就是把 App 私鑰放進會跑 Agent 的 job。被提示注入的 Agent 可能取得私鑰；私鑰不會自動過期（官方：需手動撤銷），能領出該 App 全部已授權的權限，包含 `contents: write`，等於繞過本設計把 Agent 與寫入權杖隔開的做法。這是被接受的風險，不是被排除的風險；接受前請確認 App 只裝在單一 repo、有私鑰輪替與撤銷流程（3.4）、主分支保護已開。範本第 3.2 節有該路線的片段與同樣的警語。
    - 產生 patch 的步驟在 Agent 的 job 內執行，`.git/config` 可能被改過；範本關閉 fsmonitor、外部 diff 與 textconv 但不宣稱能完全擋住。該步驟沒有 secret，patch 在 publish 仍被當成不可信資料重新檢查。
 
 ---
@@ -233,6 +237,9 @@ client = CopilotClient(
 - [REST API endpoints for pull requests](https://docs.github.com/en/rest/pulls/pulls)（Create a pull request 需要 Pull requests: write）
 - [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)（job outputs 含機密會被略過）
 - [git-config：core.hooksPath](https://git-scm.com/docs/git-config)、[git-apply](https://git-scm.com/docs/git-apply)
+- [GitHub Advisory GHSA-mrrh-fwg8-r2c3（CVE-2025-30066）](https://github.com/advisories/GHSA-mrrh-fwg8-r2c3)（惡意腳本以 `sudo python3` 讀 Runner Worker 行程記憶體取出 secrets）
+- [About GitHub-hosted runners](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners)（Linux／macOS 虛擬機以免密碼 sudo 執行）
+- [Using GitHub Copilot CLI in GitHub Actions](https://docs.github.com/en/copilot/how-tos/copilot-cli/automate-copilot-cli/automate-with-actions)（組織擁有的 repo 建議用 `GITHUB_TOKEN`）
 - [Triggering a workflow](https://docs.github.com/en/actions/using-workflows/triggering-a-workflow)（`GITHUB_TOKEN` 事件不觸發新 run）
 - [Security hardening for GitHub Actions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions)（中間環境變數、釘 SHA）
 - npm registry `@github/copilot-sdk`、PyPI `github-copilot-sdk`（確認套件存在與版本號）

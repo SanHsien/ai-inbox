@@ -248,7 +248,8 @@ class TemplateCase(unittest.TestCase):
 
 class TemplateStructureTests(TemplateCase):
     def test_required_blocks_and_frontmatter(self):
-        self.assertEqual(set(self.blocks), {"app_installation_token.py", "nightly-maintenance-agent.yml"})
+        self.assertEqual(set(self.blocks), {"app_installation_token.py", "nightly-maintenance-agent.yml",
+                                            "alt-copilot-mint-step.yml"})
         text = TEMPLATE.read_text(encoding="utf-8")
         self.assertTrue(text.startswith("---\nname: github-app-s2s-agent-workflow\ndescription: "))
         self.assertIn("\n---\n", text[4:])
@@ -459,8 +460,8 @@ class PythonScriptTests(TemplateCase):
 
 # ---------- 工作流 YAML ----------
 
-AGENT_RUN = "Run agent (Copilot token only; no repo write credentials here)"
-MINT_COPILOT = "Mint Copilot-only installation token"
+AGENT_RUN = "Run agent (no secrets in this job)"
+MINT_COPILOT = "Mint Copilot-only installation token"  # 只在選用片段 alt-copilot-mint-step.yml 裡
 MINT_REPO = "Mint repo-scoped installation token"
 MAKE_PATCH = "Create patch (worktree changes only)"
 GATE = "Apply patch and blast radius gate"
@@ -572,7 +573,9 @@ class WorkflowTests(TemplateCase):
         self.assertRegex(self.yml, r"(?m)^permissions: \{\}$")
         for job in ("agent", "publish"):
             perms = re.search(r"(?m)^    permissions:\n((?:      .*\n)+)", self.jobs[job]).group(1)
-            self.assertNotIn("write", perms, job)
+            writes = re.findall(r"(\S+): write", perms)
+            # agent job 唯一的 write 是官方文件規定的 copilot-requests；publish 本身不需要任何 write（寫入靠 App 權杖）
+            self.assertEqual(writes, ["copilot-requests"] if job == "agent" else [], job)
         self.assertNotIn("pull_request_target", self.yml)
         self.assertNotIn("pull_request:", self.yml)
 
@@ -585,21 +588,24 @@ class WorkflowTests(TemplateCase):
         self.assertNotIn(PUSH, self.agent)
         for forbidden in ("git push", "gh pr create", "create-github-app-token", "repo-token", "permission-"):
             self.assertNotIn(forbidden, self.jobs["agent"], forbidden)
-        for forbidden in ("Run agent", "INSTALLATION_TOKEN", "app_installation_token.py", "copilot_token"):
+        for forbidden in ("Run agent", "INSTALLATION_TOKEN", "app_installation_token.py", "copilot_token", "GITHUB_TOKEN"):
             self.assertNotIn(forbidden, self.jobs["publish"], forbidden)
 
-    def test_agent_job_has_no_write_token_and_private_key_only_before_the_agent_runs(self):
-        keyed = [n for n, s in self.agent.items() if "APP_PRIVATE_KEY" in s]
-        self.assertEqual(keyed, [MINT_COPILOT])
-        order = step_order(self.yml, "agent")
-        self.assertLess(order.index(MINT_COPILOT), order.index(AGENT_RUN))
+    def test_default_agent_job_references_no_secret_at_all(self):
+        """預設路線：agent job 不得出現任何 secrets. 引用，也沒有 App 私鑰、App 變數或領權杖腳本。"""
+        agent_text = self.jobs["agent"]
+        self.assertNotIn("secrets.", agent_text)
+        for forbidden in ("APP_PRIVATE_KEY", "APP_CLIENT_ID", "app_installation_token", "create-github-app-token",
+                          "INSTALLATION_TOKEN", "GH_APP_"):
+            self.assertNotIn(forbidden, agent_text, forbidden)
+        self.assertEqual(re.findall(r"copilot-requests: write", agent_text), ["copilot-requests: write"])
         agent_step = self.agent[AGENT_RUN]
-        self.assertIn("INSTALLATION_TOKEN", agent_step)
-        for forbidden in ("APP_PRIVATE_KEY", "GH_TOKEN", "github.token", "secrets."):
-            self.assertNotIn(forbidden, agent_step)
-        # 領 Copilot 權杖只要求 organization_copilot_requests: read，不含任何 repo 寫入權限
-        script = run_script(self.agent[MINT_COPILOT])
-        self.assertEqual(re.findall(r'"(\w+)":"(\w+)"', script), [("organization_copilot_requests", "read")])
+        self.assertIn("GITHUB_TOKEN: ${{ github.token }}", agent_step)
+        self.assertNotIn("GH_TOKEN", agent_step)
+
+    def test_secrets_appear_only_in_the_publish_job(self):
+        self.assertEqual(len(re.findall(r"secrets\.", self.yml)), 1)
+        self.assertIn("secrets.APP_PRIVATE_KEY", self.publish[MINT_REPO])
 
     def test_publish_job_private_key_only_in_the_mint_step_after_gate_and_commit(self):
         keyed = [n for n, s in self.publish.items() if "APP_PRIVATE_KEY" in s]
@@ -638,9 +644,12 @@ class WorkflowTests(TemplateCase):
         grants = re.findall(r"permission-([a-z-]+): (\w+)", self.publish[MINT_REPO])
         self.assertEqual(sorted(grants), [("contents", "write"), ("issues", "write"), ("pull-requests", "write")])
 
-    def test_copilot_mint_arguments_pass_the_scripts_own_validation(self):
+    def test_optional_snippet_arguments_pass_the_scripts_own_validation(self):
+        """選用片段（接受風險才用）：參數要通過腳本自己的驗證，且確實是它會留在 agent job 的唯一 secret 引用。"""
         mod = load_module(self.py_path)
-        script = run_script(self.agent[MINT_COPILOT])
+        snippet = self.blocks["alt-copilot-mint-step.yml"]
+        self.assertIn("secrets.APP_PRIVATE_KEY", snippet)
+        script = run_script(split_steps(snippet)[0])
         raw = re.search(r"--permissions '(\{.*?\})'", script).group(1)
         self.assertEqual(mod.parse_permissions(raw), {"organization_copilot_requests": "read"})
         self.assertIn("--github-output copilot_token", script)
@@ -653,13 +662,11 @@ class WorkflowTests(TemplateCase):
         # 反例：把 push 步驟搬回 agent job，或讓 agent job 帶著私鑰與寫入權杖，前述斷言用的條件必須成立
         merged = self.yml.replace("  publish:\n", "  agent_tail:\n", 1)
         self.assertNotEqual(sorted(split_jobs(merged)), ["agent", "publish"])
-        leaky = self.yml.replace('INSTALLATION_TOKEN: ${{ steps.copilot.outputs.copilot_token }}',
-                                 'INSTALLATION_TOKEN: ${{ steps.copilot.outputs.copilot_token }}\n          GH_TOKEN: ${{ secrets.APP_PRIVATE_KEY }}', 1)
+        leaky = self.yml.replace('GITHUB_TOKEN: ${{ github.token }}',
+                                 'GITHUB_TOKEN: ${{ github.token }}\n          K: ${{ secrets.APP_PRIVATE_KEY }}', 1)
         self.assertNotEqual(leaky, self.yml)
-        agent_step = steps_of(leaky, "agent")[AGENT_RUN]
-        self.assertIn("APP_PRIVATE_KEY", agent_step)
-        self.assertEqual([n for n, s in steps_of(leaky, "agent").items() if "APP_PRIVATE_KEY" in s],
-                         [MINT_COPILOT, AGENT_RUN])
+        self.assertIn("secrets.", split_jobs(leaky)["agent"])  # test_default_agent_job_references_no_secret_at_all 會因此失敗
+        self.assertEqual(len(re.findall(r"secrets\.", leaky)), 2)
 
 
 HOOK = "#!/bin/sh\nprintf 'STOLEN=%s' \"$GH_TOKEN\" > \"$STOLEN_FILE\"\n"
@@ -781,13 +788,17 @@ class PublishPipelineTests(TemplateCase):
                 self.assertNotEqual(result.returncode, 0, result.stdout)
                 self.assertFalse((publish / ".git" / "hooks" / "pre-commit").exists())
 
-    @unittest.skipIf(sys.platform == "win32", "Windows 預設無法建立符號連結，無法驗證模式 120000")
     def test_symlink_patch_is_refused(self):
+        # core.symlinks=false 時 git apply --index 仍在 index 記下 120000（Windows 也能驗），關卡靠模式欄位擋
         patch = self.root / "link.patch"
         patch.write_text("diff --git a/link b/link\nnew file mode 120000\nindex 0000000..d6d8c3c\n"
                          "--- /dev/null\n+++ b/link\n@@ -0,0 +1 @@\n+/etc/passwd\n\\ No newline at end of file\n",
                          encoding="utf-8", newline="\n")
-        self.assertEqual(self.run_gate(self.clone("publish"), patch).returncode, 1)
+        publish = self.clone("publish")
+        self.git(publish, "config", "core.symlinks", "false")
+        result = self.run_gate(publish, patch)
+        self.assertEqual(result.returncode, 1, (result.stdout, result.stderr))
+        self.assertIn("符號連結", result.stderr)
 
     # ----- 審查員重現的攻擊：Agent 寫 .git/hooks/pre-commit 偷 repo 權杖 -----
     def attack(self, agent):

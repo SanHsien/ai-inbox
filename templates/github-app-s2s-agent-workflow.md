@@ -1,25 +1,29 @@
 ---
 name: github-app-s2s-agent-workflow
-description: GitHub App 短期 installation token 交換腳本（Python 與 Bash）與夜間無人值守 Agent 的 GitHub Actions 工作流範本，含權限縮減、爆破半徑關卡與 Draft PR。Use when an unattended agent needs a workload-owned GitHub identity instead of a personal token. 需要讓背景 Agent 用 GitHub App 身分而不是個人 token 時使用。
+description: 夜間無人值守 Agent 的 GitHub Actions 工作流範本（agent 與 publish 分成兩個 job，Agent 用內建 GITHUB_TOKEN 呼叫 Copilot、publish 用 GitHub App 短期權杖推送並開 Draft PR），附 App installation token 交換腳本（Python）、爆破半徑關卡與停用 hook 的 commit。 Use when an unattended agent needs to open draft PRs without a personal token and without exposing the App private key to the agent job.
 ---
 
 # GitHub App S2S 認證腳本與夜間 Agent 工作流範本
 
 > 規範：[`docs/github-apps-s2s-copilot-workload-identity-guide.md`](../docs/github-apps-s2s-copilot-workload-identity-guide.md)（本 repo）。複製到別的專案時，本檔已含全部程式碼與步驟，不依賴該連結，連結可刪。
-> 用法：把下面兩個檔案存成標示的路徑，把「要填的值」填完，先照「本機乾跑」驗證，再手動觸發一次 `workflow_dispatch`。
+> 用法：把下面的工作流存成標示的路徑，把「要填的值」填完，再手動觸發一次 `workflow_dispatch`。腳本（檔案一）只有走選用路線或在 Actions 以外使用才需要，照「本機乾跑」驗證。
+> **預設路線（混合）**：agent job 用內建 `GITHUB_TOKEN` 加 `permissions: copilot-requests: write` 呼叫 Copilot，**整個 job 不引用任何 secret**；publish job 用 GitHub App 領寫入權杖推分支、開 Draft PR（App 權杖開的 PR 才會觸發 CI）。前提：組織擁有的 repo，且組織開啟「Allow use of Copilot CLI billed to the organization」政策。改用 `GITHUB_TOKEN` 只是讓 agent job 不需要私鑰；publish job 仍然需要 App 與私鑰。
 > 查證日：2026-11-02。Copilot 的 App 認證在官方文件標示為 public preview，行為可能變動；對應來源在文末。
 
 ## 1. 要填的值
 
 | 名稱 | 放哪裡 | 怎麼取得 |
 | :--- | :--- | :--- |
-| `YOUR_ORG/YOUR_REPO` | 工作流 `if:` 那一行 | 要跑夜間 Agent 的組織與 repo。Copilot 的 App 認證只支援組織安裝，個人帳號與 enterprise 安裝不行 |
+| `YOUR_ORG/YOUR_REPO` | 工作流 `if:` 那一行 | 要跑夜間 Agent 的**組織擁有的** repo。預設路線的 `copilot-requests: write` 只對組織擁有的 repo 有效（官方 Copilot SDK 文件）；個人帳號的 repo 請改用選用路線以外的做法，本範本不涵蓋 |
+| 組織政策 | 組織的 Copilot 設定 | 啟用「Allow use of Copilot CLI billed to the organization」；沒開的話預設路線的 Copilot 請求會被拒絕 |
 | `APP_CLIENT_ID` | repo 或組織的 Actions variable（不是 secret） | GitHub App 設定頁的 Client ID（和 App ID 是不同的值） |
 | `APP_PRIVATE_KEY` | repo 或組織的 Actions secret | App 設定頁產生私鑰後下載的 `.pem`，**整個檔案內容**（含開頭與結尾那兩行）貼進 secret；貼完就把下載的檔案刪掉 |
-| App 的權限 | App 註冊頁 | 組織權限 `Copilot Requests: Read-only`；repo 權限 `Contents`、`Pull requests`、`Issues` 各 Read and write；其餘不勾 |
+| App 的權限 | App 註冊頁 | repo 權限 `Contents`、`Pull requests`、`Issues` 各 Read and write；其餘不勾。**預設路線不需要**組織權限 `Copilot Requests`，不要勾（少一個可被濫用的權限）；只有走 3.2 的選用路線才要加 `Copilot Requests: Read-only` |
 | `ai-ready` 標籤 | repo labels | 手動建立；只有維護者能貼，Agent 只處理有這個標籤的 issue |
 
-## 2. 檔案一：`.github/scripts/app_installation_token.py`
+## 2. 檔案一（選用）：`.github/scripts/app_installation_token.py`
+
+**預設工作流不呼叫這支腳本**（publish job 用官方 `actions/create-github-app-token`）。它用在兩種情況：Actions 以外的服務（自架主機、雲端排程）要換 installation token；或你接受 3.2 的風險，要在 agent job 用 App 領 Copilot 權杖。
 
 用私鑰簽 JWT、換 installation token。只用標準函式庫；私鑰只讀環境變數 `GH_APP_PRIVATE_KEY`，不接受檔案路徑、不寫磁碟、不印出。
 
@@ -269,13 +273,13 @@ if __name__ == "__main__":
 
 ## 3. 檔案二：`.github/workflows/nightly-maintenance-agent.yml`
 
-流程分成兩個 job，中間只傳一個 patch 檔：
+流程分成兩個 job，中間只傳一個 patch 檔（artifact）：
 
 ```text
  job agent（視為不可信）                         job publish（新 runner、乾淨 checkout）
  ┌────────────────────────────────┐   patch    ┌──────────────────────────────────────────┐
- │ 領 Copilot 專用權杖（私鑰只在這  │  (artifact) │ git apply 套用 patch（不執行 repo 程式碼）│
- │ 一步，Agent 啟動前已結束）       │ ─────────► │ 爆破半徑關卡（檔數、禁止路徑、.git、連結） │
+ │ Copilot 靠內建 GITHUB_TOKEN        │  (artifact) │ git apply 套用 patch（不執行 repo 程式碼）│
+ │ （整個 job 沒有任何 secret）       │ ─────────► │ 爆破半徑關卡（檔數、禁止路徑、.git、連結） │
  │ 跑 Agent（改工作目錄）           │  只含工作樹 │ 停用 hook 的 commit（此時沒有任何 token） │
  │ git diff --binary 產 patch      │  變更的資料 │ 才領寫入權杖 → 推分支 → 開 Draft PR       │
  └────────────────────────────────┘            └──────────────────────────────────────────┘
@@ -303,7 +307,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # ---- Job 1：Agent 在這裡跑。它被視為不可信：只拿得到 Copilot 專用權杖，沒有 repo 寫入權杖 ----
+  # ---- Job 1：Agent 在這裡跑。它被視為不可信。
+  # 這個 job 不引用任何 secret（沒有任何 secrets 引用，也沒有 App 私鑰）：Copilot 靠內建 GITHUB_TOKEN 加 copilot-requests: write。
+  # 原因：job 一旦引用某個 secret，同 job 裡的任何程式碼（含被提示注入的 Agent）都可能讀到它，詳見指南第 7 節。 ----
   agent:
     if: github.repository == 'YOUR_ORG/YOUR_REPO'
     runs-on: ubuntu-latest
@@ -311,6 +317,7 @@ jobs:
     permissions:
       contents: read
       issues: read
+      copilot-requests: write
     outputs:
       has_patch: ${{ steps.patch.outputs.has_patch }}
       issue_number: ${{ steps.issue.outputs.number }}
@@ -344,28 +351,14 @@ jobs:
           echo "found=true" >> "$GITHUB_OUTPUT"
           echo "number=$number" >> "$GITHUB_OUTPUT"
 
-      # 私鑰只出現在這一步的環境變數，而且這一步在任何 Agent 程式碼執行之前就結束。
-      # 之後的步驟（含 Agent）拿不到私鑰；Agent 啟動時這一步的行程已經不存在。
-      - name: Mint Copilot-only installation token
-        id: copilot
+      - name: Run agent (no secrets in this job)
         if: steps.issue.outputs.found == 'true'
         env:
-          GH_APP_CLIENT_ID: ${{ vars.APP_CLIENT_ID }}
-          GH_APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
-          APP_ORG: ${{ github.repository_owner }}
+          # 官方文件的 Actions 範例把內建 token 以 GITHUB_TOKEN 環境變數交給應用程式；github.token 與官方範例寫的內建 secret 版本是同一顆
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          python3 .github/scripts/app_installation_token.py \
-            --org "$APP_ORG" \
-            --permissions '{"organization_copilot_requests":"read"}' \
-            --github-output copilot_token
-
-      - name: Run agent (Copilot token only; no repo write credentials here)
-        if: steps.issue.outputs.found == 'true'
-        env:
-          INSTALLATION_TOKEN: ${{ steps.copilot.outputs.copilot_token }}
-        run: |
-          # 換成你的 Agent 進入點：它要用 SDK 的 gitHubToken / github_token 選項讀 INSTALLATION_TOKEN，
-          # 並設 useLoggedInUser: false（見指南第 4 節），從 "$RUNNER_TEMP/issue.json" 讀 issue，只改工作目錄裡的檔案。
+          # 換成你的 Agent 進入點：從 "$RUNNER_TEMP/issue.json" 讀 issue，只改工作目錄裡的檔案。
+          # Copilot 認證怎麼接（環境變數或 SDK 選項）請照 SDK 官方文件；本範本未驗證 SDK 會自動讀 GITHUB_TOKEN。
           echo "尚未設定 Agent 指令：請替換這一步" >&2
           exit 1
 
@@ -507,8 +500,9 @@ jobs:
 ### 3.1 設計重點
 
 - **為什麼要拆兩個 job（一個已重現的漏洞）。** 若 Agent 與推送在同一個 job，Agent 可以寫入 `.git/hooks/pre-commit`；`git status` 與 `git diff --cached` 都看不到 `.git/` 內的變更，關卡照樣通過，之後帶著寫入權杖執行 `git commit` 時 hook 就跑起來，把環境變數裡的權杖寫走。拆開後 publish 在新的 runner 乾淨 checkout，`.git/` 不可能被 Agent 動過；patch 只是一份資料。測試用暫存 repo 重現了這個攻擊（見測試 `test_hook_attack_*`），並證明新流程拿不到權杖。
-- **兩顆 token，各管一件事。** `actions/create-github-app-token` 目前的輸入沒有 Copilot Requests 這個權限（v3.3.0 的 `action.yml` 查不到），所以 Copilot 用的 token 由檔案一直接呼叫 REST API 領，且只要 `organization_copilot_requests: read`；寫入 repo 用的 token 由官方 action 領，且只要 `contents`、`pull-requests`、`issues` 的 write。
-- **私鑰出現的位置。** publish job 的領權杖那一步一定有私鑰。agent job 也要領 Copilot 權杖，所以 agent job 的**第一個 Agent 之前的步驟**會用到私鑰；這一步是範本自己的腳本、在 Agent 程式碼啟動前就結束，之後的步驟（含 Agent）拿不到私鑰。官方 Workflow syntax 頁（2026-11-02 核對）寫明含機密的 job output 會在 runner 上被遮蔽、不會送給 GitHub Actions（本次未實際跑一次驗證），所以沒辦法再多拆一個只領權杖的 job。若你的威脅模型連這一步都不接受，請改用「Actions 內建 `GITHUB_TOKEN` 加 `copilot-requests: write`」那條路（指南第 5 節），它不需要私鑰。
+- **兩種權杖，分在兩個 job。** agent job 只有內建 `GITHUB_TOKEN`（`contents: read`、`issues: read`、`copilot-requests: write`），沒有任何 `secrets.` 引用，也沒有 App 私鑰；寫入 repo 用的權杖由 publish job 以官方 `actions/create-github-app-token` 領，且只要 `contents`、`pull-requests`、`issues` 的 write，只限目前這個 repo。
+- **為什麼 agent job 不能引用任何 secret。** 官方 GitHub Advisory（CVE-2025-30066，tj-actions/changed-files）描述惡意腳本「以 `sudo python3` 讀取 Runner Worker 行程記憶體取出 secrets」；官方 GitHub-hosted runner 文件寫明 Linux 與 macOS 的虛擬機以免密碼 sudo 執行。所以**同一個 job 裡的任何程式碼（包含被提示注入的 Agent）都應被視為讀得到該 job 引用的 secret**。「引用的 secret 會留在 Worker 記憶體到 job 結束」是由上述事實推論，官方文件沒有逐字這樣寫。因此私鑰不能出現在 agent job，哪怕只在 Agent 之前的一個步驟——步驟結束不代表記憶體裡的值消失。
+- **為什麼不能再拆一個只領 Copilot 權杖的 job。** job output 這條路被擋：官方 Workflow syntax 頁寫明含機密的 job output 會在 runner 上被遮蔽、不會送給 GitHub Actions。artifact 這條路擋不住：領權杖的 job 可以把權杖寫進 artifact 再由 agent job 下載，但那等於把一顆會在 1 小時內有效的 Copilot 權杖放在 artifact 儲存區，任何有權限下載該 run artifact 的人都拿得到，也沒有 output 那種自動遮蔽（以上是依官方 artifact 與 output 行為的推論，本次未實測）——本範本不採用。所以 Copilot 認證改用不需私鑰的 `GITHUB_TOKEN` 路線。
 - **issue 內容是不受信任的輸入。** 只存成檔案放在 `$RUNNER_TEMP`，不內插進 shell 或指令；`run:` 區塊內不使用 `${{ }}`，所有值都經 `env:` 傳入（GitHub 的安全強化文件建議用中間環境變數）。
 - **預留的失敗點。** 「Run agent」預設 `exit 1`，沒替換就不會有 PR。這是刻意的：預設成功會讓空殼工作流看起來像在運作。
 - **爆破半徑關卡**（publish job；`git apply` 本身也會拒絕寫進 `.git/` 的路徑，這裡是第二層）：patch 大小上限、變更檔數超過 `MAX_FILES`、碰到 `DENY_REGEX` 的路徑（預設含 `.github/`、任何層級的 `.git`、`.gitattributes`、`.gitmodules`、Dockerfile、docker-compose、Terraform）、符號連結或 submodule、或套用後沒有變更，都失敗。上限與路徑是本範本的取捨，不是 GitHub 的規定。
@@ -518,6 +512,27 @@ jobs:
 - **用 App token 開 PR 的原因**：用 `GITHUB_TOKEN` 觸發的事件不會再觸發新的 workflow run（`workflow_dispatch`、`repository_dispatch` 例外），所以以 `GITHUB_TOKEN` 開的 PR 不會自動跑 CI；用 App token 開則會。
 - **action 版本釘 SHA**：`actions/checkout` v7.0.1、`actions/create-github-app-token` v3.3.0、`actions/upload-artifact` v7.0.2、`actions/download-artifact` v8.0.2，皆釘在 commit SHA（2026-11-02 以 `gh api repos/.../commits/<tag>` 核對）。升級時重新核對 SHA，不要只改註解。
 - **還需要在 repo 設定做的事**（工作流本身做不到）：主分支的保護規則要求 PR、至少一位真人 review 與 CI 必要檢查，且不要把這個 App 加進 bypass 名單；Actions 設定把 workflow 權限預設調成唯讀。
+
+### 3.2 選用：一定要在 agent job 用 App 領 Copilot 權杖（明確接受的風險）
+
+只有在你的 repo 不是組織擁有、或組織不開「Allow use of Copilot CLI billed to the organization」政策、或你要把用量以 App 身分（CSV 的 `app_client_id`）歸帳時才考慮。做法：App 加上組織權限 `Copilot Requests: Read-only`、保留檔案一，把下面這一步放進 agent job 的 "Run agent" 之前，並拿掉 job `permissions` 裡的 `copilot-requests: write`；Agent 步驟改成用 `INSTALLATION_TOKEN` 環境變數取得權杖，再用 SDK 的 `gitHubToken`／`github_token` 選項傳入（指南第 4 節）。
+
+```yaml alt-copilot-mint-step.yml
+      - name: Mint Copilot-only installation token
+        id: copilot
+        if: steps.issue.outputs.found == 'true'
+        env:
+          GH_APP_CLIENT_ID: ${{ vars.APP_CLIENT_ID }}
+          GH_APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+          APP_ORG: ${{ github.repository_owner }}
+        run: |
+          python3 .github/scripts/app_installation_token.py \
+            --org "$APP_ORG" \
+            --permissions '{"organization_copilot_requests":"read"}' \
+            --github-output copilot_token
+```
+
+**這是明確接受的風險，不是已排除的風險。** 一旦 agent job 引用了 `secrets.APP_PRIVATE_KEY`，被提示注入的 Agent 就可能取得 App 私鑰（見 3.1 的 Runner Worker 記憶體說明）。私鑰不會自動過期（官方：需手動撤銷），可以領出該 App 全部已授權的權限，包含 publish 要用的 `contents: write`，等於繞過本範本把 Agent 與寫入權杖隔開的整個設計。接受前請確認：App 只裝在這一個 repo、權限只有檔案內列的三項加 Copilot Requests、私鑰有輪替與撤銷的流程，並在 repo 設定做好分支保護。
 
 ## 4. 本機乾跑（假私鑰，不連網）
 
@@ -535,8 +550,8 @@ Windows PowerShell 沒有 `openssl` 時，可以在 Git Bash 裡跑上面這段�
 
 ## 5. 這個範本沒有做到的事
 
-- **Agent 本體不在範本內。** 「Run agent」是預留步驟。官方文件（查證日 2026-11-02）只給出建立 `CopilotClient` 並傳入 `gitHubToken`／`github_token` 與 `useLoggedInUser: false` 的範例；建立 session、送 prompt 的 API 本範本沒有逐一核對，請照 SDK 的 README 寫，標為**未驗證**。
-- **工作流沒有在真實的 GitHub 上跑過。** 本範本的測試（`tests/test_github_app_s2s_template.py`）實跑了交換腳本（簽 JWT、對本機模擬伺服器換 token）、patch 產生、爆破半徑關卡與停用 hook 的 commit；整份 YAML 只做結構檢查（action 釘 SHA、`run:` 內無 `${{`、頂層 permissions 為空、agent 與 publish 分屬兩個 job、agent job 沒有寫入權杖），沒有在 Actions 上執行。第一次使用請先 `workflow_dispatch` 手動跑。
+- **Agent 本體不在範本內。** 「Run agent」是預留步驟。官方文件（查證日 2026-11-02）給出：Actions 內用 `GITHUB_TOKEN` 加 `copilot-requests: write`；以及 SDK 建立 `CopilotClient` 並傳入 `gitHubToken`／`github_token` 與 `useLoggedInUser: false` 的範例（用在安裝權杖）。**SDK 在 Actions 裡是否自動讀 `GITHUB_TOKEN`、建立 session 與送 prompt 的 API，本範本沒有逐一核對**，請照 SDK 與 Copilot CLI 的官方文件寫，標為**未驗證**。
+- **工作流沒有在真實的 GitHub 上跑過。** 本範本的測試（`tests/test_github_app_s2s_template.py`）實跑了選用的交換腳本（簽 JWT、對本機模擬伺服器換 token）、patch 產生、爆破半徑關卡與停用 hook 的 commit；整份 YAML 只做結構檢查（action 釘 SHA、`run:` 內無 `${{`、頂層 permissions 為空、agent 與 publish 分屬兩個 job、agent job 沒有寫入權杖），沒有在 Actions 上執行。第一次使用請先 `workflow_dispatch` 手動跑。
 - **沒有提供 Bash 版。** 用 `openssl` 簽 JWT 時，私鑰要不落地就得靠行程替換（`<(...)`）；在我查證的 Windows Git Bash 環境，原生 openssl 讀不到 `/proc/<pid>/fd/*`，而本範本作者沒有 Linux 環境可實跑驗證，所以不放未跑過的腳本。Python 版同時支援 Linux、macOS、Windows。
 - **純 Python RSA 簽章不是常數時間**，只適合一次性 runner；長駐服務請改用成熟的函式庫或雲端 KMS。
 - **通知**：工作流失敗只會變紅燈；要推到 Slack、Telegram 等，請自行加步驟。
@@ -554,6 +569,9 @@ Windows PowerShell 沒有 `openssl` 時，可以在 Git Bash 裡跑上面這段�
 - [Triggering a workflow（GITHUB_TOKEN 不觸發新 run）](https://docs.github.com/en/actions/using-workflows/triggering-a-workflow)
 - [Security hardening for GitHub Actions（中間環境變數、釘 SHA）](https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions)
 - [actions/create-github-app-token v3.3.0](https://github.com/actions/create-github-app-token/tree/64ab729a6294000f5aa4a4bc0b73d1f32bc45510)（`action.yml` 與 README 於該 commit 讀取）
+- [GitHub Advisory GHSA-mrrh-fwg8-r2c3（CVE-2025-30066，tj-actions/changed-files）](https://github.com/advisories/GHSA-mrrh-fwg8-r2c3)（惡意腳本以 `sudo python3` 讀 Runner Worker 行程記憶體取出 secrets）
+- [About GitHub-hosted runners](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners)（Linux 與 macOS 虛擬機以免密碼 sudo 執行）
+- [Using GitHub Copilot CLI in GitHub Actions](https://docs.github.com/en/copilot/how-tos/copilot-cli/automate-copilot-cli/automate-with-actions)（組織擁有的 repo 建議用 `GITHUB_TOKEN`）
 - [actions/checkout v7.0.1](https://github.com/actions/checkout/tree/3d3c42e5aac5ba805825da76410c181273ba90b1)
 - [actions/upload-artifact v7.0.2](https://github.com/actions/upload-artifact/tree/cf430e030ddbb5b0abf93d22962f4752f3646cd9)、[actions/download-artifact v8.0.2](https://github.com/actions/download-artifact/tree/9000827ccba6bdab643e8b6fd33ac0654aef8333)
 - [Workflow syntax for GitHub Actions](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)（含機密的 job output 不會傳遞）
