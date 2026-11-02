@@ -6,7 +6,7 @@ source_platform: "Threads (@insight.log_by_yubin) / Substack (Dan Koe)"
 author: "Daily Insight (育斌, @insight.log_by_yubin) / Dan Koe"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: archived
 cluster: 3
 cluster_role: "一人公司工作流"
 short_title: "Dan Koe數位匠人與經驗時代架構"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@insight.log_by_yubin)](https://www.threads.com/share/BAb6GnHykL/) ｜ [貼文永久網址](https://www.threads.com/@insight.log_by_yubin/post/DfDxxnAE0cY) ｜ [Dan Koe 原文：The influencer is dead. The Age of Experience is here.](https://letters.thedankoe.com/p/the-influencer-is-dead-the-age-of)
 - **核心作者**：Daily Insight（育斌，@insight.log_by_yubin 導讀推薦）／ Dan Koe（年收數億台幣一人公司實踐者、暢銷書作者與數位思想家）
 - **分析主題**：解構 Dan Koe 提出的重磅長文《網紅已死，經驗時代來臨（The influencer is dead. The Age of Experience is here.）》。深度拆解「網紅（Influencer）vs 個人品牌（Personal Brand）vs 數位匠人（Artisan）」三大創作者原型的底層驅動力差，闡述生成式 AI 泛濫時代下「個人獨特視角（Perspective）與真實生活經驗（Lived Experience）」作為終極護城河的商業本質，並提煉「思想博物館、5 視角切角重構、信號捕捉、數位產品閉環」的 4 階段執行計畫。
-- **當前狀態**：`🔴 待辦處理中 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md`](./2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md)（Felix Rieseberg AI 野心四維框架與個人槓桿放大）
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 硬化工程哲學：專業工作流與抗噪自律）
@@ -126,6 +126,7 @@ Dan Koe 揭示了一個關鍵真相：「沒有人能壟斷一個主題或知識
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
 - [ ] **`T-20261031-10`**｜**[優先級：高]** 撰寫「Dan Koe 數位匠人（Artisan）4 階段個人思想資產與視角重構規範指南」收錄於 `docs/dan-koe-digital-artisan-framework-spec.md`
+  - **狀態**：⚪ 不做（Antigravity 交付經獨立審查退回：歸給 Dan Koe 的作品名、數字與分類多處捏造仍標「已查證」（例如拼出的書名、Kortex 實作思想博物館）；切角工具只把輸入套進固定句子，換任何輸入結果相同。原文能用的只有 5 切角、雙看板、四週計畫，一頁就能摘要，不值得再投入規範、工具與範本。）
   - **目標範圍**：`docs/dan-koe-digital-artisan-framework-spec.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳細整理網紅、個人品牌與數位匠人三大原型的邊界與長短期激勵陷阱。
@@ -136,6 +137,7 @@ Dan Koe 揭示了一個關鍵真相：「沒有人能壟斷一個主題或知識
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-11`**｜**[優先級：中]** 實作「數位匠人 5 視角切角與雙軌思想看板產生工具」於 `tools/generate_artisan_angles.py` 與單元測試
+  - **狀態**：⚪ 不做（Antigravity 交付經獨立審查退回：歸給 Dan Koe 的作品名、數字與分類多處捏造仍標「已查證」（例如拼出的書名、Kortex 實作思想博物館）；切角工具只把輸入套進固定句子，換任何輸入結果相同。原文能用的只有 5 切角、雙看板、四週計畫，一頁就能摘要，不值得再投入規範、工具與範本。）
   - **目標範圍**：`tools/generate_artisan_angles.py` 與 `tests/test_generate_artisan_angles.py`
   - **具體做法**：
     1. 實作 CLI 工具，支援輸入核心主題與常見觀點，依 5 大視角切角（大師濾鏡、過去自我、概念重構、對抗主流、日常落地）自動生成結構化分析提示與骨架。
@@ -145,6 +147,7 @@ Dan Koe 揭示了一個關鍵真相：「沒有人能壟斷一個主題或知識
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261031-12`**｜**[優先級：低]** 產出標準化「Digital Artisan 思想博物館與視角重構 Prompt 範本」收錄於 `templates/digital-artisan-prompt-template.md`
+  - **狀態**：⚪ 不做（Antigravity 交付經獨立審查退回：歸給 Dan Koe 的作品名、數字與分類多處捏造仍標「已查證」（例如拼出的書名、Kortex 實作思想博物館）；切角工具只把輸入套進固定句子，換任何輸入結果相同。原文能用的只有 5 切角、雙看板、四週計畫，一頁就能摘要，不值得再投入規範、工具與範本。）
   - **目標範圍**：`templates/digital-artisan-prompt-template.md`
   - **具體做法**：
     1. 產出可直接供 Claude Code、Antigravity 或其他 Agent 引入的高階 Prompt 範本。
