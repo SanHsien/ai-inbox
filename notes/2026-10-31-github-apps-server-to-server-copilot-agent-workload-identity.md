@@ -6,7 +6,7 @@ source_platform: "Threads (@it.oppa.twhk) / GitHub Changelog (github.blog)"
 author: "it.oppa.twhk (@it.oppa.twhk) / GitHub Copilot Team"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "工作負載身分認證"
 short_title: "GitHub Apps S2S代理人身分認證"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Threads 原文分享 (@it.oppa.twhk)](https://www.threads.com/share/_juQRw3Bl/) ｜ [貼文永久網址](https://www.threads.com/@it.oppa.twhk/post/DfEikz9DWOv) ｜ [GitHub Changelog 官方公告 (2026-10-27)](https://github.blog/changelog/2026-10-27-github-copilot-supports-server-to-server-authentication/) ｜ [GitHub Apps 認證官方文檔](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app)
 - **核心作者**：it.oppa.twhk（@it.oppa.twhk，軟體架構與 AI 實戰創作者）／ GitHub Copilot 產品架構團隊
 - **分析主題**：解構 GitHub 於 2026 年 10 月 27 日正式發布的重大架構更新——**GitHub Copilot 正式支援 Organization GitHub Apps 的「Server-to-Server (S2S)」服務端認證機制（Public Preview）**。深入剖析此項功能如何徹底打破過去 AI Coding Agent（如 Copilot SDK、背景修蟲 Bot、CI/CD 掃描器）必須寄生於「個別工程師個人帳號與 Personal Access Token (PAT)」的結構性瓶頸，賦予 AI 代理人專屬的 **Workload-Owned 系統組織身分**。結合社群架構師（@alicken、@ginsengtrycatch）的深度討論，探討最小權限隔離（Least-Privilege）、短期動態 Token 交換（1 小時 TTL）、企業稽核追蹤（`app_client_id`）與夜間自主「無人值守 SDLC（Unattended SDLC）」的安全防護與回滾邊界。
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 專案規範四大硬閘門：最小權限、環境隔離與確定性防線）
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（Thorsten Ball 15 條實戰哲學：爆破半徑審查、不可反駁證據與人類最終裁決）
@@ -190,7 +190,7 @@ sequenceDiagram
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261031-25`**｜**[優先級：高]** 撰寫「GitHub Apps Server-to-Server 與 Copilot SDK 工作負載身分整合實戰指南：權限配置、短期 Token 交換與夜間無人值守 SDLC」收錄於 `docs/github-apps-s2s-copilot-workload-identity-guide.md`
+- [x] **`T-20261031-25`**｜**[優先級：高]** 撰寫「GitHub Apps Server-to-Server 與 Copilot SDK 工作負載身分整合實戰指南：權限配置、短期 Token 交換與夜間無人值守 SDLC」收錄於 `docs/github-apps-s2s-copilot-workload-identity-guide.md`
   - **目標範圍**：`docs/github-apps-s2s-copilot-workload-identity-guide.md`（規範文檔；不修改其他專案程式）
   - **具體做法**：
     1. 詳盡規範 Organization GitHub App 的建立步驟與最小授權原則（`Copilot Requests: Read-only`、`Pull Requests: Write`、`Issues: Write`、`Contents: Write`，排除組織管理高危權限）。
@@ -198,7 +198,8 @@ sequenceDiagram
     3. 規範 Copilot SDK（Node.js / Python）在背景無人值守作業下的呼叫介面（`useLoggedInUser: false`、環境變數 `COPILOT_GITHUB_TOKEN` 注入）。
     4. 定義夜間自主 Agent PR 提交的安全防線（受保護分支不可繞過、強制真人 Review、自動化測試 Gate、一鍵撤回與 Rollback 流程）。
   - **驗收標準（DoD）**：產出 `docs/github-apps-s2s-copilot-workload-identity-guide.md`，具備標準 Markdown 結構與 S2S 認證流程圖；以 `Test-Path docs/github-apps-s2s-copilot-workload-identity-guide.md` 驗證存在。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：docs/github-apps-s2s-copilot-workload-identity-guide.md：對照 docs.github.com 與 2026-10-27 Changelog，更正筆記 7 處（權限鍵 organization_copilot_requests、權杖經 gitHubToken 傳入、不能替單一 App 設預算、只支援組織安裝等）。安全說明經兩輪審查改寫：Agent 與推送分成兩個 job，私鑰不進 Agent 所在 job，殘留風險照實寫。
 
 - [ ] **`T-20261031-26`**｜**[優先級：中]** 實作「GitHub App S2S 憑證規格檢驗與權限邊界審查工具」於 `tools/audit_github_app_s2s_spec.py` 與單元測試
   - **狀態**：⚪ 不做（目前 Agent 不用 GitHub App 身分，沒有真實 App 設定可檢驗，這支工具只會是空轉；規範與範本（T-20261031-25、27）保留。）
@@ -211,9 +212,11 @@ sequenceDiagram
   - **驗收標準（DoD）**：產出 `tools/audit_github_app_s2s_spec.py` 與對應測試；執行 `python -m unittest tests/test_audit_github_app_s2s_spec.py` 全綠通過。
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
-- [ ] **`T-20261031-27`**｜**[優先級：低]** 產出標準化「GitHub App S2S 認證封裝腳本與無人值守 Agent GitHub Actions 工作流範本」收錄於 `templates/github-app-s2s-agent-workflow.md`
+- [x] **`T-20261031-27`**｜**[優先級：低]** 產出標準化「GitHub App S2S 認證封裝腳本與無人值守 Agent GitHub Actions 工作流範本」收錄於 `templates/github-app-s2s-agent-workflow.md`
   - **目標範圍**：`templates/github-app-s2s-agent-workflow.md`
   - **具體做法**：
     1. 提供標準 Bash / Python 短權杖交換腳本範本（讀取 App ID 與 Private Key 產出短期 `ghs_` Token）。
     2. 提供開箱即用的 GitHub Actions 工作流（Workflow）範例，展示在 CI/CD 中以 Workload-Owned 系統身分啟動夜間維護 Agent 自動分析 issue、提交修復分支與 Draft PR。
   - **驗收標準（DoD）**：產出 `templates/github-app-s2s-agent-workflow.md`，具備標準 YAML frontmatter 與完整配置代碼；以 `Test-Path templates/github-app-s2s-agent-workflow.md` 驗證存在。
+  - **完成日期**：2026-11-02
+  - **實作紀錄 / 證據**：templates/github-app-s2s-agent-workflow.md＋tests（46 測試）：agent job 只用 GITHUB_TOKEN 加 copilot-requests，不引用任何 secret；publish job 乾淨 checkout、套用 patch 後檢查、停用 hook 再 commit，最後才領 App 寫入權杖推送。測試重現舊流程經 .git/hooks 偷權杖、新流程拿不到；換權杖腳本用執行時產生的假金鑰對本機模擬伺服器實跑。actionlint 尚不認得 copilot-requests 範圍；未在真實 Actions 執行。
