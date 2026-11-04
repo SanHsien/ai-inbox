@@ -474,7 +474,7 @@ class TestShaderHeroDemoStatic(unittest.TestCase):
         self.assertRegex(self.html, r'id="res-display">--<')
 
     def test_not_labelled_as_upstream_work(self):
-        visible = re.sub(r"<!--[\s\S]*?-->|/\*[\s\S]*?\*/|<script[\s\S]*?</script>|<style[\s\S]*?</style>", "", self.html)
+        visible = re.sub(r"<!--[\s\S]*?-->|/\*[\s\S]*?\*/|<script[\s\S]*?</script[^>]*>|<style[\s\S]*?</style[^>]*>", "", self.html, flags=re.I)
         self.assertNotIn("DVK Lab", visible)
         self.assertIn("自行撰寫", visible)
 
