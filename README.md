@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 195 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 124／⚪ 不做 71
+> 共 198 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 127／⚪ 不做 71
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,7 +50,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 124 項）</summary>
+<details><summary>展開查看已完成任務（共 127 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -178,6 +178,9 @@
 | `T-20261102-10` | 2026-11-02 | 撰寫「AI Coding Agent 防過度設計與防官僚化精實工程手冊（8 條白話規約與反模式清單）」收錄於 `docs/anti-overengineering-agent-rules-spec.md` | 已完成規格手冊撰寫，詳述 8 大反模式、300 行預算守衛、兩輪審查熔斷機制與單雙向門矩陣；以 `Test-Path` 驗證為 True。 | [2026-11-02-microphone-anti-overengineering-eight-agent-rules](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md) |
 | `T-20261102-11` | 2026-11-02 | 實作「Agent 單次改動規模與規則通膨靜態稽核腳本」於 `tools/verify_agent_lean_rules.py` 與單元測試 | 已完成 `tools/verify_agent_lean_rules.py` 與單元測試 `tests/test_verify_agent_lean_rules.py`，測試覆蓋正常變更、300 行超額豁免宣告、未宣告攔截與規則檔案長度審查，單元測試全數綠燈通過。 | [2026-11-02-microphone-anti-overengineering-eight-agent-rules](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md) |
 | `T-20261102-12` | 2026-11-02 | 產出即插即用的「8 條輕量治病 Agent 系統提示詞模組（適用 CLAUDE.md / AGENTS.md / GEMINI.md）」收錄於 `templates/anti-overengineering-agent-prompt.md` | 已產出雙語精實 Prompt 模板於 `templates/anti-overengineering-agent-prompt.md`，字數控制在極簡 Token 預算內，以 `Test-Path` 驗證為 True。 | [2026-11-02-microphone-anti-overengineering-eight-agent-rules](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md) |
+| `T-20261104-01` | 2026-11-04 | 撰寫「AI 時代雲端算力竊盜防禦手冊：AMOS 釣魚木馬、Cookie 劫持與 LLMJacking 防範規格」收錄於 `docs/llmjacking-cloud-defense-spec.md` | 已完成規格手冊撰寫，包含端到端攻擊鏈矩陣、AMOS 惡意特徵清單、GCP Hard Cap 自動熔斷架構與防釣魚安裝協議；以 `Test-Path` 驗證為 True。 | [2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) |
+| `T-20261104-02` | 2026-11-04 | 實作「本地持久化後門與未授權雲端 Service Account 異常稽核腳本」於 `tools/verify_cloud_persistence_audit.py` 與單元測試 | 已完成 `tools/verify_cloud_persistence_audit.py` 與單元測試 `tests/test_verify_cloud_persistence_audit.py`，測試覆蓋木馬特徵掃描、GCP Service Account 異常命名與金鑰稽核，單元測試全數綠燈通過。 | [2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) |
+| `T-20261104-03` | 2026-11-04 | 產出標準化「雲端 AI API 預算硬熔斷與防釣魚安裝審查 Prompt 模板」收錄於 `templates/llmjacking-defense-checklist-prompt.md` | 已產出 `templates/llmjacking-defense-checklist-prompt.md`，包含防釣魚安裝自檢、IAM 單向門審查清單與雲端預算硬熔斷模板，以 `Test-Path` 驗證為 True。 | [2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) |
 
 </details>
 
@@ -341,6 +344,7 @@
 | 2026-11-02 | 🟢 | [Google 官方開源 Elephant-Goldfish Model (EGM) 架構解構：大象長記憶規劃、金魚零上下文對抗審查與軟體設計工業化](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | `google`, `elephant-goldfish-model`, `egm` | 2 / 2（+1 不做） |
 | 2026-11-02 | 🟢 | [「麥克風的市場求生手冊」給 Agent 的 8 條極簡治病規約：終結 Codex 過度設計、無休止審查與規則通膨](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md) | `agent-rules`, `anti-overengineering`, `codex` | 3 / 3 |
 | 2026-11-02 | ⚪ | [OpenCut 開源 CapCut 替代品深度解析：97K Stars 多軌剪輯、Rust 跨端核心、MCP Server 與無頭自動化渲染架構](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | `opencut`, `capcut-alternative`, `video-editor` | 0 / 0（+3 不做） |
+| 2026-11-04 | 🟢 | [Nicholas Lin 醫師 GCP Vertex AI 盜用案深度鑑別診斷：假 Claude Code 釣魚、AMOS 竊密木馬、Cookie 劫持與 LLMJacking 雲端算力變現攻擊鏈](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) | `llmjacking`, `gcp`, `vertex-ai` | 3 / 3 |
 <!-- END GENERATED: index -->
 
 ---
@@ -413,6 +417,7 @@
 - PaaS架構分析：[Zeabur開源PaaS架構與資安反思](./notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md)
 - 自架PaaS生態：[Zeabur OSS開源與Installer自建](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md)
 - 端點資安與間諜軟體鑑識：[Zero-Breach-Toolkit間諜軟體鑑識](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md)
+- 雲端憑證竊取與LLMJacking防禦：[假Claude Code釣魚與Vertex AI盜刷鑑別診斷](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 閱讀框架：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)
