@@ -345,6 +345,7 @@
 | 2026-11-02 | 🟢 | [「麥克風的市場求生手冊」給 Agent 的 8 條極簡治病規約：終結 Codex 過度設計、無休止審查與規則通膨](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md) | `agent-rules`, `anti-overengineering`, `codex` | 3 / 3 |
 | 2026-11-02 | ⚪ | [OpenCut 開源 CapCut 替代品深度解析：97K Stars 多軌剪輯、Rust 跨端核心、MCP Server 與無頭自動化渲染架構](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | `opencut`, `capcut-alternative`, `video-editor` | 0 / 0（+3 不做） |
 | 2026-11-04 | 🟢 | [Nicholas Lin 醫師 GCP Vertex AI 盜用案深度鑑別診斷：假 Claude Code 釣魚、AMOS 竊密木馬、Cookie 劫持與 LLMJacking 雲端算力變現攻擊鏈](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) | `llmjacking`, `gcp`, `vertex-ai` | 3 / 3 |
+| 2026-11-06 | 🟢 | [風雪之閣「IDA 接上 AI，逆向工程最後一哩路」貼文評估：ida-pro-mcp／GhidraMCP 現況查證與既有 REA 逆向流水線對照](./notes/2026-11-06-fengxue-ida-pro-ai-mcp-reverse-engineering-concern.md) | `reverse-engineering`, `ida-pro`, `ghidra` | 0 / 0 |
 | 2026-11-06 | 🟢 | [Threads「臉書發文賺得比月薪多」貼文查核：作者自曝後台數據反證、複製貼上農場訊號與副業引流話術](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md) | `fact-check`, `facebook-content-monetization`, `engagement-farming` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -419,6 +420,7 @@
 - 自架PaaS生態：[Zeabur OSS開源與Installer自建](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md)
 - 端點資安與間諜軟體鑑識：[Zero-Breach-Toolkit間諜軟體鑑識](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md)
 - 雲端憑證竊取與LLMJacking防禦：[假Claude Code釣魚與Vertex AI盜刷鑑別診斷](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md)
+- AI 輔助逆向工程現況對照：[IDA接AI逆向貼文評估](./notes/2026-11-06-fengxue-ida-pro-ai-mcp-reverse-engineering-concern.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 閱讀框架：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)
