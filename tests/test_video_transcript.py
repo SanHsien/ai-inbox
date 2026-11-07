@@ -114,6 +114,31 @@ class DownloadAudioTest(unittest.TestCase):
                     video_transcript.download_audio(bad, self.tmp)
             run.assert_not_called()
 
+    def test_threads_url_extracts_ssr_video_versions_and_uses_bestaudio_fallback(self):
+        fake_html = b'<html>{"video_versions":[{"url":"https:\\/\\/cdn.example.com\\/v.mp4?x=1&amp;y=2"}]}</html>'
+        resp = mock.MagicMock()
+        resp.__enter__.return_value.read.return_value = fake_html
+
+        def fake_dl(cmd, **kwargs):
+            (self.tmp / "audio.mp4").write_bytes(b"MP4")
+            return _completed(0)
+
+        with mock.patch.object(video_transcript.urllib.request, "urlopen", return_value=resp), \
+                mock.patch.object(video_transcript.subprocess, "run", side_effect=fake_dl) as run:
+            out = video_transcript.download_audio("https://www.threads.com/@u/post/abc", self.tmp)
+        self.assertEqual(out.name, "audio.mp4")
+        cmd = run.call_args.args[0]
+        self.assertIn("bestaudio/best", cmd)
+        self.assertEqual(cmd[-1], "https://cdn.example.com/v.mp4?x=1&y=2")
+
+    def test_threads_url_without_video_raises_runtime_error(self):
+        resp = mock.MagicMock()
+        resp.__enter__.return_value.read.return_value = b"<html>no video here</html>"
+        with mock.patch.object(video_transcript.urllib.request, "urlopen", return_value=resp):
+            with self.assertRaises(RuntimeError) as ctx:
+                video_transcript.download_audio("https://www.threads.com/@u/post/novid", self.tmp)
+        self.assertIn("未偵測到影片串流", str(ctx.exception))
+
 
 class DeviceResolveTest(unittest.TestCase):
     def test_explicit_cpu_or_cuda_preserved(self):

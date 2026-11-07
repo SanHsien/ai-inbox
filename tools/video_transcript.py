@@ -18,10 +18,13 @@
 """
 
 import argparse
+import html
 import os
+import re
 import site
 import subprocess
 import sys
+import urllib.request
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -95,6 +98,35 @@ def _validate_url(url: str) -> str:
     return url
 
 
+_THREADS_HOSTS = {"threads.com", "www.threads.com", "threads.net", "www.threads.net"}
+
+
+def _resolve_threads_video_url(url: str, timeout: int = 15) -> str:
+    """從 Threads 貼文 SSR HTML 萃取 video_versions 直連 MP4 網址（yt-dlp 原生不支援 threads.com）。"""
+    parsed = urlparse(url)
+    if parsed.netloc.lower() not in _THREADS_HOSTS:
+        return url
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "facebookexternalhit/1.1",
+            "Accept": "text/html,application/xhtml+xml",
+        },
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        body = resp.read().decode("utf-8", errors="replace")
+    for block in re.findall(r'"video_versions":\[(.*?)\]', body):
+        m = re.search(r'"url":"([^"]+)"', block)
+        if m:
+            raw = m.group(1).replace("\\/", "/").encode("utf-8").decode("unicode_escape")
+            return _validate_url(html.unescape(raw))
+    for raw_mp4 in re.findall(r'https?:\\?/\\?/[^"\'\s<>]+\.mp4[^"\'\s<>]*', body):
+        clean = html.unescape(raw_mp4.replace("\\/", "/").encode("utf-8").decode("unicode_escape"))
+        if "rsrc.php" not in clean:
+            return _validate_url(clean)
+    raise RuntimeError(f"Threads 貼文未偵測到影片串流：{url}")
+
+
 def _audio_files(out_dir: Path) -> list[Path]:
     return sorted(
         p for p in out_dir.glob("audio.*") if p.is_file() and not p.name.lower().endswith(_PARTIAL_SUFFIXES)
@@ -113,9 +145,10 @@ def download_audio(url: str, out_dir: Path) -> Path:
         # 資料夾裡的舊音訊來自別的網址：先移除，否則新音訊副檔名不同時（m4a→webm）會沿用舊檔
         for stale in existing:
             stale.unlink()
+    target_url = _resolve_threads_video_url(url)
     template = str(out_dir / "audio.%(ext)s")
-    cmd = [sys.executable, "-m", "yt_dlp", "--no-playlist", "-f", "bestaudio", "-o", template]
-    cmd += ["--", url]  # "--" 之後一律視為位置參數，不會被解析成選項
+    cmd = [sys.executable, "-m", "yt_dlp", "--no-playlist", "-f", "bestaudio/best", "-o", template]
+    cmd += ["--", target_url]  # "--" 之後一律視為位置參數，不會被解析成選項
     try:
         result = subprocess.run(
             cmd,

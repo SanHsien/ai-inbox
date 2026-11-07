@@ -56,6 +56,7 @@ python -m pip install --user -U yt-dlp "yt-dlp[curl-cffi]" faster-whisper "av>=1
 | 抓網頁取得的字幕網址下載得到 0 位元組 | 自動字幕網址需額外簽章憑證 | 同上，不要手刻 `timedtext` 網址 |
 | 終端機輸出中文變亂碼 | Windows 主控台編碼顯示問題，檔案本身是 UTF-8 | 用 `read_file` 或 `Get-Content -Encoding UTF8` 讀檔確認 |
 | `yt-dlp` 警告 No supported JavaScript runtime | 未安裝 deno | 音訊下載仍可成功，可忽略 |
+| Threads 貼文影片報 `Unsupported URL: https://www.threads.com/...` 或直連 `.mp4` 報 `Requested format is not available` | `yt-dlp` 原生不支援 `threads.com`，且單檔 `.mp4` 無獨立 `bestaudio` 軌道 | 2026-11-08 已於 `tools/video_transcript.py` 內建 `_resolve_threads_video_url()` 自動從 Threads SSR HTML 萃取 `video_versions` 直連 `.mp4` 並改用 `-f bestaudio/best` |
 
 ---
 
