@@ -351,6 +351,7 @@
 | 2026-11-07 | 🟢 | [GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md) | `model-routing`, `github-copilot-fusion`, `cascade` | 0 / 0 |
 | 2026-11-07 | 🟢 | [AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯及 Token 成本查證](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) | `ai-engineering-from-scratch`, `curriculum`, `agent-skills` | 0 / 0 |
 | 2026-11-07 | 🟢 | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
+| 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -400,6 +401,7 @@
 - 本地語音克隆：[VoiceStudio本地語音克隆管線](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md)
 - 開源CapCut替代品與AI視訊編輯器：[OpenCut開源視訊編輯器與AI Agents](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md)
 - Canva 簡報與視覺字型速查：[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
+- 上游追蹤與繁體中文化管線：[保哥 answer-me-with-html 繁中 Fork 評估](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)
