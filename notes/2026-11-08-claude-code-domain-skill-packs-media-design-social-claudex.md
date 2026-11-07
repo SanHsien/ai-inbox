@@ -2,7 +2,7 @@
 id: 2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex
 title: "Claude Code 垂直領域 Skill 與 MCP 生態系全盤點：影音配音聽覺自審、YouTube/IG 確定性腳本、前端反 AI Slop 五件套與 Claudex 跨模型互審"
 source_url: "https://www.instagram.com/reel/DfMpBTvh_Yj/"
-source_platform: "Instagram Reels & Posts (7 則同主題工作流彙整) / GitHub"
+source_platform: "Instagram Reels & Posts (8 則同主題工作流彙整) / GitHub"
 author: "Kwon 永誠 (@kwons_en)、Airi (@airi_aimagic)、Hana (@its_hana_digital)、Chloe (@chloemakesdesign)、阿幸 (@hsing.daily)、Rena 姜瑞娜 (@renakeung)、Chiara (@lynexaai)"
 analyzed_at: 2026-11-08
 analyzed_by: "Antigravity"
@@ -25,14 +25,15 @@ tags:
 
 # Claude Code 垂直領域 Skill 與 MCP 生態系全盤點：影音配音聽覺自審、YouTube/IG 確定性腳本、前端反 AI Slop 五件套與 Claudex 跨模型互審
 
-- **來源連結（7 則同系列 Instagram 貼文合併分析）**：
+- **來源連結（8 則同系列 Instagram 貼文合併分析）**：
   1. [IG Reel `DfMpBTvh_Yj` (@kwons_en：Openverse + MMAudio + Earshot 影音自動配音與聽覺自審)](https://www.instagram.com/reel/DfMpBTvh_Yj/)
   2. [IG Reel `DfRwxagKLG9` (@airi_aimagic：YouTube 11 個免費 Claude Skills 經營頻道)](https://www.instagram.com/reel/DfRwxagKLG9/)
-  3. [IG Post `DfPQ-yeEzYJ` (@its_hana_digital：以背景、結構與限制取代空泛 Hook/Caption 指令)](https://www.instagram.com/p/DfPQ-yeEzYJ/)
-  4. [IG Reel `DebpuRpkfnw` (@chloemakesdesign：消除 AI 介面感的 5 大前端設計 Skill 與 MCP 工具鏈)](https://www.instagram.com/reel/DebpuRpkfnw/)
-  5. [IG Reel `DfFHkoEOs-F` (@hsing.daily：Instagram-Agent-Skill 13 個 IG 經營專用 Skill 流程)](https://www.instagram.com/reel/DfFHkoEOs-F/)
-  6. [IG Post `DfMnV6sGAUE` (@renakeung：Instagram 13 Skills + `voice.md` 口吻設定與草稿安全邊界)](https://www.instagram.com/p/DfMnV6sGAUE/)
-  7. [IG Reel `DdX7C1YP5Kj` (@lynexaai：Claudex Loop 讓 Claude 與 ChatGPT/Codex 四階段互審與角色互換開發)](https://www.instagram.com/reel/DdX7C1YP5Kj/)
+  3. [IG Reel `DfKHNzYq_s7` (@airi_aimagic：Instagram 13 個 Claude Skills 寫 Reels 26 公式、回留言與草稿安全邊界)](https://www.instagram.com/reel/DfKHNzYq_s7/)
+  4. [IG Post `DfPQ-yeEzYJ` (@its_hana_digital：以背景、結構與限制取代空泛 Hook/Caption 指令)](https://www.instagram.com/p/DfPQ-yeEzYJ/)
+  5. [IG Reel `DebpuRpkfnw` (@chloemakesdesign：消除 AI 介面感的 5 大前端設計 Skill 與 MCP 工具鏈)](https://www.instagram.com/reel/DebpuRpkfnw/)
+  6. [IG Reel `DfFHkoEOs-F` (@hsing.daily：Instagram-Agent-Skill 13 個 IG 經營專用 Skill 流程)](https://www.instagram.com/reel/DfFHkoEOs-F/)
+  7. [IG Post `DfMnV6sGAUE` (@renakeung：Instagram 13 Skills + `voice.md` 口吻設定與草稿安全邊界)](https://www.instagram.com/p/DfMnV6sGAUE/)
+  8. [IG Reel `DdX7C1YP5Kj` (@lynexaai：Claudex Loop 讓 Claude 與 ChatGPT/Codex 四階段互審與角色互換開發)](https://www.instagram.com/reel/DdX7C1YP5Kj/)
 - **對應官方開源 GitHub 專案（主動深挖補齊）**：
   - [`Leonxlnx/earshot`](https://github.com/Leonxlnx/earshot)（4,156 Stars，MIT）& [`hkchengrex/MMAudio`](https://github.com/hkchengrex/MMAudio)（2,307 Stars，MIT，CVPR 2025）
   - [`Jakeschincariol/youtube-agent-skill`](https://github.com/Jakeschincariol/youtube-agent-skill)（4,992 Stars，MIT）
@@ -46,15 +47,15 @@ tags:
 
 ---
 
-## 1. 核心內容摘要：5W1H 初篩與七篇貼文合併脈絡（Executive Summary）
+## 1. 核心內容摘要：5W1H 初篩與八篇貼文合併脈絡（Executive Summary）
 
-這 7 則 Instagram 貼文在外觀上都是典型的「介紹一套 Claude Code 神級工具組合 → 留言關鍵字領取安裝連結」社群導流內容；將其背後隱藏的原始碼倉庫逐一挖出後，可歸納為 **Claude Code 垂直領域外部 Harness（Skill Packs + Deterministic CLI + MCP）的四大實戰範式**：
+這 8 則 Instagram 貼文在外觀上都是典型的「介紹一套 Claude Code 神級工具組合 → 留言關鍵字領取安裝連結」社群導流內容；將其背後隱藏的原始碼倉庫逐一挖出後，可歸納為 **Claude Code 垂直領域外部 Harness（Skill Packs + Deterministic CLI + MCP）的四大實戰範式**：
 
 ```
 +-----------------------------------------------------------------------------------+
-|               7 則 IG 貼文背後指向的 4 大 Claude Code 垂直工具鏈                  |
+|               8 則 IG 貼文背後指向的 4 大 Claude Code 垂直工具鏈                  |
 +-----------------------------------------+-----------------------------------------+
-| 1. 影音音效合成與聽覺閉環 (DfMpBTvh_Yj) | 2. 自媒體頻道確定性經營 (4 則貼文合併)  |
+| 1. 影音音效合成與聽覺閉環 (DfMpBTvh_Yj) | 2. 自媒體頻道確定性經營 (5 則貼文合併)  |
 |  - Openverse (500萬+ CC0 音效搜尋)      |  - youtube-agent-skill (11 Skills+6 CLI)|
 |  - hkchengrex/MMAudio (畫面對齊生音效)  |  - instagram-agent-skill (13 Skills+5CLI)|
 |  - Leonxlnx/earshot (AI 聽覺自審與評分) |  - voice.md 個人語氣錨點 + 結構化約束   |
@@ -80,9 +81,9 @@ tags:
      - 解決 Coding Agent「會寫渲染影片的程式碼（如 Remotion），卻聽不到自己做出來的聲音是否破音或慢了 80ms」的盲區。
      - **核心指令**：`earshot describe`（輸出瞬態、衰減時間、AudioSet 標籤與峰值 dBFS）、`earshot timeline`（逐秒聽覺逐字稿，標記事件與畫面切點同步誤差）、`earshot sheet -o out.png`（輸出含頻譜、波形、響度與畫面幀的視覺化對照圖供多模態模型檢視）、`earshot critique`（對照 7 部專業產品發佈片計算 23 項評分指標與 LUFS 響度）、以及 `earshot forge` / `earshot fit`（以純程式碼合成 252 種無版權音效）。
 
-### 2.2 主題二：YouTube 與 Instagram 確定性自媒體工作流（`DfRwxagKLG9`、`DfFHkoEOs-F`、`DfMnV6sGAUE`、`DfPQ-yeEzYJ`）
+### 2.2 主題二：YouTube 與 Instagram 確定性自媒體工作流（`DfRwxagKLG9`、`DfKHNzYq_s7`、`DfFHkoEOs-F`、`DfMnV6sGAUE`、`DfPQ-yeEzYJ`）
 
-這 4 則貼文共同圍繞同一位作者 **Jake Schincariol** 開源的姊妹專案與結構化提示詞原則：
+這 5 則貼文共同圍繞同一位作者 **Jake Schincariol** 開源的姊妹專案與結構化提示詞原則（其中 `@airi_aimagic` 分別以 `DfRwxagKLG9` 介紹 YouTube 11 Skills、以 `DfKHNzYq_s7` 介紹 Instagram 13 Skills 的 `/ig-reel` 26 種開頭公式打分、`/ig-comment`、`/ig-reply`、`/ig-profile`、`/ig-plan`、`/ig-viral` 與「只寫草稿、不給 IG 密碼」之安全邊界）：
 
 | 專案名稱 | 規模與指令數 | 內建零依賴 Python 確定性工具 | 關鍵設計亮點與 CQR 實測限制 |
 | :--- | :--- | :--- | :--- |
@@ -123,7 +124,7 @@ tags:
 - [x] **`T-20261108-04`**｜**[優先級：高]** 撰寫《Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範》，並實作 `tools/verify_agent_skill_pack_safety.py` 靜態審計器
   - **目標範圍**：`docs/claude-code-domain-skill-packs-and-mcp-audit.md`、`tools/verify_agent_skill_pack_safety.py`、`tests/test_verify_agent_skill_pack_safety.py`
   - **具體實作步驟**：
-    1. 撰寫 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`，完整整理 7 則 IG 貼文對應之四大垂直領域開源專案（`earshot`/`MMAudio`、`youtube-agent-skill`/`instagram-agent-skill`、`ui-ux-pro-max`/`impeccable`/`21st-mcp`、`claudex-loop`）架構、CQR 實證數據（`hookscore.py` AUC `0.83` vs `0.56`）與安全邊界。
+    1. 撰寫 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`，完整整理 8 則 IG 貼文對應之四大垂直領域開源專案（`earshot`/`MMAudio`、`youtube-agent-skill`/`instagram-agent-skill`、`ui-ux-pro-max`/`impeccable`/`21st-mcp`、`claudex-loop`）架構、CQR 實證數據（`hookscore.py` AUC `0.83` vs `0.56`）與安全邊界。
     2. 實作 `tools/verify_agent_skill_pack_safety.py`，強制檢驗四條採納防線：`SKILLPACK-001`（攔截 `--dangerously-bypass-approvals-and-sandbox` / `bypassPermissions` 與 Impeccable Live Mode 背景自動提權）、`SKILLPACK-002`（背景 Hook 審查與 `DO_NOT_TRACK=1` / `telemetry: false` 閘門）、`SKILLPACK-003`（社交平台 `human_publish_only` 草稿唯讀與 `{{your number}}` 零虛構數據佔位符）、`SKILLPACK-004`（確定性本地 Linter 支撐與反 `100% undetectable` 誇大宣稱）。
     3. 撰寫 `tests/test_verify_agent_skill_pack_safety.py` 涵蓋四條規則之正反例單元測試。
   - **驗收標準（DoD）**：
