@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 202 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 131／⚪ 不做 71
+> 共 203 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 132／⚪ 不做 71
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,7 +50,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 131 項）</summary>
+<details><summary>展開查看已完成任務（共 132 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -182,8 +182,9 @@
 | `T-20261104-02` | 2026-11-04 | 實作「本地持久化後門與未授權雲端 Service Account 異常稽核腳本」於 `tools/verify_cloud_persistence_audit.py` 與單元測試 | 已完成 `tools/verify_cloud_persistence_audit.py` 與單元測試 `tests/test_verify_cloud_persistence_audit.py`，測試覆蓋木馬特徵掃描、GCP Service Account 異常命名與金鑰稽核，單元測試全數綠燈通過。 | [2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) |
 | `T-20261104-03` | 2026-11-04 | 產出標準化「雲端 AI API 預算硬熔斷與防釣魚安裝審查 Prompt 模板」收錄於 `templates/llmjacking-defense-checklist-prompt.md` | 已產出 `templates/llmjacking-defense-checklist-prompt.md`，包含防釣魚安裝自檢、IAM 單向門審查清單與雲端預算硬熔斷模板，以 `Test-Path` 驗證為 True。 | [2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) |
 | `T-20261107-01` | 2026-11-07 | 借鑑 `tool-call-firewall` 與 `agent-trace-debugger` 實作「綁定請求雜湊之單次審批收據驗證器與 Trace Span 去重分析工具」於 `tools/verify_tool_call_firewall.py` 與單元測試 | 已完成 `tools/verify_tool_call_firewall.py` 與單元測試 `tests/test_verify_tool_call_firewall.py`（7 項測試涵蓋合法單次收據放行、收據重放攔截、審批後內容竄改攔截、路徑越界攔截、Windows/POSIX 斜線正規化與父子 Span 重疊時間／Token 去重計算，全數綠燈通過）。 | [2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) |
-| `T-20261107-03` | 2026-11-07 | 借鑑保哥 `scripts/zh-tw/vocab.mjs` 實作「台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具」於 `tools/verify_zhtw_vocab.py` 與單元測試 | 已完成 `tools/verify_zhtw_vocab.py` 與單元測試 `tests/test_verify_zhtw_vocab.py`（5 項測試全過），並實跑全庫 `notes`、`docs`、`templates`、`README.md` 掃描與冪等驗證全綠通過。 | [2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) |
-| `T-20261107-04` | 2026-11-07 | 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md` | 已完成 `docs/zhtw-fork-idempotent-sync-spec.md` 撰寫，涵蓋 6 步無衝突重建流水線、OpenCC 二次退化修補對照表與本機驗證指令；以 `Test-Path` 驗證為 True。 | [2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) |
+| `T-20261107-02` | 2026-11-07 | 借鑑保哥 `scripts/zh-tw/vocab.mjs` 實作「台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具」於 `tools/verify_zhtw_vocab.py` 與單元測試 | 已完成 `tools/verify_zhtw_vocab.py` 與單元測試 `tests/test_verify_zhtw_vocab.py`（5 項測試全過），並實跑全庫 `notes`、`docs`、`templates`、`README.md` 掃描與冪等驗證全綠通過。 | [2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) |
+| `T-20261107-03` | 2026-11-07 | 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md` | 已完成 `docs/zhtw-fork-idempotent-sync-spec.md` 撰寫，涵蓋 6 步無衝突重建流水線、OpenCC 二次退化修補對照表與本機驗證指令；以 `Test-Path` 驗證為 True。 | [2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) |
+| `T-20261107-04` | 2026-11-07 | 升級 `tools/render_artifact_html.py` 支援 `--zhtw` 編譯前台灣繁體中文詞庫修補並保持預設輸出位元組確定性 | 已於 `tools/render_artifact_html.py` 新增 `normalize_zhtw` 與 `--zhtw` 參數，並於 `tests/test_render_artifact_html.py` 新增 `test_zhtw_normalization_repairs_degraded_vocab_outside_code`，19 項測試全數通過。 | [2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) |
 | `T-20261107-05` | 2026-11-07 | 擴充 `tools/verify_cloud_persistence_audit.py` 新增 MCP 設定檔靜態 Bearer／`ya29.` Token 與過寬 `cloud-platform` Scope 稽核器 | 已於 `tools/verify_cloud_persistence_audit.py` 實作 `audit_mcp_config_credentials` 與 `--audit-mcp-config`，並於 `tests/test_verify_cloud_persistence_audit.py` 新增正反案例測試，8 項測試全數通過。 | [2026-11-07-gemini-notebook-official-api-mcp-preview](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md) |
 
 </details>
@@ -355,7 +356,7 @@
 | 2026-11-07 | ⚪ | [GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md) | `model-routing`, `github-copilot-fusion`, `cascade` | 0 / 0 |
 | 2026-11-07 | 🟢 | [AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯及 Token 成本查證](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) | `ai-engineering-from-scratch`, `curriculum`, `agent-skills` | 1 / 1 |
 | 2026-11-07 | ⚪ | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
-| 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 2 / 2 |
+| 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 3 / 3 |
 <!-- END GENERATED: index -->
 
 ---

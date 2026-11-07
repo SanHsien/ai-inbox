@@ -109,6 +109,7 @@ notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
 - **查證個人 Fork 與遠端倉庫嚴禁依賴搜尋引擎斷言（必須直連真實 URL / API 驗證）**：
   - *教訓實例（2026-10-20）*：使用者詢問是否已 Fork `public-apis`，Agent 僅憑 `search_web` 搜尋 `site:github.com/SanHsien "public-apis"` 的空結果便妄下斷言稱「尚未 Fork」，實際上 `https://github.com/SanHsien/public-apis` 早已存在。第三方搜尋引擎爬蟲存在嚴重延遲與索引死角，**查證個人資產、遠端 Repo 或 Fork 狀態時，必須直接對目標 URL（如 `https://github.com/SanHsien/<repo>`）發起真實 HTTP 請求（如 read_url_content 或 curl）或調用 GitHub API 驗證，未經驗證真實網址前嚴禁聲稱不存在**。
 - **若文章經評估無須落地**：如實記錄分析結論，YAML frontmatter 的 `status` 設為 `archived`，不強湊無意義的待辦事項。
+- **執行中途若調整提議之任務編號、範圍或交付形式，必須主動揭露（2026-11-07 教訓）**：若在維護者授權後，執行中改採更適合的做法（例如將原本詢問「開進 Active Queue」的任務直接實作完成並勾選 `[x]` 轉入「🟢 已做 Completed」表，或擴充任務數量而改變編號對應），**必須在回報開頭主動說明與原提議方案的差異及理由**，不可默默改做卻不交代，導致維護者核對 `README.md` Active Queue 或任務編號時對不起來。
 
 ---
 

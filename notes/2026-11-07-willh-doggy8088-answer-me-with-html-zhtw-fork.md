@@ -59,14 +59,14 @@ OpenCC 的 `cn -> tw2` 在技術文件與二次轉換（second-pass）時有幾�
 
 | 類別 | OpenCC 轉換後（或原文） | 修正為台灣慣用詞 | 原因說明 |
 |---|---|---|---|
-| **OpenCC 二次退化 / 斷詞誤判** | `連線埠` | `連接埠` | OpenCC 對「連接埠」跑第二次會退化成 `` `連接埠` `` |
+| **OpenCC 二次退化 / 斷詞誤判** | `連線埠` | `連接埠` | OpenCC 對「連接埠」跑第二次會退化成 `` `連線埠` `` |
 | | `隻影響` | `只影響` | 副詞「只」（僅）被誤轉成量詞「隻」 |
 | | `選一個類別型` / `型別別` | `選一個類型` / `型別` | 「類型 / 型別」疊字退化 |
 | | `字面量（Literal）（Literal）` | `字面量（Literal）` | 括號英文註記重複附加 |
 | | `瞭什麼` | `了什麼` | 助詞「了」被誤轉為「瞭」 |
 | **語境多義詞（一詞多譯）** | `其他寫程式的 WAV` / `自己寫程式並下載` | `其他編碼的 WAV` / `自己編碼並下載` | 簡體「编码」被 OpenCC 無腦轉成「寫程式」，音訊語境應為「編碼」 |
 | | `渲染時會打印…` / `並打印路徑` | `渲染時會輸出…` / `並輸出路徑` | 終端機 stdout 的「打印」應為「輸出」；紙本列印才用「列印」 |
-| | `文件` vs `參考檔案` | `檔案` vs `參考文件` | 檔案系統是「檔案」，但 Documentation 被轉成 `` `參考文件` `` 需還原為「參考文件」 |
+| | `文件` vs `參考檔案` | `檔案` vs `參考文件` | 檔案系統是「檔案」，但 Documentation 被轉成 `` `參考檔案` `` 需還原為「參考文件」 |
 
 ---
 
@@ -80,7 +80,7 @@ OpenCC 的 `cn -> tw2` 在技術文件與二次轉換（second-pass）時有幾�
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [x] **`T-20261107-03`**｜**[優先級：高]** 借鑑保哥 `scripts/zh-tw/vocab.mjs` 實作「台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具」於 `tools/verify_zhtw_vocab.py` 與單元測試
+- [x] **`T-20261107-02`**｜**[優先級：高]** 借鑑保哥 `scripts/zh-tw/vocab.mjs` 實作「台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具」於 `tools/verify_zhtw_vocab.py` 與單元測試
   - **目標範圍**：`tools/verify_zhtw_vocab.py`、`tests/test_verify_zhtw_vocab.py`
   - **具體做法**：
     1. 實作 `apply_zhtw_vocab()`、`scan_degraded_vocab()` 與 `verify_idempotence()`，內建 OpenCC (`cn -> tw2`) 二次轉換退化修補（`連線埠→連接埠`、`隻影響→只影響`、`選一個類別型→選一個類型`、`型別別→型別`、`字面量（Literal）（Literal）→字面量（Literal）`、`瞭什麼→了什麼`）、語境多義詞還原（音訊 `寫程式→編碼`、終端機 `打印→輸出`、`參考檔案→參考文件`）及大陸動詞修補（`摁下→按下`）。
@@ -89,10 +89,19 @@ OpenCC 的 `cn -> tw2` 在技術文件與二次轉換（second-pass）時有幾�
   - **完成日期**：2026-11-07
   - **實作紀錄 / 證據**：已完成 `tools/verify_zhtw_vocab.py` 與單元測試 `tests/test_verify_zhtw_vocab.py`（5 項測試全過），並實跑全庫 `notes`、`docs`、`templates`、`README.md` 掃描與冪等驗證全綠通過。
 
-- [x] **`T-20261107-04`**｜**[優先級：中]** 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md`
+- [x] **`T-20261107-03`**｜**[優先級：中]** 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md`
   - **目標範圍**：`docs/zhtw-fork-idempotent-sync-spec.md`
   - **具體做法**：
     1. 完整記錄保哥 `doggy8088/answer-me-with-html@zh-tw` 如何以 `.base-sha` 錨點、`git checkout -B zh-tw upstream/main` 強制重建、OpenCC + 兩層詞庫修補與雙重冪等檢驗閘門，徹底消除上游簡體專案 Fork 的合併衝突與二次轉換退化。
   - **驗收標準（DoD）**：產出 `docs/zhtw-fork-idempotent-sync-spec.md`；以 `Test-Path docs/zhtw-fork-idempotent-sync-spec.md` 驗證存在。
   - **完成日期**：2026-11-07
   - **實作紀錄 / 證據**：已完成 `docs/zhtw-fork-idempotent-sync-spec.md` 撰寫，涵蓋 6 步無衝突重建流水線、OpenCC 二次退化修補對照表與本機驗證指令；以 `Test-Path` 驗證為 True。
+
+- [x] **`T-20261107-04`**｜**[優先級：中]** 升級 `tools/render_artifact_html.py` 支援 `--zhtw` 編譯前台灣繁體中文詞庫修補並保持預設輸出位元組確定性
+  - **目標範圍**：`tools/render_artifact_html.py`、`tests/test_render_artifact_html.py`
+  - **具體做法**：
+    1. 於 `render(source, normalize_zhtw=False)` 與 CLI 新增 `--zhtw` 選項，啟用時自動呼叫 `verify_zhtw_vocab.apply_zhtw_vocab(source, skip_code=True)` 修補草稿中的 OpenCC 二次退化詞與大陸用語，且不更動程式碼區塊。
+    2. 預設未加 `--zhtw` 時維持 100% 原始位元組輸出，確保既有 `T-20261026-06` 確定性雜湊不變。
+  - **驗收標準（DoD）**：執行 `python -m unittest tests/test_render_artifact_html.py` 綠燈通過。
+  - **完成日期**：2026-11-07
+  - **實作紀錄 / 證據**：已於 `tools/render_artifact_html.py` 新增 `normalize_zhtw` 與 `--zhtw` 參數，並於 `tests/test_render_artifact_html.py` 新增 `test_zhtw_normalization_repairs_degraded_vocab_outside_code`，19 項測試全數通過。
