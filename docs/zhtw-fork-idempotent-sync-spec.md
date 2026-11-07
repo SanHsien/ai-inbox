@@ -2,7 +2,7 @@
 
 > **版本**：1.0.0  
 > **建立日期**：2026-11-07  
-> **來源依據**：萃取自 Will 保哥（[`doggy8088/answer-me-with-html@zh-tw`](https://github.com/doggy8088/answer-me-with-html/tree/zh-tw)，上游 [`QingYunA/answer-me-with-html`](https://github.com/QingYunA/answer-me-with-html)）之 `scripts/zh-tw/` 自動化繁體中文化管線，對應任務 `T-20261107-03`、`T-20261107-04`。
+> **來源依據**：萃取自 Will 保哥（[`doggy8088/answer-me-with-html@zh-tw`](https://github.com/doggy8088/answer-me-with-html/tree/zh-tw)，上游 [`QingYunA/answer-me-with-html`](https://github.com/QingYunA/answer-me-with-html)）之 `scripts/zh-tw/` 自動化繁體中文化管線，對應任務 `T-20261107-02`、`T-20261107-03`、`T-20261107-04`。
 
 ---
 

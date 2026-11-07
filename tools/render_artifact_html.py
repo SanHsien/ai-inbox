@@ -254,8 +254,12 @@ btn.addEventListener('click',function(){
 CSP = "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:"
 
 
-def render(source: str) -> str:
+def render(source: str, normalize_zhtw: bool = False) -> str:
     source = source.replace("\r\n", "\n").replace("\r", "\n")
+    if normalize_zhtw:
+        from verify_zhtw_vocab import apply_zhtw_vocab
+
+        source = apply_zhtw_vocab(source, skip_code=True)
     lines = source.split("\n")
     meta, start = parse_frontmatter(lines)
     body, has_ask = render_body(lines[start:])
@@ -295,12 +299,17 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="把語意草稿（Draft）確定性編譯成單檔自包含 HTML。")
     ap.add_argument("input", help="草稿檔路徑；用 - 讀 stdin")
     ap.add_argument("-o", "--output", help="輸出 HTML 路徑；省略則寫到 stdout")
+    ap.add_argument(
+        "--zhtw",
+        action="store_true",
+        help="編譯前自動套用台灣繁體中文詞庫與 OpenCC 二次退化修補（略過程式碼區塊）",
+    )
     args = ap.parse_args(argv)
     if args.input == "-":
         source = sys.stdin.buffer.read().decode("utf-8", errors="replace")
     else:
         source = Path(args.input).read_text(encoding="utf-8")
-    result = render(source)
+    result = render(source, normalize_zhtw=args.zhtw)
     if args.output:
         with open(args.output, "w", encoding="utf-8", newline="\n") as f:
             f.write(result)

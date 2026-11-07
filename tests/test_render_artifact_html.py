@@ -123,6 +123,13 @@ class RenderTest(unittest.TestCase):
     def test_crlf_same_as_lf(self):
         self.assertEqual(r.render(SAMPLE), r.render(SAMPLE.replace("\n", "\r\n")))
 
+    def test_zhtw_normalization_repairs_degraded_vocab_outside_code(self):
+        draft = "## 標題\n請檢查連線埠並摁下確認，但保留 `連線埠`。\n```python\n# 連線埠\n```\n"
+        doc = r.render(draft, normalize_zhtw=True)
+        self.assertIn("請檢查連接埠並按下確認", doc)
+        self.assertIn("<code>連線埠</code>", doc)
+        self.assertIn("# 連線埠", doc)
+
 
 class SafetyTest(unittest.TestCase):
     def assert_no_live_payload(self, doc, where):

@@ -89,7 +89,7 @@ Agent ──create_source──► Gemini Notebook ──► 人在網頁 UI 問
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [x] **`T-20261107-01`**｜**[優先級：中]** 擴充 `tools/verify_cloud_persistence_audit.py` 新增 MCP 設定檔靜態 Bearer／`ya29.` Token 與過寬 `cloud-platform` Scope 稽核器
+- [x] **`T-20261107-05`**｜**[優先級：中]** 擴充 `tools/verify_cloud_persistence_audit.py` 新增 MCP 設定檔靜態 Bearer／`ya29.` Token 與過寬 `cloud-platform` Scope 稽核器
   - **目標範圍**：`tools/verify_cloud_persistence_audit.py`、`tests/test_verify_cloud_persistence_audit.py`
   - **具體做法**：
     1. 針對官方 Gemini Notebook MCP 教學將 `gcloud auth application-default print-access-token` 產出之短效 `ya29.*` Bearer Token 直接寫進 MCP 設定檔 `headers`／`args`（易外洩且 1 小時過期後靜默失效）與申請 `cloud-platform` 全權 scope 之風險，實作 `audit_mcp_config_credentials()` 與 `--audit-mcp-config` 參數。
