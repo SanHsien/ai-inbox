@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 204 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 133／⚪ 不做 71
+> 共 205 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 134／⚪ 不做 71
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,7 +50,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 133 項）</summary>
+<details><summary>展開查看已完成任務（共 134 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -187,6 +187,7 @@
 | `T-20261107-04` | 2026-11-07 | 升級 `tools/render_artifact_html.py` 支援 `--zhtw` 編譯前台灣繁體中文詞庫修補並保持預設輸出位元組確定性 | 已於 `tools/render_artifact_html.py` 新增 `normalize_zhtw` 與 `--zhtw` 參數，並於 `tests/test_render_artifact_html.py` 新增 `test_zhtw_normalization_repairs_degraded_vocab_outside_code`，19 項測試全數通過。 | [2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) |
 | `T-20261107-05` | 2026-11-07 | 擴充 `tools/verify_cloud_persistence_audit.py` 新增 MCP 設定檔靜態 Bearer／`ya29.` Token 與過寬 `cloud-platform` Scope 稽核器 | 已於 `tools/verify_cloud_persistence_audit.py` 實作 `audit_mcp_config_credentials` 與 `--audit-mcp-config`，並於 `tests/test_verify_cloud_persistence_audit.py` 新增正反案例測試，8 項測試全數通過。 | [2026-11-07-gemini-notebook-official-api-mcp-preview](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md) |
 | `T-20261108-01` | 2026-11-08 | 升級 `tools/video_transcript.py` 支援 Threads 影片貼文 SSR 串流自動萃取與 `bestaudio/best` 格式降級 | 已於 `tools/video_transcript.py` 實作 `_resolve_threads_video_url()` 與 `-f bestaudio/best`，更新 `docs/video-transcript-howto.md`，並於 `tests/test_video_transcript.py` 新增 `test_threads_url_extracts_ssr_video_versions_and_uses_bestaudio_fallback` 與 `test_threads_url_without_video_raises_runtime_error`（`Ran 18 tests — OK`）；實測直接對 `https://www.threads.com/@roboa.ai/post/DfRx2oUk-Vv` 執行 `video_transcript.py` 成功完成 46 秒音訊 CUDA 轉寫。 | [2026-11-08-frigate-nvr-rtsp-openvino-local-ai-camera](./notes/2026-11-08-frigate-nvr-rtsp-openvino-local-ai-camera.md) |
+| `T-20261108-02` | 2026-11-08 | 撰寫 Agent Autoloop 事件溯源與四層安全防線規格，並實作 `tools/verify_autoloop_dispatch_guard.py` 派工安全檢驗器 | 已完成 `docs/agent-autoloop-event-sourcing-and-ttl-spec.md`、`tools/verify_autoloop_dispatch_guard.py` 與 `tests/test_verify_autoloop_dispatch_guard.py`；執行 `python tools/verify_autoloop_dispatch_guard.py` 輸出 `[PASS] Agent Autoloop 四層派工安全防線檢驗通過。`，執行單元測試 `Ran 6 tests — OK`。 | [2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) |
 
 </details>
 
@@ -358,6 +359,7 @@
 | 2026-11-07 | 🟢 | [AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯及 Token 成本查證](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) | `ai-engineering-from-scratch`, `curriculum`, `agent-skills` | 1 / 1 |
 | 2026-11-07 | ⚪ | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
 | 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 3 / 3 |
+| 2026-11-08 | 🟢 | [Agent Autoloop 架構深挖：1,850 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) | `agent-autoloop`, `event-sourcing`, `zero-cost-suspend` | 1 / 1 |
 | 2026-11-08 | 🟢 | [Frigate 開源本地 AI NVR 架構解析：RTSP 舊鏡頭改造、Intel OpenVINO 內顯加速、語意搜尋與 ClearCam 對照](./notes/2026-11-08-frigate-nvr-rtsp-openvino-local-ai-camera.md) | `frigate`, `smart-nvr`, `rtsp` | 1 / 1 |
 | 2026-11-08 | ⚪ | [Frigate 0.18.2 實測圖解與踩雷拆解：Tapo C200 RTSP 雙串流、OpenVINO 模型張量契約與 GHSA Root RCE 漏洞防護](./notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md) | `frigate`, `tapo-c200`, `rtsp` | 0 / 0 |
 <!-- END GENERATED: index -->
@@ -373,7 +375,7 @@
 - 記憶繼承與共用大腦：[Idle Compaction 與 cc-session-reader](./notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md)、[Claude-Mem 跨 Session 記憶](./notes/2026-10-17-claude-mem-autocompact-context.md)、[AI 共同大腦全景規劃](./notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md)、[AI 共用記憶與三 Agent 全景](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md)
 - 模型路由與配額分流：[/model opusplan 與 /advisor 雙軌架構](./notes/2026-10-17-model-routing-opusplan-advisor.md)、[0x Alpha (GLM-5.3-Flash) 1M 模型](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md)、[Sol/Astra/Luna 燒額與快取實測](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md)、[Claude Code四級模型分工架構](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)、[Magpie本地多Agent模型網關](./notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)、[Copilot Fusion 模型分派評估](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md)
 - 跨 CLI 與階層派工：[Opus 規劃顧問 + 多 Agent 降維外包](./notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)、[Herdr 終端復用 + Magpie 統一網關](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md)、[ChatGPT-6.1 全景實測與工具鏈映射](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md)、[Going Li 四 Agent 派工與五路工具流](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)、[Claude Code四角色動態調用原則](./notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)、[保哥Opus+Haiku動態工作流實測](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md)
-- A2A 通訊與協同工作區：[Crossroad A2A 跨機器寄信](./notes/2026-10-19-crossroad-a2a-agent-mail-relay.md)、[agent-relay Phase 4：工人擴充、跨機器回傳與驗收合併](./notes/2026-10-21-agent-relay-pipeline-phase4.md)、[feedback-desk 客戶工單與 AI 交接](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md)、[Block Buzz 協同工作區](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md)、[Codync 開源 Agent 中繼](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md)、[feedback-desk 開源 Agent 工單系統](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)、[OpenBot本地優先Agent工作台](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md)
+- A2A 通訊與協同工作區：[Crossroad A2A 跨機器寄信](./notes/2026-10-19-crossroad-a2a-agent-mail-relay.md)、[agent-relay Phase 4：工人擴充、跨機器回傳與驗收合併](./notes/2026-10-21-agent-relay-pipeline-phase4.md)、[feedback-desk 客戶工單與 AI 交接](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md)、[Block Buzz 協同工作區](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md)、[Codync 開源 Agent 中繼](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md)、[feedback-desk 開源 Agent 工單系統](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)、[OpenBot本地優先Agent工作台](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md)、[Agent-Autoloop事件溯源與掛起零消耗](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md)
 - 桌面操控與代理身分：[GitHub Apps S2S代理人身分認證](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md)、[Vercel Labs agent-desktop無障礙樹操作](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md)
 - 工程紀律與設計審查：[pstack 方法論與 TDD 驗證](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)、[AI 接案確定性與價值報價工程](./notes/2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md)、[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)、[Thorsten Ball 15 條 Agent 實戰哲學](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)、[Google大象金魚模型EGM軟體設計審查](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md)、[麥克風給Agent的8條防過度設計規約](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md)
 
@@ -476,7 +478,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 這些 repo 都保留了搬移檔案原本的 git 歷史；搬走的筆記與任務不再列入本 repo 的任務總表。
 
 <!-- BEGIN GENERATED: catalog -->
-### 1. CLI 工具與驗證器（`tools/`，共 32 支）
+### 1. CLI 工具與驗證器（`tools/`，共 33 支）
 | 腳本 | 用途 | 對應測試 |
 | :--- | :--- | :--- |
 | [`tools/task_cli.py`](./tools/task_cli.py) | AI 與維護者共用的任務佇列查詢、認領、結案與狀態同步 CLI | [`tests/test_inbox.py`](./tests/test_inbox.py) |
@@ -496,6 +498,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_academic_and_latex_guard.py`](./tools/verify_academic_and_latex_guard.py) | 學術論文雙語翻譯「LaTeX 公式與引用零竄改保護」及「5W1H-CQR-KSU 結構」之外部裁判驗證器（純 Python stdlib） | [`tests/test_verify_academic_and_latex_guard.py`](./tests/test_verify_academic_and_latex_guard.py) |
 | [`tools/verify_agent_lean_rules.py`](./tools/verify_agent_lean_rules.py) | Agent Lean Rules Auditor | [`tests/test_verify_agent_lean_rules.py`](./tests/test_verify_agent_lean_rules.py) |
 | [`tools/verify_agent_reach_and_data_specs.py`](./tools/verify_agent_reach_and_data_specs.py) | Agent-Reach 16 平台路由範本、Public APIs 檢索技能之「外部裁判」結構驗證器（純 Python stdlib） | [`tests/test_verify_agent_reach_and_data_specs.py`](./tests/test_verify_agent_reach_and_data_specs.py) |
+| [`tools/verify_autoloop_dispatch_guard.py`](./tools/verify_autoloop_dispatch_guard.py) | Agent Autoloop 事件溯源派工與四層安全防線驗證器 | [`tests/test_verify_autoloop_dispatch_guard.py`](./tests/test_verify_autoloop_dispatch_guard.py) |
 | [`tools/verify_claude_security_config.py`](./tools/verify_claude_security_config.py) | Claude 資安審查與閒置壓縮設定之外部裁判機械驗證器 | [`tests/test_verify_claude_security_config.py`](./tests/test_verify_claude_security_config.py) |
 | [`tools/verify_cloud_persistence_audit.py`](./tools/verify_cloud_persistence_audit.py) | Cloud Persistence & Stealer Artifacts Auditor | [`tests/test_verify_cloud_persistence_audit.py`](./tests/test_verify_cloud_persistence_audit.py) |
 | [`tools/verify_compliance_and_matrix_docs.py`](./tools/verify_compliance_and_matrix_docs.py) | 合規清單、宣稱查證與對照矩陣之「外部裁判」結構驗證器 | [`tests/test_verify_compliance_and_matrix_docs.py`](./tests/test_verify_compliance_and_matrix_docs.py) |
@@ -512,14 +515,15 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 59 份）
-<details><summary>展開查看全部 59 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 60 份）
+<details><summary>展開查看全部 60 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
 | [`docs/3d-gui-agent-control-bridge.md`](./docs/3d-gui-agent-control-bridge.md) | AI Agent 操控 3D 與本機 GUI 軟體之雙軌橋接方案規格 |
 | [`docs/academic-bilingual-paper-reader-guide.md`](./docs/academic-bilingual-paper-reader-guide.md) | 學術論文雙語排版與公式保護閱讀工具手冊：Moonlight 與開源 MinerU 對比指南 |
 | [`docs/academic-reading-smoke-report.md`](./docs/academic-reading-smoke-report.md) | 學術論文 5W1H-CQR-KSU 實測報告：SWE-bench 基準測試論文解析 |
+| [`docs/agent-autoloop-event-sourcing-and-ttl-spec.md`](./docs/agent-autoloop-event-sourcing-and-ttl-spec.md) | Agent Autoloop 事件溯源內核、掛起零消耗與四層安全防線規格 |
 | [`docs/agent-desktop-computer-use-spec.md`](./docs/agent-desktop-computer-use-spec.md) | OS 級 Computer Use 架構規格書：Accessibility Tree 無障礙樹、命名空間 Ref 與無像素匹配設計手冊 |
 | [`docs/agent-dispatch.md`](./docs/agent-dispatch.md) | 跨 Agent 派工與完工回報 |
 | [`docs/agent-driven-onboarding-and-security-spec.md`](./docs/agent-driven-onboarding-and-security-spec.md) | 面向非技術用戶的 Agent-Driven 開源專案安裝指引規範（AGENTS.md 最佳實踐與資安防線） |
