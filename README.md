@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 206 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 135／⚪ 不做 71
+> 共 207 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 136／⚪ 不做 71
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,7 +50,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 135 項）</summary>
+<details><summary>展開查看已完成任務（共 136 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -189,6 +189,7 @@
 | `T-20261108-01` | 2026-11-08 | 升級 `tools/video_transcript.py` 支援 Threads 影片貼文 SSR 串流自動萃取與 `bestaudio/best` 格式降級 | 已於 `tools/video_transcript.py` 實作 `_resolve_threads_video_url()` 與 `-f bestaudio/best`，更新 `docs/video-transcript-howto.md`，並於 `tests/test_video_transcript.py` 新增 `test_threads_url_extracts_ssr_video_versions_and_uses_bestaudio_fallback` 與 `test_threads_url_without_video_raises_runtime_error`（`Ran 18 tests — OK`）；實測直接對 `https://www.threads.com/@roboa.ai/post/DfRx2oUk-Vv` 執行 `video_transcript.py` 成功完成 46 秒音訊 CUDA 轉寫。 | [2026-11-08-frigate-nvr-rtsp-openvino-local-ai-camera](./notes/2026-11-08-frigate-nvr-rtsp-openvino-local-ai-camera.md) |
 | `T-20261108-02` | 2026-11-08 | 撰寫 Agent Autoloop 事件溯源與四層安全防線規格，並實作 `tools/verify_autoloop_dispatch_guard.py` 派工安全檢驗器 | 已完成 `docs/agent-autoloop-event-sourcing-and-ttl-spec.md`、`tools/verify_autoloop_dispatch_guard.py` 與 `tests/test_verify_autoloop_dispatch_guard.py`；執行 `python tools/verify_autoloop_dispatch_guard.py` 輸出 `[PASS] Agent Autoloop 四層派工安全防線檢驗通過。`，執行單元測試 `Ran 6 tests — OK`。 | [2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) |
 | `T-20261108-03` | 2026-11-08 | 撰寫《Harness² 雙層遞迴與 8 大模組演進及防弊規範》（`docs/harness2-recursive-agent-harnessing-spec.md`） | 已完成 `docs/harness2-recursive-agent-harnessing-spec.md`，並執行 `python tools/build_index.py` 與 `python tools/verify_inbox.py` 驗證通過（84 篇筆記、206 項任務）。 | [2026-11-08-google-research-harness2-recursive-agent-harnessing](./notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md) |
+| `T-20261108-04` | 2026-11-08 | 撰寫《Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範》，並實作 `tools/verify_agent_skill_pack_safety.py` 靜態審計器 | 已完成 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`、`tools/verify_agent_skill_pack_safety.py` 與 `tests/test_verify_agent_skill_pack_safety.py`；執行 `python tools/verify_agent_skill_pack_safety.py` 輸出 `[PASS] Agent Skill Pack 安全與決定性審計通過（共檢驗 5 組工具鏈）。`，單元測試 `Ran 6 tests — OK`。 | [2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) |
 
 </details>
 
@@ -361,6 +362,7 @@
 | 2026-11-07 | ⚪ | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
 | 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 3 / 3 |
 | 2026-11-08 | 🟢 | [Agent Autoloop 架構深挖：1,850 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) | `agent-autoloop`, `event-sourcing`, `zero-cost-suspend` | 1 / 1 |
+| 2026-11-08 | 🟢 | [Claude Code 垂直領域 Skill 與 MCP 生態系全盤點：影音配音聽覺自審、YouTube/IG 確定性腳本、前端反 AI Slop 五件套與 Claudex 跨模型互審](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) | `claude-code`, `agent-skills`, `earshot` | 1 / 1 |
 | 2026-11-08 | 🟢 | [Frigate 開源本地 AI NVR 架構解析：RTSP 舊鏡頭改造、Intel OpenVINO 內顯加速、語意搜尋與 ClearCam 對照](./notes/2026-11-08-frigate-nvr-rtsp-openvino-local-ai-camera.md) | `frigate`, `smart-nvr`, `rtsp` | 1 / 1 |
 | 2026-11-08 | 🟢 | [Google Research 開源 Harness²（Harness Squared）：無標準答案開放世界的雙層遞迴 Agent Harness 自我優化框架](./notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md) | `google-research`, `harness2`, `agent-harness` | 1 / 1 |
 | 2026-11-08 | ⚪ | [Frigate 0.18.2 實測圖解與踩雷拆解：Tapo C200 RTSP 雙串流、OpenVINO 模型張量契約與 GHSA Root RCE 漏洞防護](./notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md) | `frigate`, `tapo-c200`, `rtsp` | 0 / 0 |
@@ -386,6 +388,7 @@
 - 視覺工件與互動 UI：[靶心人故事編輯器](./notes/2026-10-18-target-story-generative-ui-editor.md)、[answer-me-with-html 視覺工件](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md)、[保哥 answer-me-with-html 繁中 Fork 評估](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md)
 - WebGL與3D重建：[3D Model Anything](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md)、[DVK Lab 70款WebGL Shader組件](./notes/2026-10-31-dvk-lab-70-webgl-shader-hero-sections.md)
 - 開源剪輯與動效提示庫：[Reelbird 開源螢幕錄影](./notes/2026-10-17-reelbird-open-source-screen-recorder.md)、[Awesome Opus 5.5 Videos](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md)、[OpenCut開源視訊編輯器與AI Agents](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md)
+- 提示詞工程與上下文：[Claude垂直領域Skill與MCP生態盤點](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
@@ -480,7 +483,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 這些 repo 都保留了搬移檔案原本的 git 歷史；搬走的筆記與任務不再列入本 repo 的任務總表。
 
 <!-- BEGIN GENERATED: catalog -->
-### 1. CLI 工具與驗證器（`tools/`，共 33 支）
+### 1. CLI 工具與驗證器（`tools/`，共 34 支）
 | 腳本 | 用途 | 對應測試 |
 | :--- | :--- | :--- |
 | [`tools/task_cli.py`](./tools/task_cli.py) | AI 與維護者共用的任務佇列查詢、認領、結案與狀態同步 CLI | [`tests/test_inbox.py`](./tests/test_inbox.py) |
@@ -500,6 +503,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_academic_and_latex_guard.py`](./tools/verify_academic_and_latex_guard.py) | 學術論文雙語翻譯「LaTeX 公式與引用零竄改保護」及「5W1H-CQR-KSU 結構」之外部裁判驗證器（純 Python stdlib） | [`tests/test_verify_academic_and_latex_guard.py`](./tests/test_verify_academic_and_latex_guard.py) |
 | [`tools/verify_agent_lean_rules.py`](./tools/verify_agent_lean_rules.py) | Agent Lean Rules Auditor | [`tests/test_verify_agent_lean_rules.py`](./tests/test_verify_agent_lean_rules.py) |
 | [`tools/verify_agent_reach_and_data_specs.py`](./tools/verify_agent_reach_and_data_specs.py) | Agent-Reach 16 平台路由範本、Public APIs 檢索技能之「外部裁判」結構驗證器（純 Python stdlib） | [`tests/test_verify_agent_reach_and_data_specs.py`](./tests/test_verify_agent_reach_and_data_specs.py) |
+| [`tools/verify_agent_skill_pack_safety.py`](./tools/verify_agent_skill_pack_safety.py) | verify_agent_skill_pack_safety.py — 第三方 Claude Code / Agent Skill 與 MCP 工具鏈採納前安全與決定性靜態審計器 (T-20261108-04) | [`tests/test_verify_agent_skill_pack_safety.py`](./tests/test_verify_agent_skill_pack_safety.py) |
 | [`tools/verify_autoloop_dispatch_guard.py`](./tools/verify_autoloop_dispatch_guard.py) | Agent Autoloop 事件溯源派工與四層安全防線驗證器 | [`tests/test_verify_autoloop_dispatch_guard.py`](./tests/test_verify_autoloop_dispatch_guard.py) |
 | [`tools/verify_claude_security_config.py`](./tools/verify_claude_security_config.py) | Claude 資安審查與閒置壓縮設定之外部裁判機械驗證器 | [`tests/test_verify_claude_security_config.py`](./tests/test_verify_claude_security_config.py) |
 | [`tools/verify_cloud_persistence_audit.py`](./tools/verify_cloud_persistence_audit.py) | Cloud Persistence & Stealer Artifacts Auditor | [`tests/test_verify_cloud_persistence_audit.py`](./tests/test_verify_cloud_persistence_audit.py) |
@@ -517,8 +521,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 61 份）
-<details><summary>展開查看全部 61 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 62 份）
+<details><summary>展開查看全部 62 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -541,6 +545,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/blast-radius-code-review-guide.md`](./docs/blast-radius-code-review-guide.md) | 爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南 |
 | [`docs/buzz-nas-deployment-and-heartbeat-spec.md`](./docs/buzz-nas-deployment-and-heartbeat-spec.md) | Buzz 私有化 NAS 常駐部署、預算路由與額度心跳協議規格 |
 | [`docs/buzz-nostr-agent-architecture.md`](./docs/buzz-nostr-agent-architecture.md) | Block Buzz 架構解析與 Nostr + ACP/MCP 代理人協同設計指引 |
+| [`docs/claude-code-domain-skill-packs-and-mcp-audit.md`](./docs/claude-code-domain-skill-packs-and-mcp-audit.md) | Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範 |
 | [`docs/claude-code-mods-windows-validation.md`](./docs/claude-code-mods-windows-validation.md) | Claude Code Mods 自體改造機制 Windows 11 本機二進位深度查驗與替代方案驗證報告 |
 | [`docs/claude-idle-compaction-setup.md`](./docs/claude-idle-compaction-setup.md) | Claude Code 閒置壓縮（Idle Compaction）Windows 11 本地配置與實測指南 |
 | [`docs/claude-plugins-official-review.md`](./docs/claude-plugins-official-review.md) | Anthropic 官方 Claude Code 外掛清單深度檢閱與工作流適配報告 |
