@@ -144,4 +144,4 @@ Harness² 將包覆在基礎模型外部的執行環境拆解為 **4 大執行�
   - **驗收標準（DoD）**：
     - 產出 `docs/harness2-recursive-agent-harnessing-spec.md` 並通過 `python tools/build_index.py` 與 `python tools/verify_inbox.py` 契約及 100% 目錄覆蓋率校驗。
   - **完成日期**：2026-11-08
-  - **實作紀錄 / 證據**：已完成 [`docs/harness2-recursive-agent-harnessing-spec.md`](../docs/harness2-recursive-agent-harnessing-spec.md)，並執行 `python tools/build_index.py` 與 `python tools/verify_inbox.py` 驗證通過（84 篇筆記、206 項任務）。
+  - **實作紀錄 / 證據**：已完成 `docs/harness2-recursive-agent-harnessing-spec.md`，並執行 `python tools/build_index.py` 與 `python tools/verify_inbox.py` 驗證通過（84 篇筆記、206 項任務）。
