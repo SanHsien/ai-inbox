@@ -78,7 +78,7 @@ Agent ──(xerj corpus add / xerj code 精準檢索)────────�
   - **Windows 11 原生相容性**：XERJ 是 Rust 單一 binary，理論上具備極佳跨平台潛力，需在原生 Windows 實測 CLI 與路徑表現。
 - **落差與採納判斷**：
   - **值得採納的部分**：
-    1. **SHA 釘選與授權檢查制度**：Agent 抓取外部知識或開源代碼時，必須學習其「釘選 Commit SHA」與「明確授權檢查」的防護思維。
+    1. **SHA 釘選與授權檢查制度**：Agent 抓取外部知識或開原始碼時，必須學習其「釘選 Commit SHA」與「明確授權檢查」的防護思維。
     2. **XERJ 混合檢索能力**：XERJ 支援 Autoindex（自動為代碼、PDF、SQLite、CSV 建模）與 MCP，可評估作為本地 Coding 工具的一環。
   - **不適用 / 需調整的部分**：
     1. **儲存策略**：78.6 GB 語料不可全拉，必須維持按需拉取單一語料包（On-demand）。

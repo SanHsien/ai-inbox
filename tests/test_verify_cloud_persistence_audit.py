@@ -16,7 +16,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 
 from verify_cloud_persistence_audit import (
     audit_local_persistence_artifacts,
-    audit_service_account_anomalies
+    audit_service_account_anomalies,
+    audit_mcp_config_credentials,
 )
 
 
@@ -96,6 +97,43 @@ class TestVerifyCloudPersistenceAudit(unittest.TestCase):
         is_safe, anomalies = audit_service_account_anomalies(accounts)
         self.assertFalse(is_safe)
         self.assertEqual(anomalies[0]["severity"], "MEDIUM")
+
+    def test_mcp_config_detects_hardcoded_bearer_and_cloud_platform_scope(self):
+        bad_cfg = {
+            "mcpServers": {
+                "gemini-notebook": {
+                    "url": "https://notebook.googleapis.com/mcp",
+                    "headers": {
+                        "Authorization": "Bearer ya29.a0AfH6SMBxExampleHardcodedToken123456"
+                    },
+                    "args": [
+                        "--scopes=https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/notebook"
+                    ],
+                }
+            }
+        }
+        is_safe, anomalies = audit_mcp_config_credentials(bad_cfg)
+        self.assertFalse(is_safe)
+        self.assertEqual(len(anomalies), 1)
+        self.assertEqual(anomalies[0]["server"], "gemini-notebook")
+        self.assertEqual(anomalies[0]["severity"], "HIGH")
+        self.assertTrue(any("Bearer Token" in r for r in anomalies[0]["reasons"]))
+        self.assertTrue(any("cloud-platform" in r for r in anomalies[0]["reasons"]))
+
+    def test_mcp_config_allows_env_placeholder(self):
+        safe_cfg = {
+            "mcpServers": {
+                "gemini-notebook": {
+                    "url": "https://notebook.googleapis.com/mcp",
+                    "headers": {
+                        "Authorization": "Bearer ${NOTEBOOK_ACCESS_TOKEN}"
+                    },
+                }
+            }
+        }
+        is_safe, anomalies = audit_mcp_config_credentials(safe_cfg)
+        self.assertTrue(is_safe, anomalies)
+        self.assertEqual(anomalies, [])
 
 
 if __name__ == "__main__":

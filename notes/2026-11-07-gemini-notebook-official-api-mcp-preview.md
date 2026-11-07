@@ -25,7 +25,7 @@ tags:
 - **官方文件**：[Gemini Notebook API：Model Context Protocol (MCP)](https://developers.google.com/notebook/docs/mcp)、[Authentication](https://developers.google.com/notebook/docs/authentication)
 - **抓取時間**：2026-11-07（貼文約 1 天前，20.5K views）
 - **歸屬集群**：集群 3（角色：`Google 研究工具 MCP 接入評估`）
-- **評估結論**：`🟡 消息屬實、目前用途有限`：不衍生任務，等可查詢版本再評估
+- **評估結論**：`🟡 消息屬實、目前僅支援寫入無查詢 API；已將靜態 Bearer Token 與 cloud-platform 全權 scope 風險轉為自動化稽核規則`
 - **相關交叉參照**：
   - [`notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md`](./2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md)（GCP 專案開 API、憑證外洩的風險鏈）
 
@@ -89,4 +89,13 @@ Agent ──create_source──► Gemini Notebook ──► 人在網頁 UI 問
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-本篇**不衍生新任務**。理由：API 目前不能查詢，對 agent 研究流程沒有回饋路徑；為「批次匯入來源」單一用途建 GCP 專案與憑證管理，不符合「每週真的會跑三次以上才接工具」的門檻。**重新評估的觸發條件**：官方加入查詢／問答工具，或支援 OAuth 自動更新、不必把 token 寫進設定檔。
+- [x] **`T-20261107-01`**｜**[優先級：中]** 擴充 `tools/verify_cloud_persistence_audit.py` 新增 MCP 設定檔靜態 Bearer／`ya29.` Token 與過寬 `cloud-platform` Scope 稽核器
+  - **目標範圍**：`tools/verify_cloud_persistence_audit.py`、`tests/test_verify_cloud_persistence_audit.py`
+  - **具體做法**：
+    1. 針對官方 Gemini Notebook MCP 教學將 `gcloud auth application-default print-access-token` 產出之短效 `ya29.*` Bearer Token 直接寫進 MCP 設定檔 `headers`／`args`（易外洩且 1 小時過期後靜默失效）與申請 `cloud-platform` 全權 scope 之風險，實作 `audit_mcp_config_credentials()` 與 `--audit-mcp-config` 參數。
+    2. 支援攔截硬編碼 Bearer Token 與 `ya29.*` 憑證，同時放行環境變數佔位符（如 `${NOTEBOOK_ACCESS_TOKEN}`）。
+  - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_cloud_persistence_audit.py` 綠燈通過。
+  - **完成日期**：2026-11-07
+  - **實作紀錄 / 證據**：已於 `tools/verify_cloud_persistence_audit.py` 實作 `audit_mcp_config_credentials` 與 `--audit-mcp-config`，並於 `tests/test_verify_cloud_persistence_audit.py` 新增正反案例測試，8 項測試全數通過。
+
+> 備註：Gemini Notebook MCP 本身因目前 7 個工具僅支援寫入、無問答或取回摘要 API，暫不接入日常研究流水線；待官方新增查詢工具或 OAuth 自動刷新機制後再評估接入。

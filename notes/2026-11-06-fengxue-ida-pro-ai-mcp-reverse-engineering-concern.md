@@ -6,7 +6,7 @@ source_platform: "Facebook (風雪之閣)"
 author: "風雪之閣 (@cooldotnet)"
 analyzed_at: 2026-11-06
 analyzed_by: "Antigravity"
-status: done
+status: archived
 cluster: 3
 cluster_role: "AI 輔助逆向工程現況對照"
 short_title: "IDA接AI逆向貼文評估"

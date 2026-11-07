@@ -4,7 +4,7 @@ GitHub CLI
 
 ## GitHub (gh CLI)
 
-GitHub 官方命令行工具，用于仓库、Issue、PR、Actions、Release 以及 API 访问。
+GitHub 官方命令列工具，用于仓库、Issue、PR、Actions、Release 以及 API 访问。
 
 ```bash
 # 认证

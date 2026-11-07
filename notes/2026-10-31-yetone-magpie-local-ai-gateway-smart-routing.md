@@ -121,8 +121,8 @@ Magpie 允許開發者將多個底層模型包裝為一個「虛擬模型組（R
 ### 2.4 Agent 零感知故障轉移（Zero-Error Resilient Fallback）
 
 傳統架構下，Agent 收到 HTTP 429 或 503 就會直接中斷或丟出例外。
-- Magpie 在本機網關層攔截一切非致命 HTTP 錯誤代碼，對 Agent 保持連線掛起，在後端自動換鍵重試或重定向至群組內的替代模型。
-- 如實測介面顯示：**「4 requests, 2 rerouted, 0 errors your agent saw」**——在經歷了 2 次後端重定向與限流切換的過程中，上層 Coding Agent 始終視為平滑執行，大幅提升無人值守多輪編程的成功率。
+- Magpie 在本機網關層攔截一切非致命 HTTP 錯誤代碼，對 Agent 保持連線掛起，在後端自動換鍵重試或重新導向至群組內的替代模型。
+- 如實測介面顯示：**「4 requests, 2 rerouted, 0 errors your agent saw」**——在經歷了 2 次後端重新導向與限流切換的過程中，上層 Coding Agent 始終視為平滑執行，大幅提升無人值守多輪編程的成功率。
 
 ---
 

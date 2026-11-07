@@ -119,7 +119,7 @@ tags:
   - **目標範圍**：`tools/` 或專案品質檢查腳本
   - **完成日期**：2026-10-23
   - **具體實作步驟**：
-    1. 編寫 Python 腳本，利用正則表達式檢測 HTML/CSS/Tailwind 代碼中的罐頭特徵（如 `from-indigo.*to-purple`、巨大 `shadow-2xl`、文字包含 `delve/vibe/seamlessly`）。
+    1. 編寫 Python 腳本，利用正規表示式檢測 HTML/CSS/Tailwind 代碼中的罐頭特徵（如 `from-indigo.*to-purple`、巨大 `shadow-2xl`、文字包含 `delve/vibe/seamlessly`）。
     2. 輸出清晰的警告與違規行號報告。
     3. 整合至前端驗收檢查流程。
   - **驗收標準（DoD）**：腳本能準確偵測故意包含罐頭特徵的測試 HTML 檔案，並在乾淨代碼下回報 Pass。

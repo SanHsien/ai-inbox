@@ -9,6 +9,7 @@ Cloud Persistence & Stealer Artifacts Auditor (verify_cloud_persistence_audit.py
 """
 
 import os
+import re
 import sys
 import json
 import argparse
@@ -92,10 +93,109 @@ def audit_service_account_anomalies(accounts: List[Dict[str, Any]]) -> Tuple[boo
     return is_safe, anomalies
 
 
+_ENV_PLACEHOLDER_RE = re.compile(
+    r"^(\$\{[A-Za-z0-9_]+\}|\$[A-Za-z0-9_]+|%[A-Za-z0-9_]+%|\{\{[^}]+\}\}|<[^>]+>)$"
+)
+_BEARER_VALUE_RE = re.compile(r"(?i)\bBearer\s+([^\s\"']+)")
+
+
+def _is_hardcoded_token(token_val: str) -> bool:
+    """判斷 Bearer token 值是否為寫死的真實憑證（排除環境變數或樣板佔位符）。"""
+    val = token_val.strip().strip("\"'")
+    if not val or _ENV_PLACEHOLDER_RE.match(val):
+        return False
+    if val.startswith("ya29."):
+        return True
+    if "$(" in val or "`" in val:
+        return False
+    return len(val) >= 16
+
+
+def audit_mcp_config_credentials(config_data: Dict[str, Any]) -> Tuple[bool, List[Dict[str, Any]]]:
+    """
+    審查 MCP 設定檔（mcpServers / servers）：
+    1. 攔截 headers 或 args 中直接寫死的明文 Bearer Token / Google OAuth Access Token (ya29.*)
+       （既違反憑證不進設定檔與指令列硬閘門，且短效 Token 過期後會靜默失效）
+    2. 攔截同時要求 cloud-platform 全權 scope 之過度授權配置
+    """
+    servers = config_data.get("mcpServers") or config_data.get("servers") or {}
+    if not isinstance(servers, dict):
+        return True, []
+
+    anomalies: List[Dict[str, Any]] = []
+    for srv_name, srv_cfg in servers.items():
+        if not isinstance(srv_cfg, dict):
+            continue
+        reasons: List[str] = []
+        severity = "MEDIUM"
+
+        # 1. 檢查 headers 中的靜態 Bearer / ya29. token
+        headers = srv_cfg.get("headers") or {}
+        if isinstance(headers, dict):
+            for h_key, h_val in headers.items():
+                if not isinstance(h_val, str):
+                    continue
+                m = _BEARER_VALUE_RE.search(h_val)
+                if m and _is_hardcoded_token(m.group(1)):
+                    reasons.append(
+                        f"headers['{h_key}'] 寫死明文 Bearer Token（外洩風險且短效 OAuth Token 過期後會靜默失效）"
+                    )
+                    severity = "HIGH"
+                elif "ya29." in h_val and not _ENV_PLACEHOLDER_RE.match(h_val.strip()):
+                    reasons.append(
+                        f"headers['{h_key}'] 含寫死的 Google OAuth Access Token (ya29.*)"
+                    )
+                    severity = "HIGH"
+
+        # 2. 檢查 args 中的 --header Bearer token 或 cloud-platform 全權 scope
+        args_list = srv_cfg.get("args") or []
+        if isinstance(args_list, list):
+            joined_args = " ".join(str(a) for a in args_list)
+            for m in _BEARER_VALUE_RE.finditer(joined_args):
+                if _is_hardcoded_token(m.group(1)):
+                    reasons.append(
+                        "args 命令列參數寫死明文 Bearer Token（違反憑證不進指令列硬閘門）"
+                    )
+                    severity = "HIGH"
+                    break
+            if "cloud-platform" in joined_args:
+                reasons.append(
+                    "args 包含全權 'cloud-platform' OAuth scope（一旦本機憑證遭竊將危及整個 GCP 專案）"
+                )
+                if severity != "HIGH":
+                    severity = "HIGH"
+
+        # 3. 檢查 env 中的 ya29. 明文或 cloud-platform scope
+        env_map = srv_cfg.get("env") or {}
+        if isinstance(env_map, dict):
+            for e_key, e_val in env_map.items():
+                if not isinstance(e_val, str):
+                    continue
+                if e_val.startswith("ya29."):
+                    reasons.append(
+                        f"env['{e_key}'] 寫死短效 Google OAuth Access Token (ya29.*)"
+                    )
+                    severity = "HIGH"
+                if "cloud-platform" in e_val:
+                    reasons.append(
+                        f"env['{e_key}'] 包含全權 'cloud-platform' OAuth scope"
+                    )
+
+        if reasons:
+            anomalies.append({
+                "server": srv_name,
+                "reasons": reasons,
+                "severity": severity,
+            })
+
+    return len(anomalies) == 0, anomalies
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Cloud Persistence & Stealer Artifacts Auditor")
     parser.add_argument("--scan-dir", type=str, default="", help="掃描本地持久化後門目錄")
     parser.add_argument("--audit-accounts-json", type=str, default="", help="審查 Service Account JSON 檔案")
+    parser.add_argument("--audit-mcp-config", type=str, default="", help="審查 MCP 設定檔 JSON 是否含明文 Bearer Token 或過寬 GCP scope")
     args = parser.parse_args()
 
     exit_code = 0
@@ -126,8 +226,23 @@ def main() -> int:
                 print(f"  - [{a['severity']}] {a['email']}: {', '.join(a['reasons'])}")
             exit_code = 1
 
-    if not args.scan_dir and not args.audit_accounts_json:
-        print("[INFO] 請提供 --scan-dir 或 --audit-accounts-json 參數進行稽核。")
+    if args.audit_mcp_config:
+        if not os.path.exists(args.audit_mcp_config):
+            print(f"[ERROR] 找不到檔案：{args.audit_mcp_config}")
+            return 1
+        with open(args.audit_mcp_config, "r", encoding="utf-8") as mf:
+            mcp_data = json.load(mf)
+        is_safe, mcp_anomalies = audit_mcp_config_credentials(mcp_data)
+        if is_safe:
+            print(f"[PASS] MCP 設定檔稽核合格，未發現寫死的明文 Token 或過寬 cloud-platform scope。")
+        else:
+            print(f"[ALERT] 發現 {len(mcp_anomalies)} 個高風險 MCP Server 憑證配置！")
+            for a in mcp_anomalies:
+                print(f"  - [{a['severity']}] {a['server']}: {', '.join(a['reasons'])}")
+            exit_code = 1
+
+    if not args.scan_dir and not args.audit_accounts_json and not args.audit_mcp_config:
+        print("[INFO] 請提供 --scan-dir、--audit-accounts-json 或 --audit-mcp-config 參數進行稽核。")
 
     return exit_code
 

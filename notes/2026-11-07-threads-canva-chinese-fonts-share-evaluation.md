@@ -6,7 +6,7 @@ source_platform: "Threads (@thank______u)"
 author: "蘇蘇 (@thank______u)"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
-status: done
+status: archived
 cluster: 2
 cluster_role: "Canva 簡報與視覺字型速查"
 short_title: "Canva 中文字型貼文評估"

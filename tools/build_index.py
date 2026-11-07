@@ -133,14 +133,14 @@ class Note:
 def expected_note_status(note: Note) -> str:
     """依筆記底下任務狀態推算 frontmatter 應有的 status。
 
-    - 無任務：維持既有 status（若無則 pending）
+    - 無任務（評估後無須落地）：archived
     - 全部任務皆為 ⚪ 不做 (archived)：archived
     - 有效任務（排除 ⚪ 不做）全數完成 (done)：done
     - 有任一任務已做或進行中：in-progress
     - 其餘（有效任務皆未開始）：pending
     """
     if not note.tasks:
-        return note.meta.get("status") or "pending"
+        return "archived"
     active = [t for t in note.tasks if not t.archived]
     if not active:
         return "archived"

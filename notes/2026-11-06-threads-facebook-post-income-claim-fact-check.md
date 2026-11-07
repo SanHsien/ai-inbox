@@ -6,7 +6,7 @@ source_platform: "Threads (@museta1023)"
 author: "@museta1023"
 analyzed_at: 2026-11-06
 analyzed_by: "Antigravity"
-status: done
+status: archived
 cluster: 4
 cluster_role: "社群收益宣稱查核"
 short_title: "臉書發文收益宣稱查核"

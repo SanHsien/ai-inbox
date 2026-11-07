@@ -25,7 +25,7 @@ tags:
 - **官方開源倉庫**：[`rohitg00/ai-engineering-from-scratch`](https://github.com/rohitg00/ai-engineering-from-scratch)（77,280 Stars、13,696 Forks、MIT 授權，最近更新 2026-11-06，最新版本 `v2026.11.1`）
 - **官方學習網站**：[aiengineeringfromscratch.com](https://aiengineeringfromscratch.com)
 - **歸屬集群**：集群 4：領域知識庫、論文閱讀與尖端工程手冊（角色：`AI 工程從零實作開源教材索引`）
-- **評估結論**：`🟢 高參考價值教材，建議按需在網站閱讀或跑單一專案，不預裝 18 個 Skills`：依規則淨零增長原則，不衍生常駐任務
+- **評估結論**：`🟢 高參考價值教材：不預裝 18 個教學 Skills 以免污染上下文，已萃取其 Tool Call Firewall 單次授權收據與 Trace Span 去重規格落實為本機工具`
 - **相關交叉參照**：
   - [`notes/2026-10-19-rea-reverse-engineer-anything-agent.md`](./2026-10-19-rea-reverse-engineer-anything-agent.md)（逆向工程路線對照）
   - [`notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md`](./2026-11-02-microphone-anti-overengineering-eight-agent-rules.md)（規則與工具淨零增長）
@@ -90,4 +90,13 @@ rohitg00/ai-engineering-from-scratch
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-本篇**不衍生常駐待辦任務**。理由：教材本身是外部參考資源，無需在本機預裝 18 個教學 Skills 或複製教材內容；上列架構索引、專項路線與 `scripts/project_test.py` 指令已完整記錄於本筆記，日後要練 `tool-call-firewall` 或查閱 `manuals/` 時直接按本篇索引取用即可。
+- [x] **`T-20261107-02`**｜**[優先級：高]** 借鑑 `tool-call-firewall` 與 `agent-trace-debugger` 實作「綁定請求雜湊之單次審批收據驗證器與 Trace Span 去重分析工具」於 `tools/verify_tool_call_firewall.py` 與單元測試
+  - **目標範圍**：`tools/verify_tool_call_firewall.py`、`tests/test_verify_tool_call_firewall.py`
+  - **具體做法**：
+    1. 實作 `compute_request_digest()`、`issue_approval_receipt()` 與 `ToolCallFirewall`：將寫入操作審批收據綁定 `(tool, role, normalized_path, content_sha256)` 之 SHA-256 雜湊，阻斷審批後竄改內容（TOCTOU `DIGEST_MISMATCH`）、同一收據二次重放（`REPLAYED_RECEIPT`）、未授權角色與 `..` 路徑越界。
+    2. 實作 `analyze_trace_spans()`：合併重疊子 Span 時間區間（Interval Union）算出真實 `exclusive_duration_ms`，並扣除父子重複計算之 Token（`deduplicated_total_tokens`）。
+  - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_tool_call_firewall.py` 綠燈通過。
+  - **完成日期**：2026-11-07
+  - **實作紀錄 / 證據**：已完成 `tools/verify_tool_call_firewall.py` 與單元測試 `tests/test_verify_tool_call_firewall.py`（7 項測試涵蓋合法單次收據放行、收據重放攔截、審批後內容竄改攔截、路徑越界攔截、Windows/POSIX 斜線正規化與父子 Span 重疊時間／Token 去重計算，全數綠燈通過）。
+
+> 備註：教材本身的 18 個教學 Skills 不預裝至本機全域環境，以免佔用每次對話啟動的技能描述空間；平時查閱課文與 `manuals/` 直接按本篇第 2 節索引取用。

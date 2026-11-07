@@ -6,7 +6,7 @@ source_platform: "Facebook 社團（Codex 中文社群）"
 author: "Gary Hsieh"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
-status: done
+status: archived
 cluster: 1
 cluster_role: "模型路由與升級策略對照"
 short_title: "Copilot Fusion 模型分派評估"

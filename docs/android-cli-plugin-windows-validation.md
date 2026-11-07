@@ -423,7 +423,7 @@ INFO: Successfully created project 'Empty Activity' at '%USERPROFILE%\AppData\Lo
    - 透過手動下載二進位並在當前 PowerShell 行程注入 `$env:PATH` 的沙盒方案，**完全達成零 Registry 修改、零全域環境變數污染**。
 2. **網路頻寬極致輕量**：
    - 下載 `android.exe`：3.03 MB。
-   - 下載 Skills 數據庫：1.2 MB。
+   - 下載 Skills 資料庫：1.2 MB。
    - 下載 Template 包：296 KB。
    - 總下載量小於 5 MB，遠低於 500 MB 硬閘門上限。
 3. **功能性完整驗證**：

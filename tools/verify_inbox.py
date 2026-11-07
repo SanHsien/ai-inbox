@@ -74,7 +74,7 @@ def check_notes(notes: list[bi.Note]) -> list[str]:
         status = n.meta.get("status", "")
         if status and status not in bi.STATUSES:
             errors.append(f"{name}: status '{status}' 不合法，需為 {'|'.join(bi.STATUSES)}")
-        elif status and n.tasks:
+        elif status:
             expected = bi.expected_note_status(n)
             if status != expected:
                 done = sum(t.done for t in n.tasks)

@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 198 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 127／⚪ 不做 71
+> 共 202 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 131／⚪ 不做 71
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,7 +50,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 127 項）</summary>
+<details><summary>展開查看已完成任務（共 131 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -181,6 +181,10 @@
 | `T-20261104-01` | 2026-11-04 | 撰寫「AI 時代雲端算力竊盜防禦手冊：AMOS 釣魚木馬、Cookie 劫持與 LLMJacking 防範規格」收錄於 `docs/llmjacking-cloud-defense-spec.md` | 已完成規格手冊撰寫，包含端到端攻擊鏈矩陣、AMOS 惡意特徵清單、GCP Hard Cap 自動熔斷架構與防釣魚安裝協議；以 `Test-Path` 驗證為 True。 | [2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) |
 | `T-20261104-02` | 2026-11-04 | 實作「本地持久化後門與未授權雲端 Service Account 異常稽核腳本」於 `tools/verify_cloud_persistence_audit.py` 與單元測試 | 已完成 `tools/verify_cloud_persistence_audit.py` 與單元測試 `tests/test_verify_cloud_persistence_audit.py`，測試覆蓋木馬特徵掃描、GCP Service Account 異常命名與金鑰稽核，單元測試全數綠燈通過。 | [2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) |
 | `T-20261104-03` | 2026-11-04 | 產出標準化「雲端 AI API 預算硬熔斷與防釣魚安裝審查 Prompt 模板」收錄於 `templates/llmjacking-defense-checklist-prompt.md` | 已產出 `templates/llmjacking-defense-checklist-prompt.md`，包含防釣魚安裝自檢、IAM 單向門審查清單與雲端預算硬熔斷模板，以 `Test-Path` 驗證為 True。 | [2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) |
+| `T-20261107-01` | 2026-11-07 | 擴充 `tools/verify_cloud_persistence_audit.py` 新增 MCP 設定檔靜態 Bearer／`ya29.` Token 與過寬 `cloud-platform` Scope 稽核器 | 已於 `tools/verify_cloud_persistence_audit.py` 實作 `audit_mcp_config_credentials` 與 `--audit-mcp-config`，並於 `tests/test_verify_cloud_persistence_audit.py` 新增正反案例測試，8 項測試全數通過。 | [2026-11-07-gemini-notebook-official-api-mcp-preview](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md) |
+| `T-20261107-02` | 2026-11-07 | 借鑑 `tool-call-firewall` 與 `agent-trace-debugger` 實作「綁定請求雜湊之單次審批收據驗證器與 Trace Span 去重分析工具」於 `tools/verify_tool_call_firewall.py` 與單元測試 | 已完成 `tools/verify_tool_call_firewall.py` 與單元測試 `tests/test_verify_tool_call_firewall.py`（7 項測試涵蓋合法單次收據放行、收據重放攔截、審批後內容竄改攔截、路徑越界攔截、Windows/POSIX 斜線正規化與父子 Span 重疊時間／Token 去重計算，全數綠燈通過）。 | [2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) |
+| `T-20261107-03` | 2026-11-07 | 借鑑保哥 `scripts/zh-tw/vocab.mjs` 實作「台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具」於 `tools/verify_zhtw_vocab.py` 與單元測試 | 已完成 `tools/verify_zhtw_vocab.py` 與單元測試 `tests/test_verify_zhtw_vocab.py`（5 項測試全過），並實跑全庫 `notes`、`docs`、`templates`、`README.md` 掃描與冪等驗證全綠通過。 | [2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) |
+| `T-20261107-04` | 2026-11-07 | 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md` | 已完成 `docs/zhtw-fork-idempotent-sync-spec.md` 撰寫，涵蓋 6 步無衝突重建流水線、OpenCC 二次退化修補對照表與本機驗證指令；以 `Test-Path` 驗證為 True。 | [2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) |
 
 </details>
 
@@ -345,13 +349,13 @@
 | 2026-11-02 | 🟢 | [「麥克風的市場求生手冊」給 Agent 的 8 條極簡治病規約：終結 Codex 過度設計、無休止審查與規則通膨](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md) | `agent-rules`, `anti-overengineering`, `codex` | 3 / 3 |
 | 2026-11-02 | ⚪ | [OpenCut 開源 CapCut 替代品深度解析：97K Stars 多軌剪輯、Rust 跨端核心、MCP Server 與無頭自動化渲染架構](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | `opencut`, `capcut-alternative`, `video-editor` | 0 / 0（+3 不做） |
 | 2026-11-04 | 🟢 | [Nicholas Lin 醫師 GCP Vertex AI 盜用案深度鑑別診斷：假 Claude Code 釣魚、AMOS 竊密木馬、Cookie 劫持與 LLMJacking 雲端算力變現攻擊鏈](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) | `llmjacking`, `gcp`, `vertex-ai` | 3 / 3 |
-| 2026-11-06 | 🟢 | [風雪之閣「IDA 接上 AI，逆向工程最後一哩路」貼文評估：ida-pro-mcp／GhidraMCP 現況查證與既有 REA 逆向流水線對照](./notes/2026-11-06-fengxue-ida-pro-ai-mcp-reverse-engineering-concern.md) | `reverse-engineering`, `ida-pro`, `ghidra` | 0 / 0 |
-| 2026-11-06 | 🟢 | [Threads「臉書發文賺得比月薪多」貼文查核：作者自曝後台數據反證、複製貼上農場訊號與副業引流話術](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md) | `fact-check`, `facebook-content-monetization`, `engagement-farming` | 0 / 0 |
-| 2026-11-07 | 🟢 | [Gemini Notebook（前 NotebookLM）官方 API 與 MCP 預覽版評估：7 個工具只能寫入不能查詢、GCP ADC 憑證風險與實際用途界定](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md) | `gemini-notebook`, `notebooklm`, `mcp` | 0 / 0 |
-| 2026-11-07 | 🟢 | [GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md) | `model-routing`, `github-copilot-fusion`, `cascade` | 0 / 0 |
-| 2026-11-07 | 🟢 | [AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯及 Token 成本查證](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) | `ai-engineering-from-scratch`, `curriculum`, `agent-skills` | 0 / 0 |
-| 2026-11-07 | 🟢 | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
-| 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 0 / 0 |
+| 2026-11-06 | ⚪ | [風雪之閣「IDA 接上 AI，逆向工程最後一哩路」貼文評估：ida-pro-mcp／GhidraMCP 現況查證與既有 REA 逆向流水線對照](./notes/2026-11-06-fengxue-ida-pro-ai-mcp-reverse-engineering-concern.md) | `reverse-engineering`, `ida-pro`, `ghidra` | 0 / 0 |
+| 2026-11-06 | ⚪ | [Threads「臉書發文賺得比月薪多」貼文查核：作者自曝後台數據反證、複製貼上農場訊號與副業引流話術](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md) | `fact-check`, `facebook-content-monetization`, `engagement-farming` | 0 / 0 |
+| 2026-11-07 | 🟢 | [Gemini Notebook（前 NotebookLM）官方 API 與 MCP 預覽版評估：7 個工具只能寫入不能查詢、GCP ADC 憑證風險與實際用途界定](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md) | `gemini-notebook`, `notebooklm`, `mcp` | 1 / 1 |
+| 2026-11-07 | ⚪ | [GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md) | `model-routing`, `github-copilot-fusion`, `cascade` | 0 / 0 |
+| 2026-11-07 | 🟢 | [AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯及 Token 成本查證](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) | `ai-engineering-from-scratch`, `curriculum`, `agent-skills` | 1 / 1 |
+| 2026-11-07 | ⚪ | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
+| 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 2 / 2 |
 <!-- END GENERATED: index -->
 
 ---

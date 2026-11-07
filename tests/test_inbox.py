@@ -182,6 +182,15 @@ tags:
         n.tasks[0].fields["狀態"] = "⚪ 不做（全部關閉）"
         self.assertEqual(bi.expected_note_status(n), "archived")
 
+    def test_zero_task_note_must_be_archived(self):
+        n = make_note(self.tmp, status="done")
+        n.tasks.clear()
+        self.assertEqual(bi.expected_note_status(n), "archived")
+        errs = vi.check_notes([n])
+        self.assertTrue(any("status 應為 'archived'" in e for e in errs), errs)
+        n.meta["status"] = "archived"
+        self.assertEqual(vi.check_notes([n]), [])
+
     def test_task_cli_claim_complete_and_close(self):
         n = make_note(self.tmp, status="pending", box=" ", extra="  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*")
         # 先把 T-02 的進行中拿掉，測試從純 pending 開始

@@ -76,7 +76,7 @@ tags:
 
 ### 2.1 規範一：No Extra State（無額外狀態庫）的極致雲原生架構
 - **摒棄內部資料庫與自定義 CRD**：
-  - 傳統自建 PaaS（如早期 Rancher、Dokku、CapRover 等）通常需要外掛複雜的 MySQL/Postgres 存儲平台元數據，一旦數據庫損毀或升級失敗，整個 PaaS 癱瘓；或定義了大量專有 CRD，導致遷移時產生嚴重的平台鎖定。
+  - 傳統自建 PaaS（如早期 Rancher、Dokku、CapRover 等）通常需要外掛複雜的 MySQL/Postgres 存儲平台元數據，一旦資料庫損毀或升級失敗，整個 PaaS 癱瘓；或定義了大量專有 CRD，導致遷移時產生嚴重的平台鎖定。
   - Zeabur OSS 採用革命性的**「純投影架構（Pure Projection Architecture）」**：它**不安裝任何專有資料庫，也不引入非標準 CRD**，直接以 Kubernetes 的原生物件（Namespace、Deployment、Service、Ingress、ConfigMap、Secret）作為單一事實來源（SSOT）。
 - **零鎖定與高彈性（Zero Lock-in Guarantee）**：
   - 即使 Zeabur Pod 崩潰重啟或被徹底刪除，你的應用程式依然完全不受影響地在 Kubernetes 節點上穩定運作，標準 `kubectl` 隨時可接手控制。
