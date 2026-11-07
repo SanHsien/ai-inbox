@@ -349,6 +349,7 @@
 | 2026-11-06 | 🟢 | [Threads「臉書發文賺得比月薪多」貼文查核：作者自曝後台數據反證、複製貼上農場訊號與副業引流話術](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md) | `fact-check`, `facebook-content-monetization`, `engagement-farming` | 0 / 0 |
 | 2026-11-07 | 🟢 | [Gemini Notebook（前 NotebookLM）官方 API 與 MCP 預覽版評估：7 個工具只能寫入不能查詢、GCP ADC 憑證風險與實際用途界定](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md) | `gemini-notebook`, `notebooklm`, `mcp` | 0 / 0 |
 | 2026-11-07 | 🟢 | [GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md) | `model-routing`, `github-copilot-fusion`, `cascade` | 0 / 0 |
+| 2026-11-07 | 🟢 | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -397,6 +398,7 @@
 - 次世代語音轉錄：[NVIDIA Nemotron 3.5語音轉錄大模型](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md)
 - 本地語音克隆：[VoiceStudio本地語音克隆管線](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md)
 - 開源CapCut替代品與AI視訊編輯器：[OpenCut開源視訊編輯器與AI Agents](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md)
+- Canva 簡報與視覺字型速查：[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)
