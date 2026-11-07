@@ -7,8 +7,8 @@ author: "it.oppa.twhk (@it.oppa.twhk) / NVIDIA Applied Research"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "次世代語音轉錄"
+cluster: "3"
+cluster_role: "語音轉錄與生成式媒體"
 short_title: "NVIDIA Nemotron 3.5語音轉錄大模型"
 tags:
   - nvidia

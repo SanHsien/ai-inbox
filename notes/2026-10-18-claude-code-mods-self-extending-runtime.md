@@ -7,8 +7,8 @@ author: "Addy Osmani (Anthropic) & @NFT_Chen"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
 status: done
-cluster: 3
-cluster_role: "自體改造"
+cluster: "3"
+cluster_role: "外掛生態與設定治理"
 short_title: "Claude Code Mods"
 tags:
   - claude-code

@@ -7,8 +7,8 @@ author: "solution.share (@solution.share1025)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "視覺工件輸出"
+cluster: "2"
+cluster_role: "視覺工件與互動 UI"
 short_title: "answer-me-with-html 視覺工件"
 tags:
   - generative-ui

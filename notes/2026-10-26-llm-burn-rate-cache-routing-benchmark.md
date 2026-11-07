@@ -7,8 +7,8 @@ author: "維護者 (Maintainer)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "路由分流"
+cluster: "1"
+cluster_role: "模型路由與配額分流"
 short_title: "Sol/Astra/Luna 燒額與快取實測"
 tags:
   - cost-control

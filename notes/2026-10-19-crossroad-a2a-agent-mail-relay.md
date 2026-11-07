@@ -7,8 +7,8 @@ author: "Agent-Tong (@Agent-Tong)"
 analyzed_at: 2026-10-19
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 1
-cluster_role: "訊息傳輸"
+cluster: "1"
+cluster_role: "A2A 通訊與協同工作區"
 short_title: "Crossroad A2A 跨機器寄信"
 tags:
   - a2a

@@ -7,8 +7,8 @@ author: "故事結構分析師 / Generative UI 產品設計師"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "互動生成"
+cluster: "2"
+cluster_role: "視覺工件與互動 UI"
 short_title: "靶心人故事編輯器"
 tags:
   - generative-ui

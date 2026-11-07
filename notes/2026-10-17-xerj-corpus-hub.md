@@ -9,8 +9,8 @@ official_hub: "https://hub.xerj.org"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: archived
-cluster: 3
-cluster_role: "語料預索引"
+cluster: "3"
+cluster_role: "跨網情報與知識檢索"
 short_title: "XERJ Corpus Hub"
 tags:
   - agent-memory

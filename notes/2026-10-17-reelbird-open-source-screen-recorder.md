@@ -7,8 +7,8 @@ author: "btahir (Bashir Tahir)"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: archived
-cluster: 2
-cluster_role: "展示錄製"
+cluster: "2"
+cluster_role: "開源剪輯與動效提示庫"
 short_title: "Reelbird 開源螢幕錄影"
 tags:
   - screen-recording

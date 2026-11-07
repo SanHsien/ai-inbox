@@ -7,8 +7,8 @@ author: "Going Li / Leoceeport / 社團社群"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "團隊共用記憶架構"
+cluster: "1"
+cluster_role: "記憶繼承與共用大腦"
 short_title: "AI 共用記憶與三 Agent 全景"
 tags:
   - shared-memory

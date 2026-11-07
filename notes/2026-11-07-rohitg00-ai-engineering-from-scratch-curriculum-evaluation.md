@@ -7,8 +7,8 @@ author: "黃裕 (@cz88422) / Rohit Ghumare (@rohitg00)"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
 status: done
-cluster: 4
-cluster_role: "AI 工程從零實作開源教材索引"
+cluster: "4"
+cluster_role: "開源教材與商業案例查核"
 short_title: "AI Engineering from Scratch 教材評估"
 tags:
   - ai-engineering-from-scratch

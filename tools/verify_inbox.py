@@ -70,6 +70,9 @@ def check_notes(notes: list[bi.Note]) -> list[str]:
         for key in ("cluster_role", "short_title"):
             if not n.meta.get(key):
                 errors.append(f"{name}: frontmatter 缺少知識圖譜欄位 '{key}'")
+        role = n.meta.get("cluster_role", "")
+        if role and len(role) > bi.MAX_CLUSTER_ROLE_LEN:
+            errors.append(f"{name}: frontmatter 'cluster_role' 長度 {len(role)} 超過上限 {bi.MAX_CLUSTER_ROLE_LEN} 字元")
 
         status = n.meta.get("status", "")
         if status and status not in bi.STATUSES:
@@ -132,10 +135,31 @@ def check_task_ids(notes: list[bi.Note], texts: dict[Path, str]) -> list[str]:
 def check_links(texts: dict[Path, str]) -> list[str]:
     errors = []
     for path, text in texts.items():
-        for target in LINK.findall(text):
-            target = unquote(target.split("#", 1)[0].split("?", 1)[0])
-            if target and not (path.parent / target).exists():
-                errors.append(f"{rel(path)}: 連結目標不存在 {target}")
+        for _, line in bi.iter_outside_fences(text.split("\n")):
+            stripped = re.sub(r"`[^`\n]+`", "", line)
+            for target in LINK.findall(stripped):
+                target = unquote(target.split("#", 1)[0].split("?", 1)[0])
+                if target and not (path.parent / target).exists():
+                    errors.append(f"{rel(path)}: 連結目標不存在 {target}")
+    return errors
+
+
+def check_catalog_coverage(readme_text: str) -> list[str]:
+    errors = []
+    if "<!-- BEGIN GENERATED: catalog -->" not in readme_text:
+        errors.append("README.md: 缺少 <!-- BEGIN GENERATED: catalog --> 標記")
+        return errors
+    for p in sorted((bi.REPO_ROOT / "tools").glob("*.py")):
+        if not p.name.startswith("_") and f"./tools/{p.name}" not in readme_text:
+            errors.append(f"README.md: 產出物導覽漏列 tools/{p.name}")
+    for p in sorted((bi.REPO_ROOT / "docs").rglob("*.md")):
+        rel_doc = p.relative_to(bi.REPO_ROOT).as_posix()
+        if f"./{rel_doc}" not in readme_text:
+            errors.append(f"README.md: 產出物導覽漏列 {rel_doc}")
+    for p in sorted([*(bi.REPO_ROOT / "templates").glob("*.md"), *(bi.REPO_ROOT / "templates").glob("*/SKILL.md")]):
+        rel_tpl = p.relative_to(bi.REPO_ROOT).as_posix()
+        if f"./{rel_tpl}" not in readme_text:
+            errors.append(f"README.md: 產出物導覽漏列 {rel_tpl}")
     return errors
 
 
@@ -228,10 +252,21 @@ def main(argv: list[str] | None = None) -> int:
     tasks = [t for n in notes for t in n.tasks]
     print(f"[*] {len(notes)} 篇筆記、{len(tasks)} 項任務")
 
-    md_files = [bi.README_FILE, *(n.path for n in notes), *sorted((bi.REPO_ROOT / "templates").glob("*.md"))]
+    md_files = [
+        bi.README_FILE,
+        *(p for p in (bi.REPO_ROOT / "AGENTS.md", bi.REPO_ROOT / "ROADMAP.md") if p.exists()),
+        *(n.path for n in notes),
+        *sorted((bi.REPO_ROOT / "docs").rglob("*.md")),
+        *sorted((bi.REPO_ROOT / "templates").rglob("*.md")),
+    ]
     texts = {p: p.read_text(encoding="utf-8") for p in md_files}
     note_texts = {n.path: texts[n.path] for n in notes}
     readme_texts = {bi.README_FILE: texts[bi.README_FILE]}
+
+    session_texts = {
+        p: texts[p]
+        for p in [bi.README_FILE, *(n.path for n in notes), *sorted((bi.REPO_ROOT / "templates").glob("*.md"))]
+    }
 
     scan = tracked_texts()
     errors = [
@@ -239,8 +274,9 @@ def main(argv: list[str] | None = None) -> int:
         *check_dod_artifacts(notes),
         *check_task_ids(notes, {**readme_texts, **note_texts}),
         *check_readme(notes),
+        *check_catalog_coverage(texts[bi.README_FILE]),
         *check_links(texts),
-        *check_secrets(texts),  # 文件（含 Session 連結檢查）
+        *check_secrets(session_texts),  # 文件（含 Session 連結檢查）
         *check_secrets(scan, skip_labels=(SESSION_LINK_LABEL,)),  # 全部會提交的文字檔（docs/、assets/、tools/ 等）
         *check_self_references(scan),
         # tests/ 用假帳號當測試資料，不納入

@@ -7,8 +7,8 @@ author: "Andrej Karpathy / dev (@easyanythinghk)"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "規範工程"
+cluster: "1"
+cluster_role: "工程紀律與設計審查"
 short_title: "Karpathy 四大原則工程加固"
 tags:
   - karpathy-rules

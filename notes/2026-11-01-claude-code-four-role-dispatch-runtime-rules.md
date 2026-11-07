@@ -7,8 +7,8 @@ author: "0xalpha.ai (@0xalpha.ai)"
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
 status: archived
-cluster: 1
-cluster_role: "階層式派工原則與調用觸發策略"
+cluster: "1"
+cluster_role: "跨 CLI 與階層派工"
 short_title: "Claude Code四角色動態調用原則"
 tags:
   - claude-code

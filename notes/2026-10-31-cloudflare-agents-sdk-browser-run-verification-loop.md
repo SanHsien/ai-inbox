@@ -7,8 +7,8 @@ author: "無聊就學SI Lab (Boring Traveler, @akiraxtwo) / Cloudflare"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 3
-cluster_role: "瀏覽器代理"
+cluster: "3"
+cluster_role: "螢幕感知與瀏覽器代理"
 short_title: "Cloudflare Agents與Browser驗證閉環"
 tags:
   - cloudflare-agents

@@ -7,8 +7,8 @@ author: "shiaho777"
 analyzed_at: 2026-10-23
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 3
-cluster_role: "手機端開發工具"
+cluster: "3"
+cluster_role: "逆向工程與軟體封裝"
 short_title: "WebToApp 網站轉 Android App"
 tags:
   - webtoapp

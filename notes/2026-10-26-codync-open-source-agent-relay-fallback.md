@@ -7,8 +7,8 @@ author: "Kevin (leepokai) / it.oppa.twhk (@it.oppa.twhk)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "遠端多Agent中繼與容錯"
+cluster: "1"
+cluster_role: "A2A 通訊與協同工作區"
 short_title: "Codync 開源 Agent 中繼"
 tags:
   - multi-agent-orchestration

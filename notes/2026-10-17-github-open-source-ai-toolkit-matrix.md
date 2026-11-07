@@ -7,8 +7,8 @@ author: "Community Curator / Antigravity"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: archived
-cluster: 4
-cluster_role: "開源矩陣"
+cluster: "4"
+cluster_role: "開源教材與商業案例查核"
 short_title: "GitHub 開源 AI 工具矩陣"
 tags:
   - open-source-ai

@@ -7,8 +7,8 @@ author: "AI 協同開發實戰者 / Antigravity"
 analyzed_at: 2026-10-19
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 1
-cluster_role: "總綱中樞"
+cluster: "1"
+cluster_role: "記憶繼承與共用大腦"
 short_title: "AI 共同大腦全景規劃"
 tags:
   - ai-shared-brain

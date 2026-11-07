@@ -7,8 +7,8 @@ author: "孔老師AI研習社 (@Teacher_Kong)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "終端派工"
+cluster: "1"
+cluster_role: "跨 CLI 與階層派工"
 short_title: "ChatGPT-6.1 全景實測與工具鏈映射"
 tags:
   - chatgpt-6-1

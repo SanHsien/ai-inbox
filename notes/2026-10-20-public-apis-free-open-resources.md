@@ -8,8 +8,8 @@ github_repo: "https://github.com/public-apis/public-apis"
 analyzed_at: 2026-10-20
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 3
-cluster_role: "公開資料"
+cluster: "3"
+cluster_role: "跨網情報與知識檢索"
 short_title: "Public APIs 免費 API 資源庫"
 tags:
   - public-apis

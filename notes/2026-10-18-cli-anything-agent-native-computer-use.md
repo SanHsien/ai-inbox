@@ -7,8 +7,8 @@ author: "dev (@easyanythinghk)"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 3
-cluster_role: "軟體升級"
+cluster: "3"
+cluster_role: "逆向工程與軟體封裝"
 short_title: "CLI-Anything"
 tags:
   - cli-anything

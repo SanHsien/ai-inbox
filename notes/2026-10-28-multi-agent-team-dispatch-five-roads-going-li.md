@@ -7,8 +7,8 @@ author: "Going Li (李國印)"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "開發流程"
+cluster: "1"
+cluster_role: "跨 CLI 與階層派工"
 short_title: "Going Li 四 Agent 派工與五路工具流"
 tags:
   - multi-agent

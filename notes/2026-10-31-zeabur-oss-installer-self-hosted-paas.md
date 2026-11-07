@@ -7,8 +7,8 @@ author: "‎ǼǾՖ唯一ی‎ (@_xox._.xox._.xox._.xox._.xox_) / 林沅霖 (Zeab
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 3
-cluster_role: "自架PaaS生態"
+cluster: "3"
+cluster_role: "端點資安與雲端基建"
 short_title: "Zeabur OSS開源與Installer自建"
 tags:
   - zeabur

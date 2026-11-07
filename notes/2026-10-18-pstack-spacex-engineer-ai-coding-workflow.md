@@ -7,8 +7,8 @@ author: "Lauren Tan (@poteto) / 轉載分享：MengShyue Tsai (@mengshyue.tsai)"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 1
-cluster_role: "驗證紀律"
+cluster: "1"
+cluster_role: "工程紀律與設計審查"
 short_title: "pstack 方法論與 TDD 驗證"
 tags:
   - pstack

@@ -7,8 +7,8 @@ author: "Tom Preston-Werner / miniasp 譯"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 3
-cluster_role: "設定工程"
+cluster: "3"
+cluster_role: "外掛生態與設定治理"
 short_title: "TOML v1.1 規格與設定檔工程"
 tags:
   - toml

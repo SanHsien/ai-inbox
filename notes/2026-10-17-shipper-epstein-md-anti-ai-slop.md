@@ -7,8 +7,8 @@ author: "Kufu 酷服 (@kufutw) / Shipper (@shipper_now)"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "審美防線"
+cluster: "2"
+cluster_role: "審美防線與字型排版"
 short_title: "Shipper 反 AI 罐頭設計"
 tags:
   - anti-ai-slop

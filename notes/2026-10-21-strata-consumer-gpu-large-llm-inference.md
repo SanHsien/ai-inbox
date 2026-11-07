@@ -8,8 +8,8 @@ github_repo: "https://github.com/Niko1221/Strata"
 analyzed_at: 2026-10-21
 analyzed_by: "Antigravity"
 status: archived # pending | in-progress | done | archived
-cluster: 3
-cluster_role: "本地推論"
+cluster: "3"
+cluster_role: "端點資安與雲端基建"
 short_title: "Strata 12GB 顯卡運行 125B 大模型"
 tags:
   - strata

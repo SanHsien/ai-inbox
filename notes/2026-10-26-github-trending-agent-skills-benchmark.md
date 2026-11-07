@@ -7,8 +7,8 @@ author: "一股GoodJob (@good_job_ai)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 3
-cluster_role: "Skill生態評估"
+cluster: "3"
+cluster_role: "外掛生態與設定治理"
 short_title: "GitHub 必裝 Skill 實測"
 tags:
   - agent-skills

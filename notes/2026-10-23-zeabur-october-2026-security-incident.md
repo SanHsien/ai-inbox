@@ -7,8 +7,8 @@ author: "Zeabur (@zeabur.app)"
 analyzed_at: 2026-10-23
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 3
-cluster_role: "資安防護"
+cluster: "3"
+cluster_role: "端點資安與雲端基建"
 short_title: "Zeabur 十月資安事件與憑證輪替"
 tags:
   - zeabur

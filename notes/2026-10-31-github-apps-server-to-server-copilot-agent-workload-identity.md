@@ -7,8 +7,8 @@ author: "it.oppa.twhk (@it.oppa.twhk) / GitHub Copilot Team"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "工作負載身分認證"
+cluster: "1"
+cluster_role: "桌面操控與代理身分"
 short_title: "GitHub Apps S2S代理人身分認證"
 tags:
   - github-copilot

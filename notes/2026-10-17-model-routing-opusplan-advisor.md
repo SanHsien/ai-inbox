@@ -7,8 +7,8 @@ author: "Mors (@mors_tw)"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: archived
-cluster: 1
-cluster_role: "路由分流"
+cluster: "1"
+cluster_role: "模型路由與配額分流"
 short_title: "/model opusplan 與 /advisor 雙軌架構"
 tags:
   - model-routing

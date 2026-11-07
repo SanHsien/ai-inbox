@@ -8,8 +8,8 @@ author_background: "Purdue 商學院博士後研究員、台大數學系，專�
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: done
-cluster: 4
-cluster_role: "閱讀框架"
+cluster: "4"
+cluster_role: "學術論文閱讀與視覺分割"
 short_title: "5W1H / CQR / KSU"
 tags:
   - academic-reading

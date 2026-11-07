@@ -7,8 +7,8 @@ author: "Threads 社群實戰者 / yetone & herdrdev"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 1
-cluster_role: "終端派工"
+cluster: "1"
+cluster_role: "跨 CLI 與階層派工"
 short_title: "Herdr 終端復用 + Magpie 統一網關"
 tags:
   - multi-agent-factory

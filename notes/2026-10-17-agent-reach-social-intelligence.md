@@ -8,8 +8,8 @@ github_repo: "https://github.com/Panniantong/Agent-Reach"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: done
-cluster: 3
-cluster_role: "跨網情報"
+cluster: "3"
+cluster_role: "跨網情報與知識檢索"
 short_title: "Agent-Reach"
 tags:
   - social-media-crawler

@@ -7,8 +7,8 @@ author: "jokdooaa (@jokdooaa)"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: done
-cluster: 4
-cluster_role: "雙語研讀"
+cluster: "4"
+cluster_role: "學術論文閱讀與視覺分割"
 short_title: "Moonlight 論文雙語對照"
 tags:
   - paper-reading

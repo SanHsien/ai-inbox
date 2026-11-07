@@ -7,8 +7,8 @@ author: "aixwangtw（部落格：aixwang.dev）"
 analyzed_at: 2026-10-24
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 3
-cluster_role: "多 Agent 協作與交接"
+cluster: "1"
+cluster_role: "A2A 通訊與協同工作區"
 short_title: "feedback-desk 客戶工單與 AI 交接"
 tags:
   - feedback-desk

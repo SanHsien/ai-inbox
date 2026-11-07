@@ -7,8 +7,8 @@ author: "Ethan (pizza的存錢日記＆＆自我成長, @ethansavemoneydairy) / 
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "視覺組件"
+cluster: "2"
+cluster_role: "WebGL與3D重建"
 short_title: "DVK Lab 70款WebGL Shader組件"
 tags:
   - dvk-lab

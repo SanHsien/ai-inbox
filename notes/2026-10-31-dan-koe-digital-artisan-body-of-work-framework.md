@@ -7,8 +7,8 @@ author: "Daily Insight (育斌, @insight.log_by_yubin) / Dan Koe"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 3
-cluster_role: "一人公司工作流"
+cluster: "3"
+cluster_role: "高槓桿思維與工作流"
 short_title: "Dan Koe數位匠人與經驗時代架構"
 tags:
   - dan-koe

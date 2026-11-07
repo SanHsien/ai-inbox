@@ -7,8 +7,8 @@ author: "Meta AI / 凱文大叔 (SubTutor)"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: archived
-cluster: 4
-cluster_role: "視覺追蹤"
+cluster: "4"
+cluster_role: "學術論文閱讀與視覺分割"
 short_title: "Meta SAM 3.1 視訊分割"
 tags:
   - computer-vision

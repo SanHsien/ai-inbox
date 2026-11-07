@@ -7,8 +7,8 @@ author: "dev (@easyanythinghk) / nightly-labs (OpenBot)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 1
-cluster_role: "本地多Agent工作台"
+cluster: "1"
+cluster_role: "A2A 通訊與協同工作區"
 short_title: "OpenBot本地優先Agent工作台"
 tags:
   - openbot

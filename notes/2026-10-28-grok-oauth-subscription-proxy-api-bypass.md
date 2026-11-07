@@ -7,8 +7,8 @@ author: "大齡工程師 (elderengineer)"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "系統架構"
+cluster: "3"
+cluster_role: "端點資安與雲端基建"
 short_title: "Grok OAuth 訂閱轉 API 鑑權破綻解構"
 tags:
   - grok-oauth

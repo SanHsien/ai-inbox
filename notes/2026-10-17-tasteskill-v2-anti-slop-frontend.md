@@ -7,8 +7,8 @@ author: "Leon Lin (@Leonxlnx)"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "審美防線"
+cluster: "2"
+cluster_role: "審美防線與字型排版"
 short_title: "TasteSkill v2"
 tags:
   - taste-skill

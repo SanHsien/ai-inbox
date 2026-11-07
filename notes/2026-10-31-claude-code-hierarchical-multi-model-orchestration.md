@@ -7,8 +7,8 @@ author: "0xalpha.ai (@0xalpha.ai)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 1
-cluster_role: "模型多級分工與階層調度"
+cluster: "1"
+cluster_role: "模型路由與配額分流"
 short_title: "Claude Code四級模型分工架構"
 tags:
   - claude-code

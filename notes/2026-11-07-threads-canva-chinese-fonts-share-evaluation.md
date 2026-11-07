@@ -7,8 +7,8 @@ author: "蘇蘇 (@thank______u)"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
 status: archived
-cluster: 2
-cluster_role: "Canva 簡報與視覺字型速查"
+cluster: "2"
+cluster_role: "審美防線與字型排版"
 short_title: "Canva 中文字型貼文評估"
 tags:
   - canva

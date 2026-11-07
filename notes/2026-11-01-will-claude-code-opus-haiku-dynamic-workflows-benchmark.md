@@ -7,8 +7,8 @@ author: "Will 保哥 (黃保翕) / 多奇數位創意"
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
 status: archived
-cluster: 1
-cluster_role: "動態工作流與大規模子代理並行"
+cluster: "1"
+cluster_role: "跨 CLI 與階層派工"
 short_title: "保哥Opus+Haiku動態工作流實測"
 tags:
   - claude-code

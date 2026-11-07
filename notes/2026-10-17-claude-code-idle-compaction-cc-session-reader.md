@@ -7,8 +7,8 @@ author: "Lydia Hallie (@lydiahallie) & SanHsien / Mapleeeeeeeeeee"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "記憶繼承"
+cluster: "1"
+cluster_role: "記憶繼承與共用大腦"
 short_title: "Idle Compaction 與 cc-session-reader"
 tags:
   - claude-code

@@ -9,8 +9,8 @@ official_registry: "claude-plugins-official"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: done
-cluster: 3
-cluster_role: "官方外掛"
+cluster: "3"
+cluster_role: "外掛生態與設定治理"
 short_title: "Claude Code 官方插件目錄"
 tags:
   - claude-code

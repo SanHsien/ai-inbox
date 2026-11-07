@@ -364,15 +364,50 @@ CLUSTERS = {
     "4": "文獻研究、論文閱讀與全端工程實踐",
 }
 
+CLUSTER_ROLES: dict[str, tuple[str, ...]] = {
+    "1": (
+        "記憶繼承與共用大腦",
+        "模型路由與配額分流",
+        "跨 CLI 與階層派工",
+        "A2A 通訊與協同工作區",
+        "桌面操控與代理身分",
+        "工程紀律與設計審查",
+    ),
+    "2": (
+        "審美防線與字型排版",
+        "視覺工件與互動 UI",
+        "WebGL與3D重建",
+        "開源剪輯與動效提示庫",
+    ),
+    "3": (
+        "跨網情報與知識檢索",
+        "外掛生態與設定治理",
+        "逆向工程與軟體封裝",
+        "螢幕感知與瀏覽器代理",
+        "語音轉錄與生成式媒體",
+        "端點資安與雲端基建",
+        "高槓桿思維與工作流",
+    ),
+    "4": (
+        "學術論文閱讀與視覺分割",
+        "全端部署與自動化落地",
+        "開源教材與商業案例查核",
+    ),
+}
+MAX_CLUSTER_ROLE_LEN = 12
+
 
 def render_clusters(notes: list[Note]) -> str:
     out = ["全庫筆記圍繞「AI 程式開發工業化與多代理協同」形成四個互相引用的集群：", ""]
     for key, name in CLUSTERS.items():
         out.append(f"**集群 {key}：{name}**")
         roles: dict[str, list[Note]] = {}
+        for r in CLUSTER_ROLES.get(key, ()):
+            roles[r] = []
         for n in notes:
             if n.meta.get("cluster") == key:
                 roles.setdefault(n.meta.get("cluster_role") or "其他", []).append(n)
+        roles = {r: members for r, members in roles.items() if members}
         for role, members in roles.items():
             links = "、".join(f"[{_cell(n.meta.get('short_title') or n.meta.get('title', n.slug))}]({n.link})"
                              for n in members)
@@ -383,7 +418,113 @@ def render_clusters(notes: list[Note]) -> str:
     return "\n".join(out)
 
 
-RENDERERS = {"tasks": render_tasks, "index": render_index, "clusters": render_clusters}
+def _extract_py_summary(path: Path) -> str:
+    text = path.read_text(encoding="utf-8")
+    m = re.search(r'"""(.*?)"""', text, re.S)
+    if not m:
+        return path.stem
+    lines = [ln.strip() for ln in m.group(1).strip().splitlines() if ln.strip()]
+    if not lines:
+        return path.stem
+    first = lines[0]
+    if first.endswith(".py") and len(lines) > 1:
+        first = lines[1]
+    first = re.sub(rf"\s*[\(（]{re.escape(path.name)}[\)）]", "", first)
+    return first.rstrip("：:。")
+
+
+def _extract_md_title(path: Path) -> str:
+    text = path.read_text(encoding="utf-8")
+    for _, line in iter_outside_fences(text.split("\n")):
+        s = line.strip()
+        if s.startswith("# "):
+            title = s[2:].strip()
+            if title.startswith("<") and title.endswith(">"):
+                return f"{path.stem} 範本"
+            return re.sub(r"\s*[\(（]T-\d{8}-\d+[\)）]$", "", title)
+    meta = parse_frontmatter(text)
+    return meta.get("title") or meta.get("name") or path.stem
+
+
+def render_catalog(notes: list[Note] | None = None) -> str:
+    tools_dir = REPO_ROOT / "tools"
+    tests_dir = REPO_ROOT / "tests"
+    docs_dir = REPO_ROOT / "docs"
+    templates_dir = REPO_ROOT / "templates"
+    assets_dir = REPO_ROOT / "assets"
+
+    core_order = ["task_cli.py", "build_index.py", "verify_inbox.py"]
+    tool_files = sorted(
+        (p for p in tools_dir.glob("*.py") if not p.name.startswith("_")),
+        key=lambda p: (core_order.index(p.name) if p.name in core_order else 99, p.name),
+    )
+
+    out = [
+        f"### 1. CLI 工具與驗證器（`tools/`，共 {len(tool_files)} 支）",
+        "| 腳本 | 用途 | 對應測試 |",
+        "| :--- | :--- | :--- |",
+    ]
+    for p in tool_files:
+        rel_tool = f"./tools/{p.name}"
+        summary = _cell(_extract_py_summary(p))
+        test_file = tests_dir / f"test_{p.stem}.py"
+        if not test_file.exists():
+            test_file = tests_dir / "test_inbox.py"
+        rel_test = f"./tests/{test_file.name}"
+        out.append(f"| [`tools/{p.name}`]({rel_tool}) | {summary} | [`tests/{test_file.name}`]({rel_test}) |")
+
+    doc_files = sorted(docs_dir.rglob("*.md"))
+    out += [
+        "",
+        f"### 2. 技術規範與實測報告（`docs/`，共 {len(doc_files)} 份）",
+        f"<details><summary>展開查看全部 {len(doc_files)} 份技術規範與實測報告</summary>",
+        "",
+        "| 文件路徑 | 主題 |",
+        "| :--- | :--- |",
+    ]
+    for p in doc_files:
+        rel_doc = p.relative_to(REPO_ROOT).as_posix()
+        title = _cell(_extract_md_title(p))
+        out.append(f"| [`{rel_doc}`](./{rel_doc}) | {title} |")
+    out += ["", "</details>"]
+
+    tpl_files = sorted([*templates_dir.glob("*.md"), *templates_dir.glob("*/SKILL.md")])
+    asset_entries: list[tuple[str, str]] = []
+    if assets_dir.exists():
+        for d in sorted(p for p in assets_dir.iterdir() if p.is_dir()):
+            htmls = sorted(d.glob("*.html"))
+            if (d / "index.html").exists():
+                target = d / "index.html"
+            elif htmls:
+                target = htmls[0]
+            elif (d / ".claude-plugin" / "plugin.json").exists():
+                target = d / ".claude-plugin" / "plugin.json"
+            else:
+                files = sorted(d.rglob("*"))
+                target = next((f for f in files if f.is_file()), d)
+            rel_asset = target.relative_to(REPO_ROOT).as_posix()
+            asset_entries.append((d.name, rel_asset))
+
+    out += [
+        "",
+        f"### 3. 可重用 Prompt 與 Skill 範本（`templates/`，共 {len(tpl_files)} 份）及互動展示（`assets/`，共 {len(asset_entries)} 組）",
+        "- **範本（`templates/`）**：" + " ｜ ".join(
+            f"[{_cell(_extract_md_title(p))}](./{p.relative_to(REPO_ROOT).as_posix()})" for p in tpl_files
+        ),
+        "- **互動展示與擴充資產（`assets/`）**：" + " ｜ ".join(
+            f"[`{name}`](./{rel_path})" for name, rel_path in asset_entries
+        ),
+    ]
+    return "\n".join(out) + "\n"
+
+
+RENDERERS = {
+    "tasks": render_tasks,
+    "index": render_index,
+    "clusters": render_clusters,
+    "catalog": render_catalog,
+}
+REQUIRED_RENDERERS = {"tasks", "index", "clusters"}
 
 
 def build_readme(readme: str, notes: list[Note]) -> str:
@@ -397,7 +538,7 @@ def build_readme(readme: str, notes: list[Note]) -> str:
         return m.group(1) + RENDERERS[name](notes) + m.group(4)
 
     result = GENERATED_BLOCK.sub(replace, readme)
-    missing = set(RENDERERS) - found
+    missing = REQUIRED_RENDERERS - found
     if missing:
         raise SystemExit(f"[FAIL] README.md 缺少自動產生區塊標記：{sorted(missing)}")
     return result

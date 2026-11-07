@@ -7,8 +7,8 @@ author: "Jenjen (@jenjen69606) / Palash Debnath (VoiceStudio)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 2
-cluster_role: "本地語音克隆"
+cluster: "3"
+cluster_role: "語音轉錄與生成式媒體"
 short_title: "VoiceStudio本地語音克隆管線"
 tags:
   - voicestudio

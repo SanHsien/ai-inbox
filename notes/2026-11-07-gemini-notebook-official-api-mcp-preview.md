@@ -7,8 +7,8 @@ author: "AI 主理人 (@be.ai.curator)"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
 status: done
-cluster: 3
-cluster_role: "Google 研究工具 MCP 接入評估"
+cluster: "3"
+cluster_role: "跨網情報與知識檢索"
 short_title: "Gemini Notebook MCP 預覽評估"
 tags:
   - gemini-notebook

@@ -16,13 +16,13 @@ C:\GitHub\ai-inbox\
 │   └── YYYY-MM-DD-<slug>.md         # 每一篇 AI 文章的分析任務結果（一檔一篇）★唯一資料來源
 ├── tools/
 │   ├── task_cli.py                  # 任務佇列查詢 (next/show)、認領 (claim)、結案 (complete，DoD 要求的檔案須存在)、關閉 (close)
-│   ├── build_index.py               # 從 notes/ 重產 README 的任務表與索引
+│   ├── build_index.py               # 從 notes/ 與全庫目錄重產 README 的任務表、索引、知識圖譜與產出物導覽
 │   ├── verify_inbox.py              # 契約驗證（CI 同款）
-│   ├── verify_*.py（其餘 10 支）     # 外部裁判：檢查 docs/、templates/、assets/ 的規定結構（見 docs/external-judge-audit.md）
+│   ├── verify_*.py                  # 外部裁判與專項驗證器（結構、防火牆、繁中詞彙、無障礙樹等）
 │   ├── _judge_common.py             # 外部裁判共用：剝註解、結構下限、報告輸出
 │   ├── video_transcript.py          # 影片音訊下載 + faster-whisper (CUDA/CPU) 逐字稿轉寫（見 docs/video-transcript-howto.md）
 │   ├── screen_privacy.py            # 截圖／OCR 隱私檢查（規範 docs/multimodal-screen-privacy-spec.md 的參考實作）
-│   └── 其他功能型工具               # audit_fullstack_security、cli_to_skill、public_apis_indexer（各有對應 tests/test_*.py）
+│   └── 其他功能型工具               # audit_*、cli_to_skill、generate_dod_verifier、public_apis_indexer、render_artifact_html、toml_validator
 ├── docs/                            # 技術規格、實測報告與 SOP 手冊（跨 Agent 派工指令見 docs/agent-dispatch.md）
 ├── assets/                          # 單檔 HTML / Generative UI / Canvas 互動成品
 └── tests/                           # tools/ 的單元測試
@@ -33,11 +33,12 @@ C:\GitHub\ai-inbox\
 > 2026-11-02 再移出三組：動態設計影格審查與電影感影片提示詞併入 [`SanHsien/code-as-video-studio`](https://github.com/SanHsien/code-as-video-studio)；LINE 16 宮格貼圖切圖併入 [`SanHsien/sticker-forge`](https://github.com/SanHsien/sticker-forge)；Claude Code context／token 稽核工具（工具裁剪、記憶壓縮、token 哨兵、記憶索引健檢）獨立成 [`SanHsien/claude-context-audit`](https://github.com/SanHsien/claude-context-audit)。
 
 **資料流（單一資料來源）**：任務的優先級、範圍、狀態、證據**只寫在筆記裡**；README 的
-`<!-- BEGIN GENERATED -->` 區塊一律由腳本產生，禁止手改。
+`<!-- BEGIN GENERATED -->` 區塊（`tasks`、`index`、`clusters`、`catalog`）一律由腳本產生，禁止手改。
 
 ```text
-notes/*.md ──build_index.py──▶ README.md（任務表 / 索引）
-     └──────verify_inbox.py──▶ 格式、狀態一致性、ID 唯一、連結、機密、README 是否過期
+notes/*.md + tools/ + docs/ + templates/ + assets/
+     ├──build_index.py──▶ README.md（任務表 / 索引 / 知識圖譜 / 全庫產出物導覽）
+     └──verify_inbox.py─▶ 格式、狀態一致性、ID 唯一、全庫連結、機密、產出物覆蓋率、README 是否過期
 ```
 
 ---

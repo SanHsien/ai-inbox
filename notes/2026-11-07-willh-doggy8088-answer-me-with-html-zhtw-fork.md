@@ -7,8 +7,8 @@ author: "Will 保哥 (@will.fans / @doggy8088)"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "上游追蹤與繁體中文化管線"
+cluster: "2"
+cluster_role: "視覺工件與互動 UI"
 short_title: "保哥 answer-me-with-html 繁中 Fork 評估"
 tags:
   - answer-me-with-html

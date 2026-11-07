@@ -7,8 +7,8 @@ author: "CabLate (AI 實戰分享, @cab_late) / Zeabur"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 3
-cluster_role: "PaaS架構分析"
+cluster: "3"
+cluster_role: "端點資安與雲端基建"
 short_title: "Zeabur開源PaaS架構與資安反思"
 tags:
   - zeabur

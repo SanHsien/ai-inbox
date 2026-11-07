@@ -7,8 +7,8 @@ author: "臺大玩AI (@inxtool)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 4
-cluster_role: "一手案例研讀與影音萃取"
+cluster: "4"
+cluster_role: "開源教材與商業案例查核"
 short_title: "海外一手副業案例與影音萃取管線"
 tags:
   - solopreneur

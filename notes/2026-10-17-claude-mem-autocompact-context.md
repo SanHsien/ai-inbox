@@ -7,8 +7,8 @@ author: "thedotmack"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: archived
-cluster: 1
-cluster_role: "記憶繼承"
+cluster: "1"
+cluster_role: "記憶繼承與共用大腦"
 short_title: "Claude-Mem 跨 Session 記憶"
 tags:
   - context-management

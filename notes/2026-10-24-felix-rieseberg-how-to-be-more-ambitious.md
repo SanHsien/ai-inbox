@@ -7,8 +7,8 @@ author: "Felix Rieseberg (Anthropic)"
 analyzed_at: 2026-10-24
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 3
-cluster_role: "Prompt 與工作流方法論"
+cluster: "3"
+cluster_role: "高槓桿思維與工作流"
 short_title: "AI 野心四維框架與深度四問"
 tags:
   - anthropic

@@ -7,8 +7,8 @@ author: "李昀翰 (@leeunhn) / interplains (Zero-Breach-Toolkit)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 3
-cluster_role: "端點資安與間諜軟體鑑識"
+cluster: "3"
+cluster_role: "端點資安與雲端基建"
 short_title: "Zero-Breach-Toolkit間諜軟體鑑識"
 tags:
   - zero-breach-toolkit

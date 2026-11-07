@@ -367,85 +367,32 @@
 全庫筆記圍繞「AI 程式開發工業化與多代理協同」形成四個互相引用的集群：
 
 **集群 1：多 Agent 共同大腦、通訊與協同調度**
-- 記憶繼承：[Idle Compaction 與 cc-session-reader](./notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md)、[Claude-Mem 跨 Session 記憶](./notes/2026-10-17-claude-mem-autocompact-context.md)
-- 跨 CLI 編排：[Opus 規劃顧問 + 多 Agent 降維外包](./notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)
-- 路由分流：[/model opusplan 與 /advisor 雙軌架構](./notes/2026-10-17-model-routing-opusplan-advisor.md)、[Sol/Astra/Luna 燒額與快取實測](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md)
-- 終端派工：[Herdr 終端復用 + Magpie 統一網關](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md)、[ChatGPT-6.1 全景實測與工具鏈映射](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md)
-- 驗證紀律：[pstack 方法論與 TDD 驗證](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)
-- 總綱中樞：[AI 共同大腦全景規劃](./notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md)
-- 訊息傳輸：[Crossroad A2A 跨機器寄信](./notes/2026-10-19-crossroad-a2a-agent-mail-relay.md)
-- 長上下文外包：[0x Alpha (GLM-5.3-Flash) 1M 模型](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md)
-- 派工落地：[agent-relay Phase 4：工人擴充、跨機器回傳與驗收合併](./notes/2026-10-21-agent-relay-pipeline-phase4.md)
-- 接案與商業化：[AI 接案確定性與價值報價工程](./notes/2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md)
-- 團隊共用記憶架構：[AI 共用記憶與三 Agent 全景](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md)
-- Nostr人機協同工作區：[Block Buzz 協同工作區](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md)
-- 遠端多Agent中繼與容錯：[Codync 開源 Agent 中繼](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md)
-- 開發流程：[feedback-desk 開源 Agent 工單系統](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)、[Going Li 四 Agent 派工與五路工具流](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)、[Thorsten Ball 15 條 Agent 實戰哲學](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)
-- 規範工程：[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)
-- 模型多級分工與階層調度：[Claude Code四級模型分工架構](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)
-- 工作負載身分認證：[GitHub Apps S2S代理人身分認證](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md)
-- 本地多Agent工作台：[OpenBot本地優先Agent工作台](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md)
-- 本地模型網關與智慧路由：[Magpie本地多Agent模型網關](./notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)
-- 階層式派工原則與調用觸發策略：[Claude Code四角色動態調用原則](./notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)
-- OS級無障礙樹Computer Use與桌面操作：[Vercel Labs agent-desktop無障礙樹操作](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md)
-- 動態工作流與大規模子代理並行：[保哥Opus+Haiku動態工作流實測](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md)
-- Google大象金魚模型與零記憶審查：[Google大象金魚模型EGM軟體設計審查](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md)
-- Agent防過度設計與輕量工作規約：[麥克風給Agent的8條防過度設計規約](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md)
-- 模型路由與升級策略對照：[Copilot Fusion 模型分派評估](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md)
+- 記憶繼承與共用大腦：[Idle Compaction 與 cc-session-reader](./notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md)、[Claude-Mem 跨 Session 記憶](./notes/2026-10-17-claude-mem-autocompact-context.md)、[AI 共同大腦全景規劃](./notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md)、[AI 共用記憶與三 Agent 全景](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md)
+- 模型路由與配額分流：[/model opusplan 與 /advisor 雙軌架構](./notes/2026-10-17-model-routing-opusplan-advisor.md)、[0x Alpha (GLM-5.3-Flash) 1M 模型](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md)、[Sol/Astra/Luna 燒額與快取實測](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md)、[Claude Code四級模型分工架構](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)、[Magpie本地多Agent模型網關](./notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)、[Copilot Fusion 模型分派評估](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md)
+- 跨 CLI 與階層派工：[Opus 規劃顧問 + 多 Agent 降維外包](./notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)、[Herdr 終端復用 + Magpie 統一網關](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md)、[ChatGPT-6.1 全景實測與工具鏈映射](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md)、[Going Li 四 Agent 派工與五路工具流](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md)、[Claude Code四角色動態調用原則](./notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)、[保哥Opus+Haiku動態工作流實測](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md)
+- A2A 通訊與協同工作區：[Crossroad A2A 跨機器寄信](./notes/2026-10-19-crossroad-a2a-agent-mail-relay.md)、[agent-relay Phase 4：工人擴充、跨機器回傳與驗收合併](./notes/2026-10-21-agent-relay-pipeline-phase4.md)、[feedback-desk 客戶工單與 AI 交接](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md)、[Block Buzz 協同工作區](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md)、[Codync 開源 Agent 中繼](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md)、[feedback-desk 開源 Agent 工單系統](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)、[OpenBot本地優先Agent工作台](./notes/2026-10-31-openbot-local-first-multi-agent-desktop-workspace.md)
+- 桌面操控與代理身分：[GitHub Apps S2S代理人身分認證](./notes/2026-10-31-github-apps-server-to-server-copilot-agent-workload-identity.md)、[Vercel Labs agent-desktop無障礙樹操作](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md)
+- 工程紀律與設計審查：[pstack 方法論與 TDD 驗證](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)、[AI 接案確定性與價值報價工程](./notes/2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md)、[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)、[Thorsten Ball 15 條 Agent 實戰哲學](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)、[Google大象金魚模型EGM軟體設計審查](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md)、[麥克風給Agent的8條防過度設計規約](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
-- 展示錄製：[Reelbird 開源螢幕錄影](./notes/2026-10-17-reelbird-open-source-screen-recorder.md)
-- 審美防線：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)
-- 提示動物園：[Awesome Opus 5.5 Videos](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md)
-- 互動生成：[靶心人故事編輯器](./notes/2026-10-18-target-story-generative-ui-editor.md)
-- LiDAR空間重建：[3D Model Anything](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md)
-- 視覺工件輸出：[answer-me-with-html 視覺工件](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md)
-- 系統架構：[Grok OAuth 訂閱轉 API 鑑權破綻解構](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md)
-- 視覺組件：[DVK Lab 70款WebGL Shader組件](./notes/2026-10-31-dvk-lab-70-webgl-shader-hero-sections.md)
-- 次世代語音轉錄：[NVIDIA Nemotron 3.5語音轉錄大模型](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md)
-- 本地語音克隆：[VoiceStudio本地語音克隆管線](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md)
-- 開源CapCut替代品與AI視訊編輯器：[OpenCut開源視訊編輯器與AI Agents](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md)
-- Canva 簡報與視覺字型速查：[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
-- 上游追蹤與繁體中文化管線：[保哥 answer-me-with-html 繁中 Fork 評估](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md)
+- 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
+- 視覺工件與互動 UI：[靶心人故事編輯器](./notes/2026-10-18-target-story-generative-ui-editor.md)、[answer-me-with-html 視覺工件](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md)、[保哥 answer-me-with-html 繁中 Fork 評估](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md)
+- WebGL與3D重建：[3D Model Anything](./notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md)、[DVK Lab 70款WebGL Shader組件](./notes/2026-10-31-dvk-lab-70-webgl-shader-hero-sections.md)
+- 開源剪輯與動效提示庫：[Reelbird 開源螢幕錄影](./notes/2026-10-17-reelbird-open-source-screen-recorder.md)、[Awesome Opus 5.5 Videos](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md)、[OpenCut開源視訊編輯器與AI Agents](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
-- 跨網情報：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)
-- 官方外掛：[Claude Code 官方插件目錄](./notes/2026-10-17-claude-plugins-official-directory.md)
-- 語料預索引：[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)
-- 自體改造：[Claude Code Mods](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md)
-- 軟體升級：[CLI-Anything](./notes/2026-10-18-cli-anything-agent-native-computer-use.md)
-- 視覺感知：[desktop-sense 本機螢幕上下文](./notes/2026-10-18-desktop-sense-local-screen-context.md)
-- 領域專家：[Google Android 官方 Agent Skills](./notes/2026-10-19-android-official-skills-google-coding-agent.md)
-- 逆向分析：[REA 逆向工程 MCP Server](./notes/2026-10-19-rea-reverse-engineer-anything-agent.md)
-- 公開資料：[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)
-- 本地推論：[Strata 12GB 顯卡運行 125B 大模型](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md)
-- 資安防護：[security-guidance 三層左移資安外掛](./notes/2026-10-23-claude-plugin-security-guidance.md)、[Zeabur 十月資安事件與憑證輪替](./notes/2026-10-23-zeabur-october-2026-security-incident.md)
-- 手機端開發工具：[WebToApp 網站轉 Android App](./notes/2026-10-23-web-to-app-android-packaging.md)
-- 生成式媒體工作流：[AI 網紅限動：ChatGPT＋HeyGen＋ElevenLabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md)
-- 多 Agent 協作與交接：[feedback-desk 客戶工單與 AI 交接](./notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md)
-- Prompt 與工作流方法論：[AI 野心四維框架與深度四問](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md)
-- Skill生態評估：[GitHub 必裝 Skill 實測](./notes/2026-10-26-github-trending-agent-skills-benchmark.md)
-- 設定工程：[TOML v1.1 規格與設定檔工程](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md)
-- 邊緣環境感知：[clearcam開源智慧NVR與VLM摘要](./notes/2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md)
-- 瀏覽器代理：[Cloudflare Agents與Browser驗證閉環](./notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md)
-- 一人公司工作流：[Dan Koe數位匠人與經驗時代架構](./notes/2026-10-31-dan-koe-digital-artisan-body-of-work-framework.md)
-- PaaS架構分析：[Zeabur開源PaaS架構與資安反思](./notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md)
-- 自架PaaS生態：[Zeabur OSS開源與Installer自建](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md)
-- 端點資安與間諜軟體鑑識：[Zero-Breach-Toolkit間諜軟體鑑識](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md)
-- 雲端憑證竊取與LLMJacking防禦：[假Claude Code釣魚與Vertex AI盜刷鑑別診斷](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md)
-- AI 輔助逆向工程現況對照：[IDA接AI逆向貼文評估](./notes/2026-11-06-fengxue-ida-pro-ai-mcp-reverse-engineering-concern.md)
-- Google 研究工具 MCP 接入評估：[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
+- 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
+- 外掛生態與設定治理：[Claude Code 官方插件目錄](./notes/2026-10-17-claude-plugins-official-directory.md)、[Claude Code Mods](./notes/2026-10-18-claude-code-mods-self-extending-runtime.md)、[Google Android 官方 Agent Skills](./notes/2026-10-19-android-official-skills-google-coding-agent.md)、[GitHub 必裝 Skill 實測](./notes/2026-10-26-github-trending-agent-skills-benchmark.md)、[TOML v1.1 規格與設定檔工程](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md)
+- 逆向工程與軟體封裝：[CLI-Anything](./notes/2026-10-18-cli-anything-agent-native-computer-use.md)、[REA 逆向工程 MCP Server](./notes/2026-10-19-rea-reverse-engineer-anything-agent.md)、[WebToApp 網站轉 Android App](./notes/2026-10-23-web-to-app-android-packaging.md)、[IDA接AI逆向貼文評估](./notes/2026-11-06-fengxue-ida-pro-ai-mcp-reverse-engineering-concern.md)
+- 螢幕感知與瀏覽器代理：[desktop-sense 本機螢幕上下文](./notes/2026-10-18-desktop-sense-local-screen-context.md)、[clearcam開源智慧NVR與VLM摘要](./notes/2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md)、[Cloudflare Agents與Browser驗證閉環](./notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md)
+- 語音轉錄與生成式媒體：[AI 網紅限動：ChatGPT＋HeyGen＋ElevenLabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md)、[NVIDIA Nemotron 3.5語音轉錄大模型](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md)、[VoiceStudio本地語音克隆管線](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md)
+- 端點資安與雲端基建：[Strata 12GB 顯卡運行 125B 大模型](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md)、[security-guidance 三層左移資安外掛](./notes/2026-10-23-claude-plugin-security-guidance.md)、[Zeabur 十月資安事件與憑證輪替](./notes/2026-10-23-zeabur-october-2026-security-incident.md)、[Grok OAuth 訂閱轉 API 鑑權破綻解構](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md)、[Zeabur開源PaaS架構與資安反思](./notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md)、[Zeabur OSS開源與Installer自建](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md)、[Zero-Breach-Toolkit間諜軟體鑑識](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md)、[假Claude Code釣魚與Vertex AI盜刷鑑別診斷](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md)
+- 高槓桿思維與工作流：[AI 野心四維框架與深度四問](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md)、[Dan Koe數位匠人與經驗時代架構](./notes/2026-10-31-dan-koe-digital-artisan-body-of-work-framework.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
-- 閱讀框架：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)
-- 開源矩陣：[GitHub 開源 AI 工具矩陣](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md)
-- 全端部署：[HanSun 全端建置部署手冊](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md)
-- 視覺追蹤：[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)
-- 雙語研讀：[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
-- 一手案例研讀與影音萃取：[海外一手副業案例與影音萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)
-- Agent引導部署與LINE家庭Bot落地：[LINE家庭群組Bot與Agent引導部署](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md)
-- 社群收益宣稱查核：[臉書發文收益宣稱查核](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md)
-- AI 工程從零實作開源教材索引：[AI Engineering from Scratch 教材評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md)
+- 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
+- 全端部署與自動化落地：[HanSun 全端建置部署手冊](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md)、[LINE家庭群組Bot與Agent引導部署](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md)
+- 開源教材與商業案例查核：[GitHub 開源 AI 工具矩陣](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md)、[海外一手副業案例與影音萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)、[臉書發文收益宣稱查核](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md)、[AI Engineering from Scratch 教材評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md)
 <!-- END GENERATED: clusters -->
 
 ---
@@ -525,35 +472,114 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 
 這些 repo 都保留了搬移檔案原本的 git 歷史；搬走的筆記與任務不再列入本 repo 的任務總表。
 
-### 1. CLI 工具與驗證器（`tools/`）
+<!-- BEGIN GENERATED: catalog -->
+### 1. CLI 工具與驗證器（`tools/`，共 32 支）
 | 腳本 | 用途 | 對應測試 |
 | :--- | :--- | :--- |
-| [`tools/task_cli.py`](./tools/task_cli.py) | 任務佇列查詢（`next`/`show`）、認領（`claim`）、結案（`complete`）、關閉（`close`）與筆記狀態同步 | [`tests/test_inbox.py`](./tests/test_inbox.py) |
-| [`tools/build_index.py`](./tools/build_index.py) | 從 `notes/*.md` 自動產生 README 的任務總表、文章索引與四大知識圖譜 | [`tests/test_inbox.py`](./tests/test_inbox.py) |
-| [`tools/verify_inbox.py`](./tools/verify_inbox.py) | CI 與本地共用的契約驗證（Frontmatter、DoD、連結、機密、別名與稱謂檢查） | [`tests/test_inbox.py`](./tests/test_inbox.py) |
-| [`tools/video_transcript.py`](./tools/video_transcript.py) | `yt-dlp` 音訊下載 + `faster-whisper`（NVIDIA CUDA `float16` / CPU `int8`）影片逐字稿轉寫 | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
-| [`tools/verify_no_slop.py`](./tools/verify_no_slop.py) | 前端 AI 罐頭特徵（SLOP-01~05：漸層字、假數據、裝飾 Emoji 等）靜態掃描器 | [`tests/test_verify_no_slop.py`](./tests/test_verify_no_slop.py) |
-| [`tools/verify_story_structure.py`](./tools/verify_story_structure.py) | 靶心人故事模型因果與三伏三冒距離檢驗器 | [`tests/test_verify_story_structure.py`](./tests/test_verify_story_structure.py) |
-| [`tools/audit_fullstack_security.py`](./tools/audit_fullstack_security.py) | 全端專案上線前 `.gitignore`、`.env`、Client 機密與 Supabase RLS 靜態稽核 | [`tests/test_audit_fullstack_security.py`](./tests/test_audit_fullstack_security.py) |
-| [`tools/public_apis_indexer.py`](./tools/public_apis_indexer.py) | Public APIs 免金鑰（`Auth: No`）且支援 CORS 端點離線篩選索引器 | [`tests/test_public_apis_indexer.py`](./tests/test_public_apis_indexer.py) |
-| [`tools/cli_to_skill.py`](./tools/cli_to_skill.py) | 將任意 CLI 工具之 `--help` 結構自動封裝為標準 Agent `SKILL.md` | [`tests/test_cli_to_skill.py`](./tests/test_cli_to_skill.py) |
-| [`tools/verify_claude_security_config.py`](./tools/verify_claude_security_config.py) | Claude Code `idleCompaction` 門檻、`security-guidance` 8 KB 預算與對抗式代碼掃描外部裁判驗證器 | [`tests/test_verify_claude_security_config.py`](./tests/test_verify_claude_security_config.py) |
-| [`tools/verify_compliance_and_matrix_docs.py`](./tools/verify_compliance_and_matrix_docs.py) | AI 人物合規清單、宣稱查證、對照矩陣與野心檢查表之結構化外部裁判驗證器 | [`tests/test_verify_compliance_and_matrix_docs.py`](./tests/test_verify_compliance_and_matrix_docs.py) |
-| [`tools/verify_incident_and_workflow_specs.py`](./tools/verify_incident_and_workflow_specs.py) | Zeabur 資安事件盤點、PaaS 入侵應變清單與 WebToApp 接案規格之外部裁判驗證器 | [`tests/test_verify_incident_and_workflow_specs.py`](./tests/test_verify_incident_and_workflow_specs.py) |
-| [`tools/verify_generative_ui_assets.py`](./tools/verify_generative_ui_assets.py) | `assets/` 全庫 4 個單檔 HTML Generative UI 互動展示之結構與 HTTPS CDN 外部裁判驗證器 | [`tests/test_verify_generative_ui_assets.py`](./tests/test_verify_generative_ui_assets.py) |
-| [`tools/verify_academic_and_latex_guard.py`](./tools/verify_academic_and_latex_guard.py) | 學術雙語翻譯 LaTeX 公式／引用標籤／交叉參照零竄改比對與 5W1H-CQR-KSU 結構外部裁判驗證器 | [`tests/test_verify_academic_and_latex_guard.py`](./tests/test_verify_academic_and_latex_guard.py) |
-| [`tools/verify_re_and_android_specs.py`](./tools/verify_re_and_android_specs.py) | 逆向工程三階段流水線（REA + CLI-Anything）與 Android 官方 33 Skills 防幻覺規範外部裁判驗證器 | [`tests/test_verify_re_and_android_specs.py`](./tests/test_verify_re_and_android_specs.py) |
-| [`tools/verify_pstack_and_fullstack_specs.py`](./tools/verify_pstack_and_fullstack_specs.py) | pstack 五大工程 Playbooks、Claude 官方外掛評測與全端商業建站規範外部裁判驗證器 | [`tests/test_verify_pstack_and_fullstack_specs.py`](./tests/test_verify_pstack_and_fullstack_specs.py) |
-| [`tools/verify_agent_reach_and_data_specs.py`](./tools/verify_agent_reach_and_data_specs.py) | Agent-Reach 16 平台路由範本與 Public APIs 檢索技能外部裁判驗證器 | [`tests/test_verify_agent_reach_and_data_specs.py`](./tests/test_verify_agent_reach_and_data_specs.py) |
+| [`tools/task_cli.py`](./tools/task_cli.py) | AI 與維護者共用的任務佇列查詢、認領、結案與狀態同步 CLI | [`tests/test_inbox.py`](./tests/test_inbox.py) |
+| [`tools/build_index.py`](./tools/build_index.py) | 從 notes/*.md（唯一資料來源）產生 README.md 內的任務總表、文章索引與知識圖譜 | [`tests/test_inbox.py`](./tests/test_inbox.py) |
+| [`tools/verify_inbox.py`](./tools/verify_inbox.py) | 驗證 ai-inbox 的契約完整性（CI 與本地共用） | [`tests/test_inbox.py`](./tests/test_inbox.py) |
+| [`tools/audit_fullstack_security.py`](./tools/audit_fullstack_security.py) | 全端商業網站上線前資安與架構自檢工具 | [`tests/test_audit_fullstack_security.py`](./tests/test_audit_fullstack_security.py) |
+| [`tools/audit_oauth_credentials.py`](./tools/audit_oauth_credentials.py) | 審查本機 AI 工具（Grok CLI、Codex、Claude Code）的 OAuth 憑證檔「放得安不安全」。唯讀，不改任何檔案 | [`tests/test_audit_oauth_credentials.py`](./tests/test_audit_oauth_credentials.py) |
+| [`tools/audit_skills_context_budget.py`](./tools/audit_skills_context_budget.py) | Agent Skills 上下文預算稽核工具 | [`tests/test_audit_skills_context_budget.py`](./tests/test_audit_skills_context_budget.py) |
+| [`tools/audit_surgical_diff.py`](./tools/audit_surgical_diff.py) | 外科手術式修改（Surgical Changes）的 Git 變更範圍審查。唯讀，不改任何檔案、不改 git 狀態 | [`tests/test_audit_surgical_diff.py`](./tests/test_audit_surgical_diff.py) |
+| [`tools/cli_to_skill.py`](./tools/cli_to_skill.py) | Agent-Native CLI to SKILL.md 自動轉換工具 | [`tests/test_cli_to_skill.py`](./tests/test_cli_to_skill.py) |
+| [`tools/generate_dod_verifier.py`](./tools/generate_dod_verifier.py) | 從任務的 DoD（驗收標準）文字或 JSON 規格，產生一支獨立、可執行的驗收腳本 verify_delivery.py | [`tests/test_generate_dod_verifier.py`](./tests/test_generate_dod_verifier.py) |
+| [`tools/public_apis_indexer.py`](./tools/public_apis_indexer.py) | Public APIs 本地離線索引與免金鑰 API 篩選工具 | [`tests/test_public_apis_indexer.py`](./tests/test_public_apis_indexer.py) |
+| [`tools/render_artifact_html.py`](./tools/render_artifact_html.py) | 把「語意草稿（Draft）」確定性地編譯成單檔自包含 HTML（規格：docs/visual-agent-artifacts-engineering-spec.md） | [`tests/test_render_artifact_html.py`](./tests/test_render_artifact_html.py) |
+| [`tools/screen_privacy.py`](./tools/screen_privacy.py) | 多模態 Agent 截圖／OCR 隱私規範的參考實作（規範：docs/multimodal-screen-privacy-spec.md） | [`tests/test_screen_privacy.py`](./tests/test_screen_privacy.py) |
+| [`tools/toml_validator.py`](./tools/toml_validator.py) | TOML 設定檔輕量校驗工具（只用標準庫 tomllib，需要 Python 3.11+） | [`tests/test_toml_validator.py`](./tests/test_toml_validator.py) |
+| [`tools/verify_a11y_tree_snapshot.py`](./tools/verify_a11y_tree_snapshot.py) | Windows UI Automation (UIA) 與 OS 級無障礙樹快照與 Ref 點擊驗證工具 | [`tests/test_verify_a11y_tree_snapshot.py`](./tests/test_verify_a11y_tree_snapshot.py) |
+| [`tools/verify_academic_and_latex_guard.py`](./tools/verify_academic_and_latex_guard.py) | 學術論文雙語翻譯「LaTeX 公式與引用零竄改保護」及「5W1H-CQR-KSU 結構」之外部裁判驗證器（純 Python stdlib） | [`tests/test_verify_academic_and_latex_guard.py`](./tests/test_verify_academic_and_latex_guard.py) |
+| [`tools/verify_agent_lean_rules.py`](./tools/verify_agent_lean_rules.py) | Agent Lean Rules Auditor | [`tests/test_verify_agent_lean_rules.py`](./tests/test_verify_agent_lean_rules.py) |
+| [`tools/verify_agent_reach_and_data_specs.py`](./tools/verify_agent_reach_and_data_specs.py) | Agent-Reach 16 平台路由範本、Public APIs 檢索技能之「外部裁判」結構驗證器（純 Python stdlib） | [`tests/test_verify_agent_reach_and_data_specs.py`](./tests/test_verify_agent_reach_and_data_specs.py) |
+| [`tools/verify_claude_security_config.py`](./tools/verify_claude_security_config.py) | Claude 資安審查與閒置壓縮設定之外部裁判機械驗證器 | [`tests/test_verify_claude_security_config.py`](./tests/test_verify_claude_security_config.py) |
+| [`tools/verify_cloud_persistence_audit.py`](./tools/verify_cloud_persistence_audit.py) | Cloud Persistence & Stealer Artifacts Auditor | [`tests/test_verify_cloud_persistence_audit.py`](./tests/test_verify_cloud_persistence_audit.py) |
+| [`tools/verify_compliance_and_matrix_docs.py`](./tools/verify_compliance_and_matrix_docs.py) | 合規清單、宣稱查證與對照矩陣之「外部裁判」結構驗證器 | [`tests/test_verify_compliance_and_matrix_docs.py`](./tests/test_verify_compliance_and_matrix_docs.py) |
+| [`tools/verify_feedback_desk_contract.py`](./tools/verify_feedback_desk_contract.py) | feedback-desk 工單合規與交接契約的外部裁判。唯讀，只用 Python 標準函式庫 | [`tests/test_verify_feedback_desk_contract.py`](./tests/test_verify_feedback_desk_contract.py) |
+| [`tools/verify_generative_ui_assets.py`](./tools/verify_generative_ui_assets.py) | assets/ 全庫 4 個單檔 HTML Generative UI 互動展示之「外部裁判」結構與安全驗證器（純 Python stdlib） | [`tests/test_verify_generative_ui_assets.py`](./tests/test_verify_generative_ui_assets.py) |
+| [`tools/verify_incident_and_workflow_specs.py`](./tools/verify_incident_and_workflow_specs.py) | 資安事件盤點與 WebToApp 接案規格之「外部裁判」結構驗證器（純 Python stdlib） | [`tests/test_verify_incident_and_workflow_specs.py`](./tests/test_verify_incident_and_workflow_specs.py) |
+| [`tools/verify_no_slop.py`](./tools/verify_no_slop.py) | 靜態檢測 HTML / CSS 代碼中的典型 AI 罐頭設計特徵（Anti-AI-Slop Linter） | [`tests/test_verify_no_slop.py`](./tests/test_verify_no_slop.py) |
+| [`tools/verify_pstack_and_fullstack_specs.py`](./tools/verify_pstack_and_fullstack_specs.py) | pstack 五大工程 Playbooks、Claude 官方外掛評測與全端商業建站規範之「外部裁判」結構驗證器（純 Python stdlib） | [`tests/test_verify_pstack_and_fullstack_specs.py`](./tests/test_verify_pstack_and_fullstack_specs.py) |
+| [`tools/verify_re_and_android_specs.py`](./tools/verify_re_and_android_specs.py) | 逆向工程流水線（REA + CLI-Anything）與 Android 官方 33 Skills 防幻覺規範之「外部裁判」結構驗證器（純 Python stdlib） | [`tests/test_verify_re_and_android_specs.py`](./tests/test_verify_re_and_android_specs.py) |
+| [`tools/verify_spatial_alignment.py`](./tools/verify_spatial_alignment.py) | 空間幾何契約校驗：量測 vs 模型、單位/軸向、物體與房間邊界、相機內參投影誤差 | [`tests/test_verify_spatial_alignment.py`](./tests/test_verify_spatial_alignment.py) |
+| [`tools/verify_story_structure.py`](./tools/verify_story_structure.py) | 故事因果與三伏三冒檢驗器 | [`tests/test_verify_story_structure.py`](./tests/test_verify_story_structure.py) |
+| [`tools/verify_tool_call_firewall.py`](./tools/verify_tool_call_firewall.py) | Tool Call Firewall & Agent Trace Span Deduplicator | [`tests/test_verify_tool_call_firewall.py`](./tests/test_verify_tool_call_firewall.py) |
+| [`tools/verify_tool_fallback_matrix.py`](./tools/verify_tool_fallback_matrix.py) | 檢查「產出導向工具流矩陣」設定檔（JSON）：五條產出路徑都要有主力與合格備援， | [`tests/test_verify_tool_fallback_matrix.py`](./tests/test_verify_tool_fallback_matrix.py) |
+| [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
+| [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`）
-- **Agent 工具鏈與安全**：[影片逐字稿 GPU 轉寫 SOP](./docs/video-transcript-howto.md) ｜ [外部裁判 DoD 缺口稽核](./docs/external-judge-audit.md) ｜ [Claude Code idleCompaction 設定與驗證](./docs/claude-idle-compaction-setup.md) ｜ [security-guidance Windows 11 實測與三層防禦](./docs/claude-security-guidance-windows-setup.md) ｜ [Zeabur 資安事件衝擊盤點報告](./docs/zeabur-incident-credential-audit.md) ｜ [feedback-desk Windows 11 實測](./docs/feedback-desk-windows-eval.md) ｜ [feedback-desk 對照 agent-relay](./docs/feedback-desk-vs-agent-relay.md) ｜ [Claude 官方外掛評測](./docs/claude-plugins-official-review.md) ｜ [pstack Agent Playbooks 規格](./docs/pstack-agent-playbooks.md) ｜ [CLI-Anything 轉 Skill 協議](./docs/cli-anything-to-skill-protocol.md) ｜ [REA 逆向工程沙盒實測](./docs/rea-sandbox-evaluation-evidence.md) ｜ [三階段逆向分析流水線規格](./docs/reverse-engineering-pipeline-spec.md) ｜ [Android 官方 33 Skills 防幻覺手冊](./docs/android-official-skills-anti-hallucination.md) ｜ [Android CLI Windows 驗證](./docs/android-cli-plugin-windows-validation.md)
-- **生成式媒體、行動打包與前端動效**：[AI 網紅限動三項宣稱查核](./docs/ai-influencer-claims-check.md) ｜ [AI 人物與聲音合規檢查清單](./docs/ai-persona-compliance-checklist.md) ｜ [WebToApp 打包 APK 實測評估](./docs/web-to-app-evaluation.md) ｜ [網站轉 App 接案六步規格](./docs/web-to-app-freelance-workflow.md) ｜ [Anti-AI-Slop 反罐頭前端規範](./docs/anti-ai-slop-frontend.md) ｜ [靶心人故事編輯器規格](./docs/target-story-generative-ui-spec.md)
-- **資料、全端與文獻研究**：[462 個免費免金鑰 Public APIs 手冊](./docs/free-public-apis.md) ｜ [全端上線 QA 與資安檢核表](./docs/production-smoke-security-checklist.md) ｜ [雙語論文閱讀工具對比](./docs/academic-bilingual-paper-reader-guide.md) ｜ [SWE-bench 論文 5W1H-CQR-KSU 實測](./docs/academic-reading-smoke-report.md)
+### 2. 技術規範與實測報告（`docs/`，共 59 份）
+<details><summary>展開查看全部 59 份技術規範與實測報告</summary>
 
-### 3. 可重用 Prompt 與 Skill 範本（`templates/`）及互動展示（`assets/`）
-- **範本（`templates/`）**：[文章分析標準範本](./templates/article-analysis.md) ｜ [AI 野心升級檢查表](./templates/ambition-prompt-checklist.md) ｜ [Claude security-guidance 自訂審查規範範本](./templates/claude-security-guidance.md) ｜ [託管平台入侵應變清單](./templates/platform-breach-response.md) ｜ [5W1H-CQR-KSU 學術閱讀 Prompt](./templates/academic-reading-prompt.md) ｜ [LaTeX 公式與引用保護 Prompt](./templates/latex-citation-protection-prompt.md) ｜ [主體資產盤點與論證寫作 Prompt](./templates/subject-inventory-argument-writing-prompt.md) ｜ [單檔 Creative Coding 技能](./templates/single-file-creative-coding-skill.md) ｜ [全端商業建站技能](./templates/fullstack-website-builder-skill.md) ｜ [Public APIs 檢索技能](./templates/public-apis-search-skill.md)
-- **單檔互動展示（`assets/`）**：[Anti-Slop 示範頁](./assets/anti-slop-demo/index.html) ｜ [靶心人故事編輯器](./assets/target-story-editor/index.html) ｜ [Open-Meteo 即時氣候圖表](./assets/open-meteo-weather-chart/index.html) ｜ [Three.js 粒子星系](./assets/creative-coding-demo/threejs-particle-galaxy.html)
+| 文件路徑 | 主題 |
+| :--- | :--- |
+| [`docs/3d-gui-agent-control-bridge.md`](./docs/3d-gui-agent-control-bridge.md) | AI Agent 操控 3D 與本機 GUI 軟體之雙軌橋接方案規格 |
+| [`docs/academic-bilingual-paper-reader-guide.md`](./docs/academic-bilingual-paper-reader-guide.md) | 學術論文雙語排版與公式保護閱讀工具手冊：Moonlight 與開源 MinerU 對比指南 |
+| [`docs/academic-reading-smoke-report.md`](./docs/academic-reading-smoke-report.md) | 學術論文 5W1H-CQR-KSU 實測報告：SWE-bench 基準測試論文解析 |
+| [`docs/agent-desktop-computer-use-spec.md`](./docs/agent-desktop-computer-use-spec.md) | OS 級 Computer Use 架構規格書：Accessibility Tree 無障礙樹、命名空間 Ref 與無像素匹配設計手冊 |
+| [`docs/agent-dispatch.md`](./docs/agent-dispatch.md) | 跨 Agent 派工與完工回報 |
+| [`docs/agent-driven-onboarding-and-security-spec.md`](./docs/agent-driven-onboarding-and-security-spec.md) | 面向非技術用戶的 Agent-Driven 開源專案安裝指引規範（AGENTS.md 最佳實踐與資安防線） |
+| [`docs/agent-skills-curation-and-context-budget-spec.md`](./docs/agent-skills-curation-and-context-budget-spec.md) | Agent Skills 評選矩陣與上下文預算工程規範 |
+| [`docs/agents-knowledge-ab-test-protocol.md`](./docs/agents-knowledge-ab-test-protocol.md) | AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議 |
+| [`docs/ai-influencer-claims-check.md`](./docs/ai-influencer-claims-check.md) | AI 網紅與數位人口播流程宣稱查證報告（Claims Verification） |
+| [`docs/ai-persona-compliance-checklist.md`](./docs/ai-persona-compliance-checklist.md) | AI 生成人物與聲音使用合規檢查清單（AI Persona Compliance Checklist） |
+| [`docs/ai-shared-memory-engineering-spec.md`](./docs/ai-shared-memory-engineering-spec.md) | 多 Agent 團隊共用記憶系統工程規範 |
+| [`docs/android-cli-plugin-windows-validation.md`](./docs/android-cli-plugin-windows-validation.md) | Android CLI Plugin 在 Windows 11 之安裝安全評估與整合驗證報告 |
+| [`docs/android-official-skills-anti-hallucination.md`](./docs/android-official-skills-anti-hallucination.md) | Google Android 官方 Skills 深度盤點與現代 Android 開發防幻覺手冊 |
+| [`docs/anti-ai-slop-frontend.md`](./docs/anti-ai-slop-frontend.md) | 反 AI 罐頭設計前端工程規範 (Anti-AI-Slop Frontend Guidelines) |
+| [`docs/anti-overengineering-agent-rules-spec.md`](./docs/anti-overengineering-agent-rules-spec.md) | AI Coding Agent 防過度設計與防官僚化精實工程手冊（8 條白話規約與反模式清單） |
+| [`docs/blast-radius-code-review-guide.md`](./docs/blast-radius-code-review-guide.md) | 爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南 |
+| [`docs/buzz-nas-deployment-and-heartbeat-spec.md`](./docs/buzz-nas-deployment-and-heartbeat-spec.md) | Buzz 私有化 NAS 常駐部署、預算路由與額度心跳協議規格 |
+| [`docs/buzz-nostr-agent-architecture.md`](./docs/buzz-nostr-agent-architecture.md) | Block Buzz 架構解析與 Nostr + ACP/MCP 代理人協同設計指引 |
+| [`docs/claude-code-mods-windows-validation.md`](./docs/claude-code-mods-windows-validation.md) | Claude Code Mods 自體改造機制 Windows 11 本機二進位深度查驗與替代方案驗證報告 |
+| [`docs/claude-idle-compaction-setup.md`](./docs/claude-idle-compaction-setup.md) | Claude Code 閒置壓縮（Idle Compaction）Windows 11 本地配置與實測指南 |
+| [`docs/claude-plugins-official-review.md`](./docs/claude-plugins-official-review.md) | Anthropic 官方 Claude Code 外掛清單深度檢閱與工作流適配報告 |
+| [`docs/claude-security-guidance-windows-setup.md`](./docs/claude-security-guidance-windows-setup.md) | Claude Code security-guidance 外掛 Windows 11 安裝評估、配置驗證與三層防禦整合報告 |
+| [`docs/cli-anything-to-skill-protocol.md`](./docs/cli-anything-to-skill-protocol.md) | Agent-Native CLI 封裝與自動生成 Skill 標準協議 (CLI-Anything to Skill Protocol) |
+| [`docs/codex-skills-agents-bootstrap-guide.md`](./docs/codex-skills-agents-bootstrap-guide.md) | Codex／Claude Code／Antigravity：AGENTS.md 起步與 Skill 預算控制手冊 |
+| [`docs/codync-agent-fallback-and-mobile-relay-spec.md`](./docs/codync-agent-fallback-and-mobile-relay-spec.md) | Codync 解析：ACP 橋接、Agent 容錯降級與 E2EE 遠端審批規格 |
+| [`docs/correction-queue-evaluation.md`](./docs/correction-queue-evaluation.md) | 評估：在共用 SSOT 倉庫引進「糾正審查佇列」（correction-queue.jsonl） |
+| [`docs/elephant-goldfish-model-spec.md`](./docs/elephant-goldfish-model-spec.md) | 大象-金魚模型（EGM）規格手冊：長上下文起草、零上下文審查與 CUJ 驅動設計流程 |
+| [`docs/evidence/2026-10-26-buzz-windows-build.md`](./docs/evidence/2026-10-26-buzz-windows-build.md) | Buzz 在 Windows 11 的編譯檢查與 Job Object 驗證 |
+| [`docs/external-judge-audit.md`](./docs/external-judge-audit.md) | AI Inbox 任務 DoD 外部裁判（External Judge）稽核報告 |
+| [`docs/feedback-desk-architecture-and-handoff-spec.md`](./docs/feedback-desk-architecture-and-handoff-spec.md) | feedback-desk 架構解構與跨 Agent 工單交接規範 |
+| [`docs/feedback-desk-vs-agent-relay.md`](./docs/feedback-desk-vs-agent-relay.md) | feedback-desk 與 agent-relay 多 Agent 協作機制對照分析 |
+| [`docs/feedback-desk-windows-eval.md`](./docs/feedback-desk-windows-eval.md) | feedback-desk Windows 11 原生環境評估報告 |
+| [`docs/free-public-apis.md`](./docs/free-public-apis.md) | Public APIs 免金鑰與 CORS 支援精選手冊 |
+| [`docs/freelance-contract-scope-and-prerequisites-spec.md`](./docs/freelance-contract-scope-and-prerequisites-spec.md) | AI 接案防失控合約與時程前提規範指南 |
+| [`docs/github-apps-s2s-copilot-workload-identity-guide.md`](./docs/github-apps-s2s-copilot-workload-identity-guide.md) | GitHub Apps Server-to-Server 與 Copilot SDK 工作負載身分整合指南 |
+| [`docs/grok-herdr-agents-bootstrap.md`](./docs/grok-herdr-agents-bootstrap.md) | Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範 |
+| [`docs/irrefutable-evidence-and-invalid-patterns-spec.md`](./docs/irrefutable-evidence-and-invalid-patterns-spec.md) | 無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範 |
+| [`docs/karpathy-rules-mechanical-hardening-spec.md`](./docs/karpathy-rules-mechanical-hardening-spec.md) | Karpathy 四原則工程加固指引：從 Prompt 到硬閘門 |
+| [`docs/llmjacking-cloud-defense-spec.md`](./docs/llmjacking-cloud-defense-spec.md) | AI 時代雲端算力竊盜防禦手冊：AMOS 釣魚木馬、Cookie 劫持與 LLMJacking 防範規格 |
+| [`docs/model-burn-rate-routing-matrix.md`](./docs/model-burn-rate-routing-matrix.md) | 長程並行開發：模型選型與配額消耗速查表（Sol 6.1／Astra 6／Luna 6） |
+| [`docs/multi-agent-parallel-dispatch-spec.md`](./docs/multi-agent-parallel-dispatch-spec.md) | 四 Agent 平行派工協議與人類審核門檻規範 |
+| [`docs/multimodal-screen-privacy-spec.md`](./docs/multimodal-screen-privacy-spec.md) | 多模態 Coding Agent 螢幕截圖與 OCR 視覺隱私安全檢驗規範 |
+| [`docs/nvidia-nemotron-transcribe-pipeline-spec.md`](./docs/nvidia-nemotron-transcribe-pipeline-spec.md) | NVIDIA Nemotron 3.5 Transcribe 語音辨識模型技術規格與 Windows 本機語音輸入適用性評估 |
+| [`docs/production-smoke-security-checklist.md`](./docs/production-smoke-security-checklist.md) | 全端網站上線前 QA 與資安稽核檢核表 (Production Smoke & Security Checklist) |
+| [`docs/pstack-agent-playbooks.md`](./docs/pstack-agent-playbooks.md) | pstack 技能庫與 Playbooks 跨 Agent CLI 移植規格書 |
+| [`docs/pstack-governance-integration.md`](./docs/pstack-governance-integration.md) | pstack 工程防線與 agent-governance-toolkit 運行期政策檢查整合實踐 |
+| [`docs/rea-sandbox-evaluation-evidence.md`](./docs/rea-sandbox-evaluation-evidence.md) | REA（Reverse Engineer Anything）沙盒環境實測報告 |
+| [`docs/reverse-engineering-pipeline-spec.md`](./docs/reverse-engineering-pipeline-spec.md) | REA + CLI-Anything 逆向分析與功能重造流水線規格 (Reverse Engineering Pipeline Spec) |
+| [`docs/saas-subscription-and-api-defense-spec.md`](./docs/saas-subscription-and-api-defense-spec.md) | SaaS 訂閱與 API 鑑權防繞過架構設計規範 |
+| [`docs/scan-to-threejs-spatial-agent-spec.md`](./docs/scan-to-threejs-spatial-agent-spec.md) | 空間運算 Agent 規範：LiDAR 測量、Three.js 程式化建模與相機內參比對閉環 |
+| [`docs/target-story-generative-ui-spec.md`](./docs/target-story-generative-ui-spec.md) | 靶心人故事編輯器 Generative UI 互動規格 (Target Story Generative UI Spec) |
+| [`docs/toml-config-engineering-spec.md`](./docs/toml-config-engineering-spec.md) | TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引 |
+| [`docs/video-transcript-howto.md`](./docs/video-transcript-howto.md) | 影片逐字稿 SOP：字幕取不到時，用 yt-dlp 抓音訊 + Whisper 本機 GPU 轉寫 |
+| [`docs/visual-agent-artifacts-engineering-spec.md`](./docs/visual-agent-artifacts-engineering-spec.md) | AI Agent 視覺化工件輸出規範與 Token 節流工程指引 |
+| [`docs/web-to-app-evaluation.md`](./docs/web-to-app-evaluation.md) | WebToApp（網站轉 Android App）技術評估與本機環境驗證報告 |
+| [`docs/web-to-app-freelance-workflow.md`](./docs/web-to-app-freelance-workflow.md) | 網站轉 Android App 接案標準作業流程與風險防範規格 |
+| [`docs/zeabur-incident-credential-audit.md`](./docs/zeabur-incident-credential-audit.md) | Zeabur 資安事件衝擊盤點與憑證安全稽核報告 |
+| [`docs/zero-build-shader-hero-sections-spec.md`](./docs/zero-build-shader-hero-sections-spec.md) | Zero-Build WebGL/Shader Hero Section 架構規範與視覺資產手冊 |
+| [`docs/zhtw-fork-idempotent-sync-spec.md`](./docs/zhtw-fork-idempotent-sync-spec.md) | 上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範 |
+
+</details>
+
+### 3. 可重用 Prompt 與 Skill 範本（`templates/`，共 23 份）及互動展示（`assets/`，共 7 組）
+- **範本（`templates/`）**：[學術閱讀與知識管理三層框架提示詞範本 (5W1H -> CQR -> KSU)](./templates/academic-reading-prompt.md) ｜ [Agent 桌面操控指令集與 STALE_REF 安全重試 Prompt 模板](./templates/agent-desktop-skill-prompt.md) ｜ [Agent Reach — 互联网能力路由器](./templates/agent-reach/SKILL.md) ｜ [AI 野心升級檢查表（Ambition Prompt Checklist）](./templates/ambition-prompt-checklist.md) ｜ [8 條輕量治病 Agent 系統提示詞模組（適用 CLAUDE.md / AGENTS.md / GEMINI.md）](./templates/anti-overengineering-agent-prompt.md) ｜ [article-analysis 範本](./templates/article-analysis.md) ｜ [Claude Code security-guidance 自訂資安審查規範範本與三層防禦配置手冊](./templates/claude-security-guidance.md) ｜ [需求解壓縮與名詞規格化提示詞範本](./templates/client-requirement-decomposition-prompt.md) ｜ [EGM 工作流 Prompt 範本庫（Brainstorm／Draft／Review／Resolve／Drift-report）](./templates/egm-workflow-prompts.md) ｜ [feedback-desk 跨 Agent 工單認領與調整說明 Prompt 範本](./templates/feedback-desk-agent-prompt.md) ｜ [Fullstack Website Builder Agent Skill (全端商業建站技能規格)](./templates/fullstack-website-builder-skill.md) ｜ [GitHub App S2S 認證腳本與夜間 Agent 工作流範本](./templates/github-app-s2s-agent-workflow.md) ｜ [Karpathy 風格加固版 AGENTS.md 範本](./templates/karpathy-hardened-agents-md.md) ｜ [學術論文雙語解讀與翻譯：LaTeX 數學公式與引用保護提示詞範本](./templates/latex-citation-protection-prompt.md) ｜ [輕量化 Agent Skill 範本](./templates/lightweight-skill-template.md) ｜ [雲端 AI API 預算硬熔斷與防釣魚安裝審查 Prompt 模板](./templates/llmjacking-defense-checklist-prompt.md) ｜ [託管平台資安事件應變清單（Platform Breach Response Checklist）](./templates/platform-breach-response.md) ｜ [Public APIs 動態檢索 Skill / MCP 伺服器規格 (Public APIs Search Protocol)](./templates/public-apis-search-skill.md) ｜ [Single-File Creative Coding Skill 範本](./templates/single-file-creative-coding-skill.md) ｜ [主體資產盤點 (Subject Inventory) 與論證寫作前置提示詞範本](./templates/subject-inventory-argument-writing-prompt.md) ｜ [Team-Dispatch：先拆單、等「派」、再同時派工](./templates/team-dispatch-skill-template.md) ｜ [Coding Agent 上游端點容錯切換策略範本](./templates/upstream-proxy-fallback-policy.md) ｜ [Zero-Build Hero Section 快速注入技能 (Skill 範本)](./templates/zero-build-hero-injector-skill.md)
+- **互動展示與擴充資產（`assets/`）**：[`anti-slop-demo`](./assets/anti-slop-demo/index.html) ｜ [`creative-coding-demo`](./assets/creative-coding-demo/threejs-particle-galaxy.html) ｜ [`inbox-band-mod`](./assets/inbox-band-mod/.claude-plugin/plugin.json) ｜ [`open-meteo-weather-chart`](./assets/open-meteo-weather-chart/index.html) ｜ [`shader-hero-demo`](./assets/shader-hero-demo/index.html) ｜ [`spatial-room-viewer`](./assets/spatial-room-viewer/index.html) ｜ [`target-story-editor`](./assets/target-story-editor/index.html)
+<!-- END GENERATED: catalog -->
 
 ---
 

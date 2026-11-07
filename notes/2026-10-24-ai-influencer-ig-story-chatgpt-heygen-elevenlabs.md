@@ -7,8 +7,8 @@ author: "tangigtutor（頻道名稱依頁面資料）"
 analyzed_at: 2026-10-24
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 3
-cluster_role: "生成式媒體工作流"
+cluster: "3"
+cluster_role: "語音轉錄與生成式媒體"
 short_title: "AI 網紅限動：ChatGPT＋HeyGen＋ElevenLabs"
 tags:
   - ai-influencer

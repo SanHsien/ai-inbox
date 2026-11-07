@@ -7,8 +7,8 @@ author: "angletech2026-arch"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
 status: done
-cluster: 3
-cluster_role: "視覺感知"
+cluster: "3"
+cluster_role: "螢幕感知與瀏覽器代理"
 short_title: "desktop-sense 本機螢幕上下文"
 tags:
   - desktop-sense

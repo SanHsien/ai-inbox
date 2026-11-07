@@ -7,8 +7,8 @@ author: "OpenCut 團隊 (@opencutapp / OpenCut-app)"
 analyzed_at: 2026-11-02
 analyzed_by: "Antigravity"
 status: archived
-cluster: 2
-cluster_role: "開源CapCut替代品與AI視訊編輯器"
+cluster: "2"
+cluster_role: "開源剪輯與動效提示庫"
 short_title: "OpenCut開源視訊編輯器與AI Agents"
 tags:
   - opencut

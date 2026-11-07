@@ -7,8 +7,8 @@ author: "Block, Inc."
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "Nostr人機協同工作區"
+cluster: "1"
+cluster_role: "A2A 通訊與協同工作區"
 short_title: "Block Buzz 協同工作區"
 tags:
   - nostr-protocol

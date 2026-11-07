@@ -7,8 +7,8 @@ author: "SanHsien"
 analyzed_at: 2026-10-21
 analyzed_by: "Claude Code"
 status: done # pending | in-progress | done | archived
-cluster: 1
-cluster_role: "派工落地"
+cluster: "1"
+cluster_role: "A2A 通訊與協同工作區"
 short_title: "agent-relay Phase 4：工人擴充、跨機器回傳與驗收合併"
 tags:
   - agent-workflow

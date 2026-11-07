@@ -7,8 +7,8 @@ author: "@museta1023"
 analyzed_at: 2026-11-06
 analyzed_by: "Antigravity"
 status: archived
-cluster: 4
-cluster_role: "社群收益宣稱查核"
+cluster: "4"
+cluster_role: "開源教材與商業案例查核"
 short_title: "臉書發文收益宣稱查核"
 tags:
   - fact-check

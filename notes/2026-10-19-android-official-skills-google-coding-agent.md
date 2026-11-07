@@ -8,8 +8,8 @@ github_repo: "https://github.com/android/skills"
 analyzed_at: 2026-10-19
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 3
-cluster_role: "領域專家"
+cluster: "3"
+cluster_role: "外掛生態與設定治理"
 short_title: "Google Android 官方 Agent Skills"
 tags:
   - android-skills

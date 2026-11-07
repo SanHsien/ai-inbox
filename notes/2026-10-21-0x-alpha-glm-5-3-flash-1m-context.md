@@ -8,8 +8,8 @@ github_repo: "https://github.com/zai-org/GLM-5"
 analyzed_at: 2026-10-21
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
-cluster: 1
-cluster_role: "長上下文外包"
+cluster: "1"
+cluster_role: "模型路由與配額分流"
 short_title: "0x Alpha (GLM-5.3-Flash) 1M 模型"
 tags:
   - 0x-alpha

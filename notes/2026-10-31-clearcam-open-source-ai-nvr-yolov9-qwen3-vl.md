@@ -7,8 +7,8 @@ author: "Guus Beckham (@christmasguus) / Rory Clear"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 3
-cluster_role: "邊緣環境感知"
+cluster: "3"
+cluster_role: "螢幕感知與瀏覽器代理"
 short_title: "clearcam開源智慧NVR與VLM摘要"
 tags:
   - clearcam

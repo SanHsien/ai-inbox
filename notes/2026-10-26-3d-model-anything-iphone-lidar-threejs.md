@@ -7,8 +7,8 @@ author: "Wes Bos / 李昱翰 (@leeunhn)"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "LiDAR空間重建"
+cluster: "2"
+cluster_role: "WebGL與3D重建"
 short_title: "3D Model Anything"
 tags:
   - threejs

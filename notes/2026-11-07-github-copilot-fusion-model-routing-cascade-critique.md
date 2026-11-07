@@ -7,8 +7,8 @@ author: "Gary Hsieh"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
 status: archived
-cluster: 1
-cluster_role: "模型路由與升級策略對照"
+cluster: "1"
+cluster_role: "模型路由與配額分流"
 short_title: "Copilot Fusion 模型分派評估"
 tags:
   - model-routing

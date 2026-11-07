@@ -7,8 +7,8 @@ author: "Renzhe Yu (@yrzheee) / LargitData 大數軟體 (@largitdata) / Chris Ta
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "OS級無障礙樹Computer Use與桌面操作"
+cluster: "1"
+cluster_role: "桌面操控與代理身分"
 short_title: "Vercel Labs agent-desktop無障礙樹操作"
 tags:
   - agent-desktop

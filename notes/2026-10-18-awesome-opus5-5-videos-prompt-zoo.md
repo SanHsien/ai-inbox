@@ -7,8 +7,8 @@ author: "yihui-dev & Skillry Community"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
 status: done
-cluster: 2
-cluster_role: "提示動物園"
+cluster: "2"
+cluster_role: "開源剪輯與動效提示庫"
 short_title: "Awesome Opus 5.5 Videos"
 tags:
   - awesome-opus5-5

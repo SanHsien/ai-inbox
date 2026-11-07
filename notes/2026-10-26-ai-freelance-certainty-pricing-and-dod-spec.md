@@ -7,8 +7,8 @@ author: "Debug 土撥鼠"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "接案與商業化"
+cluster: "1"
+cluster_role: "工程紀律與設計審查"
 short_title: "AI 接案確定性與價值報價工程"
 tags:
   - ai-freelance

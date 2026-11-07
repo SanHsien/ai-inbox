@@ -7,8 +7,8 @@ author: "HengYu Lin (@castlen3)"
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
 status: done
-cluster: 4
-cluster_role: "Agent引導部署與LINE家庭Bot落地"
+cluster: "4"
+cluster_role: "全端部署與自動化落地"
 short_title: "LINE家庭群組Bot與Agent引導部署"
 tags:
   - line-bot

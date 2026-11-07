@@ -7,8 +7,8 @@ author: "Nicholas Lin (@nps798)"
 analyzed_at: 2026-11-04
 analyzed_by: "Antigravity"
 status: done
-cluster: 3
-cluster_role: "雲端憑證竊取與LLMJacking防禦"
+cluster: "3"
+cluster_role: "端點資安與雲端基建"
 short_title: "假Claude Code釣魚與Vertex AI盜刷鑑別診斷"
 tags:
   - llmjacking

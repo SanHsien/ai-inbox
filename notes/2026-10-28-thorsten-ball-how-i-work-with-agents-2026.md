@@ -7,8 +7,8 @@ author: "Thorsten Ball (Amp /《Writing An Interpreter In Go》作者) / Maple K
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "開發流程"
+cluster: "1"
+cluster_role: "工程紀律與設計審查"
 short_title: "Thorsten Ball 15 條 Agent 實戰哲學"
 tags:
   - thorsten-ball

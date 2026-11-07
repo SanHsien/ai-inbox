@@ -7,8 +7,8 @@ author: "Community Practitioner / Antigravity"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "跨 CLI 編排"
+cluster: "1"
+cluster_role: "跨 CLI 與階層派工"
 short_title: "Opus 規劃顧問 + 多 Agent 降維外包"
 tags:
   - multi-agent-orchestration

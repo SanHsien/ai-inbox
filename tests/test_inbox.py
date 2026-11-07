@@ -280,10 +280,20 @@ tags:
 
     def test_links_percent_encoding_and_query(self):
         (self.tmp / "a b.md").write_text("x", encoding="utf-8")
-        ok = {self.tmp / "r.md": "[a](a%20b.md) [b](a%20b.md?x=1#h)"}
+        ok = {self.tmp / "r.md": "[a](a%20b.md) [b](a%20b.md?x=1#h) `[inline](no-such.md)`\n```\n[fenced](no-such.md)\n```"}
         self.assertEqual(vi.check_links(ok), [])
         bad = {self.tmp / "r.md": "[a](missing.md)"}
         self.assertEqual(len(vi.check_links(bad)), 1)
+
+    def test_cluster_role_max_length_and_catalog_coverage(self):
+        n = make_note(self.tmp)
+        n.meta["cluster_role"] = "這是一個超過十二個字元的過長角色名稱"
+        errs = vi.check_notes([n])
+        self.assertTrue(any("cluster_role" in e and "超過上限" in e for e in errs), errs)
+        cat = bi.render_catalog()
+        self.assertIn("tools/build_index.py", cat)
+        self.assertEqual(vi.check_catalog_coverage("<!-- BEGIN GENERATED: catalog -->\n" + cat), [])
+        self.assertTrue(len(vi.check_catalog_coverage("<!-- BEGIN GENERATED: catalog -->\n")) > 0)
 
     def test_stale_readme_detected(self):
         n = make_note(self.tmp)

@@ -7,8 +7,8 @@ author: "王士麟 (Alex Wang, @aixwangtw)"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "開發流程"
+cluster: "1"
+cluster_role: "A2A 通訊與協同工作區"
 short_title: "feedback-desk 開源 Agent 工單系統"
 tags:
   - feedback-desk

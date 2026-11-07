@@ -7,8 +7,8 @@ author: "麥克風的市場求生手冊 (@mktsurvivalkit)"
 analyzed_at: 2026-11-02
 analyzed_by: "Antigravity"
 status: done
-cluster: 1
-cluster_role: "Agent防過度設計與輕量工作規約"
+cluster: "1"
+cluster_role: "工程紀律與設計審查"
 short_title: "麥克風給Agent的8條防過度設計規約"
 tags:
   - agent-rules

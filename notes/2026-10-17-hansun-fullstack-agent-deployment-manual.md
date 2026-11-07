@@ -7,8 +7,8 @@ author: "HanSun Architects (瀚森建築)"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: done
-cluster: 4
-cluster_role: "全端部署"
+cluster: "4"
+cluster_role: "全端部署與自動化落地"
 short_title: "HanSun 全端建置部署手冊"
 tags:
   - fullstack-architecture

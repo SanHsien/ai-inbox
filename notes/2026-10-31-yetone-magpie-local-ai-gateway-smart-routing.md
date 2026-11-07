@@ -7,8 +7,8 @@ author: "大齡工程師 (@elderengineer) / yetone"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
-cluster: 1
-cluster_role: "本地模型網關與智慧路由"
+cluster: "1"
+cluster_role: "模型路由與配額分流"
 short_title: "Magpie本地多Agent模型網關"
 tags:
   - magpie
