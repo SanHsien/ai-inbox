@@ -515,8 +515,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 60 份）
-<details><summary>展開查看全部 60 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 61 份）
+<details><summary>展開查看全部 61 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -557,6 +557,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/freelance-contract-scope-and-prerequisites-spec.md`](./docs/freelance-contract-scope-and-prerequisites-spec.md) | AI 接案防失控合約與時程前提規範指南 |
 | [`docs/github-apps-s2s-copilot-workload-identity-guide.md`](./docs/github-apps-s2s-copilot-workload-identity-guide.md) | GitHub Apps Server-to-Server 與 Copilot SDK 工作負載身分整合指南 |
 | [`docs/grok-herdr-agents-bootstrap.md`](./docs/grok-herdr-agents-bootstrap.md) | Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範 |
+| [`docs/harness2-recursive-agent-harnessing-spec.md`](./docs/harness2-recursive-agent-harnessing-spec.md) | Harness² 雙層遞迴與 8 大模組演進及防弊規範 |
 | [`docs/irrefutable-evidence-and-invalid-patterns-spec.md`](./docs/irrefutable-evidence-and-invalid-patterns-spec.md) | 無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範 |
 | [`docs/karpathy-rules-mechanical-hardening-spec.md`](./docs/karpathy-rules-mechanical-hardening-spec.md) | Karpathy 四原則工程加固指引：從 Prompt 到硬閘門 |
 | [`docs/llmjacking-cloud-defense-spec.md`](./docs/llmjacking-cloud-defense-spec.md) | AI 時代雲端算力竊盜防禦手冊：AMOS 釣魚木馬、Cookie 劫持與 LLMJacking 防範規格 |
