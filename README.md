@@ -349,6 +349,7 @@
 | 2026-11-06 | 🟢 | [Threads「臉書發文賺得比月薪多」貼文查核：作者自曝後台數據反證、複製貼上農場訊號與副業引流話術](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md) | `fact-check`, `facebook-content-monetization`, `engagement-farming` | 0 / 0 |
 | 2026-11-07 | 🟢 | [Gemini Notebook（前 NotebookLM）官方 API 與 MCP 預覽版評估：7 個工具只能寫入不能查詢、GCP ADC 憑證風險與實際用途界定](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md) | `gemini-notebook`, `notebooklm`, `mcp` | 0 / 0 |
 | 2026-11-07 | 🟢 | [GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md) | `model-routing`, `github-copilot-fusion`, `cascade` | 0 / 0 |
+| 2026-11-07 | 🟢 | [AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯及 Token 成本查證](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) | `ai-engineering-from-scratch`, `curriculum`, `agent-skills` | 0 / 0 |
 | 2026-11-07 | 🟢 | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -437,6 +438,7 @@
 - 一手案例研讀與影音萃取：[海外一手副業案例與影音萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)
 - Agent引導部署與LINE家庭Bot落地：[LINE家庭群組Bot與Agent引導部署](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md)
 - 社群收益宣稱查核：[臉書發文收益宣稱查核](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md)
+- AI 工程從零實作開源教材索引：[AI Engineering from Scratch 教材評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md)
 <!-- END GENERATED: clusters -->
 
 ---
