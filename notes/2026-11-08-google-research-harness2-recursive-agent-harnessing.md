@@ -1,9 +1,11 @@
 ---
+id: 2026-11-08-google-research-harness2-recursive-agent-harnessing
 title: "Google Research 開源 Harness²（Harness Squared）：無標準答案開放世界的雙層遞迴 Agent Harness 自我優化框架"
-source_type: thread
-source_url: "https://www.threads.com/@wayturn_/post/DfR0PG7mTz6"
+source_url: "https://www.threads.com/share/_toE5mWj3"
+source_platform: "Threads (@wayturn_) / GitHub (google-research/harness2)"
 author: "偉騰 (@wayturn_) / Google Research (Ruiyao Xu, Tomas Pfister et al.)"
-created: 2026-11-08
+analyzed_at: 2026-11-08
+analyzed_by: "Antigravity"
 status: done
 cluster: "1"
 cluster_role: "工程紀律與設計審查"
@@ -19,10 +21,20 @@ tags:
 
 # Google Research 開源 Harness²（Harness Squared）：無標準答案開放世界的雙層遞迴 Agent Harness 自我優化框架
 
+- **來源連結**：[Threads 原文分享](https://www.threads.com/share/_toE5mWj3) ｜ [貼文永久網址 (@wayturn_)](https://www.threads.com/@wayturn_/post/DfR0PG7mTz6) ｜ [GitHub (google-research/harness2)](https://github.com/google-research/harness2) ｜ [官方論文 (arXiv:2610.14224)](https://arxiv.org/pdf/2610.14224)
+- **核心作者**：偉騰（`@wayturn_`）／ Google Research（Ruiyao Xu, Yanfei Chen, Zhongying CuiZhu, Bhavana Dalvi Mishra, Yifei Ming, Han Yu, Rujun Han, Chen-Yu Lee, Tomas Pfister）
+- **分析主題**：剖析 Google Research 開源的 **Harness²（Harness Squared：Recursive Agent Harnessing for an Open World）**（23,026 Stars、2,301 Forks、Apache-2.0 License），在固定語言模型權重且無須標準答案（without ground-truth feedback）的開放世界任務中，透過雙層遞迴（Task-level `Propose–Probe–Compose` 與 Harnessing-level `Experience Reflector`）自動精煉 8 大外部 Harness 模組；並檢視其官方 README 揭露之「關閉沙盒與無網路限制導致公開 Benchmark 答案洩漏」防弊邊界。
+- **當前狀態**：`🟢 已完成 (Done)`
+- **相關交叉參照**：
+  - [`notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md`](./2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md)（Agent Autoloop 事件溯源與 8 跳 TTL 熔斷防線）
+  - [`docs/external-judge-audit.md`](../docs/external-judge-audit.md)（外部裁判防弊與驗證器設計規範）
+
+---
+
 ## 1. 資訊初篩（5W1H）
 
-- **Who**：Google Research 團隊（Ruiyao Xu, Yanfei Chen, Zhongying CuiZhu, Bhavana Dalvi Mishra, Yifei Ming, Han Yu, Rujun Han, Chen-Yu Lee, Tomas Pfister）開源，由偉騰（`@wayturn_`）於 Threads 整理分享。
-- **What**：開源 **Harness²（Harness Squared）**（[`google-research/harness2`](https://github.com/google-research/harness2)，23,026 Stars、Apache-2.0 License），一套在不修改底層語言模型權重（Frozen Weights）、且**無須依賴標準答案（without ground-truth feedback）**的開放世界環境中，透過雙層遞迴自動精煉 Agent 外部控制架構（Harness）的系統。
+- **Who**：Google Research 團隊（Ruiyao Xu, Tomas Pfister 等）開源，由偉騰（`@wayturn_`）於 Threads 整理分享。
+- **What**：開源 **Harness²（Harness Squared）**（[`google-research/harness2`](https://github.com/google-research/harness2)），一套在不修改底層語言模型權重（Frozen Weights）、且**無須依賴標準答案（without ground-truth feedback）**的開放世界環境中，透過雙層遞迴自動精煉 Agent 外部控制架構（Harness）的系統。
 - **Where**：
   - Threads 原文：`https://www.threads.com/@wayturn_/post/DfR0PG7mTz6`（短網址：`https://www.threads.com/share/_toE5mWj3`）
   - 官方 GitHub：`https://github.com/google-research/harness2`
@@ -112,17 +124,24 @@ Harness² 將包覆在基礎模型外部的執行環境拆解為 **4 大執行�
 
 ## 4. 與本庫架構之對映與吸收價值
 
-本庫與跨 AI 協作環境（`AGENTS.md`、`skills/`、`tools/verify_*.py`）已自然涵蓋 Harness² 的多數模組，對照如下：
-
 | Harness² 模組 | 本庫對應實作 | 差距與優化空間 |
 | :--- | :--- | :--- |
 | `system prompt` / `guardrails` | `AGENTS.md`、`GEMINI.md`、`tools/verify_*.py` | 已具備硬閘門，可引入「通用 vs 領域」雙軌變更分類。 |
-| `memory` / `Experience Reflector` | `notes/`、`docs/`、`checkpoint` / `neat-freak` | 過去多為單次人工觸發，可定義標準化的「軌跡對照證據（Behavioral Contrast Evidence）」欄位。 |
+| `memory` / `Experience Reflector` | `notes/`、`docs/`、`checkpoint` / `neat-freak` | 可定義標準化的「軌跡對照證據（Behavioral Contrast Evidence）」欄位。 |
 | `skills` / `tool guidance` / `scripts` | `.gemini/config/skills/`、`tools/*.py` | 當腳本或規則在 Probe 失敗時，應強制檢查是否違反沙盒與網路隔離契約。 |
 | `subagents` / `plugins` | `invoke_subagent`、Pre/Post-tool Hooks | 需防範子代理在評估模式下繞過沙盒或觸發無限制外網抓取。 |
 
 ---
 
-## 5. 衍生行動任務（Actionable Tasks）
+## 5. 拆解待辦事項（Action Items）
 
-- [x] **T-20261108-03**：撰寫《Harness² 雙層遞迴與 8 大模組演進及防弊規範》（[docs/harness2-recursive-agent-harnessing-spec.md](../docs/harness2-recursive-agent-harnessing-spec.md)），定義：(1) 本庫 8 大 Harness 模組映射表；(2) 無標準答案任務的 `Propose–Probe–Compose` 對比審查流程；(3) `Experience Reflector` 寫入規則庫之證據門檻；(4) 基準評測與 Probe 階段的「沙盒強制開啟與 Rubric 網域隔離」安全防弊契約。（已完成，2026-11-08）
+- [x] **`T-20261108-03`**｜**[優先級：高]** 撰寫《Harness² 雙層遞迴與 8 大模組演進及防弊規範》（`docs/harness2-recursive-agent-harnessing-spec.md`）
+  - **目標範圍**：`docs/harness2-recursive-agent-harnessing-spec.md`
+  - **具體實作步驟**：
+    1. 定義 8 大可編輯 Harness 模組（`system prompt`, `guardrails`, `memory`, `skills`, `tool guidance`, `scripts`, `subagents`, `plugins`）至本庫與本地多 Agent 架構的映射表及驗證閘門。
+    2. 規範無標準答案任務的第一層遞迴（Task-Level `Propose–Probe–Compose` 對比精煉流程）與第二層遞迴（Harnessing-Level `Experience Reflector` 經驗蒸餾三項證據門檻）。
+    3. 針對 `google-research/harness2` 預設關閉 Codex 沙盒且未限制網路存取的問題，制定「沙盒強制開啟與基準 Rubric 網域隔離」防弊安全契約。
+  - **驗收標準（DoD）**：
+    - 產出 `docs/harness2-recursive-agent-harnessing-spec.md` 並通過 `python tools/build_index.py` 與 `python tools/verify_inbox.py` 契約及 100% 目錄覆蓋率校驗。
+  - **完成日期**：2026-11-08
+  - **實作紀錄 / 證據**：已完成 [`docs/harness2-recursive-agent-harnessing-spec.md`](../docs/harness2-recursive-agent-harnessing-spec.md)，並執行 `python tools/build_index.py` 與 `python tools/verify_inbox.py` 驗證通過（84 篇筆記、206 項任務）。
