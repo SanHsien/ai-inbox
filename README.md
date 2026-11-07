@@ -347,6 +347,7 @@
 | 2026-11-04 | 🟢 | [Nicholas Lin 醫師 GCP Vertex AI 盜用案深度鑑別診斷：假 Claude Code 釣魚、AMOS 竊密木馬、Cookie 劫持與 LLMJacking 雲端算力變現攻擊鏈](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) | `llmjacking`, `gcp`, `vertex-ai` | 3 / 3 |
 | 2026-11-06 | 🟢 | [風雪之閣「IDA 接上 AI，逆向工程最後一哩路」貼文評估：ida-pro-mcp／GhidraMCP 現況查證與既有 REA 逆向流水線對照](./notes/2026-11-06-fengxue-ida-pro-ai-mcp-reverse-engineering-concern.md) | `reverse-engineering`, `ida-pro`, `ghidra` | 0 / 0 |
 | 2026-11-06 | 🟢 | [Threads「臉書發文賺得比月薪多」貼文查核：作者自曝後台數據反證、複製貼上農場訊號與副業引流話術](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md) | `fact-check`, `facebook-content-monetization`, `engagement-farming` | 0 / 0 |
+| 2026-11-07 | 🟢 | [GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md) | `model-routing`, `github-copilot-fusion`, `cascade` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -381,6 +382,7 @@
 - 動態工作流與大規模子代理並行：[保哥Opus+Haiku動態工作流實測](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md)
 - Google大象金魚模型與零記憶審查：[Google大象金魚模型EGM軟體設計審查](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md)
 - Agent防過度設計與輕量工作規約：[麥克風給Agent的8條防過度設計規約](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md)
+- 模型路由與升級策略對照：[Copilot Fusion 模型分派評估](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 展示錄製：[Reelbird 開源螢幕錄影](./notes/2026-10-17-reelbird-open-source-screen-recorder.md)
