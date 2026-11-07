@@ -31,6 +31,7 @@ tags:
 - **分析主題**：解構開源本地 AI 監視器 NVR 標竿專案 **Frigate**（`blakeblackshear/frigate`，37,313 Stars、v0.18.2），剖析如何以「支援 RTSP 的傳統網路攝影機 + 8GB RAM / Intel 第 6 代以上舊電腦 + Docker + AI 輔助排錯」零月費替代每月 \$10～\$20 美元的商用雲端 AI 攝影機訂閱（Google Nest Aware / Ring / Arlo），並與本庫已收錄之 [`clearcam`](./2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md) 進行工程架構對照。
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
+  - [`notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md`](./2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md)（許哲維 Frigate 0.18.2 + Tapo C200 實測設定檔、8 大踩雷與 GHSA Root RCE 漏洞分析）
   - [`notes/2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md`](./2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md)（clearcam 開源智慧 NVR：tinygrad YOLOv9 + OC-SORT + Qwen3 VL 事件摘要）
   - [`notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md`](./2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md)（Agent 引導非技術使用者部署開源專案與安全護欄）
   - [`docs/video-transcript-howto.md`](../docs/video-transcript-howto.md)（影片逐字稿 GPU 轉寫 SOP）
