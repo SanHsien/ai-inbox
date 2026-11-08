@@ -1,7 +1,7 @@
 # 全端網站上線前 QA 與資安稽核檢核表 (Production Smoke & Security Checklist)
 
-> 本檢核表提煉自 HanSun Architects 全端商業建置架構與真實商業上線規範。  
-> 適用技術棧：Next.js App Router (TypeScript)、Supabase (PostgreSQL / RLS)、Vercel、Stripe / 外部金流。  
+> 本檢核表提煉自 HanSun Architects 全端商業建置架構、Cloudflare Serverless 全家桶（Workers / Pages / KV / D1 / R2）與真實商業上線規範。  
+> 適用技術棧：Next.js App Router (TypeScript)、Supabase (PostgreSQL / RLS)、Vercel、Cloudflare Workers (`npx wrangler deploy`)、Stripe / 外部金流。  
 > 交付形式：以 `ai-inbox` 範本（`docs/production-smoke-security-checklist.md`）交付，搭配標準庫稽核腳本 `tools/audit_fullstack_security.py` 進行自動化驗證。
 
 ---
@@ -71,3 +71,15 @@
   4. 確認 Email 或 LINE 成功收到開課/購買確認通知。
   5. 測試後台管理者（Admin）頁面，確認非管理員帳號無法存取。
 - [ ] **零停機發布與即時回滾準備**：確認 Production 環境環境變數已同步配置完畢，並已知曉 Vercel 一鍵 Instant Rollback 的操作入口。
+
+---
+
+## 6. Cloudflare Serverless (`npx wrangler deploy`) 邊緣部署與配額防呆
+
+當採用 Cloudflare 全家桶（Workers + Static Assets + KV + D1 SQLite + R2 Blob Store）免虛擬主機一鍵部署時，額外檢核以下五項：
+
+- [ ] **`.dev.vars` 機密隔離**：本地開發機密一律寫入 `.dev.vars` 並確認 `.gitignore` 包含 `.dev.vars*`；嚴禁將 `API_KEY`、`SECRET`、`PRIVATE_KEY` 寫入明文 `wrangler.toml` / `wrangler.jsonc` 的 `[vars]` 區塊。
+- [ ] **Production 機密注入**：正式環境機密必須透過 `npx wrangler secret put <KEY>` 加密寫入 Cloudflare 邊緣，不得隨原始碼推送。
+- [ ] **D1 參數化查詢與遷移版控**：D1 (`env.DB.prepare("... ?1").bind(...)`) 強制使用參數綁定防範 SQL Injection，結構變更一律經由 `npx wrangler d1 migrations apply` 版控執行。
+- [ ] **KV 最終一致性邊界**：Workers KV 為全球最終一致性（讀取快取最長約 60 秒延遲），嚴禁將 KV 用於「庫存扣減、餘額計算、防重放鎖」等強一致性場景（強一致性請改用 D1 或 Durable Objects）。
+- [ ] **R2 零出口費與公開桶權限**：R2 預設關閉 Public Access，僅對公開靜態素材開啟自訂網域並配置 Cache-Control，私人上傳檔案一律透過 Worker 簽章或權限驗證存取。

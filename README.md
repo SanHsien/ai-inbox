@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 207 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 136／⚪ 不做 71
+> 共 208 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 137／⚪ 不做 71
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,7 +50,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 136 項）</summary>
+<details><summary>展開查看已完成任務（共 137 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -190,6 +190,7 @@
 | `T-20261108-02` | 2026-11-08 | 撰寫 Agent Autoloop 事件溯源與四層安全防線規格，並實作 `tools/verify_autoloop_dispatch_guard.py` 派工安全檢驗器 | 已完成 `docs/agent-autoloop-event-sourcing-and-ttl-spec.md`、`tools/verify_autoloop_dispatch_guard.py` 與 `tests/test_verify_autoloop_dispatch_guard.py`；執行 `python tools/verify_autoloop_dispatch_guard.py` 輸出 `[PASS] Agent Autoloop 四層派工安全防線檢驗通過。`，執行單元測試 `Ran 6 tests — OK`。 | [2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) |
 | `T-20261108-03` | 2026-11-08 | 撰寫《Harness² 雙層遞迴與 8 大模組演進及防弊規範》（`docs/harness2-recursive-agent-harnessing-spec.md`） | 已完成 `docs/harness2-recursive-agent-harnessing-spec.md`，並執行 `python tools/build_index.py` 與 `python tools/verify_inbox.py` 驗證通過（84 篇筆記、206 項任務）。 | [2026-11-08-google-research-harness2-recursive-agent-harnessing](./notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md) |
 | `T-20261108-04` | 2026-11-08 | 撰寫《Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範》，並實作 `tools/verify_agent_skill_pack_safety.py` 靜態審計器 | 已完成 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`、`tools/verify_agent_skill_pack_safety.py` 與 `tests/test_verify_agent_skill_pack_safety.py`；執行 `python tools/verify_agent_skill_pack_safety.py` 輸出 `[PASS] Agent Skill Pack 安全與決定性審計通過（共檢驗 5 組工具鏈）。`，單元測試 `Ran 6 tests — OK`。 | [2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) |
+| `T-20261108-05` | 2026-11-08 | 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核 | 已於 `tools/audit_fullstack_security.py` 新增 `check_wrangler_config` 檢查、於 `docs/production-smoke-security-checklist.md` 新增第 6 節 Cloudflare Serverless 部署檢核清單，並擴充 `tests/test_audit_fullstack_security.py` 至 16 項測試（`Ran 16 tests — OK`）。 | [2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) |
 
 </details>
 
@@ -362,6 +363,7 @@
 | 2026-11-07 | ⚪ | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
 | 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 3 / 3 |
 | 2026-11-08 | 🟢 | [Agent Autoloop 架構深挖：1,850 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) | `agent-autoloop`, `event-sourcing`, `zero-cost-suspend` | 1 / 1 |
+| 2026-11-08 | 🟢 | [陳鍾誠教授分享「AI 寫網站＋Cloudflare `npx wrangler deploy` 一鍵上線」評估：免虛擬主機全端免費全家桶（Workers/KV/D1/R2）與 Wrangler 機密防洩漏稽核](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) | `cloudflare-workers`, `wrangler-deploy`, `serverless-fullstack` | 1 / 1 |
 | 2026-11-08 | ⚪ | [Claude Code 原生 `/advisor` 指令與伺服端 `advisor_20260301` 工具評估：Sonnet 主模型＋Opus/Fable 顧問機制與本地 `SanHsien/agent-advisor` 架構對比](./notes/2026-11-08-claude-code-builtin-advisor-command-evaluation.md) | `claude-code`, `advisor-mode`, `model-routing` | 0 / 0 |
 | 2026-11-08 | 🟢 | [Claude Code 垂直領域 Skill 與 MCP 生態系全盤點：影音配音聽覺自審、YouTube/IG 確定性腳本、前端反 AI Slop 五件套與 Claudex 跨模型互審](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) | `claude-code`, `agent-skills`, `earshot` | 1 / 1 |
 | 2026-11-08 | 🟢 | [Frigate 開源本地 AI NVR 架構解析：RTSP 舊鏡頭改造、Intel OpenVINO 內顯加速、語意搜尋與 ClearCam 對照](./notes/2026-11-08-frigate-nvr-rtsp-openvino-local-ai-camera.md) | `frigate`, `smart-nvr`, `rtsp` | 1 / 1 |
@@ -402,7 +404,7 @@
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
-- 全端部署與自動化落地：[HanSun 全端建置部署手冊](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md)、[LINE家庭群組Bot與Agent引導部署](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md)
+- 全端部署與自動化落地：[HanSun 全端建置部署手冊](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md)、[LINE家庭群組Bot與Agent引導部署](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md)、[陳鍾誠Cloudflare一鍵部署評估](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md)
 - 開源教材與商業案例查核：[GitHub 開源 AI 工具矩陣](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md)、[海外一手副業案例與影音萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)、[臉書發文收益宣稱查核](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md)、[AI Engineering from Scratch 教材評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md)
 <!-- END GENERATED: clusters -->
 

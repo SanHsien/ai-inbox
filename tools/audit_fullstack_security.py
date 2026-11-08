@@ -167,6 +167,68 @@ def check_sql_rls(root: Path) -> list[str]:
     return issues
 
 
+def check_wrangler_config(root: Path) -> list[str]:
+    """檢查 Cloudflare Wrangler (wrangler.toml / wrangler.json / wrangler.jsonc) 與 .dev.vars 安全規範"""
+    issues: list[str] = []
+
+    # 1. 若專案使用 .dev.vars（Cloudflare 本地機密檔），必須確認 .gitignore 已忽略 .dev.vars
+    dev_vars_exists = (root / ".dev.vars").exists() or (root / ".dev.vars.example").exists()
+    wrangler_files = [
+        p
+        for p in (root / "wrangler.toml", root / "wrangler.json", root / "wrangler.jsonc")
+        if p.exists()
+    ]
+    if not dev_vars_exists and not wrangler_files:
+        return issues
+
+    gitignore_path = root / ".gitignore"
+    if gitignore_path.exists():
+        content = gitignore_path.read_text(encoding="utf-8-sig", errors="ignore")
+        lines = [line.strip() for line in content.splitlines() if line.strip() and not line.strip().startswith("#")]
+        rules: list[tuple[bool, str]] = []
+        for line in lines:
+            negated = line.startswith("!")
+            glob = (line[1:] if negated else line).lstrip("/")
+            if glob.startswith("**/"):
+                glob = glob[3:]
+            rules.append((negated, glob.rstrip("/")))
+        dev_vars_ignored = False
+        for negated, glob in rules:
+            if fnmatch.fnmatchcase(".dev.vars", glob):
+                dev_vars_ignored = not negated
+        if not dev_vars_ignored:
+            issues.append("Cloudflare Wrangler 專案之 .gitignore 未忽略本地機密檔 '.dev.vars'")
+
+    # 2. 掃描 wrangler.toml / wrangler.json(c) 是否在明文 vars 中存放敏感金鑰或真實 Token
+    secret_key_name_re = re.compile(
+        r"(?:SECRET|PRIVATE_KEY|API_KEY|ACCESS_TOKEN|AUTH_TOKEN|PASSWORD|SERVICE_ROLE)",
+        re.IGNORECASE,
+    )
+    for wf in wrangler_files:
+        rel_wf = wf.relative_to(root)
+        raw = wf.read_text(encoding="utf-8", errors="ignore")
+        for lineno, line in enumerate(raw.splitlines(), start=1):
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#") or stripped.startswith("//"):
+                continue
+            for pattern, desc in SUSPICIOUS_KEY_PATTERNS:
+                if pattern.search(stripped):
+                    issues.append(f"Wrangler 設定檔 '{rel_wf}' 第 {lineno} 行疑似包含真實金鑰 ({desc})，應改用 wrangler secret put")
+            # 檢查 key = "value" 或 "key": "value" 中以明文定義敏感變數名且值非空佔位符
+            kv_match = re.match(
+                r'^["\']?([A-Za-z0-9_]+)["\']?\s*[:=]\s*["\']([^"\']+)["\']',
+                stripped,
+            )
+            if kv_match:
+                key_name, val = kv_match.group(1), kv_match.group(2).strip()
+                if secret_key_name_re.search(key_name) and val and not val.startswith(("<", "YOUR_", "your-", "$")):
+                    issues.append(
+                        f"Wrangler 設定檔 '{rel_wf}' 第 {lineno} 行將敏感變數 '{key_name}' 寫入明文設定，應改放 '.dev.vars' 或執行 'npx wrangler secret put {key_name}'"
+                    )
+
+    return issues
+
+
 def audit_fullstack_security(target_dir: Path) -> dict[str, Any]:
     """執行完整安全稽核並回傳結果"""
     target = target_dir.resolve()
@@ -178,6 +240,7 @@ def audit_fullstack_security(target_dir: Path) -> dict[str, Any]:
             "env_example": check_env_example(target),
             "client_components": check_client_components(target),
             "sql_rls": check_sql_rls(target),
+            "wrangler_config": check_wrangler_config(target),
         },
         "total_issues": 0,
     }

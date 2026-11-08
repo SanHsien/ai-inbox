@@ -12,6 +12,7 @@ from audit_fullstack_security import (
     check_env_example,
     check_gitignore,
     check_sql_rls,
+    check_wrangler_config,
 )
 
 
@@ -152,6 +153,25 @@ class TestAuditFullstackSecurity(unittest.TestCase):
         issues = check_sql_rls(self.test_dir)
         self.assertEqual(len(issues), 1)
         self.assertIn("leaky", issues[0])
+
+    def test_wrangler_config_blocks_plaintext_secrets_and_missing_dev_vars_ignore(self):
+        (self.test_dir / ".gitignore").write_text(".env\n.env.local\n", encoding="utf-8")
+        (self.test_dir / "wrangler.toml").write_text(
+            'name = "demo-worker"\ncompatibility_date = "2026-11-01"\n\n[vars]\nOPENAI_API_KEY = "real-secret-value-123"\n',
+            encoding="utf-8",
+        )
+        issues = check_wrangler_config(self.test_dir)
+        self.assertEqual(len(issues), 2)
+        self.assertTrue(any(".dev.vars" in i for i in issues))
+        self.assertTrue(any("OPENAI_API_KEY" in i for i in issues))
+
+    def test_wrangler_config_passes_when_clean(self):
+        (self.test_dir / ".gitignore").write_text(".env\n.env.local\n.dev.vars*\n", encoding="utf-8")
+        (self.test_dir / "wrangler.toml").write_text(
+            'name = "demo-worker"\ncompatibility_date = "2026-11-01"\n\n[vars]\nENVIRONMENT = "production"\n',
+            encoding="utf-8",
+        )
+        self.assertEqual(check_wrangler_config(self.test_dir), [])
 
 
 if __name__ == "__main__":
