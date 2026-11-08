@@ -369,6 +369,7 @@
 | 2026-11-08 | ⚪ | [黑暗執行緒推薦「Motion Library 動態收藏」：327 種網頁特效的 AI 提示詞庫、CSS/GSAP 實作與 Agent Skill 整合評估](./notes/2026-11-08-darkthread-kittenjam-motion-library-frontend-animation-prompts.md) | `motion-library`, `frontend-animation`, `darkthread` | 0 / 0 |
 | 2026-11-08 | 🟢 | [Frigate 開源本地 AI NVR 架構解析：RTSP 舊鏡頭改造、Intel OpenVINO 內顯加速、語意搜尋與 ClearCam 對照](./notes/2026-11-08-frigate-nvr-rtsp-openvino-local-ai-camera.md) | `frigate`, `smart-nvr`, `rtsp` | 1 / 1 |
 | 2026-11-08 | 🟢 | [Google Research 開源 Harness²（Harness Squared）：無標準答案開放世界的雙層遞迴 Agent Harness 自我優化框架](./notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md) | `google-research`, `harness2`, `agent-harness` | 1 / 1 |
+| 2026-11-08 | ⚪ | [評析 Threads 爆款「Claude 8 條提示詞 90 天 YouTube 變現」：泛用角色提示詞的淺層缺陷、搬運破綻與工業級 Agent Skill 實證對照](./notes/2026-11-08-jackiechin073-claude-youtube-8-prompts-vs-agent-skills.md) | `youtube-strategy`, `prompt-engineering`, `mega-prompts` | 0 / 0 |
 | 2026-11-08 | ⚪ | [開源專案 `JustVugg/colibri` 解構：VRAM/RAM/NVMe 三層式 MoE 推理引擎、零生成 `System One`（Jev API 相容）決策端點與本機 RTX 3060 適配評估](./notes/2026-11-08-justvugg-colibri-hierarchical-moe-inference-engine.md) | `colibri`, `moe-inference`, `expert-offloading` | 0 / 0 |
 | 2026-11-08 | ⚪ | [Frigate 0.18.2 實測圖解與踩雷拆解：Tapo C200 RTSP 雙串流、OpenVINO 模型張量契約與 GHSA Root RCE 漏洞防護](./notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md) | `frigate`, `tapo-c200`, `rtsp` | 0 / 0 |
 <!-- END GENERATED: index -->
@@ -395,6 +396,7 @@
 - 開源剪輯與動效提示庫：[Reelbird 開源螢幕錄影](./notes/2026-10-17-reelbird-open-source-screen-recorder.md)、[Awesome Opus 5.5 Videos](./notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md)、[OpenCut開源視訊編輯器與AI Agents](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md)
 - 提示詞工程與上下文：[Claude垂直領域Skill與MCP生態盤點](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md)
 - 前端動態與提示詞工程：[Motion-Library網頁動效庫](./notes/2026-11-08-darkthread-kittenjam-motion-library-frontend-animation-prompts.md)
+- 提示詞工程與自媒體：[YouTube八大提示詞vsAgentSkill對照](./notes/2026-11-08-jackiechin073-claude-youtube-8-prompts-vs-agent-skills.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
