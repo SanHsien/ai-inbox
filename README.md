@@ -374,6 +374,7 @@
 | 2026-11-08 | ⚪ | [開源專案 `JustVugg/colibri` 解構：VRAM/RAM/NVMe 三層式 MoE 推理引擎、零生成 `System One`（Jev API 相容）決策端點與本機 RTX 3060 適配評估](./notes/2026-11-08-justvugg-colibri-hierarchical-moe-inference-engine.md) | `colibri`, `moe-inference`, `expert-offloading` | 0 / 0 |
 | 2026-11-08 | ⚪ | [評析 Threads 推薦「OpenMausBot」：開源 Grok Bot 替代方案、雙行程 Harness 架構與 Local VM / Bot Box 沙盒安全邊界深挖](./notes/2026-11-08-otto-scope-openmausbot-local-vm-agent-fleet.md) | `openmausbot`, `grok-bot-alternative`, `agent-sandbox` | 0 / 0 |
 | 2026-11-08 | ⚪ | [Frigate 0.18.2 實測圖解與踩雷拆解：Tapo C200 RTSP 雙串流、OpenVINO 模型張量契約與 GHSA Root RCE 漏洞防護](./notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md) | `frigate`, `tapo-c200`, `rtsp` | 0 / 0 |
+| 2026-11-09 | ⚪ | [評析「一股GoodJob」GitHub 週榜 5 大 Claude Skills：Hallmark 反 Slop、claude-mem 跨會話記憶、Game Studios 遊戲工坊、Claude SEO 與 OpenMontage 影音管線](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md) | `claude-code`, `agent-skills`, `hallmark` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -401,6 +402,7 @@
 - 提示詞工程與上下文：[Claude垂直領域Skill與MCP生態盤點](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md)
 - 前端動態與提示詞工程：[Motion-Library網頁動效庫](./notes/2026-11-08-darkthread-kittenjam-motion-library-frontend-animation-prompts.md)
 - 提示詞工程與自媒體：[YouTube八大提示詞vsAgentSkill對照](./notes/2026-11-08-jackiechin073-claude-youtube-8-prompts-vs-agent-skills.md)
+- 垂直工作流技能包：[GitHub週榜五大ClaudeSkills](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
