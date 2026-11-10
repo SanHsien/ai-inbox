@@ -375,6 +375,7 @@
 | 2026-11-08 | ⚪ | [評析 Threads 推薦「OpenMausBot」：開源 Grok Bot 替代方案、雙行程 Harness 架構與 Local VM / Bot Box 沙盒安全邊界深挖](./notes/2026-11-08-otto-scope-openmausbot-local-vm-agent-fleet.md) | `openmausbot`, `grok-bot-alternative`, `agent-sandbox` | 0 / 0 |
 | 2026-11-08 | ⚪ | [Frigate 0.18.2 實測圖解與踩雷拆解：Tapo C200 RTSP 雙串流、OpenVINO 模型張量契約與 GHSA Root RCE 漏洞防護](./notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md) | `frigate`, `tapo-c200`, `rtsp` | 0 / 0 |
 | 2026-11-09 | ⚪ | [評析「一股GoodJob」GitHub 週榜 5 大 Claude Skills：Hallmark 反 Slop、claude-mem 跨會話記憶、Game Studios 遊戲工坊、Claude SEO 與 OpenMontage 影音管線](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md) | `claude-code`, `agent-skills`, `hallmark` | 0 / 0 |
+| 2026-11-10 | ⚪ | [評析陳盟升（Darks）「Claude Code 突破 5 小時額度牆自我喚醒術」：無人值守長駐 Agent 的背景排程範式、夜間死循環熔斷與落盤對帳防線](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md) | `claude-code`, `rate-limit`, `5-hour-window` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -393,6 +394,7 @@
 - 工程紀律與設計審查：[pstack 方法論與 TDD 驗證](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md)、[AI 接案確定性與價值報價工程](./notes/2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md)、[Karpathy 四大原則工程加固](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)、[Thorsten Ball 15 條 Agent 實戰哲學](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)、[Google大象金魚模型EGM軟體設計審查](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md)、[麥克風給Agent的8條防過度設計規約](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md)、[Google Harness²雙層遞迴優化](./notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md)
 - 會話模式與節奏控制：[Claude-Work-Mode三態架構深挖](./notes/2026-11-08-dustin-gmat-danyuchn-claude-work-mode-session-modes.md)
 - Agent安全與沙盒隔離：[OpenMausBot沙盒與架構深挖](./notes/2026-11-08-otto-scope-openmausbot-local-vm-agent-fleet.md)
+- Agent排程與額度管理：[ClaudeCode五小時額度自喚醒](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
