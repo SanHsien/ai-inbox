@@ -1,11 +1,11 @@
 # 路線圖
 
 > 本 repo 後續工作的單一真相源。做完一項，就在同一個 commit 刪掉那一列；新工作只加在這裡。
-> 現況段的數字是 2026-11-07 依 `main` 查的快照，開工前先重查 GitHub。
+> 現況段的數字是 2026-11-10 依 `main` 查的快照，開工前先重查 GitHub。
 
 ## 現況
 
-public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 80 篇、`tools/` 32 支 CLI 工具、`docs/` 59 份、`templates/` 24 份、`assets/` 7 組、`tests/` 38 支測試檔），維護者持續直推 main 新增筆記與任務。健康：open issue 0、open PR 0、Dependabot 與 Code scanning 告警各 0，`CI Contract Verification`、`CodeQL` 皆 success；沒有 release。`README.md` 的任務總表、文章索引、四大知識圖譜與全庫產出物導覽皆由 `tools/build_index.py` 自動生成並由 `tools/verify_inbox.py` 執行契約與覆蓋率校驗。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
+public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 93 篇、`tools/` 34 支 CLI 工具、`docs/` 62 份、`templates/` 23 份、`assets/` 7 組、`tests/` 40 支測試檔），維護者持續直推 main 新增筆記與任務。健康：open issue 0、open PR 0、Dependabot 與 Code scanning 告警各 0，`CI Contract Verification`、`CodeQL` 皆 success；沒有 release。`README.md` 的任務總表、文章索引、四大知識圖譜與全庫產出物導覽皆由 `tools/build_index.py` 自動生成並由 `tools/verify_inbox.py` 執行契約與覆蓋率校驗。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
 
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
