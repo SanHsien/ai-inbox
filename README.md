@@ -375,6 +375,7 @@
 | 2026-11-08 | ⚪ | [評析 Threads 推薦「OpenMausBot」：開源 Grok Bot 替代方案、雙行程 Harness 架構與 Local VM / Bot Box 沙盒安全邊界深挖](./notes/2026-11-08-otto-scope-openmausbot-local-vm-agent-fleet.md) | `openmausbot`, `grok-bot-alternative`, `agent-sandbox` | 0 / 0 |
 | 2026-11-08 | ⚪ | [Frigate 0.18.2 實測圖解與踩雷拆解：Tapo C200 RTSP 雙串流、OpenVINO 模型張量契約與 GHSA Root RCE 漏洞防護](./notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md) | `frigate`, `tapo-c200`, `rtsp` | 0 / 0 |
 | 2026-11-09 | ⚪ | [評析「一股GoodJob」GitHub 週榜 5 大 Claude Skills：Hallmark 反 Slop、claude-mem 跨會話記憶、Game Studios 遊戲工坊、Claude SEO 與 OpenMontage 影音管線](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md) | `claude-code`, `agent-skills`, `hallmark` | 0 / 0 |
+| 2026-11-10 | ⚪ | [評析 Threads 冠妙 Asha「Muse 跨區註冊與 10 億 Token 邀請碼」：加拿大節點規避年齡驗證、VPN 試用陷阱與 ToS 封號資安評估](./notes/2026-11-10-asha-muse-registration-vpn-referral-evaluation.md) | `meta-muse`, `vpn-bypass`, `referral-program` | 0 / 0 |
 | 2026-11-10 | ⚪ | [評析陳盟升（Darks）「Claude Code 突破 5 小時額度牆自我喚醒術」：無人值守長駐 Agent 的背景排程範式、夜間死循環熔斷與落盤對帳防線](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md) | `claude-code`, `rate-limit`, `5-hour-window` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -419,6 +420,7 @@
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
 - 全端部署與自動化落地：[HanSun 全端建置部署手冊](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md)、[LINE家庭群組Bot與Agent引導部署](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md)、[陳鍾誠Cloudflare一鍵部署評估](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md)
 - 開源教材與商業案例查核：[GitHub 開源 AI 工具矩陣](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md)、[海外一手副業案例與影音萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)、[臉書發文收益宣稱查核](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md)、[AI Engineering from Scratch 教材評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md)
+- 社群動態與帳號合規：[Muse跨區註冊與邀請碼評析](./notes/2026-11-10-asha-muse-registration-vpn-referral-evaluation.md)
 <!-- END GENERATED: clusters -->
 
 ---
