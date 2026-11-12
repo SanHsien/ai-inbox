@@ -378,6 +378,7 @@
 | 2026-11-10 | ⚪ | [評析 Threads 冠妙 Asha「Muse 跨區註冊與 10 億 Token 邀請碼」：加拿大節點規避年齡驗證、VPN 試用陷阱與 ToS 封號資安評估](./notes/2026-11-10-asha-muse-registration-vpn-referral-evaluation.md) | `meta-muse`, `vpn-bypass`, `referral-program` | 0 / 0 |
 | 2026-11-10 | ⚪ | [評析陳盟升（Darks）「Claude Code 突破 5 小時額度牆自我喚醒術」：無人值守長駐 Agent 的背景排程範式、夜間死循環熔斷與落盤對帳防線](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md) | `claude-code`, `rate-limit`, `5-hour-window` | 0 / 0 |
 | 2026-11-11 | ⚪ | [Meta Astryx 開源設計系統：8 年內建、agent-ready、150+ 元件](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md) | `design-system`, `meta`, `astryx` | 0 / 0 |
+| 2026-11-12 | ⚪ | [Claude Duet 申請送 3 次 resets：Fable 5.2 發布時機與配額策略](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md) | `claude`, `claude-duet`, `fable-5-2` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -397,6 +398,7 @@
 - 會話模式與節奏控制：[Claude-Work-Mode三態架構深挖](./notes/2026-11-08-dustin-gmat-danyuchn-claude-work-mode-session-modes.md)
 - Agent安全與沙盒隔離：[OpenMausBot沙盒與架構深挖](./notes/2026-11-08-otto-scope-openmausbot-local-vm-agent-fleet.md)
 - Agent排程與額度管理：[ClaudeCode五小時額度自喚醒](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md)
+- Claude配額管理：[Duet申請送Resets](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
