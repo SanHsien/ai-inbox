@@ -377,6 +377,7 @@
 | 2026-11-09 | ⚪ | [評析「一股GoodJob」GitHub 週榜 5 大 Claude Skills：Hallmark 反 Slop、claude-mem 跨會話記憶、Game Studios 遊戲工坊、Claude SEO 與 OpenMontage 影音管線](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md) | `claude-code`, `agent-skills`, `hallmark` | 0 / 0 |
 | 2026-11-10 | ⚪ | [評析 Threads 冠妙 Asha「Muse 跨區註冊與 10 億 Token 邀請碼」：加拿大節點規避年齡驗證、VPN 試用陷阱與 ToS 封號資安評估](./notes/2026-11-10-asha-muse-registration-vpn-referral-evaluation.md) | `meta-muse`, `vpn-bypass`, `referral-program` | 0 / 0 |
 | 2026-11-10 | ⚪ | [評析陳盟升（Darks）「Claude Code 突破 5 小時額度牆自我喚醒術」：無人值守長駐 Agent 的背景排程範式、夜間死循環熔斷與落盤對帳防線](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md) | `claude-code`, `rate-limit`, `5-hour-window` | 0 / 0 |
+| 2026-11-11 | ⚪ | [Meta Astryx 開源設計系統：8 年內建、agent-ready、150+ 元件](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md) | `design-system`, `meta`, `astryx` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -406,6 +407,7 @@
 - 前端動態與提示詞工程：[Motion-Library網頁動效庫](./notes/2026-11-08-darkthread-kittenjam-motion-library-frontend-animation-prompts.md)
 - 提示詞工程與自媒體：[YouTube八大提示詞vsAgentSkill對照](./notes/2026-11-08-jackiechin073-claude-youtube-8-prompts-vs-agent-skills.md)
 - 垂直工作流技能包：[GitHub週榜五大ClaudeSkills](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md)
+- AI工具整合：[Meta Astryx設計系統](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
