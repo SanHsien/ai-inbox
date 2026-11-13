@@ -380,6 +380,7 @@
 | 2026-11-11 | ⚪ | [Meta Astryx 開源設計系統：8 年內建、agent-ready、150+ 元件](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md) | `design-system`, `meta`, `astryx` | 0 / 0 |
 | 2026-11-12 | ⚪ | [Claude Duet 申請送 3 次 resets：Fable 5.2 發布時機與配額策略](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md) | `claude`, `claude-duet`, `fable-5-2` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Editkin：免費 Windows 本地優先 AI 剪輯器（0.16 起轉閉源 freeware，原始碼凍結於 0.15）](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md) | `editkin`, `video-editing`, `local-first` | 0 / 0 |
+| 2026-11-13 | ⚪ | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -401,6 +402,7 @@
 - Agent安全與沙盒隔離：[OpenMausBot沙盒與架構深挖](./notes/2026-11-08-otto-scope-openmausbot-local-vm-agent-fleet.md)
 - Agent排程與額度管理：[ClaudeCode五小時額度自喚醒](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md)
 - Claude配額管理：[Duet申請送Resets](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md)
+- 簡報工作流：[Claude Artifacts簡報](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
