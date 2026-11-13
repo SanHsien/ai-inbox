@@ -379,6 +379,7 @@
 | 2026-11-10 | ⚪ | [評析陳盟升（Darks）「Claude Code 突破 5 小時額度牆自我喚醒術」：無人值守長駐 Agent 的背景排程範式、夜間死循環熔斷與落盤對帳防線](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md) | `claude-code`, `rate-limit`, `5-hour-window` | 0 / 0 |
 | 2026-11-11 | ⚪ | [Meta Astryx 開源設計系統：8 年內建、agent-ready、150+ 元件](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md) | `design-system`, `meta`, `astryx` | 0 / 0 |
 | 2026-11-12 | ⚪ | [Claude Duet 申請送 3 次 resets：Fable 5.2 發布時機與配額策略](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md) | `claude`, `claude-duet`, `fable-5-2` | 0 / 0 |
+| 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -419,6 +420,7 @@
 - 語音轉錄與生成式媒體：[AI 網紅限動：ChatGPT＋HeyGen＋ElevenLabs](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md)、[NVIDIA Nemotron 3.5語音轉錄大模型](./notes/2026-10-31-nvidia-nemotron-3-5-transcribe-prompt-guided-asr.md)、[VoiceStudio本地語音克隆管線](./notes/2026-10-31-voicestudio-local-ai-voice-cloning-skill-pipeline.md)
 - 端點資安與雲端基建：[Strata 12GB 顯卡運行 125B 大模型](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md)、[security-guidance 三層左移資安外掛](./notes/2026-10-23-claude-plugin-security-guidance.md)、[Zeabur 十月資安事件與憑證輪替](./notes/2026-10-23-zeabur-october-2026-security-incident.md)、[Grok OAuth 訂閱轉 API 鑑權破綻解構](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md)、[Zeabur開源PaaS架構與資安反思](./notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md)、[Zeabur OSS開源與Installer自建](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md)、[Zero-Breach-Toolkit間諜軟體鑑識](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md)、[假Claude Code釣魚與Vertex AI盜刷鑑別診斷](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md)
 - 高槓桿思維與工作流：[AI 野心四維框架與深度四問](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md)、[Dan Koe數位匠人與經驗時代架構](./notes/2026-10-31-dan-koe-digital-artisan-body-of-work-framework.md)
+- 免費算力整合：[Muse指揮10免費工具](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
