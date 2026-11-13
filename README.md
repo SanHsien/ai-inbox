@@ -379,6 +379,7 @@
 | 2026-11-10 | ⚪ | [評析陳盟升（Darks）「Claude Code 突破 5 小時額度牆自我喚醒術」：無人值守長駐 Agent 的背景排程範式、夜間死循環熔斷與落盤對帳防線](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md) | `claude-code`, `rate-limit`, `5-hour-window` | 0 / 0 |
 | 2026-11-11 | ⚪ | [Meta Astryx 開源設計系統：8 年內建、agent-ready、150+ 元件](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md) | `design-system`, `meta`, `astryx` | 0 / 0 |
 | 2026-11-12 | ⚪ | [Claude Duet 申請送 3 次 resets：Fable 5.2 發布時機與配額策略](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md) | `claude`, `claude-duet`, `fable-5-2` | 0 / 0 |
+| 2026-11-13 | ⚪ | [Editkin：免費 Windows 本地優先 AI 剪輯器（0.16 起轉閉源 freeware，原始碼凍結於 0.15）](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md) | `editkin`, `video-editing`, `local-first` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -411,6 +412,7 @@
 - 提示詞工程與自媒體：[YouTube八大提示詞vsAgentSkill對照](./notes/2026-11-08-jackiechin073-claude-youtube-8-prompts-vs-agent-skills.md)
 - 垂直工作流技能包：[GitHub週榜五大ClaudeSkills](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md)
 - AI工具整合：[Meta Astryx設計系統](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md)
+- AI影片剪輯：[Editkin免費AI剪輯](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
