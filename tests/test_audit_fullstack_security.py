@@ -3,6 +3,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+import json
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
@@ -172,6 +173,63 @@ class TestAuditFullstackSecurity(unittest.TestCase):
             encoding="utf-8",
         )
         self.assertEqual(check_wrangler_config(self.test_dir), [])
+
+    def test_wrangler_inline_json_toml_and_numeric_password(self):
+        (self.test_dir / '.gitignore').write_text('.dev.vars*\n', encoding='utf-8')
+        for name, content in (
+            ('wrangler.json', '{"name":"demo","vars":{"API_KEY":"synthetic-secret"}}'),
+            ('wrangler.toml', 'name="demo"\nvars = { API_KEY = "synthetic-secret" }'),
+            ('wrangler.toml', '[vars]\nPASSWORD=123456'),
+        ):
+            with self.subTest(name=name, content=content):
+                p = self.test_dir / name
+                p.write_text(content, encoding='utf-8')
+                self.assertTrue(check_wrangler_config(self.test_dir))
+                p.unlink()
+
+    def test_wrangler_env_vars_all_types_and_nested_tokens(self):
+        (self.test_dir / '.gitignore').write_text('.dev.vars*\n', encoding='utf-8')
+        for value in (0, False, None, '', [], {}, ['safe'], {'nested': 'safe'}, 'static'):
+            for scope in ('vars', 'env'):
+                config = {'vars': {'PASSWORD': value}} if scope == 'vars' else {
+                    'env': {'staging': {'vars': {'PASSWORD': value}}}}
+                (self.test_dir / 'wrangler.json').write_text(json.dumps(config), encoding='utf-8')
+                self.assertTrue(check_wrangler_config(self.test_dir), (scope, value))
+        config = {'vars': {'PUBLIC': {'nested': ['ghp_' + 'a' * 24]}}}
+        (self.test_dir / 'wrangler.json').write_text(json.dumps(config), encoding='utf-8')
+        self.assertTrue(check_wrangler_config(self.test_dir))
+
+    def test_wrangler_jsonc_strings_comments_and_trailing_commas(self):
+        (self.test_dir / '.gitignore').write_text('.dev.vars*\n', encoding='utf-8')
+        p = self.test_dir / 'wrangler.jsonc'
+        p.write_text('''{// comment
+          "vars": {"URL": "https://example.com/a//b/*c*/", "TEXT": "escaped\\\"quote",},
+          /* comment */ "env": {"test": {"vars": {"ENVIRONMENT": "test"},},},
+        }''', encoding='utf-8')
+        self.assertEqual(check_wrangler_config(self.test_dir), [])
+        p.write_text('{"env":{"x":{"vars":{"API_KEY":"secret"}}}}', encoding='utf-8')
+        self.assertTrue(check_wrangler_config(self.test_dir))
+
+    def test_wrangler_bad_schema_and_empty_config_fail_closed(self):
+        (self.test_dir / '.gitignore').write_text('.dev.vars*\n', encoding='utf-8')
+        for name, content in (('wrangler.json', ''), ('wrangler.json', '{}'),
+                              ('wrangler.json', '[]'), ('wrangler.json', '{'),
+                              ('wrangler.toml', ''), ('wrangler.toml', 'vars = ['),
+                              ('wrangler.jsonc', '{/* unfinished'),
+                              ('wrangler.json', '{"vars":[]}'),
+                              ('wrangler.json', '{"env":{"x":[]}}'),
+                              ('wrangler.json', '{"env":[]}'),
+                              ('wrangler.json', '{"vars":{},"vars":{"PASSWORD":"x"}}')):
+            with self.subTest(content=content):
+                p = self.test_dir / name
+                p.write_text(content, encoding='utf-8')
+                self.assertTrue(check_wrangler_config(self.test_dir))
+                p.unlink()
+
+    def test_wrangler_missing_root_and_missing_ignore(self):
+        self.assertTrue(check_wrangler_config(self.test_dir / 'absent'))
+        (self.test_dir / 'wrangler.toml').write_text('name="demo"', encoding='utf-8')
+        self.assertTrue(check_wrangler_config(self.test_dir))
 
 
 if __name__ == "__main__":

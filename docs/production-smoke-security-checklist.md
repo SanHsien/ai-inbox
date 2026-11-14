@@ -76,10 +76,16 @@
 
 ## 6. Cloudflare Serverless (`npx wrangler deploy`) 邊緣部署與配額防呆
 
-當採用 Cloudflare 全家桶（Workers + Static Assets + KV + D1 SQLite + R2 Blob Store）免虛擬主機一鍵部署時，額外檢核以下五項：
+採用 Cloudflare Workers 時，另依以下五項人工檢核；本機靜態工具不驗證部署結果。
 
-- [ ] **`.dev.vars` 機密隔離**：本地開發機密一律寫入 `.dev.vars` 並確認 `.gitignore` 包含 `.dev.vars*`；嚴禁將 `API_KEY`、`SECRET`、`PRIVATE_KEY` 寫入明文 `wrangler.toml` / `wrangler.jsonc` 的 `[vars]` 區塊。
-- [ ] **Production 機密注入**：正式環境機密必須透過 `npx wrangler secret put <KEY>` 加密寫入 Cloudflare 邊緣，不得隨原始碼推送。
-- [ ] **D1 參數化查詢與遷移版控**：D1 (`env.DB.prepare("... ?1").bind(...)`) 強制使用參數綁定防範 SQL Injection，結構變更一律經由 `npx wrangler d1 migrations apply` 版控執行。
-- [ ] **KV 最終一致性邊界**：Workers KV 為全球最終一致性（讀取快取最長約 60 秒延遲），嚴禁將 KV 用於「庫存扣減、餘額計算、防重放鎖」等強一致性場景（強一致性請改用 D1 或 Durable Objects）。
-- [ ] **R2 零出口費與公開桶權限**：R2 預設關閉 Public Access，僅對公開靜態素材開啟自訂網域並配置 Cache-Control，私人上傳檔案一律透過 Worker 簽章或權限驗證存取。
+- [ ] **`.dev.vars` 機密隔離**：本地機密放入 `.dev.vars` 並忽略 `.dev.vars*`；不要將機密放入 `wrangler.toml` / `wrangler.json` / `wrangler.jsonc` 的 `vars` 或 `env.*.vars`。[Cloudflare Secrets](https://developers.cloudflare.com/workers/configuration/secrets/)、[設定格式](https://developers.cloudflare.com/workers/wrangler/configuration/)。
+- [ ] **Production 機密注入**：依本檢核表政策，用 `npx wrangler secret put <KEY>` 管理正式環境機密，不隨原始碼提交；此命令由官方 [Secrets 文件](https://developers.cloudflare.com/workers/configuration/secrets/) 說明。
+- [ ] **D1 參數化查詢與遷移版控**：本檢核表要求用 `prepare("... ?1").bind(...)` 綁定使用者輸入，並將結構變更寫入遷移檔；API 與 `wrangler d1 migrations apply` 用法見 [Prepared statements](https://developers.cloudflare.com/d1/worker-api/prepared-statements/)、[Migrations](https://developers.cloudflare.com/d1/reference/migrations/)。
+- [ ] **KV 最終一致性邊界**：其他地區可能需 60 秒或更久才看見更新，並非 60 秒上限；提高 `cacheTtl` 也會影響快取期限，寫入所在地立即可見亦無保證。本檢核表禁止用 KV 單獨處理庫存扣減、餘額計算或防重放鎖；需要原子操作或交易時應另行設計，官方建議考慮 Durable Objects。[How KV works](https://developers.cloudflare.com/kv/concepts/how-kv-works/)。
+- [ ] **R2 公開桶權限**：R2 bucket 預設不公開；本檢核表要求只有公開素材才開啟公開存取，私人檔案另作存取驗證。[Public buckets](https://developers.cloudflare.com/r2/buckets/public-buckets/)。
+
+### 本機工具的檢查範圍與結束碼
+
+[`check_wrangler_config`](../tools/audit_fullstack_security.py) 以 Python 3.11+ 標準庫 `tomllib` / `json` 解析專案根目錄的三種 Wrangler 檔案；JSONC 會先移除字串外註解及尾端逗號。遍歷 `vars`、`env.*.vars` 及其巢狀值：敏感鍵所有值型別都報錯（包含空值或佔位符），其他欄位也掃描工具列出的金鑰特徵。不執行環境變數替換、不驗證完整 Wrangler schema，也不查雲端權限、D1/KV/R2 或配額。[工具原始碼](../tools/audit_fullstack_security.py)、[回歸測試](../tests/test_audit_fullstack_security.py)、[tomllib](https://docs.python.org/3/library/tomllib.html)。
+
+`python tools/audit_fullstack_security.py --target <目錄>`：exit 0 表示本機規則未命中；exit 1 表示規則命中、路徑無效或設定為空／無法解析／受檢 schema 錯誤；exit 2 是命令列用法錯誤。未使用 Wrangler 的專案不強制提供 Wrangler 檔案；空白專案仍因缺 `.gitignore` 而失敗。這些是本工具契約，不是 Cloudflare 的安全認證。[CLI 實作](../tools/audit_fullstack_security.py)。

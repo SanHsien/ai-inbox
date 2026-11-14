@@ -15,6 +15,7 @@ import fnmatch
 import json
 import re
 import sys
+import tomllib
 from pathlib import Path
 from typing import Any
 
@@ -167,9 +168,33 @@ def check_sql_rls(root: Path) -> list[str]:
     return issues
 
 
+def _jsonc_to_json(raw: str) -> str:
+    """移除字串外的 //、/* */ 註解與尾端逗號；字串與跳脫原樣保留。"""
+    tokens = re.compile(r'"(?:[^"\\]|\\.)*"|//[^\r\n]*|/\*.*?\*/', re.DOTALL)
+    raw = tokens.sub(lambda m: m.group() if m.group().startswith('"') else ' ', raw)
+    # 用 token 避免誤改字串內的逗號與括號。
+    tokens = re.compile(r'"(?:[^"\\]|\\.)*"|,(\s*[}\]])', re.DOTALL)
+    return tokens.sub(lambda m: m.group() if m.group().startswith('"') else m.group(1), raw)
+
+
+def _unique_json_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON key")
+        result[key] = value
+    return result
+
+
+def _reject_json_constant(value):
+    raise ValueError("nonstandard JSON constant")
+
+
 def check_wrangler_config(root: Path) -> list[str]:
     """檢查 Cloudflare Wrangler (wrangler.toml / wrangler.json / wrangler.jsonc) 與 .dev.vars 安全規範"""
     issues: list[str] = []
+    if not root.is_dir():
+        return ["Wrangler 掃描路徑不存在或不是目錄"]
 
     # 1. 若專案使用 .dev.vars（Cloudflare 本地機密檔），必須確認 .gitignore 已忽略 .dev.vars
     dev_vars_exists = (root / ".dev.vars").exists() or (root / ".dev.vars.example").exists()
@@ -199,32 +224,57 @@ def check_wrangler_config(root: Path) -> list[str]:
         if not dev_vars_ignored:
             issues.append("Cloudflare Wrangler 專案之 .gitignore 未忽略本地機密檔 '.dev.vars'")
 
+    else:
+        issues.append("Cloudflare Wrangler 專案缺少 .gitignore，無法確認 .dev.vars 隔離")
+
     # 2. 掃描 wrangler.toml / wrangler.json(c) 是否在明文 vars 中存放敏感金鑰或真實 Token
     secret_key_name_re = re.compile(
         r"(?:SECRET|PRIVATE_KEY|API_KEY|ACCESS_TOKEN|AUTH_TOKEN|PASSWORD|SERVICE_ROLE)",
         re.IGNORECASE,
     )
+    def check_values(value, location, sensitive_keys=False):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                if sensitive_keys and secret_key_name_re.search(key):
+                    issues.append(f"Wrangler {location}.{key} 為敏感變數，所有值型別皆須移至 secrets")
+                check_values(child, f"{location}.{key}", sensitive_keys)
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                check_values(child, f"{location}[{index}]", sensitive_keys)
+        elif isinstance(value, str):
+            for pattern, desc in SUSPICIOUS_KEY_PATTERNS:
+                if pattern.search(value):
+                    issues.append(f"Wrangler {location} 疑似包含真實金鑰 ({desc})")
+
     for wf in wrangler_files:
         rel_wf = wf.relative_to(root)
-        raw = wf.read_text(encoding="utf-8", errors="ignore")
-        for lineno, line in enumerate(raw.splitlines(), start=1):
-            stripped = line.strip()
-            if not stripped or stripped.startswith("#") or stripped.startswith("//"):
-                continue
-            for pattern, desc in SUSPICIOUS_KEY_PATTERNS:
-                if pattern.search(stripped):
-                    issues.append(f"Wrangler 設定檔 '{rel_wf}' 第 {lineno} 行疑似包含真實金鑰 ({desc})，應改用 wrangler secret put")
-            # 檢查 key = "value" 或 "key": "value" 中以明文定義敏感變數名且值非空佔位符
-            kv_match = re.match(
-                r'^["\']?([A-Za-z0-9_]+)["\']?\s*[:=]\s*["\']([^"\']+)["\']',
-                stripped,
-            )
-            if kv_match:
-                key_name, val = kv_match.group(1), kv_match.group(2).strip()
-                if secret_key_name_re.search(key_name) and val and not val.startswith(("<", "YOUR_", "your-", "$")):
-                    issues.append(
-                        f"Wrangler 設定檔 '{rel_wf}' 第 {lineno} 行將敏感變數 '{key_name}' 寫入明文設定，應改放 '.dev.vars' 或執行 'npx wrangler secret put {key_name}'"
-                    )
+        try:
+            raw = wf.read_text(encoding="utf-8-sig")
+            if wf.suffix == ".toml":
+                data = tomllib.loads(raw)
+            else:
+                data = json.loads(_jsonc_to_json(raw) if wf.suffix == ".jsonc" else raw,
+                                  object_pairs_hook=_unique_json_object,
+                                  parse_constant=_reject_json_constant)
+            if not isinstance(data, dict) or not data:
+                raise ValueError("empty or invalid config")
+            scopes = [("vars", data)]
+            envs = data.get("env", {})
+            if not isinstance(envs, dict):
+                raise ValueError("env must be object")
+            for name, env in envs.items():
+                if not isinstance(env, dict):
+                    raise ValueError("env entry must be object")
+                scopes.append((f"env.{name}.vars", env))
+            for location, scope in scopes:
+                values = scope.get("vars", {})
+                if not isinstance(values, dict):
+                    raise ValueError("vars must be object")
+                check_values(values, f"{rel_wf}:{location}", True)
+            # 其餘欄位也掃描已知金鑰特徵，不將 vars 之外的設定視為安全藏匿處。
+            check_values(data, str(rel_wf))
+        except (OSError, ValueError, TypeError):
+            issues.append(f"Wrangler 設定檔 '{rel_wf}' 無法讀取或解析、為空或 schema 不符，未完成稽核")
 
     return issues
 
@@ -259,7 +309,7 @@ def main() -> int:
         except (AttributeError, ValueError, OSError):
             pass
 
-    parser = argparse.ArgumentParser(description="全端商業網站上線前資安自檢稽核工具")
+    parser = argparse.ArgumentParser(description="全端靜態規則稽核：0=未命中，1=規則命中或輸入無效，2=CLI 用法錯誤")
     parser.add_argument("--target", default=".", help="待稽核專案根目錄路徑 (預設為當前目錄)")
     parser.add_argument("--json", action="store_true", help="以 JSON 格式輸出")
     args = parser.parse_args()
@@ -277,7 +327,7 @@ def main() -> int:
 
     print(f"[*] 開始執行全端網站資安上線前稽核：{report['target']}")
     if report["passed"]:
-        print("[PASS] 全端資安稽核 100% 通過，無發現安全違規項目！")
+        print("[PASS] 所選靜態規則未命中；不代表完整安全保證。")
         return 0
 
     print(f"[FAIL] 稽核失敗，發現 {report['total_issues']} 項資安風險：")
