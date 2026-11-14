@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 221 項任務：🔴 未做 8／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
+> 共 223 項任務：🔴 未做 10／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -47,8 +47,10 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261114-05` | 🟡 進行中 | 高 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | `C:\GitHub\agent-relay`（`ROADMAP.md`、`SPEC.md`、`SPEC.en.md`、`agent_relay/envelope.py`、`agent_relay/cli.py`、`tests/`） | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | 2026-11-14 |
+| `T-20261115-08` | 🔴 未做 | 高 | 建立《AI-Native 一人接案營運總綱》（`docs/ai-agency-delivery-playbook.md`），串聯現有診斷、建站、審查與維運範本成端到端流水線 | `C:\GitHub\ai-inbox\docs\ai-agency-delivery-playbook.md`（參考並連結現有 `templates/client-requirement-decomposition-prompt.md`、`templates/fullstack-website-builder-skill.md`、`docs/production-smoke-security-checklist.md`、`templates/feedback-desk-agent-prompt.md`） | [2026-11-15-ai-native-agency-retainer-and-org-playbook](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | 2026-11-15 |
 | `T-20261115-01` | 🔴 未做 | 中 | 在 Windows 11 原生環境沙盒安裝並實測 `earendil-works/pi`，驗證 TUI、`powershell` 工具與 `openai-codex` / `anthropic` provider 相容性，並定案與 `agent-relay` 的分工邊界 | 本機測試環境（Windows Terminal + `C:\GitHub\_sandbox\pi-test`）與 `C:\GitHub\ai-inbox` 評估紀錄 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
 | `T-20261115-04` | 🔴 未做 | 中 | 審查並沙盒實測 `cloudflare/security-audit-skill`（驗證零依賴 `.cjs` 測試與 Windows 11 `quick` 模式靜態稽核） | `C:\GitHub\_sandbox\security-audit-skill`（先唯讀審查）與個人測試目標 repo（如 `SanHsien/agent-relay` 局部 scoped `quick` 試跑） | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) | 2026-11-15 |
+| `T-20261115-09` | 🔴 未做 | 中 | 建立「建置導入＋月費維運（Retainer）提案與邊界範本」（`templates/agency-retainer-proposal-template.md`） | `C:\GitHub\ai-inbox\templates\agency-retainer-proposal-template.md` | [2026-11-15-ai-native-agency-retainer-and-org-playbook](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 | `T-20261115-02` | 🔴 未做 | 低 | 實作 Pi 混合型擴充套件 `pi-hybrid-relay`（於 Pi 內統一委派 `codex` CLI、`claude` CLI、Antigravity 頂層對話與 `agent-relay` 問答） | 新建 `C:\GitHub\pi-hybrid-harness`（對應 `SanHsien/pi-hybrid-harness`）或作為 `agent-relay` 擴充套件（依 `T-20261115-01` 結論定案） | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
 | `T-20261115-03` | 🔴 未做 | 低 | 安全審查並評估本地零額度幾何向量 Logo 方案（`mcpware/logoloom` 或自建構造幾何 SVG + SVGO Skill） | `C:\GitHub\_sandbox\`（唯讀／沙盒審查）與 `C:\GitHub\ai-inbox\templates\` | [2026-11-15-rikyu-geometric-vector-logo-mcp](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | 2026-11-15 |
@@ -397,6 +399,7 @@
 | 2026-11-14 | 🟡 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 1 / 2（+1 不做） |
 | 2026-11-14 | 🟡 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 1 / 2 |
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
+| 2026-11-15 | 🔴 | [AI-Native 一人接案公司：從賣工時轉向「建置＋月費維運」與多角色可重複服務系統](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | `ai-agency`, `freelance`, `retainer-model` | 0 / 2 |
 | 2026-11-15 | ⚪ | [Amazon 亞馬遜聯盟分潤與台灣電商（蝦皮／酷澎／聯盟網／momo）分潤計畫查證評估](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md) | `affiliate-marketing`, `amazon-associates`, `shopee-affiliate` | 0 / 0 |
 | 2026-11-15 | 🔴 | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 0 / 2 |
@@ -426,6 +429,7 @@
 - 簡報工作流：[Claude Artifacts簡報](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md)
 - Terra額度路由：[Terra額度與Fast倍率核實](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md)
 - 多session管理：[總PM與claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md)
+- 一人接案Agency系統：[AI一人接案Agency](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md)
 - 多模型省額角色路由：[多AI分權省額路由](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md)
 - 混合型Harness：[Pi混合型Harness](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md)
 
