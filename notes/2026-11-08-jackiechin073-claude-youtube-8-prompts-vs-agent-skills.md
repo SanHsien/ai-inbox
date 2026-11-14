@@ -84,6 +84,7 @@ Threads 作者 `@jackiechin073` 發布引流貼文：
 
 ### 2.3 缺陷三：忽視 YouTube 官方的內容政策與 YPP 審核紅線
 - 宣稱「90 天變現」與「全流程 AI 做視頻」，忽略了 YouTube 對 **「不具備原創教育/評論價值的純自動化重複內容（Ineligible Repetitive / Auto-generated Content）」** 的嚴格打擊。
+- 官方政策：[YouTube 頻道營利政策（YPP）](https://support.google.com/youtube/answer/1311392)含大量製作／重複內容（repetitious content）的規範。
 - 若依照該流程批量由 AI 寫腳本、AI 配音、AI 湊圖剪輯，在申請加入 YouTube 合作夥伴計劃（YPP）時極易遭到「重複內容（Repetitious Content）」拒絕營利。
 
 ---
@@ -94,7 +95,7 @@ Threads 作者 `@jackiechin073` 發布引流貼文：
 
 | 營運環節 | Threads 泛用提示詞做法 | 工業級開源方案（`youtube-agent-skill` / `youtuber`） | 關鍵架構差異 |
 | :--- | :--- | :--- | :--- |
-| **開場鉤子 (Hook)** | 「給我讓人忍不住點開的開頭」 | `yt-script` + `hookscore.py` | 根據 74 支影片實測，五大評分維度中只有 **`SPECIFICITY`（具體數字與名詞）** 能區分表現；未達標直接要求改寫，杜絕「嗨大家好」無效廢話。 |
+| **開場鉤子 (Hook)** | 「給我讓人忍不住點開的開頭」 | `yt-script` + `hookscore.py` | IG 庫 README 的實證（AUC 0.83／0.56，語料為 74 筆 YouTube Shorts 開頭，作者自述，未重現）顯示五大評分維度中只有 **`SPECIFICITY`（具體數字與名詞）** 能區分表現；YouTube 庫本身僅宣告 `hookscore.py` 為啟發式、未提供自己的 AUC；未達標直接要求改寫，杜絕「嗨大家好」無效廢話。 |
 | **點擊包裝 (Packaging)** | 「給我標題和封面思路」 | `yt-package` + `title.py` | 將標題與封面視為「單一點擊面」聯合 lint；強制檢查是否重複同一句文案，並模擬行動端 42–50 字元截斷。 |
 | **爆款挖掘 (Outlier)** | 「給我 100 個選題」 | `yt-viral` + `swipe.py` | 不看對手頻道的絕對觀看數，而是計算**超越該頻道自身中位數的倍數（Outlier Multiple）**，精準抓出破圈選題。 |
 | **留存與剪輯 (Retention)** | 「給我敘事結構與留人技巧」 | `yt-edit` + `deadair.py` | 直接解析 `.srt` 逐字稿與時間戳，標註停滯超過 3 秒的廢話點，自動生成剪輯決策清單（EDL）。 |
@@ -106,7 +107,7 @@ Threads 作者 `@jackiechin073` 發布引流貼文：
 
 1. **本質判定**：
    - 本篇 Threads 貼文為典型的社群流量導向「提示詞合集」，甚至在第 8 點出現拼裝外包私訊的複製車禍。
-   - 其提示詞缺乏確定性約束、數據輸入管線與政策安全邊界，難以支撐「90 天內保證變現」的承諾。
+   - 其提示詞缺乏確定性約束、數據輸入管線與政策安全邊界，難以支撐貼文宣稱「90 天可達變現門檻」的說法。
 2. **處置決策**：
-   - 本庫先前已完整收錄並實裝 [`Jakeschincariol/youtube-agent-skill`](./2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) 與 `SkillSpector` 防護規範。
+   - 本庫已收錄分析 [`Jakeschincariol/youtube-agent-skill`](./2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md)，並建立採納審計器 `tools/verify_agent_skill_pack_safety.py`；未安裝該技能包。
    - 本筆記建檔為反面教材與架構對照基準，標記為 **`status: archived` 歸檔備查**，不衍生額外代碼或建置任務。
