@@ -137,6 +137,61 @@ class VerifyAutoloopDispatchGuardTest(unittest.TestCase):
         self.assertEqual(len(findings), 4)
         self.assertTrue(all(f["rule_id"] == "AUTOLOOP-004" for f in findings))
 
+    def _cli_rc(self, bundle) -> int:
+        with tempfile.TemporaryDirectory(dir=".work-tmp") as tmp:
+            p = Path(tmp) / "b.json"
+            p.write_text(json.dumps(bundle), encoding="utf-8")
+            with contextlib.redirect_stdout(io.StringIO()):
+                return vadg.main(["--config", str(p)])
+
+    def test_round2_event_keys_case_and_nesting(self) -> None:
+        for key in ("CWD", "Access", " agent ", "ＣＷＤ"):
+            b = vadg.default_clean_bundle(); b["events"][0][key] = "x"
+            with self.subTest(key=key):
+                self.assertEqual(self._cli_rc(b), 1)
+        for nested in ({"payload": {"cwd": "/x"}}, {"payload": {"Meta": [{"COMMAND": "x"}]}}):
+            b = vadg.default_clean_bundle(); b["events"][0].update(nested)
+            with self.subTest(nested=nested):
+                self.assertEqual(self._cli_rc(b), 1)
+
+    def test_round2_max_hops_capped_at_spec_limit(self) -> None:
+        b = vadg.default_clean_bundle(); b["max_hops"] = 99
+        b["hop_chain"] = [{"hop": i} for i in range(1, 40)]
+        self.assertEqual(self._cli_rc(b), 1)
+        b["max_hops"] = 9
+        self.assertEqual(self._cli_rc(b), 1)
+        self.assertTrue(vadg.check_hop_chain([{"hop": 1}], max_hops=99))
+        self.assertTrue(vadg.check_hop_chain([{"hop": 9}], max_hops=99))
+        b = vadg.default_clean_bundle(); b["max_hops"] = 8
+        self.assertEqual(self._cli_rc(b), 0)
+        b["max_hops"] = 3
+        self.assertEqual(self._cli_rc(b), 1)
+
+    def test_round2_source_allowlist_and_case(self) -> None:
+        for src in ("GitHub", " GITLAB ", "slack", "discord", ""):
+            b = vadg.default_clean_bundle()
+            b["rules"][0]["when"]["source"] = src
+            b["rules"][0]["access"] = "full"; b["rules"][0]["resume"] = True
+            with self.subTest(src=src):
+                self.assertEqual(self._cli_rc(b), 1)
+        for src in ("slack", "Slack"):
+            b = vadg.default_clean_bundle(); b["rules"][0]["when"]["source"] = src
+            with self.subTest(src=src, mode="no-full"):
+                self.assertEqual(self._cli_rc(b), 1)
+        b = vadg.default_clean_bundle()
+        b["rules"][0]["when"]["source"] = "github"; b["rules"][0]["access"] = "FULL"; b["rules"][0]["resume"] = True
+        self.assertEqual(self._cli_rc(b), 1)
+        for src in sorted(vadg.ALLOWED_SOURCES):
+            b = vadg.default_clean_bundle(); b["rules"][0]["when"]["source"] = src
+            with self.subTest(src=src, mode="allowed"):
+                self.assertEqual(self._cli_rc(b), 0)
+
+    def test_round2_self_approval_tool_names_case_insensitive(self) -> None:
+        for name in ("Autoloop_Answer", " ANSWER_CARD ", "MCP__AutoLoop__Answer", "Agent-Autoloop Answer"):
+            b = vadg.default_clean_bundle(); b["isolation"]["worker_tools"] = ["read_file", name]
+            with self.subTest(name=name):
+                self.assertEqual(self._cli_rc(b), 1)
+
     def test_cli_json_output_and_invalid_config_file(self) -> None:
         with tempfile.TemporaryDirectory(dir=".work-tmp") as tmp:
             bad_cfg = Path(tmp) / "bad.json"

@@ -14,6 +14,7 @@ import argparse
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 from string import Formatter
 from typing import Any
@@ -45,6 +46,14 @@ SELF_APPROVAL_TOOLS = frozenset({
     "agent-autoloop answer",
 })
 
+# 規格固定 8 跳；設定檔自行填更大的 max_hops 視為違規（見規格文件第 2 節）。
+MAX_HOPS_LIMIT = 8
+
+# 來源白名單（見規格文件）：不在清單內的來源（例如 slack）一律判違規。
+UNTRUSTED_SOURCES = frozenset({"github", "gitlab", "webhook", "external"})
+TRUSTED_SOURCES = frozenset({"local", "manual", "cron"})
+ALLOWED_SOURCES = UNTRUSTED_SOURCES | TRUSTED_SOURCES
+
 SAFE_IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9._:/-]+$")
 
 
@@ -56,12 +65,32 @@ def ensure_utf8_stdout() -> None:
             pass
 
 
+def norm(value: Any) -> str:
+    """鍵名／來源／工具名比對前的正規化：NFKC、去頭尾空白、轉小寫。"""
+    return unicodedata.normalize("NFKC", str(value)).strip().casefold()
+
+
+def find_forbidden_keys(value: Any, path: str = "") -> list[str]:
+    """遞迴找出任何深度的禁用欄位（鍵名轉小寫後比對），回傳路徑清單。"""
+    found: list[str] = []
+    if isinstance(value, dict):
+        for key, child in value.items():
+            here = f"{path}.{key}" if path else str(key)
+            if norm(key) in FORBIDDEN_EVENT_FIELDS:
+                found.append(here)
+            found.extend(find_forbidden_keys(child, here))
+    elif isinstance(value, list):
+        for i, child in enumerate(value):
+            found.extend(find_forbidden_keys(child, f"{path}[{i}]"))
+    return found
+
+
 def check_event_payloads(events: list[dict[str, Any]]) -> list[dict[str, str]]:
     """AUTOLOOP-001: 檢查外部事件是否夾帶禁止的控制欄位，以及識別元是否符合字元白名單。"""
     findings: list[dict[str, str]] = []
     for idx, ev in enumerate(events):
         ev_id = str(ev.get("id", f"event[{idx}]"))
-        injected = sorted(set(ev.keys()) & FORBIDDEN_EVENT_FIELDS)
+        injected = sorted(find_forbidden_keys(ev))
         if injected:
             findings.append({
                 "rule_id": "AUTOLOOP-001",
@@ -108,8 +137,15 @@ def check_dispatch_rules(rules: list[dict[str, Any]]) -> list[dict[str, str]]:
                     findings.append({"rule_id": "AUTOLOOP-002", "target": name,
                                      "message": f"模板 {field} 含未受信任佔位符 {{{ph}}}"})
         when = rule.get("when") or {}
-        untrusted_source = when.get("source") in ("github", "gitlab", "webhook", "external")
-        if untrusted_source and rule.get("access") == "full" and rule.get("resume") is True:
+        source = norm(when.get("source", ""))
+        if source not in ALLOWED_SOURCES:
+            findings.append({
+                "rule_id": "AUTOLOOP-002",
+                "target": name,
+                "message": f"when.source={when.get('source')!r} 不在來源白名單 {sorted(ALLOWED_SOURCES)}",
+            })
+        untrusted_source = source in UNTRUSTED_SOURCES
+        if untrusted_source and norm(rule.get("access", "")) == "full" and rule.get("resume") is True:
             findings.append({
                 "rule_id": "AUTOLOOP-002",
                 "target": name,
@@ -121,6 +157,13 @@ def check_dispatch_rules(rules: list[dict[str, Any]]) -> list[dict[str, str]]:
 def check_hop_chain(chain: list[dict[str, Any]], max_hops: int = 8) -> list[dict[str, str]]:
     """AUTOLOOP-003: 檢查事件跳數是否等於 parent+1（經 ask/later 不可清零）且超過 max_hops 時強制熔斷。"""
     findings: list[dict[str, str]] = []
+    if type(max_hops) is not int or max_hops < 0 or max_hops > MAX_HOPS_LIMIT:
+        findings.append({
+            "rule_id": "AUTOLOOP-003",
+            "target": "max_hops",
+            "message": f"max_hops={max_hops!r} 無效或超過規格上限 {MAX_HOPS_LIMIT}",
+        })
+        max_hops = MAX_HOPS_LIMIT if type(max_hops) is not int or max_hops < 0 else min(max_hops, MAX_HOPS_LIMIT)
     prev_hop: int | None = None
     for idx, step in enumerate(chain):
         step_id = str(step.get("step_id", f"step[{idx}]"))
@@ -153,8 +196,8 @@ def check_hop_chain(chain: list[dict[str, Any]], max_hops: int = 8) -> list[dict
 def check_worker_and_delivery_isolation(isolation: dict[str, Any]) -> list[dict[str, str]]:
     """AUTOLOOP-004: 檢查 Worker 是否掛載自審工具、PR 交付是否檢出外部程式碼、Windows ACL 是否外洩。"""
     findings: list[dict[str, str]] = []
-    worker_tools = set(isolation.get("worker_tools") or [])
-    overlap = sorted(worker_tools & SELF_APPROVAL_TOOLS)
+    banned = {norm(t) for t in SELF_APPROVAL_TOOLS}
+    overlap = sorted({str(t) for t in (isolation.get("worker_tools") or []) if norm(t) in banned})
     if overlap:
         findings.append({
             "rule_id": "AUTOLOOP-004",

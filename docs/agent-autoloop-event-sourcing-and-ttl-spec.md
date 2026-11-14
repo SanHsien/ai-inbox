@@ -23,10 +23,10 @@
 
 ## 2. 四層檢驗契約
 
-- `AUTOLOOP-001`：事件頂層禁止 `cwd`、`agent`、`to`、`access`、`program`、`command`、`skill`、`parallel`、`hop`。事件 `type`／`id` 必填；`link`／`context_file` 若有提供，也必須符合 `^[A-Za-z0-9._:/-]+$`。來源：[FORBIDDEN_EVENT_FIELDS、check_event_payloads、validate_bundle_schema](../tools/verify_autoloop_dispatch_guard.py)。
-- `AUTOLOOP-002`：遞迴檢查規則中所有字串欄位，包括 `prompt`、`command`、`cwd`、`program` 及巢狀參數，共用同一模板檢查。只接受 `{type}`、`{id}`、`{link}`、`{context_file}`；拒絕未知欄位、屬性／索引存取、轉換及格式規格，也拒絕無法解析的括號。外部來源同時使用 `access="full"` 與 `resume=true` 會被拒絕。來源：[template_strings 與 check_dispatch_rules](../tools/verify_autoloop_dispatch_guard.py)。
-- `AUTOLOOP-003`：`hop` 是非負整數，布林值不算整數；相鄰節點必須滿足 `child.hop == parent.hop + 1`，包括 `ask`／`later`。首節點可代表既有鏈的片段，沒有可比較的父節點。`max_hops` 預設 8；超限節點只能 `dispatched=false`，缺省 `dispatched` 視為 true。來源：[check_hop_chain 與 validate_bundle_schema](../tools/verify_autoloop_dispatch_guard.py)。
-- `AUTOLOOP-004`：Worker 工具清單拒絕原始碼 `SELF_APPROVAL_TOOLS` 列出的名稱；`delivery.checkout_pr_code` 與 `delivery.allow_octopus_merge` 必須明列為布林值，且 true 會被拒絕。ACL 清單不得空白，僅接受 `CURRENT_USER` 與 `SYSTEM`，包含 `Administrators` 在內的其他名稱都拒絕。來源：[check_worker_and_delivery_isolation 與 validate_bundle_schema](../tools/verify_autoloop_dispatch_guard.py)。
+- `AUTOLOOP-001`：事件禁止出現下列欄位，鍵名先做 NFKC、去頭尾空白、轉小寫後比對，並遞迴檢查巢狀物件與清單（如 `payload.cwd`、`CWD`）： `cwd`、`agent`、`to`、`access`、`program`、`command`、`skill`、`parallel`、`hop`。事件 `type`／`id` 必填；`link`／`context_file` 若有提供，也必須符合 `^[A-Za-z0-9._:/-]+$`。來源：[FORBIDDEN_EVENT_FIELDS、check_event_payloads、validate_bundle_schema](../tools/verify_autoloop_dispatch_guard.py)。
+- `AUTOLOOP-002`：遞迴檢查規則中所有字串欄位，包括 `prompt`、`command`、`cwd`、`program` 及巢狀參數，共用同一模板檢查。只接受 `{type}`、`{id}`、`{link}`、`{context_file}`；拒絕未知欄位、屬性／索引存取、轉換及格式規格，也拒絕無法解析的括號。`when.source` 採白名單制（NFKC、去空白、轉小寫後比對）：信任度低的外部來源 `github`、`gitlab`、`webhook`、`external`，與本機來源 `local`、`manual`、`cron`；其他來源（例如 `slack`）一律拒絕。外部來源同時使用 `access="full"`（大小寫不拘）與 `resume=true` 會被拒絕。白名單常數為原始碼 `ALLOWED_SOURCES`，新增來源須同步修改原始碼、測試與本節。來源：[template_strings 與 check_dispatch_rules](../tools/verify_autoloop_dispatch_guard.py)。
+- `AUTOLOOP-003`：`hop` 是非負整數，布林值不算整數；相鄰節點必須滿足 `child.hop == parent.hop + 1`，包括 `ask`／`later`。首節點可代表既有鏈的片段，沒有可比較的父節點。`max_hops` 預設 8，且上限固定為 8（`MAX_HOPS_LIMIT`）：設定檔填大於 8 的值本身就判違規，檢查超限時也以 8 為準，不能靠調高設定放行第 9 跳以後的派工。超限節點只能 `dispatched=false`，缺省 `dispatched` 視為 true。來源：[check_hop_chain 與 validate_bundle_schema](../tools/verify_autoloop_dispatch_guard.py)。
+- `AUTOLOOP-004`：Worker 工具清單拒絕原始碼 `SELF_APPROVAL_TOOLS` 列出的名稱（比對前一律 NFKC、去空白、轉小寫，故 `Autoloop_Answer` 同樣被拒）；`delivery.checkout_pr_code` 與 `delivery.allow_octopus_merge` 必須明列為布林值，且 true 會被拒絕。ACL 清單不得空白，僅接受 `CURRENT_USER` 與 `SYSTEM`，包含 `Administrators` 在內的其他名稱都拒絕。來源：[check_worker_and_delivery_isolation 與 validate_bundle_schema](../tools/verify_autoloop_dispatch_guard.py)。
 
 ## 3. Schema 與結束碼
 
