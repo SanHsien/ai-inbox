@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 220 項任務：🔴 未做 7／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
+> 共 221 項任務：🔴 未做 8／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -54,6 +54,7 @@
 | `T-20261115-03` | 🔴 未做 | 低 | 安全審查並評估本地零額度幾何向量 Logo 方案（`mcpware/logoloom` 或自建構造幾何 SVG + SVGO Skill） | `C:\GitHub\_sandbox\`（唯讀／沙盒審查）與 `C:\GitHub\ai-inbox\templates\` | [2026-11-15-rikyu-geometric-vector-logo-mcp](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | 2026-11-15 |
 | `T-20261115-05` | 🔴 未做 | 低 | 評估將 `needs_validation` 三態裁決與「證偽導向」對抗式檢查精神整合至 `SanHsien/agent-advisor` 審查協定 | `C:\GitHub\agent-advisor`（`advisor-pro-reviewer` 與相關審查參考文件） | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) | 2026-11-15 |
 | `T-20261115-06` | 🔴 未做 | 低 | 於 `docs/model-burn-rate-routing-matrix.md` 增補「PM／一線實作／QA 三角分權路由樣板」與 Reviewer Tax 評估註記 | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（可與 `T-20261114-03` 實測時一併更新） | [2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | 2026-11-15 |
+| `T-20261115-07` | 🔴 未做 | 低 | 若未來需建置純前端隱私修圖工具，僅採「垂直切片」驗證單一 WebGPU ONNX 模型（如 U²-Net 去背）＋ Canvas 縮放／前後對比線最小可用原型（不照原文一口氣全包） | 未來若立項時新建 `C:\GitHub\browser-image-studio`（目前暫不建立空 repo） | [2026-11-15-browser-webgpu-photo-video-editor-prompt-eval](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
@@ -397,6 +398,7 @@
 | 2026-11-14 | 🟡 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 1 / 2 |
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 | 2026-11-15 | ⚪ | [Amazon 亞馬遜聯盟分潤與台灣電商（蝦皮／酷澎／聯盟網／momo）分潤計畫查證評估](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md) | `affiliate-marketing`, `amazon-associates`, `shopee-affiliate` | 0 / 0 |
+| 2026-11-15 | 🔴 | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 0 / 2 |
 | 2026-11-15 | 🔴 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 0 / 2 |
@@ -438,6 +440,7 @@
 - 垂直工作流技能包：[GitHub週榜五大ClaudeSkills](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md)
 - AI工具整合：[Meta Astryx設計系統](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md)
 - AI影片剪輯：[Editkin免費AI剪輯](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md)
+- 前端WebGPU修圖：[WebGPU修圖Prompt評估](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md)
 - 向量幾何Logo與MCP：[Rikyū幾何Logo與MCP](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
