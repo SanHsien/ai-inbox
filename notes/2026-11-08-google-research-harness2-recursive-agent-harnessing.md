@@ -40,7 +40,7 @@ tags:
   - 官方 GitHub：`https://github.com/google-research/harness2`
   - 官方論文：[arXiv:2610.14224](https://arxiv.org/pdf/2610.14224)（*Harness²: Recursive Agent Harnessing for an Open World*）
   - 專案首頁：`https://harness2.github.io`
-  - 社群延伸導讀：`https://medium.com/@simon3458/ai-agent-harness-squared-intro-bdb182241a04`
+  - 社群延伸導讀（未查證）：`https://medium.com/@simon3458/ai-agent-harness-squared-intro-bdb182241a04`
 - **When**：2026 年 10 月發表論文並開源，2026 年 11 月納入知識庫分析。
 - **Why**：真實世界的複雜長程任務（辦公室文件處理、網頁操作、跨檔案軟體工程、法律審查）缺乏可即時計算 Reward 的 Ground Truth。傳統 Prompt Optimizer 需要驗證集標準答案打分；Harness² 改用「同任務多候選執行軌跡的行為對照（Behavioral Contrasts）」來驅動外部 8 大 Harness 模組演化。
 - **How**：在單一任務內執行 **Task-level recursion（`Propose–Probe–Compose` 對比精煉）**，並在任務結束後透過 **Harnessing-level recursion（`Experience Reflector` 經驗蒸餾）** 將經過實證的修改規則寫入持久化的 *Improvement Harness* 資料庫。
@@ -101,6 +101,8 @@ Harness² 將包覆在基礎模型外部的執行環境拆解為 **4 大執行�
 ## 3. CQR 品質檢驗與基準測試剖析
 
 ### 論文基準數據核驗
+
+> 下表基準值來自論文，未逐一核對。
 
 | 基準測試 (Benchmark) | 涵蓋領域 | 基礎配置表現 | Harness² 優化後表現 | 淨提升幅度 |
 | :--- | :--- | :--- | :--- | :--- |
