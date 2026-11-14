@@ -6,7 +6,7 @@ source_platform: "Threads (@roboa.ai) / YouTube / GitHub (blakeblackshear/frigat
 author: "Roboa.ai (@roboa.ai) / Blake Blackshear"
 analyzed_at: 2026-11-08
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: "3"
 cluster_role: "螢幕感知與瀏覽器代理"
 short_title: "Frigate開源本地AI監視器NVR"
@@ -29,7 +29,7 @@ tags:
 - **來源連結**：[Threads 原文分享](https://www.threads.com/share/_9AFeXBZH) ｜ [貼文永久網址 (@roboa.ai)](https://www.threads.com/@roboa.ai/post/DfRx2oUk-Vv) ｜ [完整 6 分鐘 YouTube 影片](https://youtu.be/c0bBVL5cVsA) ｜ [GitHub (blakeblackshear/frigate)](https://github.com/blakeblackshear/frigate) ｜ [官方文件 (docs.frigate.video)](https://docs.frigate.video/)
 - **核心作者**：Roboa.ai（`@roboa.ai` 教學分享）／ Blake Blackshear（Frigate 專案作者）
 - **分析主題**：解構開源本地 AI 監視器 NVR 標竿專案 **Frigate**（`blakeblackshear/frigate`，37,313 Stars（快照日 2026-11-08）、v0.18.2），剖析如何以「支援 RTSP 的傳統網路攝影機 + 8GB RAM / Intel 第 6 代以上舊電腦 + Docker + AI 輔助排錯」零月費替代每月 \$10～\$20 美元的商用雲端 AI 攝影機訂閱（Google Nest Aware / Ring / Arlo），並與本庫已收錄之 [`clearcam`](./2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md) 進行工程架構對照。
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md`](./2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md)（許哲維 Frigate 0.18.2 + Tapo C200 實測設定檔、8 大踩雷與 GHSA Root RCE 漏洞分析）
   - [`notes/2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md`](./2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md)（clearcam 開源智慧 NVR：tinygrad YOLOv9 + OC-SORT + Qwen3 VL 事件摘要）
@@ -115,7 +115,7 @@ tags:
 
 ## 4. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261108-01`**｜**[優先級：高]** 升級 `tools/video_transcript.py` 支援 Threads 影片貼文 SSR 串流自動萃取與 `bestaudio/best` 格式降級
+- [x] **`T-20261108-01`**｜**[優先級：高]** 升級 `tools/video_transcript.py` 支援 Threads 影片貼文 SSR 串流自動萃取與 `bestaudio/best` 格式降級
   - **目標範圍**：`tools/video_transcript.py`、`tests/test_video_transcript.py`、`docs/video-transcript-howto.md`
   - **具體實作步驟**：
     1. 在 `tools/video_transcript.py` 新增 `_resolve_threads_video_url(url)`：當網址網域屬於 `threads.com` 或 `threads.net` 時，發送帶 `User-Agent: facebookexternalhit/1.1` 與 `Accept: text/html,application/xhtml+xml` 之請求，從 SSR HTML 解析 `"video_versions"` 區塊或非靜態資源之 `.mp4` 直連網址；若貼文不含影片則拋出明確 `RuntimeError`。
@@ -124,4 +124,5 @@ tags:
   - **驗收標準（DoD）**：
     - `python -m unittest tests/test_video_transcript.py -v` 全數通過。
     - 實際對本篇 Threads 貼文網址 `https://www.threads.com/@roboa.ai/post/DfRx2oUk-Vv` 執行 `python tools/video_transcript.py` 成功產出逐字稿且 exit 0。
-  - **實作紀錄 / 證據**：已於 `tools/video_transcript.py` 實作 `_resolve_threads_video_url()` 與 `-f bestaudio/best`，更新 `docs/video-transcript-howto.md`，並於 `tests/test_video_transcript.py` 新增 `test_threads_url_extracts_ssr_video_versions_and_uses_bestaudio_fallback` 與 `test_threads_url_without_video_raises_runtime_error`（`Ran 18 tests — OK`）；實測直接對 `https://www.threads.com/@roboa.ai/post/DfRx2oUk-Vv` 執行 `video_transcript.py` 成功完成 46 秒音訊 CUDA 轉寫。 **退回（2026-11-14，獨立審查）**：`tools/video_transcript.py:118-126` 沒有限定目標貼文：目標貼文沒有影片、但同頁推薦貼文有時，會下載到別人的影片；刪掉 rsrc.php 靜態資源排除條件後 19 個測試仍全綠，缺反例測試。
+  - **完成日期**：2026-11-14
+  - **實作紀錄 / 證據**：修正（2026-11-14）：Threads 解析只取網址 post ID 對應的目標貼文影片，推薦與引用貼文的影片不會被選中；排除 rsrc.php；schema 無效或找不到目標回 RuntimeError。新增 4 項測試，刪除 rsrc.php 排除條件的 mutation 會讓測試變紅。真實 Threads 下載本輪未重跑。

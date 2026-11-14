@@ -6,7 +6,7 @@ source_platform: "Threads (@cz88422)"
 author: "黃裕 (@cz88422) / Rohit Ghumare (@rohitg00)"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: "4"
 cluster_role: "開源教材與商業案例查核"
 short_title: "AI Engineering from Scratch 教材評估"
@@ -90,12 +90,13 @@ rohitg00/ai-engineering-from-scratch
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261107-01`**｜**[優先級：高]** 借鑑 `tool-call-firewall` 與 `agent-trace-debugger` 實作「綁定請求雜湊之單次審批收據驗證器與 Trace Span 去重分析工具」於 `tools/verify_tool_call_firewall.py` 與單元測試
+- [x] **`T-20261107-01`**｜**[優先級：高]** 借鑑 `tool-call-firewall` 與 `agent-trace-debugger` 實作「綁定請求雜湊之單次審批收據驗證器與 Trace Span 去重分析工具」於 `tools/verify_tool_call_firewall.py` 與單元測試
   - **目標範圍**：`tools/verify_tool_call_firewall.py`、`tests/test_verify_tool_call_firewall.py`
   - **具體做法**：
     1. 實作 `compute_request_digest()`、`issue_approval_receipt()` 與 `ToolCallFirewall`：將寫入操作審批收據綁定 `(tool, role, normalized_path, content_sha256)` 之 SHA-256 雜湊，阻斷審批後竄改內容（TOCTOU `DIGEST_MISMATCH`）、同一收據二次重放（`REPLAYED_RECEIPT`）、未授權角色與 `..` 路徑越界。
     2. 實作 `analyze_trace_spans()`：合併重疊子 Span 時間區間（Interval Union）算出真實 `exclusive_duration_ms`，並扣除父子重複計算之 Token（`deduplicated_total_tokens`）。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_tool_call_firewall.py` 綠燈通過。
-  - **實作紀錄 / 證據**：已完成 `tools/verify_tool_call_firewall.py` 與單元測試 `tests/test_verify_tool_call_firewall.py`（7 項測試涵蓋合法單次收據放行、收據重放攔截、審批後內容竄改攔截、路徑越界攔截、Windows/POSIX 斜線正規化與父子 Span 重疊時間／Token 去重計算，全數綠燈通過）。 **退回（2026-11-14，獨立審查）**：`tools/verify_tool_call_firewall.py:64` 採信呼叫自附的 content_sha256，內容改成 evil 仍 ALLOWED；:41 絕對路徑 `/src/x` 放行；:134 未知工具（`Write`）沒有收據也放行。
+  - **完成日期**：2026-11-14
+  - **實作紀錄 / 證據**：修正兩輪（2026-11-14）：digest 綁定整個 canonical call 並自行重算 content 雜湊；各工具欄位白名單，未知欄位拒絕；記錄已消費 digest，換 receipt_id 重送拒絕；拒絕絕對、磁碟機、UNC、ADS（含 :）、結尾點、保留裝置名路徑；未知工具預設拒絕。原審查與 Opus 新繞過（換 command／new_string、重送、src/x:evil.ps1）全部由 exit 0 變 1。限制：收據沒有簽章、consumed_digests 只存在單次程序，文件已寫明。
 
 > 備註：教材本身的 18 個教學 Skills 不預裝至本機全域環境，以免佔用每次對話啟動的技能描述空間；平時查閱課文與 `manuals/` 直接按本篇第 2 節索引取用。

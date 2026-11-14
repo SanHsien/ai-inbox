@@ -6,7 +6,7 @@ source_platform: "facebook"
 author: "Jackle Chen"
 analyzed_at: "2026-11-14"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "多session管理"
 short_title: "總PM與claude-inbox"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Facebook 貼文：Jackle Chen](https://www.facebook.com/share/p/19youqwPEF/)
 - **發布平台 / 作者**：`facebook` / `Jackle Chen`
 - **分析日期**：`2026-11-14`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -169,12 +169,12 @@ agent 處理完 ──inbox close <題號>──▶ 收起
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261114-04`**｜**[優先級：中]** `tools/verify_inbox.py` 新增檢查：筆記裡沒有任務 ID 的待辦核取方塊一律報錯，並清掉 11-11 至 11-14 六篇筆記的殘留清單
+- [x] **`T-20261114-04`**｜**[優先級：中]** `tools/verify_inbox.py` 新增檢查：筆記裡沒有任務 ID 的待辦核取方塊一律報錯，並清掉 11-11 至 11-14 六篇筆記的殘留清單
   - **目標範圍**：`tools/verify_inbox.py`、`tests/test_inbox.py`，以及 `notes/` 下 2026-11-11 astryx、11-12 duet、11-13 editkin、11-13 hujiaxi、11-13 soveryai、11-14 jackle 六篇筆記
   - **具體做法**：
     1. 在 `check_task_ids` 旁新增檢查：圍欄外符合 `^- \[[ xX]\] ` 但不含任務 ID 的行，報「待辦行缺任務 ID，總表讀不到：檔名:行號」；`templates/` 不掃，圍欄內範例不報。
     2. `tests/test_inbox.py` 加三個測試：無 ID 的核取方塊報錯、合格任務行不報、圍欄內範例不報。
     3. 六篇筆記的核取清單整段刪除（沒有可驗收的 DoD），並補齊範本要求的章節。
   - **驗收標準（DoD）**：`python -m unittest tests/test_inbox.py` 綠燈且含上述三個新測試；清理前 `python tools/verify_inbox.py` 對六篇報錯（附輸出），清理後回 `[PASS]`；`python -m unittest discover -s tests` 全綠。
-  - **完成日期**：
-  - **實作紀錄 / 證據**：
+  - **完成日期**：2026-11-14
+  - **實作紀錄 / 證據**：完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。

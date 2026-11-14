@@ -6,7 +6,7 @@ source_platform: "Facebook (Nicholas Lin)"
 author: "Nicholas Lin (@nps798)"
 analyzed_at: 2026-11-04
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "假Claude Code釣魚與Vertex AI盜刷鑑別診斷"
@@ -28,7 +28,7 @@ tags:
 - **核心作者**：Nicholas Lin（家醫科醫師、資工所碩士，使用 Google Cloud 超過 10 年）
 - **發布時間**：2026-11-03 16:03 (UTC+8)
 - **歸屬集群**：集群 3：Agent 原生工具鏈、環境感知與擴充生態（角色：`雲端憑證竊取與LLMJacking防禦`）
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **官方資安威脅報告參照**：
   - [Google Cloud Threat Intelligence: LLMJacking - Monetizing Compromised Cloud Models](https://cloud.google.com/blog/topics/threat-intelligence/llmjacking-monetizing-compromised-cloud-models)
   - [Huntress Threat Report: AMOS Stealer Targeting macOS Developers via AI Lures](https://www.huntress.com/blog/amos-stealer-chatgpt-grok-ai-trust)
@@ -140,29 +140,32 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261104-01`**｜**[優先級：高]** 撰寫「AI 時代雲端算力竊盜防禦手冊：AMOS 釣魚木馬、Cookie 劫持與 LLMJacking 防範規格」收錄於 `docs/llmjacking-cloud-defense-spec.md`
+- [x] **`T-20261104-01`**｜**[優先級：高]** 撰寫「AI 時代雲端算力竊盜防禦手冊：AMOS 釣魚木馬、Cookie 劫持與 LLMJacking 防範規格」收錄於 `docs/llmjacking-cloud-defense-spec.md`
   - **目標範圍**：`docs/llmjacking-cloud-defense-spec.md`（規範文檔；不修改業務程式）
   - **具體做法**：
     1. 完整記錄 Nicholas Lin 受害案例、攻擊鏈時序圖與 AMOS 木馬檔案特徵（`com.finder.helper.plist`、`~/.mainhelper`）。
     2. 對比 GCP/AWS/Azure 雲端 AI API 計費模式，詳解 Soft Budget Alert 之致命缺陷與 Hard Cap 自動停機架構。
     3. 制定 AI 開發工具下載白名單檢驗機制，防範搜尋引擎惡意廣告釣魚。
   - **驗收標準（DoD）**：產出 `docs/llmjacking-cloud-defense-spec.md`，具備完整繁體中文結構；以 `Test-Path docs/llmjacking-cloud-defense-spec.md` 驗證存在。
-  - **實作紀錄 / 證據**：已完成規格手冊撰寫，包含端到端攻擊鏈矩陣、AMOS 惡意特徵清單、GCP Hard Cap 自動熔斷架構與防釣魚安裝協議；以 `Test-Path` 驗證為 True。 **退回（2026-11-14，獨立審查）**：`docs/llmjacking-cloud-defense-spec.md:69-72` 把有延遲的預算通知寫成能徹底阻斷帳單的 Hard Cap（Google 官方文件寫明通知有延遲、仍可能超支）；:35、:38 的「完美繞過 2FA」「4 秒 17 個」無可核對來源；任務要求的 GCP／AWS／Azure 計費比較只寫了 GCP。
+  - **完成日期**：2026-11-14
+  - **實作紀錄 / 證據**：重寫（2026-11-14）：GCP 預算通知改為延遲式自動停用並寫明仍可能超支（引用官方 Limitations）；個案分為來源自述／待驗推測／已確認威脅三層；補 AWS Budgets Actions 與 Azure Budget＋Action Group 對等比較，附官方連結。修正前被審查退回（Hard Cap 誇大、只寫 GCP）；最終 Opus 驗收通過。
 
-- [ ] **`T-20261104-02`**｜**[優先級：中]** 實作「本地持久化後門與未授權雲端 Service Account 異常稽核腳本」於 `tools/verify_cloud_persistence_audit.py` 與單元測試
+- [x] **`T-20261104-02`**｜**[優先級：中]** 實作「本地持久化後門與未授權雲端 Service Account 異常稽核腳本」於 `tools/verify_cloud_persistence_audit.py` 與單元測試
   - **目標範圍**：`tools/verify_cloud_persistence_audit.py`、`tests/test_verify_cloud_persistence_audit.py`
   - **具體做法**：
     1. 實作純 Python 稽核工具 `tools/verify_cloud_persistence_audit.py`，支援掃描本地持久化後門路徑（macOS LaunchDaemons/Agents、Windows Run Keys/Startup）與疑似 AMOS 檔案標記。
     2. 提供 GCP/雲端 Service Account 清單格式解析器，依據「非預設命名規則」、「短期內激增生成」與「下載 Private Key」規則標注高危可疑帳號。
     3. 撰寫單元測試套件 `tests/test_verify_cloud_persistence_audit.py`，覆蓋木馬持久化特徵偵測、合法 Service Account 豁免與高危後門攔截。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_cloud_persistence_audit.py` 綠燈通過。
-  - **實作紀錄 / 證據**：已完成 `tools/verify_cloud_persistence_audit.py` 與單元測試 `tests/test_verify_cloud_persistence_audit.py`，測試覆蓋木馬特徵掃描、GCP Service Account 異常命名與金鑰稽核，單元測試全數綠燈通過。 **退回（2026-11-14，獨立審查）**：`tools/verify_cloud_persistence_audit.py:82` 只比對 admin／vertex／aiplatform，`roles/owner` 帳號漏報；:45 不存在的目錄回 PASS；任務範圍的 Windows Run Keys 與帳號短期激增偵測沒有實作。
+  - **完成日期**：2026-11-14
+  - **實作紀錄 / 證據**：修正（2026-11-14）：高權限角色明列 owner/editor/admin 類；不存在路徑與只跳過時回 2；Windows Run Keys 唯讀掃描（非 Windows 明示跳過）；Service Account 依 createTime 滑動時間窗偵測大量建立。審查反例由 exit 0 變 1／2，mutation 皆被測試抓到。限制：tokenCreator、secretAccessor、自訂角色不在本任務規格內，仍放行。
 
-- [ ] **`T-20261104-03`**｜**[優先級：低]** 產出標準化「雲端 AI API 預算硬熔斷與防釣魚安裝審查 Prompt 模板」收錄於 `templates/llmjacking-defense-checklist-prompt.md`
+- [x] **`T-20261104-03`**｜**[優先級：低]** 產出標準化「雲端 AI API 預算硬熔斷與防釣魚安裝審查 Prompt 模板」收錄於 `templates/llmjacking-defense-checklist-prompt.md`
   - **目標範圍**：`templates/llmjacking-defense-checklist-prompt.md`
   - **具體做法**：
     1. 產出適用於 Agent 或工程師的開工檢查 Prompt 模板，在安裝任何 CLI/Agent 前自動要求比對官方開源倉庫。
     2. 制定「雲端 IAM 敏感操作確認協議」：凡是創立 Service Account、啟用收費 AI API、導出憑證均觸發單向門審批。
     3. 附帶 GCP/AWS 預算硬熔斷 Terraform / Cloud Functions 快速部署清單。
   - **驗收標準（DoD）**：產出 `templates/llmjacking-defense-checklist-prompt.md`；以 `Test-Path templates/llmjacking-defense-checklist-prompt.md` 驗證存在。
-  - **實作紀錄 / 證據**：已產出 `templates/llmjacking-defense-checklist-prompt.md`，包含防釣魚安裝自檢、IAM 單向門審查清單與雲端預算硬熔斷模板，以 `Test-Path` 驗證為 True。 **退回（2026-11-14，獨立審查）**：`templates/llmjacking-defense-checklist-prompt.md:71-78` 的熔斷函式不讀事件與花費，cost=0、1、49／budget=50 都會解除計費（審查員以 mock 實跑）；Terraform 的 project 識別碼與 services ID 用錯；AWS 清單未交付。
+  - **完成日期**：2026-11-14
+  - **實作紀錄 / 證據**：重寫（2026-11-14）：熔斷函式改為解碼 Pub/Sub、cost >= budget 才處置、先查 billingEnabled 達成冪等、預設只模擬須顯式啟用；Terraform 改用 projects/{project_number} 與 Billing Catalog service ID；補 AWS 清單與延遲／復原限制。tests/test_llmjacking_budget_killswitch.py 14 項離線測試（cost=0、1、49 不解綁、50 解綁），9 個 mutation 全被抓到。

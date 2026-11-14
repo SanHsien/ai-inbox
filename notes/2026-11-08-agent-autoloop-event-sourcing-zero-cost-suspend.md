@@ -6,7 +6,7 @@ source_platform: "Threads (@leeunhn) / GitHub (KKKKhazix/agent-autoloop)"
 author: "李昀翰 (@leeunhn) / Khazix (@KKKKhazix)"
 analyzed_at: 2026-11-08
 analyzed_by: "Antigravity"
-status: pending
+status: done
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "Agent-Autoloop事件溯源與掛起零消耗"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[Threads 原文分享](https://www.threads.com/share/BBhKdG9xii) ｜ [貼文永久網址 (@leeunhn)](https://www.threads.com/@leeunhn/post/DfUMk5hlLLV) ｜ [GitHub (KKKKhazix/agent-autoloop)](https://github.com/KKKKhazix/agent-autoloop) ｜ [安全邊界文件 (SECURITY.md)](https://github.com/KKKKhazix/agent-autoloop/blob/main/SECURITY.md)
 - **核心作者**：李昀翰（`@leeunhn` 推薦）／ Khazix（`@KKKKhazix`，專案作者）
 - **分析主題**：解構在 GitHub 迅速斬獲 3,929 Stars、713 Forks 的命令列 Agent 背景自動化中台 **`KKKKhazix/agent-autoloop`**（TypeScript，Node 24+，零外部執行期依賴）。剖析其「掛起零消耗（提問後行程立即退出，0 RSS / 0 Token 等待人類拍板）」、「kernel/ 約 2,000 行（11 檔實數 2,057）的純函式事件溯源內核（SQLite WAL+FULL 單一交易落盤）」、「SQL 參數化式指令資料分離」與「8 跳 TTL 強制熔斷」四大機制，以及 `SECURITY.md` 揭露的反自問自答、PR 零檢出審查與 Windows Codex 沙盒 ACL 收斂防線。
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-21-agent-relay-pipeline-phase4.md`](./2026-10-21-agent-relay-pipeline-phase4.md)（`SanHsien/agent-relay` 跨機器派工、並發／花費上限與驗收合併）
   - [`notes/2026-10-26-codync-open-source-agent-relay-fallback.md`](./2026-10-26-codync-open-source-agent-relay-fallback.md)（Codync 開源 Agent 中繼與 ACP 橋接、E2EE 遠端審批）
@@ -92,7 +92,7 @@ tags:
 
 ## 4. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261108-02`**｜**[優先級：高]** 撰寫 Agent Autoloop 事件溯源與四層安全防線規格，並實作 `tools/verify_autoloop_dispatch_guard.py` 派工安全檢驗器
+- [x] **`T-20261108-02`**｜**[優先級：高]** 撰寫 Agent Autoloop 事件溯源與四層安全防線規格，並實作 `tools/verify_autoloop_dispatch_guard.py` 派工安全檢驗器
   - **目標範圍**：`docs/agent-autoloop-event-sourcing-and-ttl-spec.md`、`tools/verify_autoloop_dispatch_guard.py`、`tests/test_verify_autoloop_dispatch_guard.py`
   - **具體實作步驟**：
     1. 撰寫 `docs/agent-autoloop-event-sourcing-and-ttl-spec.md`，整理「無狀態行程 + 事件溯源內核」拓撲與四大機械契約（`AUTOLOOP-001` 路由與權限欄位隔離、`AUTOLOOP-002` 指令與外部資料分離、`AUTOLOOP-003` 8 跳 TTL 單調遞增與熔斷、`AUTOLOOP-004` 反自問自答／PR 零檢出／Windows 沙盒 ACL 收斂）。
@@ -102,4 +102,5 @@ tags:
     - 產出 `docs/agent-autoloop-event-sourcing-and-ttl-spec.md`、`tools/verify_autoloop_dispatch_guard.py` 與 `tests/test_verify_autoloop_dispatch_guard.py`。
     - `python tools/verify_autoloop_dispatch_guard.py` 回傳 `[PASS]`（exit 0）。
     - `python -m unittest tests/test_verify_autoloop_dispatch_guard.py -v` 全數通過。
-  - **實作紀錄 / 證據**：已完成 `docs/agent-autoloop-event-sourcing-and-ttl-spec.md`、`tools/verify_autoloop_dispatch_guard.py` 與 `tests/test_verify_autoloop_dispatch_guard.py`；執行 `python tools/verify_autoloop_dispatch_guard.py` 輸出 `[PASS] Agent Autoloop 四層派工安全防線檢驗通過。`，執行單元測試 `Ran 6 tests — OK`。 **退回（2026-11-14，獨立審查）**：`tools/verify_autoloop_dispatch_guard.py:99` 只檢查 prompt，漏掉 command 欄位（規格 :48 要求）；:189 空 JSON `{}` 回 PASS；:134 跳數 1→7 放行（規格要求 parent+1）；:177 放行 Administrators（規格只允許本人與 SYSTEM）。
+  - **完成日期**：2026-11-14
+  - **實作紀錄 / 證據**：修正兩輪（2026-11-14）：所有模板欄位共用注入檢查；schema 缺漏判失敗；hop 須為 parent+1；ACL 只允許本人與 SYSTEM；事件鍵名 NFKC＋casefold 後遞迴比對禁用欄位；來源與工具名不分大小寫；來源改白名單（github、gitlab、webhook、external、local、manual、cron，後三者為本 repo 自訂，上游未明文）；max_hops 上限 8。原審查與 Opus 新繞過全部由 exit 0 變 1，規格第 2 節已同步。
