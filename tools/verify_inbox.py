@@ -132,6 +132,17 @@ def check_task_ids(notes: list[bi.Note], texts: dict[Path, str]) -> list[str]:
     return errors
 
 
+def check_idless_checkboxes(notes: list[bi.Note], texts: dict[Path, str]) -> list[str]:
+    """圍欄外、行首的核取方塊若不含任務 ID，總表讀不到，一律報錯（templates/ 不在 notes 內，不掃）。"""
+    idless = re.compile(r"^- \[[ xX]\] ")
+    errors = []
+    for n in notes:
+        for idx, line in bi.iter_outside_fences(texts[n.path].split("\n")):
+            if idless.match(line) and not re.search(bi.TASK_ID, line):
+                errors.append(f"{n.path.name}:{idx + 1}: 待辦行缺任務 ID，總表讀不到：{line[:60]}…")
+    return errors
+
+
 def check_links(texts: dict[Path, str]) -> list[str]:
     errors = []
     for path, text in texts.items():
@@ -273,6 +284,7 @@ def main(argv: list[str] | None = None) -> int:
         *check_notes(notes),
         *check_dod_artifacts(notes),
         *check_task_ids(notes, {**readme_texts, **note_texts}),
+        *check_idless_checkboxes(notes, note_texts),
         *check_readme(notes),
         *check_catalog_coverage(texts[bi.README_FILE]),
         *check_links(texts),

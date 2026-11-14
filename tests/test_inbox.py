@@ -109,6 +109,23 @@ class ParseTest(unittest.TestCase):
         errs = vi.check_task_ids([n], {n.path: text})
         self.assertTrue(any("格式不符範本" in e for e in errs), errs)
 
+    def test_idless_checkbox_detected(self):
+        n = make_note(self.tmp)
+        text = n.path.read_text(encoding="utf-8") + "\n- [ ] 沒有任務 ID 的待辦\n- [x] 已勾但沒有 ID\n"
+        errs = vi.check_idless_checkboxes([n], {n.path: text})
+        self.assertEqual(2, len(errs), errs)
+        self.assertTrue(all("待辦行缺任務 ID" in e and f"{n.path.name}:" in e for e in errs), errs)
+
+    def test_valid_task_lines_not_reported_as_idless(self):
+        n = make_note(self.tmp)
+        text = n.path.read_text(encoding="utf-8")
+        self.assertEqual([], vi.check_idless_checkboxes([n], {n.path: text}))
+
+    def test_idless_checkbox_inside_fence_ignored(self):
+        n = make_note(self.tmp)
+        text = n.path.read_text(encoding="utf-8") + "\n```markdown\n- [ ] 圍欄內的範例待辦\n```\n"
+        self.assertEqual([], vi.check_idless_checkboxes([n], {n.path: text}))
+
     def test_secret_and_session_link_detected(self):
         p = self.tmp / "x.md"
         texts = {p: "key ghp_" + "a" * 30 + "\n[s](conversation://abc)"}
