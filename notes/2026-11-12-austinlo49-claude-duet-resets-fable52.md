@@ -38,7 +38,7 @@ tags:
 - **Why**：Duet 背景執行耗配額，社群視 resets 為緩衝。
 - **How**：至 claude.com/duet 加入 waitlist（見下方技術架構）。
 - **When & Where**：Pro／Max／Ultra 訂閱者，**僅限美國**（官方頁寫 in the US）；研究預覽期間。
-- **Key Metrics / Numbers**：官方頁僅寫 6,000+ connectors；「3 次 resets」無官方出處。
+- **Key Metrics / Numbers**：官方頁僅寫 6,000+ connectors；官方公告 https://www.anthropic.com/news/claude-fable-and-mythos-5-2 寫明「one to three Fable resets based on how long they've subscribed」（2026-11-14 實際取得該頁確認原文），這是 Fable 5.2 上市的促銷，與 Duet 申請無關；貼文把它誤植成 Duet 申請贈品。
 
 ### 摘要原文
 

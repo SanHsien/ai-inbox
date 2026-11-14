@@ -18,6 +18,7 @@ verify_agent_skill_pack_safety.py — 第三方 Claude Code / Agent Skill 與 MC
   BYPASS        免審批／破沙盒旗標與設定值
   REMOTE-EXEC   遠端內容接管線、替換或下載後直接執行
   OBFUSCATED    編碼過、無法靜態判讀的指令
+  DYNAMIC-EXEC  執行非字面內容（iex $c、eval "$s"、bash -c "$s"、eval(code)）；只列 REVIEW，不判 FAIL
   CRED-ACCESS   讀取瀏覽器 Cookie／登入資料庫或憑證檔
   INSTALL-EXEC  安裝時自動執行的腳本（npm lifecycle 等）
   AUTO-HOOK     審批之外自動執行的 hook／技能內嵌指令（列出內容，需人工審查）
@@ -60,6 +61,7 @@ REVIEW = "REVIEW"
 CAT_BYPASS = "BYPASS"
 CAT_REMOTE = "REMOTE-EXEC"
 CAT_OBFUSCATED = "OBFUSCATED"
+CAT_DYNAMIC = "DYNAMIC-EXEC"
 CAT_CRED = "CRED-ACCESS"
 CAT_INSTALL = "INSTALL-EXEC"
 CAT_HOOK = "AUTO-HOOK"
@@ -550,6 +552,30 @@ def check_encoded_command(stage: list[Tok]) -> list[Hit]:
     return []
 
 
+_DYNAMIC_EVALS = {"iex", "invoke-expression", "eval"}
+_DYNAMIC_SHELLS = {"sh", "bash", "zsh", "dash", "ksh", "ash", "pwsh", "powershell"}
+_DYNAMIC_CMD_FLAGS = {"-c", "-lc", "-ic", "-command", "-cmd"}
+_DYNAMIC_CALL_RE = re.compile(r"(?<![.\w])(?:eval|exec)\s*\(\s*(?![\"'`)\s])")
+
+
+def check_dynamic_exec(stage: list[Tok]) -> list[Hit]:
+    """執行「非字面內容」的寫法：內容在執行期才決定，靜態無法判讀，只列 REVIEW。"""
+    shown = " ".join(t.value for t in stage)[:160]
+    idx, names = _head(stage)
+    if idx is not None:
+        rest = stage[idx + 1 :]
+        if names & _DYNAMIC_EVALS:
+            if any("$" in t.raw or "`" in t.raw for t in rest if not t.op):
+                return [Hit(REVIEW, CAT_DYNAMIC, stage[0].line, f"執行非字面內容（內容在執行期才決定）：{shown}")]
+        elif names & _DYNAMIC_SHELLS:
+            for pos, tok in enumerate(rest[:-1]):
+                if tok.value.lower() in _DYNAMIC_CMD_FLAGS and ("$" in rest[pos + 1].raw or "`" in rest[pos + 1].raw):
+                    return [Hit(REVIEW, CAT_DYNAMIC, stage[0].line, f"直譯器 -c 執行非字面內容：{shown}")]
+    if _DYNAMIC_CALL_RE.search(" ".join(t.raw for t in stage)):
+        return [Hit(REVIEW, CAT_DYNAMIC, stage[0].line, f"eval／exec 呼叫的參數不是字面字串：{shown}")]
+    return []
+
+
 def _downloaded_names(stage: list[Tok]) -> set[str]:
     out: set[str] = set()
     for idx, tok in enumerate(stage):
@@ -619,6 +645,7 @@ def analyze_text(text: str, comment: str = "", code_escapes: bool = False, _dept
         for stage in pipe:
             hits += check_substitution(stage)
             hits += check_encoded_command(stage)
+            hits += check_dynamic_exec(stage)
             if _depth == 0:
                 hits += check_download_then_run(stage, downloaded)
                 if _all_names(stage) & DOWNLOADERS:

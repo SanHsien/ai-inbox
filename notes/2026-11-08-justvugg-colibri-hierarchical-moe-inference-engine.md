@@ -117,5 +117,5 @@ tags:
 
 ### 評估結論（歸檔備查，不自動下載大檔或衍生新任務）
 
-1. **遵循本機硬閘門**（`AI_SETUP.md` 未查證：2026-11-14 repo 根目錄清單未見此檔）：`colibri` 最小聊天模型需下載 19–23 GB，且本機主力 Agent（Claude Opus 5.5、Codex、Antigravity、Hermes）皆已有穩定的雲端配額，目前無需耗費數十 GB 磁碟空間安裝本地 LLM。
+1. **遵循本機硬閘門**（見 `docs/AI_SETUP.md`，2026-11-14 以 `gh api repos/JustVugg/colibri/contents/docs/AI_SETUP.md` 確認存在）：`colibri` 最小聊天模型需下載 19–23 GB，且本機主力 Agent（Claude Opus 5.5、Codex、Antigravity、Hermes）皆已有穩定的雲端配額，目前無需耗費數十 GB 磁碟空間安裝本地 LLM。
 2. **留存架構資產**：將 `JustVugg/colibri` 的三層 MoE 記憶體規劃、本機 RTX 3060 12GB 適配表、以及 `POST /v1/systemone`（本地零生成 Jev API 替代方案）與 `COLI_PARK`（Agent 跨輪 KV 暫存）完整記錄於本筆記備查（`status: archived`），日後若有離線推理或本地微秒級分類器需求，可直接按第 4 節 Tier S / Tier A 參數啟用。

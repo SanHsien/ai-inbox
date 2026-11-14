@@ -126,6 +126,33 @@ class ParseTest(unittest.TestCase):
         text = n.path.read_text(encoding="utf-8") + "\n```markdown\n- [ ] 圍欄內的範例待辦\n```\n"
         self.assertEqual([], vi.check_idless_checkboxes([n], {n.path: text}))
 
+    def test_main_exits_1_when_note_has_idless_checkbox(self):
+        """整合層級：跑真正的 verify_inbox.py，待辦行缺 ID 要讓結束碼變 1（對照組乾淨時為 0）。"""
+        import shutil
+        import subprocess
+
+        root = self.tmp / "repo"
+        for name in ("tools", "tests", "notes", "docs", "templates", "assets"):
+            shutil.copytree(bi.REPO_ROOT / name, root / name, ignore=shutil.ignore_patterns("__pycache__"))
+        for item in bi.REPO_ROOT.iterdir():
+            if item.is_file():
+                shutil.copy2(item, root / item.name)
+
+        def run():
+            return subprocess.run(
+                [sys.executable, "-B", str(root / "tools" / "verify_inbox.py")],
+                capture_output=True, text=True, encoding="utf-8", cwd=root,
+            )
+
+        control = run()
+        self.assertEqual(0, control.returncode, control.stdout + control.stderr)
+        note = sorted((root / "notes").glob("2*.md"))[0]
+        with note.open("a", encoding="utf-8") as fh:
+            fh.write("\n- [ ] 沒有任務 ID 的待辦\n")
+        result = run()
+        self.assertEqual(1, result.returncode, result.stdout + result.stderr)
+        self.assertIn("待辦行缺任務 ID", result.stdout)
+
     def test_secret_and_session_link_detected(self):
         p = self.tmp / "x.md"
         texts = {p: "key ghp_" + "a" * 30 + "\n[s](conversation://abc)"}

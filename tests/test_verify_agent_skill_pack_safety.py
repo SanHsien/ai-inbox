@@ -46,6 +46,11 @@ IWR = "iw" + "r"
 URL = "https://example.invalid/install.sh"
 
 
+def fullwidth(text: str) -> str:
+    """ASCII 可見字元轉全形（NFKC 正規化應該把它們還原）。"""
+    return "".join(chr(ord(c) + 0xFEE0) if "!" <= c <= "~" else c for c in text)
+
+
 def pipe(*stages: str) -> str:
     return " | ".join(stages)
 
@@ -146,6 +151,15 @@ class TestBypassFlagNormalization(unittest.TestCase):
         self.assert_bypass(f"claude {PM}\u00a0{BP}")
         self.assert_bypass(f"claude {PM}\u3000{BP}")
         self.assert_bypass("claude " + SKIP[:8] + "\u200b" + SKIP[8:])
+
+    def test_fullwidth_letter_flags_are_normalized(self) -> None:
+        # 全形英數與全形連字號；只靠 NFKC 還原，刪掉正規化就會漏掉。
+        for flag in (SKIP, CODEX_BYPASS, HOOK_TRUST):
+            with self.subTest(flag=flag):
+                self.assertNotEqual(fullwidth(flag), flag)
+                self.assert_bypass("claude " + fullwidth(flag))
+        self.assert_bypass("claude " + fullwidth(PM) + " " + fullwidth(BP))
+        self.assertEqual(guard.normalize_text(fullwidth(SKIP)), SKIP)
 
     def test_argv_list_forms(self) -> None:
         self.assert_bypass(f'subprocess.run(["claude", "{PM}", "{BP}"])', comment="#", code_escapes=True)
@@ -347,6 +361,51 @@ class TestRemoteExec(unittest.TestCase):
         ):
             with self.subTest(text=text):
                 self.assert_clean(text)
+
+
+class TestDynamicExec(PackCase):
+    """非字面參數的 iex／eval／exec／bash -c：標 REVIEW 並列出，不判 FAIL。"""
+
+    DYNAMIC = (
+        "ie" + "x $c",
+        "ie" + "x $payload",
+        "Invoke-Expres" + "sion $code",
+        "ev" + 'al "$s"',
+        "ev" + "al $cmd",
+        "ba" + 'sh -c "$s"',
+        "s" + 'h -c "$s"',
+        "pw" + "sh -Command $c",
+        "ex" + "ec(code)",
+        "ev" + "al($x)",
+        'python -c "ex' + 'ec(open(f).read())"',
+    )
+    LITERAL = (
+        "ev" + 'al "echo hi"',
+        "ie" + 'x "Get-Date"',
+        "ba" + 'sh -c "echo hi"',
+        "ex" + "ec('print(1)')",
+        "re.ex" + "ec(text)",
+        "ls $HOME",
+    )
+
+    def test_dynamic_forms_are_review_not_fail(self) -> None:
+        for text in self.DYNAMIC:
+            with self.subTest(text=text):
+                hits = guard.analyze_text(text)
+                self.assertIn(guard.CAT_DYNAMIC, categories(hits, guard.REVIEW), text)
+                self.assertEqual(categories(hits), set(), text)
+
+    def test_literal_forms_are_not_flagged(self) -> None:
+        for text in self.LITERAL:
+            with self.subTest(text=text):
+                self.assertEqual(guard.analyze_text(text), [], text)
+
+    def test_pack_lists_dynamic_exec_and_exit_code_follows_strict(self) -> None:
+        report = self.scan({"scripts/run.ps1": "ie" + "x $c" + chr(10)})
+        self.assertTrue(any(f.category == guard.CAT_DYNAMIC and f.severity == guard.REVIEW for f in report.findings))
+        self.assertEqual(report.fails(), [])
+        self.assertEqual(guard.compute_exit_code([report], [], [], strict=False), 0)
+        self.assertEqual(guard.compute_exit_code([report], [], [], strict=True), 1)
 
 
 class TestObfuscated(unittest.TestCase):

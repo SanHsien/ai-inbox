@@ -27,7 +27,7 @@ notes/*.md -> 去重 -> gh api / urllib HEAD 或 GET -> 狀態與警告
 
 最終結果（2026-11-14，整合者在可用 gh 的環境重跑，取代先前 Codex 沙盒中 gh 無法使用、58 個連結回 403 的那一輪）：
 
-`python tools/check_external_refs.py --notes notes --cache <暫存檔>` → exit 1；`SUMMARY total=93 errors=2 warnings=2 online`，91 個 OK（含 3 個 arXiv）。
+`python tools/check_external_refs.py --notes notes --cache <暫存檔>` → exit 1；`SUMMARY total=94 errors=2 warnings=2 online`，92 個 OK（含 3 個 arXiv）；2026-11-14 於本分支重跑，總數比先前記錄的 93 多 1（原因未查證），兩個 404 與兩個警告不變。
 
 重跑時抓到工具本身的 bug：`gh api` 的輸出以系統編碼（cp950）解碼，遇到含非 ASCII 的 repo 描述時 stdout 變成 None 而崩潰。已改為 `encoding='utf-8'`，並加回歸測試 `test_gh_output_decoded_as_utf8_not_locale`（拿掉修正時該測試變紅）。
 

@@ -117,6 +117,7 @@ python tools/verify_agent_skill_pack_safety.py --pack path/to/pack --strict
 | `BYPASS` 免審批／破沙盒 | 4.10 表列的旗標與設定值，例如 `--dangerously-skip-permissions`、`--dangerously-bypass-approvals-and-sandbox`、`--yolo`、`--permission-mode bypassPermissions`、`defaultMode: bypassPermissions`、`--sandbox danger-full-access`、`--ask-for-approval never` | 權限模式設為 `acceptEdits` 或 `auto`；`--approve-for-me`；不在清單上的 `--dangerously-*` 旗標；單獨出現的 `bypassPermissions` 或 `danger-full-access`（例如先存進變數，或拿來做比較） |
 | `REMOTE-EXEC` 遠端內容直接執行 | 下載指令接管線到直譯器（`curl`、`wget`、`irm`、`iwr`、`Invoke-WebRequest`、`Invoke-RestMethod` 接到 `sh`、`bash`、`python`、`node`、`iex`、`Invoke-Expression` 等）；指令替換與行程替換；`iex (irm …)`、`DownloadString`；同一份檔案裡先下載再執行同名檔；程式裡同一個敘述同時出現 `exec`／`eval` 與 `urlopen`／`requests.get`／`fetch` | 無 |
 | `OBFUSCATED` 無法判讀 | PowerShell 的 `-EncodedCommand`（含 `-enc`、`-e` 等縮寫）；`base64 -d` 之類的解碼結果接管線到直譯器 | 無 |
+| `DYNAMIC-EXEC` 執行非字面內容 | 無（只列 REVIEW） | 參數在執行期才決定的執行：`iex $c`、`Invoke-Expression $code`、`eval "$s"`、`bash -c "$s"`（`sh`、`zsh`、`pwsh -Command` 同理）、`eval(code)`、`exec(code)`（括號內第一個參數不是字串常值）。字面內容（`eval "echo hi"`）與 `re.exec(x)` 這類方法呼叫不列。工具無法得知變數內容，所以只列出來要人看，不判 FAIL；加 `--strict` 才會讓結束碼變 1 |
 | `CRED-ACCESS` 讀取 Cookie 或憑證 | Chrome／Edge／Brave 等設定檔目錄下的 `Cookies`、`Login Data`、`Web Data`、`Local State`；Firefox 的 `cookies.sqlite`、`key4.db`；`~/.aws/credentials`；`~/.ssh/id_*` 私鑰；`.netrc`、`.git-credentials`、Docker／Kubernetes／gcloud／GitHub CLI 的憑證檔；`.claude/.credentials.json`、`.codex/auth.json`；`--cookies-from-browser`、`browser_cookie3` 等工具；macOS 鑰匙圈查詢 | 無 |
 | `INSTALL-EXEC` 安裝時自動執行 | `package.json` 的 `preinstall`、`install`、`postinstall` | `package.json` 的 `prepublish`、`preprepare`、`prepare`、`postprepare`；存在 `setup.py` 或 `binding.gyp` |
 | `AUTO-HOOK` 審批之外自動執行 | 不會單獨 FAIL。hook 指令本身若命中其他類別，會另外列 FAIL | 列出每一條指令：任何 JSON 裡 `type: command` 的項目（含 `statusLine`）、`hooks` 底下的 `http`／`prompt`／`agent`／`mcp_tool` 項目、Skill frontmatter 的 hook、技能載入時自動執行的行內指令與指令區塊、`.git/hooks/` 裡沒有 `.sample` 結尾的檔案 |
@@ -153,7 +154,7 @@ python tools/verify_agent_skill_pack_safety.py --pack path/to/pack --strict
 ### 4.7 抓不到的東西
 
 - **執行期才組出來的內容**：變數間接（旗標或指令先存進變數再展開，最多只會有 REVIEW）、`printf`／`join`／格式化字串拼出來的旗標、相鄰字串常值的隱式相接、跨行的字串相加、從檔案或環境變數讀進來的參數。
-- **各種編碼與混淆**：base64 或十六進位編碼的旗標與指令、壓縮檔、被壓縮混淆過的 JavaScript。只有 PowerShell 編碼指令與「解碼後接管線」這兩種會被標成 `OBFUSCATED`。
+- **各種編碼與混淆**：base64 或十六進位編碼的旗標與指令、壓縮檔、被壓縮混淆過的 JavaScript。只有 PowerShell 編碼指令與「解碼後接管線」這兩種會被標成 `OBFUSCATED`。執行變數內容的 `iex $c`、`eval "$s"`、`bash -c "$s"` 只會列 `DYNAMIC-EXEC` REVIEW，變數裡實際是什麼仍要人判斷。
 - **不經管線也不經替換的遠端執行**：下載和執行分在不同檔案或不同敘述且檔名對不上；`npx`、`uvx`、`pipx run`、`pip install git+https://…` 這類直接執行遠端套件的指令；`mshta`、`regsvr32`、`certutil -urlcache` 等系統內建工具；程式裡用 HTTP 函式庫下載後再寫檔執行。
 - **二進位檔與壓縮檔的內容**：只會列為未掃描。`.mcpb`、`.dxt`、`.zip`、執行檔、圖片都一樣。
 - **技能包以外的東西**：`npm install` 會拉進來的相依套件、hook 或 MCP 伺服器在執行期再下載的程式、遠端 MCP 伺服器的行為。
