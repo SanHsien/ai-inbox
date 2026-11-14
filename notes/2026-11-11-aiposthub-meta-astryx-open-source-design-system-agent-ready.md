@@ -23,10 +23,28 @@ tags:
   - codex
 ---
 
-## Executive Summary
+# Meta Astryx 開源設計系統：8 年內建、agent-ready、150+ 元件
 
-**@aiposthub** 介紹 Meta 在 2026 年 6 月正式開源的設計系統 **Astryx**（`meta/astryx`）。
-這套系統在 Meta 內部磨了 8 年，支撐超過 13,000 個應用，現在以 MIT 授權對外開放，並從設計之初就把 AI Agent 的開發需求納入考量。截至 2026-11-12，已累積 **25,887 stars**，2,010 forks。
+- **來源連結**：[Threads 貼文：@aiposthub](https://www.threads.com/share/_zyaE1NL7)
+- **發布平台 / 作者**：`threads` / `@aiposthub`
+- **分析日期**：`2026-11-11`
+- **當前狀態**：`⚪ 不做 (Archived)`
+
+---
+
+## 1. 核心內容摘要（5W1H 初篩）
+
+- **Who**：Meta（官方倉庫 `meta/astryx`，MIT）；貼文作者 `@aiposthub` 為轉述者。
+- **What**：開源設計系統 Astryx，150+ 元件、CSS custom property 主題、CLI + AGENTS.md 雙通道。
+- **Why**：讓人與 AI Agent 走同一套 API／文件／CLI，減少 Agent 亂寫樣式。
+- **How**：React 19 + StyleX 底層；`astryx docs <Component>` 等 CLI 供 Agent 查文件（見下方技術架構）。
+- **When & Where**：新 React 19+ 專案、需要多 Agent 一致產出 UI 時；目前 Beta。
+- **Key Metrics / Numbers**：25,887 stars／2,010 forks（快照日 2026-11-11 前後，筆記原記 2026-11-12）；2026-11-14 複查為 27,568 stars／2,141 forks；README 自述 13,000+ apps、8 年。
+
+### 摘要原文
+
+**@aiposthub** 介紹 Meta 在 2026 年 6 月正式開源（未查證：repo 建立日為 2026-01-09，6 月說法來源不明）的設計系統 **Astryx**（`meta/astryx`）。
+這套系統在 Meta 內部磨了 8 年，支撐超過 13,000 個應用，現在以 MIT 授權對外開放，並從設計之初就把 AI Agent 的開發需求納入考量。截至分析日 2026-11-11（原稿寫 2026-11-12，已與 analyzed_at 對齊），已累積 **25,887 stars**，2,010 forks。
 
 核心特色：**150+ 元件、CSS custom property 主題系統、CLI + AI Agent 雙通道、React 19 + StyleX 底層**。
 
@@ -80,16 +98,16 @@ CLAUDE.md / .claude-plugin/   ← Claude Code 讀入
      ↓
 astryx CLI（全域 or 專案安裝）
   ├── astryx docs <ComponentName>   # 給 agent 查元件文件
-  ├── astryx docs global/project-global-or-both
-  ├── pnpm specs:for <path>         # 列出路徑關聯的規格記錄
-  └── pnpm review:pre               # PR 前自動 checklist
+  ├── astryx docs global/project-global-or-both   # README 有載（2026-11-14 查證）
+  ├── pnpm specs:for <path>         # 列出路徑關聯的規格記錄（未驗證）
+  └── pnpm review:pre               # PR 前自動 checklist（未驗證）
 ```
 
 - **`packages/cli/assets/docs/`**：專門為 Agent 準備的文件素材（非人類 UI 格式）
 - **`{Name}.doc.mjs`**：每個元件的機器可讀文件檔，Agent 可直接 `astryx docs Button` 查詢
 - **全域 CLI 安裝**：`npm i -g @astryxdesign/cli`，讓任何工作目錄的 Agent 都能調用 Astryx 知識
 
-### 安裝指令（三包管理器）
+### 安裝指令（三包管理器；以下指令未驗證，本筆記未實跑）
 
 ```bash
 # 核心 + 中性主題 + StyleX peer dep
@@ -142,7 +160,17 @@ npm i -g @astryxdesign/cli
 
 ---
 
-## 與本機防線對照
+## 2. CQR 深入論證檢驗（技術報告選填）
+
+- **Claim**：Astryx 是從設計起就把 AI Agent 當第一類使用者的設計系統。
+- **Evidence**：README 載有 `AGENTS.md`、`astryx docs` 與 150+ 元件的說明（2026-11-14 查證）；其餘依貼文轉述。
+- **Reasoning**：「agent-ready」是作者／官方自述，未實測 Agent 產出品質；仍在 Beta（v0.7.x），API 可能變動。
+
+---
+
+## 3. 啟發與適用性評估
+
+### 與本機防線對照
 
 | 評估維度 | 結論 |
 |---------|------|
@@ -154,7 +182,7 @@ npm i -g @astryxdesign/cli
 
 ---
 
-## 評估結論與處置
+### 評估結論與處置
 
 **評分：⭐⭐⭐⭐（4/5）**
 
@@ -164,11 +192,15 @@ StyleX 底層對消費者透明——這三點組合是真正的 agent-ready 而
 
 **扣分點**：目前仍是 Beta；React 19 門檻；StyleX 在社群接受度相對 Tailwind 仍低。
 
-**處置**：
-- [ ] 評估在新 React 專案中引入 Astryx 的可行性
-- [ ] 測試 `astryx docs` CLI 與 Antigravity/Claude Code 的整合效果
-- [ ] 追蹤 Astryx 離開 Beta 的時間點（訂閱 `meta/astryx` releases）
-- [ ] 關注 `astryx swizzle` 的 eject 機制是否適合客製化需求較高的場景
+**處置**：僅歸檔備查；無可驗收的具體任務，不衍生待辦。以下為依 README 自述的看法，未實測：
+- 新 React 專案才有引入價值；本庫目前無對應的 React 專案。
+- Astryx 的 `astryx docs` 與本機 Agent 整合效果未測。
+
+---
+
+## 4. 拆解待辦事項（Action Items）
+
+無（零任務判斷：維持歸檔，未建立任務，原核取清單因無可驗收 DoD 已刪除）。
 
 **參考連結**：
 - 官方 repo：https://github.com/meta/astryx
