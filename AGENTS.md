@@ -101,6 +101,7 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
 ## 3. 寫作與分析鐵律
 
 - **主動深挖並補齊官方 GitHub／原始碼**：文章若提及任何工具、框架、專案、論文或模型，**必須主動檢索其開源 GitHub 倉庫、文件站或 arXiv，將 Repository URL、架構特點與安裝指引直接補充至分析檔**，不用等維護者提醒。
+  - GitHub／arXiv 人工巡檢：`python tools/check_external_refs.py --notes notes`；`--offline` 只列清單、不驗證，`--cache <檔>` 重用快照（無自動到期，重新查證前須刪除）；結束碼 0 表示無錯誤（改名／封存為警告），1 表示失效或無法查證，2 表示輸入／快取／本機讀寫錯誤。僅掃 `notes/*.md`、略過程式碼圍欄及同列標「（私有）」的 GitHub repo，不接 CI；詳見 [工具原始碼](tools/check_external_refs.py)。
   - *社群轉貼者說明*：若使用者提供的是純文字截圖或轉貼內容且未附原 PO，**不需要花時間去人肉搜尋轉貼者是誰**，author 直接填 `社群分享` 或專案作者即可，精力完全聚焦在技術本身、官方 Repo 與任務拆解。
   - *影片來源必取逐字稿*：若來源是 YouTube 等影片，**不可只看標題與說明欄就交差**。先用 `python -m yt_dlp` 抓字幕；若遇到 `HTTP 429` 或無字幕，直接執行 `python tools/video_transcript.py <網址> --out <暫存目錄>`（本機已配妥 RTX 3060 CUDA 加速與 `faster-whisper`），完整步驟與踩坑紀錄見 [`docs/video-transcript-howto.md`](docs/video-transcript-howto.md)。
 - **規劃必須詳盡具體（拒絕空泛）**：分析時重點永遠是「這篇文章的哪個設計／技巧，能解決什麼痛點，或改進哪個具體專案／Skill？」。拆解任務必須包含目標範圍、具體實作步驟與嚴格的 DoD 驗收標準，不留空泛概念。
