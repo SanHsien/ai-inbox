@@ -383,6 +383,7 @@
 | 2026-11-13 | ⚪ | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
 | 2026-11-14 | ⚪ | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 0 / 0 |
+| 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -427,6 +428,7 @@
 - 端點資安與雲端基建：[Strata 12GB 顯卡運行 125B 大模型](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md)、[security-guidance 三層左移資安外掛](./notes/2026-10-23-claude-plugin-security-guidance.md)、[Zeabur 十月資安事件與憑證輪替](./notes/2026-10-23-zeabur-october-2026-security-incident.md)、[Grok OAuth 訂閱轉 API 鑑權破綻解構](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md)、[Zeabur開源PaaS架構與資安反思](./notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md)、[Zeabur OSS開源與Installer自建](./notes/2026-10-31-zeabur-oss-installer-self-hosted-paas.md)、[Zero-Breach-Toolkit間諜軟體鑑識](./notes/2026-10-31-zero-breach-toolkit-mercenary-spyware-forensics.md)、[假Claude Code釣魚與Vertex AI盜刷鑑別診斷](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md)
 - 高槓桿思維與工作流：[AI 野心四維框架與深度四問](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md)、[Dan Koe數位匠人與經驗時代架構](./notes/2026-10-31-dan-koe-digital-artisan-body-of-work-framework.md)
 - 免費算力整合：[Muse指揮10免費工具](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md)
+- 人生指南Skill：[台灣版人生指南](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
