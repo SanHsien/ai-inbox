@@ -81,14 +81,14 @@ Facebook 粉專「一股GoodJob」彙整了 2026 年 11 月初 GitHub Trending �
 - **支援生態**：Claude Code、OpenClaw、Codex、Gemini、Hermes、Copilot 等。
 - **運作機制**：透過 Hook 機制即時擷取 Agent 在 Session 中的工具調用與決策軌跡，交由背景 LLM 提取精華並壓縮為語義向量或結構化知識條目；下次開啟全新對話時，依據當前 Prompt 自動檢索關聯記憶並注入上下文。
 - **重要資安與隱私防護須知**：
-  - 預設提供雲端同步服務，有 30 天試用與登入提示。
+  - Cloud Sync 為選用（opt-in）；30 天試用屬 claude-mem observer 模型（結帳頁需付款方式）；匿名使用統計預設開啟，可用 `npx claude-mem telemetry disable` 關閉（依 README，2026-11-14 查證）。
   - **資安硬原則**：在處理企業專案、私鑰、金鑰或機密代碼時，**絕對禁止將記憶同步至其第三方雲端平台**。使用者應選擇純本機儲存，或利用其標籤過濾功能將機密目錄標記為 `private` 排除上傳。
 
 ### 2.3 Claude Code Game Studios（`Donchitos/Claude-Code-Game-Studios`，37.3K Stars）：敏捷勝過重型文檔
-- **組織架構**：提供 49 個預設角色（創意總監、關卡設計、物理主程、資產美工、QA 測試員等）與 72 款工作流技能，支援 Godot、Unity、Unreal Engine。
+- **組織架構**：提供 49 個預設角色（創意總監、關卡設計、物理主程、資產美工、QA 測試員等）與 75 款工作流技能（README 寫 75 skills，2026-11-14 查證），支援 Godot、Unity、Unreal Engine。
 - **關鍵實證結論（反過度架構化）**：
   - 預設模式為「最快開工模式（Fastest Mode）」：只要一頁 High-Concept 企劃即刻啟動代碼建置與最小可行原型（MVP）。
-  - 作者曾進行 A/B 測試：強迫 Agent 事先撰寫 29 份完整遊戲設計文件（GDD）的組別，最終產出遊戲在試玩評選中反而排名敬陪末座；反而是輕文檔、快速原型迭代的組別表現最優。這印證了在 AI 編排中「避免過度抽象、儘早接觸執行反饋」的定律。
+  - README 的 `modes.rigor` 比較（作者自述，未重現；非嚴格 A/B 測試）：`standard` 模式先寫 30 份文件（比 `minimal` 多 29 份），兩名盲評與一次人工試玩把 `standard` 版排最後；反而是輕文檔、快速原型迭代的組別表現最優。這印證了在 AI 編排中「避免過度抽象、儘早接觸執行反饋」的定律。
 
 ### 2.4 Claude SEO（`AgriciDaniel/claude-seo`，27.6K Stars）：AEO/GEO 時代的 Agent 友善評鑑
 - **開發者**：Agrici Daniel（本庫先前收錄之 `AgriciDaniel/youtuber` 核心作者）。
@@ -100,7 +100,7 @@ Facebook 粉專「一股GoodJob」彙整了 2026 年 11 月初 GitHub Trending �
 ### 2.5 OpenMontage（`OpenMontageInc/OpenMontage`，78.9K Stars）：逆向節奏與開放資產零成本剪輯
 - **核心功能**：輸入一段現有爆款短影音（YouTube / Reels / TikTok），自動分析其節奏曲線、開頭視覺錨點與分鏡轉換頻率，逆向生成 2～3 個具備相同張力的新腳本。
 - **成本階梯解耦**：
-  - **零成本路徑**：調用 NASA、Wikimedia Commons、The Met 等開放典藏真實影像，搭配本地開源 TTS 語音，由本機 Python + FFmpeg 進行全自動裁切對齊與渲染，全程不產生額外 API 費用。
+  - **零成本路徑**：調用 NASA、Wikimedia Commons、The Met 等開放典藏真實影像，搭配本地開源 TTS 語音，由本機 Python + FFmpeg 進行全自動裁切對齊與渲染，零成本路徑為選項（開放典藏影像＋本地開源 TTS）；README 範例成本 US$1.33（THE LAST BANANA）。
   - **付費路徑**：僅在需要生出逼真自訂 AI 生成鏡頭時，才按需調用外部視訊模型。
 
 ---
