@@ -32,7 +32,7 @@ tags:
 
 ---
 
-## 1. 資訊初篩（5W1H）与貼文原文
+## 1. 資訊初篩（5W1H）與貼文原文
 
 - **貼文原文**（Claude Taiwan 社團）：
   > 「大家知道 Claude 可以自己請顧問嗎？最近才發現這個指令：輸入 `/advisor 模型`，例如 `/advisor opus`。假設使用的主模型是 sonnet，可以安排 opus 或 fable 顧問給他，當 sonnet 無法處理的，會請顧問協助..還滿有趣的」
@@ -40,6 +40,7 @@ tags:
 - **What**：讓較輕量、低成本的執行模型（Executor，如 `sonnet` 或 `haiku`）擔任主模型處理日常讀寫與工具呼叫，並在遇到架構歧義、卡關或收尾前，於同一次推論請求中自動呼叫高階模型（Advisor，如 `opus` 或 `fable`）提供 400–700 tokens 的結構化指導。
 - **Where**：
   - Claude Code 互動指令：`/advisor opus` 或 `/advisor fable`
+  - 官方文件：[Advisor tool（API）](https://docs.claude.com/en/docs/agents-and-tools/tool-use/advisor-tool)、[Claude Code commands](https://code.claude.com/docs/en/commands)（2026-11-14 兩頁可開啟，commands 頁有 advisor 字樣；以下參數名稱以官方頁為準）
   - CLI 啟動參數：`claude --advisor opus`
   - 設定檔持久化：`~/.claude/settings.json` 中的 `"advisorModel": "opus"`
   - Anthropic API Beta：`betas=["advisor-tool-2026-03-01"]`，工具型別 `type: "advisor_20260301"`
