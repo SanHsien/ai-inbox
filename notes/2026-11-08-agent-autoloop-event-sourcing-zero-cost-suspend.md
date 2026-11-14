@@ -20,11 +20,11 @@ tags:
   - acp
 ---
 
-# Agent Autoloop 架構深挖：1,850 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線
+# Agent Autoloop 架構深挖：kernel/ 約 2,000 行（11 檔實數 2,057）零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線
 
 - **來源連結**：[Threads 原文分享](https://www.threads.com/share/BBhKdG9xii) ｜ [貼文永久網址 (@leeunhn)](https://www.threads.com/@leeunhn/post/DfUMk5hlLLV) ｜ [GitHub (KKKKhazix/agent-autoloop)](https://github.com/KKKKhazix/agent-autoloop) ｜ [安全邊界文件 (SECURITY.md)](https://github.com/KKKKhazix/agent-autoloop/blob/main/SECURITY.md)
 - **核心作者**：李昀翰（`@leeunhn` 推薦）／ Khazix（`@KKKKhazix`，專案作者）
-- **分析主題**：解構在 GitHub 迅速斬獲 3,929 Stars、713 Forks 的命令列 Agent 背景自動化中台 **`KKKKhazix/agent-autoloop`**（TypeScript，Node 24+，零外部執行期依賴）。剖析其「掛起零消耗（提问後行程立即退出，0 RSS / 0 Token 等待人類拍板）」、「1,850 行純函式事件溯源內核（SQLite WAL+FULL 單一交易落盤）」、「SQL 參數化式指令資料分離」與「8 跳 TTL 強制熔斷」四大機制，以及 `SECURITY.md` 揭露的反自問自答、PR 零檢出審查與 Windows Codex 沙盒 ACL 收斂防線。
+- **分析主題**：解構在 GitHub 迅速斬獲 3,929 Stars、713 Forks 的命令列 Agent 背景自動化中台 **`KKKKhazix/agent-autoloop`**（TypeScript，Node 24+，零外部執行期依賴）。剖析其「掛起零消耗（提问後行程立即退出，0 RSS / 0 Token 等待人類拍板）」、「kernel/ 約 2,000 行（11 檔實數 2,057）的純函式事件溯源內核（SQLite WAL+FULL 單一交易落盤）」、「SQL 參數化式指令資料分離」與「8 跳 TTL 強制熔斷」四大機制，以及 `SECURITY.md` 揭露的反自問自答、PR 零檢出審查與 Windows Codex 沙盒 ACL 收斂防線。
 - **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-10-21-agent-relay-pipeline-phase4.md`](./2026-10-21-agent-relay-pipeline-phase4.md)（`SanHsien/agent-relay` 跨機器派工、並發／花費上限與驗收合併）
@@ -52,10 +52,10 @@ tags:
 
 1. **掛起零消耗（Zero-Cost Suspension）**：
    - 當 Agent 遇到刪資料、重啟服務、發貨方式等需人類拍板事項時，輸出 `ask` JSON 回執後**行程直接結束退出**。
-   - 等待狀態持久化於本機 SQLite（`hub.db`）；即使人類 3 天後才回覆，期間 **0 個 Agent 行程在跑、0 Token 消耗**，僅中台（約 60 MB RSS）在背景待命；一旦執行 `agent-autoloop answer <id> <選項>` 或點擊飛書卡片，中台立即喚醒原會話繼續執行。
+   - 等待狀態持久化於本機 SQLite（`hub.db`）；即使人類 3 天後才回覆，期間 **0 個 Agent 行程在跑、0 Token 消耗**，僅中台（約 60 MB RSS：README 效能表「空闲内存 59.94 MB RSS」，作者在 Apple M5 Pro 上自述的實測，本筆記未重現）在背景待命；一旦執行 `agent-autoloop answer <id> <選項>` 或點擊飛書卡片，中台立即喚醒原會話繼續執行。
    - 若 Agent 輸出的回執 JSON 格式有誤，中台只讓它在原會話重寫最後一段回覆，**不會把已做完的業務重做一遍**。
 2. **純函式事件溯源（Deterministic Event-Sourcing Kernel）**：
-   - `kernel/` 約 1,850 行程式碼、**0 外部依賴、不讀系統時鐘、不用隨機數、不發網路請求**。
+   - `kernel/` 約 2,000 行程式碼（11 檔實數 2,057，2026-11-14 以 GitHub API 計）、**0 外部依賴、不讀系統時鐘、不用隨機數、不發網路請求**。
    - 所有狀態皆由單一 append-only 事實日誌推導，決策、事實追加與狀態投影（`evolve`）在同一個 SQLite `WAL + FULL` 交易中寫入磁碟才回應。
    - 內建確定性模擬測試：
      - `node sim/random.ts 24301 200000`：單一隨機種子重現 20 萬步斷網、丟包、崩潰與重複提交；
