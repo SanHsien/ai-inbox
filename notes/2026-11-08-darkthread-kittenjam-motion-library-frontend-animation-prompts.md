@@ -25,7 +25,7 @@ tags:
 
 - **來源貼文**：[Facebook 黑暗執行緒貼文（`1675948690568224`）](https://www.facebook.com/share/p/1CSB7d1YQh/)
 - **原作網站**：[Motion Library 動態收藏（`kittenjam-motion-library.vercel.app`）](https://kittenjam-motion-library.vercel.app/)（策展作者：Hannah，UI/UX Designer，[作品集](https://hannahchao-portfolio.vercel.app/)）
-- **社群開源衍生倉庫（主動深挖補齊）**：
+- **社群衍生倉庫（主動深挖補齊；yazelin 無 LICENSE，hevangel 為 MIT，但內容源自原站，授權以原作者為準；2026-11-14 以 GitHub API 查證）**：
   - [`yazelin/kittenjam-motion-library-mirror`](https://github.com/yazelin/kittenjam-motion-library-mirror)：原站每日快取鏡像（GitHub Pages）、`effects.json`、`llms.txt`，以及零依賴 Python 查詢工具與 Agent Skill（`skills/motion-library/`）。
   - [`hevangel/motion-library-prompts`](https://github.com/hevangel/motion-library-prompts)：全量 327 種動效逆向萃取庫，提供 `prompts.json`、`prompts.md`、`prompts.csv`、中英雙語對照檔與單檔範例目錄（`examples/`）。
 - **分析日期**：`2026-11-08`
@@ -146,4 +146,4 @@ tags:
    - 提示詞尾部強制帶入「配色依照既有主題色」的解耦設計，對保護現有 Design Tokens 具高度借鏡價值。
 2. **任務處置**：
    - 經評估，社群已具備完整靜態站點、中英雙語 JSON 萃取庫（`hevangel/motion-library-prompts`）與零依賴查詢工具（`yazelin`）。
-   - 本機目前無需維護額外專用伺服器或鏡像，在需要前端動效設計時直接查閱本筆記與對應開源倉庫即可，**歸檔備查（`status: archived`），不衍生獨立代碼任務**。
+   - 本機目前無需維護額外專用伺服器或鏡像，在需要前端動效設計時直接查閱本筆記與對應衍生倉庫即可（授權風險：內容源自原站，yazelin 倉庫無 LICENSE、hevangel 的 MIT 不代表原站內容可任意再利用，商用或轉載前先確認原作者授權），**歸檔備查（`status: archived`），不衍生獨立代碼任務**。
