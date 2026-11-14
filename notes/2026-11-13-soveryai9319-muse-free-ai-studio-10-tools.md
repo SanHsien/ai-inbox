@@ -25,10 +25,28 @@ tags:
   - ai-studio
 ---
 
-## Executive Summary
+# Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構
+
+- **來源連結**：[Threads 貼文：@soveryai9319](https://www.threads.com/share/BAexxbxxvd)
+- **發布平台 / 作者**：`threads` / `@soveryai9319`
+- **分析日期**：`2026-11-13`
+- **當前狀態**：`⚪ 不做 (Archived)`
+
+---
+
+## 1. 核心內容摘要（5W1H 初篩）
+
+- **Who**：貼文作者 @soveryai9319（凡森）；涉及 10 個第三方免費服務。
+- **What**：讓 Muse Agent 統一指揮 10 個免費工具，組成零成本 AI 工作室。
+- **Why**：以免費額度拼出算力、資料庫、部署與排程。
+- **How**：Muse 規劃部署與排程，各服務帳號授權交給 Muse（見下方架構圖）。
+- **When & Where**：個人實驗與低流量專案；各服務額度以官方定價頁為準。
+- **Key Metrics / Numbers**：額度數字多為貼文自述；Simular 首頁僅寫 box 免費，credits 數字未查證。
+
+### 摘要原文
 
 **@soveryai9319（凡森）** 分享一套「讓 Muse Agent 統一指揮 10 個免費工具」的零成本 AI 工作室架構。
-核心思路：先把每個免費服務的帳號與 token 收攏給 Muse，再讓 Muse 自動規劃部署、排程任務、排錯，人只需要負責帳號授權確認。
+核心思路：先把每個免費服務的帳號與 token 收攏給 Muse（**與本庫「絕對零機密」原則衝突**：AGENTS.md 第 4 節第 2 條規範機密不得寫入 repo，本作法雖非寫入 repo，但把 10 個服務的 token 集中交給單一第三方 Agent，風險同源），再讓 Muse 自動規劃部署、排程任務、排錯，人只需要負責帳號授權確認。
 
 工具清單（貼文原文）：
 
@@ -36,7 +54,7 @@ tags:
 |---|------|------|------------|
 | 1 | Kaggle | GPU 算力 | 雙 T4 GPU，每週 30 小時 |
 | 2 | GitHub Actions | 自動任務排程 | 2,000 分鐘/月（公開 repo 無限） |
-| 3 | Simular Box | AI 雲端電腦 | 每日 1,000 credits，4vCPU/8GB RAM |
+| 3 | Simular Box | AI 雲端電腦 | 首頁僅寫 box 免費；每日 1,000 credits（貼文自述，credits 數字未查證），4vCPU/8GB RAM |
 | 4 | Cloady | 免費容器 | 資訊有限（見下方說明） |
 | 5 | Supabase | 資料庫 | 500MB PostgreSQL，50MB 儲存 |
 | 6 | OpenRouter | 模型 API | `:free` 模型 50 req/day（付 $10 升至 1,000） |
@@ -92,7 +110,7 @@ Muse Agent（統一指揮）
 **Simular Box（AI 雲端電腦）**
 - 官網：https://box.simular.ai
 - 規格：4 vCPU / 8GB RAM / 40GB disk，Ubuntu + 瀏覽器 + terminal
-- 免費：每日 1,000 credits（無需信用卡），workspace 持久化
+- 免費：首頁僅寫 box 免費；每日 1,000 credits 為貼文自述，未查證（無需信用卡、workspace 持久化亦未查證）
 - 兼容：Claude / ChatGPT / Cursor / Codex（MCP 相容）
 - **Muse 整合重點**：Simular Box 是 Muse 的「身體」，Agent 在此自主執行任務
 
@@ -157,7 +175,7 @@ Muse Agent（統一指揮）
 | 層級 | 工具 | 月費 |
 |------|------|------|
 | GPU | Kaggle + Colab | \$0 |
-| VM | Simular Box（每日 1,000 credits） | \$0 |
+| VM | Simular Box（免費；credits 數字未查證） | \$0 |
 | 自動化 | GitHub Actions（公開 repo） | \$0 |
 | 模型 | OpenRouter :free | \$0（50 req/day）|
 | DB | Supabase | \$0 |
@@ -168,7 +186,17 @@ Muse Agent（統一指揮）
 
 ---
 
-## 與本機防線對照
+## 2. CQR 深入論證檢驗（選填）
+
+- **Claim**：一個 Agent 指揮 10 個免費工具即可零成本運作 AI 工作室。
+- **Evidence**：額度數字為貼文自述，僅部分對照官方定價頁；Simular credits、Cloady 皆未查證。
+- **Reasoning**：免費額度會變動、Cloady 不可驗證；token 集中交給單一 Agent 與零機密原則衝突，風險大於貼文給的好處。
+
+---
+
+## 3. 啟發與適用性評估
+
+### 與本機防線對照
 
 | 評估維度 | 結論 |
 |---------|------|
@@ -181,9 +209,9 @@ Muse Agent（統一指揮）
 
 ---
 
-## 評估結論與處置
+### 評估結論與處置
 
-**評分：⭐⭐⭐⭐（4/5）**
+**評分：⭐⭐（2/5）**（原 4/5；因「把 10 個服務 token 交給 Muse」與零機密原則衝突，且不安裝，故調降使評分與歸檔結論一致）
 
 概念紮實：「用 AI Agent 指揮一群免費服務」是可複製的低成本架構。
 Simular Box（VM） + OpenRouter（模型） + Supabase（DB） + Cloudflare（邊緣+儲存） + GitHub Actions（排程）這五件是核心骨幹，組合可行性高。
@@ -191,12 +219,13 @@ Sakupa 的 MCP 部署流程是亮點（AI 聊天直接發布靜態站）。
 
 **扣分點**：Cloady 無可查資訊；token 集中管理安全風險未提及；Kaggle/Colab 不支援持久後台。
 
-**處置**：
-- [ ] 測試 Simular Box 免費 tier 的穩定性（每日 1,000 credits 是否夠用於 Muse 一般任務）
-- [ ] 以 Google Cloud Run 替代 Cloady（容器層）
-- [ ] 評估 Sakupa MCP 整合（`npx -y @sakupa/mcp@latest`）至本地 Antigravity 環境
-- [ ] 設計 token 集中管理方案：考慮用本地加密 vault（如 1Password CLI）而非直接傳給 Muse
-- [ ] 監控 OpenRouter 餘額，確保不低於 0 避免 :free 模型停用
+**處置**：僅歸檔備查；不採用 token 集中給第三方 Agent 的作法，不衍生待辦（原核取清單因無可驗收 DoD 已刪除）。
+
+---
+
+## 4. 拆解待辦事項（Action Items）
+
+無（零任務判斷：維持歸檔）。
 
 **參考連結**：
 - Simular Box：https://box.simular.ai
