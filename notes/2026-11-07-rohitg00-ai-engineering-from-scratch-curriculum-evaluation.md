@@ -19,10 +19,10 @@ tags:
   - local-grader
 ---
 
-# AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯及 Token 成本查證
+# AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯評估
 
 - **來源連結**：[Threads 貼文：@cz88422](https://www.threads.com/@cz88422/post/DfSEJ-0D_WE) ｜ [分享短網址](https://www.threads.com/share/BAZ8beVvFs)
-- **官方開源倉庫**：[`rohitg00/ai-engineering-from-scratch`](https://github.com/rohitg00/ai-engineering-from-scratch)（77,280 Stars、13,696 Forks、MIT 授權，最近更新 2026-11-06，最新版本 `v2026.11.1`）
+- **官方開源倉庫**：[`rohitg00/ai-engineering-from-scratch`](https://github.com/rohitg00/ai-engineering-from-scratch)（77,280 Stars、13,696 Forks、MIT 授權，最近更新 2026-11-06，撰寫當時最新版本 `v2026.11.1`，2026-11-03 發布；複查時 2026-11-14 已到 `v2026.11.3`）
 - **官方學習網站**：[aiengineeringfromscratch.com](https://aiengineeringfromscratch.com)
 - **歸屬集群**：集群 4：領域知識庫、論文閱讀與尖端工程手冊（角色：`AI 工程從零實作開源教材索引`）
 - **評估結論**：`🟢 高參考價值教材：不預裝 18 個教學 Skills 以免污染上下文，已萃取其 Tool Call Firewall 單次授權收據與 Trace Span 去重規格落實為本機工具`
@@ -78,7 +78,7 @@ rohitg00/ai-engineering-from-scratch
 
 ## 3. 為什麼不建議現在執行 `npx skills add`
 
-1. **描述區膨脹**：一次裝入 18 個 Skills，每次對話啟動都要載入這 18 個技能的說明；你日常用 Coding Agent 是做開發與調研，不是每輪都在上課。
+1. **描述區膨脹（推論，未實測）**：一次裝入 18 個 Skills，每次對話啟動都要載入這 18 個技能的說明；你日常用 Coding Agent 是做開發與調研，不是每輪都在上課。
 2. **額度消耗**：貼文作者自己也提醒「如果只是想閱讀教材，直接用官網即可，不需要安裝技能，使用 Codex 會消耗額度」。讓 Opus / Codex 一堂一堂帶讀課文，等於拿最貴的推論額度當電子書閱讀器。
 3. **最佳用法**：
    - **平時查閱**：直接開 [aiengineeringfromscratch.com](https://aiengineeringfromscratch.com) 或下載 Releases 的 6 冊 EPUB / PDF。
