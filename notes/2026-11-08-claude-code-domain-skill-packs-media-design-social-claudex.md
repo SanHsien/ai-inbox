@@ -76,7 +76,7 @@ tags:
 - **貼文主張**（`@kwons_en`）：剪片最累的是翻十幾個網站找音效、放上去還慢半拍；透過 **Openverse + MMAudio + Earshot** 三件套，讓 Claude 自己找、自己生、自己聽完修正。
 - **底層開源架構查證**：
   1. **Openverse**：檢索超過 500 萬個 CC0 與開放授權音效素材。
-  2. **[`hkchengrex/MMAudio`](https://github.com/hkchengrex/MMAudio)**（UIUC & Sony AI，CVPR 2025，論文 [arXiv:2412.15322](https://arxiv.org/abs/2412.15322)）：多模態聯合訓練的 Video-to-Audio 模型，內建幀級同步模組（Synchronization Module）使生成音效對齊畫面動作。
+  2. **[`hkchengrex/MMAudio`](https://github.com/hkchengrex/MMAudio)**（UIUC & Sony AI，CVPR 2025，論文 [arXiv:2412.15322](https://arxiv.org/abs/2412.15322)，2026-11-14 查證標題為 MMAudio: Taming Multimodal Joint Training for High-Quality Video-to-Audio Synthesis）：多模態聯合訓練的 Video-to-Audio 模型，內建幀級同步模組（Synchronization Module）使生成音效對齊畫面動作。
   3. **[`Leonxlnx/earshot`](https://github.com/Leonxlnx/earshot)**（`v0.4.0`，4,156 Stars，純 CPU 執行之 CLI / Python API / MCP Server）：
      - 解決 Coding Agent「會寫渲染影片的程式碼（如 Remotion），卻聽不到自己做出來的聲音是否破音或慢了 80ms」的盲區。
      - **核心指令**：`earshot describe`（輸出瞬態、衰減時間、AudioSet 標籤與峰值 dBFS）、`earshot timeline`（逐秒聽覺逐字稿，標記事件與畫面切點同步誤差）、`earshot sheet -o out.png`（輸出含頻譜、波形、響度與畫面幀的視覺化對照圖供多模態模型檢視）、`earshot critique`（對照 7 部專業產品發佈片計算 23 項評分指標與 LUFS 響度）、以及 `earshot forge` / `earshot fit`（以純程式碼合成 252 種無版權音效）。
@@ -88,19 +88,19 @@ tags:
 | 專案名稱 | 規模與指令數 | 內建零依賴 Python 確定性工具 | 關鍵設計亮點與 CQR 實測限制 |
 | :--- | :--- | :--- | :--- |
 | **[`Jakeschincariol/youtube-agent-skill`](https://github.com/Jakeschincariol/youtube-agent-skill)** (4,992★) | 11 個 Skills（`/yt-script`, `/yt-package`, `/yt-edit`, `/yt-comment`, `/yt-plan`, `/yt-viral`, `/yt-retention`, `/yt-shorts`, `/yt-seo`, `/yt-chapters`, `/yt-audit`） | 6 支：`hookscore.py`、`title.py`、`deadair.py`、`chapters.py`、`retention.py`、`swipe.py` | - 將「標題＋縮圖」視為單一點擊面聯合檢查（`title.py` 抓重複與截斷）。<br>- `deadair.py` 直接把 `.srt` 逐字稿轉成標好秒數的剪輯決策清單（EDL）。<br>- `swipe.py` 不看絕對觀看數，而是計算**超越該頻道自身中位數的倍數（Outlier Multiple）**。 |
-| **[`Jakeschincariol/instagram-agent-skill`](https://github.com/Jakeschincariol/instagram-agent-skill)** (5,302★) | 13 個 Skills（`/ig-reel`, `/ig-viral`, `/ig-caption`, `/ig-carousel`, `/ig-story`, `/ig-profile`, `/ig-plan`, `/ig-human`, `/ig-comment`, `/ig-reply`, `/ig-dm`, `/ig-repurpose`, `/ig-audit`） | 5 支：`hookscore.py`、`beats.py`、`caption.py`、`humanize.py`、`detect.py`、`swipe.py` | - `beats.py` 依 165 wpm 估算每句台詞秒數，抓出「超過 3 秒才進主軸」與「單一畫面停滯超過 4 秒」的流失點。<br>- `caption.py` 模擬 IG 動態牆**前 125 字元折疊視窗**，並強制執行 2025/12/18 生效的 **5 個 Hashtag 上限**。<br>- `humanize.py` 自動清除 18 類複製貼上隱藏字元、破折號與 154 個套話（`slop.json`）。 |
+| **[`Jakeschincariol/instagram-agent-skill`](https://github.com/Jakeschincariol/instagram-agent-skill)** (5,302★) | 13 個 Skills（`/ig-reel`, `/ig-viral`, `/ig-caption`, `/ig-carousel`, `/ig-story`, `/ig-profile`, `/ig-plan`, `/ig-human`, `/ig-comment`, `/ig-reply`, `/ig-dm`, `/ig-repurpose`, `/ig-audit`） | 6 支：`hookscore.py`、`beats.py`、`caption.py`、`humanize.py`、`detect.py`、`swipe.py` | - `beats.py` 依 165 wpm 估算每句台詞秒數，抓出「超過 3 秒才進主軸」與「單一畫面停滯超過 4 秒」的流失點。<br>- `caption.py` 模擬 IG 動態牆**前 125 字元折疊視窗**，並強制執行 2025/12/18 生效的 **5 個 Hashtag 上限**。<br>- `humanize.py` 自動清除 18 類複製貼上隱藏字元、破折號與 154 個套話（`slop.json`）。 |
 
 - **CQR 實證亮點（作者於 README 誠實公開的負面實驗結果）**：
-  1. **`hookscore.py` 能抓出爛開頭（AUC `0.83`），但無法預測爆款（AUC `0.56`）**：在 74 支真實短影音上，五項評分維度中只有 `SPECIFICITY`（具體數字或專有名詞）能有效區分高低表現（中位數差 60 分），`STAKES` 與 `ADDRESS` 中位數完全相同。
+  1. **`hookscore.py` 能抓出爛開頭（AUC `0.83`），但無法預測爆款（AUC `0.56`）**（出處：[instagram-agent-skill README](https://github.com/Jakeschincariol/instagram-agent-skill#readme) 第 225-242 行附近的實測段落；該段說明 74 筆語料是 YouTube Shorts 的前 3 秒自動字幕，非 Reels，且為作者自述、本筆記未重現；此數字僅屬 IG 庫，不套用於上方 YouTube 庫那一列）：在 74 支真實短影音上，五項評分維度中只有 `SPECIFICITY`（具體數字或專有名詞）能有效區分高低表現（中位數差 60 分），`STAKES` 與 `ADDRESS` 中位數完全相同。
   2. **草稿唯讀鐵律（Nothing gets posted until you say yes）**：兩個專案皆刻意不接自動發文爬蟲，避免違反平台條款遭封鎖，且未知數據一律輸出 `{{your number}}` 佔位符，絕不捏造案例數據。
   3. **`voice.md` 與具體約束（對應 `@its_hana_digital` `DfPQ-yeEzYJ`）**：必須先提供 3 支過往影片或填寫 `~/.claude/{youtube,instagram}/voice.md` 建立個人語氣、受眾與禁忌詞，才能消除千篇一律的 AI 腔調。
 
 ### 2.3 主題三：消除「一眼 AI 介面」的前端設計五件套（`DebpuRpkfnw`）
 
 - **貼文主張**（`@chloemakesdesign`）：Claude 做出來的介面充滿紫色漸層與卡片套卡片，不是 Prompt 問題，而是少了「先定風格、最後再檢查」的 5 個工具：
-  1. **[`nextlevelbuilder/ui-ux-pro-max-skill`](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)**（146,485 Stars）：提供 192 條設計推理規則與 80 種可搜尋 UI 風格，開工前先鎖定配色與字體階層。
+  1. **[`nextlevelbuilder/ui-ux-pro-max-skill`](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)**（146,485 Stars）：提供 192 條設計推理規則（2026-11-14 查證：README 寫 192 Reasoning Rules）與 80 種可搜尋 UI 風格（2026-11-14 查證：README 寫 80 searchable styles，其中 51 種為 active），開工前先鎖定配色與字體階層。
   2. **[`pbakaus/impeccable`](https://github.com/pbakaus/impeccable)**（Paul Bakaus 開源，105,368 Stars）：提供 24 個設計引導指令（如 `/impeccable bolder`、`quieter`、`critique`、`audit`、`harden`）與 **62 條零 LLM 決定性反 AI Slop 規則**（`npx impeccable detect`，直接攔截 Inter 濫用、藍紫漸層、巢狀卡片、低對比度）。
-  3. **[`21st-dev/magic-mcp`](https://github.com/21st-dev/magic-mcp)**（現已升級為 **21st MCP**，`npx @21st-dev/cli@latest init`，6,414 Stars）：直接在編輯器內搜尋 10,000+ 個高品質 React/Tailwind 元件。
+  3. **[`21st-dev/magic-mcp`](https://github.com/21st-dev/magic-mcp)**（現已升級為 **21st MCP**，2026-11-14 查證：repo 說明寫「Magic MCP is now the 21st MCP」，`npx @21st-dev/cli@latest init`，6,414 Stars）：直接在編輯器內搜尋 10,000+ 個高品質 React/Tailwind 元件。
   4. **Figma MCP**：選取設計稿畫框直接轉為結構化元件程式碼。
   5. **Chrome DevTools MCP**：讓 Agent 自動開啟真實瀏覽器檢查渲染結果與響應式破版並自行修正。
 - **重要資安發現（`pbakaus/impeccable` Live Mode 無沙盒風險）**：
