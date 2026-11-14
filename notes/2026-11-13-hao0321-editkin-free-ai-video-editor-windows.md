@@ -23,7 +23,25 @@ tags:
   - codex
 ---
 
-## Executive Summary
+# Editkin：免費 Windows 本地優先 AI 剪輯器（0.16 起轉閉源 freeware，原始碼凍結於 0.15）
+
+- **來源連結**：[Threads 貼文：@hao0321_studio](https://www.threads.com/share/BATqCv2_uX)
+- **發布平台 / 作者**：`threads` / `@hao0321_studio`
+- **分析日期**：`2026-11-13`
+- **當前狀態**：`⚪ 不做 (Archived)`
+
+---
+
+## 1. 核心內容摘要（5W1H 初篩）
+
+- **Who**：作者 Hao0321（倉庫 `Hao0321/Editkin`）。
+- **What**：Windows 本地優先 AI 剪輯器，可編輯時間軸 + EditGraph + MCP 命令。
+- **Why**：把 AI 規劃落到可編輯時間軸，而非一鍵黑盒出片。
+- **How**：Editkin 出引擎、Agent 做決策（見下方技術架構）。
+- **When & Where**：Windows x64 桌面；v0.17.0 安裝檔約 1.5 GB（2026-11-14 以 GitHub API 查證）。
+- **Key Metrics / Numbers**：122 stars、GPL-3.0（原始碼版，快照日 2026-11-14 查證）；最新 Release v0.17.0（2026-11-12）。
+
+### 摘要原文
 
 **@hao0321_studio**（2026-11-05，2.1K views）以一句話介紹「完全免費 AI 自動剪輯 Editkin（Windows）」。貼文本身資訊極少，以下內容來自官方倉庫 `Hao0321/Editkin`、Release 附件與 EULA 的實查。
 
@@ -80,6 +98,8 @@ Editkin 本機 MCP tools：prepare → audit → apply → render
 
 ### EULA 要點（v1.0，2026-11-05）
 
+> 下表摘自 Release 附件 EULA，未逐條核對。
+
 | 條款 | 內容 |
 |------|------|
 | 授權 | 免費、永久、可商用、任意台數 |
@@ -106,7 +126,17 @@ Editkin 本機 MCP tools：prepare → audit → apply → render
 
 ---
 
-## 與本機防線對照
+## 2. CQR 深入論證檢驗（選填）
+
+- **Claim**：免費、本地優先、可商用的 AI 自動剪輯器。
+- **Evidence**：Release 附件 EULA 與 `SHA256SUMS.txt` 存在（API 查證）；EULA 條款未逐條核對；剪輯品質未實測。
+- **Reasoning**：授權由 GPL 轉閉源 freeware，二進位無法審計；證據只涵蓋「存在與條款文字」，不涵蓋功能與安全。
+
+---
+
+## 3. 啟發與適用性評估
+
+### 與本機防線對照
 
 - 官方來源明確（作者倉庫與 Releases 均為 `Hao0321`），EULA 可讀、無強制遙測條款，但為閉源二進位。
 - 若要試用：先核對 `SHA256SUMS.txt`，在隔離環境（VM 或 Simular Box 類）安裝，MCP 僅接本機、不給雲端 agent 長期權限。
@@ -114,17 +144,19 @@ Editkin 本機 MCP tools：prepare → audit → apply → render
 
 ---
 
-## 評估結論與處置
+### 評估結論與處置
 
 **評分：⭐⭐⭐（3/5）**
 
 「AI 規劃落到可編輯時間軸」的設計比一鍵黑盒出片更實用，EULA 對商用友善。扣分：授權由 GPL 轉閉源、安裝檔大、簽章與實際剪輯品質未驗證，且貼文只有一句話，不構成可複製的做法。
 
-**處置**：
-- [ ] 下載 v0.17.0 前先比對 `SHA256SUMS.txt`，以 VM 隔離試裝
-- [ ] 評估 `video-autopilot-kit` + Claude Code / Antigravity MCP 的串接（只讀 Kit 內容，不執行其腳本）
-- [ ] 若需開源路線，評估 fork GPL 凍結版 `0.15.0-preview.20261029` 的維護成本
-- [ ] 追蹤 0.17.x 後續版本與 SmartScreen 簽章狀態
+**處置**：僅歸檔備查；無可驗收的具體任務，不衍生待辦。若日後試用，建議先比對 `SHA256SUMS.txt` 並在隔離環境安裝（原核取清單因無可驗收 DoD 已刪除）。
+
+---
+
+## 4. 拆解待辦事項（Action Items）
+
+無（零任務判斷：維持歸檔）。
 
 **參考連結**：
 - 倉庫：https://github.com/Hao0321/Editkin
