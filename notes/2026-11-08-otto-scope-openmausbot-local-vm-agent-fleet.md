@@ -86,11 +86,13 @@ OpenMausBot 徹底分離了「使用者介面」與「Agent 執行載體」：
 2. **行程與命名空間隔離**：
    - 啟用獨立的 PID Namespace，沙盒內部的 Agent 無法看見或干擾宿主機與其他 Agent 的運作行程。
    - 獨立的私有 `/tmp`、`/var/tmp`、`/run`、`/dev`、`/proc`。
-3. **兩大防線閘門（The Two Gates）**：
+3. **兩大防線閘門（The Two Gates）**（埠號 `3128`、驅動名稱 `cua-driver` 等細節出自 README／貼文描述，未讀原始碼，未查證）：
    - **出站代理閘門（Egress Gate）**：沙盒內部網路僅有 loopback，出網必須強制走 `127.0.0.1:3128` 上的專屬 HTTP CONNECT 代理。該代理會在伺服器端自行解析 DNS，**嚴格拒絕連線至 127.0.0.1、內網私有 IP（RFC 1918）、Link-Local（169.254.169.254 雲端元數據）與 Fly 私有網路**，徹底杜絕 Agent 透過 SSRF 竊取本機憑證或雲端 IAM 權限。
    - **權限仲裁者（Permission Broker）**：僅對「純文字、無管道（Pipe）、無重新導向、路徑完全在 Bot 私有資料夾內」的純讀取指令（`cat`, `head`, `grep`, `ls` 等）放行；任何具備副作用的寫入、刪除或外部路徑讀取均強制阻斷並要求使用者審批。
 
 ### 2.3 電腦使用（Computer Use）整合方案
+
+> 本節驅動名稱與依賴說明未讀原始碼，僅依 README／貼文描述。
 
 在桌面端操作上，OpenMausBot 採取了嚴格的收斂策略：
 - **拒絕脆弱方案**：完全摒棄 `cliclick`、`robotjs`、`nut.js` 或 Python 臨時腳本。
@@ -117,5 +119,5 @@ OpenMausBot 的設計與我們在四大 Agent（Antigravity / Claude / Codex / H
 1. **專案價值判定**：
    - OpenMausBot 展示了一套生產級的多 Agent 本地編排架構，其「Egress Gate 阻絕 SSRF」與「私有工作空間與核心 DB 物理隔離」的設計極具參考價值。
 2. **處置決策**：
-   - 該專案為完整的獨立 Electron 產品，目前我們已有成型的四大 Agent 原生調度體系與 `harness-guard` 攔截層，無需在本機重複部署 OpenMausBot 實體服務。
+   - 該專案為完整的獨立 Electron 產品，目前我們已有成型的四大 Agent 原生調度體系與 `harness-guard` 攔截層，因此不裝；並非不能裝：官方 release（v0.1.155，2026-11-14 查證）有 Windows 安裝檔 `OpenMausBot-0.1.155-setup.exe`。
    - 將其架構與沙盒設計精華納入本庫知識庫，標記為 **`status: archived` 歸檔備查**，不衍生額外代碼任務。
