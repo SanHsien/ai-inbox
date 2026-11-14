@@ -87,7 +87,7 @@ OpenCC 的 `cn -> tw2` 在技術文件與二次轉換（second-pass）時有幾�
     2. 支援略過 Markdown 圍欄程式碼區塊與行內反引號反例（`skip_code=True`），並提供 `--check`、`--fix`、`--verify-idempotent` CLI。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_zhtw_vocab.py` 綠燈通過，且 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 全數通過。
   - **完成日期**：2026-11-14
-  - **實作紀錄 / 證據**：修正（2026-11-14）：行內程式碼依反引號 run 長度配對；--check 遇不存在路徑、零輸入、空檔、非 UTF-8 回 2；修補反覆執行到固定點（型別別別 → 型別）。DoD 指令 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 現為 exit 0。4 項回歸測試，mutation 皆被抓到。
+  - **實作紀錄 / 證據**：修正（2026-11-14）：行內程式碼依反引號 run 長度配對；--check 遇不存在路徑、零輸入、空檔、非 UTF-8 回 2；修補反覆執行到固定點（`型別別別` → `型別`）。DoD 指令 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 現為 exit 0。4 項回歸測試，mutation 皆被抓到。
 
 - [x] **`T-20261107-03`**｜**[優先級：中]** 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md`
   - **目標範圍**：`docs/zhtw-fork-idempotent-sync-spec.md`
