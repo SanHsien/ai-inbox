@@ -74,7 +74,7 @@ tags:
 - `colibri` 內建了完全相容 TypeSafe Jev API 的本地端點 **`POST /v1/systemone`**（僅需將 `TYPESAFE_BASE_URL=http://127.0.0.1:8000` 指向本機 `coli serve`）：
   - **零生成（Zero-Token Generation）**：只做 1 次 Forward Pass 讀取輸入狀態（`state`），直接讀取各允許選項的機率分布與信心值（`confidence` 0~1），**完全不跑自迴歸文字生成**，因此絕對不會跳出允許清單之外，且同一份文件問 4 個問題比生成答案快 **5.7 倍**。
   - **三種決策題型**：`choice`（多選一＋各選項機率＋信心度）、`noul`（二元是／否機率）、`score`（期望評分等級）。
-  - **三款輕量專用決策模型（僅需 1.7–1.9 GB RAM）**：
+  - **兩款輕量專用決策模型（Laya、GLiNER2.5-Decide，僅需 1.7–1.9 GB RAM）；Clef 為 27B，RAM 19–55 GB**（README 第 263 行）：
     1. **`Laya`**（下載 `0.85 GB`，RAM `1.7 GB`）：CPU 單題 `219 ms`，CUDA 12 題僅 `0.69s`。
     2. **`GLiNER2.5-Decide`**（下載 `1.95 GB`，RAM `1.9 GB`）：CPU 單題 `294 ms`，CUDA 12 題僅 `0.16–0.21s`。
     3. **`Clef`**（Cloudflare 開源，基於 Qwen3.8-27B 加上決策頭）。
@@ -110,12 +110,12 @@ tags:
 
 | 模型檔位 | 模型 ID (`--model`) | 下載大小 | RAM 需求 (最低/理想) | 本機 `msi-P50` (32GB RAM + RTX 3060 12GB) 適配判定與預估表現 |
 | :--- | :--- | :---: | :---: | :--- |
-| **Tier S：極速決策 API (`System One`)** | `laya` / `gliner_decide` | `0.85 GB` / `1.95 GB` | `1.7–1.9 GB` | **極佳（首選）**：VRAM/RAM 佔用極微，RTX 3060 CUDA 可在 **< 20ms/題** 內完成二元或枚舉分類，可作為零成本本地 JEV 決策器。 |
-| **Tier A：本地 Coding / 工具呼叫甜區** | `qwen3-coder-30b` / `qwen36-35b` / `Flint-40B` | `19–23 GB` | `8–10 GB` / `18–20 GB` | **可流暢執行（30–60+ tok/s）**：RTX 3060 12GB VRAM 比官方基準機 C（RTX 3070 8GB，實測 30 tok/s）多出 4GB VRAM，開啟 `CUDA` + `Q36_DN_GPU=1` 可將稠密層、DeltaNet 與熱點專家放入 12GB VRAM，其餘專家放 32GB RAM。 |
+| **Tier S：極速決策 API (`System One`)** | `laya` / `gliner_decide` | `0.85 GB` / `1.95 GB` | `1.7–1.9 GB` | **極佳（首選）**：VRAM/RAM 佔用極微，官方基準（非 3060）約 **13–57 ms/題**（CUDA 12 題 0.16–0.69 s 換算；RTX 3060 未實測）可完成二元或枚舉分類，可作為零成本本地 JEV 決策器。 |
+| **Tier A：本地 Coding / 工具呼叫甜區** | `qwen3-coder-30b` / `qwen36-35b` / `Flint-40B` | `19–23 GB` | `8–10 GB` / `18–20 GB` | **預估可執行（30–60+ tok/s，預估，未實測）**：RTX 3060 12GB VRAM 比官方基準機 C（RTX 3070 8GB，實測 30 tok/s）多出 4GB VRAM，開啟 `CUDA` + `Q36_DN_GPU=1` 可將稠密層、DeltaNet 與熱點專家放入 12GB VRAM，其餘專家放 32GB RAM。 |
 | **Tier B：中型硬碟串流 MoE** | `deepseek-v4-flash-reap` (150B) / `deepseek-v4-flash` (284B) | `85 GB` / `167 GB` | `16 / 32 GB` | **勉強可跑但慢（~1 tok/s）**：167 GB 會吃掉 `C:\` 71% 剩餘空間，僅適合外接高速 NVMe 實驗。 |
 | **Tier C：超巨型 MoE** | `glm-5.2` (744B) / `kimi-k3` (2.8T) | `429 GB` / `1.56 TB` | `16–64 GB` | **不適用**：`C:\` 可用空間（233.5 GB）放不下 429 GB 權重檔。 |
 
 ### 評估結論（歸檔備查，不自動下載大檔或衍生新任務）
 
-1. **遵循 `AI_SETUP.md` 與本機硬閘門**：`colibri` 最小聊天模型需下載 19–23 GB，且本機主力 Agent（Claude Opus 5.5、Codex、Antigravity、Hermes）皆已有穩定的雲端配額，目前無需耗費數十 GB 磁碟空間安裝本地 LLM。
+1. **遵循本機硬閘門**（`AI_SETUP.md` 未查證：2026-11-14 repo 根目錄清單未見此檔）：`colibri` 最小聊天模型需下載 19–23 GB，且本機主力 Agent（Claude Opus 5.5、Codex、Antigravity、Hermes）皆已有穩定的雲端配額，目前無需耗費數十 GB 磁碟空間安裝本地 LLM。
 2. **留存架構資產**：將 `JustVugg/colibri` 的三層 MoE 記憶體規劃、本機 RTX 3060 12GB 適配表、以及 `POST /v1/systemone`（本地零生成 Jev API 替代方案）與 `COLI_PARK`（Agent 跨輪 KV 暫存）完整記錄於本筆記備查（`status: archived`），日後若有離線推理或本地微秒級分類器需求，可直接按第 4 節 Tier S / Tier A 參數啟用。
