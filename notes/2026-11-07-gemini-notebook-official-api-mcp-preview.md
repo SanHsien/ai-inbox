@@ -33,7 +33,7 @@ tags:
 
 ## 1. 貼文重點
 
-- Gemini Notebook（2026-07-16 起由 NotebookLM 改名）推出個人用官方 API 與 MCP 預覽版：AI 工具可以自己**建筆記本、加入網頁、有字幕的 YouTube、純文字**。
+- Gemini Notebook（2026-07-16 起由 NotebookLM 改名；未查證，官方文件頁未見此說明）推出個人用官方 API 與 MCP 預覽版：AI 工具可以自己**建筆記本、加入網頁、有字幕的 YouTube、純文字**。
 - 作者自己標明限制：**不能問問題、不能產生語音摘要、不能傳 PDF，Workspace 帳號還不開放**。
 - 作者主張：從額度分工角度，beta 免費值得先接，可分擔 Grok／Claude Code／Codex 研究影片的額度。
 - 值得留意的留言：
@@ -73,7 +73,7 @@ Agent ──create_source──► Gemini Notebook ──► 人在網頁 UI 問
 
 - **憑證進指令列與設定檔**：與「API key、token 不進程式碼、指令列、對話」的硬閘門衝突。
 - **ADC 帶 `cloud-platform` 全權 scope**：本機一旦被竊（參照 Nicholas Lin 案的 AMOS 竊密鏈），拿到的是整個 GCP 專案權限，不只 Notebook。
-- **Access token 有效期短（Google OAuth 通常約 1 小時）**：靜態寫入 header 會很快失效，要另外處理更新，否則會**默默失敗**。
+- **Access token 有效期短（Google OAuth 通常約 1 小時；文件未載明，屬 OAuth 一般行為）**：靜態寫入 header 會很快失效，要另外處理更新，否則會**默默失敗**。
 - 若要試，應開一個**專用、未綁計費帳戶的 GCP 專案**，只開 `notebook.googleapis.com`，並用包裝腳本即時取 token，不把 token 寫入任何檔案。
 
 ## 4. 評估
@@ -92,7 +92,7 @@ Agent ──create_source──► Gemini Notebook ──► 人在網頁 UI 問
 - [ ] **`T-20261107-05`**｜**[優先級：中]** 擴充 `tools/verify_cloud_persistence_audit.py` 新增 MCP 設定檔靜態 Bearer／`ya29.` Token 與過寬 `cloud-platform` Scope 稽核器
   - **目標範圍**：`tools/verify_cloud_persistence_audit.py`、`tests/test_verify_cloud_persistence_audit.py`
   - **具體做法**：
-    1. 針對官方 Gemini Notebook MCP 教學將 `gcloud auth application-default print-access-token` 產出之短效 `ya29.*` Bearer Token 直接寫進 MCP 設定檔 `headers`／`args`（易外洩且 1 小時過期後靜默失效）與申請 `cloud-platform` 全權 scope 之風險，實作 `audit_mcp_config_credentials()` 與 `--audit-mcp-config` 參數。
+    1. 針對官方 Gemini Notebook MCP 教學將 `gcloud auth application-default print-access-token` 產出之短效 `ya29.*` Bearer Token 直接寫進 MCP 設定檔 `headers`／`args`（易外洩且 1 小時（文件未載明，屬 OAuth 一般行為）過期後靜默失效）與申請 `cloud-platform` 全權 scope 之風險，實作 `audit_mcp_config_credentials()` 與 `--audit-mcp-config` 參數。
     2. 支援攔截硬編碼 Bearer Token 與 `ya29.*` 憑證，同時放行環境變數佔位符（如 `${NOTEBOOK_ACCESS_TOKEN}`）。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_cloud_persistence_audit.py` 綠燈通過。
   - **實作紀錄 / 證據**：已於 `tools/verify_cloud_persistence_audit.py` 實作 `audit_mcp_config_credentials` 與 `--audit-mcp-config`，並於 `tests/test_verify_cloud_persistence_audit.py` 新增正反案例測試，8 項測試全數通過。 **退回（2026-11-14，獨立審查）**：`tools/verify_cloud_persistence_audit.py:111` 用長度 16 當門檻，`Bearer abc123` 放行；:153 args 裡不帶 Bearer 的 `ya29.` token 放行；:121 壞 schema（mcpServers 為陣列）回 PASS。把門檻改成 >=1 沒有任何測試變紅。
