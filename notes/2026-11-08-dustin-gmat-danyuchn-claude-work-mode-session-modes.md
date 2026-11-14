@@ -62,7 +62,7 @@ Threads 作者 Dustin（`@dustin_gmat`）分享其開源專案 `claude-work-mode
 |                                                                                   |
 |  /work-mode out (外派節流 + 額度分流)                                             |
 |    - 批次任務外派: 抽取、分類、審核工作下放至背景子代理或外部 CLI (codex/gemini)   |
-|    - Nudge 節流閥: 主線單一回合讀取 > 20,000 字元未外派時，自動觸發提醒           |
+|    - Nudge 節流閥: 主線單回合讀取超過閾值未外派 → 拒絕下一次讀取，直到外派或宣告原因|
 |    - Quota-Aware: 依外部模型池額度表 (quotaFile) 自動動態引導分流                |
 |                                                                                   |
 |  /work-mode wrap (收斂結案)                                                       |
@@ -91,26 +91,27 @@ Threads 作者 Dustin（`@dustin_gmat`）分享其開源專案 `claude-work-mode
   - 模型接收到明確的拒絕原因後，會自動修正做法繼續推進，**完全不需要人類介入**。
 
 ### 3.3 額度分流與字元計量（Quota & Character Throttling）
-- 監控單回合工具返回的字元數，當超過閾值（預設 20,000 字元）時發出 Nudge，提醒模型不要在昂貴的主力模型主線消耗過多上下文，引導其外派給背景 Worker 或獨立 CLI。
+- 監控單回合工具返回的字元數，當超過閾值（README 設定表載明 `dispatch.nudgeThresholdChars` 預設 `20000`，2026-11-14 查證）時發出 Nudge，提醒模型不要在昂貴的主力模型主線消耗過多上下文，引導其外派給背景 Worker 或獨立 CLI。
 
 ---
 
 ## 4. 與本機資安全域規範之對照評估
 
-使用者全域規範中曾明確強調：
-> 「使用者要求『像 Codex/Claude 那樣 auto』是指客戶端執行授權（Turbo Mode），不要在 Prompt 強行閹割思考停頓... 提示詞應保留模型在重大疑慮時主動向使用者確認的判斷力。」
+依維護者規則，授權模式（auto）不應靠 Prompt 強行禁止模型的思考停頓，模型在重大疑慮時仍應保留主動向使用者確認的判斷力。
 
-`claude-work-mode` 的架構設計正好完美落實了此一原則：
+`claude-work-mode` 的設計與此規則方向一致（以 README 描述為據，未實測）：
 1. **不是無腦放行**：它並未在 Prompt 中強令「禁止暫停」，而是嚴格區分「可逆本機操作（放行）」與「不可逆破壞/外部操作（後置批次確認）」。
 2. **利用 Gate 回傳反饋促進自癒**：當模型踩到邊界時，透過 Gate 拒絕並給出處方，由模型自主修復，而非雙重煞車失效。
 3. **收斂階段強制決策標籤**：`wrap` 模式要求所有待決事項必須標註標籤與具體得失取捨，保證使用者在最終驗收時享有完整的透明度。
 
 ---
 
+> 環境限制：README 載明 gates 需要 `bash`、`jq`、`git`、`python3`；Windows 原生環境要先裝齊才能跑。
+
 ## 5. 評估結論與處置
 
 1. **實用性判定**：
-   - 專案程式碼簡潔扎實（TypeScript + Shell Hooks），具備完整的單元測試與中英展示，展現了專業級的 Claude Code 外掛水準。
+   - 專案程式碼簡潔扎實（TypeScript + Shell Hooks），README 載有 plugin 測試、decision-label self-test 與 gate 測試（本筆記未實跑）及中英展示，展現了專業級的 Claude Code 外掛水準。
    - 其「批次集中確認」、「Gate Deny 引導自癒」與「單次注入防 Token 膨脹」機制，對本地四大 Agent（Antigravity / Claude / Codex / Hermes）的互動節奏調校極具啟發。
 2. **處置決策**：
    - 本分析建檔為 **`status: archived` 歸檔備查**，作為本庫開發調度策略與 Prompt/Hook 設計的高價值標竿範本，不衍生額外代碼維護任務。
