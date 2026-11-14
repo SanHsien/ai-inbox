@@ -19,6 +19,70 @@ import verify_autoloop_dispatch_guard as vadg  # noqa: E402
 
 
 class VerifyAutoloopDispatchGuardTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.temp_root = Path(".work-tmp")
+        cls.created_temp_root = not cls.temp_root.exists()
+        cls.temp_root.mkdir(exist_ok=True)
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.created_temp_root:
+            cls.temp_root.rmdir()
+
+    def test_all_template_fields_share_injection_checks(self):
+        for field in ("prompt", "command", "cwd", "program", "to", "skill", "args"):
+            for token in ("{body}", "{title}", "{prompt}", "{unknown}", "{id.attr}", "{id[0]}", "{id!r}", "{id:{body}}", "{"):
+                bundle = vadg.default_clean_bundle()
+                bundle["rules"][0][field] = [token] if field == "args" else token
+                with self.subTest(field=field, token=token):
+                    self.assertTrue(vadg.audit_bundle(bundle))
+        bundle = vadg.default_clean_bundle()
+        bundle["rules"][0]["command"] = "echo {type} {id} {link} {context_file}"
+        self.assertEqual(vadg.audit_bundle(bundle), [])
+
+    def test_hops_require_parent_plus_one(self):
+        for hops in ((1, 7), (1, 1), (1, 0), (True, 2)):
+            b = vadg.default_clean_bundle()
+            b["hop_chain"] = [{"hop": n} for n in hops]
+            self.assertTrue(vadg.audit_bundle(b))
+        self.assertEqual(vadg.check_hop_chain([{"hop": 8}, {"hop": 9, "dispatched": False}]), [])
+        self.assertTrue(vadg.check_hop_chain([{"hop": 8}, {"hop": 9, "dispatched": True}]))
+
+    def test_acl_is_explicit_allowlist(self):
+        for acl in (["CURRENT_USER", "SYSTEM", "Administrators"], ["Everyone"], [], None, "SYSTEM", [3]):
+            b = vadg.default_clean_bundle()
+            b["isolation"]["windows_data_dir_acl"] = acl
+            self.assertTrue(vadg.audit_bundle(b))
+
+    def test_missing_empty_and_bad_schema_fail_closed(self):
+        invalid = [None, [], {}, "", {"events": []}]
+        for key in ("events", "rules", "hop_chain", "isolation"):
+            for value in (None, [], {}, "bad", [None]):
+                b = vadg.default_clean_bundle(); b[key] = value; invalid.append(b)
+            b = vadg.default_clean_bundle(); del b[key]; invalid.append(b)
+        for path, value in ((('max_hops',), True), (('max_hops',), "8"),
+                            (('events',0,'id'), None), (('events',0,'link'), 'https://x/;evil'),
+                            (('rules',0,'resume'), 'false'), (('rules',0,'when'), []),
+                            (('rules',0,'command'), 3), (('hop_chain',0,'dispatched'), 'false'),
+                            (('isolation','delivery'), {}), (('isolation','worker_tools'), 'read_file')):
+            b = vadg.default_clean_bundle(); obj = b
+            for key in path[:-1]: obj = obj[key]
+            obj[path[-1]] = value; invalid.append(b)
+        with tempfile.TemporaryDirectory(dir=".work-tmp") as tmp:
+            p = Path(tmp) / "bundle.json"
+            for b in invalid:
+                with self.subTest(bundle=b), contextlib.redirect_stdout(io.StringIO()):
+                    self.assertTrue(vadg.audit_bundle(b))
+                    p.write_text(json.dumps(b), encoding="utf-8")
+                    self.assertEqual(vadg.main(["--config", str(p)]), 1)
+            for text in ('', '{'):
+                p.write_text(text, encoding="utf-8")
+                with contextlib.redirect_stderr(io.StringIO()):
+                    self.assertEqual(vadg.main(["--config", str(p)]), 1)
+            with contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(vadg.main(["--config", str(p)+'missing']), 1)
+
     def test_default_clean_bundle_passes(self) -> None:
         bundle = vadg.default_clean_bundle()
         self.assertEqual(vadg.audit_bundle(bundle), [])
@@ -59,9 +123,9 @@ class VerifyAutoloopDispatchGuardTest(unittest.TestCase):
             {"step_id": "s3", "hop": 9, "via": "event", "dispatched": True},
         ]
         findings = vadg.check_hop_chain(chain, max_hops=8)
-        self.assertEqual(len(findings), 2)
+        self.assertEqual(len(findings), 3)
         self.assertIn("未遞增或被清零", findings[0]["message"])
-        self.assertIn("超過熔斷上限", findings[1]["message"])
+        self.assertIn("超過熔斷上限", findings[2]["message"])
 
     def test_autoloop_004_detects_self_approval_pr_checkout_and_acl_leak(self) -> None:
         isolation = {
@@ -74,7 +138,7 @@ class VerifyAutoloopDispatchGuardTest(unittest.TestCase):
         self.assertTrue(all(f["rule_id"] == "AUTOLOOP-004" for f in findings))
 
     def test_cli_json_output_and_invalid_config_file(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=".work-tmp") as tmp:
             bad_cfg = Path(tmp) / "bad.json"
             bad_bundle = vadg.default_clean_bundle()
             bad_bundle["events"][0]["agent"] = "claude"

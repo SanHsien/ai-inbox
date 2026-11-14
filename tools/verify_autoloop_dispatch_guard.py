@@ -4,7 +4,7 @@ tools/verify_autoloop_dispatch_guard.py
 Agent Autoloop 事件溯源派工與四層安全防線驗證器：
 1. AUTOLOOP-001 (Route Override Guard)：外部事件 payload 禁止夾帶 cwd/agent/access/command 等控制欄位。
 2. AUTOLOOP-002 (Prompt Parameterization Guard)：規則 prompt 禁止直接拼接 {body}/{title} 等外部自由文本，僅允許 {type}/{id}/{link}/{context_file}。
-3. AUTOLOOP-003 (TTL Hop Limit Guard)：事件鏈 hop 必須單調遞增（經 ask/later 不得清零），超過 max_hops (預設 8) 必須熔斷阻斷派工。
+3. AUTOLOOP-003 (TTL Hop Limit Guard)：事件鏈 hop 必須等於 parent+1（經 ask/later 不得清零），超過 max_hops (預設 8) 必須熔斷阻斷派工。
 4. AUTOLOOP-004 (Anti-Self-Approval & Isolation Guard)：Worker 禁止掛載卡片回答工具（防自問自答）、PR 交付禁止檢出執行 PR 程式碼、Windows ACL 僅允許本人與 SYSTEM。
 """
 
@@ -15,6 +15,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from string import Formatter
 from typing import Any
 
 FORBIDDEN_EVENT_FIELDS = frozenset({
@@ -34,18 +35,6 @@ ALLOWED_PROMPT_PLACEHOLDERS = frozenset({
     "id",
     "link",
     "context_file",
-    "prompt",
-})
-
-UNTRUSTED_PLACEHOLDERS = frozenset({
-    "body",
-    "title",
-    "issue_body",
-    "issue_title",
-    "comment",
-    "description",
-    "payload",
-    "raw_text",
 })
 
 SELF_APPROVAL_TOOLS = frozenset({
@@ -57,7 +46,6 @@ SELF_APPROVAL_TOOLS = frozenset({
 })
 
 SAFE_IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9._:/-]+$")
-PLACEHOLDER_RE = re.compile(r"\{([A-Za-z0-9_]+)\}")
 
 
 def ensure_utf8_stdout() -> None:
@@ -91,19 +79,34 @@ def check_event_payloads(events: list[dict[str, Any]]) -> list[dict[str, str]]:
     return findings
 
 
+def template_strings(value: Any, path: str = "rule"):
+    """所有字串模板欄位共用相同檢查，包含巢狀 command/args。"""
+    if isinstance(value, str):
+        yield path, value
+    elif isinstance(value, dict):
+        for key, child in value.items():
+            yield from template_strings(child, f"{path}.{key}")
+    elif isinstance(value, list):
+        for i, child in enumerate(value):
+            yield from template_strings(child, f"{path}[{i}]")
+
+
 def check_dispatch_rules(rules: list[dict[str, Any]]) -> list[dict[str, str]]:
     """AUTOLOOP-002: 檢查規則是否將外部不可信正文直接拼入 prompt，或對不可信來源開啟無隔離 resume+full。"""
     findings: list[dict[str, str]] = []
     for idx, rule in enumerate(rules):
         name = str(rule.get("name", f"rule[{idx}]"))
-        prompt = str(rule.get("prompt", ""))
-        for ph in PLACEHOLDER_RE.findall(prompt):
-            if ph in UNTRUSTED_PLACEHOLDERS or ph not in ALLOWED_PROMPT_PLACEHOLDERS:
-                findings.append({
-                    "rule_id": "AUTOLOOP-002",
-                    "target": name,
-                    "message": f"規則 prompt 直接內插未受信任佔位符 '{{{ph}}}'，應改由獨立資料檔 context.json 讀取",
-                })
+        for field, template in template_strings(rule):
+            try:
+                parts = list(Formatter().parse(template))
+            except ValueError as exc:
+                findings.append({"rule_id": "AUTOLOOP-002", "target": name,
+                                 "message": f"模板 {field} 無法解析：{exc}"})
+                continue
+            for _, ph, spec, conversion in parts:
+                if ph is not None and (ph not in ALLOWED_PROMPT_PLACEHOLDERS or spec or conversion):
+                    findings.append({"rule_id": "AUTOLOOP-002", "target": name,
+                                     "message": f"模板 {field} 含未受信任佔位符 {{{ph}}}"})
         when = rule.get("when") or {}
         untrusted_source = when.get("source") in ("github", "gitlab", "webhook", "external")
         if untrusted_source and rule.get("access") == "full" and rule.get("resume") is True:
@@ -116,7 +119,7 @@ def check_dispatch_rules(rules: list[dict[str, Any]]) -> list[dict[str, str]]:
 
 
 def check_hop_chain(chain: list[dict[str, Any]], max_hops: int = 8) -> list[dict[str, str]]:
-    """AUTOLOOP-003: 檢查事件跳數是否單調遞增（經 ask/later 不可清零）且超過 max_hops 時強制熔斷。"""
+    """AUTOLOOP-003: 檢查事件跳數是否等於 parent+1（經 ask/later 不可清零）且超過 max_hops 時強制熔斷。"""
     findings: list[dict[str, str]] = []
     prev_hop: int | None = None
     for idx, step in enumerate(chain):
@@ -124,18 +127,18 @@ def check_hop_chain(chain: list[dict[str, Any]], max_hops: int = 8) -> list[dict
         hop = step.get("hop")
         via = str(step.get("via", "event"))
         dispatched = bool(step.get("dispatched", True))
-        if not isinstance(hop, int) or hop < 0:
+        if type(hop) is not int or hop < 0:
             findings.append({
                 "rule_id": "AUTOLOOP-003",
                 "target": step_id,
                 "message": f"無效的 hop 計數：{hop!r}",
             })
             continue
-        if prev_hop is not None and hop <= prev_hop:
+        if prev_hop is not None and hop != prev_hop + 1:
             findings.append({
                 "rule_id": "AUTOLOOP-003",
                 "target": step_id,
-                "message": f"事件跳數在經由 '{via}' 後未遞增或被清零（前次 hop={prev_hop}，本次 hop={hop}）",
+                "message": f"事件跳數在經由 '{via}' 後未遞增或被清零／跳號（必須 parent+1）（前次 hop={prev_hop}，本次 hop={hop}）",
             })
         if hop > max_hops and dispatched:
             findings.append({
@@ -174,7 +177,7 @@ def check_worker_and_delivery_isolation(isolation: dict[str, Any]) -> list[dict[
         })
 
     acl_principals = set(isolation.get("windows_data_dir_acl") or [])
-    allowed_principals = {"CURRENT_USER", "SYSTEM", "Administrators"}
+    allowed_principals = {"CURRENT_USER", "SYSTEM"}
     leaked = sorted(acl_principals - allowed_principals)
     if leaked:
         findings.append({
@@ -185,8 +188,55 @@ def check_worker_and_delivery_isolation(isolation: dict[str, Any]) -> list[dict[
     return findings
 
 
+def validate_bundle_schema(bundle: Any) -> str:
+    if not isinstance(bundle, dict):
+        return "設定必須是物件"
+    if type(bundle.get("max_hops", 8)) is not int or bundle.get("max_hops", 8) < 0:
+        return "max_hops 必須是非負整數"
+    for key in ("events", "rules", "hop_chain"):
+        items = bundle.get(key)
+        if not isinstance(items, list) or not items or any(not isinstance(x, dict) for x in items):
+            return f"{key} 必須是非空物件清單"
+    for ev in bundle["events"]:
+        if any(not isinstance(ev.get(k), str) or not ev[k] for k in ("id", "type")):
+            return "事件必須有非空 id/type 字串"
+        for k in ("id", "type", "link", "context_file"):
+            if k in ev and (not isinstance(ev[k], str) or not SAFE_IDENTIFIER_RE.fullmatch(ev[k])):
+                return f"事件 {k} 必須符合字元白名單"
+    for rule in bundle["rules"]:
+        if any(not isinstance(rule.get(k), str) or not rule[k] for k in ("name", "to", "cwd", "access", "prompt")):
+            return "規則缺少必要非空字串"
+        if type(rule.get("resume")) is not bool or not isinstance(rule.get("when"), dict):
+            return "規則必須有布林 resume 與 when 物件"
+        if not isinstance(rule["when"].get("source"), str) or not rule["when"]["source"]:
+            return "when.source 必須是非空字串"
+        if "command" in rule and not isinstance(rule["command"], str):
+            return "command 必須是字串"
+    for step in bundle["hop_chain"]:
+        if type(step.get("hop")) is not int or step["hop"] < 0:
+            return "hop 必須是非負整數"
+        if "dispatched" in step and type(step["dispatched"]) is not bool:
+            return "dispatched 必須是布林值"
+    iso = bundle.get("isolation")
+    if not isinstance(iso, dict):
+        return "缺少 isolation 物件"
+    for key in ("worker_tools", "windows_data_dir_acl"):
+        items = iso.get(key)
+        if not isinstance(items, list) or any(not isinstance(x, str) or not x for x in items):
+            return f"{key} 必須是字串清單"
+    if not iso["windows_data_dir_acl"]:
+        return "ACL 不得空白"
+    delivery = iso.get("delivery")
+    if not isinstance(delivery, dict) or any(type(delivery.get(k)) is not bool for k in ("checkout_pr_code", "allow_octopus_merge")):
+        return "delivery 必須明列兩項布林旗標"
+    return ""
+
+
 def audit_bundle(bundle: dict[str, Any]) -> list[dict[str, str]]:
-    max_hops = int(bundle.get("max_hops", 8))
+    error = validate_bundle_schema(bundle)
+    if error:
+        return [{"rule_id": "AUTOLOOP-SCHEMA", "target": "bundle", "message": error}]
+    max_hops = bundle.get("max_hops", 8)
     return [
         *check_event_payloads(bundle.get("events") or []),
         *check_dispatch_rules(bundle.get("rules") or []),
@@ -216,7 +266,7 @@ def default_clean_bundle() -> dict[str, Any]:
             {"step_id": "s1", "hop": 1, "via": "event", "dispatched": True},
             {"step_id": "s2", "hop": 2, "via": "ask", "dispatched": True},
             {"step_id": "s3", "hop": 3, "via": "later", "dispatched": True},
-            {"step_id": "s9", "hop": 9, "via": "event", "dispatched": False},
+            *[{"step_id": f"s{i}", "hop": i, "via": "event", "dispatched": i <= 8} for i in range(4, 10)],
         ],
         "isolation": {
             "worker_tools": ["read_file", "edit_file", "run_tests"],
@@ -238,7 +288,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.config is not None:
         try:
             bundle = json.loads(args.config.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
             print(f"[FAIL] 無法讀取設定檔 {args.config}: {exc}", file=sys.stderr)
             return 1
     else:

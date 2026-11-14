@@ -6,6 +6,10 @@
 """
 
 import os
+import json
+import tempfile
+from pathlib import Path
+from unittest.mock import patch
 import sys
 import unittest
 
@@ -20,11 +24,79 @@ from verify_tool_call_firewall import (
 
 
 class TestVerifyToolCallFirewall(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.temp_root = Path(".work-tmp")
+        cls.created_temp_root = not cls.temp_root.exists()
+        cls.temp_root.mkdir(exist_ok=True)
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.created_temp_root:
+            cls.temp_root.rmdir()
+
     def setUp(self) -> None:
         self.fw = ToolCallFirewall(
             allowed_roles=("implementer", "maintainer"),
             allowed_roots=("src/", "docs/", "tools/"),
         )
+
+    def test_content_hash_spoof_and_digest_recomputation(self):
+        from verify_tool_call_firewall import compute_content_sha256
+        call = dict(tool="write_file", role="implementer", path="src/x", content="safe",
+                    content_sha256=compute_content_sha256("safe"))
+        receipt = issue_approval_receipt("hash", call)
+        evil = dict(call, content="evil")
+        self.assertNotEqual(compute_request_digest(call), compute_request_digest(evil))
+        self.assertFalse(self.fw.verify_call(evil, receipt)[0])
+        mismatched = dict(call, content_sha256="0" * 64)
+        self.assertEqual(self.fw.verify_call(mismatched, receipt)[1], "CONTENT_HASH_MISMATCH")
+        self.assertTrue(self.fw.verify_call(call, receipt)[0])
+
+    def test_absolute_drive_unc_and_unknown_tools_blocked(self):
+        call = dict(tool="read_file", role="implementer", path="src/x")
+        for path in ("/src/x", "C:/src/x", "C:src/x", "\\\\server/share/src/x", "\\src/x"):
+            with self.subTest(path=path):
+                self.assertEqual(self.fw.verify_call(dict(call, path=path))[1], "ABSOLUTE_PATH")
+        for tool in ("Write", "Read", "unknown", "WRITE_FILE"):
+            self.assertEqual(self.fw.verify_call(dict(call, tool=tool))[1], "UNKNOWN_TOOL")
+        self.assertEqual(self.fw.verify_call(dict(call, tool="write_file", content="x"))[1], "MISSING_RECEIPT")
+        write = dict(call, tool="write_file", content="x")
+        invalid_receipt = issue_approval_receipt("r", write)
+        invalid_receipt["receipt_id"] = 123
+        self.assertEqual(self.fw.verify_call(write, invalid_receipt)[1], "INVALID_RECEIPT")
+
+
+    def test_resolved_path_escape_and_invalid_envelopes(self):
+        call = dict(tool="read_file", role="implementer", path="src/link/x")
+        real_resolve = Path.resolve
+        target = self.fw.workspace_root / "src/link/x"
+        def resolve(path, *args, **kwargs):
+            if path == target:
+                return self.fw.workspace_root.parent / "outside/x"
+            return real_resolve(path, *args, **kwargs)
+        with patch.object(Path, "resolve", resolve):
+            self.assertEqual(self.fw.verify_call(call)[1], "OUTSIDE_ALLOWED_ROOT")
+        for invalid in (None, {}, dict(call, path=1), dict(call, content=[])):
+            self.assertFalse(self.fw.verify_call(invalid)[0])
+        with self.assertRaises(ValueError):
+            ToolCallFirewall(allowed_roots=[])
+
+    def test_cli_fail_closed_schema_empty_and_missing(self):
+        from verify_tool_call_firewall import main
+        from contextlib import redirect_stdout
+        import io
+        with tempfile.TemporaryDirectory(dir=".work-tmp") as tmp, redirect_stdout(io.StringIO()):
+            p = Path(tmp) / "calls.json"
+            for data in ({}, [], {"invocations": []}, {"invocations": [None]},
+                         {"invocations": [{"call": {}}], "allowed_roots": []},
+                         {"invocations": [{"call": {}}], "allowed_roles": "all"}):
+                p.write_text(json.dumps(data), encoding="utf-8")
+                self.assertNotEqual(main(["--verify-calls", str(p)]), 0)
+            p.write_text("", encoding="utf-8")
+            self.assertNotEqual(main(["--verify-calls", str(p)]), 0)
+            self.assertNotEqual(main(["--verify-calls", str(p)+"missing"]), 0)
+            self.assertNotEqual(main([]), 0)
 
     def test_valid_single_use_receipt_allows_write(self) -> None:
         call = {

@@ -16,9 +16,8 @@ Tool Call Firewall & Agent Trace Span Deduplicator (verify_tool_call_firewall.py
 import argparse
 import hashlib
 import json
-import posixpath
 import sys
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
 if sys.stdout and hasattr(sys.stdout, "reconfigure"):
@@ -32,6 +31,9 @@ if sys.stderr and hasattr(sys.stderr, "reconfigure"):
     except Exception:
         pass
 
+
+TOOL_ACCESS = {"read_file": "read", "write_file": "write", "edit_file": "write",
+               "delete_file": "write", "run_command": "write"}
 
 DEFAULT_WRITE_TOOLS = frozenset({"write_file", "edit_file", "delete_file", "run_command"})
 
@@ -59,11 +61,9 @@ def compute_content_sha256(content: str) -> str:
 def compute_request_digest(call: Dict[str, Any]) -> str:
     """
     對工具呼叫信封（tool, role, path, content_sha256）計算確定性 SHA-256 請求雜湊。
-    若 call 提供 'content' 原文則自動計算其 SHA-256。
+    只對實際 content 原文計算 SHA-256，不採信自附 content_sha256。
     """
-    content_hash = call.get("content_sha256")
-    if not content_hash:
-        content_hash = compute_content_sha256(str(call.get("content", "")))
+    content_hash = compute_content_sha256(call.get("content", ""))
     canonical = {
         "tool": str(call.get("tool", "")).strip(),
         "role": str(call.get("role", "")).strip(),
@@ -91,7 +91,15 @@ class ToolCallFirewall:
         allowed_roles: Sequence[str] = ("implementer", "maintainer"),
         allowed_roots: Sequence[str] = ("workspace/", "src/", "docs/", "tools/", "tests/"),
         write_tools: Sequence[str] = tuple(DEFAULT_WRITE_TOOLS),
+        workspace_root: Optional[Path] = None,
     ) -> None:
+        self.workspace_root = (workspace_root or Path.cwd()).resolve()
+        if not self.workspace_root.is_dir():
+            raise ValueError("workspace_root 必須是存在的目錄")
+        if not allowed_roots or any(not isinstance(r, str) or not r.strip() or
+                                    PureWindowsPath(r).drive or r.replace("\\", "/").startswith("/") or
+                                    has_path_traversal(r) for r in allowed_roots):
+            raise ValueError("allowed_roots 必須是非空 workspace 相對路徑清單")
         self.allowed_roles: Set[str] = {r.strip() for r in allowed_roles if r.strip()}
         self.allowed_roots: Tuple[str, ...] = tuple(
             normalize_logical_path(r).rstrip("/") + "/" for r in allowed_roots if normalize_logical_path(r)
@@ -111,12 +119,20 @@ class ToolCallFirewall:
         if not isinstance(call, dict):
             return False, "INVALID_ENVELOPE", "呼叫信封必須為 JSON 物件"
 
-        tool = str(call.get("tool", "")).strip()
-        role = str(call.get("role", "")).strip()
-        raw_path = str(call.get("path", "")).strip()
-
-        if not tool or not role or not raw_path:
-            return False, "INVALID_ENVELOPE", "缺少必要欄位 (tool / role / path)"
+        if any(not isinstance(call.get(k), str) or not call[k].strip()
+               for k in ("tool", "role", "path")):
+            return False, "INVALID_ENVELOPE", "必要欄位必須是非空字串"
+        tool, role, raw_path = (call[k].strip() for k in ("tool", "role", "path"))
+        if tool not in TOOL_ACCESS:
+            return False, "UNKNOWN_TOOL", "未列於明確工具對照表"
+        if "content" in call and not isinstance(call["content"], str):
+            return False, "INVALID_ENVELOPE", "content 必須是字串"
+        if TOOL_ACCESS[tool] == "write" and not isinstance(call.get("content"), str):
+            return False, "INVALID_ENVELOPE", "寫入型工具必須提供實際 content（無內容時用空字串）"
+        if "content_sha256" in call and call["content_sha256"] != compute_content_sha256(call.get("content", "")):
+            return False, "CONTENT_HASH_MISMATCH", "自附雜湊與實際 content 不符"
+        if PureWindowsPath(raw_path).drive or raw_path.replace("\\", "/").startswith("/"):
+            return False, "ABSOLUTE_PATH", "禁止絕對、UNC 與磁碟機路徑"
 
         if role not in self.allowed_roles:
             return False, "UNAUTHORIZED_ROLE", f"角色 '{role}' 未獲授權執行工具呼叫"
@@ -125,15 +141,23 @@ class ToolCallFirewall:
             return False, "PATH_TRAVERSAL", f"路徑 '{raw_path}' 含 '..' 越界區段"
 
         norm_path = normalize_logical_path(raw_path)
-        if self.allowed_roots and not any(
-            norm_path == root.rstrip("/") or norm_path.startswith(root)
-            for root in self.allowed_roots
-        ):
-            return False, "OUTSIDE_ALLOWED_ROOT", f"路徑 '{norm_path}' 不在允許根目錄範圍內"
+        try:
+            target = (self.workspace_root / norm_path).resolve()
+            roots = [(self.workspace_root / r).resolve() for r in self.allowed_roots]
+            if not target.is_relative_to(self.workspace_root) or not any(
+                root.is_relative_to(self.workspace_root) and target.is_relative_to(root) for root in roots
+            ):
+                return False, "OUTSIDE_ALLOWED_ROOT", "解析後路徑不在 workspace 允許目錄內"
+        except (OSError, ValueError, RuntimeError):
+            return False, "INVALID_PATH", "無法解析路徑"
 
-        if tool in self.write_tools:
+        if TOOL_ACCESS[tool] == "write" or tool in self.write_tools:
             if not receipt or not isinstance(receipt, dict):
                 return False, "MISSING_RECEIPT", f"寫入型工具 '{tool}' 必須附帶單次審批收據"
+
+            if any(not isinstance(receipt.get(k), str) or not receipt[k].strip()
+                   for k in ("receipt_id", "approved_role", "request_digest")):
+                return False, "INVALID_RECEIPT", "收據欄位必須是非空字串"
 
             receipt_id = str(receipt.get("receipt_id", "")).strip()
             approved_role = str(receipt.get("approved_role", "")).strip()
@@ -250,7 +274,7 @@ def analyze_trace_spans(spans: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def _main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="驗證 Tool Call 單次審批收據與分析 Agent Trace Span 去重指標"
     )
@@ -260,7 +284,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     if not args.verify_calls and not args.analyze_trace:
         print("[INFO] 請提供 --verify-calls 或 --analyze-trace 參數。")
-        return 0
+        return 2
 
     exit_code = 0
     if args.verify_calls:
@@ -268,7 +292,19 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         if not p.is_file():
             print(f"[ERROR] 找不到檔案：{p}")
             return 1
-        data = json.loads(p.read_text(encoding="utf-8"))
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+            if not isinstance(data, dict) or not isinstance(data.get("invocations"), list) or not data["invocations"]:
+                raise ValueError("invocations 必須是非空清單")
+            for key in ("allowed_roles", "allowed_roots"):
+                if key in data and (not isinstance(data[key], list) or not data[key] or
+                                    any(not isinstance(x, str) or not x.strip() for x in data[key])):
+                    raise ValueError(key + " 必須是非空字串清單")
+            if any(not isinstance(item, dict) or not isinstance(item.get("call"), dict) for item in data["invocations"]):
+                raise ValueError("invocations 項目必須包含 call 物件")
+        except (OSError, UnicodeError, ValueError) as exc:
+            print(f"[ERROR] 無效輸入：{exc}")
+            return 2
         fw = ToolCallFirewall(
             allowed_roles=data.get("allowed_roles", ("implementer", "maintainer")),
             allowed_roots=data.get("allowed_roots", ("workspace/", "src/", "docs/", "tools/", "tests/")),
@@ -291,10 +327,21 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             spans = json.loads(raw_text)
         else:
             spans = [json.loads(line) for line in raw_text.splitlines() if line.strip()]
+        if not isinstance(spans, list) or not spans or any(not isinstance(s, dict) or not {"span_id", "start_ms", "end_ms", "total_tokens"} <= s.keys() for s in spans):
+            raise ValueError("trace 必須是非空且具必要欄位的 span 清單")
         report = analyze_trace_spans(spans)
         print(json.dumps(report, ensure_ascii=False, indent=2))
 
     return exit_code
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    """退出碼：0 全部通過；1 拒絕／路徑不存在；2 輸入或 schema 無效。"""
+    try:
+        return _main(argv)
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
+        print(f"[ERROR] 無法判斷輸入：{exc}")
+        return 2
 
 
 if __name__ == "__main__":
