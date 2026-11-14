@@ -363,10 +363,10 @@
 | 2026-11-06 | ⚪ | [Threads「臉書發文賺得比月薪多」貼文查核：作者自曝後台數據反證、複製貼上農場訊號與副業引流話術](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md) | `fact-check`, `facebook-content-monetization`, `engagement-farming` | 0 / 0 |
 | 2026-11-07 | 🔴 | [Gemini Notebook（前 NotebookLM）官方 API 與 MCP 預覽版評估：7 個工具只能寫入不能查詢、GCP ADC 憑證風險與實際用途界定](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md) | `gemini-notebook`, `notebooklm`, `mcp` | 0 / 1 |
 | 2026-11-07 | ⚪ | [GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md) | `model-routing`, `github-copilot-fusion`, `cascade` | 0 / 0 |
-| 2026-11-07 | 🔴 | [AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯及 Token 成本查證](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) | `ai-engineering-from-scratch`, `curriculum`, `agent-skills` | 0 / 1 |
+| 2026-11-07 | 🔴 | [AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) | `ai-engineering-from-scratch`, `curriculum`, `agent-skills` | 0 / 1 |
 | 2026-11-07 | ⚪ | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
 | 2026-11-07 | 🟡 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 1 / 3 |
-| 2026-11-08 | 🔴 | [Agent Autoloop 架構深挖：1,850 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) | `agent-autoloop`, `event-sourcing`, `zero-cost-suspend` | 0 / 1 |
+| 2026-11-08 | 🔴 | [Agent Autoloop 架構深挖：約 2,000 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) | `agent-autoloop`, `event-sourcing`, `zero-cost-suspend` | 0 / 1 |
 | 2026-11-08 | 🔴 | [陳鍾誠教授分享「AI 寫網站＋Cloudflare `npx wrangler deploy` 一鍵上線」評估：免虛擬主機全端免費全家桶（Workers/KV/D1/R2）與 Wrangler 機密防洩漏稽核](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) | `cloudflare-workers`, `wrangler-deploy`, `serverless-fullstack` | 0 / 1 |
 | 2026-11-08 | ⚪ | [Claude Code 原生 `/advisor` 指令與伺服端 `advisor_20260301` 工具評估：Sonnet 主模型＋Opus/Fable 顧問機制與本地 `SanHsien/agent-advisor` 架構對比](./notes/2026-11-08-claude-code-builtin-advisor-command-evaluation.md) | `claude-code`, `advisor-mode`, `model-routing` | 0 / 0 |
 | 2026-11-08 | 🔴 | [Claude Code 垂直領域 Skill 與 MCP 生態系全盤點：影音配音聽覺自審、YouTube/IG 確定性腳本、前端反 AI Slop 五件套與 Claudex 跨模型互審](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) | `claude-code`, `agent-skills`, `earshot` | 0 / 2 |
@@ -521,7 +521,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 這些 repo 都保留了搬移檔案原本的 git 歷史；搬走的筆記與任務不再列入本 repo 的任務總表。
 
 <!-- BEGIN GENERATED: catalog -->
-### 1. CLI 工具與驗證器（`tools/`，共 34 支）
+### 1. CLI 工具與驗證器（`tools/`，共 35 支）
 | 腳本 | 用途 | 對應測試 |
 | :--- | :--- | :--- |
 | [`tools/task_cli.py`](./tools/task_cli.py) | AI 與維護者共用的任務佇列查詢、認領、結案與狀態同步 CLI | [`tests/test_inbox.py`](./tests/test_inbox.py) |
@@ -531,6 +531,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/audit_oauth_credentials.py`](./tools/audit_oauth_credentials.py) | 審查本機 AI 工具（Grok CLI、Codex、Claude Code）的 OAuth 憑證檔「放得安不安全」。唯讀，不改任何檔案 | [`tests/test_audit_oauth_credentials.py`](./tests/test_audit_oauth_credentials.py) |
 | [`tools/audit_skills_context_budget.py`](./tools/audit_skills_context_budget.py) | Agent Skills 上下文預算稽核工具 | [`tests/test_audit_skills_context_budget.py`](./tests/test_audit_skills_context_budget.py) |
 | [`tools/audit_surgical_diff.py`](./tools/audit_surgical_diff.py) | 外科手術式修改（Surgical Changes）的 Git 變更範圍審查。唯讀，不改任何檔案、不改 git 狀態 | [`tests/test_audit_surgical_diff.py`](./tests/test_audit_surgical_diff.py) |
+| [`tools/check_external_refs.py`](./tools/check_external_refs.py) | Manual GitHub/arXiv inspection. Exit 0: no errors (offline: not checked), | [`tests/test_check_external_refs.py`](./tests/test_check_external_refs.py) |
 | [`tools/cli_to_skill.py`](./tools/cli_to_skill.py) | Agent-Native CLI to SKILL.md 自動轉換工具 | [`tests/test_cli_to_skill.py`](./tests/test_cli_to_skill.py) |
 | [`tools/generate_dod_verifier.py`](./tools/generate_dod_verifier.py) | 從任務的 DoD（驗收標準）文字或 JSON 規格，產生一支獨立、可執行的驗收腳本 verify_delivery.py | [`tests/test_generate_dod_verifier.py`](./tests/test_generate_dod_verifier.py) |
 | [`tools/public_apis_indexer.py`](./tools/public_apis_indexer.py) | Public APIs 本地離線索引與免金鑰 API 篩選工具 | [`tests/test_public_apis_indexer.py`](./tests/test_public_apis_indexer.py) |
@@ -559,8 +560,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 62 份）
-<details><summary>展開查看全部 62 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 63 份）
+<details><summary>展開查看全部 63 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -594,6 +595,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/correction-queue-evaluation.md`](./docs/correction-queue-evaluation.md) | 評估：在共用 SSOT 倉庫引進「糾正審查佇列」（correction-queue.jsonl） |
 | [`docs/elephant-goldfish-model-spec.md`](./docs/elephant-goldfish-model-spec.md) | 大象-金魚模型（EGM）規格手冊：長上下文起草、零上下文審查與 CUJ 驅動設計流程 |
 | [`docs/evidence/2026-10-26-buzz-windows-build.md`](./docs/evidence/2026-10-26-buzz-windows-build.md) | Buzz 在 Windows 11 的編譯檢查與 Job Object 驗證 |
+| [`docs/evidence/external-refs-check-2026-11.md`](./docs/evidence/external-refs-check-2026-11.md) | T-20261108-06：2026-11 外部連結巡檢證據 |
 | [`docs/external-judge-audit.md`](./docs/external-judge-audit.md) | AI Inbox 任務 DoD 外部裁判（External Judge）稽核報告 |
 | [`docs/feedback-desk-architecture-and-handoff-spec.md`](./docs/feedback-desk-architecture-and-handoff-spec.md) | feedback-desk 架構解構與跨 Agent 工單交接規範 |
 | [`docs/feedback-desk-vs-agent-relay.md`](./docs/feedback-desk-vs-agent-relay.md) | feedback-desk 與 agent-relay 多 Agent 協作機制對照分析 |
@@ -605,7 +607,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/harness2-recursive-agent-harnessing-spec.md`](./docs/harness2-recursive-agent-harnessing-spec.md) | Harness² 雙層遞迴與 8 大模組演進及防弊規範 |
 | [`docs/irrefutable-evidence-and-invalid-patterns-spec.md`](./docs/irrefutable-evidence-and-invalid-patterns-spec.md) | 無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範 |
 | [`docs/karpathy-rules-mechanical-hardening-spec.md`](./docs/karpathy-rules-mechanical-hardening-spec.md) | Karpathy 四原則工程加固指引：從 Prompt 到硬閘門 |
-| [`docs/llmjacking-cloud-defense-spec.md`](./docs/llmjacking-cloud-defense-spec.md) | AI 時代雲端算力竊盜防禦手冊：AMOS 釣魚木馬、Cookie 劫持與 LLMJacking 防範規格 |
+| [`docs/llmjacking-cloud-defense-spec.md`](./docs/llmjacking-cloud-defense-spec.md) | 雲端算力竊盜防禦：LLMJacking、AMOS 與延遲式自動停用 |
 | [`docs/model-burn-rate-routing-matrix.md`](./docs/model-burn-rate-routing-matrix.md) | 長程並行開發：模型選型與配額消耗速查表（Sol 6.1／Terra 6.1／Astra 6／Luna 6） |
 | [`docs/multi-agent-parallel-dispatch-spec.md`](./docs/multi-agent-parallel-dispatch-spec.md) | 四 Agent 平行派工協議與人類審核門檻規範 |
 | [`docs/multimodal-screen-privacy-spec.md`](./docs/multimodal-screen-privacy-spec.md) | 多模態 Coding Agent 螢幕截圖與 OCR 視覺隱私安全檢驗規範 |
@@ -630,7 +632,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 </details>
 
 ### 3. 可重用 Prompt 與 Skill 範本（`templates/`，共 23 份）及互動展示（`assets/`，共 7 組）
-- **範本（`templates/`）**：[學術閱讀與知識管理三層框架提示詞範本 (5W1H -> CQR -> KSU)](./templates/academic-reading-prompt.md) ｜ [Agent 桌面操控指令集與 STALE_REF 安全重試 Prompt 模板](./templates/agent-desktop-skill-prompt.md) ｜ [Agent Reach — 互联网能力路由器](./templates/agent-reach/SKILL.md) ｜ [AI 野心升級檢查表（Ambition Prompt Checklist）](./templates/ambition-prompt-checklist.md) ｜ [8 條輕量治病 Agent 系統提示詞模組（適用 CLAUDE.md / AGENTS.md / GEMINI.md）](./templates/anti-overengineering-agent-prompt.md) ｜ [article-analysis 範本](./templates/article-analysis.md) ｜ [Claude Code security-guidance 自訂資安審查規範範本與三層防禦配置手冊](./templates/claude-security-guidance.md) ｜ [需求解壓縮與名詞規格化提示詞範本](./templates/client-requirement-decomposition-prompt.md) ｜ [EGM 工作流 Prompt 範本庫（Brainstorm／Draft／Review／Resolve／Drift-report）](./templates/egm-workflow-prompts.md) ｜ [feedback-desk 跨 Agent 工單認領與調整說明 Prompt 範本](./templates/feedback-desk-agent-prompt.md) ｜ [Fullstack Website Builder Agent Skill (全端商業建站技能規格)](./templates/fullstack-website-builder-skill.md) ｜ [GitHub App S2S 認證腳本與夜間 Agent 工作流範本](./templates/github-app-s2s-agent-workflow.md) ｜ [Karpathy 風格加固版 AGENTS.md 範本](./templates/karpathy-hardened-agents-md.md) ｜ [學術論文雙語解讀與翻譯：LaTeX 數學公式與引用保護提示詞範本](./templates/latex-citation-protection-prompt.md) ｜ [輕量化 Agent Skill 範本](./templates/lightweight-skill-template.md) ｜ [雲端 AI API 預算硬熔斷與防釣魚安裝審查 Prompt 模板](./templates/llmjacking-defense-checklist-prompt.md) ｜ [託管平台資安事件應變清單（Platform Breach Response Checklist）](./templates/platform-breach-response.md) ｜ [Public APIs 動態檢索 Skill / MCP 伺服器規格 (Public APIs Search Protocol)](./templates/public-apis-search-skill.md) ｜ [Single-File Creative Coding Skill 範本](./templates/single-file-creative-coding-skill.md) ｜ [主體資產盤點 (Subject Inventory) 與論證寫作前置提示詞範本](./templates/subject-inventory-argument-writing-prompt.md) ｜ [Team-Dispatch：先拆單、等「派」、再同時派工](./templates/team-dispatch-skill-template.md) ｜ [Coding Agent 上游端點容錯切換策略範本](./templates/upstream-proxy-fallback-policy.md) ｜ [Zero-Build Hero Section 快速注入技能 (Skill 範本)](./templates/zero-build-hero-injector-skill.md)
+- **範本（`templates/`）**：[學術閱讀與知識管理三層框架提示詞範本 (5W1H -> CQR -> KSU)](./templates/academic-reading-prompt.md) ｜ [Agent 桌面操控指令集與 STALE_REF 安全重試 Prompt 模板](./templates/agent-desktop-skill-prompt.md) ｜ [Agent Reach — 互联网能力路由器](./templates/agent-reach/SKILL.md) ｜ [AI 野心升級檢查表（Ambition Prompt Checklist）](./templates/ambition-prompt-checklist.md) ｜ [8 條輕量治病 Agent 系統提示詞模組（適用 CLAUDE.md / AGENTS.md / GEMINI.md）](./templates/anti-overengineering-agent-prompt.md) ｜ [article-analysis 範本](./templates/article-analysis.md) ｜ [Claude Code security-guidance 自訂資安審查規範範本與三層防禦配置手冊](./templates/claude-security-guidance.md) ｜ [需求解壓縮與名詞規格化提示詞範本](./templates/client-requirement-decomposition-prompt.md) ｜ [EGM 工作流 Prompt 範本庫（Brainstorm／Draft／Review／Resolve／Drift-report）](./templates/egm-workflow-prompts.md) ｜ [feedback-desk 跨 Agent 工單認領與調整說明 Prompt 範本](./templates/feedback-desk-agent-prompt.md) ｜ [Fullstack Website Builder Agent Skill (全端商業建站技能規格)](./templates/fullstack-website-builder-skill.md) ｜ [GitHub App S2S 認證腳本與夜間 Agent 工作流範本](./templates/github-app-s2s-agent-workflow.md) ｜ [Karpathy 風格加固版 AGENTS.md 範本](./templates/karpathy-hardened-agents-md.md) ｜ [學術論文雙語解讀與翻譯：LaTeX 數學公式與引用保護提示詞範本](./templates/latex-citation-protection-prompt.md) ｜ [輕量化 Agent Skill 範本](./templates/lightweight-skill-template.md) ｜ [雲端 AI API 延遲式預算停用與安裝審查 Prompt](./templates/llmjacking-defense-checklist-prompt.md) ｜ [託管平台資安事件應變清單（Platform Breach Response Checklist）](./templates/platform-breach-response.md) ｜ [Public APIs 動態檢索 Skill / MCP 伺服器規格 (Public APIs Search Protocol)](./templates/public-apis-search-skill.md) ｜ [Single-File Creative Coding Skill 範本](./templates/single-file-creative-coding-skill.md) ｜ [主體資產盤點 (Subject Inventory) 與論證寫作前置提示詞範本](./templates/subject-inventory-argument-writing-prompt.md) ｜ [Team-Dispatch：先拆單、等「派」、再同時派工](./templates/team-dispatch-skill-template.md) ｜ [Coding Agent 上游端點容錯切換策略範本](./templates/upstream-proxy-fallback-policy.md) ｜ [Zero-Build Hero Section 快速注入技能 (Skill 範本)](./templates/zero-build-hero-injector-skill.md)
 - **互動展示與擴充資產（`assets/`）**：[`anti-slop-demo`](./assets/anti-slop-demo/index.html) ｜ [`creative-coding-demo`](./assets/creative-coding-demo/threejs-particle-galaxy.html) ｜ [`inbox-band-mod`](./assets/inbox-band-mod/.claude-plugin/plugin.json) ｜ [`open-meteo-weather-chart`](./assets/open-meteo-weather-chart/index.html) ｜ [`shader-hero-demo`](./assets/shader-hero-demo/index.html) ｜ [`spatial-room-viewer`](./assets/spatial-room-viewer/index.html) ｜ [`target-story-editor`](./assets/target-story-editor/index.html)
 <!-- END GENERATED: catalog -->
 

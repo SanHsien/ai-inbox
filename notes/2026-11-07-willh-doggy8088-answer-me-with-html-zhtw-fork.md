@@ -86,7 +86,7 @@ OpenCC 的 `cn -> tw2` 在技術文件與二次轉換（second-pass）時有幾�
     1. 實作 `apply_zhtw_vocab()`、`scan_degraded_vocab()` 與 `verify_idempotence()`，內建 OpenCC (`cn -> tw2`) 二次轉換退化修補（`連線埠→連接埠`、`隻影響→只影響`、`選一個類別型→選一個類型`、`型別別→型別`、`字面量（Literal）（Literal）→字面量（Literal）`、`瞭什麼→了什麼`）、語境多義詞還原（音訊 `寫程式→編碼`、終端機 `打印→輸出`、`參考檔案→參考文件`）及大陸動詞修補（`摁下→按下`）。
     2. 支援略過 Markdown 圍欄程式碼區塊與行內反引號反例（`skip_code=True`），並提供 `--check`、`--fix`、`--verify-idempotent` CLI。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_zhtw_vocab.py` 綠燈通過，且 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 全數通過。
-  - **實作紀錄 / 證據**：已完成 `tools/verify_zhtw_vocab.py` 與單元測試 `tests/test_verify_zhtw_vocab.py`（5 項測試全過），並實跑全庫 `notes`、`docs`、`templates`、`README.md` 掃描與冪等驗證全綠通過。 **退回（2026-11-14，獨立審查）**：DoD 指令 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 實跑 exit 1（雙反引號內的反例被誤報）；`--check` 指向不存在的路徑或零輸入時回 PASS；「型別別別」連續退化修一次不收斂，與宣稱的冪等不符。
+  - **實作紀錄 / 證據**：已完成 `tools/verify_zhtw_vocab.py` 與單元測試 `tests/test_verify_zhtw_vocab.py`（5 項測試全過），並實跑全庫 `notes`、`docs`、`templates`、`README.md` 掃描與冪等驗證全綠通過。 **退回（2026-11-14，獨立審查）**：DoD 指令 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 實跑 exit 1（雙反引號內的反例被誤報）；`--check` 指向不存在的路徑或零輸入時回 PASS；「`型別別別`」連續退化修一次不收斂，與宣稱的冪等不符。
 
 - [ ] **`T-20261107-03`**｜**[優先級：中]** 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md`
   - **目標範圍**：`docs/zhtw-fork-idempotent-sync-spec.md`

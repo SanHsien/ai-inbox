@@ -1,6 +1,6 @@
 ---
 id: 2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation
-title: "AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯及 Token 成本查證"
+title: "AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯評估"
 source_url: "https://www.threads.com/@cz88422/post/DfSEJ-0D_WE"
 source_platform: "Threads (@cz88422)"
 author: "黃裕 (@cz88422) / Rohit Ghumare (@rohitg00)"

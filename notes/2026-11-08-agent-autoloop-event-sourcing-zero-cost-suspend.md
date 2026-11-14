@@ -1,6 +1,6 @@
 ---
 id: 2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend
-title: "Agent Autoloop 架構深挖：1,850 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線"
+title: "Agent Autoloop 架構深挖：約 2,000 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線"
 source_url: "https://www.threads.com/share/BBhKdG9xii"
 source_platform: "Threads (@leeunhn) / GitHub (KKKKhazix/agent-autoloop)"
 author: "李昀翰 (@leeunhn) / Khazix (@KKKKhazix)"
