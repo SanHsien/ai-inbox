@@ -70,6 +70,15 @@ tags:
   2. **缺「月費維運（Retainer）邊界與報價範本」**：若月費方案沒有白紙黑字切開「例行維運（安全更新、數據月報、SEO/GEO 微調、小修）」與「新功能變更單（CR）」，月費很容易變成「每月 2.5 萬包山包海無限加班」。
   3. **缺「結案資產沉澱檢查點」**：每次專案結案時，沒有強制觸發「把這次踩過的坑與重複流程蒸餾回 `ai-inbox/templates/` 或 `workflow-skill-creator`」的收尾清單。
 
+### 2.1 補充查證：網友留言評估（入門提示詞 vs. 國外 B2B Lead Gen 工具鏈）
+
+1. **留言 1（通用提示詞詢問 AI 接案架構）**：這類問題只適合當作初始概念掃盲；通用模型給出的是抽象教科書架構，沒有真實行業名單、驗證管道、合規或定價邊界，無法直接作為接案業務引擎。
+2. **留言 2（國外流行的 AI Lead Gen 關鍵詞與 API 工具鏈）— 查證屬實，但有嚴格合規紅線**：
+   - **主流 B2B Outbound 技術棧**：**Discovery**（Google Places API / Apify 按區域與行業找名單）$\rightarrow$ **Enrichment**（Apollo.io + **Clay** Waterfall 多源驗證企業信箱，並由 Claygent 讀目標官網自動產出診斷切入點）$\rightarrow$ **Outreach**（Instantly.ai / Smartlead 多信箱輪替預熱、壓低退信率）。
+   - **合規與實務風險（不可直接盲目照搬）**：
+     - 美國受 **CAN-SPAM** 規範（須實體地址、誠實主旨、10 天內處理退訂）；歐盟／英國受 **GDPR** 嚴格限制（無明確同意原則禁止對個人工作信箱冷發信，德國／奧地利尤嚴）；台灣進行 B2B 開發須遵守《個人資料保護法》與公開來源合法性，切勿購買黑名單或對社群／LINE 進行未授權批量私訊。
+     - 不可使用主網域直接發冷開發信，避免聲譽受損影響正常客戶溝通；API 串接須遵守各平台速率與 ToS（避免無頭硬爬導致封號）。
+
 ---
 
 ## 3. 拆解待辦事項（Action Items）
@@ -77,7 +86,7 @@ tags:
 - [ ] **`T-20261115-08`**｜**[優先級：高]** 建立《AI-Native 一人接案營運總綱》（`docs/ai-agency-delivery-playbook.md`），串聯現有診斷、建站、審查與維運範本成端到端流水線
   - **目標範圍**：`C:\GitHub\ai-inbox\docs\ai-agency-delivery-playbook.md`（參考並連結現有 `templates/client-requirement-decomposition-prompt.md`、`templates/fullstack-website-builder-skill.md`、`docs/production-smoke-security-checklist.md`、`templates/feedback-desk-agent-prompt.md`）
   - **具體做法**：
-    1. 繪製 7 階段接案流水線對照表（獲客診斷 $\rightarrow$ 報價簽約 $\rightarrow$ Research/Strategy $\rightarrow$ Developer/Writer $\rightarrow$ 獨立 Reviewer/QA $\rightarrow$ 人類終審交付 $\rightarrow$ 月費維運），每階段明確綁定維護者現有的範本／工具／`agent-relay` 角色。
+    1. 繪製 7 階段接案流水線對照表（獲客診斷 $\rightarrow$ 報價簽約 $\rightarrow$ Research/Strategy $\rightarrow$ Developer/Writer $\rightarrow$ 獨立 Reviewer/QA $\rightarrow$ 人類終審交付 $\rightarrow$ 月費維運），每階段明確綁定維護者現有的範本／工具／`agent-relay` 角色，並於第 1 階段納入合規 B2B Lead Gen 關鍵詞與官網診斷切入流程（註明 GDPR / CAN-SPAM / 個資法與網域隔離紅線）。
     2. 訂定「人類必須親自把關的 4 個閘門」（需求確認、對外承諾／報價、上線前安全驗收、例外升級），其餘交給 Agent 流水線。
     3. 加入「結案資產沉澱清單（Post-Project Asset Extraction）」，強制在每個專案收尾時檢核是否產出新的 Skill、SOP 或範本更新。
   - **驗收標準（DoD）**：產出 `docs/ai-agency-delivery-playbook.md`，所有引用之內部範本路徑皆存在有效，且通過 `python tools/verify_inbox.py`。
