@@ -94,8 +94,8 @@ Agent ──create_source──► Gemini Notebook ──► 人在網頁 UI 問
   - **具體做法**：
     1. 針對官方 Gemini Notebook MCP 教學將 `gcloud auth application-default print-access-token` 產出之短效 `ya29.*` Bearer Token 直接寫進 MCP 設定檔 `headers`／`args`（易外洩且 1 小時（文件未載明，屬 OAuth 一般行為）過期後靜默失效）與申請 `cloud-platform` 全權 scope 之風險，實作 `audit_mcp_config_credentials()` 與 `--audit-mcp-config` 參數。
     2. 支援攔截硬編碼 Bearer Token 與 `ya29.*` 憑證，同時放行環境變數佔位符（如 `${NOTEBOOK_ACCESS_TOKEN}`）。
-  - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_cloud_persistence_audit.py` 綠燈通過。
+  - **驗收標準（DoD）**：執行 python -m unittest tests/test_verify_cloud_persistence_audit.py 綠燈通過。
   - **完成日期**：2026-11-14
-  - **實作紀錄 / 證據**：修正兩輪（2026-11-14）：MCP 設定的 env／headers 敏感鍵名與已知 token 樣式（ghp_、github_pat_、sk-、sk-ant-、xox、ya29.、AKIA）、url 查詢參數與 user:pass@ 都會報出；佔位符放行；壞 schema 回 2。原審查反例（短 Bearer、args 的 ya29.、陣列 schema）與 Opus 新繞過（env GITHUB_TOKEN、url access_token、X-API-Key）全部由 exit 0 變 1／2。
+  - **實作紀錄 / 證據**：修正兩輪（2026-11-14）：MCP 設定的 env／headers 敏感鍵名與已知 token 樣式（ghp_、github_pat_、sk-、sk-ant-、xox、ya29.、AKIA）、url 查詢參數與 user:pass@ 都會報出；佔位符放行；壞 schema 回 2。原審查反例（短 Bearer、args 的 ya29.、陣列 schema）與 Opus 新繞過（env GITHUB_TOKEN、url access_token、X-API-Key）全部由 exit 0 變 1／2。 **搬移註記（2026-11-14）**：工具與測試已移至 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)（保留 git 歷史）。
 
 > 備註：Gemini Notebook MCP 本身因目前 7 個工具僅支援寫入、無問答或取回摘要 API，暫不接入日常研究流水線；待官方新增查詢工具或 OAuth 自動刷新機制後再評估接入。

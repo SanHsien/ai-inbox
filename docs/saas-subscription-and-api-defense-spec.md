@@ -8,7 +8,7 @@
 - **讀者**：要設計「同時賣個人訂閱與開發者 API」的平台工程師；其次是自己用 Coding Agent、想判斷某條接法合不合規的使用者。
 - **只談防禦與合規設計**：服務方怎麼讓訂閱額度不被轉成 API 用量、使用者怎麼保管自己的憑證。本文不收錄任何繞過、偽裝客戶端或規避偵測的操作步驟；社群工具只引用它自己 README 寫的風險聲明。
 - **本 repo 的立場（維護者政策）**：生產管線不使用非官方代理去消耗訂閱額度。自動化要嘛走官方客戶端本身提供的無人值守模式，要嘛走標準 API 金鑰，要嘛用本機模型（容錯做法見 [`templates/upstream-proxy-fallback-policy.md`](../templates/upstream-proxy-fallback-policy.md)）。
-- 配套工具：[`tools/audit_oauth_credentials.py`](../tools/audit_oauth_credentials.py)（使用者自查憑證檔，見第 9 節）。
+- 配套工具：[`tools/audit_oauth_credentials.py`](https://github.com/SanHsien/agent-safety-checks/blob/main/tools/audit_oauth_credentials.py)（使用者自查憑證檔，見第 9 節）。
 
 ## 1. 事件背景：已查證的事實與未驗證的說法
 
@@ -200,7 +200,7 @@ abuse_policy:
 
 ### 8.2 使用者側（自查）
 
-- [ ] 跑 `python tools/audit_oauth_credentials.py`，結束碼為 0（第 9 節）。
+- [ ] 跑 `python C:\GitHub\agent-safety-checks\tools\audit_oauth_credentials.py`，結束碼為 0（第 9 節）。
 - [ ] 憑證檔不在任何 git 工作樹內，或已被 `.gitignore` 忽略且未被追蹤。
 - [ ] 工具支援作業系統憑證庫時改用憑證庫（例：Codex 的 `cli_auth_credentials_store = "keyring"`）。
 - [ ] 沒有任何本機代理或轉接服務聽在非 loopback 位址。
@@ -211,9 +211,9 @@ abuse_policy:
 `tools/audit_oauth_credentials.py` 掃描 `~/.grok/`、`~/.codex/`（或 `CODEX_HOME`）、`~/.claude/`（或 `CLAUDE_CONFIG_DIR`）的第一層檔案與 `oauth-proxy/` 子資料夾，只看 metadata 與欄位名稱，**不會輸出任何憑證值**：
 
 ```bash
-python tools/audit_oauth_credentials.py                     # 掃預設目錄
-python tools/audit_oauth_credentials.py --repo ./my-project # 另外檢查某個 repo 有沒有追蹤憑證檔
-python tools/audit_oauth_credentials.py --json --strict     # 給 CI 或排程用：WARN 也算失敗
+python C:\GitHub\agent-safety-checks\tools\audit_oauth_credentials.py                     # 掃預設目錄
+python C:\GitHub\agent-safety-checks\tools\audit_oauth_credentials.py --repo ./my-project # 另外檢查某個 repo 有沒有追蹤憑證檔
+python C:\GitHub\agent-safety-checks\tools\audit_oauth_credentials.py --json --strict     # 給 CI 或排程用：WARN 也算失敗
 ```
 
 結束碼：`0` 通過；`1` 有 ERROR（或 `--strict` 且有 WARN）；`2` 參數錯誤。各檢查項目與嚴重度見該檔案開頭說明。ERROR 代表要馬上處理（權限過寬、已被 git 追蹤、代理聽在外部網卡）；`plaintext-token` 只是 WARN，因為官方工具本身就可能把憑證存成明文檔，那是提醒你「能用憑證庫就用」，不是故障。

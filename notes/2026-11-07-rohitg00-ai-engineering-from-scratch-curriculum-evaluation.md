@@ -95,8 +95,8 @@ rohitg00/ai-engineering-from-scratch
   - **具體做法**：
     1. 實作 `compute_request_digest()`、`issue_approval_receipt()` 與 `ToolCallFirewall`：將寫入操作審批收據綁定 `(tool, role, normalized_path, content_sha256)` 之 SHA-256 雜湊，阻斷審批後竄改內容（TOCTOU `DIGEST_MISMATCH`）、同一收據二次重放（`REPLAYED_RECEIPT`）、未授權角色與 `..` 路徑越界。
     2. 實作 `analyze_trace_spans()`：合併重疊子 Span 時間區間（Interval Union）算出真實 `exclusive_duration_ms`，並扣除父子重複計算之 Token（`deduplicated_total_tokens`）。
-  - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_tool_call_firewall.py` 綠燈通過。
+  - **驗收標準（DoD）**：執行 python -m unittest tests/test_verify_tool_call_firewall.py 綠燈通過。
   - **完成日期**：2026-11-14
-  - **實作紀錄 / 證據**：修正兩輪（2026-11-14）：digest 綁定整個 canonical call 並自行重算 content 雜湊；各工具欄位白名單，未知欄位拒絕；記錄已消費 digest，換 receipt_id 重送拒絕；拒絕絕對、磁碟機、UNC、ADS（含 :）、結尾點、保留裝置名路徑；未知工具預設拒絕。原審查與 Opus 新繞過（換 command／new_string、重送、src/x:evil.ps1）全部由 exit 0 變 1。限制：收據沒有簽章、consumed_digests 只存在單次程序，文件已寫明。
+  - **實作紀錄 / 證據**：修正兩輪（2026-11-14）：digest 綁定整個 canonical call 並自行重算 content 雜湊；各工具欄位白名單，未知欄位拒絕；記錄已消費 digest，換 receipt_id 重送拒絕；拒絕絕對、磁碟機、UNC、ADS（含 :）、結尾點、保留裝置名路徑；未知工具預設拒絕。原審查與 Opus 新繞過（換 command／new_string、重送、src/x:evil.ps1）全部由 exit 0 變 1。限制：收據沒有簽章、consumed_digests 只存在單次程序，文件已寫明。 **搬移註記（2026-11-14）**：工具與測試已移至 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)（保留 git 歷史）。
 
 > 備註：教材本身的 18 個教學 Skills 不預裝至本機全域環境，以免佔用每次對話啟動的技能描述空間；平時查閱課文與 `manuals/` 直接按本篇第 2 節索引取用。

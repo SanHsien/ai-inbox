@@ -156,9 +156,9 @@ tags:
     1. 實作純 Python 稽核工具 `tools/verify_cloud_persistence_audit.py`，支援掃描本地持久化後門路徑（macOS LaunchDaemons/Agents、Windows Run Keys/Startup）與疑似 AMOS 檔案標記。
     2. 提供 GCP/雲端 Service Account 清單格式解析器，依據「非預設命名規則」、「短期內激增生成」與「下載 Private Key」規則標注高危可疑帳號。
     3. 撰寫單元測試套件 `tests/test_verify_cloud_persistence_audit.py`，覆蓋木馬持久化特徵偵測、合法 Service Account 豁免與高危後門攔截。
-  - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_cloud_persistence_audit.py` 綠燈通過。
+  - **驗收標準（DoD）**：執行 python -m unittest tests/test_verify_cloud_persistence_audit.py 綠燈通過。
   - **完成日期**：2026-11-14
-  - **實作紀錄 / 證據**：修正（2026-11-14）：高權限角色明列 owner/editor/admin 類；不存在路徑與只跳過時回 2；Windows Run Keys 唯讀掃描（非 Windows 明示跳過）；Service Account 依 createTime 滑動時間窗偵測大量建立。審查反例由 exit 0 變 1／2，mutation 皆被測試抓到。限制：tokenCreator、secretAccessor、自訂角色不在本任務規格內，仍放行。
+  - **實作紀錄 / 證據**：修正（2026-11-14）：高權限角色明列 owner/editor/admin 類；不存在路徑與只跳過時回 2；Windows Run Keys 唯讀掃描（非 Windows 明示跳過）；Service Account 依 createTime 滑動時間窗偵測大量建立。審查反例由 exit 0 變 1／2，mutation 皆被測試抓到。限制：tokenCreator、secretAccessor、自訂角色不在本任務規格內，仍放行。 **搬移註記（2026-11-14）**：工具與測試已移至 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)（保留 git 歷史）。
 
 - [x] **`T-20261104-03`**｜**[優先級：低]** 產出標準化「雲端 AI API 預算硬熔斷與防釣魚安裝審查 Prompt 模板」收錄於 `templates/llmjacking-defense-checklist-prompt.md`
   - **目標範圍**：`templates/llmjacking-defense-checklist-prompt.md`

@@ -128,11 +128,11 @@ tags:
     2. 實作 `tools/verify_agent_skill_pack_safety.py`，以 `--pack` 對技能包實際檔案做靜態啟發式掃描（通過不代表安全，仍需人工審查），並保留四條自填宣告檢查項目（不能當作採納依據）：`SKILLPACK-001`（攔截 `--dangerously-bypass-approvals-and-sandbox` / `bypassPermissions` 與 Impeccable Live Mode 背景自動提權）、`SKILLPACK-002`（背景 Hook 審查與 `DO_NOT_TRACK=1` / `telemetry: false` 閘門）、`SKILLPACK-003`（社交平台 `human_publish_only` 草稿唯讀與 `{{your number}}` 零虛構數據佔位符）、`SKILLPACK-004`（確定性本地 Linter 支撐與反 `100% undetectable` 誇大宣稱）。
     3. 撰寫 `tests/test_verify_agent_skill_pack_safety.py` 涵蓋四條規則之正反例單元測試。
   - **驗收標準（DoD）**：
-    - `python tools/verify_agent_skill_pack_safety.py --self-test` 回 0；以 `--pack` 掃描含危險旗標的假技能包回 1、掃描不存在的目錄回 2（由 `tests/test_verify_agent_skill_pack_safety.py` 涵蓋）。（DoD 於 2026-11-14 隨退回修正改寫：原本的裸執行回 `[PASS]` 不能當採納檢查。）
-    - `python -m unittest tests/test_verify_agent_skill_pack_safety.py -v` 全數通過。
+    - python tools/verify_agent_skill_pack_safety.py --self-test 回 0；以 `--pack` 掃描含危險旗標的假技能包回 1、掃描不存在的目錄回 2（由 tests/test_verify_agent_skill_pack_safety.py 涵蓋）。（DoD 於 2026-11-14 隨退回修正改寫：原本的裸執行回 `[PASS]` 不能當採納檢查。）
+    - python -m unittest tests/test_verify_agent_skill_pack_safety.py -v 全數通過。
     - `python tools/build_index.py` 與 `python tools/verify_inbox.py` 契約及 100% 目錄覆蓋率驗證通過。
   - **完成日期**：2026-11-14
-  - **實作紀錄 / 證據**：重寫（2026-11-14，Fable）：改為 --pack 實掃技能包目錄的靜態啟發式審計器，argv 等級解析（等號、空白、Tab、引號、大小寫、NFKC 全形、續行），類別 BYPASS／REMOTE-EXEC／OBFUSCATED／CRED-ACCESS／INSTALL-EXEC 判 FAIL，AUTO-HOOK／MCP-SERVER／DYNAMIC-EXEC 列 REVIEW；裸執行回 2，內建範例改由 --self-test。審查反例（=、雙空白、Tab）由 exit 0 變 1；Opus 以 25 個假技能包測試，抓不到的變數間接、$(…) 拼接已寫進文件第 4.7 節。專屬測試約 90 個，mutation 全被抓到。
+  - **實作紀錄 / 證據**：重寫（2026-11-14，Fable）：改為 --pack 實掃技能包目錄的靜態啟發式審計器，argv 等級解析（等號、空白、Tab、引號、大小寫、NFKC 全形、續行），類別 BYPASS／REMOTE-EXEC／OBFUSCATED／CRED-ACCESS／INSTALL-EXEC 判 FAIL，AUTO-HOOK／MCP-SERVER／DYNAMIC-EXEC 列 REVIEW；裸執行回 2，內建範例改由 --self-test。審查反例（=、雙空白、Tab）由 exit 0 變 1；Opus 以 25 個假技能包測試，抓不到的變數間接、$(…) 拼接已寫進文件第 4.7 節。專屬測試約 90 個，mutation 全被抓到。 **搬移註記（2026-11-14）**：工具與測試已移至 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)（保留 git 歷史）。
 
 - [x] **`T-20261108-06`**｜**[優先級：中]** 新增 `tools/check_external_refs.py`：掃描 `notes/` 內的 GitHub repo 與 arXiv 連結，確認存在、是否改名或封存
   - **目標範圍**：`tools/check_external_refs.py`、`tests/test_check_external_refs.py`、`docs/evidence/external-refs-check-2026-11.md`

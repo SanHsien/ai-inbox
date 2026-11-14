@@ -211,3 +211,24 @@
   - autoloop 不檢查 `workdir`、`model` 欄位；跳數從 0 起算。
   - autoloop 來源白名單的 local、manual、cron 是本 repo 自訂，上游沒有明文。
 - 尚未驗證：真實 Threads 下載與 GPU 轉寫、真實 winreg Run Keys 掃描、Terraform 實際部署。
+
+
+## 14. agent 安全檢查工具搬出收件匣（2026-11-14）
+
+**為什麼搬**：安全檢查關卡不該放在任何 agent 都會直接推送的收件匣 repo 裡；而且全域規則（第 15 條與 agent-assets 第 12 條）直接依賴這些工具，放在這裡等於讓被檢查的對象有機會改動檢查本身。獨立成 repo 後，改動要走該 repo 自己的審查與測試。
+
+**搬了什麼**：5 支工具與對應測試（共 10 個檔案），加上一份規範文件，新建 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)，保留原檔 git 歷史。
+- `verify_agent_skill_pack_safety`（第三方 Skill／MCP 採納前靜態審計）
+- `verify_tool_call_firewall`（工具呼叫防火牆與單次審批收據）
+- `verify_cloud_persistence_audit`（持久化後門、MCP 靜態 token 與雲端 Service Account 稽核）
+- `audit_oauth_credentials`（本機 OAuth 憑證檔安全審查）
+- `screen_privacy`（截圖／OCR 隱私檢查）與 `docs/multimodal-screen-privacy-spec.md`
+
+**留下什麼**：筆記全部留在 ai-inbox，任務勾選狀態不變。`audit_fullstack_security` 留下，因為它是網站專案稽核，不是 agent 本機安全關卡；`verify_autoloop_dispatch_guard` 留下，因為它驗證的是目前不在用的系統規格。
+
+**引用怎麼改**（照 11-02 前例）：
+- 筆記：連結改指新 repo 的 blob 網址；已做任務 DoD 欄帶反引號的搬走路徑改成純文字（`verify_inbox` 會檢查反引號路徑是否存在），並在「實作紀錄 / 證據」欄末尾加搬移註記，不改勾選狀態。
+- `AGENTS.md`：本機截圖指令改為 `python C:\GitHub\agent-safety-checks\tools\screen_privacy.py ...`，規範改指新 repo；目錄樹刪除 `screen_privacy`；搬移說明補上本批。
+- `README.md`：第 0 節表格新增一列，自動產生區塊重產。`ROADMAP.md`：刪除「抽成獨立 repo」那一列（本次已完成）。
+- `docs/`、`templates/`：連到被搬走檔案的連結改成新 repo 絕對網址；指令範例改指 `C:\GitHub\agent-safety-checks`。
+- 本文件第 1～13 節是歷史紀錄，不改。全域規則（`~/.claude/AGENTS.md`、agent-assets）的路徑由整合者另行處理。

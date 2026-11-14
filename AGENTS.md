@@ -21,7 +21,6 @@ C:\GitHub\ai-inbox\
 │   ├── verify_*.py                  # 外部裁判與專項驗證器（結構、防火牆、繁中詞彙、無障礙樹等）
 │   ├── _judge_common.py             # 外部裁判共用：剝註解、結構下限、報告輸出
 │   ├── video_transcript.py          # 影片音訊下載 + faster-whisper (CUDA/CPU) 逐字稿轉寫（見 docs/video-transcript-howto.md）
-│   ├── screen_privacy.py            # 截圖／OCR 隱私檢查（規範 docs/multimodal-screen-privacy-spec.md 的參考實作）
 │   └── 其他功能型工具               # audit_*、cli_to_skill、generate_dod_verifier、public_apis_indexer、render_artifact_html、toml_validator
 ├── docs/                            # 技術規格、實測報告與 SOP 手冊（跨 Agent 派工指令見 docs/agent-dispatch.md）
 ├── assets/                          # 單檔 HTML / Generative UI / Canvas 互動成品
@@ -31,6 +30,8 @@ C:\GitHub\ai-inbox\
 > 健康存摺解析器與 Code-as-Video 影片工具已於 2026-10-25 獨立成 [`SanHsien/health-bank-toolkit`](https://github.com/SanHsien/health-bank-toolkit) 與 [`SanHsien/code-as-video-studio`](https://github.com/SanHsien/code-as-video-studio)，相關筆記與任務一併移出；要改那些工具請到對應 repo。
 >
 > 2026-11-02 再移出三組：動態設計影格審查與電影感影片提示詞併入 [`SanHsien/code-as-video-studio`](https://github.com/SanHsien/code-as-video-studio)；LINE 16 宮格貼圖切圖併入 [`SanHsien/sticker-forge`](https://github.com/SanHsien/sticker-forge)；Claude Code context／token 稽核工具（工具裁剪、記憶壓縮、token 哨兵、記憶索引健檢）獨立成 [`SanHsien/claude-context-audit`](https://github.com/SanHsien/claude-context-audit)。
+>
+> 2026-11-14 再移出 agent 本機安全檢查五支工具與對應測試（`verify_agent_skill_pack_safety`、`verify_tool_call_firewall`、`verify_cloud_persistence_audit`、`audit_oauth_credentials`、`screen_privacy`）與《多模態 Agent 螢幕截圖與 OCR 視覺隱私安全檢驗規範》，獨立成 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)（保留 git 歷史）；筆記留在本 repo，連結已改指新 repo。安全檢查關卡不放在任何 agent 都會直接推送的收件匣 repo。
 
 **資料流（單一資料來源）**：任務的優先級、範圍、狀態、證據**只寫在筆記裡**；README 的
 `<!-- BEGIN GENERATED -->` 區塊（`tasks`、`index`、`clusters`、`catalog`）一律由腳本產生，禁止手改。
@@ -131,10 +132,10 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
 3. **版權與隱私過濾**：
    - 若來源為付費內容、內部研討截圖或私人對話，**不可直接摘錄完整原文**，僅可提煉抽象的架構概念與實作邏輯。
    - 所有公開分析必須保持出處連結（Attribution）與作者標記。
-4. **本機截圖、錄影與 OCR**：擷取本機畫面給 AI 看、或把截圖／錄影放進 repo 當證據之前，遵循 [`docs/multimodal-screen-privacy-spec.md`](docs/multimodal-screen-privacy-spec.md)（敏感視窗不截、洩鑰即丟、48 小時內清除）。
-   - 截圖前用 `python tools/screen_privacy.py --title "<視窗標題>" --app <程式名>` 判斷：`blocked`／`nocap` 不可截圖。
-   - 截圖後先 OCR，再用 `python tools/screen_privacy.py --ocr-file <OCR 文字檔>` 檢查：結果是 `drop_image`（含金鑰、身分證、卡號，或敏感關鍵字達門檻）就刪掉這張圖，不可送出、不可提交。
-   - 規則以 `tools/screen_privacy.py` 為準；要改規則先在 `tests/test_screen_privacy.py` 補反例。
+4. **本機截圖、錄影與 OCR**：擷取本機畫面給 AI 看、或把截圖／錄影放進 repo 當證據之前，遵循 [`docs/multimodal-screen-privacy-spec.md`](https://github.com/SanHsien/agent-safety-checks/blob/main/docs/multimodal-screen-privacy-spec.md)（已於 2026-11-14 移至 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)）（敏感視窗不截、洩鑰即丟、48 小時內清除）。
+   - 截圖前用 `python C:\GitHub\agent-safety-checks\tools\screen_privacy.py --title "<視窗標題>" --app <程式名>` 判斷：`blocked`／`nocap` 不可截圖。
+   - 截圖後先 OCR，再用 `python C:\GitHub\agent-safety-checks\tools\screen_privacy.py --ocr-file <OCR 文字檔>` 檢查：結果是 `drop_image`（含金鑰、身分證、卡號，或敏感關鍵字達門檻）就刪掉這張圖，不可送出、不可提交。
+   - 規則以 `SanHsien/agent-safety-checks` 的 `tools/screen_privacy.py` 為準；要改規則請到該 repo，先在 `tests/test_screen_privacy.py` 補反例。
 
 ## 路線圖
 

@@ -237,7 +237,7 @@ routes:
 | 任何 `base_url` 是 loopback 以外的 http（明文）或非官方網域 | 沒有 |
 | 設定檔裡有任何金鑰字串 | 沒有（只有 `env` 名稱） |
 | `confidential_tasks` 路由只含 `data_classes` 有 `confidential` 的端點 | 是 |
-| 本機端點 `base_url` 是 `localhost` 或 `127.0.0.1`，且本機模型服務沒有對外網卡開放 | 是（服務綁在哪個位址依該服務的文件確認；它的設定檔若有 bind／listen 欄位，可用 `python tools/audit_oauth_credentials.py --dir <設定檔資料夾>` 掃一遍） |
+| 本機端點 `base_url` 是 `localhost` 或 `127.0.0.1`，且本機模型服務沒有對外網卡開放 | 是（服務綁在哪個位址依該服務的文件確認；它的設定檔若有 bind／listen 欄位，可用 `python C:\GitHub\agent-safety-checks\tools\audit_oauth_credentials.py --dir <設定檔資料夾>` 掃一遍） |
 
 ## 5. 切換事件紀錄欄位
 

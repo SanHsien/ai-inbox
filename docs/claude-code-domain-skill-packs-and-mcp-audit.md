@@ -2,7 +2,7 @@
 
 > **對應任務**：`T-20261108-04`
 > **來源筆記**：[notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md](../notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md)
-> **驗證工具**：[`tools/verify_agent_skill_pack_safety.py`](../tools/verify_agent_skill_pack_safety.py) ｜ [`tests/test_verify_agent_skill_pack_safety.py`](../tests/test_verify_agent_skill_pack_safety.py)
+> **驗證工具**：[`tools/verify_agent_skill_pack_safety.py`](https://github.com/SanHsien/agent-safety-checks/blob/main/tools/verify_agent_skill_pack_safety.py) ｜ [`tests/test_verify_agent_skill_pack_safety.py`](https://github.com/SanHsien/agent-safety-checks/blob/main/tests/test_verify_agent_skill_pack_safety.py)
 > **修訂**：2026-11-14 依獨立審查改寫第 4 節。工具改成實際讀取技能包目錄的靜態掃描；原本「強制執行四條防線」的說法不符實況，已刪除。
 
 ---
@@ -72,11 +72,11 @@
 
 ```bash
 # 主要用法：掃描一個或多個技能包目錄
-python tools/verify_agent_skill_pack_safety.py --pack path/to/pack
-python tools/verify_agent_skill_pack_safety.py --pack pack-a --pack pack-b --json
+python C:\GitHub\agent-safety-checks\tools\verify_agent_skill_pack_safety.py --pack path/to/pack
+python C:\GitHub\agent-safety-checks\tools\verify_agent_skill_pack_safety.py --pack pack-a --pack pack-b --json
 
 # 把需要人工審查的項目也算成失敗
-python tools/verify_agent_skill_pack_safety.py --pack path/to/pack --strict
+python C:\GitHub\agent-safety-checks\tools\verify_agent_skill_pack_safety.py --pack path/to/pack --strict
 ```
 
 | 結束碼 | 意思 |
@@ -166,8 +166,8 @@ python tools/verify_agent_skill_pack_safety.py --pack path/to/pack --strict
 ### 4.8 宣告模式（補充）
 
 ```bash
-python tools/verify_agent_skill_pack_safety.py --config declaration.json
-python tools/verify_agent_skill_pack_safety.py --self-test   # 只對內建的五組宣告範例做自檢，回 0 或 1
+python C:\GitHub\agent-safety-checks\tools\verify_agent_skill_pack_safety.py --config declaration.json
+python C:\GitHub\agent-safety-checks\tools\verify_agent_skill_pack_safety.py --self-test   # 只對內建的五組宣告範例做自檢，回 0 或 1
 ```
 
 `--config` 與 `--self-test` 不能同時給。兩者都可以和 `--pack` 一起用，結束碼照 4.2 的規則合併計算：任一邊發現問題就是 `1`，否則任一邊輸入錯誤或掃描不完整就是 `2`。

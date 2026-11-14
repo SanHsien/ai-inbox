@@ -36,7 +36,7 @@
 
 - 要有：**完整指令列** + **實際輸出** + **exit code**，來自真的啟動的進程（CLI、服務、瀏覽器），不是在同一個測試進程內呼叫函式。
 - 能被第三人重跑：指令不依賴回報者腦中的狀態（環境變數、已開的視窗要寫明）。
-- UI 類：附截圖或錄影，且截圖要看得出被測的版本或時間（例如頁面上的 commit hash、URL 列）。涉及本機畫面擷取時先遵守 [`multimodal-screen-privacy-spec.md`](./multimodal-screen-privacy-spec.md)。
+- UI 類：附截圖或錄影，且截圖要看得出被測的版本或時間（例如頁面上的 commit hash、URL 列）。涉及本機畫面擷取時先遵守 [`multimodal-screen-privacy-spec.md`](https://github.com/SanHsien/agent-safety-checks/blob/main/docs/multimodal-screen-privacy-spec.md)。
 
 ### 支柱 B：外部裁判的 exit code
 
@@ -149,4 +149,4 @@
 
 - Thorsten Ball，〈How I work with Agents〉，X Article，2026-10-25。tweet：<https://x.com/thorstenball/status/2114386050638336082>，文章：<https://x.com/i/article/2114385531811319808>。X Article 需登入才能直接瀏覽；本文以 fxtwitter 公開 API（`https://api.fxtwitter.com/thorstenball/status/2114386050638336082`）取得的全文區塊核對，2026-11-02 查證。第 1 節對作者的歸屬都以該全文為準。
 - 作者資訊：作者 X 帳號簡介寫明任職 Amp（@ampcode）、部落格為 <https://registerspill.thorstenball.com>（同一 API 回傳，2026-11-02）。
-- 本 repo：[`docs/external-judge-audit.md`](./external-judge-audit.md)、[`docs/multimodal-screen-privacy-spec.md`](./multimodal-screen-privacy-spec.md)、[`docs/pstack-governance-integration.md`](./pstack-governance-integration.md)（皆已開檔確認存在）。
+- 本 repo：[`docs/external-judge-audit.md`](./external-judge-audit.md)、[`docs/pstack-governance-integration.md`](./pstack-governance-integration.md)（皆已開檔確認存在）；已搬到 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)：[`docs/multimodal-screen-privacy-spec.md`](https://github.com/SanHsien/agent-safety-checks/blob/main/docs/multimodal-screen-privacy-spec.md)。

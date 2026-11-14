@@ -153,9 +153,9 @@ Facebook 知名技術專頁「大齡工程師」於 2026 年 10 月發文感嘆�
     1. 實作安全審查 CLI，掃描常見 AI 工具目錄（`~/.grok/`、`~/.codex/`、`~/.claude/`）之憑證檔案權限與存儲狀態。
     2. 檢查規則：檢測是否以明文形式存儲未受保護的 Refresh Token、檔案權限是否過於寬鬆（非 0600）、是否包含可被外部網卡存取之代理監聽設定。
     3. 撰寫單元測試覆蓋安全與高風險組態。
-  - **驗收標準（DoD）**：產出 `tools/audit_oauth_credentials.py` 與單元測試，執行 `python -m unittest discover -s tests` 全綠通過。
+  - **驗收標準（DoD）**：產出 tools/audit_oauth_credentials.py 與單元測試，執行 `python -m unittest discover -s tests` 全綠通過。
   - **完成日期**：2026-11-02
-  - **實作紀錄 / 證據**：tools/audit_oauth_credentials.py＋tests/test_audit_oauth_credentials.py：只查權限、ACL、git 追蹤、欄位種類，不輸出 token 值。獨立審查兩輪修正中文路徑 ACL 漏報、UTF-16、NUL 填充、IPv6 scope 回顯；zh-TW 機器實測授權 Everyone 報 acl-broad。已知限制：非英文 Windows 主體名稱、無 BOM 的非 ASCII UTF-16。
+  - **實作紀錄 / 證據**：tools/audit_oauth_credentials.py＋tests/test_audit_oauth_credentials.py：只查權限、ACL、git 追蹤、欄位種類，不輸出 token 值。獨立審查兩輪修正中文路徑 ACL 漏報、UTF-16、NUL 填充、IPv6 scope 回顯；zh-TW 機器實測授權 Everyone 報 acl-broad。已知限制：非英文 Windows 主體名稱、無 BOM 的非 ASCII UTF-16。 **搬移註記（2026-11-14）**：工具與測試已移至 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)（保留 git 歷史）。
 
 - [x] **`T-20261028-15`**｜**[優先級：低]** 產出標準化「Coding Agent 外部端點可用性與風控回退策略範本」收錄於 `templates/upstream-proxy-fallback-policy.md`
   - **目標範圍**：`templates/upstream-proxy-fallback-policy.md`

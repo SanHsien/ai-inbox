@@ -162,8 +162,8 @@ tags:
     1. 分析 `desktop-sense` 的敏感視窗正則庫（涵蓋中英法德西日韓等語系之金融、密碼、無痕關鍵字）與無障礙樹（Accessibility Tree）偵測邏輯。
     2. 萃取其 API Key 與機密憑證正則過濾規則（OpenAI, GitHub, AWS, Stripe, JWT 等），建立「偵測到金鑰立即 Drop 截圖」的通用防護模組。
     3. 整理為可複用的「多模態 Coding Agent 螢幕截圖與 OCR 隱私安全檢驗手冊」。
-  - **驗收標準（DoD）**：產出結構化隱私檢驗規範文件（`docs/multimodal-screen-privacy-spec.md`），並確保任何牽涉本機畫面擷取的 Agent 流程均遵循「敏感跳過、洩鑰即丟、嚴格時限」的資料保護標準。
+  - **驗收標準（DoD）**：產出結構化隱私檢驗規範文件（docs/multimodal-screen-privacy-spec.md），並確保任何牽涉本機畫面擷取的 Agent 流程均遵循「敏感跳過、洩鑰即丟、嚴格時限」的資料保護標準。
   - **完成日期**：2026-10-26
-  - **實作紀錄 / 證據**：規範 docs/multimodal-screen-privacy-spec.md 加上可執行參考實作 tools/screen_privacy.py（56 項測試 tests/test_screen_privacy.py，含覆核兩輪找到的漏抓與誤判回歸測試，CI 於 Ubuntu 與 Windows 通過）。落地於三處：本 repo AGENTS.md 第 4 節第 4 點；Claude 全域 ~/.claude/AGENTS.md 路由表；跨 AI 共用規則 `SanHsien/agent-assets`（私有） rules/GLOBAL_RULES.md 第 12 條（commit 6327397，CI 通過；Codex 與 Gemini/Antigravity 的全域指令檔經 agent-assets-ssot 引用段讀取該規則）。
+  - **實作紀錄 / 證據**：規範 docs/multimodal-screen-privacy-spec.md 加上可執行參考實作 tools/screen_privacy.py（56 項測試 tests/test_screen_privacy.py，含覆核兩輪找到的漏抓與誤判回歸測試，CI 於 Ubuntu 與 Windows 通過）。落地於三處：本 repo AGENTS.md 第 4 節第 4 點；Claude 全域 ~/.claude/AGENTS.md 路由表；跨 AI 共用規則 `SanHsien/agent-assets`（私有） rules/GLOBAL_RULES.md 第 12 條（commit 6327397，CI 通過；Codex 與 Gemini/Antigravity 的全域指令檔經 agent-assets-ssot 引用段讀取該規則）。 **搬移註記（2026-11-14）**：工具與測試已移至 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)（保留 git 歷史）。
 
 ---

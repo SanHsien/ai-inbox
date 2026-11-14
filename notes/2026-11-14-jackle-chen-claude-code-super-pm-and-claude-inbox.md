@@ -147,7 +147,7 @@ agent 處理完 ──inbox close <題號>──▶ 收起
 | **採用可行性** | 低：本機為 Windows 11 原生，`inbox.py` 用 `fcntl`（POSIX 專有）、hook 寫死 `python3`（2026-11-14 以 GitHub API 查證） |
 | **概念可借用** | 高：「問人的事排隊、答案由 hook 注入下一輪」與本機 `ai-inbox`、hook 防線、派工清單思路同源 |
 | **安全性** | 良好：loopback 預設、token、Host/Origin 檢查、純文字顯示；唯一外部輸入是人本人的答案 |
-| **第三方 plugin 風險** | 屬社群個人專案（16 stars），依零信任規則：只讀分析，不安裝；採納前須過 SkillSpector 與 `verify_agent_skill_pack_safety.py` |
+| **第三方 plugin 風險** | 屬社群個人專案（16 stars），依零信任規則：只讀分析，不安裝；採納前須過 SkillSpector 與 [`verify_agent_skill_pack_safety.py`](https://github.com/SanHsien/agent-safety-checks/blob/main/tools/verify_agent_skill_pack_safety.py) |
 | **對照既有規範** | 本機已有「派工要掌控到完成」規範；總 PM 模式與之吻合，但作者的「決定做就當作完成」心法與「結案前要實查」衝突，不宜照搬 |
 | **成本** | 總 PM 用旗艦模型常駐 20 天，配額消耗高，未提供用量數字 |
 

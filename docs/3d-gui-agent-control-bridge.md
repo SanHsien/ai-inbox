@@ -142,8 +142,8 @@ MCP 傳輸層的官方規範（與本機連線安全直接相關）：**標準�
 
 ### 3.4 本機螢幕截圖與隱私規範的交集
 
-方案 B 若需要**視覺確認**操作結果（例如截圖 Blender 視窗確認渲染是否正確），必須遵守本 repo [`docs/multimodal-screen-privacy-spec.md`](./multimodal-screen-privacy-spec.md)：
-- 截圖前用 `python tools/screen_privacy.py --title "<視窗標題>" --app <程式名>` 判斷是否 `blocked`／`nocap`；3D 軟體視窗一般不在黑名單，但若視窗標題帶有使用者自訂的機密專案名稱仍需走正規化與清洗（該規範第 2 節）。
+方案 B 若需要**視覺確認**操作結果（例如截圖 Blender 視窗確認渲染是否正確），必須遵守[`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks) 的 [`docs/multimodal-screen-privacy-spec.md`](https://github.com/SanHsien/agent-safety-checks/blob/main/docs/multimodal-screen-privacy-spec.md)：
+- 截圖前用 `python C:\GitHub\agent-safety-checks\tools\screen_privacy.py --title "<視窗標題>" --app <程式名>` 判斷是否 `blocked`／`nocap`；3D 軟體視窗一般不在黑名單，但若視窗標題帶有使用者自訂的機密專案名稱仍需走正規化與清洗（該規範第 2 節）。
 - 截圖後 OCR 掃描，依該規範第 5 節的機密與 PII 正則表處理；命中金鑰／身分證/卡號等一律整張丟棄（`drop_image`），不可送給視覺模型。
 - 截圖保留依該規範「生命週期」章節：48 小時內清除，不作為長期證據留存於 repo。
 

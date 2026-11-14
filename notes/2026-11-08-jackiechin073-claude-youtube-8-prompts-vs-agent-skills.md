@@ -109,5 +109,5 @@ Threads 作者 `@jackiechin073` 發布引流貼文：
    - 本篇 Threads 貼文為典型的社群流量導向「提示詞合集」，甚至在第 8 點出現拼裝外包私訊的複製車禍。
    - 其提示詞缺乏確定性約束、數據輸入管線與政策安全邊界，難以支撐貼文宣稱「90 天可達變現門檻」的說法。
 2. **處置決策**：
-   - 本庫已收錄分析 [`Jakeschincariol/youtube-agent-skill`](./2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md)，並建立採納審計器 `tools/verify_agent_skill_pack_safety.py`；未安裝該技能包。
+   - 本庫已收錄分析 [`Jakeschincariol/youtube-agent-skill`](./2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md)，並建立採納審計器 [`tools/verify_agent_skill_pack_safety.py`](https://github.com/SanHsien/agent-safety-checks/blob/main/tools/verify_agent_skill_pack_safety.py)；未安裝該技能包。
    - 本筆記建檔為反面教材與架構對照基準，標記為 **`status: archived` 歸檔備查**，不衍生額外代碼或建置任務。

@@ -14,7 +14,6 @@ public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 把 agent 安全檢查工具抽成獨立 repo（`verify_agent_skill_pack_safety`、`verify_tool_call_firewall`、`verify_cloud_persistence_audit`、`audit_oauth_credentials`、`screen_privacy`） | 維護者同意修改全域規則與 agent-assets 第 12 條中引用 `ai-inbox\tools\` 的路徑 | 照 2026-11-02 前例用 git-filter-repo 保留歷史搬出；ai-inbox、全域 AGENTS.md、agent-assets 的引用全部改指新 repo；兩邊 CI 綠燈 | Claude | `REVIEW.md` 第 13 節；全域 AGENTS.md 第 15 條與截圖路由列 |
 | 重新確認 `av>=14,<17` 固定版本是否還需要 | `faster-whisper` 發布高於 1.2.1 的版本，或維護者在新機器重裝 `video_transcript` 環境 | 在乾淨 venv 以最新 `faster-whisper` 安裝並跑 `tools/video_transcript.py` 一次；依結果更新或刪除 `docs/video-transcript-howto.md:35` 與 `:53` 的 pin，兩處一致 | Claude Sonnet | `docs/video-transcript-howto.md:35`、`:53`；freshness 深掃報告（2026-10-28）「未處理／留意」 |
 | 新增依賴宣告檔時改用 dependency-freshness workflow | repo 新增 requirements／pyproject，或 `assets/inbox-band-mod` 補上 package.json | 加上含 `check_dependency_freshness` 的 workflow，並在同一 commit 刪掉 `.github/dependabot.yml:3` 的 `fleet-waiver`；`python -m fleet_ops audit`（repo-fleet-ops）該 repo freshness 欄不再是 `w` | Claude Sonnet | `.github/dependabot.yml:3`；freshness 深掃報告（2026-10-28） |
 | 編輯器匯出 JSON 轉驗證器輸入的轉換工具 | 維護者決定要讓 target-story 編輯器與驗證器串成一條流程 | 新工具把 `assets/target-story-editor` 的匯出餵進 `tools/verify_story_structure.py` 且 exit 0（至少一份編輯器匯出檔）、並有一個測試以固定匯出檔釘住輸出；`docs/target-story-generative-ui-spec.md` 第 3 節改寫並有測試對照 | 維護者 | 深掃報告（2026-10-26）缺陷 9 與「刻意不修」 |
