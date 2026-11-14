@@ -37,6 +37,36 @@ TOOL_ACCESS = {"read_file": "read", "write_file": "write", "edit_file": "write",
 
 DEFAULT_WRITE_TOOLS = frozenset({"write_file", "edit_file", "delete_file", "run_command"})
 
+# 每種工具允許的欄位白名單；出現未列欄位一律拒絕（UNKNOWN_FIELD）。
+_BASE_FIELDS = frozenset({"tool", "role", "path"})
+TOOL_ALLOWED_FIELDS = {
+    "read_file": _BASE_FIELDS,
+    "write_file": _BASE_FIELDS | {"content", "content_sha256"},
+    "edit_file": _BASE_FIELDS | {"content", "content_sha256", "old_string", "new_string"},
+    "delete_file": _BASE_FIELDS | {"content", "content_sha256"},
+    "run_command": _BASE_FIELDS | {"content", "content_sha256", "command"},
+}
+# 這些欄位若出現必須是字串
+_STRING_FIELDS = frozenset({"old_string", "new_string", "command"})
+
+_RESERVED_DEVICE_NAMES = frozenset(
+    {"con", "prn", "aux", "nul"} | {f"com{i}" for i in range(1, 10)} | {f"lpt{i}" for i in range(1, 10)}
+)
+
+
+def has_unsafe_windows_segment(raw_path: str) -> bool:
+    """含 ':'（NTFS 替代資料串流、磁碟機代號）、結尾 '.'/空白、保留裝置名或 8.3 '~N' 短名的區段一律視為不安全。"""
+    if ":" in raw_path:
+        return True
+    for seg in raw_path.replace("\\", "/").split("/"):
+        if not seg or seg == ".":
+            continue
+        if seg != seg.rstrip(" .") or seg.split(".")[0].strip().lower() in _RESERVED_DEVICE_NAMES:
+            return True
+        if "~" in seg and any(ch.isdigit() for ch in seg.split("~", 1)[1][:1]):
+            return True
+    return False
+
 
 def normalize_logical_path(raw_path: str) -> str:
     """將路徑統一轉為 POSIX 斜線並保留相對層級以檢查 '..' 逃逸。"""
@@ -58,19 +88,27 @@ def compute_content_sha256(content: str) -> str:
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 
+def canonical_call(call: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    整個工具呼叫的 canonical 形式：所有欄位（含 command、old_string、new_string 等）都納入，
+    path 正規化、tool/role 去空白；自附 content_sha256 由實際 content 重算，不採信。
+    """
+    canon: Dict[str, Any] = {}
+    for key, value in call.items():
+        if key == "content_sha256":
+            continue
+        if key in ("tool", "role"):
+            value = str(value).strip()
+        elif key == "path":
+            value = normalize_logical_path(str(value))
+        canon[str(key)] = value
+    canon["content_sha256"] = compute_content_sha256(call.get("content", ""))
+    return canon
+
+
 def compute_request_digest(call: Dict[str, Any]) -> str:
-    """
-    對工具呼叫信封（tool, role, path, content_sha256）計算確定性 SHA-256 請求雜湊。
-    只對實際 content 原文計算 SHA-256，不採信自附 content_sha256。
-    """
-    content_hash = compute_content_sha256(call.get("content", ""))
-    canonical = {
-        "tool": str(call.get("tool", "")).strip(),
-        "role": str(call.get("role", "")).strip(),
-        "path": normalize_logical_path(str(call.get("path", ""))),
-        "content_sha256": str(content_hash).strip().lower(),
-    }
-    payload = json.dumps(canonical, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    """對整個 canonical call（鍵排序後序列化）計算確定性 SHA-256 請求雜湊。"""
+    payload = json.dumps(canonical_call(call), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
@@ -106,6 +144,7 @@ class ToolCallFirewall:
         )
         self.write_tools: Set[str] = set(write_tools)
         self.consumed_receipts: Set[str] = set()
+        self.consumed_digests: Set[str] = set()
 
     def verify_call(
         self,
@@ -125,6 +164,13 @@ class ToolCallFirewall:
         tool, role, raw_path = (call[k].strip() for k in ("tool", "role", "path"))
         if tool not in TOOL_ACCESS:
             return False, "UNKNOWN_TOOL", "未列於明確工具對照表"
+        unknown = sorted(str(k) for k in call if k not in TOOL_ALLOWED_FIELDS[tool])
+        if unknown:
+            return False, "UNKNOWN_FIELD", f"工具 '{tool}' 不允許欄位：{', '.join(unknown)}"
+        if any(k in call and not isinstance(call[k], str) for k in _STRING_FIELDS):
+            return False, "INVALID_ENVELOPE", "command／old_string／new_string 必須是字串"
+        if tool == "run_command" and not call.get("command", "").strip():
+            return False, "INVALID_ENVELOPE", "run_command 必須提供非空 command"
         if "content" in call and not isinstance(call["content"], str):
             return False, "INVALID_ENVELOPE", "content 必須是字串"
         if TOOL_ACCESS[tool] == "write" and not isinstance(call.get("content"), str):
@@ -139,6 +185,8 @@ class ToolCallFirewall:
 
         if has_path_traversal(raw_path):
             return False, "PATH_TRAVERSAL", f"路徑 '{raw_path}' 含 '..' 越界區段"
+        if call["path"] != raw_path or has_unsafe_windows_segment(raw_path):
+            return False, "UNSAFE_PATH", f"路徑 '{raw_path}' 含 ':'（ADS／磁碟機）、結尾點或空白、保留裝置名或 8.3 短名"
 
         norm_path = normalize_logical_path(raw_path)
         try:
@@ -180,7 +228,11 @@ class ToolCallFirewall:
                     "呼叫內容或目標路徑於審批後遭竄改（request_digest 不吻合）",
                 )
 
+            if actual_digest in self.consumed_digests:
+                return False, "REPLAYED_REQUEST", "同一請求內容已被審批消費過，換 receipt_id 重送也拒絕"
+
             self.consumed_receipts.add(receipt_id)
+            self.consumed_digests.add(actual_digest)
 
         return True, "ALLOWED", "驗證通過"
 
