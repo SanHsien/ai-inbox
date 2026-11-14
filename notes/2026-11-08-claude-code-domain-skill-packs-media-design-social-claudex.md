@@ -128,7 +128,7 @@ tags:
     2. 實作 `tools/verify_agent_skill_pack_safety.py`，以 `--pack` 對技能包實際檔案做靜態啟發式掃描（通過不代表安全，仍需人工審查），並保留四條自填宣告檢查項目（不能當作採納依據）：`SKILLPACK-001`（攔截 `--dangerously-bypass-approvals-and-sandbox` / `bypassPermissions` 與 Impeccable Live Mode 背景自動提權）、`SKILLPACK-002`（背景 Hook 審查與 `DO_NOT_TRACK=1` / `telemetry: false` 閘門）、`SKILLPACK-003`（社交平台 `human_publish_only` 草稿唯讀與 `{{your number}}` 零虛構數據佔位符）、`SKILLPACK-004`（確定性本地 Linter 支撐與反 `100% undetectable` 誇大宣稱）。
     3. 撰寫 `tests/test_verify_agent_skill_pack_safety.py` 涵蓋四條規則之正反例單元測試。
   - **驗收標準（DoD）**：
-    - `python tools/verify_agent_skill_pack_safety.py` 回傳 `[PASS]`（exit 0）。
+    - `python tools/verify_agent_skill_pack_safety.py --self-test` 回 0；以 `--pack` 掃描含危險旗標的假技能包回 1、掃描不存在的目錄回 2（由 `tests/test_verify_agent_skill_pack_safety.py` 涵蓋）。（DoD 於 2026-11-14 隨退回修正改寫：原本的裸執行回 `[PASS]` 不能當採納檢查。）
     - `python -m unittest tests/test_verify_agent_skill_pack_safety.py -v` 全數通過。
     - `python tools/build_index.py` 與 `python tools/verify_inbox.py` 契約及 100% 目錄覆蓋率驗證通過。
   - **實作紀錄 / 證據**：已完成 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`、`tools/verify_agent_skill_pack_safety.py` 與 `tests/test_verify_agent_skill_pack_safety.py`；執行 `python tools/verify_agent_skill_pack_safety.py` 輸出 `[PASS] Agent Skill Pack 安全與決定性審計通過（共檢驗 5 組工具鏈）。`，單元測試 `Ran 6 tests — OK`。 **退回（2026-11-14，獨立審查）**：`tools/verify_agent_skill_pack_safety.py:198` 只做固定子字串比對，`--permission-mode=bypassPermissions`、雙空白、Tab 都繞得過；:219、:260 只檢查自填的 JSON，完全不掃第三方技能包的實際檔案，不能當全域規則第 15 條的採納關卡；刪掉旗標檢查沒有任何測試變紅。
