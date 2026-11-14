@@ -39,13 +39,14 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 213 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 140／⚪ 不做 72
+> 共 214 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 140／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
+| `T-20261114-05` | 🔴 未做 | 高 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | `C:\GitHub\agent-relay`（`ROADMAP.md`、`SPEC.md`、`SPEC.en.md`、`agent_relay/envelope.py`、`agent_relay/cli.py`、`tests/`） | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | 2026-11-14 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 
 ### 🟢 已做（Done）
@@ -387,7 +388,7 @@
 | 2026-11-13 | ⚪ | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
 | 2026-11-14 | 🟡 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 1 / 2（+1 不做） |
-| 2026-11-14 | 🟢 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 1 / 1 |
+| 2026-11-14 | 🟡 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 1 / 2 |
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 <!-- END GENERATED: index -->
 

@@ -6,7 +6,7 @@ source_platform: "facebook"
 author: "Jackle Chen"
 analyzed_at: "2026-11-14"
 analyzed_by: "antigravity"
-status: done
+status: in-progress
 cluster: 1
 cluster_role: "多session管理"
 short_title: "總PM與claude-inbox"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Facebook 貼文：Jackle Chen](https://www.facebook.com/share/p/19youqwPEF/)
 - **發布平台 / 作者**：`facebook` / `Jackle Chen`
 - **分析日期**：`2026-11-14`
-- **當前狀態**：`🟢 已完成 (Done)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 
 ---
 
@@ -44,7 +44,7 @@ tags:
 
 **Jackle Chen**（FB 貼文，原文發表於其部落格 `jackle.pro`，2026-11-07）分享他同時帶 20 多條 Claude Code session 的做法：**一個常駐的「總 PM」session 負責派工，所有需要人決定的事統一進一個網頁「收件匣」**，人有空再一次回答，答案經 hook 自動回到對應 agent。他把收件匣核心拆出來開源為 `chenjackle45/claude-inbox`（MIT，16 stars、6 forks）。
 
-資料來源說明：Facebook 全文被登入牆與 CAPTCHA 擋住（未繞過），貼文只取得 og 摘要；完整內容取自作者在貼文中指向的公開部落格文章 `jackle.pro/articles/claude-inbox`，以及 GitHub 倉庫原始碼實讀。
+資料來源說明：早期透過純文字爬蟲被導向登入頁與 CAPTCHA 擋住；2026-11-14 改由瀏覽器（無登入狀態、關閉登入彈窗後）實際讀取確認 Facebook 貼文全文與前 10 則公開留言完全可見（無需繞過 CAPTCHA），內文與作者公開部落格 `jackle.pro/articles/claude-inbox` 一致。留言區另有兩項實用討論：Atticus Wu 提醒「一個專案／待辦對應到哪些 session」的追蹤關聯性；Leo Tong 指出常駐 Fable PM 的 Token 燃燒成本過高。
 
 **對本機最重要的結論：`inbox.py` 使用 `fcntl`，README 明載「不支援原生 Windows」，本機（Windows 11 原生）無法直接使用，只有 WSL 可行。**
 
@@ -140,26 +140,27 @@ agent 處理完 ──inbox close <題號>──▶ 收起
 
 ## 3. 啟發與適用性評估
 
-### 與本機防線對照
+### 與本機防線與現有派工系統對照（2026-11-14 實查 `agent-relay` / `agentdeck`）
 
 | 評估維度 | 結論 |
 |---------|------|
 | **採用可行性** | 低：本機為 Windows 11 原生，`inbox.py` 用 `fcntl`（POSIX 專有）、hook 寫死 `python3`（2026-11-14 以 GitHub API 查證） |
-| **概念可借用** | 高：「問人的事排隊、答案由 hook 注入下一輪」與本機 `ai-inbox`、hook 防線、派工清單思路同源 |
+| **對比 `agent-relay`（核心強項）** | 本機 `agent-relay` + `agentdeck` + `harness-guard` + `ai-quality-gates` 在跨 CLI 派工、SSH 簽章、worktree 隔離、`dispatch.verify` 驗收閘門、`/recap` 期間摘要皆已遠勝 `claude-inbox` 單一插件，無需重造輪子 |
+| **對比 `agent-relay`（唯一真實缺口）** | 實查 `agent_relay/envelope.py:17` 僅有 `KINDS = ("task", "reply", "note", "result")`。當 Worker 施工中遇到需人類「二選一／拍板」但不想中斷整條線時，尚缺類似 `claude-inbox` 的**結構化待決策問題格式與統一篩選／批次回覆介面** |
 | **安全性** | 良好：loopback 預設、token、Host/Origin 檢查、純文字顯示；唯一外部輸入是人本人的答案 |
 | **第三方 plugin 風險** | 屬社群個人專案（16 stars），依零信任規則：只讀分析，不安裝；採納前須過 SkillSpector 與 [`verify_agent_skill_pack_safety.py`](https://github.com/SanHsien/agent-safety-checks/blob/main/tools/verify_agent_skill_pack_safety.py) |
 | **對照既有規範** | 本機已有「派工要掌控到完成」規範；總 PM 模式與之吻合，但作者的「決定做就當作完成」心法與「結案前要實查」衝突，不宜照搬 |
-| **成本** | 總 PM 用旗艦模型常駐 20 天，配額消耗高，未提供用量數字 |
+| **成本** | 總 PM 用旗艦模型常駐 20 天，配額消耗高（留言區亦被質疑），未提供用量數字 |
 
 ---
 
 ### 評估結論與處置
 
-**評分：⭐⭐⭐（3/5）**（原 4/5；結論為 Windows 原生不可用、不安裝，故酌降使評分與結論一致）
+**評分：⭐⭐⭐（3/5）**
 
-方法論有實戰數據（21 條 session、20 天常駐），且作者主動坦承限制（未實測 Codex、常駐版本停滯、每晚仍須人工允許），開源範圍也交代清楚（儀表板、撈 log、進度頁不在 repo 內）。扣分：Windows 原生不可用且不安裝；FB 貼文本身只是導流，細節在部落格；「決定做就當作完成」的心法在無實查時有漏洞。
+方法論有實戰數據（21 條 session、20 天常駐），且作者主動坦承限制（未實測 Codex、常駐版本停滯、每晚仍須人工允許），開源範圍也交代清楚（儀表板、撈 log、進度頁不在 repo 內）。扣分：Windows 原生不可用且不安裝；「決定做就當作完成」的心法在無實查時有漏洞。
 
-**處置**：不安裝 `claude-inbox`（Windows 原生不可用；若要試，只在 WSL 隔離環境，且先審 `inbox.py`、`hooks.json` 全文）。可借用的是概念：問人的事排隊、答案由 hook 注入下一輪，可由本機 `agent-relay` 或 `ai-inbox` 現有機制承接。原核取清單因無可驗收 DoD 已刪除；本篇唯一的任務見第 4 節。
+**處置**：不安裝 `claude-inbox`（Windows 原生不可用）。對比本機派工系統後，確認無需引入總 PM 常駐對話或 `/leave`（已有 `agent-relay` + `agentdeck` + `/recap`），僅將「結構化非同步決策問答（`ask`／待拍板佇列篩選與回傳）」列為 `SanHsien/agent-relay` 的近期優先事項（已同步更新至 `agent-relay/ROADMAP.md` 與本篇 `T-20261114-05`）。
 
 **參考連結**：
 - 部落格原文：https://jackle.pro/articles/claude-inbox
@@ -178,3 +179,12 @@ agent 處理完 ──inbox close <題號>──▶ 收起
   - **驗收標準（DoD）**：`python -m unittest tests/test_inbox.py` 綠燈且含上述三個新測試；清理前 `python tools/verify_inbox.py` 對六篇報錯（附輸出），清理後回 `[PASS]`；`python -m unittest discover -s tests` 全綠。
   - **完成日期**：2026-11-14
   - **實作紀錄 / 證據**：完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。
+
+- [ ] **`T-20261114-05`**｜**[優先級：高]** 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務）
+  - **目標範圍**：`C:\GitHub\agent-relay`（`ROADMAP.md`、`SPEC.md`、`SPEC.en.md`、`agent_relay/envelope.py`、`agent_relay/cli.py`、`tests/`）
+  - **具體做法**：
+    1. 在 `SPEC.md`／`SPEC.en.md` 定義結構化決策問題欄位（來源專案、`thread`、選項 `A/B`、推薦選項、期限與補充欄），評估採 `question` kind 或 `note` 擴充欄位。
+    2. 在 `agent_relay/cli.py` 新增對應篩選（如 `relay inbox --questions`）與回覆指令，讓使用者一次回答多題並回傳至對應 Worker `thread`（由 `hooks/session_start.py` 或 `poller` 帶入下一輪上下文）。
+    3. 補齊單元測試並通過 `python -m unittest discover -s tests`、`tools/check_doc_parity.py`、`tools/check_links.py`。
+  - **驗收標準（DoD）**：`agent-relay` 可透過 CLI 送出結構化決策問題、篩選待拍板佇列並回覆回原 `thread`，中英規格對齊且測試與 doc parity 全綠（已先登錄於 `agent-relay/ROADMAP.md` 近期優先事項）。
+  - **實作紀錄 / 證據**：*（2026-11-14 已將本項加入 `C:\GitHub\agent-relay\ROADMAP.md` 近期優先事項；待排程實作）*
