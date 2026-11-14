@@ -49,8 +49,8 @@ GitHub Copilot Fusion 推出自動模型分派，使用者只選投入程度（S
 
 ## 2. 查證
 
-- **Fusion 官方說明**與貼文一致：三種執行方式 + 三種努力等級；主對話盡量留在同一模型以保 prompt cache，審查模型只拿必要 context；**沒有額外訂閱費，但按實際呼叫的每個模型計費**，High／Max 可能觸發多模型呼叫，消耗高於 Standard。
-- **NVIDIA NeMo Switchyard**：stage router 觀察最近幾輪工具活動（讀取／寫入／測試），**重複失敗、空轉迴圈 → 升級到強模型**；穩定寫入、測試通過 → 降回便宜模型；有 `capable_hold_turns` 升級後保持期，訊號不明時可問 LLM judge。可作為 middleware 或獨立 proxy。
+- **Fusion 官方說明**與貼文一致（未查證：本筆記未附官方網址，採納前請至 GitHub 官方文件核對）：三種執行方式 + 三種努力等級；主對話盡量留在同一模型以保 prompt cache，審查模型只拿必要 context；**沒有額外訂閱費，但按實際呼叫的每個模型計費**，High／Max 可能觸發多模型呼叫，消耗高於 Standard。
+- **[NVIDIA NeMo Switchyard](https://github.com/NVIDIA-NeMo/Switchyard)**：stage router 觀察最近幾輪工具活動（讀取／寫入／測試），**重複失敗、空轉迴圈 → 升級到強模型**；穩定寫入、測試通過 → 降回便宜模型；有 `capable_hold_turns` 升級後保持期（README 未見；僅在 repo 原始碼搜尋到該字串，行為未查證），訊號不明時可問 LLM judge。可作為 middleware 或獨立 proxy。
 
 ## 3. 最有價值的反證：第一線留言
 
