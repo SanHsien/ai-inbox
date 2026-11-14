@@ -21,7 +21,25 @@ tags:
   - claude-plugins-official
 ---
 
-## Executive Summary
+# Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF
+
+- **來源連結**：[Facebook 貼文：胡嘉璽](https://www.facebook.com/share/1CRZAaRBW7/)
+- **發布平台 / 作者**：`facebook` / `胡嘉璽`
+- **分析日期**：`2026-11-13`
+- **當前狀態**：`⚪ 不做 (Archived)`
+
+---
+
+## 1. 核心內容摘要（5W1H 初篩）
+
+- **Who**：作者胡嘉璽（貼文）；功能出自 Anthropic 官方 Claude Code。
+- **What**：Claude Code 做投影片時產出可分享的 Artifact 網頁，可匯出 PDF／PPTX（匯出部分未查證）。
+- **Why**：作者以此取代 Canva；本筆記要釐清是新功能還是誤解。
+- **How**：內建 `Artifact` tool 發布單檔 HTML 到 claude.ai（見下方技術架構）。
+- **When & Where**：需 claude.ai 登入的互動 session；官方文件寫 beta、Team／Enterprise。
+- **Key Metrics / Numbers**：貼文 262 reactions、76 shares；無實測數據。
+
+### 摘要原文
 
 **胡嘉璽**（2026-11-08，262 reactions、76 shares）發現：用 Claude Code 做投影片時，輸出不再是 `.pptx`，而是開啟一個 **Claude Code Artifacts 網頁**，介面與 Canva 幾乎一樣，可分享，且能下載成 PDF 或 PPTX。作者因此退訂 Canva，並問「是新功能還是我大驚小怪」。
 
@@ -103,26 +121,38 @@ https://claude.ai/code/artifact/<uuid>   預設私有
 
 ---
 
-## 與本機防線對照
+## 2. CQR 深入論證檢驗（選填）
+
+- **Claim**：Claude Code 做簡報會開啟 Canva 式編輯網頁並可匯出 PPTX／PDF。
+- **Evidence**：官方 `project-artifact` plugin 佐證 Artifact 發布與分享；Canva 式編輯器與匯出僅有第三方摘要。
+- **Reasoning**：觸發條件不明、匯出品質未實測，單一用戶經驗不足以支撐「Canva 殺手」結論。
+
+---
+
+## 3. 啟發與適用性評估
+
+### 與本機防線對照
 
 - **隱私**：發布 Artifact 等於把簡報內容上傳到 claude.ai 託管；含客戶或內部資料者不應使用，預設私有但分享後即外流。
-- **方案限制**：Team/Enterprise beta，個人帳號可能沒有此功能；本機 Antigravity 環境不適用（無 Claude Code Artifact tool）。
+- **方案限制**：Team/Enterprise beta，個人方案可能沒有此功能（需 Team／Enterprise）；本機若無 claude.ai 登入的互動 session 也無法使用。
 - **「Canva 被斬殺」是情緒化結論**：沒有實測匯出品質，單一用戶經驗不足以推論產業判斷。
 - 本機若要穩定產簡報，仍以 `pptx` skill 路線為主。
 
 ---
 
-## 評估結論與處置
+### 評估結論與處置
 
 **評分：⭐⭐⭐（3/5）**
 
 提供了有用的線索：Claude Code 已有可發布分享的內建 Artifact tool，且 `pptx` skill 與 Artifact 是兩條不同路線。扣分：貼文沒說清楚觸發方式；Canva 式編輯器與匯出的官方證據不足；標題帶有誇張成分。
 
-**處置**：
-- [ ] 若有 Team/Enterprise 帳號，實測「請 Claude Code 做簡報」在不同措辭（投影片 / ppt / slides）下是否導向 Artifact，並記錄匯出 PPTX 的格式品質
-- [ ] 查 Claude Code 官方更新記錄，確認 Artifact tool 與簡報範本的正式發布日期
-- [ ] 本機簡報任務維持 `anthropics/skills` 的 `pptx` skill；含敏感內容者不要發布到 Artifact
-- [ ] 與 `2026-11-09-goodjobai-five-trending-claude-skills.md` 一併追蹤官方 skill 與 plugin 的變動
+**處置**：僅歸檔備查；無可驗收的具體任務，不衍生待辦。本機簡報維持 `anthropics/skills` 的 `pptx` skill，含敏感內容者不要發布到 Artifact（原核取清單因無可驗收 DoD 已刪除）。
+
+---
+
+## 4. 拆解待辦事項（Action Items）
+
+無（零任務判斷：維持歸檔）。
 
 **參考連結**：
 - 官方 plugin：https://github.com/anthropics/claude-plugins-official/tree/main/plugins/project-artifact
