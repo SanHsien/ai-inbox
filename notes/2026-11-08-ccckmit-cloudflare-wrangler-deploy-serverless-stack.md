@@ -6,7 +6,7 @@ source_platform: "Facebook (@ccckmit 陳鍾誠)"
 author: "陳鍾誠 (國立金門大學資訊工程系教授, @ccckmit)"
 analyzed_at: 2026-11-08
 analyzed_by: "Antigravity"
-status: done
+status: pending
 cluster: "4"
 cluster_role: "全端部署與自動化落地"
 short_title: "陳鍾誠Cloudflare一鍵部署評估"
@@ -24,7 +24,7 @@ tags:
 
 - **來源連結**：[Facebook 分享短網址](https://www.facebook.com/share/1GJKuLJkSt/) ｜ [貼文永久網址 (@ccckmit)](https://www.facebook.com/814251892/posts/10164685081236893/) ｜ [陳鍾誠 GitHub (`ccckmit`)](https://github.com/ccckmit)
 - **歸屬集群**：集群 4：全端商業建站、資料庫與安全審計（角色：`全端部署與自動化落地`）
-- **當前狀態**：`🟢 已完成 (Done)`
+- **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md`](./2026-10-17-hansun-fullstack-agent-deployment-manual.md)（HanSun 全端建置部署手冊與 `audit_fullstack_security.py`）
   - [`notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md`](./2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md)（Cloudflare Agents SDK 與 Durable Objects 邊緣運行時）
@@ -88,7 +88,7 @@ tags:
 
 本庫既有 `T-20261017-24` 已建置 [`docs/production-smoke-security-checklist.md`](../docs/production-smoke-security-checklist.md) 與 [`tools/audit_fullstack_security.py`](../tools/audit_fullstack_security.py)，但原先僅涵蓋 Next.js + Supabase + Vercel，尚未納管 Cloudflare `wrangler.toml` / `.dev.vars` 的機密防洩漏檢查。直接擴充既有工具與檢核表完成閉環：
 
-- [x] **`T-20261108-05`**｜**[優先級：中]** 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核
+- [ ] **`T-20261108-05`**｜**[優先級：中]** 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核
   - **目標範圍**：`tools/audit_fullstack_security.py`、`tests/test_audit_fullstack_security.py`、`docs/production-smoke-security-checklist.md`
   - **具體實作步驟**：
     1. 在 `tools/audit_fullstack_security.py` 新增 `check_wrangler_config(root)`：當專案存在 `wrangler.toml` / `wrangler.json` / `wrangler.jsonc` 或 `.dev.vars` 時，強制驗證 `.gitignore` 是否忽略 `.dev.vars`，並攔截在 `wrangler.toml` 明文定義 `SECRET` / `API_KEY` / `PRIVATE_KEY` / `ACCESS_TOKEN` / `PASSWORD` 或真實金鑰特徵。
@@ -97,5 +97,4 @@ tags:
   - **驗收標準（DoD）**：
     - `python -m unittest tests/test_audit_fullstack_security.py -v` 全數通過。
     - `python tools/verify_inbox.py` 契約與覆蓋率檢查回傳 `[PASS]`。
-  - **完成日期**：2026-11-08
-  - **實作紀錄 / 證據**：已於 `tools/audit_fullstack_security.py` 新增 `check_wrangler_config` 檢查、於 `docs/production-smoke-security-checklist.md` 新增第 6 節 Cloudflare Serverless 部署檢核清單，並擴充 `tests/test_audit_fullstack_security.py` 至 16 項測試（`Ran 16 tests — OK`）。
+  - **實作紀錄 / 證據**：已於 `tools/audit_fullstack_security.py` 新增 `check_wrangler_config` 檢查、於 `docs/production-smoke-security-checklist.md` 新增第 6 節 Cloudflare Serverless 部署檢核清單，並擴充 `tests/test_audit_fullstack_security.py` 至 16 項測試（`Ran 16 tests — OK`）。 **退回（2026-11-14，獨立審查）**：`tools/audit_fullstack_security.py:218` 逐行 regex 漏掉單行 JSON 與 inline TOML 的 `vars.API_KEY`，未加引號的數值密碼也漏報；`docs/production-smoke-security-checklist.md:84` 把 KV 常見延遲寫成「最長約 60 秒」上限（官方為 60 秒或更久）。

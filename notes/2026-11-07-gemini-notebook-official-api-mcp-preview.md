@@ -6,7 +6,7 @@ source_platform: "Threads (@be.ai.curator)"
 author: "AI 主理人 (@be.ai.curator)"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
-status: done
+status: pending
 cluster: "3"
 cluster_role: "跨網情報與知識檢索"
 short_title: "Gemini Notebook MCP 預覽評估"
@@ -89,13 +89,12 @@ Agent ──create_source──► Gemini Notebook ──► 人在網頁 UI 問
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [x] **`T-20261107-05`**｜**[優先級：中]** 擴充 `tools/verify_cloud_persistence_audit.py` 新增 MCP 設定檔靜態 Bearer／`ya29.` Token 與過寬 `cloud-platform` Scope 稽核器
+- [ ] **`T-20261107-05`**｜**[優先級：中]** 擴充 `tools/verify_cloud_persistence_audit.py` 新增 MCP 設定檔靜態 Bearer／`ya29.` Token 與過寬 `cloud-platform` Scope 稽核器
   - **目標範圍**：`tools/verify_cloud_persistence_audit.py`、`tests/test_verify_cloud_persistence_audit.py`
   - **具體做法**：
     1. 針對官方 Gemini Notebook MCP 教學將 `gcloud auth application-default print-access-token` 產出之短效 `ya29.*` Bearer Token 直接寫進 MCP 設定檔 `headers`／`args`（易外洩且 1 小時過期後靜默失效）與申請 `cloud-platform` 全權 scope 之風險，實作 `audit_mcp_config_credentials()` 與 `--audit-mcp-config` 參數。
     2. 支援攔截硬編碼 Bearer Token 與 `ya29.*` 憑證，同時放行環境變數佔位符（如 `${NOTEBOOK_ACCESS_TOKEN}`）。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_cloud_persistence_audit.py` 綠燈通過。
-  - **完成日期**：2026-11-07
-  - **實作紀錄 / 證據**：已於 `tools/verify_cloud_persistence_audit.py` 實作 `audit_mcp_config_credentials` 與 `--audit-mcp-config`，並於 `tests/test_verify_cloud_persistence_audit.py` 新增正反案例測試，8 項測試全數通過。
+  - **實作紀錄 / 證據**：已於 `tools/verify_cloud_persistence_audit.py` 實作 `audit_mcp_config_credentials` 與 `--audit-mcp-config`，並於 `tests/test_verify_cloud_persistence_audit.py` 新增正反案例測試，8 項測試全數通過。 **退回（2026-11-14，獨立審查）**：`tools/verify_cloud_persistence_audit.py:111` 用長度 16 當門檻，`Bearer abc123` 放行；:153 args 裡不帶 Bearer 的 `ya29.` token 放行；:121 壞 schema（mcpServers 為陣列）回 PASS。把門檻改成 >=1 沒有任何測試變紅。
 
 > 備註：Gemini Notebook MCP 本身因目前 7 個工具僅支援寫入、無問答或取回摘要 API，暫不接入日常研究流水線；待官方新增查詢工具或 OAuth 自動刷新機制後再評估接入。

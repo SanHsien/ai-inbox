@@ -6,7 +6,7 @@ source_platform: "Facebook (Will 保哥的技術交流中心)"
 author: "Will 保哥 (@will.fans / @doggy8088)"
 analyzed_at: 2026-11-07
 analyzed_by: "Antigravity"
-status: done
+status: in-progress
 cluster: "2"
 cluster_role: "視覺工件與互動 UI"
 short_title: "保哥 answer-me-with-html 繁中 Fork 評估"
@@ -80,22 +80,20 @@ OpenCC 的 `cn -> tw2` 在技術文件與二次轉換（second-pass）時有幾�
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [x] **`T-20261107-02`**｜**[優先級：高]** 借鑑保哥 `scripts/zh-tw/vocab.mjs` 實作「台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具」於 `tools/verify_zhtw_vocab.py` 與單元測試
+- [ ] **`T-20261107-02`**｜**[優先級：高]** 借鑑保哥 `scripts/zh-tw/vocab.mjs` 實作「台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具」於 `tools/verify_zhtw_vocab.py` 與單元測試
   - **目標範圍**：`tools/verify_zhtw_vocab.py`、`tests/test_verify_zhtw_vocab.py`
   - **具體做法**：
     1. 實作 `apply_zhtw_vocab()`、`scan_degraded_vocab()` 與 `verify_idempotence()`，內建 OpenCC (`cn -> tw2`) 二次轉換退化修補（`連線埠→連接埠`、`隻影響→只影響`、`選一個類別型→選一個類型`、`型別別→型別`、`字面量（Literal）（Literal）→字面量（Literal）`、`瞭什麼→了什麼`）、語境多義詞還原（音訊 `寫程式→編碼`、終端機 `打印→輸出`、`參考檔案→參考文件`）及大陸動詞修補（`摁下→按下`）。
     2. 支援略過 Markdown 圍欄程式碼區塊與行內反引號反例（`skip_code=True`），並提供 `--check`、`--fix`、`--verify-idempotent` CLI。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_zhtw_vocab.py` 綠燈通過，且 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 全數通過。
-  - **完成日期**：2026-11-07
-  - **實作紀錄 / 證據**：已完成 `tools/verify_zhtw_vocab.py` 與單元測試 `tests/test_verify_zhtw_vocab.py`（5 項測試全過），並實跑全庫 `notes`、`docs`、`templates`、`README.md` 掃描與冪等驗證全綠通過。
+  - **實作紀錄 / 證據**：已完成 `tools/verify_zhtw_vocab.py` 與單元測試 `tests/test_verify_zhtw_vocab.py`（5 項測試全過），並實跑全庫 `notes`、`docs`、`templates`、`README.md` 掃描與冪等驗證全綠通過。 **退回（2026-11-14，獨立審查）**：DoD 指令 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 實跑 exit 1（雙反引號內的反例被誤報）；`--check` 指向不存在的路徑或零輸入時回 PASS；「型別別別」連續退化修一次不收斂，與宣稱的冪等不符。
 
-- [x] **`T-20261107-03`**｜**[優先級：中]** 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md`
+- [ ] **`T-20261107-03`**｜**[優先級：中]** 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md`
   - **目標範圍**：`docs/zhtw-fork-idempotent-sync-spec.md`
   - **具體做法**：
     1. 完整記錄保哥 `doggy8088/answer-me-with-html@zh-tw` 如何以 `.base-sha` 錨點、`git checkout -B zh-tw upstream/main` 強制重建、OpenCC + 兩層詞庫修補與雙重冪等檢驗閘門，徹底消除上游簡體專案 Fork 的合併衝突與二次轉換退化。
   - **驗收標準（DoD）**：產出 `docs/zhtw-fork-idempotent-sync-spec.md`；以 `Test-Path docs/zhtw-fork-idempotent-sync-spec.md` 驗證存在。
-  - **完成日期**：2026-11-07
-  - **實作紀錄 / 證據**：已完成 `docs/zhtw-fork-idempotent-sync-spec.md` 撰寫，涵蓋 6 步無衝突重建流水線、OpenCC 二次退化修補對照表與本機驗證指令；以 `Test-Path` 驗證為 True。
+  - **實作紀錄 / 證據**：已完成 `docs/zhtw-fork-idempotent-sync-spec.md` 撰寫，涵蓋 6 步無衝突重建流水線、OpenCC 二次退化修補對照表與本機驗證指令；以 `Test-Path` 驗證為 True。 **退回（2026-11-14，獨立審查）**：`docs/zhtw-fork-idempotent-sync-spec.md:15、:58、:72` 的錯誤範例被批次轉換改成正確寫法，前後自相矛盾；:29-31 的備份流程與上游 `sync.sh` 實際做法不符。
 
 - [x] **`T-20261107-04`**｜**[優先級：中]** 升級 `tools/render_artifact_html.py` 支援 `--zhtw` 編譯前台灣繁體中文詞庫修補並保持預設輸出位元組確定性
   - **目標範圍**：`tools/render_artifact_html.py`、`tests/test_render_artifact_html.py`

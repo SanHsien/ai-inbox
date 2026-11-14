@@ -6,7 +6,7 @@ source_platform: "Instagram Reels & Posts (8 則同主題工作流彙整) / GitH
 author: "Kwon 永誠 (@kwons_en)、Airi (@airi_aimagic)、Hana (@its_hana_digital)、Chloe (@chloemakesdesign)、阿幸 (@hsing.daily)、Rena 姜瑞娜 (@renakeung)、Chiara (@lynexaai)"
 analyzed_at: 2026-11-08
 analyzed_by: "Antigravity"
-status: done
+status: pending
 cluster: "2"
 cluster_role: "提示詞工程與上下文"
 short_title: "Claude垂直領域Skill與MCP生態盤點"
@@ -40,7 +40,7 @@ tags:
   - [`Jakeschincariol/instagram-agent-skill`](https://github.com/Jakeschincariol/instagram-agent-skill)（5,302 Stars，MIT）
   - [`nextlevelbuilder/ui-ux-pro-max-skill`](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)（146,485 Stars，MIT）、[`pbakaus/impeccable`](https://github.com/pbakaus/impeccable)（105,368 Stars，Apache-2.0）、[`21st-dev/magic-mcp`](https://github.com/21st-dev/magic-mcp)（6,414 Stars，ISC）
   - [`chaseai-yt/claudex-loop`](https://github.com/chaseai-yt/claudex-loop)（3,374 Stars，MIT）
-- **當前狀態**：`🟢 已完成 (Done)`
+- **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md`](./2026-10-17-tasteskill-v2-anti-slop-frontend.md)（Taste-Skill v2 前端反 AI Slop 規則）
   - [`notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md`](./2026-11-08-google-research-harness2-recursive-agent-harnessing.md)（Google Research Harness² 8 大模組與沙盒防弊契約）
@@ -121,7 +121,7 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [x] **`T-20261108-04`**｜**[優先級：高]** 撰寫《Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範》，並實作 `tools/verify_agent_skill_pack_safety.py` 靜態審計器
+- [ ] **`T-20261108-04`**｜**[優先級：高]** 撰寫《Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範》，並實作 `tools/verify_agent_skill_pack_safety.py` 靜態審計器
   - **目標範圍**：`docs/claude-code-domain-skill-packs-and-mcp-audit.md`、`tools/verify_agent_skill_pack_safety.py`、`tests/test_verify_agent_skill_pack_safety.py`
   - **具體實作步驟**：
     1. 撰寫 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`，完整整理 8 則 IG 貼文對應之四大垂直領域開源專案（`earshot`/`MMAudio`、`youtube-agent-skill`/`instagram-agent-skill`、`ui-ux-pro-max`/`impeccable`/`21st-mcp`、`claudex-loop`）架構、CQR 實證數據（`hookscore.py` AUC `0.83` vs `0.56`）與安全邊界。
@@ -131,5 +131,15 @@ tags:
     - `python tools/verify_agent_skill_pack_safety.py` 回傳 `[PASS]`（exit 0）。
     - `python -m unittest tests/test_verify_agent_skill_pack_safety.py -v` 全數通過。
     - `python tools/build_index.py` 與 `python tools/verify_inbox.py` 契約及 100% 目錄覆蓋率驗證通過。
-  - **完成日期**：2026-11-08
-  - **實作紀錄 / 證據**：已完成 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`、`tools/verify_agent_skill_pack_safety.py` 與 `tests/test_verify_agent_skill_pack_safety.py`；執行 `python tools/verify_agent_skill_pack_safety.py` 輸出 `[PASS] Agent Skill Pack 安全與決定性審計通過（共檢驗 5 組工具鏈）。`，單元測試 `Ran 6 tests — OK`。
+  - **實作紀錄 / 證據**：已完成 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`、`tools/verify_agent_skill_pack_safety.py` 與 `tests/test_verify_agent_skill_pack_safety.py`；執行 `python tools/verify_agent_skill_pack_safety.py` 輸出 `[PASS] Agent Skill Pack 安全與決定性審計通過（共檢驗 5 組工具鏈）。`，單元測試 `Ran 6 tests — OK`。 **退回（2026-11-14，獨立審查）**：`tools/verify_agent_skill_pack_safety.py:198` 只做固定子字串比對，`--permission-mode=bypassPermissions`、雙空白、Tab 都繞得過；:219、:260 只檢查自填的 JSON，完全不掃第三方技能包的實際檔案，不能當全域規則第 15 條的採納關卡；刪掉旗標檢查沒有任何測試變紅。
+
+- [ ] **`T-20261108-06`**｜**[優先級：中]** 新增 `tools/check_external_refs.py`：掃描 `notes/` 內的 GitHub repo 與 arXiv 連結，確認存在、是否改名或封存
+  - **目標範圍**：`tools/check_external_refs.py`、`tests/test_check_external_refs.py`、`docs/evidence/external-refs-check-2026-11.md`
+  - **具體做法**：
+    1. 掃 `notes/*.md`（略過程式碼圍欄），抽出 `https://github.com/<owner>/<repo>` 與 `arxiv.org/(abs|pdf)/<id>`，去重；同一行含「（私有）」的 repo 跳過。
+    2. 用 `gh api repos/<o>/<r>` 查（無 gh 時退用 urllib 加 `GITHUB_TOKEN`）：404 記錯誤、改名（301 或回傳的 full_name 不同）記警告、archived 記警告；arXiv 用 HEAD 請求，404 記錯誤。
+    3. 查詢函式可注入，測試用假回應、不連網；支援 `--offline`（只列清單）與 `--cache <檔>`。
+    4. 不接 CI（會連網、有 rate limit），只當人工巡檢與派工驗收用，在 `AGENTS.md` 寫作鐵律補一行用法。
+  - **驗收標準（DoD）**：`python -m unittest tests/test_check_external_refs.py` 全綠，至少涵蓋 404 → exit 1、改名 → exit 0 且有警告、「（私有）」被略過、arXiv 404 → exit 1；實跑 `python tools/check_external_refs.py --notes notes` 的摘要存成 `docs/evidence/external-refs-check-2026-11.md`（總數與失敗清單，失敗要逐條處理）；`python tools/verify_inbox.py` 通過。
+  - **完成日期**：
+  - **實作紀錄 / 證據**：
