@@ -157,6 +157,14 @@ Codync 提出 **BYOA（Bring Your Own Agent）** 與 **BYOS（Bring Your Own Sub
 
 ---
 
+## 4.5 2026-11-15 追蹤補充：Remote Desktop 與內建 `product-launch-film` Skill
+
+- **專案最新進展（2026-11-15 GitHub API 實查）**：`leepokai/Codync` 已成長至 **2,094 stars**（Apache-2.0、Rust、最後更新 `2026-11-14`），除支援 Mac/Linux/Windows、Tailscale 與 Cloudflare Relay 外，新增 **Remote Desktop 遠端桌面操控**與 iOS App（送審中）。
+- **意外亮點：`.claude/skills/product-launch-film/` 產品發表影片 Skill**：
+  - 倉庫內隨附了作者用於製作 Codync 宣傳片的完整 Skill（純 Markdown 規範＋靜態範本，可唯讀參考，遵守 Apache-2.0 授權），採 **HyperFrames（單一 `index.html` + GSAP timeline）**，將 60–90 秒 1080p60 發表影片嚴格拆為四階段簽核：**Story（`BRIEF.md` 節奏表）$\rightarrow$ Look（關鍵影格靜圖）$\rightarrow$ Motion（30fps 草稿）$\rightarrow$ Finish（SFX 音效＋60fps 成片）**，並附帶字型與 `sfx/*.mp3` 資產結構，極適合未來為 `agent-relay` 或接案產品製作發表短片時借鑑。
+
+---
+
 ## 5. 關聯筆記與相關任務（Related Notes & Tasks）
 
 - **模型燒額率與配額調度**：
