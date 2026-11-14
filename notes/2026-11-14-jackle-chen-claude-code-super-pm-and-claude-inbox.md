@@ -6,7 +6,7 @@ source_platform: "facebook"
 author: "Jackle Chen"
 analyzed_at: "2026-11-14"
 analyzed_by: "antigravity"
-status: in-progress
+status: done
 cluster: 1
 cluster_role: "多session管理"
 short_title: "總PM與claude-inbox"
@@ -27,7 +27,7 @@ tags:
 - **來源連結**：[Facebook 貼文：Jackle Chen](https://www.facebook.com/share/p/19youqwPEF/)
 - **發布平台 / 作者**：`facebook` / `Jackle Chen`
 - **分析日期**：`2026-11-14`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -180,11 +180,12 @@ agent 處理完 ──inbox close <題號>──▶ 收起
   - **完成日期**：2026-11-14
   - **實作紀錄 / 證據**：完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。
 
-- [ ] **`T-20261114-05`**｜**[優先級：高]** 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務）
+- [x] **`T-20261114-05`**｜**[優先級：高]** 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務）
   - **目標範圍**：`C:\GitHub\agent-relay`（`ROADMAP.md`、`SPEC.md`、`SPEC.en.md`、`agent_relay/envelope.py`、`agent_relay/cli.py`、`tests/`）
   - **具體做法**：
     1. 在 `SPEC.md`／`SPEC.en.md` 定義結構化決策問題欄位（來源專案、`thread`、選項 `A/B`、推薦選項、期限與補充欄），評估採 `question` kind 或 `note` 擴充欄位。
     2. 在 `agent_relay/cli.py` 新增對應篩選（如 `relay inbox --questions`）與回覆指令，讓使用者一次回答多題並回傳至對應 Worker `thread`（由 `hooks/session_start.py` 或 `poller` 帶入下一輪上下文）。
     3. 補齊單元測試並通過 `python -m unittest discover -s tests`、`tools/check_doc_parity.py`、`tools/check_links.py`。
   - **驗收標準（DoD）**：`agent-relay` 可透過 CLI 送出結構化決策問題、篩選待拍板佇列並回覆回原 `thread`，中英規格對齊且測試與 doc parity 全綠（已先登錄於 `agent-relay/ROADMAP.md` 近期優先事項）。
-  - **實作紀錄 / 證據**：*（2026-11-14 已將本項加入 `C:\GitHub\agent-relay\ROADMAP.md` 近期優先事項；待排程實作）*
+  - **完成日期**：2026-11-14
+  - **實作紀錄 / 證據**：完成（2026-11-14，commit `2044f9b` 已推送至 `SanHsien/agent-relay` `main`）：`agent_relay/envelope.py` 新增 `kind="question"` 與 `question` 結構驗證（`options`/`recommend`/`deadline`）；`agent_relay/cli.py` 新增 `relay ask`、`relay inbox --questions`／`--kind`、`relay answer` 與 `relay read` 選項呈現；同步更新 `SPEC.md`/`SPEC.en.md`、`README.md`/`README.en.md` 並自 `ROADMAP.md` 移除已完成列；新增 `tests/test_questions.py`（5 tests），全套驗證通過：`python tools/check_doc_parity.py`（PASS，5 pairs）、`python tools/check_links.py`（30 files，0 broken links）、`python -m unittest discover -s tests -q`（461 tests OK）。

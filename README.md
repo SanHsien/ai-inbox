@@ -39,19 +39,18 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 214 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 140／⚪ 不做 72
+> 共 214 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 141／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261114-05` | 🔴 未做 | 高 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | `C:\GitHub\agent-relay`（`ROADMAP.md`、`SPEC.md`、`SPEC.en.md`、`agent_relay/envelope.py`、`agent_relay/cli.py`、`tests/`） | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | 2026-11-14 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 140 項）</summary>
+<details><summary>展開查看已完成任務（共 141 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -195,6 +194,7 @@
 | `T-20261108-06` | 2026-11-14 | 新增 `tools/check_external_refs.py`：掃描 `notes/` 內的 GitHub repo 與 arXiv 連結，確認存在、是否改名或封存 | 完成（2026-11-14）：tools/check_external_refs.py＋tests（404、改名、封存、私有略過、arXiv、壞快取、gh 輸出 UTF-8 解碼等）。實跑 94 個連結：92 OK，2 個 404 是筆記刻意記錄的「尚未 Fork」，1 改名、1 封存；證據 docs/evidence/external-refs-check-2026-11.md。整合者實跑時抓到 gh 輸出以 cp950 解碼而崩潰的 bug，已修並加回歸測試。 | [2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) |
 | `T-20261114-01` | 2026-11-14 | 將 GPT-6.1 Terra 額度、credits 單價與 Fast 倍率核實結果增補進模型速查表 | `docs/model-burn-rate-routing-matrix.md` 新增第 9 節（9.1–9.6，約 66 行）。數字取自 2026-11-14 讀取的官方頁：Terra 35–285 對 Sol 15–160、Terra credits 25/1.25/125 對 Sol 50/2.5/250、Fast 2.5x／2x。線索中「額度增加」依官方原文「Overall Work and Codex plan limits are unchanged」標為措辭不精確。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
 | `T-20261114-04` | 2026-11-14 | `tools/verify_inbox.py` 新增檢查：筆記裡沒有任務 ID 的待辦核取方塊一律報錯，並清掉 11-11 至 11-14 六篇筆記的殘留清單 | 完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
+| `T-20261114-05` | 2026-11-14 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | 完成（2026-11-14，commit `2044f9b` 已推送至 `SanHsien/agent-relay` `main`）：`agent_relay/envelope.py` 新增 `kind="question"` 與 `question` 結構驗證（`options`/`recommend`/`deadline`）；`agent_relay/cli.py` 新增 `relay ask`、`relay inbox --questions`／`--kind`、`relay answer` 與 `relay read` 選項呈現；同步更新 `SPEC.md`/`SPEC.en.md`、`README.md`/`README.en.md` 並自 `ROADMAP.md` 移除已完成列；新增 `tests/test_questions.py`（5 tests），全套驗證通過：`python tools/check_doc_parity.py`（PASS，5 pairs）、`python tools/check_links.py`（30 files，0 broken links）、`python -m unittest discover -s tests -q`（461 tests OK）。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
 
 </details>
 
@@ -388,7 +388,7 @@
 | 2026-11-13 | ⚪ | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
 | 2026-11-14 | 🟡 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 1 / 2（+1 不做） |
-| 2026-11-14 | 🟡 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 1 / 2 |
+| 2026-11-14 | 🟢 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 2 / 2 |
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 <!-- END GENERATED: index -->
 
