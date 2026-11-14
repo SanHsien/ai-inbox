@@ -125,7 +125,7 @@ tags:
   - **目標範圍**：`docs/claude-code-domain-skill-packs-and-mcp-audit.md`、`tools/verify_agent_skill_pack_safety.py`、`tests/test_verify_agent_skill_pack_safety.py`
   - **具體實作步驟**：
     1. 撰寫 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`，完整整理 8 則 IG 貼文對應之四大垂直領域開源專案（`earshot`/`MMAudio`、`youtube-agent-skill`/`instagram-agent-skill`、`ui-ux-pro-max`/`impeccable`/`21st-mcp`、`claudex-loop`）架構、CQR 實證數據（`hookscore.py` AUC `0.83` vs `0.56`）與安全邊界。
-    2. 實作 `tools/verify_agent_skill_pack_safety.py`，強制檢驗四條採納防線：`SKILLPACK-001`（攔截 `--dangerously-bypass-approvals-and-sandbox` / `bypassPermissions` 與 Impeccable Live Mode 背景自動提權）、`SKILLPACK-002`（背景 Hook 審查與 `DO_NOT_TRACK=1` / `telemetry: false` 閘門）、`SKILLPACK-003`（社交平台 `human_publish_only` 草稿唯讀與 `{{your number}}` 零虛構數據佔位符）、`SKILLPACK-004`（確定性本地 Linter 支撐與反 `100% undetectable` 誇大宣稱）。
+    2. 實作 `tools/verify_agent_skill_pack_safety.py`，以 `--pack` 對技能包實際檔案做靜態啟發式掃描（通過不代表安全，仍需人工審查），並保留四條自填宣告檢查項目（不能當作採納依據）：`SKILLPACK-001`（攔截 `--dangerously-bypass-approvals-and-sandbox` / `bypassPermissions` 與 Impeccable Live Mode 背景自動提權）、`SKILLPACK-002`（背景 Hook 審查與 `DO_NOT_TRACK=1` / `telemetry: false` 閘門）、`SKILLPACK-003`（社交平台 `human_publish_only` 草稿唯讀與 `{{your number}}` 零虛構數據佔位符）、`SKILLPACK-004`（確定性本地 Linter 支撐與反 `100% undetectable` 誇大宣稱）。
     3. 撰寫 `tests/test_verify_agent_skill_pack_safety.py` 涵蓋四條規則之正反例單元測試。
   - **驗收標準（DoD）**：
     - `python tools/verify_agent_skill_pack_safety.py` 回傳 `[PASS]`（exit 0）。

@@ -10,8 +10,9 @@ verify_agent_skill_pack_safety.py — 第三方 Claude Code / Agent Skill 與 MC
   python tools/verify_agent_skill_pack_safety.py --config <宣告.json>
       補充用法：檢查「填寫者自述」的 JSON 宣告（SKILLPACK-001 ~ 004）。宣告模式不讀任何
       第三方檔案，結果不能當作採納依據。
-  python tools/verify_agent_skill_pack_safety.py
-      不帶參數：只對內建的宣告範例做自檢，同樣不能當作採納依據。
+  python tools/verify_agent_skill_pack_safety.py --self-test
+      只對內建的宣告範例做自檢（回 0 或 1），同樣不能當作採納依據。
+  不帶 --pack、--config、--self-test 的裸執行什麼都沒檢查，會提示改用 --pack 並回 2。
 
 目錄掃描的偵測類別（細節、來源與抓不到的東西見 docs/claude-code-domain-skill-packs-and-mcp-audit.md）：
   BYPASS        免審批／破沙盒旗標與設定值
@@ -30,8 +31,9 @@ verify_agent_skill_pack_safety.py — 第三方 Claude Code / Agent Skill 與 MC
 結束碼：
   0  通過：掃描完整，沒有 FAIL。REVIEW 項目仍須人工審查。
   1  發現問題：至少一項 FAIL（或 --strict 下有 REVIEW）；宣告模式則是違反 SKILLPACK 規則。
-  2  輸入錯誤或無法掃描：目錄或檔案不存在、讀不到、是空的、JSON 壞掉、宣告結構不合法，
-     或有檔案未掃描（二進位、超過大小上限、符號連結）且沒有用 --ack-unscanned 逐檔確認。
+  2  輸入錯誤或無法掃描：沒有指定檢查對象、目錄或檔案不存在、讀不到、是空的、JSON 壞掉、
+     宣告結構不合法，或有檔案未掃描（二進位、超過大小上限、符號連結）且沒有用
+     --ack-unscanned 逐檔確認。
   同時有 FAIL 和未掃描檔時回 1（已經確定有問題）。
 """
 
@@ -1234,6 +1236,7 @@ def validate_suite(data: Any) -> list[str]:
 
 DECLARATION_CAVEAT = "宣告模式只檢查填寫者自述的 JSON，沒有讀取任何第三方檔案，不能當作採納依據；採納前請用 --pack 掃描實際目錄。"
 PASS_CAVEAT = "這是靜態啟發式掃描，通過不代表安全，仍需人工審查。"
+NO_TARGET_MESSAGE = "沒有指定檢查對象，什麼都沒檢查。採納檢查請用 --pack <目錄>；宣告檢查用 --config <檔案>，內建範例自檢用 --self-test。"
 
 
 def load_declaration(path: Path) -> tuple[Any, str]:
@@ -1286,7 +1289,9 @@ def main(argv: list[str] | None = None) -> int:
         description="第三方 Agent Skill／MCP 技能包的靜態啟發式掃描。結束碼：0 通過、1 發現問題、2 輸入錯誤或無法掃描。"
     )
     parser.add_argument("--pack", type=Path, action="append", default=[], help="要掃描的技能包目錄，可重複指定")
-    parser.add_argument("--config", type=Path, help="宣告 JSON（補充用，不讀第三方檔案）")
+    declaration_source = parser.add_mutually_exclusive_group()
+    declaration_source.add_argument("--config", type=Path, help="宣告 JSON（補充用，不讀第三方檔案）")
+    declaration_source.add_argument("--self-test", action="store_true", help="只對內建的宣告範例做自檢（回 0 或 1）")
     parser.add_argument("--strict", action="store_true", help="把需人工審查（REVIEW）的項目也算成失敗")
     parser.add_argument("--max-bytes", type=int, default=DEFAULT_MAX_BYTES, help="單檔大小上限，超過列為未掃描")
     parser.add_argument(
@@ -1311,9 +1316,11 @@ def main(argv: list[str] | None = None) -> int:
             input_errors.append(problem)
         else:
             declaration_checked = True
-    elif not args.pack:
+    elif args.self_test:
         declaration = default_suite()
         declaration_checked = True
+    elif not args.pack:
+        input_errors.append(NO_TARGET_MESSAGE)  # 什麼都沒檢查，不能回 0
     if declaration_checked:
         declaration_errors = validate_suite(declaration)
     pack_count = len(declaration["packs"]) if isinstance(declaration, dict) and isinstance(declaration.get("packs"), list) else 0
@@ -1326,7 +1333,7 @@ def main(argv: list[str] | None = None) -> int:
                 {
                     "ok": code == 0,
                     "exit_code": code,
-                    "mode": "pack-scan" if reports else "declaration-only",
+                    "mode": "pack-scan" if reports else "self-test" if args.self_test else "declaration-only" if args.config else "none",
                     "adoption_evidence": bool(reports),
                     "caveat": PASS_CAVEAT if reports else DECLARATION_CAVEAT,
                     "strict": args.strict,
@@ -1346,12 +1353,13 @@ def main(argv: list[str] | None = None) -> int:
     for report in reports:
         _print_pack(report, args.strict)
     if declaration_checked:
+        label = "內建宣告範例自檢" if args.self_test else "宣告檢查"
         if declaration_errors:
-            print("[FAIL] 宣告檢查失敗：")
+            print(f"[FAIL] {label}失敗：")
             for err in declaration_errors:
                 print(f"  - {err}")
         else:
-            print(f"[PASS] 宣告檢查通過（共 {pack_count} 組宣告）。")
+            print(f"[PASS] {label}通過（共 {pack_count} 組宣告）。")
         print(f"  注意：{DECLARATION_CAVEAT}")
     if reports:
         summary = {0: "[PASS] 掃描完整，沒有 FAIL。", 1: "[FAIL] 發現問題，見上方清單。", 2: "[INCOMPLETE] 無法完整掃描，不能視為通過。"}[code]

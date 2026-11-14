@@ -814,11 +814,55 @@ class TestDeclarationMode(PackCase):
     def test_default_suite_passes(self) -> None:
         self.assertEqual(guard.validate_suite(guard.default_suite()), [])
 
-    def test_no_argument_run_passes_and_says_it_is_not_adoption_evidence(self) -> None:
+    def test_bare_run_checks_nothing_and_is_exit_2(self) -> None:
         code, out = self.cli()
+        self.assertEqual(code, 2, out)
+        self.assertIn("採納檢查請用 --pack <目錄>", out)
+        self.assertNotIn("[PASS]", out)
+        # 只給不指定檢查對象的選項，一樣算裸執行。
+        code, out = self.cli("--strict", "--json")
+        payload = json.loads(out)
+        self.assertEqual((code, payload["exit_code"], payload["ok"]), (2, 2, False))
+        self.assertEqual(payload["mode"], "none")
+        self.assertIs(payload["adoption_evidence"], False)
+        self.assertEqual(payload["pack_count"], 0)
+        self.assertIn("採納檢查請用 --pack <目錄>", payload["input_errors"][0])
+
+    def test_bare_run_real_cli_process_is_exit_2(self) -> None:
+        proc = subprocess.run([sys.executable, "-B", str(TOOL)], capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(proc.returncode, 2, proc.stdout + proc.stderr)
+        self.assertIn("採納檢查請用 --pack <目錄>", proc.stdout)
+        self.assertNotIn("[PASS]", proc.stdout)
+
+    def test_self_test_passes_and_says_it_is_not_adoption_evidence(self) -> None:
+        code, out = self.cli("--self-test")
         self.assertEqual(code, 0, out)
-        self.assertIn("[PASS]", out)
+        self.assertIn("[PASS] 內建宣告範例自檢通過（共 5 組宣告）", out)
         self.assertIn("不能當作採納依據", out)
+        code, out = self.cli("--self-test", "--json")
+        payload = json.loads(out)
+        self.assertEqual((code, payload["mode"], payload["pack_count"]), (0, "self-test", 5))
+        self.assertIs(payload["adoption_evidence"], False)
+
+    def test_self_test_is_exit_1_when_builtin_suite_violates_a_rule(self) -> None:
+        broken = copy.deepcopy(guard.default_suite())
+        broken["packs"][0]["cli_invocations"].append(f"claude {SKIP}")
+        with mock.patch.object(guard, "default_suite", return_value=broken):
+            code, out = self.cli("--self-test")
+        self.assertEqual(code, 1, out)
+        self.assertIn("[FAIL] 內建宣告範例自檢失敗", out)
+        self.assertNotIn("[PASS]", out)
+
+    def test_self_test_does_not_mask_a_pack_result(self) -> None:
+        bad = self.pack({"run.sh": f"claude {SKIP}\n"}, name="bad")
+        self.assertEqual(self.cli("--self-test", "--pack", bad)[0], 1)
+        self.assertEqual(self.cli("--self-test", "--pack", self.root / "missing")[0], 2)
+
+    def test_self_test_and_config_cannot_be_combined(self) -> None:
+        cfg = self.config(guard.default_suite())
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as raised:
+            self.cli("--self-test", "--config", cfg)
+        self.assertEqual(raised.exception.code, 2)
 
     def test_review_regression_normalized_flags_in_declaration(self) -> None:
         variants = {

@@ -83,15 +83,17 @@ python tools/verify_agent_skill_pack_safety.py --pack path/to/pack --strict
 | :--- | :--- |
 | `0` | 通過：掃描完整，沒有 FAIL。REVIEW 項目仍須人工審查。 |
 | `1` | 發現問題：至少一項 FAIL。加 `--strict` 時 REVIEW 也算。宣告模式下則是違反 `SKILLPACK` 規則。 |
-| `2` | 輸入錯誤或無法掃描：目錄或檔案不存在、讀不到、是空的、宣告 JSON 壞掉或結構不合法，或有檔案未掃描且沒有確認。 |
+| `2` | 輸入錯誤或無法掃描：沒有指定檢查對象、目錄或檔案不存在、讀不到、是空的、宣告 JSON 壞掉或結構不合法，或有檔案未掃描且沒有確認。 |
 
 同時有 FAIL 和未掃描檔時回 `1`。
+
+不帶 `--pack`、`--config`、`--self-test` 的裸執行什麼都沒檢查：工具會印出「採納檢查請用 --pack <目錄>」並回 `2`，不會印 `[PASS]`。
 
 其他選項：
 
 - `--max-bytes N`：單檔大小上限，預設 5 MiB。超過的檔案列為未掃描。
 - `--ack-unscanned SHA256`：人工看過某個未掃描檔（例如圖片）之後，用它的 sha256 確認，該檔就不再讓結束碼變成 2。工具會在輸出裡印出每個未掃描檔的 sha256；檔案內容一變，確認就失效。可重複指定。
-- `--config FILE`：宣告模式，見 4.8。
+- `--config FILE`、`--self-test`：宣告模式，見 4.8。
 
 未掃描的情況有五種：讀不到、二進位檔（內容含 NUL 位元組，且不是帶 BOM 的 UTF-16）、超過大小上限、符號連結（不跟隨）、JSON 解析失敗。JSON 解析失敗時仍會把內容當純文字掃一次，但 hook 與 scripts 無法逐項列出，所以算掃描不完整。
 
@@ -164,8 +166,10 @@ python tools/verify_agent_skill_pack_safety.py --pack path/to/pack --strict
 
 ```bash
 python tools/verify_agent_skill_pack_safety.py --config declaration.json
-python tools/verify_agent_skill_pack_safety.py            # 只對內建的五組宣告範例做自檢
+python tools/verify_agent_skill_pack_safety.py --self-test   # 只對內建的五組宣告範例做自檢，回 0 或 1
 ```
+
+`--config` 與 `--self-test` 不能同時給。兩者都可以和 `--pack` 一起用，結束碼照 4.2 的規則合併計算：任一邊發現問題就是 `1`，否則任一邊輸入錯誤或掃描不完整就是 `2`。
 
 宣告模式檢查的是一份**人工填寫的 JSON**，不讀任何第三方檔案。每一欄都是填寫者自述，工具無法驗證真偽：把 `hook_reviewed` 填成 `true`、把 `deterministic_tools` 填一個不存在的檔名，檢查照樣通過。所以宣告模式的結果**不能當作採納依據**，輸出與 JSON 的 `adoption_evidence: false` 都會這樣標示。它的用途是當檢查清單，提醒填寫者有沒有想過下面四件事。
 
