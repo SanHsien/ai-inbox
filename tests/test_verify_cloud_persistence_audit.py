@@ -265,5 +265,64 @@ class CloudAuditRegressions(unittest.TestCase):
                 self.assertEqual(result.returncode, 2, result.stdout)
 
 
+class McpCredentialRound2(unittest.TestCase):
+    """第二輪：env/headers/url 查詢參數的寫死憑證與鍵名規則（字串組合避免真實 token 字面值）。"""
+
+    GHP = "gh" + "p_" + "a" * 36
+    YA = "ya" + "29." + "a0AfH6SMBsynthetic"
+
+    def _bad(self, cfg):
+        safe, found = audit_mcp_config_credentials({'mcpServers': {'x': cfg}})
+        self.assertFalse(safe, cfg)
+        return found
+
+    def test_env_hardcoded_token_and_sensitive_key_name(self):
+        self._bad({'env': {'GITHUB_TOKEN': self.GHP}})
+        self._bad({'env': {'MY_SECRET': 'plain-value'}})
+        self._bad({'env': {'DB_PASSWORD': 'hunter2'}})
+        self._bad({'env': {'SERVICE_CREDENTIAL': 'abc'}})
+        self._bad({'env': {'NOTE': 'use ' + self.GHP}})
+
+    def test_url_query_and_userinfo(self):
+        self._bad({'url': 'https://h/mcp?access_token=' + self.YA})
+        self._bad({'url': 'https://h/mcp?x=1&api_key=realvalue'})
+        self._bad({'url': 'https://h/mcp?q=' + self.GHP})
+        self._bad({'serverUrl': 'https://user:hunter2@h/mcp'})
+
+    def test_header_api_key(self):
+        self._bad({'headers': {'X-API-Key': 'realvalue12345'}})
+        self._bad({'headers': {'X-Custom': 'xox' + 'b-123456789-abcdefgh'}})
+
+    def test_known_token_patterns(self):
+        for token in ('sk' + '-' + 'a' * 24, 'sk' + '-ant-' + 'a' * 20, 'xox' + 'p-123456789-abc',
+                      'github' + '_pat_' + 'A' * 30, 'AK' + 'IA' + 'A' * 16):
+            with self.subTest(token=token[:6]):
+                self._bad({'env': {'NOTE': token}})
+                self._bad({'args': [token]})
+
+    def test_placeholders_and_benign_values_pass(self):
+        for cfg in ({'env': {'GITHUB_TOKEN': '${GITHUB_TOKEN}', 'API_KEY': '%API_KEY%',
+                             'SECRET': '{{secret}}', 'NODE_ENV': 'production', 'EMPTY_TOKEN': ''}},
+                    {'headers': {'X-API-Key': '$API_KEY', 'Authorization': 'Bearer ${T}'}},
+                    {'url': 'https://h/mcp?access_token=${TOKEN}&mode=fast'},
+                    {'url': 'https://h/mcp?page=2'},
+                    {'url': 'https://user:${PW}@h/mcp'},
+                    {'args': ['-y', '@scope/risk-tool', '--task-name', 'ask-me-anything-please']}):
+            with self.subTest(cfg=cfg):
+                self.assertTrue(audit_mcp_config_credentials({'mcpServers': {'x': cfg}})[0])
+
+    def test_url_must_be_string(self):
+        with self.assertRaises(ValueError):
+            audit_mcp_config_credentials({'mcpServers': {'x': {'url': ['https://h']}}})
+
+    def test_cli_exit_codes_for_new_rules(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / 'm.json'
+            p.write_text(json.dumps({'mcpServers': {'x': {'env': {'GITHUB_TOKEN': self.GHP}}}}), encoding='utf-8')
+            r = subprocess.run([sys.executable, '-B', auditor.__file__, '--audit-mcp-config', str(p)], capture_output=True)
+            self.assertEqual(r.returncode, 1, r.stdout)
+            self.assertNotIn(self.GHP.encode(), r.stdout + r.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()

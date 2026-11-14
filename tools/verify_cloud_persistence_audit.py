@@ -10,7 +10,9 @@ Cloud Persistence & Stealer Artifacts Auditor (verify_cloud_persistence_audit.py
 has_user_managed_keys 選填 boolean（未提供視為 false，非遠端金鑰查證）。
 createTime 為外部補入的含時區 ISO 8601 時間；缺漏不允許成功通過。
 預設在任意 3600 秒（含邊界）內建立至少 5 個帳號即標記，可用 --burst-* 調整。
-MCP 檢查 mcpServers/servers 的 headers/args/env，不作完整 MCP schema 驗證。
+MCP 檢查 mcpServers/servers 的 headers/args/env 與 url 欄位（查詢參數、user:pass@）：
+鍵名含 token/key/secret/password/credential 且值非佔位符即報出，另比對 ghp_、github_pat_、
+sk-、sk-ant-、xox[abp]-、ya29.、AKIA 樣式；不作完整 MCP schema 驗證。
 只豁免完整 ${VAR}/$VAR/%VAR%/{{VAR}}/<VAR>，不執行替換或 shell。
 結束碼：0=所選檢查未命中；1=規則命中；2=輸入/讀取失敗或只跳過。
 來源：
@@ -26,6 +28,7 @@ import re
 import sys
 import json
 import argparse
+from urllib.parse import parse_qsl, urlsplit
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
@@ -168,6 +171,29 @@ _ENV_PLACEHOLDER_RE = re.compile(
 _BEARER_VALUE_RE = re.compile(r"(?i)\bBearer\s+([^\s\"']+)")
 
 
+# 已知 token 樣式：任何 env/headers/args/url 值只要「含有」即報出（整值為佔位符者除外）。
+_KNOWN_TOKEN_PATTERNS = [
+    (re.compile(r"ghp_[0-9A-Za-z]{10,}"), "GitHub PAT (ghp_)"),
+    (re.compile(r"github_pat_[0-9A-Za-z_]{10,}"), "GitHub fine-grained PAT"),
+    (re.compile(r"(?<![0-9A-Za-z])sk-ant-[0-9A-Za-z_-]{8,}"), "Anthropic API key (sk-ant-)"),
+    (re.compile(r"(?<![0-9A-Za-z])sk-[0-9A-Za-z_-]{16,}"), "OpenAI-style secret key (sk-)"),
+    (re.compile(r"xox[abp]-[0-9A-Za-z-]{8,}"), "Slack token (xox[abp]-)"),
+    (re.compile(r"ya29\.[0-9A-Za-z_.-]+"), "Google OAuth access token (ya29.)"),
+    (re.compile(r"(?<![0-9A-Z])AKIA[0-9A-Z]{16}(?![0-9A-Z])"), "AWS access key ID (AKIA)"),
+]
+# 鍵名含這些字樣且值不是佔位符 -> 一律報出（不回顯值）。
+_SENSITIVE_NAME_RE = re.compile(r"token|key|secret|password|passwd|credential", re.IGNORECASE)
+_URL_USERINFO_RE = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*://[^/?#@\s]*:[^/?#@\s]+@")
+_URL_FIELDS = ("url", "serverUrl", "httpUrl", "sseUrl")
+
+
+def _scan_value_patterns(value: str) -> List[str]:
+    """回傳值內命中的已知 token 樣式說明；整值為佔位符者不報。"""
+    if _ENV_PLACEHOLDER_RE.fullmatch(value.strip()):
+        return []
+    return [desc for pattern, desc in _KNOWN_TOKEN_PATTERNS if pattern.search(value)]
+
+
 def _is_hardcoded_token(token_val: str) -> bool:
     return not bool(_ENV_PLACEHOLDER_RE.fullmatch(token_val.strip()))
 
@@ -195,7 +221,28 @@ def audit_mcp_config_credentials(config_data):
                 raise ValueError("args 必須為字串陣列")
             fields.extend(("args", str(i), v) for i, v in enumerate(args))
             reasons = []
+            for url_field in _URL_FIELDS:
+                if url_field not in cfg:
+                    continue
+                url = cfg[url_field]
+                if not isinstance(url, str):
+                    raise ValueError(f"{url_field} 必須為字串")
+                if _URL_USERINFO_RE.match(url) and not _ENV_PLACEHOLDER_RE.fullmatch(
+                        url.split("@", 1)[0].rsplit(":", 1)[-1]):
+                    reasons.append(f"{url_field} 含內嵌帳密 (user:pass@)")
+                for desc in _scan_value_patterns(url):
+                    reasons.append(f"{url_field} 含已知 token 樣式：{desc}")
+                for qkey, qval in parse_qsl(urlsplit(url).query, keep_blank_values=True):
+                    if (_SENSITIVE_NAME_RE.search(qkey) and qval.strip()
+                            and _is_hardcoded_token(qval)):
+                        reasons.append(f"{url_field} 查詢參數 '{qkey}' 寫死敏感值")
             for group, key, value in fields:
+                if group in ("headers", "env") and _SENSITIVE_NAME_RE.search(key) and value.strip():
+                    plain = re.sub(r"(?i)^(?:Bearer|Basic|Token)\s+", "", value.strip())
+                    if _is_hardcoded_token(plain):
+                        reasons.append(f"{group} '{key}' 為敏感鍵名且值非佔位符（寫死憑證）")
+                for desc in _scan_value_patterns(value):
+                    reasons.append(f"{group} 含已知 token 樣式：{desc}")
                 if group == "headers" and key.lower() == "authorization":
                     token = re.sub(r"(?i)^Bearer\s+", "", value.strip())
                     if _is_hardcoded_token(token):
@@ -214,6 +261,7 @@ def audit_mcp_config_credentials(config_data):
                 if "cloud-platform" in value:
                     reasons.append(f"{group} 含 cloud-platform scope，需人工審查最小權限")
             if reasons:
+                reasons = list(dict.fromkeys(reasons))
                 anomalies.append({"server": srv_name, "reasons": reasons, "severity": "HIGH"})
     return not anomalies, anomalies
 

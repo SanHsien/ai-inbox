@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import json
+import os
 import re
 import sys
 import tomllib
@@ -38,7 +39,16 @@ SUSPICIOUS_KEY_PATTERNS = [
     (re.compile(r"-----BEGIN (?:[A-Z]+ )*PRIVATE KEY-----"), "Private Key PEM block"),
     (re.compile(r"\bAKIA[0-9A-Z]{16}\b"), "AWS Access Key ID"),
     (re.compile(r"github_pat_[0-9a-zA-Z_]{20,}"), "GitHub Fine-grained Token"),
+    (re.compile(r"rk" + r"_live_[0-9a-zA-Z]{20,}"), "Stripe Live Restricted Key"),
+    (re.compile(r"whsec" + r"_[0-9a-zA-Z]{20,}"), "Stripe Webhook Signing Secret"),
+    (re.compile(r"(?<![0-9A-Za-z])sk-ant-[0-9A-Za-z_-]{20,}"), "Anthropic API Key"),
+    (re.compile(r"(?<![0-9A-Za-z])sk-[0-9A-Za-z_-]{20,}"), "OpenAI-style Secret Key"),
+    (re.compile(r"xox[abp]-[0-9A-Za-z-]{10,}"), "Slack Token"),
+    (re.compile(r"ya29\.[0-9A-Za-z_.-]{10,}"), "Google OAuth Access Token"),
 ]
+
+# 僅用於 Wrangler 設定值（.env.example 常見範本 URL，不套用）
+EMBEDDED_CREDENTIAL_RE = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*://[^/\s:@]+:[^/\s@]+@")
 
 # 掃描時略過的目錄（只比對「相對於稽核根目錄」的路徑片段，
 # 避免專案本身位於 /home/x/build/app 之類路徑時整個專案被誤略過）
@@ -196,40 +206,75 @@ def check_wrangler_config(root: Path) -> list[str]:
     if not root.is_dir():
         return ["Wrangler 掃描路徑不存在或不是目錄"]
 
-    # 1. 若專案使用 .dev.vars（Cloudflare 本地機密檔），必須確認 .gitignore 已忽略 .dev.vars
-    dev_vars_exists = (root / ".dev.vars").exists() or (root / ".dev.vars.example").exists()
-    wrangler_files = [
-        p
-        for p in (root / "wrangler.toml", root / "wrangler.json", root / "wrangler.jsonc")
-        if p.exists()
-    ]
-    if not dev_vars_exists and not wrangler_files:
+    # 遞迴找出所有 wrangler.toml/json/jsonc 與 .dev.vars*（略過 node_modules、.git）；
+    # 走訪失敗一律視為未完成稽核。
+    wrangler_files: list[Path] = []
+    dev_var_dirs: dict[Path, set[str]] = {}
+    walk_errors: list[str] = []
+
+    def on_walk_error(error: OSError) -> None:
+        walk_errors.append(f"Wrangler 掃描無法讀取目錄 '{error.filename}'，未完成稽核")
+
+    for dirpath, dirnames, filenames in os.walk(root, onerror=on_walk_error):
+        dirnames[:] = sorted(d for d in dirnames if d not in ("node_modules", ".git"))
+        here = Path(dirpath)
+        for name in sorted(filenames):
+            if name in ("wrangler.toml", "wrangler.json", "wrangler.jsonc"):
+                wrangler_files.append(here / name)
+                dev_var_dirs.setdefault(here, set())
+            elif name == ".dev.vars" or (name.startswith(".dev.vars.") and name != ".dev.vars.example"):
+                dev_var_dirs.setdefault(here, set()).add(name)
+    issues.extend(walk_errors)
+    if not dev_var_dirs and not wrangler_files:
         return issues
 
-    gitignore_path = root / ".gitignore"
-    if gitignore_path.exists():
-        content = gitignore_path.read_text(encoding="utf-8-sig", errors="ignore")
-        lines = [line.strip() for line in content.splitlines() if line.strip() and not line.strip().startswith("#")]
+    # 1. .dev.vars 與 .dev.vars.<env> 皆須被 .gitignore 忽略（"!" 否定規則以最後符合者為準）。
+    #    每個含 wrangler 設定或 .dev.vars* 的目錄：以根目錄加該目錄的 .gitignore 判定；
+    #    探針 ".dev.vars" 與 ".dev.vars.production" 代表 ".dev.vars" 及 ".dev.vars.*"，另加實際存在的檔名。
+    def load_rules(gitignore: Path) -> list[tuple[bool, str]]:
         rules: list[tuple[bool, str]] = []
-        for line in lines:
+        text = gitignore.read_text(encoding="utf-8-sig", errors="ignore")
+        for line in (ln.strip() for ln in text.splitlines()):
+            if not line or line.startswith("#"):
+                continue
             negated = line.startswith("!")
             glob = (line[1:] if negated else line).lstrip("/")
             if glob.startswith("**/"):
                 glob = glob[3:]
             rules.append((negated, glob.rstrip("/")))
-        dev_vars_ignored = False
-        for negated, glob in rules:
-            if fnmatch.fnmatchcase(".dev.vars", glob):
-                dev_vars_ignored = not negated
-        if not dev_vars_ignored:
-            issues.append("Cloudflare Wrangler 專案之 .gitignore 未忽略本地機密檔 '.dev.vars'")
+        return rules
 
-    else:
-        issues.append("Cloudflare Wrangler 專案缺少 .gitignore，無法確認 .dev.vars 隔離")
+    def is_ignored(name: str, rules: list[tuple[bool, str]]) -> bool:
+        ignored = False
+        for negated, glob in rules:
+            if fnmatch.fnmatchcase(name, glob):
+                ignored = not negated
+        return ignored
+
+    root_ignore = root / ".gitignore"
+    for directory in sorted(dev_var_dirs):
+        rel_dir = directory.relative_to(root).as_posix()
+        label = "." if rel_dir == "." else rel_dir
+        candidates = [g for g in {root_ignore, directory / ".gitignore"} if g.exists()]
+        if not candidates:
+            issues.append(f"Cloudflare Wrangler 專案（{label}）缺少 .gitignore，無法確認 .dev.vars 隔離")
+            continue
+        try:
+            rules: list[tuple[bool, str]] = []
+            for g in sorted(candidates, key=lambda x: len(x.parts)):
+                rules.extend(load_rules(g))
+        except OSError:
+            issues.append(f"Cloudflare Wrangler 專案（{label}）之 .gitignore 無法讀取，未完成稽核")
+            continue
+        probes = {".dev.vars", ".dev.vars.production"} | dev_var_dirs[directory]
+        missing = [probe for probe in sorted(probes) if not is_ignored(probe, rules)]
+        if missing:
+            issues.append(f"Cloudflare Wrangler 專案（{label}）之 .gitignore 未忽略本地機密檔 "
+                          + "、".join(f"'{m}'" for m in missing))
 
     # 2. 掃描 wrangler.toml / wrangler.json(c) 是否在明文 vars 中存放敏感金鑰或真實 Token
     secret_key_name_re = re.compile(
-        r"(?:SECRET|PRIVATE_KEY|API_KEY|ACCESS_TOKEN|AUTH_TOKEN|PASSWORD|SERVICE_ROLE)",
+        r"(?:TOKEN|KEY|SECRET|PASSWORD|CREDENTIAL)",
         re.IGNORECASE,
     )
     def check_values(value, location, sensitive_keys=False):
@@ -245,9 +290,11 @@ def check_wrangler_config(root: Path) -> list[str]:
             for pattern, desc in SUSPICIOUS_KEY_PATTERNS:
                 if pattern.search(value):
                     issues.append(f"Wrangler {location} 疑似包含真實金鑰 ({desc})")
+            if EMBEDDED_CREDENTIAL_RE.search(value):
+                issues.append(f"Wrangler {location} 含 URL 內嵌帳密 (scheme://user:pass@host)")
 
     for wf in wrangler_files:
-        rel_wf = wf.relative_to(root)
+        rel_wf = wf.relative_to(root).as_posix()
         try:
             raw = wf.read_text(encoding="utf-8-sig")
             if wf.suffix == ".toml":

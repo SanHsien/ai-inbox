@@ -231,6 +231,81 @@ class TestAuditFullstackSecurity(unittest.TestCase):
         (self.test_dir / 'wrangler.toml').write_text('name="demo"', encoding='utf-8')
         self.assertTrue(check_wrangler_config(self.test_dir))
 
+    # ---- 第二輪：鍵名放寬、內嵌帳密、遞迴掃描、.dev.vars.* 與否定規則 ----
+    def _wrangler(self, toml, ignore='.dev.vars*\n', where=''):
+        (self.test_dir / '.gitignore').write_text(ignore, encoding='utf-8')
+        d = self.test_dir / where if where else self.test_dir
+        d.mkdir(parents=True, exist_ok=True)
+        (d / 'wrangler.toml').write_text(toml, encoding='utf-8')
+        return check_wrangler_config(self.test_dir)
+
+    def test_wrangler_broadened_sensitive_key_names(self):
+        for key in ('TOKEN', 'STRIPE_KEY', 'DB_SECRET', 'ADMIN_PASSWORD', 'SERVICE_CREDENTIAL'):
+            with self.subTest(key=key):
+                self.assertTrue(self._wrangler(f'name="d"\n[vars]\n{key}="x1"\n'))
+
+    def test_wrangler_embedded_credentials_and_token_patterns(self):
+        for value in ('postgres://admin:hunter2@db.example.com/x', 'rk' + '_live_' + 'a' * 24,
+                      'sk' + '-ant-' + 'a' * 24, 'xox' + 'b-123456789012-abcdef', 'ya' + '29.' + 'a' * 20):
+            with self.subTest(value=value[:12]):
+                self.assertTrue(self._wrangler(f'name="d"\n[vars]\nPUBLIC_NOTE="{value}"\n'))
+        self.assertEqual(self._wrangler('name="d"\n[vars]\nPUBLIC_URL="https://example.com/a"\n'), [])
+
+    def test_wrangler_found_in_subdirectories_and_node_modules_skipped(self):
+        bad = 'name="d"\n[vars]\nPASSWORD="x1"\n'
+        self.assertTrue(self._wrangler(bad, where='apps/api'))
+        (self.test_dir / 'apps' / 'api' / 'wrangler.toml').unlink()
+        self.assertEqual(self._wrangler(bad, where='node_modules/pkg'), [])
+        self.assertEqual(self._wrangler(bad, where='.git/x'), [])
+
+    def test_wrangler_subdirectory_unparsable_fails_closed(self):
+        self.assertTrue(self._wrangler('vars = [', where='apps/api'))
+
+    def test_dev_vars_variants_must_be_ignored(self):
+        clean = 'name="d"\n'
+        self.assertEqual(self._wrangler(clean, ignore='.dev.vars\n.dev.vars.*\n'), [])
+        issues = self._wrangler(clean, ignore='.dev.vars\n')
+        self.assertTrue(any('.dev.vars.production' in i for i in issues), issues)
+        (self.test_dir / '.dev.vars.staging').write_text('A=1', encoding='utf-8')
+        issues = self._wrangler(clean, ignore='.dev.vars\n')
+        self.assertTrue(any('.dev.vars.staging' in i for i in issues), issues)
+        # .example 可以提交，不要求忽略
+        (self.test_dir / '.dev.vars.staging').unlink()
+        (self.test_dir / '.dev.vars.example').write_text('A=', encoding='utf-8')
+        self.assertEqual(self._wrangler(clean, ignore='.dev.vars\n.dev.vars.*\n!.dev.vars.example\n'), [])
+
+    def test_dev_vars_negation_rule_is_honoured(self):
+        clean = 'name="d"\n'
+        self.assertTrue(self._wrangler(clean, ignore='.dev.vars*\n!.dev.vars\n'))
+        self.assertTrue(self._wrangler(clean, ignore='.dev.vars*\n!.dev.vars.*\n'))
+        self.assertEqual(self._wrangler(clean, ignore='!.dev.vars\n.dev.vars*\n'), [])
+
+    def test_wrangler_walk_error_fails_closed(self):
+        import os
+        from unittest.mock import patch
+
+        def failing_walk(top, onerror=None, **kwargs):
+            onerror(PermissionError(13, 'denied', str(Path(top) / 'locked')))
+            return iter(())
+
+        with patch.object(os, 'walk', failing_walk):
+            issues = check_wrangler_config(self.test_dir)
+        self.assertTrue(issues)
+        self.assertTrue(any('未完成稽核' in i for i in issues))
+
+    def test_dev_vars_only_project_without_wrangler_file(self):
+        (self.test_dir / '.dev.vars').write_text('A=1', encoding='utf-8')
+        self.assertTrue(check_wrangler_config(self.test_dir))
+
+    def test_subdirectory_dev_vars_checked(self):
+        d = self.test_dir / 'apps' / 'api'
+        d.mkdir(parents=True)
+        (d / '.dev.vars.staging').write_text('A=1', encoding='utf-8')
+        (self.test_dir / '.gitignore').write_text('.dev.vars\n', encoding='utf-8')
+        self.assertTrue(check_wrangler_config(self.test_dir))
+        (d / '.gitignore').write_text('.dev.vars.*\n', encoding='utf-8')
+        self.assertEqual(check_wrangler_config(self.test_dir), [])
+
 
 if __name__ == "__main__":
     unittest.main()
