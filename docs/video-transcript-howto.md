@@ -120,3 +120,9 @@ Whisper `small` 會誤聽**專有名詞與外來語**。本次實例：
 - [`tools/video_transcript.py`](../tools/video_transcript.py)：轉寫腳本本體。
 - [`tests/test_video_transcript.py`](../tests/test_video_transcript.py)：單元測試。
 - [`notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md`](../notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md)：第一個用本流程完成的影片分析範例。
+
+### Threads 目標影片定位限制（2026-11-14 修正）
+
+Threads 解析只接受與網址 `/@使用者/post/<post ID>` 相符的 JSON 物件識別欄位（`code`、`shortcode`、`id`、`pk`），讀取該物件直接持有的 `video_versions[].url`，或缺少候選時的直接 `video_url`。不遞迴拿引用或推薦貼文的影片，也不再對全頁抓第一個 MP4；含 `rsrc.php` 的候選會被排除。這些是本庫解析器的支援範圍，並非 Threads 官方 schema 保證。[本庫實作](../tools/video_transcript.py)
+
+無法定位目標、影片為空或 schema 無效時會失敗（CLI exit 1），不嘗試拿其他貼文代替；SSR 改版、登入頁或以字串再編碼的 JSON 可能無法辨識。單元測試以離線 fixture 驗證選片及靜態資源排除；本次未重新下載或轉寫真實影片。[回歸測試](../tests/test_video_transcript.py)

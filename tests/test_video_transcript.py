@@ -115,7 +115,7 @@ class DownloadAudioTest(unittest.TestCase):
             run.assert_not_called()
 
     def test_threads_url_extracts_ssr_video_versions_and_uses_bestaudio_fallback(self):
-        fake_html = b'<html>{"video_versions":[{"url":"https:\\/\\/cdn.example.com\\/v.mp4?x=1&amp;y=2"}]}</html>'
+        fake_html = b'<html>{"code":"abc","video_versions":[{"url":"https:\\/\\/cdn.example.com\\/v.mp4?x=1&amp;y=2"}]}</html>'
         resp = mock.MagicMock()
         resp.__enter__.return_value.read.return_value = fake_html
 
@@ -130,6 +130,34 @@ class DownloadAudioTest(unittest.TestCase):
         cmd = run.call_args.args[0]
         self.assertIn("bestaudio/best", cmd)
         self.assertEqual(cmd[-1], "https://cdn.example.com/v.mp4?x=1&y=2")
+
+    def _resolve_fixture(self, payload):
+        import json
+        resp = mock.MagicMock()
+        resp.__enter__.return_value.read.return_value = ("<script type='application/json'>" + json.dumps(payload) + "</script>").encode()
+        with mock.patch.object(video_transcript.urllib.request, "urlopen", return_value=resp):
+            return video_transcript._resolve_threads_video_url("https://www.threads.com/@u/post/abc")
+
+    def test_threads_rejects_related_and_quoted_video(self):
+        for post in [{"code": "abc", "video_versions": []},
+                     {"code": "abc", "quoted_post": {"code": "other", "video_versions": [{"url": "https://cdn.example/other.mp4"}]}}]:
+            with self.subTest(post=post), self.assertRaises(RuntimeError):
+                self._resolve_fixture({"post": post, "related": {"code": "other", "video_versions": [{"url": "https://cdn.example/other.mp4"}]}})
+
+    def test_threads_selects_target_even_after_recommendation(self):
+        self.assertEqual(self._resolve_fixture({"related": {"code": "other", "video_versions": [{"url": "https://cdn.example/other.mp4"}]},
+                         "post": {"code": "abc", "video_versions": [{"url": "https://cdn.example/target.mp4"}]}}), "https://cdn.example/target.mp4")
+
+    def test_threads_fallback_rejects_rsrc_php(self):
+        with self.assertRaises(RuntimeError):
+            self._resolve_fixture({"code": "abc", "video_url": "https://cdn.example/rsrc.php/v/static.mp4"})
+        self.assertEqual(self._resolve_fixture({"code": "abc", "video_url": "https://cdn.example/target.mp4"}), "https://cdn.example/target.mp4")
+
+    def test_threads_rejects_unknown_or_malformed_target(self):
+        for data in [{"video_versions": [{"url": "https://cdn.example/other.mp4"}]},
+                     {"code": "abc", "video_versions": "bad"}, {"code": "abc", "video_versions": [None]}, {}]:
+            with self.subTest(data=data), self.assertRaises(RuntimeError):
+                self._resolve_fixture(data)
 
     def test_threads_url_without_video_raises_runtime_error(self):
         resp = mock.MagicMock()

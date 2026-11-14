@@ -1,89 +1,66 @@
 # 上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範
 
-> **版本**：1.0.0  
-> **建立日期**：2026-11-07  
-> **來源依據**：萃取自 Will 保哥（[`doggy8088/answer-me-with-html@zh-tw`](https://github.com/doggy8088/answer-me-with-html/tree/zh-tw)，上游 [`QingYunA/answer-me-with-html`](https://github.com/QingYunA/answer-me-with-html)）之 `scripts/zh-tw/` 自動化繁體中文化管線，對應任務 `T-20261107-02`、`T-20261107-03`、`T-20261107-04`。
+> 修訂日期：2026-11-14。上游固定版本：`c9b003c76571b4df97407b743a057289f9b7e34c`。
+> 標題沿用既有規範名稱；「零漂移」不是任意 Fork 的保證。本文只讀比對原始碼，未執行上游同步、安裝、建置或推送；不宣稱零衝突或完整 OpenCC 管線已在本機驗收。
 
----
+## 1. 範圍與錯誤範例
 
-## 1. 核心痛點：為什麼傳統繁中 Fork 會迅速腐敗？
+上游採取從 `upstream/main` 重建 `zh-tw` 的方式，避免逐次合併已翻譯的分支；這是生成分支的同步策略，無法保證任意 Fork 的自訂改動都能保留。[sync.sh](https://github.com/doggy8088/answer-me-with-html/blob/c9b003c76571b4df97407b743a057289f9b7e34c/scripts/zh-tw/sync.sh#L1-L28)
 
-維護上游簡體中文（或英文夾雜簡體）開源專案的台灣繁體中文 Fork 時，傳統做法是「在分支上手動改檔案，上游更新時執行 `git merge upstream/main`」。這會導致三個工程災難：
+上游詞庫列有以下修補對。這是該版本的規則與註解，OpenCC 在其他版本或任意文本上的轉換結果均未查證。[vocab.mjs](https://github.com/doggy8088/answer-me-with-html/blob/c9b003c76571b4df97407b743a057289f9b7e34c/scripts/zh-tw/vocab.mjs)
 
-1. **合併衝突（Merge Conflict）隨時間指數累積**：因為全文每一行漢字都被轉為繁體，只要上游改動任何一段文字，`git merge` 或 `git rebase` 就會產生大面積衝突。
-2. **OpenCC 二次轉換退化（Second-Pass Degradation）**：當開發者對已經轉過一次繁體的檔案再跑一次 OpenCC（`cn -> tw2`），會發生二次轉換退化（例如：`連接埠` 被二次轉成 `連線埠`、`類型` 疊字變成 `類別型`、`型別` 變成 `型別別`）。
-3. **語境多義詞誤傷（Context-Blind Substitution）**：OpenCC 的通用詞庫會把音訊格式的「编码」無腦轉為「寫程式」（變成 `` `其他編碼的 WAV` ``）、把終端機 stdout 的「打印路徑」轉為紙本「列印路徑」、把 Documentation 的「参考文件」轉為檔案系統的 `` `參考文件` ``。
+| 原文／誤轉範例 | 修正結果 | 規則語境 |
+|---|---|---|
+| `連線埠` | `連接埠` | 上游註解將前者列為二次退化結果 |
+| `隻影響` | `只影響` | 副詞與量詞誤轉修補 |
+| `選一個類別型` / `型別別` | `選一個類型` / `型別` | 疊字修補 |
+| `字面量（Literal）（Literal）` | `字面量（Literal）` | 重複註記修補 |
+| `瞭什麼` | `了什麼` | 助詞修補 |
+| `其他寫程式的 WAV` | `其他編碼的 WAV` | 音訊 encoding，錯誤範例是「寫程式」 |
+| `瀏覽器自己寫程式並下載` | `瀏覽器自己編碼並下載` | 音訊 encoding |
+| `渲染時會打印帶稿件行號的警告` / `並打印路徑` | `渲染時會輸出帶稿件行號的警告` / `並輸出路徑` | stdout 輸出 |
+| `參考檔案` | `參考文件` | Documentation 語境還原 |
 
----
+本庫另有 `摁下` → `按下` 規則；禁用範例是前者，不能把正確「按下」列為錯誤。這條及本庫其他延伸規則不代表上游詞庫的完整複製。[本庫規則](../tools/verify_zhtw_vocab.py)
 
-## 2. 零漂移自動同步架構（Reset + Regenerate Pipeline）
+## 2. 上游 sync.sh 逐段對照
 
-保哥在 `doggy8088/answer-me-with-html`（`zh-tw` 分支）實作的解法是：**永遠不對上游做 `git merge`，每次同步都從 `upstream/main` 全新重建 `zh-tw` 分支，再透過確定性腳本重新產生繁體中文內容**。
+以下行號均指上述固定 SHA 的 [sync.sh](https://github.com/doggy8088/answer-me-with-html/blob/c9b003c76571b4df97407b743a057289f9b7e34c/scripts/zh-tw/sync.sh)，是行為說明，不是可直接執行的本庫操作指令。
 
 ```text
-upstream/main (上游最新 Commit SHA)
-   │
-   ├─► Step 1. 讀取 scripts/zh-tw/.base-sha 比對上游 SHA
-   │           └─ 若相同：印出 NOCHANGE 並直接結束（0 成本）
-   │
-   ├─► Step 2. 備份本地專屬資產至暫存區 ($TMP)
-   │           ├─ scripts/zh-tw/ (轉換腳本、修補字典、.base-sha)
-   │           └─ 已重產生的繁體中文示範圖檔 (若上游生成腳本未變則免重繪)
-   │
-   ├─► Step 3. 強制重置分支基底：git checkout -B zh-tw upstream/main
-   │           └─ 徹底消除 merge commit 髒歷史與雙向衝突
-   │
-   ├─► Step 4. 還原 scripts/zh-tw/ 並執行兩階段繁中轉換
-   │           ├─ Stage A：OpenCC (cn -> tw2) 基礎簡轉繁
-   │           └─ Stage B：套用台灣技術詞庫與二次退化修補字典 (vocab)
-   │
-   ├─► Step 5. 雙重冪等與建置驗證閘門 (Gate Check)
-   │           ├─ 執行建置腳本（如重編譯內嵌模板 bundle）
-   │           ├─ 執行 check（驗證再跑一次轉換 diff 為 0，且無簡體殘留）
-   │           └─ 執行專案單元測試
-   │
-   └─► Step 6. 寫入新 .base-sha、單一 Commit 提交、git push --force-with-lease origin zh-tw
+讀取遠端 SHA / 本地 zh-tw 的 .base-sha
+  -> 相同：NOCHANGE，exit 0
+  -> 不同：fetch -> 推 origin/main -> 重建 zh-tw
+           -> 從 origin/zh-tw 還原腳本與圖片
+           -> convert -> 寫 .base-sha -> build -> check -> 測試白名單
+           -> commit -> force-with-lease 推 origin/zh-tw
 ```
 
----
+| 原始碼行 | 實際行為 |
+|---|---|
+| 11–18 | `set -eu`，切至 repo 根目錄；用 `git ls-remote upstream main` 取 SHA，從本地 `zh-tw:scripts/zh-tw/.base-sha` 讀舊值；相同才印 `NOCHANGE` 並 exit 0。仍有遠端查詢成本。 |
+| 20–23 | `git fetch upstream main`，先推送 `upstream/main:main` 至 origin，再 `git checkout -B zh-tw upstream/main` 重建本地分支。 |
+| 24–28 | 從 `origin/zh-tw` checkout `scripts/zh-tw` 與六張圖片：`tcp.png`、`architecture-dark.png`、`video-zh.png`、`text-vs-page-zh.png`、`og-en.jpg`、`og-zh.jpg`。兩個 checkout 都有 `|| true`；失敗不會立即中止。並非將本地資產備份到 `$TMP`，也未在此判斷生成腳本是否改變。 |
+| 29–31 | 將本地 node bin 加入 PATH；找不到 `opencc-cli` 才全域安裝 `@willh/opencc-cli@0.1.5`，接著執行 `convert.mjs`。本次未執行這些命令。 |
+| 32–35 | 先寫 `.base-sha`，再 `npm ci --ignore-scripts`、`npm run build`、`check.mjs`。錨點寫入不是所有驗證通過後才發生。 |
+| 36–44 | `npm test` 輸出寫 `/tmp/zh-tw-test.log`；暫時關閉 `set -e`，抽取 `✖` 測試名稱，排除摘要及 `known-test-failures.txt` 白名單；只有 EXTRA 非空才明確 exit 1。不能描述為保證所有測試 exit 0；非該輸出格式的異常也可能漏判。 |
+| 46–51 | `git add -A`、建立生成 commit，然後 `git push --force-with-lease origin zh-tw`。 |
+| 52 | 印出 `SYNCED upstream=...`。 |
 
-## 3. 兩階段轉換與 OpenCC 二次退化修補規格
+來源：[sync.sh 固定版本全文](https://github.com/doggy8088/answer-me-with-html/blob/c9b003c76571b4df97407b743a057289f9b7e34c/scripts/zh-tw/sync.sh#L11-L52)。此腳本會安裝、重建分支與對外推送，本文不建議在未審閱的工作樹直接執行。
 
-本 repo 已將此字典與檢查邏輯實作於 [`tools/verify_zhtw_vocab.py`](../tools/verify_zhtw_vocab.py)。核心規則分為兩層：
+`convert.mjs` 對指定內容呼叫 OpenCC `-f cn -t tw2` 並套用詞庫；`check.mjs` Gate 4 再對 CONTENT 執行 OpenCC + applyVocab，與現有內容比對。此外還有 zh-CN 殘留、簡體字、詞彙、文件連結及 repo slug 閘門。這是指定語料上的檢查，不能推論任意輸入的冪等性。[convert.mjs](https://github.com/doggy8088/answer-me-with-html/blob/c9b003c76571b4df97407b743a057289f9b7e34c/scripts/zh-tw/convert.mjs)、[check.mjs](https://github.com/doggy8088/answer-me-with-html/blob/c9b003c76571b4df97407b743a057289f9b7e34c/scripts/zh-tw/check.mjs)
 
-### 3.1 第一層：OpenCC 二次轉換退化修補（Second-Pass Guard）
+## 3. 本庫工具的實際契約
 
-| 退化詞（誤轉結果） | 修正結果（台灣正體） | 成因與防禦說明 |
-| :--- | :--- | :--- |
-| `連線埠` | `連接埠` | OpenCC `cn -> tw2` 將「端口」轉為「連接埠」後，若跑第二次會把「连接」轉「連線」而退化成 `` `連接埠` `` |
-| `隻影響` | `只影響` | 副詞「只」（僅）在特定斷詞下被誤轉為量詞「隻」 |
-| `選一個類別型` | `選一個類型` | 「類別」與「類型」規則重疊造成疊字退化 |
-| `型別別` | `型別` | 「类型 -> 型別」二次套用造成字尾重複 |
-| `字面量（Literal）（Literal）` | `字面量（Literal）` | 括號英文補充說明在多次執行時重複附加 |
-| `瞭什麼` | `了什麼` | 語尾助詞「了」在「什麼」前被誤判為動詞「明瞭」的「瞭」 |
+本庫 Python 工具只做內建詞庫替換，不執行 OpenCC。每輪依規則順序替換，反覆直到固定點；例如 `型別別別` 一次 API 呼叫即收斂為 `型別`。若規則循環則拒絕處理。`--verify-idempotent` 驗證內建規則與重疊樣本，並非 OpenCC 端到端測試或任意文本的形式證明。[實作](../tools/verify_zhtw_vocab.py)、[回歸測試](../tests/test_verify_zhtw_vocab.py)
 
-### 3.2 第二層：語境多義詞與兩岸慣用動詞修補
-
-| 原始／誤轉詞彙 | 修正結果（台灣慣用） | 語境說明 |
-| :--- | :--- | :--- |
-| `其他寫程式的 WAV` / `自己寫程式並下載` | `其他編碼的 WAV` / `自己編碼並下載` | 簡體「编码」在音訊／資料格式語境指 Encoding（編碼），而非 Coding（寫程式） |
-| `渲染時會打印` / `並打印路徑` | `渲染時會輸出` / `並輸出路徑` | CLI 終端機 stdout 輸出在簡體常寫「打印」，台灣技術語境應稱「輸出」（紙本才用「列印」） |
-| `參考檔案` | `參考文件` | 全域將簡體「文件（file）」轉為「檔案」後，屬於 Documentation 的 `` `參考文件` `` 需精準還原為「參考文件」 |
-| `摁下` | `按下` | 按鈕操作動詞統一使用台灣慣用「按下」，禁用大陸北方方言 `` `按下` `` |
-
----
-
-## 4. 本機檢查與驗證指令
-
-對任何 Markdown 文件或繁體中文化產物執行靜態檢查與冪等性驗證：
+`--check` / `--fix` 會略過 Markdown 圍欄與單行內長度相同的反引號 run；不同長度不能配對，未閉合 run 視為正文。這是本庫的有限 tokenizer，不宣稱完整 CommonMark（例如跨行 code span 未支援）。目錄遞迴收集 `.md`，明確指定檔案則直接處理；不存在路徑、零檔案、空白檔案、無法讀取或非 UTF-8 均失敗。先檢查全部輸入再修補，但多檔寫入沒有交易回滾保證。[實作](../tools/verify_zhtw_vocab.py)
 
 ```powershell
-# 1. 驗證詞庫與退化修補規則的嚴格冪等性（跑兩次結果完全一致）
 python tools/verify_zhtw_vocab.py --verify-idempotent
-
-# 2. 掃描目標目錄或檔案是否殘留 OpenCC 退化詞或禁用詞（自動略過程式碼區塊與行內反引號反例）
-python tools/verify_zhtw_vocab.py --check notes docs templates README.md
-
-# 3. 就地修補目標檔案中的退化詞
-python tools/verify_zhtw_vocab.py --fix <path/to/file.md>
+python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md
+python tools/verify_zhtw_vocab.py --fix path/to/file.md
 ```
+
+結束碼：`0` = 請求的操作通過；`1` = 發現詞彙問題或冪等樣本失敗；`2` = 引數／輸入／讀寫錯誤（含無操作及零輸入）。`--fix` 只修補，不保證文件事實正確；錯誤反例應放在程式碼引用中保留，不能批次轉成正確詞後仍稱為錯誤範例。[CLI](../tools/verify_zhtw_vocab.py)

@@ -66,23 +66,49 @@ DEGRADED_AND_CONTEXT_RULES: Tuple[Tuple[str, str, str], ...] = (
 
 ALL_RULES: Tuple[Tuple[str, str, str], ...] = GLOBAL_VOCAB_RULES + DEGRADED_AND_CONTEXT_RULES
 
-_INLINE_CODE_RE = re.compile(r"(`+[^`\n]+`+)")
+_BACKTICK_RUN_RE = re.compile(r"`+")
 _FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
+
+
+def _inline_parts(line: str) -> List[Tuple[bool, str]]:
+    """Pair maximal backtick runs of equal length; unmatched runs are prose."""
+    runs = list(_BACKTICK_RUN_RE.finditer(line))
+    parts = []
+    cursor = 0
+    i = 0
+    while i < len(runs):
+        opener = runs[i]
+        end = next((j for j in range(i + 1, len(runs))
+                    if len(runs[j].group()) == len(opener.group())), None)
+        if end is None:
+            i += 1
+            continue
+        closer = runs[end]
+        parts.append((False, line[cursor:opener.start()]))
+        parts.append((True, line[opener.start():closer.end()]))
+        cursor = closer.end()
+        i = end + 1
+    parts.append((False, line[cursor:]))
+    return parts
 
 
 def _transform_non_code_segment(segment: str) -> str:
     out = segment
-    for src, dst, _ in ALL_RULES:
-        if src != dst and src in out:
-            out = out.replace(src, dst)
-    return out
+    seen = set()
+    while out not in seen:
+        seen.add(out)
+        previous = out
+        for src, dst, _ in ALL_RULES:
+            if src != dst and src in out:
+                out = out.replace(src, dst)
+        if out == previous:
+            return out
+    raise ValueError("詞庫規則循環，無法收斂至固定點")
 
 
 def _transform_line_outside_inline_code(line: str) -> str:
-    parts = _INLINE_CODE_RE.split(line)
-    for idx in range(0, len(parts), 2):
-        parts[idx] = _transform_non_code_segment(parts[idx])
-    return "".join(parts)
+    return "".join(part if code else _transform_non_code_segment(part)
+                   for code, part in _inline_parts(line))
 
 
 def apply_zhtw_vocab(text: str, skip_code: bool = False) -> str:
@@ -148,7 +174,7 @@ def scan_degraded_vocab(text: str, skip_code: bool = True) -> List[Dict[str, Any
         if skip_code and in_fence is not None:
             continue
 
-        inspect_text = _INLINE_CODE_RE.sub("", line) if skip_code else line
+        inspect_text = " ".join(part for code, part in _inline_parts(line) if not code) if skip_code else line
         line_hits: List[Tuple[int, Dict[str, Any]]] = []
         for src, dst, reason in ALL_RULES:
             if src != dst and src in inspect_text:
@@ -173,7 +199,7 @@ def verify_idempotence(sample_texts: Optional[Sequence[str]] = None) -> Tuple[bo
     驗證詞庫轉換之冪等性（Idempotence）：
     對所有內建規則與給定樣本，跑第二次轉換必須與跑第一次完全一致（零二次退化）。
     """
-    samples = list(sample_texts or [])
+    samples = list(sample_texts or []) + ["型別別別別別", "字面量（Literal）（Literal）（Literal）", "命令行界面"]
     for src, dst, _ in ALL_RULES:
         samples.append(f"測試文本：{src} -> {dst}")
 
@@ -195,12 +221,19 @@ def _iter_target_files(paths: Sequence[str]) -> List[Path]:
             files.append(p)
         elif p.is_dir():
             files.extend(sorted(p.rglob("*.md")))
-    return files
+        else:
+            raise ValueError(f"路徑不存在或不是一般檔案／目錄：{p}")
+    if not files:
+        raise ValueError("沒有可檢查的輸入檔案")
+    for p in files:
+        if not p.read_text(encoding="utf-8").strip():
+            raise ValueError(f"輸入檔案為空：{p}")
+    return list(dict.fromkeys(files))
 
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
+def _main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description="台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具"
+        description="台灣繁體中文詞庫檢查／固定點修補；結束碼 0=通過，1=詞彙或冪等失敗，2=輸入／讀寫錯誤"
     )
     parser.add_argument("--check", nargs="*", default=None, help="掃描指定檔案或目錄是否殘留退化詞（略過程式碼區塊）")
     parser.add_argument("--fix", nargs="*", default=None, help="就地修補指定檔案或目錄中的退化詞（略過程式碼區塊）")
@@ -209,7 +242,15 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     if args.check is None and args.fix is None and not args.verify_idempotent:
         print("[INFO] 請提供 --check <paths>、--fix <paths> 或 --verify-idempotent。")
-        return 0
+        return 2
+
+    # Validate all inputs before any --fix mutation.
+    try:
+        check_files = _iter_target_files(args.check) if args.check is not None else []
+        fix_files = _iter_target_files(args.fix) if args.fix is not None else []
+    except (OSError, UnicodeError, ValueError) as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 2
 
     exit_code = 0
 
@@ -223,7 +264,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             exit_code = 1
 
     if args.fix is not None:
-        for fpath in _iter_target_files(args.fix):
+        for fpath in fix_files:
             orig = fpath.read_text(encoding="utf-8")
             fixed = apply_zhtw_vocab(orig, skip_code=True)
             if fixed != orig:
@@ -232,7 +273,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     if args.check is not None:
         total_findings = 0
-        for fpath in _iter_target_files(args.check):
+        for fpath in check_files:
             content = fpath.read_text(encoding="utf-8")
             hits = scan_degraded_vocab(content, skip_code=True)
             for h in hits:
@@ -246,6 +287,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             exit_code = 1
 
     return exit_code
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    try:
+        return _main(argv)
+    except (OSError, UnicodeError, ValueError) as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":

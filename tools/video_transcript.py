@@ -19,6 +19,7 @@
 
 import argparse
 import html
+import json
 import os
 import re
 import site
@@ -115,15 +116,50 @@ def _resolve_threads_video_url(url: str, timeout: int = 15) -> str:
     )
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         body = resp.read().decode("utf-8", errors="replace")
-    for block in re.findall(r'"video_versions":\[(.*?)\]', body):
-        m = re.search(r'"url":"([^"]+)"', block)
-        if m:
-            raw = m.group(1).replace("\\/", "/").encode("utf-8").decode("unicode_escape")
-            return _validate_url(html.unescape(raw))
-    for raw_mp4 in re.findall(r'https?:\\?/\\?/[^"\'\s<>]+\.mp4[^"\'\s<>]*', body):
-        clean = html.unescape(raw_mp4.replace("\\/", "/").encode("utf-8").decode("unicode_escape"))
-        if "rsrc.php" not in clean:
-            return _validate_url(clean)
+    post_match = re.fullmatch(r"/@[^/]+/post/([^/]+)/?", parsed.path)
+    if post_match is None:
+        raise RuntimeError("Threads 網址缺少可識別的 post ID")
+    post_id = post_match.group(1)
+    decoder = json.JSONDecoder()
+
+    def walk(value):
+        if isinstance(value, dict):
+            if any(value.get(key) == post_id for key in ("code", "shortcode", "id", "pk")):
+                yield value
+                return  # Do not mistake a quoted/recommended descendant for this post.
+            for child in value.values():
+                yield from walk(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from walk(child)
+
+    # Decode JSON structures rather than treating every URL on the page as media.
+    pos = 0
+    targets = []
+    while pos < len(body):
+        start = body.find("{", pos)
+        if start < 0:
+            break
+        try:
+            value, end = decoder.raw_decode(body, start)
+        except ValueError:
+            pos = start + 1
+            continue
+        targets.extend(walk(value))
+        pos = end
+    for target in targets:
+        versions = target.get("video_versions", [])
+        if not isinstance(versions, list) or any(not isinstance(v, dict) for v in versions):
+            raise RuntimeError("Threads 目標影片 schema 無效")
+        candidates = [v.get("url") for v in versions]
+        if not candidates and "video_url" in target:
+            candidates = [target["video_url"]]
+        for raw in candidates:
+            if not isinstance(raw, str) or not raw:
+                raise RuntimeError("Threads 目標影片 URL schema 無效")
+            clean = html.unescape(raw)
+            if "rsrc.php" not in clean:
+                return _validate_url(clean)
     raise RuntimeError(f"Threads 貼文未偵測到影片串流：{url}")
 
 

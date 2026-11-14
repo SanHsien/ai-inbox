@@ -62,6 +62,46 @@ class TestVerifyZhtwVocab(unittest.TestCase):
         self.assertIn("代码块內的 連線埠 與 型別別 不應被更動", fixed)
         self.assertEqual(scan_degraded_vocab(fixed, skip_code=True), [])
 
+    def test_inline_runs_pair_by_exact_length(self):
+        for raw in ["`` `連線埠` ``", "``` a `型別別` b ```", "``連線埠`仍在程式碼``"]:
+            with self.subTest(raw=raw):
+                self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), raw)
+                self.assertEqual(scan_degraded_vocab(raw), [])
+        self.assertTrue(scan_degraded_vocab("`連線埠``"))
+        self.assertEqual(apply_zhtw_vocab("`連線埠``", skip_code=True), "`連接埠``")
+
+    def test_overlapping_and_consecutive_degradations_reach_fixed_point(self):
+        for raw, expected in [("型別別別", "型別"), ("型別別別別別型別別別", "型別型別"),
+                              ("字面量（Literal）（Literal）（Literal）", "字面量（Literal）"),
+                              ("命令行界面", "命令列介面")]:
+            with self.subTest(raw=raw):
+                self.assertEqual(apply_zhtw_vocab(raw), expected)
+                self.assertTrue(verify_idempotence([raw])[0])
+
+    def test_cli_rejects_missing_and_zero_input(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            empty = Path(tmp) / "empty.md"
+            empty.write_text("", encoding="utf-8")
+            for mode in ["--check", "--fix"]:
+                for paths in [[], [str(Path(tmp) / "missing.md")], [tmp], [str(empty)]]:
+                    with self.subTest(mode=mode, paths=paths):
+                        self.assertEqual(main([mode, *paths]), 2)
+            valid = Path(tmp) / "valid.md"
+            valid.write_text("連線埠", encoding="utf-8")
+            for mode in ["--check", "--fix"]:
+                self.assertEqual(main([mode, str(valid), str(Path(tmp) / "missing.md")]), 2)
+            self.assertEqual(valid.read_text(encoding="utf-8"), "連線埠")
+            self.assertEqual(main([]), 2)
+
+    def test_cli_rejects_invalid_encoding_before_fixing_other_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            good = Path(tmp) / "good.md"
+            bad = Path(tmp) / "bad.md"
+            good.write_text("連線埠", encoding="utf-8")
+            bad.write_bytes(b"\xff")
+            self.assertEqual(main(["--fix", str(good), str(bad)]), 2)
+            self.assertEqual(good.read_text(encoding="utf-8"), "連線埠")
+
     def test_all_rules_are_strictly_idempotent(self) -> None:
         ok, failures = verify_idempotence([
             "預設值與環境變數的連接埠設定只影響命令列介面輸出，詳見參考文件。",
