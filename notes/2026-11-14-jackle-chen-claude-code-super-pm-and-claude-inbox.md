@@ -22,7 +22,25 @@ tags:
   - windows-unsupported
 ---
 
-## Executive Summary
+# Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）
+
+- **來源連結**：[Facebook 貼文：Jackle Chen](https://www.facebook.com/share/p/19youqwPEF/)
+- **發布平台 / 作者**：`facebook` / `Jackle Chen`
+- **分析日期**：`2026-11-14`
+- **當前狀態**：`🔴 未做 (Pending)`
+
+---
+
+## 1. 核心內容摘要（5W1H 初篩）
+
+- **Who**：Jackle Chen；開源倉庫 `chenjackle45/claude-inbox`（MIT）。
+- **What**：常駐「總 PM」session 派工，需人決定的事集中到網頁收件匣，答案經 hook 回到對應 agent。
+- **Why**：同時開 20 多條 Claude Code session 時，人被各處提問打斷。
+- **How**：`inbox.py` 起本機服務、hook 注入答案（見下方技術架構）。
+- **When & Where**：macOS／Linux／WSL（README 載明原生 Windows 不支援）。
+- **Key Metrics / Numbers**：16 stars、6 forks；作者自述 21 條 session、20 天常駐（未重現）。
+
+### 摘要原文
 
 **Jackle Chen**（FB 貼文，原文發表於其部落格 `jackle.pro`，2026-11-07）分享他同時帶 20 多條 Claude Code session 的做法：**一個常駐的「總 PM」session 負責派工，所有需要人決定的事統一進一個網頁「收件匣」**，人有空再一次回答，答案經 hook 自動回到對應 agent。他把收件匣核心拆出來開源為 `chenjackle45/claude-inbox`（MIT，16 stars、6 forks）。
 
@@ -112,11 +130,21 @@ agent 處理完 ──inbox close <題號>──▶ 收起
 
 ---
 
-## 與本機防線對照
+## 2. CQR 深入論證檢驗（選填）
+
+- **Claim**：總 PM + 決定收件匣可同時帶 20 多條 Claude Code session。
+- **Evidence**：作者部落格與倉庫原始碼；21 條 session、20 天常駐為作者自述，未重現。
+- **Reasoning**：方法論有實戰描述但缺用量數字；Windows 原生不可用，限縮了對本機的適用性。
+
+---
+
+## 3. 啟發與適用性評估
+
+### 與本機防線對照
 
 | 評估維度 | 結論 |
 |---------|------|
-| **採用可行性** | 低：Windows 原生不可用；本機主力為 Antigravity，且無 `CLAUDE_CODE_SESSION_ID` 與 Claude hook |
+| **採用可行性** | 低：本機為 Windows 11 原生，`inbox.py` 用 `fcntl`（POSIX 專有）、hook 寫死 `python3`（2026-11-14 以 GitHub API 查證） |
 | **概念可借用** | 高：「問人的事排隊、答案由 hook 注入下一輪」與本機 `ai-inbox`、hook 防線、派工清單思路同源 |
 | **安全性** | 良好：loopback 預設、token、Host/Origin 檢查、純文字顯示；唯一外部輸入是人本人的答案 |
 | **第三方 plugin 風險** | 屬社群個人專案（16 stars），依零信任規則：只讀分析，不安裝；採納前須過 SkillSpector 與 `verify_agent_skill_pack_safety.py` |
@@ -125,18 +153,13 @@ agent 處理完 ──inbox close <題號>──▶ 收起
 
 ---
 
-## 評估結論與處置
+### 評估結論與處置
 
-**評分：⭐⭐⭐⭐（4/5）**
+**評分：⭐⭐⭐（3/5）**（原 4/5；結論為 Windows 原生不可用、不安裝，故酌降使評分與結論一致）
 
-方法論有實戰數據（21 條 session、20 天常駐），且作者主動坦承限制（未實測 Codex、常駐版本停滯、每晚仍須人工允許），開源範圍也交代清楚（儀表板、撈 log、進度頁不在 repo 內）。扣分：Windows 原生不可用；FB 貼文本身只是導流，細節在部落格；「決定做就當作完成」的心法在無實查時有漏洞。
+方法論有實戰數據（21 條 session、20 天常駐），且作者主動坦承限制（未實測 Codex、常駐版本停滯、每晚仍須人工允許），開源範圍也交代清楚（儀表板、撈 log、進度頁不在 repo 內）。扣分：Windows 原生不可用且不安裝；FB 貼文本身只是導流，細節在部落格；「決定做就當作完成」的心法在無實查時有漏洞。
 
-**處置**：
-- [ ] 不安裝 `claude-inbox`；若要試，只在 WSL 隔離環境，且先審 `inbox.py`、`hooks.json` 全文
-- [ ] 評估把「決定收件匣」概念移植到本機：以 `agent-relay` 或 `ai-inbox` 現有機制承接，不必依賴 Claude hook
-- [ ] 參考總 PM 的職責切分（派卡、擋高風險、整理待拍板事項），對照本機「派工逐件清單」規範補強缺口
-- [ ] 追蹤作者部落格其他文章：`claude-code-worktree`、`claude-code-project-insights`、`claude-code-status-line`（本次未讀）
-- [ ] 追蹤 `claude-inbox` 是否加入 Windows 支援（以 `fcntl` 替代方案）
+**處置**：不安裝 `claude-inbox`（Windows 原生不可用；若要試，只在 WSL 隔離環境，且先審 `inbox.py`、`hooks.json` 全文）。可借用的是概念：問人的事排隊、答案由 hook 注入下一輪，可由本機 `agent-relay` 或 `ai-inbox` 現有機制承接。原核取清單因無可驗收 DoD 已刪除；本篇唯一的任務見第 4 節。
 
 **參考連結**：
 - 部落格原文：https://jackle.pro/articles/claude-inbox
