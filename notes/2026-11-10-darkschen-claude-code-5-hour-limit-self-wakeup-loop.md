@@ -71,11 +71,10 @@ AI 自動化專家陳盟升（Darks）在 Facebook 分享其使用 Claude Code �
 - **代表做法**：透過外層 Shell / Python 監控 Daemon 包裹 Claude Code CLI。
 - **機制**：
   ```bash
-  # 偽代碼示例：外層監控自動喚醒迴圈
+  # 示意偽代碼（非可執行腳本；範例已移除危險旗標）：外層監控自動喚醒迴圈
   while ! git diff --quiet main; do
-    claude --dangerously-skip-permissions -p "讀取 CHECKPOINT.md，繼續推進下一步"
-    EXIT_CODE=$?
-    if [ $EXIT_CODE -eq 429 ] || grep -q "rate limit" claude.log; then
+    claude -p "讀取 CHECKPOINT.md，繼續推進下一步"
+    if grep -q "rate limit" claude.log; then
       WAIT_SECONDS=$(python3 -c "import parse_reset; print(parse_reset.get_seconds())")
       sleep $WAIT_SECONDS
     fi
@@ -85,7 +84,7 @@ AI 自動化專家陳盟升（Darks）在 Facebook 分享其使用 Claude Code �
 
 ### 2.3 範式 C：事件溯源與無感凍結（Event-Sourcing Zero-Cost Suspend）
 - **代表系統**：[`agent-autoloop`](./2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md)。
-- **機制**：透過 ACP（Agent Client Protocol）在撞牆瞬間將完整對話狀態與執行事件序列化至本地 SQLite/日誌，釋放所有進程與記憶體，排程器在重置時間到達時重放事件日誌恢復工作線程。
+- **機制**：autoloop 只在 Agent 向人類提問時掛起（狀態寫入本地 SQLite，等待回覆期間不佔行程與 Token），不處理額度重置；它並不在撞到額度牆時自動凍結，也沒有「重置時間到達就重放事件日誌」的排程（見該筆記）。
 
 ### 2.4 範式 D：非阻塞背景子行程管道（Background Pipeline / Inbox Signal）
 - **代表做法**：Agent 在對話即將耗盡額度前，透過 Shell 啟動背景子進程：
@@ -101,7 +100,7 @@ AI 自動化專家陳盟升（Darks）在 Facebook 分享其使用 Claude Code �
 讓 AI「整夜自己叫醒自己跑」雖然極具生產力，但若缺乏安全防線，容易引發災難性後果：
 
 ### 3.1 防線一：死循環熔斷機制（Circuit Breaker / Max Iterations）
-- **致命陷阱**：Agent 陷入某個測試無法通過的修復死循環，自己叫醒自己 3 次，結果在 15 小時內把整個團隊一整週的 High-tier 模型額度全數燒光。
+- **致命陷阱**：Agent 陷入某個測試無法通過的修復死循環，自己叫醒自己 3 次，結果在 15 小時內把整個團隊一整週的 High-tier 模型額度全數燒光（假設情境，非查證事實）。
 - **硬規則**：必須設置 **最大重試輪數（Max Turns / Max Retries）** 與 **錯誤收斂檢查**；若連續 2 次喚醒後代碼未產生有效綠燈進展，必須終止自動喚醒並轉為通知人類。
 
 ### 3.2 防線二：落盤實質對帳（State File & Checkpoint）
@@ -111,7 +110,7 @@ AI 自動化專家陳盟升（Darks）在 Facebook 分享其使用 Claude Code �
   - **醒後先對帳**：喚醒後的第一個動作不是憑記憶寫代碼，而是**實質執行 `git status` 與測試套件**，重新建立世界模型。
 
 ### 3.3 防線三：嚴格恪守單一通道派工紀律
-- **全域規範對應**：正如全域規則所要求：*「429 或額度問題不擅自跨 provider、換 lane 或重複派工，等待恢復或使用者決定期間，該件仍算未結案。結案前對帳要實查... 只要還有件在外面，每輪收尾前就要留一個有期限、會主動叫醒自己的監看，不能只等事件。」*
+- **規範對應**：依維護者規則，遇 429 或額度問題不擅自跨 provider、換 lane 或重複派工，等待恢復或使用者決定期間該件仍算未結案。
 - 絕不在 429 發生時慌亂切換未經授權的模型或盲目重複派工，保持任務單位的單一性與可追溯性。
 
 ---
