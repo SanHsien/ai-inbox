@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 224 項任務：🔴 未做 11／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
+> 共 225 項任務：🔴 未做 12／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -58,6 +58,7 @@
 | `T-20261115-06` | 🔴 未做 | 低 | 於 `docs/model-burn-rate-routing-matrix.md` 增補「PM／一線實作／QA 三角分權路由樣板」與 Reviewer Tax 評估註記 | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（可與 `T-20261114-03` 實測時一併更新） | [2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | 2026-11-15 |
 | `T-20261115-07` | 🔴 未做 | 低 | 若未來需建置純前端隱私修圖工具，僅採「垂直切片」驗證單一 WebGPU ONNX 模型（如 U²-Net 去背）＋ Canvas 縮放／前後對比線最小可用原型（不照原文一口氣全包） | 未來若立項時新建 `C:\GitHub\browser-image-studio`（目前暫不建立空 repo） | [2026-11-15-browser-webgpu-photo-video-editor-prompt-eval](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | 2026-11-15 |
 | `T-20261115-10` | 🔴 未做 | 低 | 查驗 OpenAI Apps SDK 上架與 OAuth 2.1 契約規範，評估以 Cloudflare Workers 零成本託管 1 個具引流價值的垂直 MCP 微工具可行性 | 研究評估筆記／規格備忘（`C:\GitHub\ai-inbox\docs\` 或對應微工具專案，先不立新 repo） | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | 2026-11-15 |
+| `T-20261115-11` | 🔴 未做 | 低 | 於 `SanHsien/video-autopilot-kit` 評估補入「Audio-First 秒數對齊＋FFmpeg 綠幕 Chroma Key（含 `despill` 抗綠邊）合成模組」 | `C:\GitHub\video-autopilot-kit`（或本機合成工具腳本） | [2026-11-15-audio-first-greenscreen-ai-commercial-pipeline](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
@@ -402,6 +403,7 @@
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 | 2026-11-15 | 🔴 | [AI-Native 一人接案公司：從賣工時轉向「建置＋月費維運」與多角色可重複服務系統](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | `ai-agency`, `freelance`, `retainer-model` | 0 / 2 |
 | 2026-11-15 | ⚪ | [Amazon 亞馬遜聯盟分潤與台灣電商（蝦皮／酷澎／聯盟網／momo）分潤計畫查證評估](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md) | `affiliate-marketing`, `amazon-associates`, `shopee-affiliate` | 0 / 0 |
+| 2026-11-15 | 🔴 | [免剪輯軟體 17 秒 AI 商業廣告管線：Audio-First 節奏表、綠幕角色解耦與 FFmpeg Chroma Key 合成評估](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | `ai-video`, `audio-first`, `chroma-key` | 0 / 1 |
 | 2026-11-15 | 🔴 | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 1 |
 | 2026-11-15 | 🔴 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 0 / 2 |
@@ -446,6 +448,7 @@
 - 垂直工作流技能包：[GitHub週榜五大ClaudeSkills](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md)
 - AI工具整合：[Meta Astryx設計系統](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md)
 - AI影片剪輯：[Editkin免費AI剪輯](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md)
+- 綠幕合成廣告管線：[Audio-First綠幕廣告管線](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md)
 - 前端WebGPU修圖：[WebGPU修圖Prompt評估](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md)
 - 向量幾何Logo與MCP：[Rikyū幾何Logo與MCP](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md)
 
