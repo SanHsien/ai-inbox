@@ -39,18 +39,18 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 208 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 137／⚪ 不做 71
+> 共 211 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 138／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| *（目前沒有未完成任務）* | - | - | - | - | - | - |
+| `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 137 項）</summary>
+<details><summary>展開查看已完成任務（共 138 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -191,12 +191,13 @@
 | `T-20261108-03` | 2026-11-08 | 撰寫《Harness² 雙層遞迴與 8 大模組演進及防弊規範》（`docs/harness2-recursive-agent-harnessing-spec.md`） | 已完成 `docs/harness2-recursive-agent-harnessing-spec.md`，並執行 `python tools/build_index.py` 與 `python tools/verify_inbox.py` 驗證通過（84 篇筆記、206 項任務）。 | [2026-11-08-google-research-harness2-recursive-agent-harnessing](./notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md) |
 | `T-20261108-04` | 2026-11-08 | 撰寫《Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範》，並實作 `tools/verify_agent_skill_pack_safety.py` 靜態審計器 | 已完成 `docs/claude-code-domain-skill-packs-and-mcp-audit.md`、`tools/verify_agent_skill_pack_safety.py` 與 `tests/test_verify_agent_skill_pack_safety.py`；執行 `python tools/verify_agent_skill_pack_safety.py` 輸出 `[PASS] Agent Skill Pack 安全與決定性審計通過（共檢驗 5 組工具鏈）。`，單元測試 `Ran 6 tests — OK`。 | [2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) |
 | `T-20261108-05` | 2026-11-08 | 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核 | 已於 `tools/audit_fullstack_security.py` 新增 `check_wrangler_config` 檢查、於 `docs/production-smoke-security-checklist.md` 新增第 6 節 Cloudflare Serverless 部署檢核清單，並擴充 `tests/test_audit_fullstack_security.py` 至 16 項測試（`Ran 16 tests — OK`）。 | [2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) |
+| `T-20261114-01` | 2026-11-14 | 將 GPT-6.1 Terra 額度、credits 單價與 Fast 倍率核實結果增補進模型速查表 | `docs/model-burn-rate-routing-matrix.md` 新增第 9 節（9.1–9.6，約 66 行）。數字取自 2026-11-14 讀取的官方頁：Terra 35–285 對 Sol 15–160、Terra credits 25/1.25/125 對 Sol 50/2.5/250、Fast 2.5x／2x。線索中「額度增加」依官方原文「Overall Work and Codex plan limits are unchanged」標為措辭不精確。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
 
 </details>
 
 ### ⚪ 不做 / 已關閉（Archived）
 
-<details><summary>展開查看已關閉或評估不做的任務（共 71 項）</summary>
+<details><summary>展開查看已關閉或評估不做的任務（共 72 項）</summary>
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 關閉理由 | 來源分析文章 |
 | :--- | :---: | :---: | :--- | :--- | :--- |
@@ -271,6 +272,7 @@
 | `T-20261102-07` | ⚪ 不做 | 高 | 撰寫「OpenCut 開源多軌剪輯架構手冊：Rust Core、WebCodecs 本地渲染與 MCP Server 整合規格」收錄於 `docs/opencut-video-editor-architecture-spec.md` | 維護者不用 OpenCut 剪片，上游也在快速變動；時間軸驗證器與 Prompt 範本沒有實際使用情境。 | [2026-11-02-opencut-open-source-capcut-alternative-video-editor](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) |
 | `T-20261102-08` | ⚪ 不做 | 中 | 實作「OpenCut Headless 批次剪輯與時間軸 JSON 驗證腳本」於 `tools/verify_opencut_timeline.py` 與單元測試 | 維護者不用 OpenCut 剪片，上游也在快速變動；時間軸驗證器與 Prompt 範本沒有實際使用情境。 | [2026-11-02-opencut-open-source-capcut-alternative-video-editor](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) |
 | `T-20261102-09` | ⚪ 不做 | 低 | 產出標準化「AI Agent 驅動 OpenCut 自動粗剪、字幕生成與分鏡剪輯 Prompt 模板」收錄於 `templates/opencut-agent-editing-prompt.md` | 維護者不用 OpenCut 剪片，上游也在快速變動；時間軸驗證器與 Prompt 範本沒有實際使用情境。 | [2026-11-02-opencut-open-source-capcut-alternative-video-editor](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) |
+| `T-20261114-02` | ⚪ 不做 | 中 | 將「日常用 Terra、高難度用 Sol、不開 Fast」寫入 `SanHsien/agent-assets`（私有）共用偏好庫 | 不做：這是未附出處的使用者線索，且品質差異未驗證；模型名、額度、倍率屬會變動的資料，`T-20261026-02` 已確立不寫成永久偏好。數字改以附日期與出處的方式收錄在 T-20261114-01 的速查表第 9 節。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
 
 </details>
 <!-- END GENERATED: tasks -->
@@ -382,6 +384,7 @@
 | 2026-11-13 | ⚪ | [Editkin：免費 Windows 本地優先 AI 剪輯器（0.16 起轉閉源 freeware，原始碼凍結於 0.15）](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md) | `editkin`, `video-editing`, `local-first` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
+| 2026-11-14 | 🟡 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 1 / 2（+1 不做） |
 | 2026-11-14 | ⚪ | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 0 / 0 |
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 <!-- END GENERATED: index -->
@@ -405,6 +408,7 @@
 - Agent排程與額度管理：[ClaudeCode五小時額度自喚醒](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md)
 - Claude配額管理：[Duet申請送Resets](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md)
 - 簡報工作流：[Claude Artifacts簡報](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md)
+- Terra額度路由：[Terra額度與Fast倍率核實](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md)
 - 多session管理：[總PM與claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
@@ -600,7 +604,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/irrefutable-evidence-and-invalid-patterns-spec.md`](./docs/irrefutable-evidence-and-invalid-patterns-spec.md) | 無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範 |
 | [`docs/karpathy-rules-mechanical-hardening-spec.md`](./docs/karpathy-rules-mechanical-hardening-spec.md) | Karpathy 四原則工程加固指引：從 Prompt 到硬閘門 |
 | [`docs/llmjacking-cloud-defense-spec.md`](./docs/llmjacking-cloud-defense-spec.md) | AI 時代雲端算力竊盜防禦手冊：AMOS 釣魚木馬、Cookie 劫持與 LLMJacking 防範規格 |
-| [`docs/model-burn-rate-routing-matrix.md`](./docs/model-burn-rate-routing-matrix.md) | 長程並行開發：模型選型與配額消耗速查表（Sol 6.1／Astra 6／Luna 6） |
+| [`docs/model-burn-rate-routing-matrix.md`](./docs/model-burn-rate-routing-matrix.md) | 長程並行開發：模型選型與配額消耗速查表（Sol 6.1／Terra 6.1／Astra 6／Luna 6） |
 | [`docs/multi-agent-parallel-dispatch-spec.md`](./docs/multi-agent-parallel-dispatch-spec.md) | 四 Agent 平行派工協議與人類審核門檻規範 |
 | [`docs/multimodal-screen-privacy-spec.md`](./docs/multimodal-screen-privacy-spec.md) | 多模態 Coding Agent 螢幕截圖與 OCR 視覺隱私安全檢驗規範 |
 | [`docs/nvidia-nemotron-transcribe-pipeline-spec.md`](./docs/nvidia-nemotron-transcribe-pipeline-spec.md) | NVIDIA Nemotron 3.5 Transcribe 語音辨識模型技術規格與 Windows 本機語音輸入適用性評估 |

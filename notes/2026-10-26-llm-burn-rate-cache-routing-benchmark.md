@@ -20,6 +20,8 @@ tags:
 
 # 多模型連續開發實測：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐
 
+> **2026-11-14 補充**：官方用量頁已新增 GPT-6.1 Terra（Plus 每 5 小時 35–285 則、credits 單價為 Sol 6.1 的一半）與 Fast 模式倍率（訂閱內含額度 2.5x）。本文的實測只涵蓋 Sol 6.1／Astra 6／Luna 6，不含 Terra；Terra 與 Fast 的官方數字與核對結果見 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 第 9 節與 [`notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md`](./2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md)。
+
 - **資料來源**：`維護者一線連續開發實測數據（2026-10-26）`
 - **評測情境**：搭配 Tibo's Reset 後的多專案高強度連續開發、從零骨架建構與長程自主派工
 - **分析日期**：`2026-10-26`
