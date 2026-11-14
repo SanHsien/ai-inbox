@@ -208,7 +208,7 @@ abuse_policy:
 
 ## 9. 使用者自查工具
 
-`tools/audit_oauth_credentials.py` 掃描 `~/.grok/`、`~/.codex/`（或 `CODEX_HOME`）、`~/.claude/`（或 `CLAUDE_CONFIG_DIR`）的第一層檔案與 `oauth-proxy/` 子資料夾，只看 metadata 與欄位名稱，**不會輸出任何憑證值**：
+[`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks) 的 `tools/audit_oauth_credentials.py`（2026-11-14 由本 repo 移出）掃描 `~/.grok/`、`~/.codex/`（或 `CODEX_HOME`）、`~/.claude/`（或 `CLAUDE_CONFIG_DIR`）的第一層檔案與 `oauth-proxy/` 子資料夾，只看 metadata 與欄位名稱，**不會輸出任何憑證值**：
 
 ```bash
 python C:\GitHub\agent-safety-checks\tools\audit_oauth_credentials.py                     # 掃預設目錄
