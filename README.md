@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 223 項任務：🔴 未做 10／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
+> 共 224 項任務：🔴 未做 11／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -57,6 +57,7 @@
 | `T-20261115-05` | 🔴 未做 | 低 | 評估將 `needs_validation` 三態裁決與「證偽導向」對抗式檢查精神整合至 `SanHsien/agent-advisor` 審查協定 | `C:\GitHub\agent-advisor`（`advisor-pro-reviewer` 與相關審查參考文件） | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) | 2026-11-15 |
 | `T-20261115-06` | 🔴 未做 | 低 | 於 `docs/model-burn-rate-routing-matrix.md` 增補「PM／一線實作／QA 三角分權路由樣板」與 Reviewer Tax 評估註記 | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（可與 `T-20261114-03` 實測時一併更新） | [2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | 2026-11-15 |
 | `T-20261115-07` | 🔴 未做 | 低 | 若未來需建置純前端隱私修圖工具，僅採「垂直切片」驗證單一 WebGPU ONNX 模型（如 U²-Net 去背）＋ Canvas 縮放／前後對比線最小可用原型（不照原文一口氣全包） | 未來若立項時新建 `C:\GitHub\browser-image-studio`（目前暫不建立空 repo） | [2026-11-15-browser-webgpu-photo-video-editor-prompt-eval](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | 2026-11-15 |
+| `T-20261115-10` | 🔴 未做 | 低 | 查驗 OpenAI Apps SDK 上架與 OAuth 2.1 契約規範，評估以 Cloudflare Workers 零成本託管 1 個具引流價值的垂直 MCP 微工具可行性 | 研究評估筆記／規格備忘（`C:\GitHub\ai-inbox\docs\` 或對應微工具專案，先不立新 repo） | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
@@ -402,6 +403,7 @@
 | 2026-11-15 | 🔴 | [AI-Native 一人接案公司：從賣工時轉向「建置＋月費維運」與多角色可重複服務系統](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | `ai-agency`, `freelance`, `retainer-model` | 0 / 2 |
 | 2026-11-15 | ⚪ | [Amazon 亞馬遜聯盟分潤與台灣電商（蝦皮／酷澎／聯盟網／momo）分潤計畫查證評估](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md) | `affiliate-marketing`, `amazon-associates`, `shopee-affiliate` | 0 / 0 |
 | 2026-11-15 | 🔴 | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 1 |
+| 2026-11-15 | 🔴 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 0 / 2 |
 | 2026-11-15 | 🔴 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 0 / 2 |
@@ -465,6 +467,7 @@
 - 開源教材與商業案例查核：[GitHub 開源 AI 工具矩陣](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md)、[海外一手副業案例與影音萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)、[臉書發文收益宣稱查核](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md)、[AI Engineering from Scratch 教材評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md)
 - 社群動態與帳號合規：[Muse跨區註冊與邀請碼評析](./notes/2026-11-10-asha-muse-registration-vpn-referral-evaluation.md)
 - 電商分潤真假查證：[亞馬遜與蝦皮分潤查證](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md)
+- ChatGPT分發紅利：[ChatGPT MCP分發紅利](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md)
 <!-- END GENERATED: clusters -->
 
 ---
