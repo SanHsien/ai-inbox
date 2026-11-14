@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 216 項任務：🔴 未做 3／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
+> 共 217 項任務：🔴 未做 4／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,6 +50,7 @@
 | `T-20261115-01` | 🔴 未做 | 中 | 在 Windows 11 原生環境沙盒安裝並實測 `earendil-works/pi`，驗證 TUI、`powershell` 工具與 `openai-codex` / `anthropic` provider 相容性，並定案與 `agent-relay` 的分工邊界 | 本機測試環境（Windows Terminal + `C:\GitHub\_sandbox\pi-test`）與 `C:\GitHub\ai-inbox` 評估紀錄 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 | `T-20261115-02` | 🔴 未做 | 低 | 實作 Pi 混合型擴充套件 `pi-hybrid-relay`（於 Pi 內統一委派 `codex` CLI、`claude` CLI、Antigravity 頂層對話與 `agent-relay` 問答） | 新建 `C:\GitHub\pi-hybrid-harness`（對應 `SanHsien/pi-hybrid-harness`）或作為 `agent-relay` 擴充套件（依 `T-20261115-01` 結論定案） | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
+| `T-20261115-03` | 🔴 未做 | 低 | 安全審查並評估本地零額度幾何向量 Logo 方案（`mcpware/logoloom` 或自建構造幾何 SVG + SVGO Skill） | `C:\GitHub\_sandbox\`（唯讀／沙盒審查）與 `C:\GitHub\ai-inbox\templates\` | [2026-11-15-rikyu-geometric-vector-logo-mcp](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
@@ -393,6 +394,7 @@
 | 2026-11-14 | 🟡 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 1 / 2 |
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 | 2026-11-15 | 🔴 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 0 / 2 |
+| 2026-11-15 | 🔴 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -429,6 +431,7 @@
 - 垂直工作流技能包：[GitHub週榜五大ClaudeSkills](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md)
 - AI工具整合：[Meta Astryx設計系統](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md)
 - AI影片剪輯：[Editkin免費AI剪輯](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md)
+- 向量幾何Logo與MCP：[Rikyū幾何Logo與MCP](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
