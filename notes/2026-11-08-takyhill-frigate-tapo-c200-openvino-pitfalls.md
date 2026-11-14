@@ -53,6 +53,8 @@ tags:
 
 貼文標題點出的硬體陷阱，實務上分為兩類常見誤買情境：
 
+> 下列硬體相容矩陣為作者自述，未查證。
+
 | 攝影機類型 / 代表型號 | 原生 RTSP 支援 | 原因與技術解法 |
 | :--- | :---: | :--- |
 | **TP-Link Tapo 插電款**（如 **Tapo C200**、C210、C220、C310） | ✅ 原生支援 | 於 Tapo App「進階設定 → 攝影機帳戶」建立獨立帳密（勿與雲端主帳號相同），即可透過 `rtsp://帳號:密碼@IP:554/stream1`（高畫質）與 `/stream2`（低畫質）拉流。 |
@@ -95,12 +97,12 @@ tags:
 
 ## 3. CQR 論證檢驗與 `v0.18.2` Critical RCE 資安漏洞深挖
 
-作者於踩雷清單第 5 點特別警告：「**請用 0.18.2 以上：之前版本有可遠端執行指令的安全漏洞。**」經直接查核 GitHub `blakeblackshear/frigate` Security Advisories，確認 `v0.18.2`（2026-10-15 發布）修補了以下 3 項關鍵漏洞（其中 2 項為 **Critical 等級 Root RCE**）：
+作者於踩雷清單第 5 點特別警告：「**請用 0.18.2 以上：之前版本有可遠端執行指令的安全漏洞。**」經直接查核 GitHub `blakeblackshear/frigate` Security Advisories，確認 `v0.18.2`（2026-10-15 發布）修補多項漏洞，下表列出其中 3 項（其中 2 項為 **Critical 等級 Root RCE**）：
 
 | 漏洞編號 | 嚴重度 | 影響版本 | 攻擊向量與成因（Root Cause） | 防護與修補結論 |
 | :--- | :---: | :---: | :--- | :--- |
-| **`GHSA-93xj-hg88-ffg7`** | **Critical** | `< 0.18.2` | **Direct WebSocket Paths Root RCE**：低權限的 `viewer` 角色（或直接存取無鑑權 `5000` 埠的攻擊者）可透過直連內部 WebSocket 路徑繞過權限控管，以容器內 `root` 身分執行任意系統指令。 | 必須升級至 **`v0.18.2+`**（PR `#24658`），且嚴禁將內部 `5000` 埠暴露於區網或公網。 |
-| **`GHSA-qjjw-3v66-279f`** | **Critical** | `< 0.18.2` | **`go2rtc` Source Scheme 繞過 `exec:` 過濾器致 Root RCE**：Frigate 雖過濾了 `go2rtc` 設定中的 `exec:` 指令前綴，但攻擊者可利用複合 source scheme 繞過檢查，進而在 `go2rtc` 子程序中以 `root` 執行任意命令。 | 必須升級至 **`v0.18.2+`**，並以強密碼保護 `:8971` 管理員帳戶。 |
+| **`GHSA-93xj-hg88-ffg7`** | **Critical** | `< 0.18.2` | **Direct WebSocket Paths Root RCE**：低權限的 `viewer` 角色（或直接存取無鑑權 `5000` 埠的攻擊者；「無鑑權 5000 埠」未查證）可透過直連內部 WebSocket 路徑繞過權限控管，以容器內 `root` 身分執行任意系統指令。 | 必須升級至 **`v0.18.2+`**（PR `#24658`），且嚴禁將內部 `5000` 埠暴露於區網或公網。 |
+| **`GHSA-qjjw-3v66-279f`** | **Critical** | `< 0.18.2` | **`go2rtc` Source Scheme 繞過 `exec:` 過濾器致 Root RCE（需 admin 認證；官方標題為 admin-authenticated RCE as root）**：Frigate 雖過濾了 `go2rtc` 設定中的 `exec:` 指令前綴，但攻擊者可利用複合 source scheme 繞過檢查，進而在 `go2rtc` 子程序中以 `root` 執行任意命令。 | 必須升級至 **`v0.18.2+`**，並以強密碼保護 `:8971` 管理員帳戶。 |
 | **`GHSA-3cxh-fj2f-h497`**<br>（接續 `GHSA-935r-r3xx-6gmw`） | **Medium** | `< 0.18.2` | **Nginx `/auth` 路徑正規化差異繞過**：`/auth` 媒體與串流鑑權檢查的是原始請求路徑（raw request path），而非 Nginx 正規化後實際派發的路徑，導致可構造特殊路徑繞過媒體授權。 | 必須升級至 **`v0.18.2+`**（PR `#24662` 正規化媒體鑑權請求路徑）。 |
 
 ---
