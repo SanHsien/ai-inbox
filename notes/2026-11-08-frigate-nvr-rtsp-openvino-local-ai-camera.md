@@ -28,7 +28,7 @@ tags:
 
 - **來源連結**：[Threads 原文分享](https://www.threads.com/share/_9AFeXBZH) ｜ [貼文永久網址 (@roboa.ai)](https://www.threads.com/@roboa.ai/post/DfRx2oUk-Vv) ｜ [完整 6 分鐘 YouTube 影片](https://youtu.be/c0bBVL5cVsA) ｜ [GitHub (blakeblackshear/frigate)](https://github.com/blakeblackshear/frigate) ｜ [官方文件 (docs.frigate.video)](https://docs.frigate.video/)
 - **核心作者**：Roboa.ai（`@roboa.ai` 教學分享）／ Blake Blackshear（Frigate 專案作者）
-- **分析主題**：解構開源本地 AI 監視器 NVR 標竿專案 **Frigate**（`blakeblackshear/frigate`，37,313 Stars、v0.18.2），剖析如何以「支援 RTSP 的傳統網路攝影機 + 8GB RAM / Intel 第 6 代以上舊電腦 + Docker + AI 輔助排錯」零月費替代每月 \$10～\$20 美元的商用雲端 AI 攝影機訂閱（Google Nest Aware / Ring / Arlo），並與本庫已收錄之 [`clearcam`](./2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md) 進行工程架構對照。
+- **分析主題**：解構開源本地 AI 監視器 NVR 標竿專案 **Frigate**（`blakeblackshear/frigate`，37,313 Stars（快照日 2026-11-08）、v0.18.2），剖析如何以「支援 RTSP 的傳統網路攝影機 + 8GB RAM / Intel 第 6 代以上舊電腦 + Docker + AI 輔助排錯」零月費替代每月 \$10～\$20 美元的商用雲端 AI 攝影機訂閱（Google Nest Aware / Ring / Arlo），並與本庫已收錄之 [`clearcam`](./2026-10-31-clearcam-open-source-ai-nvr-yolov9-qwen3-vl.md) 進行工程架構對照。
 - **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
   - [`notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md`](./2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md)（許哲維 Frigate 0.18.2 + Tapo C200 實測設定檔、8 大踩雷與 GHSA Root RCE 漏洞分析）
@@ -44,9 +44,9 @@ tags:
 
 | 維度 | 核心內容 |
 | :--- | :--- |
-| **Who（主體）** | 內容創作者 `@roboa.ai`（教學者）與開源專案 **Frigate**（`blakeblackshear/frigate`，MIT License，37.3K Stars，最新穩定版 `v0.18.2` 於 2026-10-15 發布）。 |
+| **Who（主體）** | 內容創作者 `@roboa.ai`（教學者）與開源專案 **Frigate**（`blakeblackshear/frigate`，MIT License，37.3K Stars（快照日 2026-11-08），最新穩定版 `v0.18.2` 於 2026-10-15 發布）。 |
 | **What（核心方案）** | 用「支援 RTSP 的舊監視器 + 8GB RAM / Intel 6 代以上舊電腦 + 開源 Frigate NVR」在區域網路自建本地 AI 監視器，並以單月訂閱大型 AI（ChatGPT / Claude / Gemini）輔助撰寫設定檔與排錯，裝好即退訂。 |
-| **Why（解決痛點）** | 1. 傳統監視器僅靠像素差（Motion Detection）觸發，風吹樹葉、車燈、飛蟲皆誤報。<br>2. 商用 AI 攝影機（Google Nest + Gemini \$20/月、Ring \$19.99/月、Arlo 單鏡 \$9.99/月起）硬體便宜但長期訂閱昂貴，且私人影像須上傳第三方雲端。 |
+| **Why（解決痛點）** | 1. 傳統監視器僅靠像素差（Motion Detection）觸發，風吹樹葉、車燈、飛蟲皆誤報。<br>2. 商用 AI 攝影機（Google Nest + Gemini \$20/月、Ring \$19.99/月、Arlo 單鏡 \$9.99/月起；訂閱價為貼文自述，未查證）硬體便宜但長期訂閱昂貴，且私人影像須上傳第三方雲端。 |
 | **Where（部署環境）** | 家庭／工作室區域網路（Linux Docker 為官方主力支援路線；支援 Intel OpenVINO 內顯加速、Apple Silicon Detector、Google Coral TPU、NVIDIA TensorRT、AMD ROCm、Rockchip NPU）。 |
 | **When（觸發時機）** | 欲將既有 RTSP / ONVIF 傳統攝影機（如 TP-Link Tapo 插電款，或透過 `go2rtc` 橋接私有協議鏡頭）升級為具備物件分類、區域過濾、語意搜尋與事件摘要之智慧 NVR 時。 |
 | **How（運作流水線）** | RTSP 串流輸入 → FFmpeg 硬體解碼 → 移動偵測框選局部區域 → 5 FPS 抽幀送入本地物件偵測模型（YOLO / OpenVINO / MobileNet）→ ROI 區域過濾與事件歸檔 →（選配）CLIP 語意嵌入搜尋與 GenAI 多模態文字摘要。 |
@@ -85,9 +85,9 @@ tags:
 
 | 宣稱項目（Claim） | 官方文件與 GitHub 查證證據（Evidence） | 推論與邊界評估（Reasoning） |
 | :--- | :--- | :--- |
-| **C1：8GB RAM + Intel 第 6 代以上免獨顯即可跑 Frigate 物件偵測** | 查核 `blakeblackshear/frigate` 官方硬體文件：Intel 6th Gen（Skylake）起具備支援 AVX2 的 CPU 與支援 OpenVINO 之 Intel HD Graphics 500 系列內顯；Frigate 僅在偵測到像素位移時裁剪局部畫面，預設以 `5 fps` 送入偵測器。 | **成立**。5 FPS 動態局部推論大幅降低算力需求，單至數路鏡頭在 8GB RAM + Intel 6 代 iGPU（OpenVINO）即可穩定運行。 |
-| **C2：支援「用一句話找錄影」但建議 16GB RAM** | Frigate 自 v0.14 起內建 Semantic Search（基於 Jina CLIP v1 / MobileCLIP 視覺與文字嵌入模型），v0.18 將 `embeddings` 納入多角色 GenAI / 本地模型架構；啟用本地 CLIP 模型常駐記憶體約需額外數 GB RAM。 | **成立**。8GB 主機若同時跑系統、Docker、多路 FFmpeg 解碼與 CLIP 模型易發生 OOM，留言區與影片建議升至 16GB RAM 符合實際工程經驗。 |
-| **C3：v0.18 支援 AI 文字描述畫面，但需獨顯或外接雲端 API** | 查核 GitHub `v0.18.0`～`v0.18.2` Release Notes（2026-09～10）：`genai` 設定改為多 Provider 映射並支援 `roles`（`object descriptions`、`review summaries`、`embeddings`、`chat`），快照全面改存無標註 `.webp`（`<camera>-<id>-clean.webp`）。 | **成立**。多模態 VLM（如 Ollama 本地跑 Qwen-VL / LLaVA）在純內顯舊電腦上延遲過高，需獨立 GPU 或外接 Gemini / OpenAI API（後者需取捨隱私）。 |
+| **C1：8GB RAM + Intel 第 6 代以上免獨顯即可跑 Frigate 物件偵測** | 查核 `blakeblackshear/frigate` 官方硬體文件（[docs.frigate.video 硬體](https://docs.frigate.video/frigate/hardware/)）：Intel 6th Gen（Skylake）起具備支援 AVX2 的 CPU 與支援 OpenVINO 之 Intel HD Graphics 500 系列內顯；Frigate 僅在偵測到像素位移時裁剪局部畫面，預設以 `5 fps` 送入偵測器。 | **成立**。5 FPS 動態局部推論大幅降低算力需求，單至數路鏡頭在 8GB RAM + Intel 6 代 iGPU（OpenVINO）即可穩定運行。 |
+| **C2：支援「用一句話找錄影」但建議 16GB RAM** | Frigate 自 v0.14 起內建 Semantic Search（[官方文件](https://docs.frigate.video/configuration/semantic_search/)）（基於 Jina CLIP v1 / MobileCLIP 視覺與文字嵌入模型），v0.18 將 `embeddings` 納入多角色 GenAI / 本地模型架構；啟用本地 CLIP 模型常駐記憶體約需額外數 GB RAM。 | **成立**。8GB 主機若同時跑系統、Docker、多路 FFmpeg 解碼與 CLIP 模型易發生 OOM，留言區與影片建議升至 16GB RAM 符合實際工程經驗。 |
+| **C3：v0.18 支援 AI 文字描述畫面，但需獨顯或外接雲端 API** | 查核 GitHub `v0.18.0`～`v0.18.2` Release Notes 與 [GenAI 設定文件](https://docs.frigate.video/configuration/genai/genai_config/)（2026-09～10）：`genai` 設定改為多 Provider 映射並支援 `roles`（`object descriptions`、`review summaries`、`embeddings`、`chat`），快照全面改存無標註 `.webp`（`<camera>-<id>-clean.webp`）。 | **成立**。多模態 VLM（如 Ollama 本地跑 Qwen-VL / LLaVA）在純內顯舊電腦上延遲過高，需獨立 GPU 或外接 Gemini / OpenAI API（後者需取捨隱私）。 |
 | **C4：請大型 AI 當裝機師傅時的三條資安鐵律** | 影片第 `05:27`～`05:40` 明確警告：<br>1. 監視器 RTSP 帳號密碼與內網網址不可貼給線上 AI；<br>2. AI 給的終端機指令先看懂再執行；<br>3. 若 AI 建議將監視器連接埠直接開到外網（Port Forwarding），立即停下。 | **高度吻合本庫資安規範**。RTSP 串流為明文或弱鑑權協議，直接暴露公網極易遭 Shodan 掃描入侵；遠端查看應走 Tailscale / WireGuard 或 Home Assistant 加密通道。 |
 
 ### 2.2 本庫雙雄對照：`Frigate` vs. `ClearCam`（`2026-10-31` 筆記）
