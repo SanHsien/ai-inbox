@@ -110,6 +110,12 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
 3. **Replay Theater（重播劇場）**：
    - 逐步回放複雜重構（如變數重新命名）的影響節奏。
 
+### 1.4 補充實查：內建 Mod（`diff` / `sec-default`）與無沙盒安全邊界（2026-11-15）
+
+- **內建 `/diff` 已模組化（`diff` Mod）**：Claude Code 互動式 `/diff` 檢視面板即以內建 `diff` Mod 實作，可停用或替換為自訂版本；CLI 與 Desktop App 皆可透過 `/plugin` 安裝含 Mod 的外掛。
+- **企業級保護傘（`sec-default` Mod）**：Team / Enterprise 與託管設定環境內建 `sec-default` Mod，會在洋蔥模型最外層（`prepend` tier）優先載入並採 fail-closed 設計，防止使用者自訂 Mod 繞過組織的 permission deny-list、託管規則或 MCP allowlist。
+- **個人用戶安全提醒（無沙盒隔離）**：Mods 直接在 Claude Code 宿主進程內執行，**具備與 Claude Code 相同的本機系統權限且無沙盒隔離**；個人用戶沒有企業級 `sec-default` 託管層把關，因此僅能安裝經審查的信任來源，亦印證 `T-20261018-10` 將核心高危防護維持於外部獨立閘門（`harness-guard`／`agent-relay`）的必要性。
+
 ---
 
 ## 2. 對現有系統的啟發與適用性評估
