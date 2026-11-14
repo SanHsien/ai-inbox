@@ -46,6 +46,8 @@ tags:
 
 貼文中提到的五項原生能力，對應 Cloudflare Developer Platform 的核心元件與免費額度（Free Tier）邊界如下：
 
+> 額度數字查證日 2026-11-14（對照官方定價頁：[Workers](https://developers.cloudflare.com/workers/platform/pricing/)、[KV](https://developers.cloudflare.com/kv/platform/pricing/)、[D1](https://developers.cloudflare.com/d1/platform/pricing/)、[R2](https://developers.cloudflare.com/r2/pricing/)）；定價會調整，使用前請再核對。
+
 ```text
 [AI Coding Agent 產出專案]
        │
