@@ -21,7 +21,7 @@ tags:
 # Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照
 
 - **來源連結**：[Facebook 貼文：Will 保哥的技術交流中心](https://www.facebook.com/100064322940906/posts/1590827443071339/) ｜ [分享短網址](https://www.facebook.com/share/19PyAfYJ4k/)
-- **保哥繁中 Fork 倉庫**：[`doggy8088/answer-me-with-html`](https://github.com/doggy8088/answer-me-with-html/tree/zh-tw)（預設分支 `zh-tw`，110 Stars、11 Forks；上游為 [`QingYunA/answer-me-with-html`](https://github.com/QingYunA/answer-me-with-html)）
+- **保哥繁中 Fork 倉庫**：[`doggy8088/answer-me-with-html`](https://github.com/doggy8088/answer-me-with-html/tree/zh-tw)（預設分支 `zh-tw`，110 Stars、11 Forks，快照日 2026-11-07；上游為 [`QingYunA/answer-me-with-html`](https://github.com/QingYunA/answer-me-with-html)）
 - **發布時間**：2026-11-07 00:34 (UTC+8)（550 reactions、8 留言、126 分享）
 - **歸屬集群**：集群 2：Code-as-Video、視覺特效與 Generative UI（角色：`上游追蹤與繁體中文化管線`）
 - **評估結論**：`🟢 answer-me-with-html 渲染器已落地；保哥 zh-tw 分支的「零漂移自動同步 + OpenCC 二次退化修補詞庫」極具工程價值，已轉化為本機檢查工具與同步規範`
@@ -40,7 +40,7 @@ tags:
 
 ## 2. 真正值得深挖的亮點：保哥如何維護「零漂移」的繁體中文 Fork
 
-透過 GitHub API 比對 `doggy8088/answer-me-with-html` 的 `main...zh-tw`（`ahead_by=2, behind_by=0`），發現保哥沒有手動改檔，而是寫了一套 `scripts/zh-tw/` 自動化繁中再生管線，非常乾淨且具冪等性（Idempotent）：
+透過 GitHub API 比對 `doggy8088/answer-me-with-html` 的 `main...zh-tw`（快照日 2026-11-07 筆記記為 `ahead_by=2, behind_by=0`；2026-11-14 複查為 1，該值隨推送變動），發現保哥沒有手動改檔，而是寫了一套 `scripts/zh-tw/` 自動化繁中再生管線，非常乾淨且具冪等性（Idempotent）：
 
 ```text
 upstream/main (QingYunA)
