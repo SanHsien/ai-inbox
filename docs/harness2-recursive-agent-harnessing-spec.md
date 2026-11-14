@@ -8,13 +8,15 @@
 
 ## 1. 規範目的
 
-Google Research 的 **Harness²（Harness Squared）** 證明了在固定模型權重（Frozen Weights）且無標準答案（Without Ground-Truth Feedback）的開放世界任務中，透過雙層遞迴精煉外部 8 大 Harness 模組，可在 WorkBuddy-Bench 帶來最高 `+11.5` 分、LAB 法律基準帶來 `+11.8%` 的提升。
+依 [Harness² 作者報告（官方 README）](https://github.com/google-research/harness2#harness-components)，在三個專業基準、四種模型與 Harness 配置中，單步精煉使 GLM-5 與 Gemini 3.5 Flash 相較各自 base harness，於 WorkBuddy-Bench 最高提升 `+11.5` 分，LAB 的 partial pass rate 最高提升 `+11.8 個百分點`。這是作者報告的配置內結果；本庫未重跑基準，不能泛化為所有模型或任務均有此增益。固定模型權重、無 ground-truth feedback 的雙層遞迴設計見同一 README 開頭說明。
 
-本規範將 Harness² 的核心機制轉化為本庫與本地多 Agent 協作環境的可執行工程標準，同時修補原專案「預設關閉 Codex 沙盒且未限制網路存取導致 Benchmark 答案洩漏」之安全漏洞。
+本規範提出本地多 Agent 協作的工程標準，回應 [官方 Web access 章節揭露的風險](https://github.com/google-research/harness2#web-access)：執行器網路不受限、Codex 沙盒停用，可能存取公開評分標準。這不是已發生答案洩漏或作弊的證據；本庫未取得此類事件證據。以下映射、驗證閘門、三項蒸餾門檻與安全契約皆是本文件制定的本地規範，不代表已安裝、執行或證明能完整防弊。
 
 ---
 
 ## 2. 八大可編輯 Harness 模組映射表
+
+八個模組及執行期角色分組依 [官方 Harness components](https://github.com/google-research/harness2#harness-components)；本地對應與閘門是設計要求。
 
 在對任何 Agent 工作流進行自我優化時，所有修改提案（Proposals）必須明確標註其所屬的執行期角色與模組分類，禁止跨模組混雜修改卻不留紀錄：
 
@@ -32,6 +34,8 @@ Google Research 的 **Harness²（Harness Squared）** 證明了在固定模型�
 ---
 
 ## 3. 第一層遞迴：Task-Level `Propose–Probe–Compose` 對比精煉流程
+
+雙層遞迴依 [官方 README](https://github.com/google-research/harness2) 的 Task-level／Harnessing-level recursion；模式參照 [Experiments](https://github.com/google-research/harness2#experiments)。以下步驟與採用門檻為本地規範。
 
 當面對沒有現成 Ground-Truth 分數的開放式工程或研究任務，且初始執行（Initial Run）出現品質瓶頸時，採行三階段對比精煉：
 
@@ -76,10 +80,10 @@ Google Research 的 **Harness²（Harness Squared）** 證明了在固定模型�
 
 ## 5. 沙盒與基準防弊安全契約（Sandbox & Anti-Contamination Contract）
 
-針對 `google-research/harness2` 官方 README 揭露之風險（預設執行器無網路限制且關閉 Codex 沙盒，可能上網抓取公開 Benchmark Rubrics 與答案），本地執行任何 Harness 自動優化或基準測試時，強制實施以下安全契約：
+依 [官方 Web access](https://github.com/google-research/harness2#web-access)，網路不受限且 Codex 沙盒停用，公開評分標準可能可被存取；官方要求評測前限制對答案與評分標準的存取。此為風險揭露，不是已確認洩漏。以下列出本地假設的影響與強制安全契約，未進行部署驗收：
 
-| 風險維度 | Harness² 預設危險行為 | 本地強制防弊與安全契約 |
+| 風險維度 | 官方揭露的設定／本地風險推演 | 本地強制防弊與安全契約 |
 | :--- | :--- | :--- |
-| **宿主機執行隔離** | `--substrate cx` 預設關閉 Codex 沙盒（sandbox disabled），動態生成的 `scripts` 可任意讀寫宿主機 | **預設開啟沙盒（Standard Sandbox Mode）**：所有 `Probe` 階段測試的動態腳本與指令預設在沙盒內運行；嚴禁在未驗證的候選 Harness 中自動賦予全域免沙盒權限，亦不得讀寫專案目錄外的機敏路徑。 |
-| **基準汙染防範 (Benchmark Contamination)** | 執行器擁有無限制外網存取權，Probe 階段可搜尋公開題庫、Rubrics 或原 repo Issue 答案 | **評測期網路白名單與 Rubric 阻斷**：在執行能力基準評測（Evaluation / Benchmarking）時，必須關閉執行器的公開網頁搜尋能力，或於代理層封鎖基準題庫與評分標準所在之網域，確保 `Behavioral Contrasts` 反映真實推理與工具調用能力，而非檢索作弊能力。 |
-| **持久化污染防護 (Improvement Harness Poisoning)** | 若作弊軌跡拿高分，`Experience Reflector` 會將「上網找答案」作為成功經驗寫入持久化資料庫 | **Reflector 審計閘門**：任何寫入持久化規則庫、Skill 或 `verify_*.py` 的修改，必須經過 Git diff 審查與確定性測試，禁止自動將含外網硬編碼 URL 或繞過驗證之腳本合入主幹。 |
+| **宿主機執行隔離** | 官方稱 Codex 沙盒停用；本地風險推演：動態腳本可能在宿主權限範圍內讀寫，並非必然能存取所有檔案 | **預設開啟沙盒（Standard Sandbox Mode）**：所有 `Probe` 階段測試的動態腳本與指令預設在沙盒內運行；嚴禁在未驗證的候選 Harness 中自動賦予全域免沙盒權限，亦不得讀寫專案目錄外的機敏路徑。 |
+| **基準汙染防範 (Benchmark Contamination)** | 官方稱網路不受限、公開 Rubrics 可能可存取；實際取得答案的事件未查證 | **評測期網路白名單與 Rubric 阻斷**：在執行能力基準評測（Evaluation / Benchmarking）時，必須關閉執行器的公開網頁搜尋能力，或於代理層封鎖基準題庫與評分標準所在之網域，降低公開答案檢索對 `Behavioral Contrasts` 的污染風險；單靠網域封鎖不能保證零洩漏。 |
+| **持久化污染防護 (Improvement Harness Poisoning)** | 本地風險推演：若受污染軌跡未經審查就保留，可能污染後續精煉；未查證上游曾保留作弊經驗 | **Reflector 審計閘門**：任何寫入持久化規則庫、Skill 或 `verify_*.py` 的修改，必須經過 Git diff 審查與確定性測試，禁止自動將含外網硬編碼 URL 或繞過驗證之腳本合入主幹。 |
