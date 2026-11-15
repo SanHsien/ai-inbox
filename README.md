@@ -412,6 +412,7 @@
 | 2026-11-15 | 🟢 | [免剪輯軟體 17 秒 AI 商業廣告管線：Audio-First 節奏表、綠幕角色解耦與 FFmpeg Chroma Key 合成評估](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | `ai-video`, `audio-first`, `chroma-key` | 1 / 1 |
 | 2026-11-15 | ⚪ | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 0（+1 不做） |
 | 2026-11-15 | 🟢 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 1 / 1 |
+| 2026-11-15 | ⚪ | [ChatGPT Dots 自訂權限規則（Settings > Personalization > Permissions）安全邊界評估](./notes/2026-11-15-chatgpt-dots-custom-permissions-eval.md) | `chatgpt-dots`, `permissions`, `safety-barrier` | 0 / 0 |
 | 2026-11-15 | 🟢 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 2 / 2 |
 | 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
 | 2026-11-15 | 🔴 | [danyuchn/pii-guard：台灣繁中個資可逆遮罩與 Claude Mod（Fail-Closed＋Edit 修復）架構評估](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | `pii-guard`, `claude-mods`, `privacy` | 0 / 1 |
@@ -479,6 +480,7 @@
 - 高槓桿思維與工作流：[AI 野心四維框架與深度四問](./notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md)、[Dan Koe數位匠人與經驗時代架構](./notes/2026-10-31-dan-koe-digital-artisan-body-of-work-framework.md)
 - 免費算力整合：[Muse指揮10免費工具](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md)
 - 人生指南Skill：[台灣版人生指南](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md)
+- Dots權限規則評估：[ChatGPT Dots權限評估](./notes/2026-11-15-chatgpt-dots-custom-permissions-eval.md)
 - 資安稽核Harness：[Cloudflare資安稽核Skill](./notes/2026-11-15-cloudflare-security-audit-skill.md)
 - 台灣個資遮罩Mod：[PII-Guard個資遮罩Mod](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md)
 - Codex插件協作：[CodexPluginCC雙AI協作](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md)
