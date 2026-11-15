@@ -63,7 +63,7 @@ tags:
   2. **安全閘門提醒**：嚴禁全域關閉沙盒或繞過權限檢查。
   3. **Windows 三問核對**：
      - *同生共死*：同機 session 內的 loop 無法偵測主機休眠或離線，規格須揭露盲區。
-     - *既有機制*：已有 Windows Task Scheduler 與資產漂移檢查，relay 亦有輪詢機制，不重造同步 daemon。
+     - *既有機制*：已有 Windows Task Scheduler 與資產漂移檢查（已有相關流程文件；實際排程是否啟用尚未查證），relay 亦有輪詢機制，不重造同步 daemon。
      - *Windows 原生*：優先原生 PowerShell／Python 查詢；Herdr 須註明版本與 `sh` 前提。
 
 ---

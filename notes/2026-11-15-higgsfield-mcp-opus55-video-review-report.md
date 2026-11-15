@@ -31,7 +31,16 @@ tags:
 
 ---
 
-## 1. 核心內容摘要與官方 MCP 實查
+## 1. 核心內容摘要（5W1H 初篩與官方 MCP 實查）
+
+- **Who（作者背景 / 執行機構）**：Higgsfield AI（官方 MCP 服務提供者）與 Okihiro School（民間影片案例覆盤作者宣稱，來源頁 HTTP 403，未查證）。
+- **What（核心產出 / 做了什麼）**：Higgsfield 提供託管 MCP 端點（`https://mcp.higgsfield.ai/mcp`）；民間覆盤針對全自動 AI 生成影片（79 秒短片）提出 9 項失敗點與導演級審片檢查清單。
+- **Why（為解決什麼問題 / 痛點）**：AI 生成影片常出現台詞難讀字發音錯誤、演出視角與構圖單調僵硬、鏡頭切換間服裝與站位不連戲（連貫性破綻）等問題。
+- **How（核心架構與關鍵機制）**：
+  - MCP 端點透過 OAuth 授權接入 Claude Desktop / CLI 等 Agent，遠端調用生成模型與資產庫。
+  - 提出 7 條檢查清單：台詞預審與讀音展開（假名／注音）、ASR 讀音驗收搭配人工聽審、全身三視角色表、條件性 `start_image` 連貫鎖定、鏡頭運動拆解等。
+- **When & Where（適用時機與場景）**：使用 Claude 串接外部影片生成 MCP 服務、製作 AI 商業短片、歷史短劇或進行自動化剪輯驗收時。
+- **Key Metrics / Numbers（關鍵指標與量化數據）**：官方端點支援度屬實；覆盤案例宣稱之「79 秒影片、6 分 15 秒覆盤、35–40+ 模型數量」均未獨立查證（未查證）。
 
 ### 1.1 Higgsfield MCP 實查
 - **官方整合端點**：官方託管 MCP 端點為 `https://mcp.higgsfield.ai/mcp`，支援 Claude Desktop / Claude.ai（透過自訂 connector）及 Claude Code CLI 串接。

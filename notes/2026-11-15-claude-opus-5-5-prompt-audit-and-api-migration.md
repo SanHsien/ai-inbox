@@ -28,7 +28,17 @@ tags:
 
 ---
 
-## 1. 核心內容摘要與實查補充
+## 1. 核心內容摘要（5W1H 初篩與實查補充）
+
+- **Who（作者背景 / 執行機構）**：社群實戰整理作者（身分未獨立查證；宣稱需求 Claude Code `2.1.283+` / 本機環境 `2.1.322`，未查證）與 Anthropic 官方（模型與 API 發布機構）。
+- **What（核心產出 / 做了什麼）**：Anthropic 正式推出 Claude Opus 5.5（`claude-opus-5-5`）；社群提出提示詞衝突稽核（`prompt-audit`）、API 遷移指引與快取降價成本評估。
+- **Why（為解決什麼問題 / 痛點）**：升級新模型時因自適應思考強制開啟、Tool Use 語法嚴格約束、對話歷史簽章綁定等破壞性變更，容易遭遇 API 報錯或靜默行為改變，需預先進行提示詞與相容性盤點。
+- **How（核心架構與關鍵機制）**：
+  - 區分 `/claude-api prompt-audit`（提示詞與 tool descriptions）與 `/doctor prompt-audit`（掃描 skills/agents/commands）。
+  - API 遷移調整：以 `output_config.effort` 控制思考深度、工具選擇改 `tool_choice: {"type": "auto"}` 搭配嚴格 schema、對話歷史保留有效簽章與相容 prefix。
+  - Prompt Caching Read 降價 60%，評估長對話與高重複上下文成本。
+- **When & Where（適用時機與場景）**：既有專案準備切換為 Claude Opus 5.5 模型、調用 Claude Messages API 或在 Claude Code 終端執行開發時。
+- **Key Metrics / Numbers（關鍵指標與量化數據）**：Prompt Cache Read 單價由 Opus 5 的每百萬 token（MTok）`$0.50` 降至 `$0.20`（降幅 60%）；預設 `effort` 為 `medium`；社群宣稱之「成本極低」無用量實測數據（未查證）。
 
 ### 1.1 切換 Opus 5.5 前的三項建議動作（作者宣稱與實查）
 1. **提示檔衝突稽核（區分兩類指令）**：
@@ -44,7 +54,7 @@ tags:
 - **會直接回傳 HTTP 400 的舊寫法**：
   1. **禁止關閉 Thinking**：`thinking: {"type": "disabled"}` 與手動 `budget_tokens` 失效（思考改為永遠自適應開啟），須改用 `output_config={"effort": "low" | "medium" | "high" | "xhigh" | "max"}`。
   2. **Tool Use 語法約束**：`tool_choice={"type": "any"}` 等直接鎖定語法須改為 `tool_choice={"type": "auto"}` 搭配嚴格 schema（`"strict": true` 與 `additionalProperties: false`），但約束輸入結構不代表每輪對話必定呼叫工具。
-  3. **對話歷史修改約束**：中途篡改歷史訊息會報錯；但 thinking blocks 並非一律禁止回傳歷史，官方 migration guide 明確要求保留有效簽章與相容的歷史 prefix。遷移稽核還須納入 sampling 參數與 assistant prefill 等項目。
+  3. **對話歷史修改約束**：修改歷史可能使 prefix check 失敗，不一定回傳 400，呼叫端須處理兩種結果，附官方 migration guide：https://platform.claude.com/docs/en/models/opus-5-5/migration-guide；thinking blocks 並非一律禁止回傳歷史，官方 migration guide 明確要求保留有效簽章與相容的歷史 prefix。遷移稽核還須納入 sampling 參數與 assistant prefill 等項目。
   4. **Computer Use 版本淘汰**：`computer_20251124` 須升級為 `computer_toolset_20260801`（但非全平台淘汰，Bedrock 等受託管環境存在例外）。
 - **回傳 HTTP 200 但行為改變（靜默風險）**：
   - 未顯式指定 `effort` 時預設為 `medium`（若需最高推理深度須明確傳入 `high` 或以上）。
