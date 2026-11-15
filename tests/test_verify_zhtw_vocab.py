@@ -29,6 +29,62 @@ from verify_zhtw_vocab import (
 
 
 class TestVerifyZhtwVocab(unittest.TestCase):
+    def test_context_exceptions_require_the_exact_neighbours(self):
+        cases = [
+            ("安裝的軟件數量與軟件數據、軟件數十款", "安裝的軟體數量與軟體數據、軟體數十款", ["軟件"] * 3),
+            ("這段視頻率先曝光", "這段影片率先曝光", ["視頻"]),
+            ("家電視頻教學、充電視頻、閃電視頻", "家電影片教學、充電影片、閃電影片", ["視頻"] * 3),
+            ("服務器材質與服務器材料", "伺服器材質與伺服器材料", ["服務器"] * 2),
+            ("視頻道、視頻譜、服務器材質", "影片道、影片譜、伺服器材質", ["視頻", "視頻", "服務器"]),
+        ]
+        for raw, expected, terms in cases:
+            for skip in [True, False]:
+                with self.subTest(raw=raw, skip=skip):
+                    self.assertEqual([h["term"] for h in scan_degraded_vocab(raw, skip_code=skip)], terms)
+                    self.assertEqual(apply_zhtw_vocab(raw, skip_code=skip), expected)
+                    self.assertEqual(apply_zhtw_vocab(expected, skip_code=skip), expected)
+        for left in "電衛監檢透收":
+            for right in "道率譜段寬":
+                self.assert_protected(left + "視頻" + right)
+        for raw in ["柔軟件", "鬆軟件", "柔軟件數", "鬆軟件數", "堅硬件",
+                    "售後服務器材", "提供服務器材"]:
+            self.assert_protected(raw)
+
+    def test_bare_url_typographic_boundaries(self):
+        for delimiter in "“”‘’〈〉《》—…":
+            raw = "https://a.org/x" + delimiter + "視頻很好而且軟件也不錯"
+            with self.subTest(delimiter=delimiter):
+                self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)], ["視頻", "軟件"])
+                self.assertEqual(apply_zhtw_vocab(raw, skip_code=True),
+                                 "https://a.org/x" + delimiter + "影片很好而且軟體也不錯")
+        for raw in ["“https://a.org/x”視頻很好而且軟件也不錯", "https://a.org/x——視頻很好"]:
+            self.assertTrue(scan_degraded_vocab(raw))
+
+    def test_www_requires_a_word_boundary(self):
+        for prefix in ["a", "1", "_", "中"]:
+            raw = prefix + "www.視頻軟件"
+            with self.subTest(prefix=prefix):
+                self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)], ["視頻", "軟件"])
+                self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), prefix + "www.影片軟體")
+        for prefix in ["", " ", "(", "\n"]:
+            self.assert_protected(prefix + "www.視頻軟件")
+
+    def test_reference_period_in_prose_is_not_a_path(self):
+        raw = "[備註]: 視頻教學v2.0很重要"
+        self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)], ["視頻"])
+        self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), "[備註]: 影片教學v2.0很重要")
+        for destination in ["視頻.md", "視頻.mp4", "視頻.example.org", "docs/視頻.md"]:
+            self.assert_protected("[v]: " + destination)
+
+    def test_review_exit_code_is_documented(self):
+        self.assertIn("[REVIEW]", vocab.__doc__)
+        output = io.StringIO()
+        with redirect_stdout(output), self.assertRaises(SystemExit) as result:
+            main(["--help"])
+        self.assertEqual(result.exception.code, 0)
+        self.assertIn("[REVIEW]", output.getvalue())
+        self.assertIn("不影響結束碼", output.getvalue())
+
     def assert_protected(self, raw):
         self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), raw)
         self.assertEqual(scan_degraded_vocab(raw), [])

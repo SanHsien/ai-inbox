@@ -13,6 +13,7 @@ Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard (veri
 skip_code=True（CLI 預設）先保護程式碼、成對中文引號與 URL／連結目的地。
 引號保護最多 200 字且不可跨空白段落或表格欄；錯配引號不保護。
 裸 URL 允許中文，遇空白、全形標點或未配對右括號即停；含規則詞時 CLI 提示人工確認。
+[REVIEW] 僅提示人工確認，不影響結束碼；[ALERT] 詞彙問題才使檢查失敗。
 連結目的地限同一行，標題照常檢查；不是完整 Markdown 或語義解析器。
 未加引號的產品名稱仍無專名保護；不判斷標題、語義、標點或最終成品佔位。
 「支持」未加入自動替換。skip_code=False 保留既有全文替換模式。
@@ -81,19 +82,19 @@ ALL_RULES: Tuple[Tuple[str, str, str], ...] = GLOBAL_VOCAB_RULES + DEGRADED_AND_
 _BACKTICK_RUN_RE = re.compile(r"`+")
 _FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 _BARE_URL_RE = re.compile(
-    r"(?:https?://|ftp://|www\.)[^\s<>`，。；：、（）「」『』【】《》！？\uff00-\uffef]+"
+    r"(?:https?://|ftp://|\bwww\.)[^\s<>`，。；：、（）「」『』【】“”‘’〈〉《》—…！？\uff00-\uffef]+"
 )
 _AUTOLINK_RE = re.compile(r"<(?:https?://|ftp://|www\.)[^<>\s]+>")
 _QUOTE_LIMIT = 200
 _REFERENCE_RE = re.compile(r"(?m)^ {0,3}\[(?!\^)[^\]\n]+\]:[ \t]*(<[^<>\n]+>|[^\s]+)")
 # Match immediate neighbours, independent of the surrounding sentence.
 _CONTEXT_EXCEPTIONS = {
-    "視頻": (("電衛監", ""), ("", "率")),
+    "視頻": (("電衛監檢透收", "道率譜段寬"),),
     "服務器": (("", "材"),),
-    "軟件": (("", "數"),),
+    "軟件": (("柔鬆", ""),),
     "硬件": (("堅", ""),),
 }
-_PROTECTED_START_RE = re.compile(r"[「『]|\]\(|<(?=(?:https?://|ftp://|www\.))|(?:https?://|ftp://|www\.)")
+_PROTECTED_START_RE = re.compile(r"[「『]|\]\(|<(?=(?:https?://|ftp://|www\.))|(?:https?://|ftp://|\bwww\.)")
 
 
 def _inline_parts(line: str) -> List[Tuple[bool, str]]:
@@ -123,6 +124,10 @@ def _rule_matches(text: str, src: str):
     for match in re.finditer(re.escape(src), text):
         before = text[match.start() - 1:match.start()] if match.start() else ""
         after = text[match.end():match.end() + 1]
+        # 器材 may cross the match boundary; 材料 / 材質 describe a server.
+        if src == "服務器" and text[match.end():match.end() + 2] in ("材料", "材質"):
+            yield match
+            continue
         if not any((not left or (bool(before) and before in left)) and
                    (not right or (bool(after) and after in right))
                    for left, right in _CONTEXT_EXCEPTIONS.get(src, ())):
@@ -220,7 +225,8 @@ def _protected_parts(text: str, url_hints: Optional[List[Tuple[int, str]]] = Non
     # Protect definitions before scanning quotes or URLs in their destinations.
     for reference in _REFERENCE_RE.finditer(prose):
         destination = reference.group(1)
-        if not (destination.startswith("<") or any(c in destination for c in ("/", ".", "#", "://"))):
+        if not (destination.startswith("<") or any(c in destination for c in ("/", "#", "://"))
+                or re.search(r"\.[A-Za-z0-9][A-Za-z0-9._-]*$", destination)):
             continue
         start, end = reference.span(1)
         spans.append((start, end))
@@ -338,16 +344,16 @@ def scan_degraded_vocab(text: str, skip_code: bool = True) -> List[Dict[str, Any
                 matches = list(_rule_matches(inspect_text, src))
                 if not matches:
                     continue
-                pos = matches[0].start()
-                line_hits.append((
-                    pos,
-                    {
-                        "line": lineno,
-                        "term": src,
-                        "replacement": dst,
-                        "reason": reason,
-                    },
-                ))
+                for match in matches:
+                    line_hits.append((
+                        match.start(),
+                        {
+                            "line": lineno,
+                            "term": src,
+                            "replacement": dst,
+                            "reason": reason,
+                        },
+                    ))
                 for match in reversed(matches):
                     inspect_text = (inspect_text[:match.start()] + " " * len(src)
                                     + inspect_text[match.end():])
@@ -396,7 +402,8 @@ def _iter_target_files(paths: Sequence[str]) -> List[Path]:
 
 def _main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        description="台灣繁體中文詞庫檢查／固定點修補；結束碼 0=通過，1=詞彙或冪等失敗，2=輸入／讀寫錯誤"
+        description="台灣繁體中文詞庫檢查／固定點修補；結束碼 0=通過，1=詞彙或冪等失敗，2=輸入／讀寫錯誤。"
+                    "[REVIEW] 僅提示人工確認，不影響結束碼。"
     )
     parser.add_argument("--check", nargs="*", default=None, help="掃描指定檔案或目錄是否殘留退化詞（略過程式碼區塊）")
     parser.add_argument("--fix", nargs="*", default=None, help="就地修補指定檔案或目錄中的退化詞（略過程式碼區塊）")
