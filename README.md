@@ -46,7 +46,7 @@
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261115-17` | 🔴 未做 | 中 | 在 Windows 11 原生環境沙盒實測 `danyuchn/pii-guard`（CLI 去識別化與 `claude-code-mod` 搭配 `PII_GUARD_HOOKD_HOME` 驗證） | `C:\GitHub\_sandbox\pii-guard`（唯讀／測試）與本機 Claude Code 外掛測試環境 | [2026-11-15-danyuchn-pii-guard-claude-mod-eval](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | 2026-11-15 |
+| `T-20261115-17` | 🔴 未做 | 中 | 唯讀查核 `danyuchn/pii-guard` 並評估 Windows 與現有隱私防線的採納條件 | 本筆記與 `docs/pii-guard-readonly-assessment.md`；第三方 repo 只下載與讀檔，不安裝、不執行測試或 hook。 | [2026-11-15-danyuchn-pii-guard-claude-mod-eval](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 
 ### 🟢 已做（Done）
@@ -415,7 +415,7 @@
 | 2026-11-15 | ⚪ | [ChatGPT Dots 自訂權限規則（Settings > Personalization > Permissions）安全邊界評估](./notes/2026-11-15-chatgpt-dots-custom-permissions-eval.md) | `chatgpt-dots`, `permissions`, `safety-barrier` | 0 / 0 |
 | 2026-11-15 | 🟢 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 2 / 2 |
 | 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
-| 2026-11-15 | 🔴 | [danyuchn/pii-guard：台灣繁中個資可逆遮罩與 Claude Mod（Fail-Closed＋Edit 修復）架構評估](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | `pii-guard`, `claude-mods`, `privacy` | 0 / 1 |
+| 2026-11-15 | 🔴 | [danyuchn/pii-guard：台灣個資可逆遮罩與 Claude Mod 唯讀評估](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | `pii-guard`, `claude-mods`, `privacy` | 0 / 1 |
 | 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |
 | 2026-11-15 | 🟢 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 1 / 1 |
 | 2026-11-15 | 🟢 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 1 / 1 |
@@ -610,8 +610,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 69 份）
-<details><summary>展開查看全部 69 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 70 份）
+<details><summary>展開查看全部 70 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -667,6 +667,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/openai-plugin-submission-feasibility.md`](./docs/openai-plugin-submission-feasibility.md) | OpenAI Plugins（原 Apps SDK）上架可行性檢核表 |
 | [`docs/photo-riso-poster-readonly-assessment.md`](./docs/photo-riso-poster-readonly-assessment.md) | photo-riso-poster 唯讀評估：構圖規則、授權與提示詞安全 |
 | [`docs/pi-hybrid-harness-readonly-assessment.md`](./docs/pi-hybrid-harness-readonly-assessment.md) | Pi 混合型 Harness 唯讀評估 |
+| [`docs/pii-guard-readonly-assessment.md`](./docs/pii-guard-readonly-assessment.md) | pii-guard 唯讀採納評估 |
 | [`docs/production-smoke-security-checklist.md`](./docs/production-smoke-security-checklist.md) | 全端網站上線前 QA 與資安稽核檢核表 (Production Smoke & Security Checklist) |
 | [`docs/pstack-agent-playbooks.md`](./docs/pstack-agent-playbooks.md) | pstack 技能庫與 Playbooks 跨 Agent CLI 移植規格書 |
 | [`docs/pstack-governance-integration.md`](./docs/pstack-governance-integration.md) | pstack 工程防線與 agent-governance-toolkit 運行期政策檢查整合實踐 |
