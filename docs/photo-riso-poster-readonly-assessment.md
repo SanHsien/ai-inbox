@@ -17,7 +17,9 @@
 | LICENSE | `d8ea829b6d162ace38d2dc7dce68575da74759d7` | 21 | [LICENSE](https://github.com/luckdvr/photo-riso-poster/blob/79564228948fd393ecf58ee9aeb74fbc3c1f1deb/LICENSE) |
 | .gitignore | `0baaaa9039180f3a918e8fd7cb56d74346572264` | 4 | 只列忽略樣式，無指令 |
 
-取得方式：`git clone --depth 1` 到沙盒暫存目錄，只讀上表四個文字檔，評估完刪除該目錄。淺層複製會把圖檔物件一併帶到磁碟，這點無法避免；圖檔沒有被開啟、檢視或送給任何模型。
+取得方式：`git clone --depth 1` 到沙盒暫存目錄，只讀上表四個文字檔，評估完刪除該目錄。
+
+與任務的偏離：任務寫的是「以 GitHub contents 固定來源、不下載範例圖」，本次用淺層複製，圖檔物件因此一併落到磁碟。這本來可以避免（改用 contents API，或 `git clone --filter=blob:none --no-checkout` 後只取文字檔）。圖檔沒有被開啟、檢視或送給任何模型，已隨暫存目錄刪除。
 
 repo 內容（`git ls-tree -r -l` 的結果）：除上表四檔外，只有 26 個圖檔（`poster.jpg`、`examples/posters/` 14 個、`examples/comparisons/` 11 個），blob 合計 16,960,061 bytes（約 17 MB）。沒有腳本、hook 設定、MCP 設定或依賴宣告檔。
 
@@ -59,8 +61,8 @@ repo 中繼資料（2026-11-15 查 `https://api.github.com/repos/luckdvr/photo-r
 | 文字主題的虛構資訊 | 明文要求為主題設想少量檔案資訊（數量、季節、天氣感） | 「不可杜撰日期」只寫在照片分支；排印系統卻一律列出日期行，文字主題分支沒有禁止，模型可能自行編日期 | 成品看起來像檔案紀錄，容易被誤認為真實資料 |
 | 檔案編號 | 固定詞彙 `ARCHIVE NNN` 或 `NO. NNN` | 兩個分支的編號都沒有來源事實，與同檔「每個排印事實都要能追溯到來源」的自檢條件互相矛盾 | 應視為裝飾元素，不可當成證據 |
 | 照片中的文字 | 沒有處理 | 照片裡的招牌、螢幕或紙條文字會被宿主模型讀到，可能夾帶指令（間接提示詞注入）。這是推論，原檔沒有對應防護 | 適用外部內容零信任規則 |
-| README 與 SKILL.md 不一致 | README 說可以用一句話要求「更像本尊」；SKILL.md 沒有對應規則，並要求動物無五官、人物匿名 | 使用者照 README 操作時，行為沒有規格可依；個體相似度不被保證 | 筆記不應寫成支援個體辨識 |
-| 安裝方式 | README 建議把整個 repo 直接複製到 `~/.codex/skills/` | 沒有固定版本，之後更新會直接改變模型收到的指令；也會帶入約 17 MB 圖檔 | 與「採納前先過安全檢查」衝突 |
+| README 與 SKILL.md 不一致 | SKILL.md 只把「像一点／more faithful」對應到 faithful 抽象度（第 20 行），沒有個體相似度的規則，且第 39 行仍要求動物無五官、人物匿名；README 第 34–42 行把 likeness 當成 faithful 以外的另一件事，所以兩者不一致。另外 README 第 63 行自稱 no bundled assets，但 repo 有 26 個圖檔 | 使用者照 README 操作時，行為沒有規格可依；個體相似度不被保證 | 筆記不應寫成支援個體辨識 |
+| 安裝方式 | README 第 47 行的安裝指令是用 `git clone` 把整個 repo 放進 `~/.codex/skills/photo-riso-poster` | 沒有固定版本，之後更新會直接改變模型收到的指令；也會帶入約 17 MB 圖檔 | 與「採納前先過安全檢查」衝突 |
 
 已做的靜態檢查與範圍：SKILL.md 全文沒有外連網址、沒有 HTML 註解；SKILL.md、README.md、LICENSE 三檔沒有零寬或雙向控制字元（以 Python 掃描 U+200B–200F、U+202A–202E、U+2060–2064、U+FEFF 與 tag 字元區，結果皆為 0）。人工逐行閱讀沒有看到要求外傳資料、讀取憑證或關閉沙盒的指令。這只涵蓋固定 commit 的三個文字檔，不是完整安全認證。
 
