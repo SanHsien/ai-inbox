@@ -6,7 +6,7 @@ source_platform: "Social / Anthropic"
 author: "社群實戰整理（作者宣稱最低版本 Claude Code 2.1.283+ / 本機 2.1.322，未查證）"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 3
 cluster_role: "Opus5.5遷移與稽核"
 short_title: "Opus5.5稽核與遷移"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[官方 changelog](https://code.claude.com/docs/en/changelog) ｜ [官方 overview](https://platform.claude.com/docs/en/models/opus-5-5/overview) ｜ [Opus 5 overview](https://platform.claude.com/docs/en/models/opus-5/overview) ｜ [官方 migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide)
 - **發布平台 / 作者**：`社群實戰整理`（作者宣稱最低版本需求 Claude Code `2.1.283+` / 本機環境宣稱 `2.1.322`，皆未經本輪獨立查證）
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -80,9 +80,9 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-18`**｜**[優先級：中]** 由 Codex 唯讀盤點三個核心 repo 的提示檔衝突與 Anthropic API 呼叫相容性
+- [x] **`T-20261115-18`**｜**[優先級：中]** 由 Codex 唯讀盤點三個核心 repo 的提示檔衝突與 Anthropic API 呼叫相容性
   - **目標範圍**：唯讀檢閱 `SanHsien/agent-assets`（私有）、`SanHsien/ai-inbox`、`SanHsien/agent-relay` 的指定 checkout；公開產出限 `SanHsien/ai-inbox` 的 `docs/claude-prompt-and-api-readonly-audit.md`。私有內部 findings 只交付於 `SanHsien/agent-assets`（私有）的 `docs/prompt-api-audit-findings.md`，不得複製到公開 repo。
   - **具體做法**：先讀各 repo 指引並記錄 checkout 基準；列出實際檢閱的 AGENTS／既有 CLAUDE／rules／skills／commands／agents，不建立新的 CLAUDE.md。逐項對照官方文件，列已確認衝突、過時項目、待確認與不適用項目，附公開檔案行號及具體修改建議。確認是否真的直接呼叫 Anthropic API，區分 CLI 委派、文件範例與執行中 adapter；只有實際模型／平台適用時才列遷移風險。不得僅靠關鍵字自動刪改 thinking 規則，也不改模型路由、hooks 或 API 程式。不執行 Claude skill、API 或額外 reviewer。
   - **驗收標準（DoD）**：上述兩份具名報告存在；公開報告涵蓋三 repo 的檢閱範圍、基準、來源 URL、分類與不含私有內容的摘要。私有報告可明列「無 findings」及檢閱邊界。每個 API finding 寫明呼叫點、模型／平台、適用條件、建議修法；無直接 consumer 可列 N/A，但需列檢閱證據，不要求虛構遷移。確認私有標記、零機密與無真實家目錄帳號；對新增文件依各目標 repo 規範跑檢查，保存命令／exit code。不得把本任務稱為已完成 API 遷移或 Claude 官方 skill 實測。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15）：公開版 docs/claude-prompt-and-api-readonly-audit.md；私有版在 SanHsien/agent-assets（私有）docs/prompt-api-audit-findings.md（2955bab）。三個 repo 都沒找到直接呼叫 Anthropic Messages API 的程式，只有 CLI 委派、gateway 環境注入與範例。Codex 唯讀稽核，未呼叫 Claude；獨立複審後修正 R1（公開版補記私有報告已交付）。

@@ -6,7 +6,7 @@ source_platform: "Facebook (Generative AI 技術交流中心)"
 author: "胡嘉璽（作者宣稱，原貼文未獨立查證）"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "24x7常駐Agent"
 short_title: "24x7地端Agent架構"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[官方 Remote Control](https://code.claude.com/docs/en/remote-control) ｜ [terminal README](https://raw.githubusercontent.com/SuperCodeAgents/herdr-terminal/master/README.md) ｜ [core README](https://raw.githubusercontent.com/herdrdev/herdr-core/master/README.md) ｜ [Git 官方 pull 文件](https://git-scm.com/docs/git-pull) ｜ [Tailscale unattended 官方文件](https://tailscale.com/docs/how-to/run-unattended) ｜ [Facebook 原貼文（來源頁 Cache miss，未查證）](https://www.facebook.com/groups/gaitech/permalink/1840405647143642/)
 - **發布平台 / 作者**：`Facebook 公開社團` / `胡嘉璽`（原貼文網頁工具 Cache miss 未能獨立取得；3 台 Mac、8 個 Tart VM、2 個 Ultra 帳號等細節屬作者宣稱，未經獨立查證）
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md`](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md)（Herdr 終端復用與 Magpie 網關）
   - [`docs/buzz-nas-deployment-and-heartbeat-spec.md`](../docs/buzz-nas-deployment-and-heartbeat-spec.md)（NAS 24×7 常駐中樞與心跳規格）
@@ -70,16 +70,16 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-20`**｜**[優先級：中]** 產出 Windows 11 常駐 Agent 維運規格與唯讀現況檢查，不代改系統設定
+- [x] **`T-20261115-20`**｜**[優先級：中]** 產出 Windows 11 常駐 Agent 維運規格與唯讀現況檢查，不代改系統設定
   - **目標範圍**：`SanHsien/ai-inbox` 的 `docs/windows-24x7-agent-ops-spec.md`、`tools/inspect_windows_agent_ops.ps1`、`tests/test_inspect_windows_agent_ops.ps1` 與 `docs/evidence/windows-agent-ops-readonly-check.md`。
   - **具體做法**：依官方來源整理電源、登出／重啟、自啟動、Remote Control 與選用 Tailscale 的前提、人工設定／回復步驟及 Windows 三問。腳本只用具名白名單查詢電源狀態、必要服務與既有任務狀態、程式版本；僅向 stdout 輸出最小去識別摘要，缺權限／缺程式標 unknown／not-installed。不得修改電源、NIC、休眠、防火牆、registry、service、Task Scheduler、遠端控制設定，也不建立遠端 session、不讀憑證或全量列舉程序／排程。明確區分官方 Remote Control 與 VPN 終端通道，不預設自動登入。以 mock 測試腳本的正常、未安裝、拒絕存取及查詢逾時分支，不加入第三方測試相依套件。
   - **驗收標準（DoD）**：四個具名產出存在；Windows 原生執行唯讀腳本一次並記錄命令、exit code、去識別結果與 unknown。腳本測試驗證白名單查詢及輸出不含識別資訊，檢查程式無系統設定／憑證讀取／遠端啟用動作；focused 檢查與 repo 規定檢查有結果。文件給維護者一份有停止條件的人工驗收表，分清外網連線、鎖屏／登出／重啟恢復與有界限觀察期，不以一次成功稱 24×7 穩定。維護者尚未執行的項目明標待執行，**不屬本次文件／唯讀工具 DoD，也不得宣稱部署完成**。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15）：docs/windows-24x7-agent-ops-spec.md、tools/inspect_windows_agent_ops.ps1、tests/test_inspect_windows_agent_ops.ps1、docs/evidence/windows-agent-ops-readonly-check.md。檢查腳本只讀現況；測試擋下成員賦值、危險型別建構（New-Object、::new、型別轉換共用一份清單）、任意程序啟動與外部 Kill，共 1486 項斷言、16/16 mutation killed；複驗員的 13 個繞法全部被拒。實際設定與人工恢復驗收由維護者執行，已列入 ROADMAP。複審兩輪後通過。
 
-- [ ] **`T-20261115-21`**｜**[優先級：低]** 唯讀評估共享技能跨機更新與既有發布流程的缺口，不建立自動拉取排程
+- [x] **`T-20261115-21`**｜**[優先級：低]** 唯讀評估共享技能跨機更新與既有發布流程的缺口，不建立自動拉取排程
   - **目標範圍**：唯讀檢閱 `SanHsien/agent-assets`（私有）既有發布／漂移檢查與 `SanHsien/agent-relay` 的同步責任；公開產出限 `SanHsien/ai-inbox` 的 `docs/agent-assets-cross-machine-sync-assessment.md`，只寫抽象結論。
   - **具體做法**：列清 canonical repo、核准版本、consumer 副本、已載入 session 四個不同階段；對照既有機制，先判斷是否真有跨機需求。用 Windows 三問評估排程身份、生命週期、非互動認證與獨立觀察盲區。不執行 fetch／pull、不讀 credential store、不新增排程、常駐程式或同步腳本。規格區分人工核准後的更新操作與唯讀比較；提出 dirty tree、diverged branch、來源錯誤、離線、審查未通過與並行更新時的停止規則，不預設 stash／reset／merge。共享交換目錄不得包含 native 設定、token、cookies、私鑰或私有記憶，不以 NAS 共享取代權限邊界。
   - **驗收標準（DoD）**：具名報告存在，含資料流 ASCII 圖、既有能力重疊表、Windows 三問逐項答案、憑證／公開隱私邊界、owner、人工更新與回復規格，以及採納／暫緩／不採納結論。有更新需求才描述下一階段的維護者執行驗收；若無新增價值，允許以不新增機制的結論完成本評估。至少列 dirty／diverged／離線三個合成情境的預期決策，明標設計案例而非實測；保存 repo 文件檢查結果。不得宣稱已完成跨機同步、技能部署或排程實測。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15）：docs/agent-assets-cross-machine-sync-assessment.md 只寫抽象結論。建議沿用既有發布與漂移檢查，暫緩新增自動拉取排程（git pull 不是唯讀，更新 repo 也不等於部署技能）。獨立複審通過。

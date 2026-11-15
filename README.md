@@ -39,22 +39,18 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 235 項任務：🔴 未做 5／🟡 進行中 0／🟢 已做 153／⚪ 不做 77
+> 共 235 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 157／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261115-18` | 🔴 未做 | 中 | 由 Codex 唯讀盤點三個核心 repo 的提示檔衝突與 Anthropic API 呼叫相容性 | 唯讀檢閱 `SanHsien/agent-assets`（私有）、`SanHsien/ai-inbox`、`SanHsien/agent-relay` 的指定 checkout；公開產出限 `SanHsien/ai-inbox` 的 `docs/claude-prompt-and-api-readonly-audit.md`。私有內部 findings 只交付於 `SanHsien/agent-assets`（私有）的 `docs/prompt-api-audit-findings.md`，不得複製到公開 repo。 | [2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration](./notes/2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration.md) | 2026-11-15 |
-| `T-20261115-20` | 🔴 未做 | 中 | 產出 Windows 11 常駐 Agent 維運規格與唯讀現況檢查，不代改系統設定 | `SanHsien/ai-inbox` 的 `docs/windows-24x7-agent-ops-spec.md`、`tools/inspect_windows_agent_ops.ps1`、`tests/test_inspect_windows_agent_ops.ps1` 與 `docs/evidence/windows-agent-ops-readonly-check.md`。 | [2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
-| `T-20261115-19` | 🔴 未做 | 低 | 補齊既有敘事影片分鏡規範的連戲、讀音與人工審片條件 | 主要 owner 為 `SanHsien/code-as-video-studio`；更新 `templates/cinematic-storyboard-template.md`，新增 `docs/narrative-video-review-sop.md` 與 `docs/evidence/narrative-review-examples.md`。唯讀參照 `SanHsien/video-autopilot-kit` 已有 ASR／交付 QA，本階段不修改該 repo 程式。 | [2026-11-15-higgsfield-mcp-opus55-video-review-report](./notes/2026-11-15-higgsfield-mcp-opus55-video-review-report.md) | 2026-11-15 |
-| `T-20261115-21` | 🔴 未做 | 低 | 唯讀評估共享技能跨機更新與既有發布流程的缺口，不建立自動拉取排程 | 唯讀檢閱 `SanHsien/agent-assets`（私有）既有發布／漂移檢查與 `SanHsien/agent-relay` 的同步責任；公開產出限 `SanHsien/ai-inbox` 的 `docs/agent-assets-cross-machine-sync-assessment.md`，只寫抽象結論。 | [2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 153 項）</summary>
+<details><summary>展開查看已完成任務（共 157 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -211,6 +207,10 @@
 | `T-20261115-15` | 2026-11-15 | 唯讀評估 codex-plugin-cc 與既有 ai-review／agent-relay 的 Windows 權限與 hook 邊界，決定是否值得另案試用 | 完成（2026-11-15）：docs/codex-plugin-cc-readonly-assessment.md，固定 openai/codex-plugin-cc db52e28（1.0.6），22 個 blob SHA。三條呼叫鏈對照：review／adversarial 為 read-only；rescue 可由模型主動觸發，預設 workspace-write；三鏈都沒有逾時。Stop hook 無條件註冊，gate 開啟後非 ALLOW 全擋且不查 stop_hook_active。上游 CI 只跑 ubuntu。agent-safety-checks --pack 結束碼 0（7 項人工審查已讀）。用途與 ai-review、agent-relay 重疊；裁決現階段不安裝，附另案實測規格與停止條件。Fable 撰寫，Fable 獨立複審後修正用語；唯讀評估，未安裝、未生圖、未啟動模型。 | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) |
 | `T-20261115-16` | 2026-11-15 | 唯讀評估 speak-human-tw 的授權、47 組詞表與 38 類痕跡，不修改檢查器或安裝 Skill | 完成（2026-11-15）：docs/speak-human-tw-assessment.md，固定 Raymondhou0917/speak-human-tw 14885da（MIT），47 組詞表與 38 類規則逐列對照 tools/verify_zhtw_vocab.py。實測引號、URL、專名會被改寫，`服務器`、`支持` 目前沒有規則。裁決：先補保護範圍再試候選規則，不整包加入全域替換；後續工作已列入 ROADMAP。筆記撤回「安全性極高」、更正 claude-code-resources 授權為 CC BY-NC-SA 4.0。Codex 撰寫，Fable 獨立複審通過；未執行上游程式，檢查器本身未改。 | [2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) |
 | `T-20261115-17` | 2026-11-15 | 唯讀查核 `danyuchn/pii-guard` 並評估 Windows 與現有隱私防線的採納條件 | 完成（2026-11-15）：docs/pii-guard-readonly-assessment.md，固定 danyuchn/pii-guard 3d55636（MIT，0.2.0），20 個 blob SHA。資料流、hook 權限、寫檔、子程序都盤點過：外連只到 127.0.0.1；Ollama 只驗 loopback，win32 回 LOCAL_MODEL_UNVERIFIED；mapping 以明文寫入。agent-safety-checks --pack 結束碼 1，1 FAIL 經複審重跑確認是正則誤報，6 REVIEW 已逐項判讀。與 screen_privacy 做了比較。裁決暫不採納；動態實測依全域規則第 15 條改列 ROADMAP 採納條件。Codex 撰寫，Fable 獨立複審通過；未執行上游程式。 | [2026-11-15-danyuchn-pii-guard-claude-mod-eval](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) |
+| `T-20261115-18` | 2026-11-15 | 由 Codex 唯讀盤點三個核心 repo 的提示檔衝突與 Anthropic API 呼叫相容性 | 完成（2026-11-15）：公開版 docs/claude-prompt-and-api-readonly-audit.md；私有版在 SanHsien/agent-assets（私有）docs/prompt-api-audit-findings.md（2955bab）。三個 repo 都沒找到直接呼叫 Anthropic Messages API 的程式，只有 CLI 委派、gateway 環境注入與範例。Codex 唯讀稽核，未呼叫 Claude；獨立複審後修正 R1（公開版補記私有報告已交付）。 | [2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration](./notes/2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration.md) |
+| `T-20261115-19` | 2026-11-15 | 補齊既有敘事影片分鏡規範的連戲、讀音與人工審片條件 | 完成（2026-11-15，SanHsien/code-as-video-studio main e3d1252）：templates/cinematic-storyboard-template.md 補上連戲、讀音、人工決策欄位；新增 docs/narrative-video-review-sop.md，七項建議逐條評估、不一律設硬閘門；新增 docs/evidence/narrative-review-examples.md 合成範例。52 tests、specs 檢查通過。獨立複審通過。未生成影片、未呼叫付費或中國服務。 | [2026-11-15-higgsfield-mcp-opus55-video-review-report](./notes/2026-11-15-higgsfield-mcp-opus55-video-review-report.md) |
+| `T-20261115-20` | 2026-11-15 | 產出 Windows 11 常駐 Agent 維運規格與唯讀現況檢查，不代改系統設定 | 完成（2026-11-15）：docs/windows-24x7-agent-ops-spec.md、tools/inspect_windows_agent_ops.ps1、tests/test_inspect_windows_agent_ops.ps1、docs/evidence/windows-agent-ops-readonly-check.md。檢查腳本只讀現況；測試擋下成員賦值、危險型別建構（New-Object、::new、型別轉換共用一份清單）、任意程序啟動與外部 Kill，共 1486 項斷言、16/16 mutation killed；複驗員的 13 個繞法全部被拒。實際設定與人工恢復驗收由維護者執行，已列入 ROADMAP。複審兩輪後通過。 | [2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) |
+| `T-20261115-21` | 2026-11-15 | 唯讀評估共享技能跨機更新與既有發布流程的缺口，不建立自動拉取排程 | 完成（2026-11-15）：docs/agent-assets-cross-machine-sync-assessment.md 只寫抽象結論。建議沿用既有發布與漂移檢查，暫緩新增自動拉取排程（git pull 不是唯讀，更新 repo 也不等於部署技能）。獨立複審通過。 | [2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) |
 
 </details>
 
@@ -418,13 +418,13 @@
 | 2026-11-15 | ⚪ | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 0（+1 不做） |
 | 2026-11-15 | 🟢 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 1 / 1 |
 | 2026-11-15 | ⚪ | [ChatGPT Dots 自訂權限規則（Settings > Personalization > Permissions）安全邊界評估](./notes/2026-11-15-chatgpt-dots-custom-permissions-eval.md) | `chatgpt-dots`, `permissions`, `safety-barrier` | 0 / 0 |
-| 2026-11-15 | 🔴 | [升級 Claude Opus 5.5 前置檢查：/claude-api prompt-audit、API 破壞性變更與成本結構評估](./notes/2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration.md) | `claude-opus-5-5`, `prompt-audit`, `claude-api` | 0 / 1 |
+| 2026-11-15 | 🟢 | [升級 Claude Opus 5.5 前置檢查：/claude-api prompt-audit、API 破壞性變更與成本結構評估](./notes/2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration.md) | `claude-opus-5-5`, `prompt-audit`, `claude-api` | 1 / 1 |
 | 2026-11-15 | 🟢 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 2 / 2 |
 | 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
 | 2026-11-15 | 🟢 | [danyuchn/pii-guard：台灣個資可逆遮罩與 Claude Mod 唯讀評估](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | `pii-guard`, `claude-mods`, `privacy` | 1 / 1 |
 | 2026-11-15 | ⚪ | [DocHUB（home-999.com/dochub）離線辦公工具包查證：非開源二進位實況與開源替代評估](./notes/2026-11-15-dochub-offline-toolkit-security-eval.md) | `security-audit`, `freeware`, `pdf-tools` | 0 / 0 |
-| 2026-11-15 | 🔴 | [Higgsfield MCP × Opus 5.5 AI 影片實戰覆盤：全託管失敗原因與人類導演級對策檢查單](./notes/2026-11-15-higgsfield-mcp-opus55-video-review-report.md) | `higgsfield-mcp`, `ai-video`, `opus-5-5` | 0 / 1 |
-| 2026-11-15 | 🔴 | [胡嘉璽 24×7 地端多機 Agent 實戰架構：Remote Control、Herdr + Tailscale、Git 技能同步與 Windows 11 落地評估](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) | `24x7-agent`, `remote-control`, `herdr` | 0 / 2 |
+| 2026-11-15 | 🟢 | [Higgsfield MCP × Opus 5.5 AI 影片實戰覆盤：全託管失敗原因與人類導演級對策檢查單](./notes/2026-11-15-higgsfield-mcp-opus55-video-review-report.md) | `higgsfield-mcp`, `ai-video`, `opus-5-5` | 1 / 1 |
+| 2026-11-15 | 🟢 | [胡嘉璽 24×7 地端多機 Agent 實戰架構：Remote Control、Herdr + Tailscale、Git 技能同步與 Windows 11 落地評估](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) | `24x7-agent`, `remote-control`, `herdr` | 2 / 2 |
 | 2026-11-15 | ⚪ | [4×4 關鍵幀動作表（16 格舞步圖）＋雙圖參照驅動 120 BPM 角色舞蹈影片 Prompt 模式](./notes/2026-11-15-keyframe-grid-sheet-dance-video-prompt.md) | `ai-video`, `keyframe-sheet`, `sprite-grid` | 0 / 0 |
 | 2026-11-15 | ⚪ | [killkli/minimax-h3-lora-colab-skill：透過 Google Colab CLI 驅動遠端 A100 訓練 LoRA 之 Skill 架構評估](./notes/2026-11-15-minimax-h3-lora-colab-skill-eval.md) | `skill`, `google-colab`, `lora-training` | 0 / 0 |
 | 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |

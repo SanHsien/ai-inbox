@@ -6,7 +6,7 @@ source_platform: "Web / Official MCP"
 author: "Higgsfield AI（官方服務）/ Okihiro School（覆盤作者宣稱，未查證）"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 2
 cluster_role: "HiggsMCP覆盤"
 short_title: "HiggsfieldMCP影片覆盤"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[官方連接指南](https://higgsfield.ai/creator-hub/help-center/integrations/how-do-i-connect-higgsfield-to-ai-agent) ｜ [官方整合說明](https://higgsfield.ai/enterprise-help-center/platform/integrations) ｜ [添削01 レポート｜Opus 5.5 × Higgsfield AI 影片覆盤報告（來源頁 HTTP 403，未查證）](https://okihiro-school.com/opus55-review-report/)
 - **發布平台 / 作者**：`Higgsfield AI`（官方 MCP 服務提供者）與 `Okihiro School`（民間案例覆盤作者宣稱，報告日期標記 2026-09-26，來源頁 403，未經獨立查證；兩者非共同背書）
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md`](./2026-11-15-runway-mcp-collage-motion-graphics-prompt.md)（Runway MCP 靜態圖資與程式化動畫分權）
   - [`notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md`](./2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md)（Audio-First 時間軸對齊）
@@ -75,9 +75,9 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-19`**｜**[優先級：低]** 補齊既有敘事影片分鏡規範的連戲、讀音與人工審片條件
+- [x] **`T-20261115-19`**｜**[優先級：低]** 補齊既有敘事影片分鏡規範的連戲、讀音與人工審片條件
   - **目標範圍**：主要 owner 為 `SanHsien/code-as-video-studio`；更新 `templates/cinematic-storyboard-template.md`，新增 `docs/narrative-video-review-sop.md` 與 `docs/evidence/narrative-review-examples.md`。唯讀參照 `SanHsien/video-autopilot-kit` 已有 ASR／交付 QA，本階段不修改該 repo 程式。
   - **具體做法**：將全身角色參考、服裝／站位連戲、難讀詞預審、ASR 線索加人工聽審、反應鏡頭與轉場選擇映射到既有鏡頭卡；對每項寫適用條件、N/A 理由與人工決策者。`start_image` 僅在模型支援且鏡頭連續時選用，不保證視覺一致。說明既有字幕同步抽驗與讀音驗收的差別，不新增 ASR 引擎／關鍵字驗證器。口述回饋預設用去識別文字與時間碼；若另需錄影，先走現行隱私檢查且不自動上傳。來源頁未取得的案例細節明標未查證。
   - **驗收標準（DoD）**：三個具名檔案完成，七條建議各有採用／條件採用／不採用與理由；範例含一組連續動作與一組切換機位，各給至少兩張合成鏡頭卡，示範末幀可用／不適用情形。另列一個關鍵詞疑似誤讀的時間碼修正單範例，標示為合成案例，區分 ASR 疑點與人工聽審結論；沒有音訊時不得捏造已聽審。明列與既有影片 QA 的重疊、缺口、來源 URL 與限制；依 repo 指引執行文件／既有檢查並保存結果。不生成付費影片、不接 MCP、不以案例文件聲稱模型品質已驗證；不要求本任務 push。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15，SanHsien/code-as-video-studio main e3d1252）：templates/cinematic-storyboard-template.md 補上連戲、讀音、人工決策欄位；新增 docs/narrative-video-review-sop.md，七項建議逐條評估、不一律設硬閘門；新增 docs/evidence/narrative-review-examples.md 合成範例。52 tests、specs 檢查通過。獨立複審通過。未生成影片、未呼叫付費或中國服務。
