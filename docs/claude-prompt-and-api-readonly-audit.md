@@ -4,7 +4,7 @@
 
 **結論：指定三個 checkout 的有界限靜態檢閱，未找到直接呼叫 Anthropic Messages API 的 consumer；不需要為了 Opus 5.5 虛構遷移工作。** relay 的 Claude CLI 委派、第三方 gateway 環境設定及文件範例必須分開看。提示檔有適用範圍與載入條件需要釐清，但本輪不修改規則、hooks、模型路由或 API 程式。
 
-本輪依派工檔只新增兩份公開文件；改寫任務原 DoD 另要求的私有 findings 報告未建立，故 **T-18 原完整 DoD 為 PARTIAL**，不可據此結案。私有檢閱只在下文提供抽象摘要，不公開內部檔名清單、程式或規則內容。
+本公開文件撰寫時，DoD 另要求的私有 findings 報告尚未建立；2026-11-15 已於 `SanHsien/agent-assets`（私有）補交 `docs/prompt-api-audit-findings.md`。本公開版只記完成狀態與檢閱邊界，私有 findings 留在私有 repo。私有檢閱只在下文提供抽象摘要，不公開內部檔名清單、程式或規則內容。
 
 ## 1. 基準、方法與檢閱邊界
 
@@ -35,7 +35,7 @@
 | 待確認：載入條件 | 三 repo 採用 AGENTS 指引，不能僅由檔案存在推導 Claude 已載入 | 官方目前支援 AGENTS，但受版本、Project instructions 設定、其他 CLAUDE 指令檔與 plugin 狀態影響；須由維護者日後在既有 session 查看載入證據。本輪未讀原生設定或執行 Claude，不要求補建 CLAUDE.md。[官方載入規則](https://code.claude.com/docs/en/memory#project-instructions-with-agentsmd) |
 | 範圍差異，非 API 衝突 | ai-inbox [`AGENTS.md:144`](https://github.com/SanHsien/ai-inbox/blob/main/AGENTS.md#L144) 附近採私有 repo 真名加私有標示；relay [`AGENTS.md:50`](https://github.com/SanHsien/agent-relay/blob/main/AGENTS.md#L50) 採別名 | 此報告遵循交付 repo 與派工要求，使用真名加「私有」。日後跨 repo 搬文件須按目的地去識別，不把一方的局部規則當成另一方的全域規則 |
 | 合理的 worker 限制 | relay [`agent_relay/dispatch.py:578–592`](https://github.com/SanHsien/agent-relay/blob/main/agent_relay/dispatch.py#L578) 區分唯讀與可寫工作，要求實際讀檔與證據，並把 handover 視為資料 | 保留。明確工具使用與證據要求有實際用途，不因 MUST／不要等強語氣而機械刪除；官方 changelog 也說應保留有文件根據的 thinking 關鍵字。[官方 changelog](https://code.claude.com/docs/en/changelog) |
-| 私有摘要 | `SanHsien/agent-assets`（私有）已完成相關範圍的唯讀檢閱 | 只確認共用資產與原生治理應分開評估；具體 findings 不公開。未產出私有報告，不宣稱「無 findings」或完整私有稽核完成 |
+| 私有摘要 | `SanHsien/agent-assets`（私有）已完成相關範圍的唯讀檢閱 | 只確認共用資產與原生治理應分開評估；具體 findings 不公開。私有 findings 只記在私有報告，本文不轉載，也不宣稱完整私有稽核以外的保證 |
 | 過時／不精確的稽核說法 | 把兩種 prompt audit 當同一功能，或把全部 thinking 字詞判為應刪除 | `/claude-api prompt-audit` 處理 prompts／tool descriptions；`/doctor prompt-audit`（別名 `/checkup prompt-audit`）處理指令檔／skills／agents／commands。官方 changelog 現可確認後者在 **2.1.283** 加入；本輪沒有檢查本機 Claude 版本，也沒有執行任何一種稽核。[官方 changelog](https://code.claude.com/docs/en/changelog) |
 
 ## 3. API consumer 與相容性判定
@@ -76,7 +76,7 @@
 | 三 repo 範圍、基準、來源、分類與公開建議 | 已記錄；來源 repo Git SHA／dirty 狀態 unknown，以內容指紋與明列邊界補充 |
 | consumer／CLI／範例分流，模型及平台適用條件 | 已記錄；無直接 consumer 的有界限 N/A，未虛構遷移 |
 | 指定公開報告 | 本文件 |
-| 指定私有 findings 報告 | 未建立；本輪禁止寫入來源 repo，原完整 DoD 尚未滿足 |
+| 指定私有 findings 報告 | 已於 2026-11-15 補交至 `SanHsien/agent-assets`（私有）的 `docs/prompt-api-audit-findings.md`；內容不在本公開文件 |
 | 隱私與操作邊界 | 私有內容不外流；未讀憑證、未呼叫 Claude／API／reviewer，未改原生規則或 hooks |
 
-本報告不代表 Claude 官方 skill 實測、全量安全稽核、API 遷移或來源遠端最新版驗收。後續修檔與私有報告由整合者依另行授權處理；本輪不回寫任務狀態。
+本報告不代表 Claude 官方 skill 實測、全量安全稽核、API 遷移或來源遠端最新版驗收。後續若要依 findings 修檔，另開任務處理。
