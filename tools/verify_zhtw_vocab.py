@@ -12,7 +12,7 @@ Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard (veri
 
 skip_code=True（CLI 預設）先保護程式碼、成對中文引號與 URL／連結目的地。
 引號保護最多 200 字且不可跨空白段落或表格欄；錯配引號不保護。
-裸 URL 遇中文／全形標點即停，中文路徑請用 Markdown 連結目的地。
+裸 URL 允許中文，遇空白、全形標點或未配對右括號即停；含規則詞時 CLI 提示人工確認。
 連結目的地限同一行，標題照常檢查；不是完整 Markdown 或語義解析器。
 未加引號的產品名稱仍無專名保護；不判斷標題、語義、標點或最終成品佔位。
 「支持」未加入自動替換。skip_code=False 保留既有全文替換模式。
@@ -81,17 +81,19 @@ ALL_RULES: Tuple[Tuple[str, str, str], ...] = GLOBAL_VOCAB_RULES + DEGRADED_AND_
 _BACKTICK_RUN_RE = re.compile(r"`+")
 _FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 _BARE_URL_RE = re.compile(
-    r"(?:https?://|ftp://|www\.)[^\s<>`\u2e80-\u9fff\uf900-\ufaff\uff00-\uffef\U00020000-\U000323af]+"
+    r"(?:https?://|ftp://|www\.)[^\s<>`，。；：、（）「」『』【】《》！？\uff00-\uffef]+"
 )
+_AUTOLINK_RE = re.compile(r"<(?:https?://|ftp://|www\.)[^<>\s]+>")
 _QUOTE_LIMIT = 200
-_REFERENCE_RE = re.compile(r"(?m)^ {0,3}\[[^\]\n]+\]:[ \t]*(<[^<>\n]+>|[^\s]+)")
+_REFERENCE_RE = re.compile(r"(?m)^ {0,3}\[(?!\^)[^\]\n]+\]:[ \t]*(<[^<>\n]+>|[^\s]+)")
+# Match immediate neighbours, independent of the surrounding sentence.
 _CONTEXT_EXCEPTIONS = {
-    "視頻": (("電視頻", 1), ("衛視頻", 1)),
-    "服務器": (("售後服務器材", 2),),
-    "軟件": (("柔軟件數", 1),),
-    "硬件": (("堅硬件", 1),),
+    "視頻": (("電衛監", ""), ("", "率")),
+    "服務器": (("", "材"),),
+    "軟件": (("", "數"),),
+    "硬件": (("堅", ""),),
 }
-_PROTECTED_START_RE = re.compile(r"[「『]|\]\(|(?:https?://|ftp://|www\.)")
+_PROTECTED_START_RE = re.compile(r"[「『]|\]\(|<(?=(?:https?://|ftp://|www\.))|(?:https?://|ftp://|www\.)")
 
 
 def _inline_parts(line: str) -> List[Tuple[bool, str]]:
@@ -119,9 +121,11 @@ def _inline_parts(line: str) -> List[Tuple[bool, str]]:
 def _rule_matches(text: str, src: str):
     """Use the same narrow context exceptions in checking and rewriting."""
     for match in re.finditer(re.escape(src), text):
-        if not any(match.start() >= offset and
-                   text[match.start() - offset:match.start() - offset + len(phrase)] == phrase
-                   for phrase, offset in _CONTEXT_EXCEPTIONS.get(src, ())):
+        before = text[match.start() - 1:match.start()] if match.start() else ""
+        after = text[match.end():match.end() + 1]
+        if not any((not left or (bool(before) and before in left)) and
+                   (not right or (bool(after) and after in right))
+                   for left, right in _CONTEXT_EXCEPTIONS.get(src, ())):
             yield match
 
 
@@ -176,7 +180,7 @@ def _transform_non_code_segment(segment: str) -> str:
     raise ValueError("詞庫規則循環，無法收斂至固定點")
 
 
-def _protected_parts(text: str) -> List[Tuple[bool, str]]:
+def _protected_parts(text: str, url_hints: Optional[List[Tuple[int, str]]] = None) -> List[Tuple[bool, str]]:
     """Share exact protected spans between checking and rewriting.
 
     Code is masked first so quote characters inside code cannot open a quote.
@@ -215,6 +219,9 @@ def _protected_parts(text: str) -> List[Tuple[bool, str]]:
     pairs = _line_parentheses(prose)
     # Protect definitions before scanning quotes or URLs in their destinations.
     for reference in _REFERENCE_RE.finditer(prose):
+        destination = reference.group(1)
+        if not (destination.startswith("<") or any(c in destination for c in ("/", ".", "#", "://"))):
+            continue
         start, end = reference.span(1)
         spans.append((start, end))
         masked[start:end] = [" "] * (end - start)
@@ -228,6 +235,9 @@ def _protected_parts(text: str) -> List[Tuple[bool, str]]:
             stack = ["」" if token == "「" else "』"]
             while end < min(len(prose), start + _QUOTE_LIMIT) and stack:
                 char = prose[end]
+                if char == "\\" and end + 1 < len(prose) and prose[end + 1] in "\\|":
+                    end += 2
+                    continue
                 if char == "|" or (char == "\n" and
                                    re.match(r"[ \t\r]*\n", prose[end + 1:end + _QUOTE_LIMIT])):
                     break
@@ -241,6 +251,12 @@ def _protected_parts(text: str) -> List[Tuple[bool, str]]:
             if stack:
                 cursor = match.end()
                 continue
+        elif token == "<":
+            autolink = _AUTOLINK_RE.match(prose, start)
+            if autolink is None:
+                cursor = match.end()
+                continue
+            end = autolink.end()
         elif token == "](":
             close = pairs.get(end - 1)
             if close is None:
@@ -265,6 +281,9 @@ def _protected_parts(text: str) -> List[Tuple[bool, str]]:
                         end = index
                         break
                     depth -= 1
+            if url_hints is not None and any(src != dst and src in prose[start:end]
+                                            for src, dst, _ in ALL_RULES):
+                url_hints.append((text.count("\n", 0, start) + 1, text[start:end]))
         spans.append((start, end))
         cursor = end
 
@@ -397,6 +416,13 @@ def _main(argv: Optional[Sequence[str]] = None) -> int:
         return 2
 
     exit_code = 0
+
+    # Report once per file, including when --fix and --check share the input.
+    for fpath in dict.fromkeys([*fix_files, *check_files]):
+        hints: List[Tuple[int, str]] = []
+        _protected_parts(fpath.read_text(encoding="utf-8"), hints)
+        for line, url in hints:
+            print(f"[REVIEW] {fpath}:{line}: 裸 URL 含規則詞，保留原文，請人工確認：{url}")
 
     if args.verify_idempotent:
         ok, failures = verify_idempotence()

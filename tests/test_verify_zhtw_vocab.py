@@ -10,6 +10,8 @@ import sys
 import tempfile
 import unittest
 import time
+import io
+from contextlib import redirect_stdout
 from unittest.mock import patch
 
 from pathlib import Path
@@ -59,7 +61,6 @@ class TestVerifyZhtwVocab(unittest.TestCase):
             ("（見 https://a.org/x）這個視頻很好看而且軟件也不錯 硬件", ["視頻", "軟件", "硬件"]),
             ("(https://a.org/x)視頻教學與軟件", ["視頻", "軟件"]),
             ("https://a.org/x：視頻", ["視頻"]),
-            ("https://a.org/x視頻教學", ["視頻"]),
             ("https://a.org/x_(a))視頻", ["視頻"]),
         ]:
             with self.subTest(raw=raw):
@@ -74,7 +75,7 @@ class TestVerifyZhtwVocab(unittest.TestCase):
             self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), "https://a.org/x_(a))film")
 
     def test_context_exceptions_preserve_real_words(self):
-        raw = "電視頻道與衛視頻道、電視頻率；售後服務器材 柔軟件數 堅硬件"
+        raw = "電視頻道與衛視頻道、電視頻率；售後服務器材 柔軟件數 堅硬件 監視頻率 提供服務器材 鬆軟件數"
         for skip in [True, False]:
             with self.subTest(skip=skip):
                 self.assertEqual(apply_zhtw_vocab(raw, skip_code=skip), raw)
@@ -142,10 +143,50 @@ class TestVerifyZhtwVocab(unittest.TestCase):
 
     def test_bare_urls_protect_path_query_fragment(self):
         for raw in ["https://example.org/path?q=video#part", "<https://example.org/path>",
+                    "https://example.org/數據庫?軟件=硬件#視頻",
+                    "<https://example.org/數據庫>", "www.example.org/數據庫",
+                    "見 https://zh.wikipedia.org/wiki/數據庫 一文",
+                    "<https://zh.wikipedia.org/wiki/數據庫>",
+                    "<https://a.org/視頻：軟件>",
+                    "https://a.org/s?q=視頻&x=1",
                     "www.example.org/path", "https://a.org/x_(nested)"]:
             self.assert_protected(raw)
+        self.assertEqual(apply_zhtw_vocab("https://example.org/數據庫。數據庫", skip_code=True),
+                         "https://example.org/數據庫。資料庫")
         self.assertEqual(apply_zhtw_vocab("https:// 數據庫 www. 數據庫", skip_code=True),
                          "https:// 資料庫 www. 資料庫")
+
+    def test_ambiguous_bare_url_is_preserved_with_cli_hint(self):
+        raw = "https://a.org/x視頻教學"
+        self.assert_protected(raw)
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "url.md"
+            p.write_text(raw, encoding="utf-8")
+            output = io.StringIO()
+            with redirect_stdout(output):
+                self.assertEqual(main(["--fix", str(p), "--check", str(p)]), 0)
+            self.assertEqual(p.read_text(encoding="utf-8"), raw)
+            self.assertEqual(output.getvalue().count("[REVIEW]"), 1)
+            self.assertIn("人工確認", output.getvalue())
+
+    def test_footnotes_and_plain_labels_are_prose(self):
+        for raw, expected in [
+            ("正文[^1]\n\n[^1]: 視頻教學很重要而且軟件也是", ["視頻", "軟件"]),
+            ("[^n]: 這個服務器的硬件 很舊", ["服務器", "硬件"]),
+            ("[^n]: docs/視頻.md", ["視頻"]),
+            ("[備註]: 視頻教學很重要", ["視頻"]),
+        ]:
+            with self.subTest(raw=raw):
+                self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)], expected)
+                self.assertNotEqual(apply_zhtw_vocab(raw, skip_code=True), raw)
+        for destination in ["docs/視頻", "視頻.md", "#視頻", "<視頻>"]:
+            self.assert_protected("[v]: " + destination)
+
+    def test_escaped_pipes_do_not_end_quote_protection(self):
+        self.assert_protected(r"他說「a \| b 視頻」")
+        self.assert_protected(r"他說「a \\\| b 視頻」")
+        for raw in ["他說「a | b 視頻」", r"他說「a \\| b 視頻」"]:
+            self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)], ["視頻"])
 
     def test_candidate_rules_have_positive_and_protected_negative_cases(self):
         for raw, expected in [("啟動服務器", "啟動伺服器"),
