@@ -414,6 +414,7 @@
 | 2026-11-15 | 🔴 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 0 / 1 |
 | 2026-11-15 | 🔴 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 0 / 2 |
+| 2026-11-15 | ⚪ | [POUND0423 單檔影片／圖片故障特效（Glitch VFX）工具查證與技術評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md) | `glitch-effect`, `webgl`, `canvas` | 0 / 0 |
 | 2026-11-15 | 🔴 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 0 / 1 |
 <!-- END GENERATED: index -->
 
@@ -457,6 +458,7 @@
 - 綠幕合成廣告管線：[Audio-First綠幕廣告管線](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md)
 - 前端WebGPU修圖：[WebGPU修圖Prompt評估](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md)
 - 證據導向視覺Skill：[PhotoRisoPoster海報Skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md)
+- 前端Glitch視覺特效：[POUND0423故障特效評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md)
 - 向量幾何Logo與MCP：[Rikyū幾何Logo與MCP](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
