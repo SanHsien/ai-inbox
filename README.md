@@ -600,8 +600,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 63 份）
-<details><summary>展開查看全部 63 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 66 份）
+<details><summary>展開查看全部 66 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -630,6 +630,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/claude-plugins-official-review.md`](./docs/claude-plugins-official-review.md) | Anthropic 官方 Claude Code 外掛清單深度檢閱與工作流適配報告 |
 | [`docs/claude-security-guidance-windows-setup.md`](./docs/claude-security-guidance-windows-setup.md) | Claude Code security-guidance 外掛 Windows 11 安裝評估、配置驗證與三層防禦整合報告 |
 | [`docs/cli-anything-to-skill-protocol.md`](./docs/cli-anything-to-skill-protocol.md) | Agent-Native CLI 封裝與自動生成 Skill 標準協議 (CLI-Anything to Skill Protocol) |
+| [`docs/cloudflare-security-audit-readonly-review.md`](./docs/cloudflare-security-audit-readonly-review.md) | Cloudflare security-audit-skill 唯讀審查 |
 | [`docs/codex-skills-agents-bootstrap-guide.md`](./docs/codex-skills-agents-bootstrap-guide.md) | Codex／Claude Code／Antigravity：AGENTS.md 起步與 Skill 預算控制手冊 |
 | [`docs/codync-agent-fallback-and-mobile-relay-spec.md`](./docs/codync-agent-fallback-and-mobile-relay-spec.md) | Codync 解析：ACP 橋接、Agent 容錯降級與 E2EE 遠端審批規格 |
 | [`docs/correction-queue-evaluation.md`](./docs/correction-queue-evaluation.md) | 評估：在共用 SSOT 倉庫引進「糾正審查佇列」（correction-queue.jsonl） |
@@ -648,10 +649,12 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/irrefutable-evidence-and-invalid-patterns-spec.md`](./docs/irrefutable-evidence-and-invalid-patterns-spec.md) | 無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範 |
 | [`docs/karpathy-rules-mechanical-hardening-spec.md`](./docs/karpathy-rules-mechanical-hardening-spec.md) | Karpathy 四原則工程加固指引：從 Prompt 到硬閘門 |
 | [`docs/llmjacking-cloud-defense-spec.md`](./docs/llmjacking-cloud-defense-spec.md) | 雲端算力竊盜防禦：LLMJacking、AMOS 與延遲式自動停用 |
+| [`docs/local-svg-logo-options-review.md`](./docs/local-svg-logo-options-review.md) | 本機 SVG Logo 方案唯讀比較 |
 | [`docs/model-burn-rate-routing-matrix.md`](./docs/model-burn-rate-routing-matrix.md) | 長程並行開發：模型選型與配額消耗速查表（Sol 6.1／Terra 6.1／Astra 6／Luna 6） |
 | [`docs/multi-agent-parallel-dispatch-spec.md`](./docs/multi-agent-parallel-dispatch-spec.md) | 四 Agent 平行派工協議與人類審核門檻規範 |
 | [`docs/nvidia-nemotron-transcribe-pipeline-spec.md`](./docs/nvidia-nemotron-transcribe-pipeline-spec.md) | NVIDIA Nemotron 3.5 Transcribe 語音辨識模型技術規格與 Windows 本機語音輸入適用性評估 |
 | [`docs/openai-plugin-submission-feasibility.md`](./docs/openai-plugin-submission-feasibility.md) | OpenAI Plugins（原 Apps SDK）上架可行性檢核表 |
+| [`docs/pi-hybrid-harness-readonly-assessment.md`](./docs/pi-hybrid-harness-readonly-assessment.md) | Pi 混合型 Harness 唯讀評估 |
 | [`docs/production-smoke-security-checklist.md`](./docs/production-smoke-security-checklist.md) | 全端網站上線前 QA 與資安稽核檢核表 (Production Smoke & Security Checklist) |
 | [`docs/pstack-agent-playbooks.md`](./docs/pstack-agent-playbooks.md) | pstack 技能庫與 Playbooks 跨 Agent CLI 移植規格書 |
 | [`docs/pstack-governance-integration.md`](./docs/pstack-governance-integration.md) | pstack 工程防線與 agent-governance-toolkit 運行期政策檢查整合實踐 |
