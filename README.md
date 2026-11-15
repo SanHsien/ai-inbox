@@ -39,19 +39,18 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 231 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 152／⚪ 不做 77
+> 共 231 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 153／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261115-17` | 🔴 未做 | 中 | 唯讀查核 `danyuchn/pii-guard` 並評估 Windows 與現有隱私防線的採納條件 | 本筆記與 `docs/pii-guard-readonly-assessment.md`；第三方 repo 只下載與讀檔，不安裝、不執行測試或 hook。 | [2026-11-15-danyuchn-pii-guard-claude-mod-eval](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 152 項）</summary>
+<details><summary>展開查看已完成任務（共 153 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -207,6 +206,7 @@
 | `T-20261115-14` | 2026-11-15 | 唯讀評估 photo-riso-poster 的構圖規則、授權與提示詞安全，提出是否值得納入共用 Skill 的決策 | 完成（2026-11-15）：docs/photo-riso-poster-readonly-assessment.md，固定 luckdvr/photo-riso-poster 7956422 與 SKILL.md、README、LICENSE 的 blob SHA，MIT 授權重用要保留聲明。十項提示詞安全風險：自主生圖、重生成、EXIF、文字分支虛構資訊、ARCHIVE 編號與自檢矛盾、README 與 SKILL.md 不一致等。比對現有設計 skill 都未涵蓋此方法；裁決不採納、不收錄，附兩個未來驗收案例。Fable 撰寫，Fable 獨立複審後修正用語；唯讀評估，未安裝、未生圖、未啟動模型。 | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) |
 | `T-20261115-15` | 2026-11-15 | 唯讀評估 codex-plugin-cc 與既有 ai-review／agent-relay 的 Windows 權限與 hook 邊界，決定是否值得另案試用 | 完成（2026-11-15）：docs/codex-plugin-cc-readonly-assessment.md，固定 openai/codex-plugin-cc db52e28（1.0.6），22 個 blob SHA。三條呼叫鏈對照：review／adversarial 為 read-only；rescue 可由模型主動觸發，預設 workspace-write；三鏈都沒有逾時。Stop hook 無條件註冊，gate 開啟後非 ALLOW 全擋且不查 stop_hook_active。上游 CI 只跑 ubuntu。agent-safety-checks --pack 結束碼 0（7 項人工審查已讀）。用途與 ai-review、agent-relay 重疊；裁決現階段不安裝，附另案實測規格與停止條件。Fable 撰寫，Fable 獨立複審後修正用語；唯讀評估，未安裝、未生圖、未啟動模型。 | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) |
 | `T-20261115-16` | 2026-11-15 | 唯讀評估 speak-human-tw 的授權、47 組詞表與 38 類痕跡，不修改檢查器或安裝 Skill | 完成（2026-11-15）：docs/speak-human-tw-assessment.md，固定 Raymondhou0917/speak-human-tw 14885da（MIT），47 組詞表與 38 類規則逐列對照 tools/verify_zhtw_vocab.py。實測引號、URL、專名會被改寫，服務器、支持目前沒有規則。裁決：先補保護範圍再試候選規則，不整包加入全域替換；後續工作已列入 ROADMAP。筆記撤回「安全性極高」、更正 claude-code-resources 授權為 CC BY-NC-SA 4.0。Codex 撰寫，Fable 獨立複審通過；未執行上游程式，檢查器本身未改。 | [2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) |
+| `T-20261115-17` | 2026-11-15 | 唯讀查核 `danyuchn/pii-guard` 並評估 Windows 與現有隱私防線的採納條件 | 完成（2026-11-15）：docs/pii-guard-readonly-assessment.md，固定 danyuchn/pii-guard 3d55636（MIT，0.2.0），20 個 blob SHA。資料流、hook 權限、寫檔、子程序都盤點過：外連只到 127.0.0.1；Ollama 只驗 loopback，win32 回 LOCAL_MODEL_UNVERIFIED；mapping 以明文寫入。agent-safety-checks --pack 結束碼 1，1 FAIL 經複審重跑確認是正則誤報，6 REVIEW 已逐項判讀。與 screen_privacy 做了比較。裁決暫不採納；動態實測依全域規則第 15 條改列 ROADMAP 採納條件。Codex 撰寫，Fable 獨立複審通過；未執行上游程式。 | [2026-11-15-danyuchn-pii-guard-claude-mod-eval](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) |
 
 </details>
 
@@ -415,7 +415,7 @@
 | 2026-11-15 | ⚪ | [ChatGPT Dots 自訂權限規則（Settings > Personalization > Permissions）安全邊界評估](./notes/2026-11-15-chatgpt-dots-custom-permissions-eval.md) | `chatgpt-dots`, `permissions`, `safety-barrier` | 0 / 0 |
 | 2026-11-15 | 🟢 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 2 / 2 |
 | 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
-| 2026-11-15 | 🔴 | [danyuchn/pii-guard：台灣個資可逆遮罩與 Claude Mod 唯讀評估](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | `pii-guard`, `claude-mods`, `privacy` | 0 / 1 |
+| 2026-11-15 | 🟢 | [danyuchn/pii-guard：台灣個資可逆遮罩與 Claude Mod 唯讀評估](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | `pii-guard`, `claude-mods`, `privacy` | 1 / 1 |
 | 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |
 | 2026-11-15 | 🟢 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 1 / 1 |
 | 2026-11-15 | 🟢 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 1 / 1 |
