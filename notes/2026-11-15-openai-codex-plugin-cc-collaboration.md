@@ -6,7 +6,7 @@ source_platform: "Blog / GitHub"
 author: "OpenAI (openai/codex-plugin-cc) & be-ai-curator"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 3
 cluster_role: "Codex插件協作"
 short_title: "CodexPluginCC雙AI協作"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[openai/codex-plugin-cc (GitHub)](https://github.com/openai/codex-plugin-cc)（Apache-2.0，35,129 Stars，為查詢當下快照）｜ [Claude Code × Codex 協作長文 (be-ai-curator)](https://be-ai-curator.com/blog/claude-code-codex-collaboration)
 - **發布平台 / 作者**：`GitHub / Blog` / `OpenAI` & `be-ai-curator`
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md)（模型燒額度分權矩陣）
   - [`notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md`](./2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md)（多 AI 角色路由與反假綠燈）
@@ -66,9 +66,9 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-15`**｜**[優先級：低]** 唯讀評估 codex-plugin-cc 與既有 ai-review／agent-relay 的 Windows 權限與 hook 邊界，決定是否值得另案試用
+- [x] **`T-20261115-15`**｜**[優先級：低]** 唯讀評估 codex-plugin-cc 與既有 ai-review／agent-relay 的 Windows 權限與 hook 邊界，決定是否值得另案試用
   - **目標範圍**：本 repo `docs/codex-plugin-cc-readonly-assessment.md`；僅讀已安裝工具的非機密規格，不修改 Claude／Codex 全域配置或 hooks。
   - **具體做法**：固定官方 plugin manifest、hooks、啟動 wrapper、app-server 權限處理與依賴宣告之版本／SHA。追查 review、adversarial-review、rescue 三條呼叫鏈，列 sandbox、approval、模型／effort 選擇、背景工作取消與資料落點；辨別 policy 與實際 runtime 證據。檢查是否有禁止的 bypass 旗標、自動安裝、憑證外傳或隱性 Stop review gate 迴圈。以現有 ai-review／agent-relay 文件比對用途，不啟動任一模型後端，不安裝插件、不登入、不啟用 gate。只有明確缺口才建議後續最小實測。
   - **驗收標準（DoD）**：上述報告存在，提供三條呼叫鏈對照、來源 SHA、Windows 已知限制、與現有工具重疊／缺口，以及採納裁決。禁止用「沒看到衝突」取代相容性驗收。若建議另案實測，規格限一個隔離測試專案、一次 readonly adversarial-review 及一次最小 rescue；不跑多工具模型基準，必須明列用量未知的情況、timeout、取消及停止條件，維持 optional review gate 關閉。登入／UI 若必要由維護者處理；不能把登入完成視為整體實測成功。第三方安全審計未通過不建議安裝。後續實作需更新 ROADMAP、重建 README 並通過 verify_inbox；本任務不產生「已安裝／無衝突／比較省額度」的 runtime 宣稱。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15）：docs/codex-plugin-cc-readonly-assessment.md，固定 openai/codex-plugin-cc db52e28（1.0.6），22 個 blob SHA。三條呼叫鏈對照：review／adversarial 為 read-only；rescue 可由模型主動觸發，預設 workspace-write；三鏈都沒有逾時。Stop hook 無條件註冊，gate 開啟後非 ALLOW 全擋且不查 stop_hook_active。上游 CI 只跑 ubuntu。agent-safety-checks --pack 結束碼 0（7 項人工審查已讀）。用途與 ai-review、agent-relay 重疊；裁決現階段不安裝，附另案實測規格與停止條件。Fable 撰寫，Fable 獨立複審後修正用語；唯讀評估，未安裝、未生圖、未啟動模型。

@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 230 項任務：🔴 未做 4／🟡 進行中 0／🟢 已做 149／⚪ 不做 77
+> 共 230 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 151／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -47,13 +47,11 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
-| `T-20261115-14` | 🔴 未做 | 低 | 唯讀評估 photo-riso-poster 的構圖規則、授權與提示詞安全，提出是否值得納入共用 Skill 的決策 | 本 repo `docs/photo-riso-poster-readonly-assessment.md`；未來候選為 `SanHsien/agent-assets`（私有），本任務不修改該 repo 或 `~/.gemini`。 | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | 2026-11-15 |
-| `T-20261115-15` | 🔴 未做 | 低 | 唯讀評估 codex-plugin-cc 與既有 ai-review／agent-relay 的 Windows 權限與 hook 邊界，決定是否值得另案試用 | 本 repo `docs/codex-plugin-cc-readonly-assessment.md`；僅讀已安裝工具的非機密規格，不修改 Claude／Codex 全域配置或 hooks。 | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | 2026-11-15 |
 | `T-20261115-16` | 🔴 未做 | 低 | 審查 `Raymondhou0917/speak-human-tw` 之台灣在地化詞表與 38 種 AI 痕跡規則，評估補強至 `verify_zhtw_vocab.py`／`agent-assets` | `C:\GitHub\ai-inbox\tools\verify_zhtw_vocab.py`、`verify_no_slop.py` 與 `C:\GitHub\agent-assets\skills\` | [2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 149 項）</summary>
+<details><summary>展開查看已完成任務（共 151 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -206,6 +204,8 @@
 | `T-20261115-10` | 2026-11-15 | 依 OpenAI 一手文件修正上架、驗證與託管成本假設，交付單份可行性檢核表 | 完成（2026-11-15，commit 68d71fe、4b9098e）：docs/openai-plugin-submission-feasibility.md 22 列檢核表，逐項附 developers.openai.com 與 Cloudflare 官方頁、查證日 2026-11-15。結論是暫不開發：只有少數 plugin 獲加強曝光且不能申請；plugin 只能做實體商品交易，不能賣訂閱；唯一候選 public_apis_indexer 沒有對外需求；Workers Free 有額度上限，不是零成本。Fable 獨立複審抽查 15 項一手來源全部相符。 | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) |
 | `T-20261115-11` | 2026-11-15 | 在 video-autopilot-kit 以合成素材實作本機 Audio-First 綠幕合成切片，驗證時長、畫面與音量 | 完成（2026-11-15，SanHsien/video-autopilot-kit main f3d335f、4484386，CI 綠）：src/audio_first_compositor.py＋23 項測試＋docs/audio-first-compositor-validation.md。ffmpeg 9.0.2 實測：時長差 0.61 格、h264＋aac 可完整解碼、前景 (252,0,0)、背景 (0,0,254)、ducking 28.87 dB；帶 alpha 的綠幕會拒絕；despill 與 duck_ratio 有測試守住；不覆寫輸出。只用本機合成素材，不呼叫雲端服務。Codex 初稿在沙盒內無法執行 ffmpeg，改由 Fable 完成實測；Fable 獨立複審通過，建議項另修。 | [2026-11-15-audio-first-greenscreen-ai-commercial-pipeline](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) |
 | `T-20261115-12` | 2026-11-15 | 建立以假資料錄影與離線驗收為核心的 PR Demo 證據技能，明確分開錄製、引用與上傳 | 完成（2026-11-15，SanHsien/agent-assets（私有） main 6d3ab8d、f808065、2d3312c、eceedf0，CI 綠）：skills/pr-demo-evidence（SKILL.md、scripts/record-demo.py、scripts/compress-demo.ps1、examples/demo.html、VALIDATION.md）＋25 項測試，ASSET_REGISTER 登記為候選、未核准發布。用系統 Edge 157 以 headless 逐格截取頁面＋系統 ffmpeg 實錄，h264 1280x720、2.4 秒、完整解碼結束碼 0。錄前錄後都做隱私檢查且 fail-closed：fill 值、表單值、短暫文字、iframe／img／XHR 讀本機檔、optgroup label、open shadow root 等反例都會擋下並刪檔。Fable 獨立複審兩輪通過。限制：Playwright 內建錄影器（--capture video）未實測，closed shadow root 與 CSS content 看不到，gh 附件旗標未實測。不建 PR、不上傳。 | [2026-11-15-cross-agent-pr-demo-video-delivery-workflow](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) |
+| `T-20261115-14` | 2026-11-15 | 唯讀評估 photo-riso-poster 的構圖規則、授權與提示詞安全，提出是否值得納入共用 Skill 的決策 | 完成（2026-11-15）：docs/photo-riso-poster-readonly-assessment.md，固定 luckdvr/photo-riso-poster 7956422 與 SKILL.md、README、LICENSE 的 blob SHA，MIT 授權重用要保留聲明。十項提示詞安全風險：自主生圖、重生成、EXIF、文字分支虛構資訊、ARCHIVE 編號與自檢矛盾、README 與 SKILL.md 不一致等。比對現有設計 skill 都未涵蓋此方法；裁決不採納、不收錄，附兩個未來驗收案例。Fable 撰寫，Fable 獨立複審後修正用語；唯讀評估，未安裝、未生圖、未啟動模型。 | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) |
+| `T-20261115-15` | 2026-11-15 | 唯讀評估 codex-plugin-cc 與既有 ai-review／agent-relay 的 Windows 權限與 hook 邊界，決定是否值得另案試用 | 完成（2026-11-15）：docs/codex-plugin-cc-readonly-assessment.md，固定 openai/codex-plugin-cc db52e28（1.0.6），22 個 blob SHA。三條呼叫鏈對照：review／adversarial 為 read-only；rescue 可由模型主動觸發，預設 workspace-write；三鏈都沒有逾時。Stop hook 無條件註冊，gate 開啟後非 ALLOW 全擋且不查 stop_hook_active。上游 CI 只跑 ubuntu。agent-safety-checks --pack 結束碼 0（7 項人工審查已讀）。用途與 ai-review、agent-relay 重疊；裁決現階段不安裝，附另案實測規格與停止條件。Fable 撰寫，Fable 獨立複審後修正用語；唯讀評估，未安裝、未生圖、未啟動模型。 | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) |
 
 </details>
 
@@ -414,8 +414,8 @@
 | 2026-11-15 | 🟢 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 2 / 2 |
 | 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
 | 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |
-| 2026-11-15 | 🔴 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 0 / 1 |
-| 2026-11-15 | 🔴 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 0 / 1 |
+| 2026-11-15 | 🟢 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 1 / 1 |
+| 2026-11-15 | 🟢 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 1 / 1 |
 | 2026-11-15 | 🟢 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 1 / 1（+1 不做） |
 | 2026-11-15 | ⚪ | [POUND0423 單檔影片／圖片故障特效（Glitch VFX）工具查證與技術評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md) | `glitch-effect`, `webgl`, `canvas` | 0 / 0 |
 | 2026-11-15 | 🔴 | [Raymondhou0917 雙倉庫評估：speak-human-tw（去 AI 味 Skill）與 claude-code-resources（入門資源站）](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) | `skill`, `zh-tw`, `de-ai` | 0 / 1 |
@@ -603,8 +603,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 67 份）
-<details><summary>展開查看全部 67 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 68 份）
+<details><summary>展開查看全部 68 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |

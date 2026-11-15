@@ -6,7 +6,7 @@ source_platform: "GitHub / Social"
 author: "luckdvr"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 2
 cluster_role: "證據導向視覺Skill"
 short_title: "PhotoRisoPoster海報Skill"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[luckdvr/photo-riso-poster](https://github.com/luckdvr/photo-riso-poster)
 - **發布平台 / 作者**：`GitHub` / `luckdvr`（MIT License，60 Stars / 2 Forks，建立於 `2026-08-03`）
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 > **安全審查與實查結果**：
 > 已唯讀檢視 GitHub repo 檔案樹、[README.md](https://raw.githubusercontent.com/luckdvr/photo-riso-poster/main/README.md) 與 [SKILL.md](https://raw.githubusercontent.com/luckdvr/photo-riso-poster/main/SKILL.md)（共 73 行）。本專案為**純 Markdown 單檔規則（未附腳本、Hook 或 MCP）**。但 Markdown 會對宿主模型下指令，仍有提示詞注入、工具使用與資料傳送風險：[SKILL.md](https://github.com/luckdvr/photo-riso-poster/blob/main/SKILL.md) 要求自主呼叫生圖工具、允許重生成一次，並建議可用 EXIF 工具。本篇只做過人工閱讀，尚未跑 SkillSpector 與 agent-safety-checks 的安全檢查器，不算通過採納前的安全審查。
@@ -62,9 +62,9 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-14`**｜**[優先級：低]** 唯讀評估 photo-riso-poster 的構圖規則、授權與提示詞安全，提出是否值得納入共用 Skill 的決策
+- [x] **`T-20261115-14`**｜**[優先級：低]** 唯讀評估 photo-riso-poster 的構圖規則、授權與提示詞安全，提出是否值得納入共用 Skill 的決策
   - **目標範圍**：本 repo `docs/photo-riso-poster-readonly-assessment.md`；未來候選為 `SanHsien/agent-assets`（私有），本任務不修改該 repo 或 `~/.gemini`。
   - **具體做法**：以 GitHub contents 固定 SKILL.md、README、LICENSE 的來源與 blob SHA；審查自主工具呼叫、輸入照片／EXIF 資料流、虛構文字主題資訊及一次重生成規則。辨別照片證據與創作資訊，記錄授權保留方式；依可取得的本機官方指引確認候選安裝路徑與生圖介面，缺證據就列未查證。比較現有設計 Skill 是否已涵蓋該方法，不呼叫模型、不下載範例圖、不安裝或啟用原 skill。若日後採納外部 skill，必須先完成 SkillSpector 與 agent-safety-checks 安全檢查，不以本報告替代。
   - **驗收標準（DoD）**：上述報告存在，列來源／SHA／授權、具體風險與未查證欄位、採納或不採納的理由。若建議未來生圖，寫出兩個固定案例（純文字 standard、無 EXIF 的合成照片 minimal），每例最多初次加一次重生成；保存位置須在後續任務指明，列數量一致性、無虛構日期、短詞拼字與留白判讀方法。這只是未來驗收設計，不宣稱已有樣張或量測結果。報告與變更不得含私有內容或機密；後續實作時更新 ROADMAP、重建 README 並通過 verify_inbox。無原碼或授權證據時保持未完成，不能只靠 URL 結案。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15）：docs/photo-riso-poster-readonly-assessment.md，固定 luckdvr/photo-riso-poster 7956422 與 SKILL.md、README、LICENSE 的 blob SHA，MIT 授權重用要保留聲明。十項提示詞安全風險：自主生圖、重生成、EXIF、文字分支虛構資訊、ARCHIVE 編號與自檢矛盾、README 與 SKILL.md 不一致等。比對現有設計 skill 都未涵蓋此方法；裁決不採納、不收錄，附兩個未來驗收案例。Fable 撰寫，Fable 獨立複審後修正用語；唯讀評估，未安裝、未生圖、未啟動模型。
