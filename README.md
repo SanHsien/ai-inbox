@@ -422,6 +422,7 @@
 | 2026-11-15 | 🟢 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 2 / 2 |
 | 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
 | 2026-11-15 | 🟢 | [danyuchn/pii-guard：台灣個資可逆遮罩與 Claude Mod 唯讀評估](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | `pii-guard`, `claude-mods`, `privacy` | 1 / 1 |
+| 2026-11-15 | ⚪ | [DocHUB（home-999.com/dochub）離線辦公工具包查證：非開源二進位實況與開源替代評估](./notes/2026-11-15-dochub-offline-toolkit-security-eval.md) | `security-audit`, `freeware`, `pdf-tools` | 0 / 0 |
 | 2026-11-15 | 🔴 | [Higgsfield MCP × Opus 5.5 AI 影片實戰覆盤：全託管失敗原因與人類導演級對策檢查單](./notes/2026-11-15-higgsfield-mcp-opus55-video-review-report.md) | `higgsfield-mcp`, `ai-video`, `opus-5-5` | 0 / 1 |
 | 2026-11-15 | 🔴 | [胡嘉璽 24×7 地端多機 Agent 實戰架構：Remote Control、Herdr + Tailscale、Git 技能同步與 Windows 11 落地評估](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) | `24x7-agent`, `remote-control`, `herdr` | 0 / 2 |
 | 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |
@@ -495,6 +496,7 @@
 - Opus5.5遷移與稽核：[Opus5.5稽核與遷移](./notes/2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration.md)
 - 資安稽核Harness：[Cloudflare資安稽核Skill](./notes/2026-11-15-cloudflare-security-audit-skill.md)
 - 台灣個資遮罩Mod：[PII-Guard個資遮罩Mod](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md)
+- DocHUB閉源查證：[DocHUB離線工具查證](./notes/2026-11-15-dochub-offline-toolkit-security-eval.md)
 - Codex插件協作：[CodexPluginCC雙AI協作](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md)
 - 繁中去AI味與資源評估：[說人話Skill與CC資源評估](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md)
 - 四種AI工作模式地圖：[Rei四種AI工作模式](./notes/2026-11-15-rei-four-ai-work-modes-claude-codex-eval.md)
