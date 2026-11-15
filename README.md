@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 225 項任務：🔴 未做 12／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
+> 共 227 項任務：🔴 未做 14／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -51,6 +51,7 @@
 | `T-20261115-01` | 🔴 未做 | 中 | 在 Windows 11 原生環境沙盒安裝並實測 `earendil-works/pi`，驗證 TUI、`powershell` 工具與 `openai-codex` / `anthropic` provider 相容性，並定案與 `agent-relay` 的分工邊界 | 本機測試環境（Windows Terminal + `C:\GitHub\_sandbox\pi-test`）與 `C:\GitHub\ai-inbox` 評估紀錄 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
 | `T-20261115-04` | 🔴 未做 | 中 | 審查並沙盒實測 `cloudflare/security-audit-skill`（驗證零依賴 `.cjs` 測試與 Windows 11 `quick` 模式靜態稽核） | `C:\GitHub\_sandbox\security-audit-skill`（先唯讀審查）與個人測試目標 repo（如 `SanHsien/agent-relay` 局部 scoped `quick` 試跑） | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) | 2026-11-15 |
 | `T-20261115-09` | 🔴 未做 | 中 | 建立「建置導入＋月費維運（Retainer）提案與邊界範本」（`templates/agency-retainer-proposal-template.md`） | `C:\GitHub\ai-inbox\templates\agency-retainer-proposal-template.md` | [2026-11-15-ai-native-agency-retainer-and-org-playbook](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | 2026-11-15 |
+| `T-20261115-12` | 🔴 未做 | 中 | 建立跨 Agent 共用技能 `pr-demo-evidence`（整合 Playwright `recordVideo` + `ffmpeg` + `gh pr create --attach` 與測試證據門檻） | 共用技能（`~/.gemini/config/skills/pr-demo-evidence/` 與 `SanHsien/agent-assets` 同步） | [2026-11-15-cross-agent-pr-demo-video-delivery-workflow](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 | `T-20261115-02` | 🔴 未做 | 低 | 實作 Pi 混合型擴充套件 `pi-hybrid-relay`（於 Pi 內統一委派 `codex` CLI、`claude` CLI、Antigravity 頂層對話與 `agent-relay` 問答） | 新建 `C:\GitHub\pi-hybrid-harness`（對應 `SanHsien/pi-hybrid-harness`）或作為 `agent-relay` 擴充套件（依 `T-20261115-01` 結論定案） | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
 | `T-20261115-03` | 🔴 未做 | 低 | 安全審查並評估本地零額度幾何向量 Logo 方案（`mcpware/logoloom` 或自建構造幾何 SVG + SVGO Skill） | `C:\GitHub\_sandbox\`（唯讀／沙盒審查）與 `C:\GitHub\ai-inbox\templates\` | [2026-11-15-rikyu-geometric-vector-logo-mcp](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | 2026-11-15 |
@@ -59,6 +60,7 @@
 | `T-20261115-07` | 🔴 未做 | 低 | 若未來需建置純前端隱私修圖工具，僅採「垂直切片」驗證單一 WebGPU ONNX 模型（如 U²-Net 去背）＋ Canvas 縮放／前後對比線最小可用原型（不照原文一口氣全包） | 未來若立項時新建 `C:\GitHub\browser-image-studio`（目前暫不建立空 repo） | [2026-11-15-browser-webgpu-photo-video-editor-prompt-eval](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | 2026-11-15 |
 | `T-20261115-10` | 🔴 未做 | 低 | 查驗 OpenAI Apps SDK 上架與 OAuth 2.1 契約規範，評估以 Cloudflare Workers 零成本託管 1 個具引流價值的垂直 MCP 微工具可行性 | 研究評估筆記／規格備忘（`C:\GitHub\ai-inbox\docs\` 或對應微工具專案，先不立新 repo） | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | 2026-11-15 |
 | `T-20261115-11` | 🔴 未做 | 低 | 於 `SanHsien/video-autopilot-kit` 評估補入「Audio-First 秒數對齊＋FFmpeg 綠幕 Chroma Key（含 `despill` 抗綠邊）合成模組」 | `C:\GitHub\video-autopilot-kit`（或本機合成工具腳本） | [2026-11-15-audio-first-greenscreen-ai-commercial-pipeline](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | 2026-11-15 |
+| `T-20261115-13` | 🔴 未做 | 低 | 評估於 `SanHsien/agent-relay` 的 `result` 回報與 `accept` 驗收清單支援顯示 Demo 影片附件路徑（`refs` / `result` 證據整合，不另開 Repo） | `C:\GitHub\agent-relay`（`SPEC.md`、`agent_relay/cli.py`） | [2026-11-15-cross-agent-pr-demo-video-delivery-workflow](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
@@ -407,6 +409,7 @@
 | 2026-11-15 | 🔴 | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 1 |
 | 2026-11-15 | 🔴 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 0 / 2 |
+| 2026-11-15 | 🔴 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 0 / 2 |
 | 2026-11-15 | 🔴 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 0 / 2 |
 | 2026-11-15 | 🔴 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 0 / 1 |
@@ -434,6 +437,7 @@
 - Terra額度路由：[Terra額度與Fast倍率核實](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md)
 - 多session管理：[總PM與claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md)
 - 一人接案Agency系統：[AI一人接案Agency](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md)
+- PR錄影證據交付：[跨Agent PR錄影交付](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md)
 - 多模型省額角色路由：[多AI分權省額路由](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md)
 - 混合型Harness：[Pi混合型Harness](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md)
 
