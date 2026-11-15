@@ -62,6 +62,6 @@ tags:
 - [ ] **`T-20261115-16`**｜**[優先級：低]** 唯讀評估 speak-human-tw 的授權、47 組詞表與 38 類痕跡，不修改檢查器或安裝 Skill
   - **目標範圍**：本筆記與 `docs/speak-human-tw-assessment.md`；對照 `tools/verify_zhtw_vocab.py` 及其既有測試，均只讀。
   - **具體做法**：固定來源 commit，核對 LICENSE、詞表、patterns、保護清單與 benchmark；修正過度宣稱。逐列比較詞表與 38 類規則，記錄覆蓋、缺口、衝突、候選正例／反例與採納裁決；明示公開 repo 與 `SanHsien/agent-assets`（私有）的複製條件。不執行上游程式，不改檢查器、全域設定或私有 repo。
-  - **驗收標準（DoD）**：產出 `docs/speak-human-tw-assessment.md`，含固定 SHA／來源連結、授權與未查證權利範圍、47 組詞表及 38 類逐列對照、既有原始碼／測試證據、具體候選規則與反例、明確裁決及未實測項目。執行 `python tools/build_index.py`、`python tools/verify_zhtw_vocab.py --check notes docs`、`python tools/verify_inbox.py` 並回報各結束碼；任何失敗不得宣稱通過。本輪不得 complete 或 push，由整合者驗收後處理任務狀態。
+  - **驗收標準（DoD）**：產出 `docs/speak-human-tw-assessment.md`，含固定 SHA／來源連結、授權與未查證權利範圍、47 組詞表及 38 類逐列對照、既有原始碼／測試證據、具體候選規則與反例、明確裁決及未實測項目。執行 `python tools/build_index.py`、`python tools/verify_zhtw_vocab.py --check notes docs`、`python tools/verify_inbox.py` 並回報各結束碼；任何失敗不得宣稱通過。
   - **完成日期**：*（完成時填 YYYY-MM-DD）*
   - **實作紀錄 / 證據**：*（待整合者驗收後填寫）*

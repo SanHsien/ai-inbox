@@ -9,7 +9,7 @@
 | 對象 | 固定版本／檔案 | 已查內容 |
 | --- | --- | --- |
 | Raymondhou0917/speak-human-tw | commit `14885da5c91ed7ca2972f084599edcdd2a32ad04`；SKILL frontmatter 為 v1.4.0 | LICENSE、SKILL.md、在地化詞表、patterns、protected-list、scenes、Codex 安裝說明、benchmark 與 v1.4.0 結果；另靜態抽查星數腳本與 workflow |
-| 本 repo | 基準 HEAD `92a90ca4df30641ca3b8a48053bcca09e5d9fc4a` | [詞彙檢查器](../tools/verify_zhtw_vocab.py)、[現有測試](../tests/test_verify_zhtw_vocab.py)、[前端 slop 檢查器](../tools/verify_no_slop.py) |
+| 本 repo | 基準 HEAD `f1dcebb`（`tools/`、`tests/` 與 `92a90ca` 相同） | [詞彙檢查器](../tools/verify_zhtw_vocab.py)、[現有測試](../tests/test_verify_zhtw_vocab.py)、[前端 slop 檢查器](../tools/verify_no_slop.py) |
 | Raymondhou0917/claude-code-resources | commit `1320df1e396e7630b09d2dc80fae4b2c96861d54` | 僅 [README][cc-readme] 與 [LICENSE][cc-license]，用於修正原筆記，不是安裝包安全審計 |
 
 取得方式為淺層 clone 與固定 SHA 的 raw 檔案；只把外部內容當資料閱讀，沒有載入為執行指引、執行外部腳本、測試、安裝器或 workflow。Stars、Forks 和「最後更新」的即時數字不列為穩定證據。

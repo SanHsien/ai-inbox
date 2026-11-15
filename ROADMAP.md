@@ -1,16 +1,16 @@
 # 路線圖
 
 > 本 repo 後續工作的單一真相源。做完一項，就在同一個 commit 刪掉那一列；新工作只加在這裡。
-> 現況段的數字是 2026-11-14 依 `main` 查的快照（第二次），開工前先重查 GitHub。
+> 現況段的數字是 2026-11-15 依 `main` 查的快照（第三次），開工前先重查 GitHub。
 
 ## 現況
 
-public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 100 篇、`tools/` 35 支 CLI 工具、`docs/` 61 份、`templates/` 23 份、`assets/` 7 組、`tests/` 40 支測試檔；208 項任務全數結案，2026-11-08 之後的 14 篇新筆記都是零任務的評估），維護者持續直推 main 新增筆記與任務。健康：open issue 0、open PR 0、Dependabot 與 Code scanning 告警各 0，`CI Contract Verification`、`CodeQL` 皆 success；沒有 release。`README.md` 的任務總表、文章索引、四大知識圖譜與全庫產出物導覽皆由 `tools/build_index.py` 自動生成並由 `tools/verify_inbox.py` 執行契約與覆蓋率校驗。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
+public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 120 篇、`tools/` 31 支 CLI 工具、`docs/` 67 份、`templates/` 22 份、`assets/` 7 組、`tests/` 37 支測試檔；任務數與狀態以 README 任務總表為準），維護者持續直推 main 新增筆記與任務。健康：open issue 0、open PR 0、Dependabot 與 Code scanning 告警各 0，`CI Contract Verification`、`CodeQL` 皆 success；沒有 release。`README.md` 的任務總表、文章索引、四大知識圖譜與全庫產出物導覽皆由 `tools/build_index.py` 自動生成並由 `tools/verify_inbox.py` 執行契約與覆蓋率校驗。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
 
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| T-20261115-16：審查唯讀評估並決定是否另案補強詞彙器 | 已有固定來源、47 組詞表與 38 類對照；尚未接受整合，不直接擴充全域替換 | 整合者核對評估、候選正例／反例及文件檢查結果；本輪保留任務未結案，不安裝 Skill | 整合者 | [評估](docs/speak-human-tw-assessment.md)、[任務與 DoD](notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) |
+| 詞彙檢查器先補保護範圍，再試候選規則 | `docs/speak-human-tw-assessment.md` 第 6 節實測：一般中文引號、Markdown 連結網址、產品名都會被 `verify_zhtw_vocab.py` 改寫；`服務器`、`支持` 目前沒有規則 | 先讓引號、URL、專名不被改寫並補測試（第 6 節反例表逐列成為回歸測試），再逐條加 `服務器→伺服器`、`軟件→軟體`、`短視頻`先於`視頻` 等候選；每條都要有正例與反例測試，並跑 `--verify-idempotent`，全庫 `--check` 不新增誤判 | Codex | [評估第 6 節](docs/speak-human-tw-assessment.md)（T-20261115-16） |
 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
