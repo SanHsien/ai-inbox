@@ -11,7 +11,12 @@ function Assert-True($Condition, $Label) {
 # Closed command allowlist, also applied to every generated child query below.
 $allowed = @('Invoke-OpsProcess','Get-OpsReport','ConvertFrom-Json','ConvertTo-Json',
     'Get-Command','Select-Object','Get-CimInstance','Get-ScheduledTask','powercfg.exe')
-function Assert-QueryAst([string]$Code) {
+# DisabledRule is used only by the in-memory mutation tests below. Never execute
+# counterexamples: they are input to Parser.ParseInput, not ScriptBlock.Create.
+function Assert-GuardRule($Rule, $Condition, $DisabledRule) {
+    if ($Rule -ne $DisabledRule) { Assert-True $Condition "AST rule: $Rule" }
+}
+function Assert-QueryAst([string]$Code, [string]$DisabledRule = '') {
     $tokens = $null; $errors = $null
     $ast = [Management.Automation.Language.Parser]::ParseInput($Code, [ref]$tokens, [ref]$errors)
     Assert-True ($errors.Count -eq 0) 'parse'
@@ -19,7 +24,8 @@ function Assert-QueryAst([string]$Code) {
         $name = $cmd.GetCommandName()
         # The only scriptblock invocation is the literal query inside the wrapper.
         if ($cmd.CommandElements[0] -is [Management.Automation.Language.ScriptBlockExpressionAst]) { continue }
-        Assert-True ($name -in $allowed) "allowlisted command: $name"
+        Assert-GuardRule 'construction' ($name -ne 'New-Object') $DisabledRule
+        Assert-True ($name -in ($allowed + 'New-Object')) "allowlisted command: $name"
         if ($name -eq 'powercfg.exe') {
             Assert-True ($cmd.Extent.Text -eq '& powercfg.exe /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE') 'powercfg query only'
         }
@@ -31,10 +37,110 @@ function Assert-QueryAst([string]$Code) {
         }
     }
     Assert-True ($Code -notmatch '(?i)-(ComputerName|CimSession|Credential)\b|HKLM:|HKCU:|Get-Content|Invoke-Expression') 'no remote or credential access'
+    # Compare full receivers, not just method names. This is a finite source
+    # regression contract for this script, not a sandbox for arbitrary PowerShell.
+    $calls = @(
+        '$process.Start()', '$process.StandardOutput.ReadToEndAsync()',
+        '$process.StandardError.ReadToEndAsync()', '$process.WaitForExit($Seconds * 1000)',
+        '$process.Kill($true)', '$out.GetAwaiter().GetResult()', '$out.GetAwaiter()',
+        '$process.Dispose()', '[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($Code))',
+        '[Text.Encoding]::Unicode.GetBytes($Code)',
+        "[regex]::Matches((`$r -join ' '), '0x[0-9a-fA-F]{8}')",
+        '[Convert]::ToUInt32($v[0].Value.Substring(2),16)',
+        '[Convert]::ToUInt32($v[1].Value.Substring(2),16)',
+        '$v[0].Value.Substring(2)', '$v[1].Value.Substring(2)',
+        '[Diagnostics.FileVersionInfo]::GetVersionInfo($c.Path)',
+        "(Get-ScheduledTask -TaskName 'FakeRelay' -TaskPath '\' -ErrorAction Stop).State.ToString()",
+        "(Get-ScheduledTask -TaskName 'FakeAssets' -TaskPath '\' -ErrorAction Stop).State.ToString()",
+        '[string]::IsNullOrWhiteSpace([string]$v)'
+    )
+    $argumentCalls = @(
+        "`$info.ArgumentList.Add('-NoLogo')", "`$info.ArgumentList.Add('-NoProfile')",
+        "`$info.ArgumentList.Add('-NonInteractive')", "`$info.ArgumentList.Add('-EncodedCommand')",
+        '$info.ArgumentList.Add([Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($Code)))'
+    )
+    $memberWrites = @(
+        '$info.FileName', '$info.UseShellExecute', '$info.CreateNoWindow',
+        '$info.RedirectStandardOutput', '$info.RedirectStandardError', '$process.StartInfo'
+    )
+    $settings = @(
+        '$info.FileName = [Environment]::ProcessPath', '$info.UseShellExecute = $false',
+        '$info.CreateNoWindow = $true', '$info.RedirectStandardOutput = $true',
+        '$info.RedirectStandardError = $true', '$process.StartInfo = $info'
+    )
+    $assignments = @($ast.FindAll({param($n) $n -is [Management.Automation.Language.AssignmentStatementAst]}, $true))
+    foreach ($assignment in $assignments) {
+        $members = @($assignment.Left.FindAll({param($n) $n -is [Management.Automation.Language.MemberExpressionAst]}, $true))
+        if ($members.Count) {
+            Assert-GuardRule 'member-write' (($assignment.Left.Extent.Text -cin $memberWrites -and $assignment.Operator -eq 'Equals') -or
+                $assignment.Extent.Text -cin @("`$row.status = 'not-installed'", "`$row.reason = 'missing-command'", '$row.reason = $raw.Reason')) $DisabledRule
+            if ($assignment.Left.Extent.Text -cin $memberWrites) {
+                $rule = if ($assignment.Left.Extent.Text -eq '$info.FileName') { 'executable' } else { 'arguments' }
+                Assert-GuardRule $rule ($assignment.Extent.Text -cin $settings) $DisabledRule
+            }
+        }
+    }
+    foreach ($unary in $ast.FindAll({param($n) $n -is [Management.Automation.Language.UnaryExpressionAst]}, $true)) {
+        if ($unary.TokenKind -in @('PlusPlus','MinusMinus','PostfixPlusPlus','PostfixMinusMinus')) {
+            Assert-GuardRule 'member-write' ($unary.Child.FindAll({param($n) $n -is [Management.Automation.Language.MemberExpressionAst]}, $true).Count -eq 0) $DisabledRule
+        }
+    }
     foreach ($call in $ast.FindAll({param($n) $n -is [Management.Automation.Language.InvokeMemberExpressionAst]}, $true)) {
-        Assert-True ($call.Member.Value -in @('new','Add','Start','ReadToEndAsync','WaitForExit','Kill',
-            'GetAwaiter','GetResult','Dispose','ToBase64String','GetBytes','Matches','ToUInt32',
-            'Substring','GetVersionInfo','ToString','IsNullOrWhiteSpace')) 'method allowlist'
+        if ($call.Member.Value -eq 'new') {
+            Assert-GuardRule 'construction' ($call.Extent.Text -cin @(
+                '[Diagnostics.ProcessStartInfo]::new()', '[Diagnostics.Process]::new()')) $DisabledRule
+        } elseif ($call.Expression.Extent.Text -ceq '$info.ArgumentList' -and $call.Member.Value -ceq 'Add') {
+            Assert-GuardRule 'arguments' ($call.Extent.Text -cin $argumentCalls) $DisabledRule
+        } else {
+            Assert-GuardRule 'receiver' ($call.Extent.Text -cin $calls) $DisabledRule
+        }
+    }
+    # Pin the local process origin, startup settings and timeout branch. Reject
+    # rebinding (including scoped variables), reference passing, or another owner.
+    $lifecycle = @($ast.FindAll({param($n) $n -is [Management.Automation.Language.InvokeMemberExpressionAst] -and $n.Member.Value -in @('Start','Kill')}, $true))
+    foreach ($operation in $lifecycle) {
+        $owner = $operation.Parent
+        while ($owner -and $owner -isnot [Management.Automation.Language.FunctionDefinitionAst]) { $owner = $owner.Parent }
+        $owned = $null -ne $owner -and $owner.Name -ceq 'Invoke-OpsProcess'
+        if ($owned) {
+            $bindings = @($owner.Body.FindAll({param($n)
+                $n -is [Management.Automation.Language.VariableExpressionAst] -and
+                $n.VariablePath.UserPath -match '(^|:)(process|info)$'
+            }, $true))
+            # Every occurrence must be one of the fixed constructor assignments,
+            # approved member accesses, or the single StartInfo RHS; no alias/ref.
+            foreach ($binding in $bindings) {
+                $parent = $binding.Parent
+                $ok = ($parent -is [Management.Automation.Language.MemberExpressionAst] -and
+                    $parent.Expression -eq $binding -and $binding.Extent.Text -cin @('$process','$info')) -or
+                    ($parent -is [Management.Automation.Language.AssignmentStatementAst] -and
+                     $parent.Extent.Text -cin @('$process = [Diagnostics.Process]::new()', '$info = [Diagnostics.ProcessStartInfo]::new()')) -or
+                    ($parent -is [Management.Automation.Language.CommandExpressionAst] -and
+                     $parent.Parent -is [Management.Automation.Language.AssignmentStatementAst] -and
+                     $parent.Parent.Extent.Text -ceq '$process.StartInfo = $info')
+                $owned = $owned -and $ok
+            }
+            foreach ($required in @('$info = [Diagnostics.ProcessStartInfo]::new()',
+                '$process = [Diagnostics.Process]::new()', '$process.StartInfo = $info', '$null = $process.Start()')) {
+                $hits = @($owner.Body.FindAll({param($n) $n -is [Management.Automation.Language.AssignmentStatementAst] -and $n.Extent.Text -ceq $required}, $true))
+                $owned = $owned -and $hits.Count -eq 1 -and $hits[0].Extent.StartOffset -lt $operation.Extent.StartOffset
+                if ($hits.Count -eq 1) {
+                    if ($required -eq '$null = $process.Start()') {
+                        $owned = $owned -and $hits[0].Parent -is [Management.Automation.Language.StatementBlockAst] -and
+                            $hits[0].Parent.Parent -is [Management.Automation.Language.TryStatementAst]
+                    } else {
+                        $owned = $owned -and $hits[0].Parent -eq $owner.Body.EndBlock
+                    }
+                }
+            }
+            $branch = $operation.Parent.Parent.Parent.Parent
+            if ($operation.Member.Value -eq 'Kill') {
+                $owned = $owned -and $branch -is [Management.Automation.Language.IfStatementAst] -and
+                    $branch.Clauses.Count -eq 1 -and
+                    $branch.Clauses[0].Item1.Extent.Text -ceq '-not $process.WaitForExit($Seconds * 1000)'
+            }
+        }
+        Assert-GuardRule 'child-owner' $owned $DisabledRule
     }
     Assert-True ($ast.FindAll({param($n) $n -is [Management.Automation.Language.RedirectionAst]}, $true).Count -eq 0) 'stdout only'
 }
@@ -47,6 +153,53 @@ foreach ($bad in @('Set-Service -Name Schedule -StartupType Disabled',
     try { Assert-QueryAst $bad } catch { $rejected = $true }
     Assert-True $rejected 'AST guard rejects mutation or broad query'
 }
+# Each isolated witness has exactly one new guard responsible for rejection.
+# Removing that guard must make its rejection assertion fail (a killed mutant).
+$source = [IO.File]::ReadAllText($target)
+$witnesses = @(
+    @{ Rule='member-write'; Code='$obj.IsReadOnly = $true' }
+    @{ Rule='member-write'; Code='$obj.Prop++' }
+    @{ Rule='member-write'; Code='$info.ArgumentList[0] = "-Command"' }
+    @{ Rule='construction'; Code='[IO.FileInfo]::new("example")' }
+    @{ Rule='construction'; Code='New-Object IO.FileInfo "example"' }
+    @{ Rule='receiver'; Code='$obj.Put()' }
+    @{ Rule='receiver'; Code='$obj.SetValue("x", 1)' }
+    @{ Rule='receiver'; Code='$other.Dispose()' }
+    @{ Rule='executable'; Code='$info.FileName = "example.exe"' }
+    @{ Rule='arguments'; Code='$info.ArgumentList.Add("-Command")' }
+    @{ Rule='arguments'; Code='$info.UseShellExecute = $true' }
+    @{ Rule='child-owner'; Code='$process.Kill($true)' }
+    @{ Rule='child-owner'; Code='$process.Start()' }
+)
+function Assert-Rejected([string]$Code, [string]$DisabledRule = '') {
+    $rejected = $false
+    try { Assert-QueryAst $Code $DisabledRule } catch { $rejected = $true }
+    Assert-True $rejected "parse-only counterexample rejected (disabled=$DisabledRule)"
+}
+foreach ($witness in $witnesses) {
+    $rule = $witness.Rule
+    Assert-Rejected $witness.Code
+    $killed = $false
+    try { Assert-Rejected $witness.Code $rule } catch { $killed = $true }
+    Assert-True $killed "mutation killed: $rule"
+    Write-Output "MUTATION KILLED: $rule ($($witness.Code))"
+}
+foreach ($bad in @(
+    '$obj = [IO.FileInfo]::new("example"); $obj.IsReadOnly = $true',
+    '[Diagnostics.Process]::Start("example.exe")',
+    'Start-Process example.exe', '$other.Start()', '$other.Kill($true)',
+    '$info.Arguments = "-Command example"', '$info.ArgumentList[0] = "-Command"',
+    '$obj.Prop++', '$info.UseShellExecute = $true',
+    '$info = [Diagnostics.ProcessStartInfo]::new(); $info.FileName = "example.exe"; $info.Arguments = "example"; $process = [Diagnostics.Process]::new(); $process.StartInfo = $info; $process.Start()',
+    $source.Replace('$process = [Diagnostics.Process]::new()', '$process = $existing'),
+    $source.Replace('$process.Kill($true)', '$existing.Kill($true)'),
+    $source.Replace('$null = $process.Start()', '$null = $process.Start(); $process = $existing'),
+    $source.Replace('$null = $process.Start()', '$null = $process.Start(); $alias = $process'),
+    $source.Replace('$process.Kill($true)', '$script:process.Kill($true)'),
+    $source.Replace('$process = [Diagnostics.Process]::new()', 'if ($false) { $process = [Diagnostics.Process]::new() }'),
+    $source.Replace("`$info.ArgumentList.Add('-NoProfile')", "`$info.ArgumentList.Add('-Command')")
+)) { Assert-Rejected $bad }
+Assert-QueryAst $source
 $script:mode = 'ok'; $script:seen = 0
 function Invoke-OpsProcess {
     param([string]$Code, [int]$Seconds)

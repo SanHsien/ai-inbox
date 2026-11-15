@@ -23,11 +23,11 @@ unknown 是實際結果，不作健康推定；可能涉及權限、不可取得
 
 ## 測試與 repo 檢查
 
-測試不需 Pester 或其他第三方套件。使用五種 mock：正常、缺程式、拒絕存取、逾時、偽裝成功的敏感輸出；也實際建立無 profile 的 PowerShell 子程序驗證逾時終止與錯誤遮蔽。AST 逐一檢查主腳本與生成的查詢：命令與方法白名單、精準服務與任務選擇器、powercfg 僅 `/query`、無遠端／憑證讀取、無輸出重新導向。拒絕存取與缺命令另以 mock 放入真實子程序測試 wrapper 的 catch 分支。
+測試不需 Pester 或其他第三方套件。使用五種 mock：正常、缺程式、拒絕存取、逾時、偽裝成功的敏感輸出；也實際建立無 profile 的 PowerShell 子程序驗證逾時終止與錯誤遮蔽。AST 逐一檢查目前主腳本與生成的查詢：命令及完整方法接收者／呼叫白名單、精準服務與任務選擇器、powercfg 僅 `/query`、遠端／憑證相關語法限制與無輸出重新導向；成員賦值僅允許固定啟動設定及結果欄位，建構僅允許無參數的 ProcessStartInfo／Process。FileName 固定為目前 PowerShell 執行檔，ArgumentList 僅允許既有五項呼叫；Start／Kill 另檢查本地建構、未重新綁定／傳出別名、啟動順序與逾時分支。這是目前原始碼及已列反例的回歸契約，並非任意 PowerShell 的安全沙盒或完整資料流證明；不保證命令搜尋路徑不受同名程式遮蔽。拒絕存取與缺命令另以 mock 放入真實子程序測試 wrapper 的 catch 分支。
 
 | 命令 | 結束碼／結果 |
 | --- | --- |
-| `pwsh -NoProfile -File tests/test_inspect_windows_agent_ops.ps1` | 0；706 assertions，五種 mock 模式、真實子程序逾時／錯誤；另證明 AST 守門會拒絕修改服務、powercfg 修改參數、遠端／全量查詢及寫檔方法。 |
+| `pwsh -NoProfile -File tests/test_inspect_windows_agent_ops.ps1` | 0；R2 修正後 1440 assertions，五種 mock 模式、真實子程序逾時／錯誤；只解析的反例涵蓋屬性賦值／遞增／索引、Put／SetValue、New-Object／危險型別建構、任意程序啟動、FileName／引數及非自建程序終止。記憶體內逐組停用六道新限制，13 個對應反例的拒絕斷言全部轉紅（13/13 killed）；測試本身維持綠燈。 |
 | `python tools/build_index.py` | 0；README 已重產。 |
 | `python tools/verify_zhtw_vocab.py --check docs` | 0；繁中詞彙檢查通過。 |
 | `python tools/verify_inbox.py` | 0；125 篇筆記、235 項任務契約通過。 |
