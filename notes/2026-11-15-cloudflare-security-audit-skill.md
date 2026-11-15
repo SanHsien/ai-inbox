@@ -6,7 +6,7 @@ source_platform: "GitHub & Social"
 author: "Cloudflare Security AI Research（社群解讀：工程師米奇）"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: in-progress
 cluster: 3
 cluster_role: "資安稽核Harness"
 short_title: "Cloudflare資安稽核Skill"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：[cloudflare/security-audit-skill](https://github.com/cloudflare/security-audit-skill) ｜ [Cloudflare Engineering Blog: Build your own vulnerability harness](https://blog.cloudflare.com/build-your-own-vulnerability-harness)
 - **發布平台 / 作者**：`GitHub` / `Cloudflare Security AI Research`（查證數據：MIT License、72,408 stars、最後更新 2026-09-14）
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 
 ---
 
@@ -102,9 +102,9 @@ tags:
   - **完成日期**：*（完成時填 YYYY-MM-DD）*
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
 
-- [ ] **`T-20261115-05`**｜**[優先級：低]** 在 agent-advisor 的 Codex 審查契約補上證據缺口與防禦縱深的區分，保留既有三種最終裁決
+- [x] **`T-20261115-05`**｜**[優先級：低]** 在 agent-advisor 的 Codex 審查契約補上證據缺口與防禦縱深的區分，保留既有三種最終裁決
   - **目標範圍**：`SanHsien/agent-advisor` 的 `codex/plugins/agent-advisor-codex/` 現行 reviewer 契約／參考文件與對應測試；新增 `docs/reviewer-evidence-gap-contract.md` 記錄修改檔案及驗收。
   - **具體做法**：先讀目標 repo 指引並定位實際 reviewer 契約，若已有等價規則則補驗收證據、不重造。將證據不足記為 finding 的待驗證狀態，列缺失事實與最小驗證方式；最終 verdict 維持 ship／fix-first／rethink，不讓未知變成安全通過。將已被另一層阻擋、無可證明影響的情況列加固建議。不得順便改模型路由、安裝或修改其他 agent 的全域 Skill。
   - **驗收標準（DoD）**：上述文件列確切修改路徑與 diff；用至少三個固定案例驗證：有可重現邊界缺陷、決定性事實未知、只有防禦縱深建議。檢核未知不會冒充已證實漏洞或無條件 ship；三 verdict 與既有解析／測試契約保持相容。執行目標 repo 相關測試與要求的文件檢核，證據綁定 commit。只推 `SanHsien/agent-advisor`。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15）：SanHsien/agent-advisor 9f7a53c、cecaf62（main，CI 綠燈）。Codex reviewer 契約把證據不足標為 finding 層的 needs_validation，防禦縱深標 hardening；最終 verdict 仍只有 ship／fix-first／rethink；只有 needs_validation 的 fix-first 須交新的 fresh reviewer 重判，主代理不可自驗後回報完成。docs/reviewer-evidence-gap-contract.md 有四個固定案例。Fable 獨立複審兩輪，第二輪通過：6 個 mutation 中 5 個被測試抓到，存活的同義改寫屬字串型契約測試的已知限制。dev_check 沙盒外 PASSED（76 tests）。其他平台是否同步已列入 agent-advisor ROADMAP。

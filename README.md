@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 229 項任務：🔴 未做 11／🟡 進行中 0／🟢 已做 141／⚪ 不做 77
+> 共 229 項任務：🔴 未做 10／🟡 進行中 0／🟢 已做 142／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -51,7 +51,6 @@
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 | `T-20261115-01` | 🔴 未做 | 低 | 唯讀評估 Pi 在 Windows 原生環境的安全、訂閱授權與現有 agent-relay 分工，不安裝或連接帳號 | `SanHsien/ai-inbox` 的 `docs/pi-hybrid-harness-readonly-assessment.md`。 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
 | `T-20261115-03` | 🔴 未做 | 低 | 唯讀比較 LogoLoom 與現有 SVG 產出方式，釐清額度、依賴與安全邊界 | `SanHsien/ai-inbox` 的 `docs/local-svg-logo-options-review.md`。 | [2026-11-15-rikyu-geometric-vector-logo-mcp](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | 2026-11-15 |
-| `T-20261115-05` | 🔴 未做 | 低 | 在 agent-advisor 的 Codex 審查契約補上證據缺口與防禦縱深的區分，保留既有三種最終裁決 | `SanHsien/agent-advisor` 的 `codex/plugins/agent-advisor-codex/` 現行 reviewer 契約／參考文件與對應測試；新增 `docs/reviewer-evidence-gap-contract.md` 記錄修改檔案及驗收。 | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) | 2026-11-15 |
 | `T-20261115-06` | 🔴 未做 | 低 | 修正模型路由文件的證據分級，補上符合現行 solo／delegate／audit／full 的成本示例 | `SanHsien/ai-inbox` 的 `docs/model-burn-rate-routing-matrix.md` 與對應 2026-11-15 多模型筆記。 | [2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | 2026-11-15 |
 | `T-20261115-10` | 🔴 未做 | 低 | 依 OpenAI 一手文件修正上架、驗證與託管成本假設，交付單份可行性檢核表 | `SanHsien/ai-inbox` 的 `docs/openai-plugin-submission-feasibility.md` 與對應 ChatGPT Apps 筆記。 | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | 2026-11-15 |
 | `T-20261115-11` | 🔴 未做 | 低 | 在 video-autopilot-kit 以合成素材實作本機 Audio-First 綠幕合成切片，驗證時長、畫面與音量 | `SanHsien/video-autopilot-kit`；預定新增 `src/audio_first_compositor.py`、`tests/test_audio_first_compositor.py`、`docs/audio-first-compositor-validation.md`。認領時先依該 repo 結構確認名稱，若需改路徑須先揭露。 | [2026-11-15-audio-first-greenscreen-ai-commercial-pipeline](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | 2026-11-15 |
@@ -60,7 +59,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 141 項）</summary>
+<details><summary>展開查看已完成任務（共 142 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -205,6 +204,7 @@
 | `T-20261114-01` | 2026-11-14 | 將 GPT-6.1 Terra 額度、credits 單價與 Fast 倍率核實結果增補進模型速查表 | `docs/model-burn-rate-routing-matrix.md` 新增第 9 節（9.1–9.6，約 66 行）。數字取自 2026-11-14 讀取的官方頁：Terra 35–285 對 Sol 15–160、Terra credits 25/1.25/125 對 Sol 50/2.5/250、Fast 2.5x／2x。線索中「額度增加」依官方原文「Overall Work and Codex plan limits are unchanged」標為措辭不精確。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
 | `T-20261114-04` | 2026-11-14 | `tools/verify_inbox.py` 新增檢查：筆記裡沒有任務 ID 的待辦核取方塊一律報錯，並清掉 11-11 至 11-14 六篇筆記的殘留清單 | 完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
 | `T-20261114-05` | 2026-11-15 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | 完成（2026-11-15）：Antigravity 初版 2044f9b 經獨立審查判先修，Codex 修正為 88addb6、0cabfe3（SanHsien/agent-relay main，CI 與 CodeQL 綠燈）。recommend 必須是選項代號、answer 只接受 question、選項須在清單內、已答題不可重答、可一次回答多題且任一失敗整批不送；另補 note 禁止換行、選項代號拒絕不可見字元、SPEC 中英補 ask／answer 流程與舊格式升級說明。整合者沙盒外實跑：Python 3.14 與 3.11 各 485 tests OK、doc parity PASS、links 0 broken、mutation 25/25 killed；Fable 複審四項必修全部通過。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
+| `T-20261115-05` | 2026-11-15 | 在 agent-advisor 的 Codex 審查契約補上證據缺口與防禦縱深的區分，保留既有三種最終裁決 | 完成（2026-11-15）：SanHsien/agent-advisor 9f7a53c、cecaf62（main，CI 綠燈）。Codex reviewer 契約把證據不足標為 finding 層的 needs_validation，防禦縱深標 hardening；最終 verdict 仍只有 ship／fix-first／rethink；只有 needs_validation 的 fix-first 須交新的 fresh reviewer 重判，主代理不可自驗後回報完成。docs/reviewer-evidence-gap-contract.md 有四個固定案例。Fable 獨立複審兩輪，第二輪通過：6 個 mutation 中 5 個被測試抓到，存活的同義改寫屬字串型契約測試的已知限制。dev_check 沙盒外 PASSED（76 tests）。其他平台是否同步已列入 agent-advisor ROADMAP。 | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) |
 
 </details>
 
@@ -410,7 +410,7 @@
 | 2026-11-15 | 🔴 | [免剪輯軟體 17 秒 AI 商業廣告管線：Audio-First 節奏表、綠幕角色解耦與 FFmpeg Chroma Key 合成評估](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | `ai-video`, `audio-first`, `chroma-key` | 0 / 1 |
 | 2026-11-15 | ⚪ | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 0（+1 不做） |
 | 2026-11-15 | 🔴 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 0 / 1 |
-| 2026-11-15 | 🔴 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 0 / 2 |
+| 2026-11-15 | 🟡 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 1 / 2 |
 | 2026-11-15 | 🔴 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 0 / 1（+1 不做） |
 | 2026-11-15 | 🔴 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 0 / 1 |
 | 2026-11-15 | 🔴 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 0 / 1 |
