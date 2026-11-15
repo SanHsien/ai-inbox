@@ -39,14 +39,13 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 227 項任務：🔴 未做 14／🟡 進行中 1／🟢 已做 140／⚪ 不做 72
+> 共 227 項任務：🔴 未做 14／🟡 進行中 0／🟢 已做 141／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261114-05` | 🟡 進行中 | 高 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | `C:\GitHub\agent-relay`（`ROADMAP.md`、`SPEC.md`、`SPEC.en.md`、`agent_relay/envelope.py`、`agent_relay/cli.py`、`tests/`） | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | 2026-11-14 |
 | `T-20261115-08` | 🔴 未做 | 高 | 建立《AI-Native 一人接案營運總綱》（`docs/ai-agency-delivery-playbook.md`），串聯現有診斷、建站、審查與維運範本成端到端流水線 | `C:\GitHub\ai-inbox\docs\ai-agency-delivery-playbook.md`（參考並連結現有 `templates/client-requirement-decomposition-prompt.md`、`templates/fullstack-website-builder-skill.md`、`docs/production-smoke-security-checklist.md`、`templates/feedback-desk-agent-prompt.md`） | [2026-11-15-ai-native-agency-retainer-and-org-playbook](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | 2026-11-15 |
 | `T-20261115-01` | 🔴 未做 | 中 | 在 Windows 11 原生環境沙盒安裝並實測 `earendil-works/pi`，驗證 TUI、`powershell` 工具與 `openai-codex` / `anthropic` provider 相容性，並定案與 `agent-relay` 的分工邊界 | 本機測試環境（Windows Terminal + `C:\GitHub\_sandbox\pi-test`）與 `C:\GitHub\ai-inbox` 評估紀錄 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
 | `T-20261115-04` | 🔴 未做 | 中 | 審查並沙盒實測 `cloudflare/security-audit-skill`（驗證零依賴 `.cjs` 測試與 Windows 11 `quick` 模式靜態稽核） | `C:\GitHub\_sandbox\security-audit-skill`（先唯讀審查）與個人測試目標 repo（如 `SanHsien/agent-relay` 局部 scoped `quick` 試跑） | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) | 2026-11-15 |
@@ -64,7 +63,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 140 項）</summary>
+<details><summary>展開查看已完成任務（共 141 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -208,6 +207,7 @@
 | `T-20261108-06` | 2026-11-14 | 新增 `tools/check_external_refs.py`：掃描 `notes/` 內的 GitHub repo 與 arXiv 連結，確認存在、是否改名或封存 | 完成（2026-11-14）：tools/check_external_refs.py＋tests（404、改名、封存、私有略過、arXiv、壞快取、gh 輸出 UTF-8 解碼等）。實跑 94 個連結：92 OK，2 個 404 是筆記刻意記錄的「尚未 Fork」，1 改名、1 封存；證據 docs/evidence/external-refs-check-2026-11.md。整合者實跑時抓到 gh 輸出以 cp950 解碼而崩潰的 bug，已修並加回歸測試。 | [2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) |
 | `T-20261114-01` | 2026-11-14 | 將 GPT-6.1 Terra 額度、credits 單價與 Fast 倍率核實結果增補進模型速查表 | `docs/model-burn-rate-routing-matrix.md` 新增第 9 節（9.1–9.6，約 66 行）。數字取自 2026-11-14 讀取的官方頁：Terra 35–285 對 Sol 15–160、Terra credits 25/1.25/125 對 Sol 50/2.5/250、Fast 2.5x／2x。線索中「額度增加」依官方原文「Overall Work and Codex plan limits are unchanged」標為措辭不精確。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
 | `T-20261114-04` | 2026-11-14 | `tools/verify_inbox.py` 新增檢查：筆記裡沒有任務 ID 的待辦核取方塊一律報錯，並清掉 11-11 至 11-14 六篇筆記的殘留清單 | 完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
+| `T-20261114-05` | 2026-11-15 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | 完成（2026-11-15）：Antigravity 初版 2044f9b 經獨立審查判先修，Codex 修正為 88addb6、0cabfe3（SanHsien/agent-relay main，CI 與 CodeQL 綠燈）。recommend 必須是選項代號、answer 只接受 question、選項須在清單內、已答題不可重答、可一次回答多題且任一失敗整批不送；另補 note 禁止換行、選項代號拒絕不可見字元、SPEC 中英補 ask／answer 流程與舊格式升級說明。整合者沙盒外實跑：Python 3.14 與 3.11 各 485 tests OK、doc parity PASS、links 0 broken、mutation 25/25 killed；Fable 複審四項必修全部通過。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
 
 </details>
 
@@ -401,7 +401,7 @@
 | 2026-11-13 | ⚪ | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
 | 2026-11-14 | 🟡 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 1 / 2（+1 不做） |
-| 2026-11-14 | 🟡 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 1 / 2 |
+| 2026-11-14 | 🟢 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 2 / 2 |
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 | 2026-11-15 | 🔴 | [AI-Native 一人接案公司：從賣工時轉向「建置＋月費維運」與多角色可重複服務系統](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | `ai-agency`, `freelance`, `retainer-model` | 0 / 2 |
 | 2026-11-15 | ⚪ | [Amazon 亞馬遜聯盟分潤與台灣電商（蝦皮／酷澎／聯盟網／momo）分潤計畫查證評估](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md) | `affiliate-marketing`, `amazon-associates`, `shopee-affiliate` | 0 / 0 |
