@@ -36,7 +36,7 @@ tags:
 
 在 AI 開發者社群中，長上下文（Long-Context）程式碼分析往往伴隨著高昂的 Token 成本與嚴格的速率限制（Rate Limits）。2026 年 8 月，一個代號為 `ox-alpha` 的未具名神祕模型悄然上線 OpenRouter 與開源終端 OpenCode，迅速在開發者圈引發轟動：
 1. **社群狂熱與海量流量**：一週內在 OpenRouter 處理了數兆 Token，在各項編程排行榜上名列前茅；
-2. **極致硬規格**：具備 **100 萬 Token（1M Context Window）超長上下文**、原生支援文字/圖片/視頻多模態，且針對長程軟體工程（Long-horizon SWE）與 Agentic 工作流深度對齊；
+2. **極致硬規格**：具備 **100 萬 Token（1M Context Window）超長上下文**、原生支援文字/圖片/影片多模態，且針對長程軟體工程（Long-horizon SWE）與 Agentic 工作流深度對齊；
 3. **身分揭曉與開源開放**：8 月 26 日官方正式揭牌，證實 `ox-alpha` 為智譜 AI（Z.ai / Zhipu AI）旗下的 **GLM-5.3-Flash**，並將模型權重以 **MIT 協議**完全開源至 Hugging Face。
 
 ```

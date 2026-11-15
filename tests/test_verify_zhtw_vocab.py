@@ -22,6 +22,101 @@ from verify_zhtw_vocab import (
 
 
 class TestVerifyZhtwVocab(unittest.TestCase):
+    def assert_protected(self, raw):
+        self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), raw)
+        self.assertEqual(scan_degraded_vocab(raw), [])
+
+    def test_assessment_section_six_counterexamples(self):
+        # Every row of the section 6 counterexample probe, including the explicit
+        # fallback: unquoted product names still have no entity protection.
+        cases = [
+            ("「數據庫」是引用原話。", "「數據庫」是引用原話。"),
+            ("[來源](https://example.org/數據庫)",
+             "[來源](https://example.org/數據庫)"),
+            ("產品名：數據庫工具。", "產品名：資料庫工具。"),
+            ("這個服務器支持中文。", "這個伺服器支持中文。"),
+            ("渲染時會打印日誌。", "渲染時會輸出日誌。"),
+            ("`數據庫`\n```text\n數據庫\n```", "`數據庫`\n```text\n數據庫\n```"),
+        ]
+        for raw, expected in cases:
+            with self.subTest(raw=raw):
+                self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), expected)
+                self.assertEqual(scan_degraded_vocab(expected), [])
+
+    def test_chinese_quotes_protect_original_words(self):
+        for raw in ["產品名「服務器助手」", "『數據庫』", "「外『數據庫』內」",
+                    "「數據庫\n源代碼」", "「數據庫與 `代碼`」"]:
+            with self.subTest(raw=raw):
+                self.assert_protected(raw)
+        self.assertEqual(
+            apply_zhtw_vocab("「數據庫」及數據庫", skip_code=True),
+            "「數據庫」及資料庫",
+        )
+
+    def test_markdown_destinations_protect_relative_nested_and_escaped_paths(self):
+        for raw in ["[來源](docs/數據庫.md)",
+                    "[來源](https://example.org/數據庫_(軟件))",
+                    r"![圖](docs/數據庫\(軟件\).png)"]:
+            with self.subTest(raw=raw):
+                self.assert_protected(raw)
+        self.assertEqual(
+            apply_zhtw_vocab("[數據庫](docs/數據庫.md)與數據庫", skip_code=True),
+            "[資料庫](docs/數據庫.md)與資料庫",
+        )
+
+    def test_bare_urls_protect_path_query_fragment(self):
+        for raw in ["https://example.org/數據庫?軟件=硬件#視頻",
+                    "<https://example.org/數據庫>", "www.example.org/數據庫"]:
+            with self.subTest(raw=raw):
+                self.assert_protected(raw)
+        self.assertEqual(
+            apply_zhtw_vocab("https://example.org/數據庫。數據庫", skip_code=True),
+            "https://example.org/數據庫。資料庫",
+        )
+        self.assertEqual(
+            apply_zhtw_vocab("https:// 數據庫 www. 數據庫", skip_code=True),
+            "https:// 資料庫 www. 資料庫",
+        )
+
+    def test_candidate_rules_have_positive_and_protected_negative_cases(self):
+        for raw, expected in [("啟動服務器", "啟動伺服器"),
+                              ("安裝軟件", "安裝軟體"),
+                              ("更新硬件", "更新硬體"),
+                              ("短視頻教學", "短影音教學"),
+                              ("視頻教學", "影片教學")]:
+            with self.subTest(raw=raw):
+                self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), expected)
+                self.assertTrue(scan_degraded_vocab(raw))
+                self.assert_protected(f"「{raw}」 `短視頻` https://example.org/{raw}")
+                self.assertEqual(apply_zhtw_vocab(expected, skip_code=True), expected)
+
+    def test_long_video_rule_wins_in_transform_and_findings(self):
+        raw = "短視頻教學與視頻教學"
+        self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), "短影音教學與影片教學")
+        self.assertEqual(
+            [(h["term"], h["replacement"]) for h in scan_degraded_vocab("短視頻教學")],
+            [("短視頻", "短影音")],
+        )
+
+    def test_existing_mappings_and_semantic_exclusions(self):
+        self.assertEqual(
+            apply_zhtw_vocab("源代碼 默認值 渲染時會打印", skip_code=True),
+            "原始碼 預設值 渲染時會輸出",
+        )
+        for raw in ["支持 UTF-8 編碼、支持中文、支持開源社群、支持候選人",
+                    "完成,請重試；4,800 元；a,b；Hello, world",
+                    "最終成品：[產品名稱]；templates/ 的 [產品名稱]",
+                    "孤立的 turn0search0；教學中的 `turn0search0`"]:
+            with self.subTest(raw=raw):
+                self.assert_protected(raw)
+
+    def test_protected_spans_do_not_join_words_or_lose_line_numbers(self):
+        raw = "源「原話」代碼\n「數據庫」與數據庫\n```text\n數據庫\n```\n默認值"
+        self.assertEqual(
+            [(h["line"], h["term"]) for h in scan_degraded_vocab(raw)],
+            [(2, "數據庫"), (6, "默認值")],
+        )
+
     def test_repairs_opencc_second_pass_degradations(self) -> None:
         degraded = (
             "這個連線埠設定隻影響本地服務。請先選一個類別型，確認型別別與"

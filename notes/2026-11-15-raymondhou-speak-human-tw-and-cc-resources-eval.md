@@ -64,4 +64,4 @@ tags:
   - **具體做法**：固定來源 commit，核對 LICENSE、詞表、patterns、保護清單與 benchmark；修正過度宣稱。逐列比較詞表與 38 類規則，記錄覆蓋、缺口、衝突、候選正例／反例與採納裁決；明示公開 repo 與 `SanHsien/agent-assets`（私有）的複製條件。不執行上游程式，不改檢查器、全域設定或私有 repo。
   - **驗收標準（DoD）**：產出 `docs/speak-human-tw-assessment.md`，含固定 SHA／來源連結、授權與未查證權利範圍、47 組詞表及 38 類逐列對照、既有原始碼／測試證據、具體候選規則與反例、明確裁決及未實測項目。執行 `python tools/build_index.py`、`python tools/verify_zhtw_vocab.py --check notes docs`、`python tools/verify_inbox.py` 並回報各結束碼；任何失敗不得宣稱通過。
   - **完成日期**：2026-11-15
-  - **實作紀錄 / 證據**：完成（2026-11-15）：docs/speak-human-tw-assessment.md，固定 Raymondhou0917/speak-human-tw 14885da（MIT），47 組詞表與 38 類規則逐列對照 tools/verify_zhtw_vocab.py。實測引號、URL、專名會被改寫，服務器、支持目前沒有規則。裁決：先補保護範圍再試候選規則，不整包加入全域替換；後續工作已列入 ROADMAP。筆記撤回「安全性極高」、更正 claude-code-resources 授權為 CC BY-NC-SA 4.0。Codex 撰寫，Fable 獨立複審通過；未執行上游程式，檢查器本身未改。
+  - **實作紀錄 / 證據**：完成（2026-11-15）：docs/speak-human-tw-assessment.md，固定 Raymondhou0917/speak-human-tw 14885da（MIT），47 組詞表與 38 類規則逐列對照 tools/verify_zhtw_vocab.py。實測引號、URL、專名會被改寫，`服務器`、`支持` 目前沒有規則。裁決：先補保護範圍再試候選規則，不整包加入全域替換；後續工作已列入 ROADMAP。筆記撤回「安全性極高」、更正 claude-code-resources 授權為 CC BY-NC-SA 4.0。Codex 撰寫，Fable 獨立複審通過；未執行上游程式，檢查器本身未改。

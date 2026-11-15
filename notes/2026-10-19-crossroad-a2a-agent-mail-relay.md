@@ -128,7 +128,7 @@ tags:
        "to": "gemini-research@cloud",
        "reply_to": "claude-code@mac-mini/inbox",
        "intent": "youtube_deep_research",
-       "context": "正在調研視頻動效程式庫...",
+       "context": "正在調研影片動效程式庫...",
        "payload": {
          "query": "Remotion vs Motion Canvas 2026 performance",
          "required_fields": ["video_url", "summary", "benchmark_metrics"]

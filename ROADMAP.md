@@ -10,11 +10,11 @@ public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 詞彙檢查器先補保護範圍，再試候選規則 | `docs/speak-human-tw-assessment.md` 第 6 節實測：一般中文引號、Markdown 連結網址、產品名都會被 `verify_zhtw_vocab.py` 改寫；`服務器`、`支持` 目前沒有規則 | 先讓引號、URL、專名不被改寫並補測試（第 6 節反例表逐列成為回歸測試），再逐條加 `服務器→伺服器`、`軟件→軟體`、`短視頻`先於`視頻` 等候選；每條都要有正例與反例測試，並跑 `--verify-idempotent`，全庫 `--check` 不新增誤判 | Codex | [評估第 6 節](docs/speak-human-tw-assessment.md)（T-20261115-16） |
 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
+| 詞彙檢查器：未加引號的專名保護、`支持→支援` 技術受詞白名單 | 實際出現專名被誤改（例如產品名含 `數據庫`），或需要擋 `支持 UTF-8` 這類用詞 | 先寫出誤改實例的回歸測試再改 `tools/verify_zhtw_vocab.py`；`支持` 只在白名單受詞前替換，`支持開源社群` 等反例不變；`--verify-idempotent --check notes docs templates README.md` 通過 | Codex | [評估第 6 節](docs/speak-human-tw-assessment.md)；引號、URL 保護與五條候選規則已於 2026-11-15 完成 |
 | pii-guard 隔離動態驗證（採納條件） | 固定版本雙重靜態審計完成、SkillSpector 入口恢復，且另獲隔離實測授權 | 依評估第 8 節，只用一組假資料驗證 Windows ACL、離線／超時、Edit 與載入／既有 hook 相容性；遇停止條件即停，不改全域設定 | 維護者另行指派 | [唯讀評估](docs/pii-guard-readonly-assessment.md)（T-20261115-17，未結案） |
 | 重新確認 `av>=14,<17` 固定版本是否還需要 | `faster-whisper` 發布高於 1.2.1 的版本，或維護者在新機器重裝 `video_transcript` 環境 | 在乾淨 venv 以最新 `faster-whisper` 安裝並跑 `tools/video_transcript.py` 一次；依結果更新或刪除 `docs/video-transcript-howto.md:35` 與 `:53` 的 pin，兩處一致 | Claude Sonnet | `docs/video-transcript-howto.md:35`、`:53`；freshness 深掃報告（2026-10-28）「未處理／留意」 |
 | 新增依賴宣告檔時改用 dependency-freshness workflow | repo 新增 requirements／pyproject，或 `assets/inbox-band-mod` 補上 package.json | 加上含 `check_dependency_freshness` 的 workflow，並在同一 commit 刪掉 `.github/dependabot.yml:3` 的 `fleet-waiver`；`python -m fleet_ops audit`（repo-fleet-ops）該 repo freshness 欄不再是 `w` | Claude Sonnet | `.github/dependabot.yml:3`；freshness 深掃報告（2026-10-28） |
