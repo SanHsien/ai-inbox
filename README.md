@@ -48,7 +48,7 @@
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261115-17` | 🔴 未做 | 中 | 在 Windows 11 原生環境沙盒實測 `danyuchn/pii-guard`（CLI 去識別化與 `claude-code-mod` 搭配 `PII_GUARD_HOOKD_HOME` 驗證） | `C:\GitHub\_sandbox\pii-guard`（唯讀／測試）與本機 Claude Code 外掛測試環境 | [2026-11-15-danyuchn-pii-guard-claude-mod-eval](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
-| `T-20261115-16` | 🔴 未做 | 低 | 審查 `Raymondhou0917/speak-human-tw` 之台灣在地化詞表與 38 種 AI 痕跡規則，評估補強至 `verify_zhtw_vocab.py`／`agent-assets` | `C:\GitHub\ai-inbox\tools\verify_zhtw_vocab.py`、`verify_no_slop.py` 與 `C:\GitHub\agent-assets\skills\` | [2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) | 2026-11-15 |
+| `T-20261115-16` | 🔴 未做 | 低 | 唯讀評估 speak-human-tw 的授權、47 組詞表與 38 類痕跡，不修改檢查器或安裝 Skill | 本筆記與 `docs/speak-human-tw-assessment.md`；對照 `tools/verify_zhtw_vocab.py` 及其既有測試，均只讀。 | [2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
