@@ -425,6 +425,7 @@
 | 2026-11-15 | ⚪ | [DocHUB（home-999.com/dochub）離線辦公工具包查證：非開源二進位實況與開源替代評估](./notes/2026-11-15-dochub-offline-toolkit-security-eval.md) | `security-audit`, `freeware`, `pdf-tools` | 0 / 0 |
 | 2026-11-15 | 🔴 | [Higgsfield MCP × Opus 5.5 AI 影片實戰覆盤：全託管失敗原因與人類導演級對策檢查單](./notes/2026-11-15-higgsfield-mcp-opus55-video-review-report.md) | `higgsfield-mcp`, `ai-video`, `opus-5-5` | 0 / 1 |
 | 2026-11-15 | 🔴 | [胡嘉璽 24×7 地端多機 Agent 實戰架構：Remote Control、Herdr + Tailscale、Git 技能同步與 Windows 11 落地評估](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) | `24x7-agent`, `remote-control`, `herdr` | 0 / 2 |
+| 2026-11-15 | ⚪ | [4×4 關鍵幀動作表（16 格舞步圖）＋雙圖參照驅動 120 BPM 角色舞蹈影片 Prompt 模式](./notes/2026-11-15-keyframe-grid-sheet-dance-video-prompt.md) | `ai-video`, `keyframe-sheet`, `sprite-grid` | 0 / 0 |
 | 2026-11-15 | ⚪ | [killkli/minimax-h3-lora-colab-skill：透過 Google Colab CLI 驅動遠端 A100 訓練 LoRA 之 Skill 架構評估](./notes/2026-11-15-minimax-h3-lora-colab-skill-eval.md) | `skill`, `google-colab`, `lora-training` | 0 / 0 |
 | 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |
 | 2026-11-15 | 🟢 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 1 / 1 |
@@ -478,6 +479,7 @@
 - 綠幕合成廣告管線：[Audio-First綠幕廣告管線](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md)
 - 前端WebGPU修圖：[WebGPU修圖Prompt評估](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md)
 - HiggsMCP覆盤：[HiggsfieldMCP影片覆盤](./notes/2026-11-15-higgsfield-mcp-opus55-video-review-report.md)
+- 16格關鍵幀舞步：[16格舞步表轉影片Prompt](./notes/2026-11-15-keyframe-grid-sheet-dance-video-prompt.md)
 - Colab驅動LoRA：[Colab驅動LoRA訓練Skill](./notes/2026-11-15-minimax-h3-lora-colab-skill-eval.md)
 - 證據導向視覺Skill：[PhotoRisoPoster海報Skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md)
 - 前端Glitch視覺特效：[POUND0423故障特效評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md)
