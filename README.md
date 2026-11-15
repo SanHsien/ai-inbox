@@ -634,6 +634,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/claude-security-guidance-windows-setup.md`](./docs/claude-security-guidance-windows-setup.md) | Claude Code security-guidance 外掛 Windows 11 安裝評估、配置驗證與三層防禦整合報告 |
 | [`docs/cli-anything-to-skill-protocol.md`](./docs/cli-anything-to-skill-protocol.md) | Agent-Native CLI 封裝與自動生成 Skill 標準協議 (CLI-Anything to Skill Protocol) |
 | [`docs/cloudflare-security-audit-readonly-review.md`](./docs/cloudflare-security-audit-readonly-review.md) | Cloudflare security-audit-skill 唯讀審查 |
+| [`docs/codex-plugin-cc-readonly-assessment.md`](./docs/codex-plugin-cc-readonly-assessment.md) | codex-plugin-cc 唯讀評估：Windows 權限與 hook 邊界 |
 | [`docs/codex-skills-agents-bootstrap-guide.md`](./docs/codex-skills-agents-bootstrap-guide.md) | Codex／Claude Code／Antigravity：AGENTS.md 起步與 Skill 預算控制手冊 |
 | [`docs/codync-agent-fallback-and-mobile-relay-spec.md`](./docs/codync-agent-fallback-and-mobile-relay-spec.md) | Codync 解析：ACP 橋接、Agent 容錯降級與 E2EE 遠端審批規格 |
 | [`docs/correction-queue-evaluation.md`](./docs/correction-queue-evaluation.md) | 評估：在共用 SSOT 倉庫引進「糾正審查佇列」（correction-queue.jsonl） |
