@@ -6,7 +6,7 @@ source_platform: "Social / Threads"
 author: "匿名社群分享"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 2
 cluster_role: "綠幕合成廣告管線"
 short_title: "Audio-First綠幕廣告管線"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：`N/A`（社群貼文分享「不開傳統剪輯軟體，由 Claude Opus 5.5 擔任導演編排並合成 17 秒商業廣告」）
 - **發布平台 / 作者**：`社群平台` / `匿名作者`
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md`](./2026-10-18-awesome-opus5-5-videos-prompt-zoo.md)（Remotion / 程式化影片生成）
   - [`notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md`](./2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md)（數位人與 ElevenLabs 配音工作流）
@@ -72,9 +72,9 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-11`**｜**[優先級：低]** 在 video-autopilot-kit 以合成素材實作本機 Audio-First 綠幕合成切片，驗證時長、畫面與音量
+- [x] **`T-20261115-11`**｜**[優先級：低]** 在 video-autopilot-kit 以合成素材實作本機 Audio-First 綠幕合成切片，驗證時長、畫面與音量
   - **目標範圍**：`SanHsien/video-autopilot-kit`；預定新增 `src/audio_first_compositor.py`、`tests/test_audio_first_compositor.py`、`docs/audio-first-compositor-validation.md`。認領時先依該 repo 結構確認名稱，若需改路徑須先揭露。
   - **具體做法**：先確認現有合成模組是否可重用，僅補最小缺口。輸入本機配音、綠幕與背景素材，以實際音訊時長建立時間軸；濾鏡參數包含 chromakey、despill 與 BGM ducking。以本機產生的色塊、測試音與已授權字型驗證，不呼叫 ElevenLabs／Kling／Hailuo，不增加付費或第三方安裝。
   - **驗收標準（DoD）**：固定 fps，ffprobe 顯示輸出時長與目標音訊相差不超過一格；同時具有預期的影音 stream、解析度與可解碼格式。對合成圖的已知前景／背景取樣建立容差檢查，BGM ducking 用固定測試音驗證旁白區間相對非旁白區間至少降低 6 dB。錯誤輸入明確失敗且不覆寫原檔。上述報告保存命令、版本、結果、素材來源與限制；合成影片留 repo 外，不將真實影音或帳號資料提交。執行目標 repo 相關測試及必要 gate，缺 ffmpeg／隔離或依賴時標未完成，不偷偷安裝。只推 `SanHsien/video-autopilot-kit`。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15，SanHsien/video-autopilot-kit main f3d335f、4484386，CI 綠）：src/audio_first_compositor.py＋23 項測試＋docs/audio-first-compositor-validation.md。ffmpeg 9.0.2 實測：時長差 0.61 格、h264＋aac 可完整解碼、前景 (252,0,0)、背景 (0,0,254)、ducking 28.87 dB；帶 alpha 的綠幕會拒絕；despill 與 duck_ratio 有測試守住；不覆寫輸出。只用本機合成素材，不呼叫雲端服務。Codex 初稿在沙盒內無法執行 ffmpeg，改由 Fable 完成實測；Fable 獨立複審通過，建議項另修。

@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 229 項任務：🔴 未做 10／🟡 進行中 0／🟢 已做 142／⚪ 不做 77
+> 共 229 項任務：🔴 未做 7／🟡 進行中 0／🟢 已做 145／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -51,15 +51,12 @@
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 | `T-20261115-01` | 🔴 未做 | 低 | 唯讀評估 Pi 在 Windows 原生環境的安全、訂閱授權與現有 agent-relay 分工，不安裝或連接帳號 | `SanHsien/ai-inbox` 的 `docs/pi-hybrid-harness-readonly-assessment.md`。 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
 | `T-20261115-03` | 🔴 未做 | 低 | 唯讀比較 LogoLoom 與現有 SVG 產出方式，釐清額度、依賴與安全邊界 | `SanHsien/ai-inbox` 的 `docs/local-svg-logo-options-review.md`。 | [2026-11-15-rikyu-geometric-vector-logo-mcp](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | 2026-11-15 |
-| `T-20261115-06` | 🔴 未做 | 低 | 修正模型路由文件的證據分級，補上符合現行 solo／delegate／audit／full 的成本示例 | `SanHsien/ai-inbox` 的 `docs/model-burn-rate-routing-matrix.md` 與對應 2026-11-15 多模型筆記。 | [2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | 2026-11-15 |
-| `T-20261115-10` | 🔴 未做 | 低 | 依 OpenAI 一手文件修正上架、驗證與託管成本假設，交付單份可行性檢核表 | `SanHsien/ai-inbox` 的 `docs/openai-plugin-submission-feasibility.md` 與對應 ChatGPT Apps 筆記。 | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | 2026-11-15 |
-| `T-20261115-11` | 🔴 未做 | 低 | 在 video-autopilot-kit 以合成素材實作本機 Audio-First 綠幕合成切片，驗證時長、畫面與音量 | `SanHsien/video-autopilot-kit`；預定新增 `src/audio_first_compositor.py`、`tests/test_audio_first_compositor.py`、`docs/audio-first-compositor-validation.md`。認領時先依該 repo 結構確認名稱，若需改路徑須先揭露。 | [2026-11-15-audio-first-greenscreen-ai-commercial-pipeline](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | 2026-11-15 |
 | `T-20261115-14` | 🔴 未做 | 低 | 視需求將 `photo-riso-poster`（精簡純 `SKILL.md`）收錄至 `SanHsien/agent-assets` 並以 Antigravity `image-generator` 實測 1 組照片／文字主題海報 | `C:\GitHub\agent-assets\skills\`（或個人本地 `~/.gemini/config/skills/`） | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | 2026-11-15 |
 | `T-20261115-15` | 🔴 未做 | 低 | 在本機 Claude Code / Claude Desktop 評估安裝 `openai/codex-plugin-cc`，驗證 `/codex:adversarial-review` 與既有 `ai-review`／`agent-relay` 之分工邊界 | 本機 Claude Code 插件環境與 `C:\GitHub\ai-inbox\docs\` | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 142 項）</summary>
+<details><summary>展開查看已完成任務（共 145 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -205,6 +202,9 @@
 | `T-20261114-04` | 2026-11-14 | `tools/verify_inbox.py` 新增檢查：筆記裡沒有任務 ID 的待辦核取方塊一律報錯，並清掉 11-11 至 11-14 六篇筆記的殘留清單 | 完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
 | `T-20261114-05` | 2026-11-15 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | 完成（2026-11-15）：Antigravity 初版 2044f9b 經獨立審查判先修，Codex 修正為 88addb6、0cabfe3（SanHsien/agent-relay main，CI 與 CodeQL 綠燈）。recommend 必須是選項代號、answer 只接受 question、選項須在清單內、已答題不可重答、可一次回答多題且任一失敗整批不送；另補 note 禁止換行、選項代號拒絕不可見字元、SPEC 中英補 ask／answer 流程與舊格式升級說明。整合者沙盒外實跑：Python 3.14 與 3.11 各 485 tests OK、doc parity PASS、links 0 broken、mutation 25/25 killed；Fable 複審四項必修全部通過。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
 | `T-20261115-05` | 2026-11-15 | 在 agent-advisor 的 Codex 審查契約補上證據缺口與防禦縱深的區分，保留既有三種最終裁決 | 完成（2026-11-15）：SanHsien/agent-advisor 9f7a53c、cecaf62（main，CI 綠燈）。Codex reviewer 契約把證據不足標為 finding 層的 needs_validation，防禦縱深標 hardening；最終 verdict 仍只有 ship／fix-first／rethink；只有 needs_validation 的 fix-first 須交新的 fresh reviewer 重判，主代理不可自驗後回報完成。docs/reviewer-evidence-gap-contract.md 有四個固定案例。Fable 獨立複審兩輪，第二輪通過：6 個 mutation 中 5 個被測試抓到，存活的同義改寫屬字串型契約測試的已知限制。dev_check 沙盒外 PASSED（76 tests）。其他平台是否同步已列入 agent-advisor ROADMAP。 | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) |
+| `T-20261115-06` | 2026-11-15 | 修正模型路由文件的證據分級，補上符合現行 solo／delegate／audit／full 的成本示例 | 完成（2026-11-15，commit 87d0d1a、442d073）：docs/model-burn-rate-routing-matrix.md 第 0 節證據分五級，新增第 10 節（10.2 把 5 倍、3.5 倍、12 倍、省 60–70% 拆成不同性質的數字；10.3 路由與配對照抄已安裝 orchestration SKILL.md；10.4 solo／delegate／audit 三個書面案例加 full 例外；10.5 成本公式；10.6 換 session 前核對清單），筆記同步改標社群宣稱。未重跑 benchmark，第 9 節沒動。Fable 獨立複審後修 2 處必修。 | [2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) |
+| `T-20261115-10` | 2026-11-15 | 依 OpenAI 一手文件修正上架、驗證與託管成本假設，交付單份可行性檢核表 | 完成（2026-11-15，commit 68d71fe、4b9098e）：docs/openai-plugin-submission-feasibility.md 22 列檢核表，逐項附 developers.openai.com 與 Cloudflare 官方頁、查證日 2026-11-15。結論是暫不開發：只有少數 plugin 獲加強曝光且不能申請；plugin 只能做實體商品交易，不能賣訂閱；唯一候選 public_apis_indexer 沒有對外需求；Workers Free 有額度上限，不是零成本。Fable 獨立複審抽查 15 項一手來源全部相符。 | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) |
+| `T-20261115-11` | 2026-11-15 | 在 video-autopilot-kit 以合成素材實作本機 Audio-First 綠幕合成切片，驗證時長、畫面與音量 | 完成（2026-11-15，SanHsien/video-autopilot-kit main f3d335f、4484386，CI 綠）：src/audio_first_compositor.py＋23 項測試＋docs/audio-first-compositor-validation.md。ffmpeg 9.0.2 實測：時長差 0.61 格、h264＋aac 可完整解碼、前景 (252,0,0)、背景 (0,0,254)、ducking 28.87 dB；帶 alpha 的綠幕會拒絕；despill 與 duck_ratio 有測試守住；不覆寫輸出。只用本機合成素材，不呼叫雲端服務。Codex 初稿在沙盒內無法執行 ffmpeg，改由 Fable 完成實測；Fable 獨立複審通過，建議項另修。 | [2026-11-15-audio-first-greenscreen-ai-commercial-pipeline](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) |
 
 </details>
 
@@ -407,12 +407,12 @@
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 | 2026-11-15 | ⚪ | [AI-Native 一人接案公司：從賣工時轉向「建置＋月費維運」與多角色可重複服務系統](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | `ai-agency`, `freelance`, `retainer-model` | 0 / 0（+2 不做） |
 | 2026-11-15 | ⚪ | [Amazon 亞馬遜聯盟分潤與台灣電商（蝦皮／酷澎／聯盟網／momo）分潤計畫查證評估](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md) | `affiliate-marketing`, `amazon-associates`, `shopee-affiliate` | 0 / 0 |
-| 2026-11-15 | 🔴 | [免剪輯軟體 17 秒 AI 商業廣告管線：Audio-First 節奏表、綠幕角色解耦與 FFmpeg Chroma Key 合成評估](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | `ai-video`, `audio-first`, `chroma-key` | 0 / 1 |
+| 2026-11-15 | 🟢 | [免剪輯軟體 17 秒 AI 商業廣告管線：Audio-First 節奏表、綠幕角色解耦與 FFmpeg Chroma Key 合成評估](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | `ai-video`, `audio-first`, `chroma-key` | 1 / 1 |
 | 2026-11-15 | ⚪ | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 0（+1 不做） |
-| 2026-11-15 | 🔴 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 0 / 1 |
+| 2026-11-15 | 🟢 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 1 / 1 |
 | 2026-11-15 | 🟡 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 1 / 2 |
 | 2026-11-15 | 🔴 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 0 / 1（+1 不做） |
-| 2026-11-15 | 🔴 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 0 / 1 |
+| 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |
 | 2026-11-15 | 🔴 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 0 / 1 |
 | 2026-11-15 | 🔴 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 0 / 1（+1 不做） |

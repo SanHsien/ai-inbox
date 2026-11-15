@@ -6,7 +6,7 @@ source_platform: "Social / Forum"
 author: "匿名社群分享"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 4
 cluster_role: "ChatGPT分發紅利"
 short_title: "ChatGPT MCP分發紅利"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：`N/A`（社群貼文：主張開發「ChatGPT Plugins」吃每週 12 億活躍用戶主動推薦紅利，並與 DeepSeek Harness 對比）
 - **發布平台 / 作者**：`社群平台` / `匿名作者`
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -60,9 +60,9 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-10`**｜**[優先級：低]** 依 OpenAI 一手文件修正上架、驗證與託管成本假設，交付單份可行性檢核表
+- [x] **`T-20261115-10`**｜**[優先級：低]** 依 OpenAI 一手文件修正上架、驗證與託管成本假設，交付單份可行性檢核表
   - **目標範圍**：`SanHsien/ai-inbox` 的 `docs/openai-plugin-submission-feasibility.md` 與對應 ChatGPT Apps 筆記。
   - **具體做法**：按查證日核對 Apps SDK／Plugins 現行術語、必要包裝、developer identity、MCP、可選 UI、無驗證／OAuth、隱私／審查與對外導流規範。未取得的一手用戶規模數字移為未查證。只比較一個不用中國服務、沒有付費模型依賴的既有需求候選；若無明確需求直接不建議立項，不為湊產出發明 SaaS。
   - **驗收標準（DoD）**：上述檢核表逐項附官方 URL、查證日期、必要／可選／未查證與決策；託管成本列用量假設、免費額度、超額處置及未知費用，不能承諾永遠零成本。明確結論為暫不開發或具條件再提案。同步修正原筆記並通過文件檢查；本任務不登入開發者帳號、不部署、不提交上架、不建立 repo。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15，commit 68d71fe、4b9098e）：docs/openai-plugin-submission-feasibility.md 22 列檢核表，逐項附 developers.openai.com 與 Cloudflare 官方頁、查證日 2026-11-15。結論是暫不開發：只有少數 plugin 獲加強曝光且不能申請；plugin 只能做實體商品交易，不能賣訂閱；唯一候選 public_apis_indexer 沒有對外需求；Workers Free 有額度上限，不是零成本。Fable 獨立複審抽查 15 項一手來源全部相符。

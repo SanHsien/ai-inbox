@@ -6,7 +6,7 @@ source_platform: "Social / Forum"
 author: "匿名一線開發者（ERP／電商／遊戲化實戰經驗）"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "多模型省額角色路由"
 short_title: "多AI分權省額路由"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：`N/A`（社群貼文：多帳號實戰後總結之「用 20 美方案打敗 200 美的省錢開發方法」）
 - **發布平台 / 作者**：`社群平台` / `匿名一線開發者`
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -78,9 +78,9 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-06`**｜**[優先級：低]** 修正模型路由文件的證據分級，補上符合現行 solo／delegate／audit／full 的成本示例
+- [x] **`T-20261115-06`**｜**[優先級：低]** 修正模型路由文件的證據分級，補上符合現行 solo／delegate／audit／full 的成本示例
   - **目標範圍**：`SanHsien/ai-inbox` 的 `docs/model-burn-rate-routing-matrix.md` 與對應 2026-11-15 多模型筆記。
   - **具體做法**：區分 API 單價、不同任務的訂閱耗額比與社群估算，移除把 5x～12x 或省 60～70% 當固定實證的敘述；增補四路由對照與返工成本限制。只引用當前已驗證完整模型／effort 配對，不把三角色流程當每任務固定支出；不建議中國服務、不新增付費訂閱。加入換 session 前核對 ROADMAP／DoD 的短清單。
   - **驗收標準（DoD）**：文件與筆記的可信度標記一致；至少列出小型 solo、規格完整 delegate、風險需要 audit 的三個書面案例，另說明 full 的例外條件。標明這是文件案例、沒有重跑模型 benchmark。核對不違反現行 user policy，並通過 repo 規定文件檢查；不以格式檢查聲稱省額比例成立。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15，commit 87d0d1a、442d073）：docs/model-burn-rate-routing-matrix.md 第 0 節證據分五級，新增第 10 節（10.2 把 5 倍、3.5 倍、12 倍、省 60–70% 拆成不同性質的數字；10.3 路由與配對照抄已安裝 orchestration SKILL.md；10.4 solo／delegate／audit 三個書面案例加 full 例外；10.5 成本公式；10.6 換 session 前核對清單），筆記同步改標社群宣稱。未重跑 benchmark，第 9 節沒動。Fable 獨立複審後修 2 處必修。
