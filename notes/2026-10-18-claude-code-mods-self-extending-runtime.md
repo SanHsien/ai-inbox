@@ -26,6 +26,7 @@ tags:
 - **來源連結**：
   - [Anthropic 官方入門教學 (claude.dev Blog)](https://claude.dev/blog/getting-started-with-claude-code-mods/)
   - [Anthropic 官方說明 (claude.com Blog)](https://claude.com/blog/claude-code-mods)
+  - [官方公告推文 (@ClaudeDevs on X)](https://x.com/ClaudeDevs/status/2105721434807083061)
   - [社群貼文分析 (@NFT_Chen on X)](https://x.com/NFT_Chen/status/2105738805785596166)
 - **分析日期**：`2026-10-18`
 - **當前狀態**：`🟢 已完成 (Done)`
