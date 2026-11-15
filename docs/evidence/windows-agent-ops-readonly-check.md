@@ -23,7 +23,7 @@ unknown 是實際結果，不作健康推定；可能涉及權限、不可取得
 
 ## 測試與 repo 檢查
 
-測試不需 Pester 或其他第三方套件。使用五種 mock：正常、缺程式、拒絕存取、逾時、偽裝成功的敏感輸出；也實際建立無 profile 的 PowerShell 子程序驗證逾時終止與錯誤遮蔽。AST 逐一檢查目前主腳本與生成的查詢：命令及完整方法接收者／呼叫白名單、精準服務與任務選擇器、powercfg 僅 `/query`、遠端／憑證相關語法限制與無輸出重新導向；成員賦值僅允許固定啟動設定及結果欄位，建構僅允許無參數的 ProcessStartInfo／Process。FileName 固定為目前 PowerShell 執行檔，ArgumentList 僅允許既有五項呼叫；Start／Kill 另檢查本地建構、未重新綁定／傳出別名、啟動順序與逾時分支。這是目前原始碼及已列反例的回歸契約，並非任意 PowerShell 的安全沙盒或完整資料流證明；不保證命令搜尋路徑不受同名程式遮蔽。拒絕存取與缺命令另以 mock 放入真實子程序測試 wrapper 的 catch 分支。
+測試不需 Pester 或其他第三方套件。使用五種 mock：正常、缺程式、拒絕存取、逾時、偽裝成功的敏感輸出；也實際建立無 profile 的 PowerShell 子程序驗證逾時終止與錯誤遮蔽。AST 逐一檢查目前主腳本與生成的查詢：命令及完整方法接收者／呼叫白名單、精準服務與任務選擇器、powercfg 僅 `/query`、遠端／憑證相關語法限制與無輸出重新導向；成員賦值僅允許固定啟動設定及結果欄位，依[守門測試](../../tests/test_inspect_windows_agent_ops.ps1)，New-Object 一律拒絕，::new 僅允許原始碼中兩種固定、無參數的 ProcessStartInfo／Process 呼叫；三種建構路徑共用危險型別清單（IO.StreamWriter、IO.StreamReader、IO.FileStream、IO.FileInfo、IO.DirectoryInfo、Diagnostics.ProcessStartInfo、Diagnostics.Process），ConvertExpressionAst 型別轉換拒絕清單內型別，涵蓋簡寫及 System. 完整名稱，其他型別轉換未作全面限制。FileName 固定為目前 PowerShell 執行檔，ArgumentList 僅允許既有五項呼叫；Start／Kill 另檢查本地建構、未重新綁定／傳出別名、啟動順序與逾時分支。這是目前原始碼及已列反例的回歸契約，並非任意 PowerShell 的安全沙盒或完整資料流證明；不保證命令搜尋路徑不受同名程式遮蔽。拒絕存取與缺命令另以 mock 放入真實子程序測試 wrapper 的 catch 分支。
 
 | 命令 | 結束碼／結果 |
 | --- | --- |

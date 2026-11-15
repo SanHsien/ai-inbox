@@ -24,7 +24,6 @@ function Assert-QueryAst([string]$Code, [string]$DisabledRule = '') {
         $name = $cmd.GetCommandName()
         # The only scriptblock invocation is the literal query inside the wrapper.
         if ($cmd.CommandElements[0] -is [Management.Automation.Language.ScriptBlockExpressionAst]) { continue }
-        Assert-GuardRule 'construction' ($name -ne 'New-Object') $DisabledRule
         Assert-True ($name -in ($allowed + 'New-Object')) "allowlisted command: $name"
         if ($name -eq 'powercfg.exe') {
             Assert-True ($cmd.Extent.Text -eq '& powercfg.exe /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE') 'powercfg query only'
@@ -85,10 +84,34 @@ function Assert-QueryAst([string]$Code, [string]$DisabledRule = '') {
             Assert-GuardRule 'member-write' ($unary.Child.FindAll({param($n) $n -is [Management.Automation.Language.MemberExpressionAst]}, $true).Count -eq 0) $DisabledRule
         }
     }
+    # One finite dangerous-type list for all three construction paths. Compare
+    # names syntactically: never resolve a type or execute a counterexample.
+    $dangerousTypes = @('IO.StreamWriter', 'IO.StreamReader', 'IO.FileStream',
+        'IO.FileInfo', 'IO.DirectoryInfo', 'Diagnostics.ProcessStartInfo', 'Diagnostics.Process')
+    $constructors = @('[Diagnostics.ProcessStartInfo]::new()', '[Diagnostics.Process]::new()')
+    foreach ($node in $ast.FindAll({param($n)
+        $n -is [Management.Automation.Language.ConvertExpressionAst] -or
+        ($n -is [Management.Automation.Language.CommandAst] -and $n.GetCommandName() -eq 'New-Object') -or
+        ($n -is [Management.Automation.Language.InvokeMemberExpressionAst] -and $n.Member.Value -eq 'new')
+    }, $true)) {
+        $isConversion = $node -is [Management.Automation.Language.ConvertExpressionAst]
+        $typeNames = if ($isConversion) { $node.Type.TypeName.FullName }
+        elseif ($node -is [Management.Automation.Language.CommandAst]) {
+            # Includes positional and -TypeName literal forms; other forms are
+            # still rejected by the closed constructor allowlist below.
+            $node.CommandElements | Where-Object { $_ -is [Management.Automation.Language.StringConstantExpressionAst] } |
+                ForEach-Object { $_.Value }
+        } elseif ($node.Expression -is [Management.Automation.Language.TypeExpressionAst]) {
+            $node.Expression.TypeName.FullName
+        }
+        $dangerous = @($typeNames | Where-Object { ($_ -replace '^System\.', '') -in $dangerousTypes }).Count -gt 0
+        $approved = $node.Extent.Text -cin $constructors
+        $rule = if ($isConversion) { 'conversion' } else { 'construction' }
+        Assert-GuardRule $rule ((-not $dangerous -or $approved) -and ($isConversion -or $approved)) $DisabledRule
+    }
     foreach ($call in $ast.FindAll({param($n) $n -is [Management.Automation.Language.InvokeMemberExpressionAst]}, $true)) {
         if ($call.Member.Value -eq 'new') {
-            Assert-GuardRule 'construction' ($call.Extent.Text -cin @(
-                '[Diagnostics.ProcessStartInfo]::new()', '[Diagnostics.Process]::new()')) $DisabledRule
+            continue # Construction paths were checked together above.
         } elseif ($call.Expression.Extent.Text -ceq '$info.ArgumentList' -and $call.Member.Value -ceq 'Add') {
             Assert-GuardRule 'arguments' ($call.Extent.Text -cin $argumentCalls) $DisabledRule
         } else {
@@ -162,6 +185,9 @@ $witnesses = @(
     @{ Rule='member-write'; Code='$info.ArgumentList[0] = "-Command"' }
     @{ Rule='construction'; Code='[IO.FileInfo]::new("example")' }
     @{ Rule='construction'; Code='New-Object IO.FileInfo "example"' }
+    @{ Rule='conversion'; Code='[IO.StreamWriter]"example.txt"' }
+    @{ Rule='conversion'; Code='[Diagnostics.ProcessStartInfo]@{FileName="example.exe";Arguments="-x"}' }
+    @{ Rule='conversion'; Code='[IO.FileInfo]"x"' }
     @{ Rule='receiver'; Code='$obj.Put()' }
     @{ Rule='receiver'; Code='$obj.SetValue("x", 1)' }
     @{ Rule='receiver'; Code='$other.Dispose()' }
@@ -176,6 +202,18 @@ function Assert-Rejected([string]$Code, [string]$DisabledRule = '') {
     try { Assert-QueryAst $Code $DisabledRule } catch { $rejected = $true }
     Assert-True $rejected "parse-only counterexample rejected (disabled=$DisabledRule)"
 }
+# Parse-only coverage of the shared list through every construction path,
+# including both short and System-qualified type names.
+foreach ($typeName in @('IO.StreamWriter', 'IO.StreamReader', 'IO.FileStream',
+    'IO.FileInfo', 'IO.DirectoryInfo', 'Diagnostics.ProcessStartInfo', 'Diagnostics.Process')) {
+    foreach ($prefix in @('', 'System.')) {
+        $name = "$prefix$typeName"
+        Assert-Rejected "New-Object -TypeName $name"
+        Assert-Rejected "[$name]::new('example')"
+        Assert-Rejected "[$name]'example'"
+    }
+}
+Assert-QueryAst '[string]42; [int]"1"; [decimal]1'
 foreach ($witness in $witnesses) {
     $rule = $witness.Rule
     Assert-Rejected $witness.Code
@@ -185,6 +223,14 @@ foreach ($witness in $witnesses) {
     Write-Output "MUTATION KILLED: $rule ($($witness.Code))"
 }
 foreach ($bad in @(
+    '$f=[IO.FileInfo]::new("example"); $f.IsReadOnly=$false; $f.Refresh()',
+    '$foreign.Kill($false)',
+    '$cmd="Start-Process"; & $cmd "example.exe"',
+    'Invoke-Expression "Start-Process example.exe"',
+    '& "Start-Process" "example.exe"',
+    '[scriptblock]::Create("Start-Process example.exe")',
+    '[Diagnostics.Process].InvokeMember("Start", 256, $null, $null, @("example.exe"))',
+    '[IO.FileInfo]"example.txt"',
     '$obj = [IO.FileInfo]::new("example"); $obj.IsReadOnly = $true',
     '[Diagnostics.Process]::Start("example.exe")',
     'Start-Process example.exe', '$other.Start()', '$other.Kill($true)',
