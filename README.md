@@ -610,8 +610,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 68 份）
-<details><summary>展開查看全部 68 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 69 份）
+<details><summary>展開查看全部 69 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -674,6 +674,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/reverse-engineering-pipeline-spec.md`](./docs/reverse-engineering-pipeline-spec.md) | REA + CLI-Anything 逆向分析與功能重造流水線規格 (Reverse Engineering Pipeline Spec) |
 | [`docs/saas-subscription-and-api-defense-spec.md`](./docs/saas-subscription-and-api-defense-spec.md) | SaaS 訂閱與 API 鑑權防繞過架構設計規範 |
 | [`docs/scan-to-threejs-spatial-agent-spec.md`](./docs/scan-to-threejs-spatial-agent-spec.md) | 空間運算 Agent 規範：LiDAR 測量、Three.js 程式化建模與相機內參比對閉環 |
+| [`docs/speak-human-tw-assessment.md`](./docs/speak-human-tw-assessment.md) | speak-human-tw 唯讀評估 |
 | [`docs/target-story-generative-ui-spec.md`](./docs/target-story-generative-ui-spec.md) | 靶心人故事編輯器 Generative UI 互動規格 (Target Story Generative UI Spec) |
 | [`docs/toml-config-engineering-spec.md`](./docs/toml-config-engineering-spec.md) | TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引 |
 | [`docs/video-transcript-howto.md`](./docs/video-transcript-howto.md) | 影片逐字稿 SOP：字幕取不到時，用 yt-dlp 抓音訊 + Whisper 本機 GPU 轉寫 |
