@@ -11,6 +11,9 @@ Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard (veri
 3. 驗證轉換函數之嚴格冪等性：apply_zhtw_vocab(apply_zhtw_vocab(text)) == apply_zhtw_vocab(text)
 
 skip_code=True（CLI 預設）先保護程式碼、成對中文引號與 URL／連結目的地。
+引號保護最多 200 字且不可跨空白段落或表格欄；錯配引號不保護。
+裸 URL 遇中文／全形標點即停，中文路徑請用 Markdown 連結目的地。
+連結目的地限同一行，標題照常檢查；不是完整 Markdown 或語義解析器。
 未加引號的產品名稱仍無專名保護；不判斷標題、語義、標點或最終成品佔位。
 「支持」未加入自動替換。skip_code=False 保留既有全文替換模式。
 """
@@ -77,7 +80,17 @@ ALL_RULES: Tuple[Tuple[str, str, str], ...] = GLOBAL_VOCAB_RULES + DEGRADED_AND_
 
 _BACKTICK_RUN_RE = re.compile(r"`+")
 _FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
-_BARE_URL_RE = re.compile(r"(?:https?://|ftp://|www\.)[^\s<>`「」『』，。；！？、]+")
+_BARE_URL_RE = re.compile(
+    r"(?:https?://|ftp://|www\.)[^\s<>`\u2e80-\u9fff\uf900-\ufaff\uff00-\uffef\U00020000-\U000323af]+"
+)
+_QUOTE_LIMIT = 200
+_REFERENCE_RE = re.compile(r"(?m)^ {0,3}\[[^\]\n]+\]:[ \t]*(<[^<>\n]+>|[^\s]+)")
+_CONTEXT_EXCEPTIONS = {
+    "視頻": (("電視頻", 1), ("衛視頻", 1)),
+    "服務器": (("售後服務器材", 2),),
+    "軟件": (("柔軟件數", 1),),
+    "硬件": (("堅硬件", 1),),
+}
 _PROTECTED_START_RE = re.compile(r"[「『]|\]\(|(?:https?://|ftp://|www\.)")
 
 
@@ -103,6 +116,50 @@ def _inline_parts(line: str) -> List[Tuple[bool, str]]:
     return parts
 
 
+def _rule_matches(text: str, src: str):
+    """Use the same narrow context exceptions in checking and rewriting."""
+    for match in re.finditer(re.escape(src), text):
+        if not any(match.start() >= offset and
+                   text[match.start() - offset:match.start() - offset + len(phrase)] == phrase
+                   for phrase, offset in _CONTEXT_EXCEPTIONS.get(src, ())):
+            yield match
+
+
+def _line_parentheses(text: str) -> Dict[int, int]:
+    """Pair parentheses once, resetting at each line; no repeated suffix scans."""
+    pairs = {}
+    stack = []
+    i = 0
+    while i < len(text):
+        char = text[i]
+        if char in "\r\n":
+            stack.clear()
+        elif char == "\\" and i + 1 < len(text) and text[i + 1] not in "\r\n":
+            i += 1
+        elif char == "(":
+            stack.append(i)
+        elif char == ")" and stack:
+            pairs[stack.pop()] = i
+        i += 1
+    return pairs
+
+
+def _destination_end(text: str, start: int, close: int, pairs: Dict[int, int]) -> int:
+    """Return the destination only, leaving whitespace and link titles as prose."""
+    end = start
+    if end < close and text[end] == "<":
+        angle = text.find(">", end + 1, close)
+        return angle + 1 if angle >= 0 else start
+    while end < close and not text[end].isspace():
+        if text[end] == "\\":
+            end = min(end + 2, close)
+        elif text[end] == "(":
+            end = pairs[end] + 1
+        else:
+            end += 1
+    return end
+
+
 def _transform_non_code_segment(segment: str) -> str:
     out = segment
     seen = set()
@@ -111,7 +168,9 @@ def _transform_non_code_segment(segment: str) -> str:
         previous = out
         for src, dst, _ in ALL_RULES:
             if src != dst and src in out:
-                out = out.replace(src, dst)
+                matches = list(_rule_matches(out, src))
+                for match in reversed(matches):
+                    out = out[:match.start()] + dst + out[match.end():]
         if out == previous:
             return out
     raise ValueError("詞庫規則循環，無法收斂至固定點")
@@ -121,9 +180,9 @@ def _protected_parts(text: str) -> List[Tuple[bool, str]]:
     """Share exact protected spans between checking and rewriting.
 
     Code is masked first so quote characters inside code cannot open a quote.
-    Balanced Chinese quotes may span lines and contain inline code. Markdown
-    destinations support nested/escaped parentheses; this is not a full Markdown
-    parser (reference-style destinations and unquoted entities are not protected).
+    Quotes are bounded by length, paragraphs and table cells. Same-line Markdown
+    destinations support nested/escaped parentheses and reference definitions;
+    titles remain prose. This deliberately is not a full Markdown parser.
     """
     spans = []
     offset = 0
@@ -153,6 +212,13 @@ def _protected_parts(text: str) -> List[Tuple[bool, str]]:
     for start, end in spans:
         masked[start:end] = ["\n" if c == "\n" else " " for c in text[start:end]]
     prose = "".join(masked)
+    pairs = _line_parentheses(prose)
+    # Protect definitions before scanning quotes or URLs in their destinations.
+    for reference in _REFERENCE_RE.finditer(prose):
+        start, end = reference.span(1)
+        spans.append((start, end))
+        masked[start:end] = [" "] * (end - start)
+    prose = "".join(masked)
     cursor = 0
     while match := _PROTECTED_START_RE.search(prose, cursor):
         start = match.start()
@@ -160,8 +226,13 @@ def _protected_parts(text: str) -> List[Tuple[bool, str]]:
         end = match.end()
         if token in ("「", "『"):
             stack = ["」" if token == "「" else "』"]
-            while end < len(prose) and stack:
+            while end < min(len(prose), start + _QUOTE_LIMIT) and stack:
                 char = prose[end]
+                if char == "|" or (char == "\n" and
+                                   re.match(r"[ \t\r]*\n", prose[end + 1:end + _QUOTE_LIMIT])):
+                    break
+                if char in ("」", "』") and char != stack[-1]:
+                    break
                 if char in ("「", "『"):
                     stack.append("」" if char == "「" else "』")
                 elif char == stack[-1]:
@@ -171,26 +242,29 @@ def _protected_parts(text: str) -> List[Tuple[bool, str]]:
                 cursor = match.end()
                 continue
         elif token == "](":
-            depth = 1
-            while end < len(prose) and depth:
-                char = prose[end]
-                if char == "\\":
-                    end += 2
-                    continue
-                if char == "(":
-                    depth += 1
-                elif char == ")":
-                    depth -= 1
-                end += 1
-            if depth:
+            close = pairs.get(end - 1)
+            if close is None:
                 cursor = match.end()
                 continue
+            start = end
+            while start < close and prose[start] in " \t":
+                start += 1
+            end = _destination_end(prose, start, close, pairs)
         else:
             url = _BARE_URL_RE.match(prose, start)
             if url is None:
                 cursor = match.end()
                 continue
             end = url.end()
+            depth = 0
+            for index in range(match.end(), end):
+                if prose[index] == "(":
+                    depth += 1
+                elif prose[index] == ")":
+                    if depth == 0:
+                        end = index
+                        break
+                    depth -= 1
         spans.append((start, end))
         cursor = end
 
@@ -242,7 +316,10 @@ def scan_degraded_vocab(text: str, skip_code: bool = True) -> List[Dict[str, Any
         line_hits: List[Tuple[int, Dict[str, Any]]] = []
         for src, dst, reason in rules:
             if src != dst and src in inspect_text:
-                pos = inspect_text.find(src)
+                matches = list(_rule_matches(inspect_text, src))
+                if not matches:
+                    continue
+                pos = matches[0].start()
                 line_hits.append((
                     pos,
                     {
@@ -252,7 +329,9 @@ def scan_degraded_vocab(text: str, skip_code: bool = True) -> List[Dict[str, Any
                         "reason": reason,
                     },
                 ))
-                inspect_text = inspect_text.replace(src, " " * len(src))
+                for match in reversed(matches):
+                    inspect_text = (inspect_text[:match.start()] + " " * len(src)
+                                    + inspect_text[match.end():])
         line_hits.sort(key=lambda item: item[0])
         findings.extend(h for _, h in line_hits)
 

@@ -9,9 +9,14 @@ import os
 import sys
 import tempfile
 import unittest
+import time
+from unittest.mock import patch
+
 from pathlib import Path
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "tools")))
+
+import verify_zhtw_vocab as vocab
 
 from verify_zhtw_vocab import (
     apply_zhtw_vocab,
@@ -25,6 +30,77 @@ class TestVerifyZhtwVocab(unittest.TestCase):
     def assert_protected(self, raw):
         self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), raw)
         self.assertEqual(scan_degraded_vocab(raw), [])
+
+    def test_quote_protection_is_bounded(self):
+        cases = [
+            ("他說「視頻很好\n\n中間段落 軟件\n\n結尾」之後 硬件", ["視頻", "軟件", "硬件"]),
+            ("| 「視頻 | 軟件 |\n| 硬件 | 服務器」 |", ["視頻", "軟件", "硬件", "服務器"]),
+            ("「a『b」 視頻\n\n段落 軟件\n\n』 x 」", ["視頻", "軟件"]),
+            ("「" + "a" * 200 + "視頻」", ["視頻"]),
+            ("「a『b」 視頻』", ["視頻"]),
+            ("「視頻\n  \n軟件」", ["視頻", "軟件"]),
+        ]
+        for raw, terms in cases:
+            with self.subTest(raw=raw):
+                self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)], terms)
+                self.assertNotEqual(apply_zhtw_vocab(raw, skip_code=True), raw)
+        self.assert_protected("「" + "a" * 196 + "視頻」")
+
+    def test_unclosed_protection_has_bounded_runtime(self):
+        for token in ["「", "]("]:
+            with self.subTest(token=token):
+                raw = (token + " 視頻\n") * 5000
+                started = time.perf_counter()
+                self.assertEqual(len(scan_degraded_vocab(raw)), 5000)
+                self.assertLess(time.perf_counter() - started, 3.0)
+
+    def test_url_stops_before_chinese_prose(self):
+        for raw, expected in [
+            ("（見 https://a.org/x）這個視頻很好看而且軟件也不錯 硬件", ["視頻", "軟件", "硬件"]),
+            ("(https://a.org/x)視頻教學與軟件", ["視頻", "軟件"]),
+            ("https://a.org/x：視頻", ["視頻"]),
+            ("https://a.org/x視頻教學", ["視頻"]),
+            ("https://a.org/x_(a))視頻", ["視頻"]),
+        ]:
+            with self.subTest(raw=raw):
+                self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)], expected)
+                self.assertEqual(scan_degraded_vocab(apply_zhtw_vocab(raw, skip_code=True)), [])
+
+    def test_url_unmatched_parenthesis_ends_protection(self):
+        # An ASCII probe makes the ')' boundary observable independently of CJK.
+        with patch.object(vocab, "ALL_RULES", (("video", "film", "probe"),)):
+            raw = "https://a.org/x_(a))video"
+            self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)], ["video"])
+            self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), "https://a.org/x_(a))film")
+
+    def test_context_exceptions_preserve_real_words(self):
+        raw = "電視頻道與衛視頻道、電視頻率；售後服務器材 柔軟件數 堅硬件"
+        for skip in [True, False]:
+            with self.subTest(skip=skip):
+                self.assertEqual(apply_zhtw_vocab(raw, skip_code=skip), raw)
+                self.assertEqual(scan_degraded_vocab(raw, skip_code=skip), [])
+        self.assertEqual([h["term"] for h in scan_degraded_vocab(raw + " 視頻 軟件 硬件 服務器")],
+                         ["視頻", "軟件", "硬件", "服務器"])
+
+    def test_link_destinations_exclude_titles_and_newlines(self):
+        raw = '[x](docs/視頻.md "軟件") 硬件\n[x](docs/視頻.md\n軟件)'
+        self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)],
+                         ["軟件", "硬件", "視頻", "軟件"])
+        self.assertEqual(apply_zhtw_vocab(raw, skip_code=True),
+                         '[x](docs/視頻.md "軟體") 硬體\n[x](docs/影片.md\n軟體)')
+        self.assertEqual([h["term"] for h in scan_degraded_vocab('[x](docs/視頻.md)軟件')], ["軟件"])
+
+    def test_reference_destinations_are_protected(self):
+        raw = '[v]: docs/視頻.md "軟件"\n  [v2]: <docs/服務器.md> "硬件"\n視頻'
+        self.assertEqual([h["term"] for h in scan_degraded_vocab(raw)], ["軟件", "硬件", "視頻"])
+        self.assertEqual(apply_zhtw_vocab(raw, skip_code=True),
+                         '[v]: docs/視頻.md "軟體"\n  [v2]: <docs/服務器.md> "硬體"\n影片')
+
+    def test_scanner_sorts_rules_even_if_input_order_is_short_first(self):
+        rules = (("視頻", "影片", "short"), ("短視頻", "短影音", "long"))
+        with patch.object(vocab, "ALL_RULES", rules):
+            self.assertEqual([(h["term"], h["replacement"]) for h in scan_degraded_vocab("短視頻")],
+                             [("短視頻", "短影音")])
 
     def test_assessment_section_six_counterexamples(self):
         # Every row of the section 6 counterexample probe, including the explicit
@@ -65,18 +141,11 @@ class TestVerifyZhtwVocab(unittest.TestCase):
         )
 
     def test_bare_urls_protect_path_query_fragment(self):
-        for raw in ["https://example.org/數據庫?軟件=硬件#視頻",
-                    "<https://example.org/數據庫>", "www.example.org/數據庫"]:
-            with self.subTest(raw=raw):
-                self.assert_protected(raw)
-        self.assertEqual(
-            apply_zhtw_vocab("https://example.org/數據庫。數據庫", skip_code=True),
-            "https://example.org/數據庫。資料庫",
-        )
-        self.assertEqual(
-            apply_zhtw_vocab("https:// 數據庫 www. 數據庫", skip_code=True),
-            "https:// 資料庫 www. 資料庫",
-        )
+        for raw in ["https://example.org/path?q=video#part", "<https://example.org/path>",
+                    "www.example.org/path", "https://a.org/x_(nested)"]:
+            self.assert_protected(raw)
+        self.assertEqual(apply_zhtw_vocab("https:// 數據庫 www. 數據庫", skip_code=True),
+                         "https:// 資料庫 www. 資料庫")
 
     def test_candidate_rules_have_positive_and_protected_negative_cases(self):
         for raw, expected in [("啟動服務器", "啟動伺服器"),
@@ -87,7 +156,7 @@ class TestVerifyZhtwVocab(unittest.TestCase):
             with self.subTest(raw=raw):
                 self.assertEqual(apply_zhtw_vocab(raw, skip_code=True), expected)
                 self.assertTrue(scan_degraded_vocab(raw))
-                self.assert_protected(f"「{raw}」 `短視頻` https://example.org/{raw}")
+                self.assert_protected(f"「{raw}」 `短視頻` [x](https://example.org/{raw})")
                 self.assertEqual(apply_zhtw_vocab(expected, skip_code=True), expected)
 
     def test_long_video_rule_wins_in_transform_and_findings(self):
