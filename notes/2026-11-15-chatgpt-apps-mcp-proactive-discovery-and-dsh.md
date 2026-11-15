@@ -49,7 +49,7 @@ tags:
   - 與今日評估的 **AI-Native 一人接案系統**（[`notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md`](./2026-11-15-ai-native-agency-retainer-and-org-playbook.md)）與維護者既有的 **Cloudflare Workers Serverless 技術棧**（[`notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md`](./2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md)）直接相連。
 - **落差與採納判斷**：
   - **比「粗暴生 5 個免洗外掛」有價值的是 MCP 的可移植性，但不是一次建置處處可用**：
-    - 既然底層是標準 **MCP**，同一套後端服務既可以給維護者自己的 Claude Code / Codex / Antigravity 使用，也能對外上架到 ChatGPT App Directory 當作獲客入口。各宿主在身份驗證、UI 與工具契約上有差異，每上一個平台都要另外適配與驗收。
+    - 既然底層是標準 **MCP**，同一套後端服務既可以給維護者自己的 Claude Code / Codex / Antigravity 使用，技術上也能對外上架，但曝光與導流受限（見 [`docs/openai-plugin-submission-feasibility.md`](../docs/openai-plugin-submission-feasibility.md) 檢核表 #15、#16）。各宿主在身份驗證、UI 與工具契約上有差異，每上一個平台都要另外適配與驗收。
   - **必須避開的坑**：
     1. **免洗通用工具無護城河且倒賠伺服器費用**：PDF 轉 Excel、發票產生器這類工具在標準模型內建 Code Interpreter／檔案處理面前毫無競爭力，且免費用戶越多、你的遠端 MCP 託管帳單越高。
     2. **意圖路由不是關鍵字堆疊（Keyword Stuffing）**：OpenAI 審查與意圖路由重視乾淨的工具契約與真實完成任務的能力，粗製濫造的描述只會被自動審查下架或無曝光。

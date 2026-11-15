@@ -41,7 +41,7 @@
 | 8 | MCP tools／resources／prompts | 指引只對 tools 訂了要求（名稱清楚、描述符合行為、標註正確、輸入最小化）。resources 與 prompts 是否必要，本次取回的頁面沒有寫成送審必要項 | tools：條件必要；resources／prompts：未查證 | <https://developers.openai.com/plugins/plugin-guidelines> | 只做 tools |
 | 9 | 上架頁必填欄位 | `displayName`（30 字元內）、`shortDescription`（30 字元內）、`longDescription`、`developerName`、`category`、主要圖示。含 MCP 且要公開審查時，另外四個 HTTPS 網址全部必填：產品網站、客服頁、隱私權政策、服務條款 | 必要 | <https://developers.openai.com/plugins/deploy/submission> | **卡關**：目前沒有這四個對外頁面，要先寫並長期維護 |
 | 10 | 隱私權政策內容 | 必須公開，至少說明蒐集的個資類別、用途、接收方類別、保存期限與使用者可用的控制；不得蒐集卡號、健康資訊、政府證號、憑證類資料；回應只回與請求直接相關的資料，不得重建完整對話 | 必要 | <https://developers.openai.com/plugins/plugin-guidelines> | 候選不蒐集個資，但仍要有一份公開政策 |
-| 11 | 審查材料 | 首次 MCP 審查需要剛好 5 個正向、3 個負向測試案例，加一支審查者看得到的示範影片網址與版本說明；需要登入的話要給不必二階段驗證的示範帳號 | 條件必要（含 MCP 時）；純 skills 不需要 | <https://developers.openai.com/plugins/deploy/submission> | 做得到，但影片與案例是實打實的工時 |
+| 11 | 審查材料 | 首次 MCP 審查需要 5 個正向、3 個負向測試案例，加一支審查者看得到的示範影片網址與版本說明；需要登入的話要給不必二階段驗證的示範帳號 | 條件必要（含 MCP 時）；純 skills 不需要 | <https://developers.openai.com/plugins/deploy/submission> | 做得到，但影片與案例是實打實的工時 |
 | 12 | 品質門檻 | 要提供產品內建能力沒有的功能；不收試用版或示範性質的 plugin；不得是靜態畫面或濫發內容；要在桌面與行動版 ChatGPT 都能穩定運作 | 必要 | <https://developers.openai.com/plugins/plugin-guidelines> | **卡關**：見第 4 節，候選與內建搜尋重疊 |
 | 13 | 第三方內容 | 不得未經授權爬取外部網站或串接第三方 API；主要功能是「非官方連接器」或純轉送層的 plugin 不會核准 | 必要 | <https://developers.openai.com/plugins/plugin-guidelines> | **風險**：候選轉述他人維護的 API 清單，有被認定為轉送層的可能 |
 | 14 | 命名與描述 | 名稱不可過度通用、不可在產品名後加「MCP」「Plugin」；描述不可比較或貶低其他產品、不可寫價格或促銷；不可用描述或標註操縱模型優先選自己 | 必要 | <https://developers.openai.com/plugins/plugin-guidelines> | 堆關鍵字搶曝光的做法直接違規 |
