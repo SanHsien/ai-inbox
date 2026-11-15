@@ -14,6 +14,7 @@ public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
+| Windows 常駐 Agent 人工設定與恢復驗收 | 維護者確定要部署，已確認既有排程 owner、登入前提與本機回復管道 | 依規格逐項人工驗收外網、鎖屏、登出、重啟及有界限觀察；分別記結果與限制，不以一次成功稱 24×7 穩定 | 維護者 | [維運規格](docs/windows-24x7-agent-ops-spec.md)、[唯讀證據](docs/evidence/windows-agent-ops-readonly-check.md)；本輪只有文件與工具 |
 | 詞彙檢查器：未加引號的專名保護、`支持→支援` 技術受詞白名單 | 實際出現專名被誤改（例如產品名含 `數據庫`），或需要擋 `支持 UTF-8` 這類用詞 | 先寫出誤改實例的回歸測試再改 `tools/verify_zhtw_vocab.py`；`支持` 只在白名單受詞前替換，`支持開源社群` 等反例不變；`--verify-idempotent --check notes docs templates README.md` 通過 | Codex | [評估第 6 節](docs/speak-human-tw-assessment.md)；引號、URL 保護與五條候選規則已於 2026-11-15 完成 |
 | pii-guard 隔離動態驗證（採納條件） | 固定版本雙重靜態審計完成、SkillSpector 入口恢復，且另獲隔離實測授權 | 依評估第 8 節，只用一組假資料驗證 Windows ACL、離線／超時、Edit 與載入／既有 hook 相容性；遇停止條件即停，不改全域設定 | 維護者另行指派 | [唯讀評估](docs/pii-guard-readonly-assessment.md)（T-20261115-17，未結案） |
 | 重新確認 `av>=14,<17` 固定版本是否還需要 | `faster-whisper` 發布高於 1.2.1 的版本，或維護者在新機器重裝 `video_transcript` 環境 | 在乾淨 venv 以最新 `faster-whisper` 安裝並跑 `tools/video_transcript.py` 一次；依結果更新或刪除 `docs/video-transcript-howto.md:35` 與 `:53` 的 pin，兩處一致 | Claude Sonnet | `docs/video-transcript-howto.md:35`、`:53`；freshness 深掃報告（2026-10-28）「未處理／留意」 |

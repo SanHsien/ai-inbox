@@ -630,14 +630,15 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 70 份）
-<details><summary>展開查看全部 70 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 74 份）
+<details><summary>展開查看全部 74 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
 | [`docs/3d-gui-agent-control-bridge.md`](./docs/3d-gui-agent-control-bridge.md) | AI Agent 操控 3D 與本機 GUI 軟體之雙軌橋接方案規格 |
 | [`docs/academic-bilingual-paper-reader-guide.md`](./docs/academic-bilingual-paper-reader-guide.md) | 學術論文雙語排版與公式保護閱讀工具手冊：Moonlight 與開源 MinerU 對比指南 |
 | [`docs/academic-reading-smoke-report.md`](./docs/academic-reading-smoke-report.md) | 學術論文 5W1H-CQR-KSU 實測報告：SWE-bench 基準測試論文解析 |
+| [`docs/agent-assets-cross-machine-sync-assessment.md`](./docs/agent-assets-cross-machine-sync-assessment.md) | 共享資產跨機更新唯讀評估 |
 | [`docs/agent-autoloop-event-sourcing-and-ttl-spec.md`](./docs/agent-autoloop-event-sourcing-and-ttl-spec.md) | Agent Autoloop 事件溯源內核、掛起零消耗與四層安全防線規格 |
 | [`docs/agent-desktop-computer-use-spec.md`](./docs/agent-desktop-computer-use-spec.md) | OS 級 Computer Use 架構規格書：Accessibility Tree 無障礙樹、命名空間 Ref 與無像素匹配設計手冊 |
 | [`docs/agent-dispatch.md`](./docs/agent-dispatch.md) | 跨 Agent 派工與完工回報 |
@@ -658,6 +659,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/claude-code-mods-windows-validation.md`](./docs/claude-code-mods-windows-validation.md) | Claude Code Mods 自體改造機制 Windows 11 本機二進位深度查驗與替代方案驗證報告 |
 | [`docs/claude-idle-compaction-setup.md`](./docs/claude-idle-compaction-setup.md) | Claude Code 閒置壓縮（Idle Compaction）Windows 11 本地配置與實測指南 |
 | [`docs/claude-plugins-official-review.md`](./docs/claude-plugins-official-review.md) | Anthropic 官方 Claude Code 外掛清單深度檢閱與工作流適配報告 |
+| [`docs/claude-prompt-and-api-readonly-audit.md`](./docs/claude-prompt-and-api-readonly-audit.md) | Claude 提示檔與 API 相容性唯讀稽核 |
 | [`docs/claude-security-guidance-windows-setup.md`](./docs/claude-security-guidance-windows-setup.md) | Claude Code security-guidance 外掛 Windows 11 安裝評估、配置驗證與三層防禦整合報告 |
 | [`docs/cli-anything-to-skill-protocol.md`](./docs/cli-anything-to-skill-protocol.md) | Agent-Native CLI 封裝與自動生成 Skill 標準協議 (CLI-Anything to Skill Protocol) |
 | [`docs/cloudflare-security-audit-readonly-review.md`](./docs/cloudflare-security-audit-readonly-review.md) | Cloudflare security-audit-skill 唯讀審查 |
@@ -668,6 +670,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/elephant-goldfish-model-spec.md`](./docs/elephant-goldfish-model-spec.md) | 大象-金魚模型（EGM）規格手冊：長上下文起草、零上下文審查與 CUJ 驅動設計流程 |
 | [`docs/evidence/2026-10-26-buzz-windows-build.md`](./docs/evidence/2026-10-26-buzz-windows-build.md) | Buzz 在 Windows 11 的編譯檢查與 Job Object 驗證 |
 | [`docs/evidence/external-refs-check-2026-11.md`](./docs/evidence/external-refs-check-2026-11.md) | T-20261108-06：2026-11 外部連結巡檢證據 |
+| [`docs/evidence/windows-agent-ops-readonly-check.md`](./docs/evidence/windows-agent-ops-readonly-check.md) | Windows Agent 維運唯讀檢查證據 |
 | [`docs/external-judge-audit.md`](./docs/external-judge-audit.md) | AI Inbox 任務 DoD 外部裁判（External Judge）稽核報告 |
 | [`docs/feedback-desk-architecture-and-handoff-spec.md`](./docs/feedback-desk-architecture-and-handoff-spec.md) | feedback-desk 架構解構與跨 Agent 工單交接規範 |
 | [`docs/feedback-desk-vs-agent-relay.md`](./docs/feedback-desk-vs-agent-relay.md) | feedback-desk 與 agent-relay 多 Agent 協作機制對照分析 |
@@ -702,6 +705,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/visual-agent-artifacts-engineering-spec.md`](./docs/visual-agent-artifacts-engineering-spec.md) | AI Agent 視覺化工件輸出規範與 Token 節流工程指引 |
 | [`docs/web-to-app-evaluation.md`](./docs/web-to-app-evaluation.md) | WebToApp（網站轉 Android App）技術評估與本機環境驗證報告 |
 | [`docs/web-to-app-freelance-workflow.md`](./docs/web-to-app-freelance-workflow.md) | 網站轉 Android App 接案標準作業流程與風險防範規格 |
+| [`docs/windows-24x7-agent-ops-spec.md`](./docs/windows-24x7-agent-ops-spec.md) | Windows 11 常駐 Agent 維運規格 |
 | [`docs/zeabur-incident-credential-audit.md`](./docs/zeabur-incident-credential-audit.md) | Zeabur 資安事件衝擊盤點與憑證安全稽核報告 |
 | [`docs/zero-build-shader-hero-sections-spec.md`](./docs/zero-build-shader-hero-sections-spec.md) | Zero-Build WebGL/Shader Hero Section 架構規範與視覺資產手冊 |
 | [`docs/zhtw-fork-idempotent-sync-spec.md`](./docs/zhtw-fork-idempotent-sync-spec.md) | 上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範 |
