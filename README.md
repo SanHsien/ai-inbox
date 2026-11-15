@@ -429,6 +429,7 @@
 | 2026-11-15 | ⚪ | [killkli/minimax-h3-lora-colab-skill：透過 Google Colab CLI 驅動遠端 A100 訓練 LoRA 之 Skill 架構評估](./notes/2026-11-15-minimax-h3-lora-colab-skill-eval.md) | `skill`, `google-colab`, `lora-training` | 0 / 0 |
 | 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |
 | 2026-11-15 | 🟢 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 1 / 1 |
+| 2026-11-15 | ⚪ | [PAPAYA 電腦教室《零基礎用 Claude Desktop 做個人 App》：Vibe Coding 安全與 Git 分支教學評估](./notes/2026-11-15-papaya-vibe-coding-claude-desktop-git-workflow.md) | `vibe-coding`, `claude-desktop`, `security-guidance` | 0 / 0 |
 | 2026-11-15 | 🟢 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 1 / 1 |
 | 2026-11-15 | 🟢 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 1 / 1（+1 不做） |
 | 2026-11-15 | ⚪ | [POUND0423 單檔影片／圖片故障特效（Glitch VFX）工具查證與技術評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md) | `glitch-effect`, `webgl`, `canvas` | 0 / 0 |
@@ -502,6 +503,7 @@
 - 台灣個資遮罩Mod：[PII-Guard個資遮罩Mod](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md)
 - DocHUB閉源查證：[DocHUB離線工具查證](./notes/2026-11-15-dochub-offline-toolkit-security-eval.md)
 - Codex插件協作：[CodexPluginCC雙AI協作](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md)
+- PAPAYA入門教材：[PAPAYA零基礎做App](./notes/2026-11-15-papaya-vibe-coding-claude-desktop-git-workflow.md)
 - 繁中去AI味與資源評估：[說人話Skill與CC資源評估](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md)
 - 四種AI工作模式地圖：[Rei四種AI工作模式](./notes/2026-11-15-rei-four-ai-work-modes-claude-codex-eval.md)
 
