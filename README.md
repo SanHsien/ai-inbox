@@ -600,8 +600,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_zhtw_vocab.py`](./tools/verify_zhtw_vocab.py) | Taiwan Traditional Chinese Technical Vocabulary & OpenCC Second-Pass Guard | [`tests/test_verify_zhtw_vocab.py`](./tests/test_verify_zhtw_vocab.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 62 份）
-<details><summary>展開查看全部 62 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 63 份）
+<details><summary>展開查看全部 63 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -651,6 +651,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/model-burn-rate-routing-matrix.md`](./docs/model-burn-rate-routing-matrix.md) | 長程並行開發：模型選型與配額消耗速查表（Sol 6.1／Terra 6.1／Astra 6／Luna 6） |
 | [`docs/multi-agent-parallel-dispatch-spec.md`](./docs/multi-agent-parallel-dispatch-spec.md) | 四 Agent 平行派工協議與人類審核門檻規範 |
 | [`docs/nvidia-nemotron-transcribe-pipeline-spec.md`](./docs/nvidia-nemotron-transcribe-pipeline-spec.md) | NVIDIA Nemotron 3.5 Transcribe 語音辨識模型技術規格與 Windows 本機語音輸入適用性評估 |
+| [`docs/openai-plugin-submission-feasibility.md`](./docs/openai-plugin-submission-feasibility.md) | OpenAI Plugins（原 Apps SDK）上架可行性檢核表 |
 | [`docs/production-smoke-security-checklist.md`](./docs/production-smoke-security-checklist.md) | 全端網站上線前 QA 與資安稽核檢核表 (Production Smoke & Security Checklist) |
 | [`docs/pstack-agent-playbooks.md`](./docs/pstack-agent-playbooks.md) | pstack 技能庫與 Playbooks 跨 Agent CLI 移植規格書 |
 | [`docs/pstack-governance-integration.md`](./docs/pstack-governance-integration.md) | pstack 工程防線與 agent-governance-toolkit 運行期政策檢查整合實踐 |
