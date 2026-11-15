@@ -62,8 +62,8 @@ tags:
 ## 2. 啟發與適用性評估
 
 - **對應現有系統 / 專案**：
-  - [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md)（該文件第 0～3、8 節說明：官方 API 單價 Astra 約為 Sol 的 5 倍；12 倍是另一位作者在不同任務、不同帳號下的耗額比，未獨立重現，兩者不是同一種量測。所以只能說本文「Astra 燒得快」的體感與它方向一致，不是已實證的固定倍率；四種數字的分級對照見該文件第 10.2 節）。
-  - `SanHsien/agent-advisor`（各 runtime 版本都是「implementer＋獨立 reviewer」：Claude Code 版為 Sonnet／Haiku implementer＋Opus reviewer，Antigravity 版為 `pro`／`flash` implementer＋`pro-reviewer`；路由一律是 solo／delegate／audit／full 四選一，預設 solo）。
+  - [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md)（該文件第 0～3、8 節說明：官方 API 單價 Astra 約為 Sol 的 5 倍；12 倍是另一位作者在不同任務下（兩者同為 $100 帳號）的週額度消耗速度比，未獨立重現，兩者不是同一種量測。所以只能說本文「Astra 燒得快」的體感與它方向一致，不是已實證的固定倍率；四種數字的分級對照見該文件第 10.2 節）。
+  - `SanHsien/agent-advisor`（已查到的兩個版本都是「implementer＋獨立 reviewer」：Claude Code 版為 Sonnet／Haiku implementer＋Opus reviewer，Antigravity 版為 `pro`／`flash` implementer＋`pro-reviewer`；其餘 runtime 版本未查證。Claude Code 版的路由是 solo／delegate／audit／full 四選一，預設 solo）。
   - `SanHsien/harness-guard`（已實作防假綠、禁止註解測試／回傳假資料／未驗證宣稱結案的 Hook 閘門）。
   - `SanHsien/agent-relay`（已實作跨機派工、`accept` 本地複驗、`ask`/`answer` 決策流與 worktree 隔離）。
 - **落差與採納判斷**：
