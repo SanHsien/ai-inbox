@@ -419,6 +419,7 @@
 | 2026-11-15 | 🟢 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 1 / 1 |
 | 2026-11-15 | ⚪ | [ChatGPT Dots 自訂權限規則（Settings > Personalization > Permissions）安全邊界評估](./notes/2026-11-15-chatgpt-dots-custom-permissions-eval.md) | `chatgpt-dots`, `permissions`, `safety-barrier` | 0 / 0 |
 | 2026-11-15 | ⚪ | [Claude Taiwan 貼文評估：Anthropic 官方 `claude-code-setup` 專案自動化推薦外掛](./notes/2026-11-15-claude-code-setup-official-plugin.md) | `claude-code`, `claude-desktop`, `claude-plugins-official` | 0 / 0 |
+| 2026-11-15 | ⚪ | [Threads 情報評估：個人 Claude Max 透過 Cyber Verification Program 申請 Mythos 5.1/5.2 資格](./notes/2026-11-15-claude-mythos-cyber-verification-program.md) | `claude`, `claude-mythos`, `cyber-verification-program` | 0 / 0 |
 | 2026-11-15 | 🟢 | [升級 Claude Opus 5.5 前置檢查：/claude-api prompt-audit、API 破壞性變更與成本結構評估](./notes/2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration.md) | `claude-opus-5-5`, `prompt-audit`, `claude-api` | 1 / 1 |
 | 2026-11-15 | 🟢 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 2 / 2 |
 | 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
@@ -462,6 +463,7 @@
 - Terra額度路由：[Terra額度與Fast倍率核實](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md)
 - 多session管理：[總PM與claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md)
 - 一人接案Agency系統：[AI一人接案Agency](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md)
+- Claude資安存取：[Mythos資安資格申請](./notes/2026-11-15-claude-mythos-cyber-verification-program.md)
 - PR錄影證據交付：[跨Agent PR錄影交付](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md)
 - 24x7常駐Agent：[24x7地端Agent架構](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md)
 - 多模型省額角色路由：[多AI分權省額路由](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md)
