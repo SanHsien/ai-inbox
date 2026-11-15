@@ -422,6 +422,7 @@
 | 2026-11-15 | 🟢 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 1 / 1（+1 不做） |
 | 2026-11-15 | ⚪ | [POUND0423 單檔影片／圖片故障特效（Glitch VFX）工具查證與技術評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md) | `glitch-effect`, `webgl`, `canvas` | 0 / 0 |
 | 2026-11-15 | 🔴 | [Raymondhou0917 雙倉庫評估：speak-human-tw（去 AI 味 Skill）與 claude-code-resources（入門資源站）](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) | `skill`, `zh-tw`, `de-ai` | 0 / 1 |
+| 2026-11-15 | ⚪ | [Rei「4 種 AI 工作模式完整解析」：Chat vs Cowork/Work vs Claude Code/Codex 選型與落地陷阱評估](./notes/2026-11-15-rei-four-ai-work-modes-claude-codex-eval.md) | `claude-code`, `codex`, `claude-cowork` | 0 / 0 |
 | 2026-11-15 | 🟢 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 1 / 1 |
 | 2026-11-15 | ⚪ | [Runway MCP ＋ 程式化動態圖形（報紙剪貼拼貼 60 秒短片）工作流與分權 Prompt 評估](./notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md) | `runway-mcp`, `motion-graphics`, `remotion` | 0 / 0 |
 <!-- END GENERATED: index -->
@@ -485,6 +486,7 @@
 - 台灣個資遮罩Mod：[PII-Guard個資遮罩Mod](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md)
 - Codex插件協作：[CodexPluginCC雙AI協作](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md)
 - 繁中去AI味與資源評估：[說人話Skill與CC資源評估](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md)
+- 四種AI工作模式地圖：[Rei四種AI工作模式](./notes/2026-11-15-rei-four-ai-work-modes-claude-codex-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
