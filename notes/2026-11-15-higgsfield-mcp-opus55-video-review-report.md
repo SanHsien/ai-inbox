@@ -1,9 +1,9 @@
 ---
 id: "2026-11-15-higgsfield-mcp-opus55-video-review-report"
 title: "Higgsfield MCP × Opus 5.5 AI 影片實戰覆盤：全託管失敗原因與人類導演級對策檢查單"
-source_url: "https://okihiro-school.com/opus55-review-report/"
+source_url: "https://higgsfield.ai/mcp?tab=claude"
 source_platform: "Web / Official MCP"
-author: "Okihiro School & Higgsfield AI"
+author: "Higgsfield AI（官方服務）/ Okihiro School（覆盤作者宣稱，未查證）"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
 status: pending
@@ -21,8 +21,8 @@ tags:
 
 # Higgsfield MCP × Opus 5.5 AI 影片實戰覆盤：全託管失敗原因與人類導演級對策檢查單
 
-- **來源連結**：[Higgsfield MCP for Claude](https://higgsfield.ai/mcp?tab=claude) ｜ [添削01 レポート｜Opus 5.5 × Higgsfield AI 影片覆盤報告](https://okihiro-school.com/opus55-review-report/)
-- **發布平台 / 作者**：`Higgsfield AI` & `Okihiro School`（報告建立日 `2026-09-26`）
+- **來源連結**：[官方連接指南](https://higgsfield.ai/creator-hub/help-center/integrations/how-do-i-connect-higgsfield-to-ai-agent) ｜ [官方整合說明](https://higgsfield.ai/enterprise-help-center/platform/integrations) ｜ [添削01 レポート｜Opus 5.5 × Higgsfield AI 影片覆盤報告（來源頁 HTTP 403，未查證）](https://okihiro-school.com/opus55-review-report/)
+- **發布平台 / 作者**：`Higgsfield AI`（官方 MCP 服務提供者）與 `Okihiro School`（民間案例覆盤作者宣稱，報告日期標記 2026-09-26，來源頁 403，未經獨立查證；兩者非共同背書）
 - **分析日期**：`2026-11-15`
 - **當前狀態**：`🔴 未做 (Pending)`
 - **相關交叉參照**：
@@ -34,36 +34,41 @@ tags:
 ## 1. 核心內容摘要與官方 MCP 實查
 
 ### 1.1 Higgsfield MCP 實查
-- 官方託管 MCP 端點：`https://mcp.higgsfield.ai/mcp`，可直接在 Claude Desktop / Claude.ai（`Settings → Connectors → Add custom connector`）或 Claude Code / Cursor 中透過 OAuth 登入串接，免手動貼 API Key，讓代理直接調用 35–40+ 影音生圖模型並寫入專案檔（消耗帳號所屬 Higgsfield 點數）。
+- **官方整合端點**：官方託管 MCP 端點為 `https://mcp.higgsfield.ai/mcp`，支援 Claude Desktop / Claude.ai（透過自訂 connector）及 Claude Code CLI 串接。
+- **認證與費用邊界**：透過 OAuth 登入授權，免手動管理 API Key；但其為付費訂閱服務（非免費服務），調用模型需消耗帳號所屬 Higgsfield 點數。
+- **查證邊界**：官方文件未證實「35–40+」模型數量（作者宣稱，未查證）；官方 Assets 存放亦不等於自動寫入本機專案目錄。本分析不依該頁指示安裝額外 CLI 或 skills。
 
-### 1.2 「79 秒 AI 歷史短片」全交給 Opus 5.5 生成後的覆盤報告（9 大失敗原因）
-作者將 Opus 5.5 × Higgsfield 全自動產出的 79 秒影片（《大坂夏の陣 真田幸村 vs 徳川家康》），邊看邊錄製 6 分 15 秒口述添削影片再交回 Claude 整理出原因與對策，核心問題集中在三大類：
-1. **台詞誤讀失控（高嚴重度）**：Prompt 直接寫入難讀漢字（如「儂」「倅」「抗う」「乱世」），導致語音唸錯；且生成後模型單靠自檢時竟誤判為「大致正確（ほぼ正本どおり）」。
-2. **演出與構圖廉價（高／中嚴重度）**：AI 預設不斷產出「真橫並排廣角固定鏡頭」、只拍說話者不拍聽者反應（Reaction Cut）、把複雜動作塞進同一遠景，且未設定物理常識（鎧甲脫法不自然、敵將登場停在一步可刺死距離）。
-3. **跨鏡頭連續性破綻（高嚴重度）**：角色設定圖僅有上半身肖像，且生成下一鏡時未傳入上一鏡末幀，導致下一鏡下衣顏色（紅道服變白袴）與站位突變；剪輯還多加了無意義的 0.3 秒定格＋白閃轉場。
+### 1.2 影片覆盤案例（作者宣稱，未查證）
+原筆記轉述作者將全自動產出的 79 秒影片（《大坂夏の陣 真田幸村 vs 徳川家康》）進行 6 分 15 秒口述添削影片覆盤；但因原始頁面 HTTP 403，影片與原文未獨立取得，以下九項失敗點與數據標註為「作者宣稱，未查證」，不作為獨立驗證事實：
+1. **台詞誤讀失控（作者宣稱）**：Prompt 寫入難讀漢字（如「儂」「倅」「抗う」「乱世」）導致語音誤讀，且模型自檢誤判為合格。
+2. **演出與構圖廉價（作者宣稱）**：AI 預設產出「真橫並排廣角固定鏡頭」、欠缺聽者反應鏡頭（Reaction Cut），物理常識不自然。
+3. **跨鏡頭連續性破綻（作者宣稱）**：角色設定圖缺乏全身設定，未傳入上一鏡末幀導致下衣顏色與站位突變，剪輯夾雜 0.3 秒定格與白閃轉場。
+
+### 1.3 CQR 論證檢驗（Claim - Evidence - Reasoning）
+- **主張（Claim）**：AI 生成敘事影片常面臨連戲破綻與台詞誤讀，需引入導演級檢查清單與審片規範。
+- **證據（Evidence）**：[官方連接指南](https://higgsfield.ai/creator-hub/help-center/integrations/how-do-i-connect-higgsfield-to-ai-agent)、[官方整合說明](https://higgsfield.ai/enterprise-help-center/platform/integrations)；民間覆盤報告原始頁 HTTP 403（未查證）。
+- **推論（Reasoning）**：MCP 官方端點與授權機制屬實；但覆盤影片案例屬個人轉述，79 秒與 6 分 15 秒等細節未獨立驗證。建議之 7 條對策應作為條件性設計選項，而非不可變動之硬閘門。
 
 ---
 
 ## 2. 啟發與適用性評估
 
-- **可轉化為通用 AI 影片管線的 7 條硬檢查單**：
-  1. **台詞預審與讀音展開**：難讀字／專有名詞在送進語音／影片模型前轉為假名或注音確認版（一般常用字保留原字以免語調崩壞），並於生成前由人類核對正本。
-  2. **Whisper 逐字驗收**：生成後跑 ASR 轉錄並與正本逐字比對，只要錯 1 個關鍵詞即標記為 Retake，不信任模型主觀自評。
-  3. **全身三視角色表（Full-Body Character Sheet）**：須含正面／側面／背面、下衣、鞋襪與隨身配件。
-  4. **Last-Frame → `start_image` 連續鎖定**：連續鏡頭必須將前一 Clip 的最後一幀作為下一 Clip 的起始參照圖，輸出後並排比對接點兩幀。
-  5. **強制分鏡設計規則**：禁止連續「真橫並排固定鏡頭」，每段對話至少指定 1 次聽者反應鏡頭（Reaction Cut），動作戲拆分為特寫 Insert Cut + 明確鏡頭運動（Dolly / Pan / 仰角）。
-  6. **動作中直接 Hard Cut**：省略多餘的定格與白閃轉場，改以動作接點直切並同步音效峰值。
-  7. **「人類口述覆盤影片 → 多模態模型產出原因與對策表」閉環**：審片時直接錄下口述邊看邊批的螢幕影片交回模型整理為結構化修正單，修正效率遠高於純文字逐條溝通。
+- **對照既有影片工具管線與 7 條檢查清單適用性**：
+  1. **台詞預審與讀音展開**：難讀字在送進模型前展開為假名或注音確認版，常用字保留原字以免語調失真，由人類核對正本。
+  2. **ASR 讀音驗收與人工聽審**：Whisper 等 ASR 是篩檢線索，可能誤辨、漏字或把錯音辨為正字，不能作為 100% 逐字保證；讀音驗收仍需時間碼、預期讀音與人工聽審。ASR 失敗或缺依賴不能等同合格或直接強制重拍。既有影片工具 `SanHsien/video-autopilot-kit`（本機 `src/capcut_helpers/delivery_qa.py`）已有字幕同步抽驗與重疊率檢查，先對照缺口，不另造第二個 ASR 引擎。
+  3. **全身三視角色表（Full-Body Character Sheet）**：含正面／側面／背面、下衣與配件，作為角色一致性參考。
+  4. **Last-Frame → `start_image` 連續鎖定**：`start_image` 僅在模型支援且鏡頭連續時選用，切換機位、反應鏡頭或時間跳接未必適用，末幀亦不保證服裝完全一致。
+  5. **分鏡設計與反應鏡頭**：反應鏡頭（Reaction Cut）與鏡頭運動作為可註理由的導演選項，不硬性規定每段對話死板套用。
+  6. **動作直切（Hard Cut）**：省略多餘白閃，作為剪輯風格選項。
+  7. **口述覆盤人機協作流程**：「效率遠高於純文字」為作者宣稱待驗證假設；口述審片涉及錄影外送，必須先做視窗與 OCR 隱私檢查，嚴禁預設上傳私有素材，遵守 48 小時清除規範。
 
 ---
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-19`**｜**[優先級：低]** 將 AI 敘事影片 7 條導演級檢查單（全身角色表、末幀 `start_image` 接續、難讀詞預審＋ASR 逐字驗收、反應／特寫分鏡）納入 `video-autopilot-kit`／`code-as-video-studio` 分鏡規範
-  - **目標範圍**：`SanHsien/video-autopilot-kit` 或 `SanHsien/code-as-video-studio` 之分鏡規格／品質檢查文件
-  - **具體做法**：
-    1. 檢視現有影片自動化管線的分鏡與音畫驗收清單，補入「全身角色表＋`start_image` 連續性鎖定」與「ASR 逐字比對 Retake 閘門」規格。
-    2. 評估將「口述添削影片轉結構化修改單」列為人機協作審片標準流程（SOP）。
-  - **驗收標準（DoD）**：完成分鏡與審片 SOP 文件更新並推送至對應專案倉庫。
+- [ ] **`T-20261115-19`**｜**[優先級：低]** 補齊既有敘事影片分鏡規範的連戲、讀音與人工審片條件
+  - **目標範圍**：主要 owner 為 `SanHsien/code-as-video-studio`；更新 `templates/cinematic-storyboard-template.md`，新增 `docs/narrative-video-review-sop.md` 與 `docs/evidence/narrative-review-examples.md`。唯讀參照 `SanHsien/video-autopilot-kit` 已有 ASR／交付 QA，本階段不修改該 repo 程式。
+  - **具體做法**：將全身角色參考、服裝／站位連戲、難讀詞預審、ASR 線索加人工聽審、反應鏡頭與轉場選擇映射到既有鏡頭卡；對每項寫適用條件、N/A 理由與人工決策者。`start_image` 僅在模型支援且鏡頭連續時選用，不保證視覺一致。說明既有字幕同步抽驗與讀音驗收的差別，不新增 ASR 引擎／關鍵字驗證器。口述回饋預設用去識別文字與時間碼；若另需錄影，先走現行隱私檢查且不自動上傳。來源頁未取得的案例細節明標未查證。
+  - **驗收標準（DoD）**：三個具名檔案完成，七條建議各有採用／條件採用／不採用與理由；範例含一組連續動作與一組切換機位，各給至少兩張合成鏡頭卡，示範末幀可用／不適用情形。另列一個關鍵詞疑似誤讀的時間碼修正單範例，標示為合成案例，區分 ASR 疑點與人工聽審結論；沒有音訊時不得捏造已聽審。明列與既有影片 QA 的重疊、缺口、來源 URL 與限制；依 repo 指引執行文件／既有檢查並保存結果。不生成付費影片、不接 MCP、不以案例文件聲稱模型品質已驗證；不要求本任務 push。
   - **完成日期**：*（完成時填 YYYY-MM-DD）*
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
