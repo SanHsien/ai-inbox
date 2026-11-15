@@ -47,8 +47,8 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
-| `T-20261115-14` | 🔴 未做 | 低 | 視需求將 `photo-riso-poster`（精簡純 `SKILL.md`）收錄至 `SanHsien/agent-assets` 並以 Antigravity `image-generator` 實測 1 組照片／文字主題海報 | `C:\GitHub\agent-assets\skills\`（或個人本地 `~/.gemini/config/skills/`） | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | 2026-11-15 |
-| `T-20261115-15` | 🔴 未做 | 低 | 在本機 Claude Code / Claude Desktop 評估安裝 `openai/codex-plugin-cc`，驗證 `/codex:adversarial-review` 與既有 `ai-review`／`agent-relay` 之分工邊界 | 本機 Claude Code 插件環境與 `C:\GitHub\ai-inbox\docs\` | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | 2026-11-15 |
+| `T-20261115-14` | 🔴 未做 | 低 | 唯讀評估 photo-riso-poster 的構圖規則、授權與提示詞安全，提出是否值得納入共用 Skill 的決策 | 本 repo `docs/photo-riso-poster-readonly-assessment.md`；未來候選為 `SanHsien/agent-assets`（私有），本任務不修改該 repo 或 `~/.gemini`。 | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | 2026-11-15 |
+| `T-20261115-15` | 🔴 未做 | 低 | 唯讀評估 codex-plugin-cc 與既有 ai-review／agent-relay 的 Windows 權限與 hook 邊界，決定是否值得另案試用 | 本 repo `docs/codex-plugin-cc-readonly-assessment.md`；僅讀已安裝工具的非機密規格，不修改 Claude／Codex 全域配置或 hooks。 | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 

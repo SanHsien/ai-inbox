@@ -27,7 +27,7 @@ tags:
   - [Anthropic 官方入門教學 (claude.dev Blog)](https://claude.dev/blog/getting-started-with-claude-code-mods/)
   - [Anthropic 官方說明 (claude.com Blog)](https://claude.com/blog/claude-code-mods)
   - [Claude Code 官方更新日誌 (v2.1.287)](https://code.claude.com/docs/en/changelog)
-  - [官方公告推文 (@ClaudeDevs on X)](https://x.com/ClaudeDevs/status/2105721434807083061)
+  - [官方公告推文 (@ClaudeDevs on X)](https://x.com/ClaudeDevs/status/2105721434807083061)（原文未能讀取，未查證）
   - [社群貼文分析 (@NFT_Chen on X)](https://x.com/NFT_Chen/status/2105738805785596166)
 - **分析日期**：`2026-10-18`
 - **當前狀態**：`🟢 已完成 (Done)`
@@ -114,19 +114,19 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
 
 ### 1.4 補充實查：內建 Mod（`diff` / `sec-default`）與無沙盒安全邊界（2026-11-15）
 
-- **內建 `/diff` 已模組化（`diff` Mod）**：Claude Code 互動式 `/diff` 檢視面板即以內建 `diff` Mod 實作，可停用或替換為自訂版本；CLI 與 Desktop App 皆可透過 `/plugin` 安裝含 Mod 的外掛。
-- **企業級保護傘（`sec-default` Mod）**：Team / Enterprise 與託管設定環境內建 `sec-default` Mod，會在洋蔥模型最外層（`prepend` tier）優先載入並採 fail-closed 設計，防止使用者自訂 Mod 繞過組織的 permission deny-list、託管規則或 MCP allowlist。
-- **個人用戶安全提醒（無沙盒隔離）**：Mods 直接在 Claude Code 宿主進程內執行，**具備與 Claude Code 相同的本機系統權限且無沙盒隔離**；個人用戶沒有企業級 `sec-default` 託管層把關，因此僅能安裝經審查的信任來源，亦印證 `T-20261018-10` 將核心高危防護維持於外部獨立閘門（`harness-guard`／`agent-relay`）的必要性。
+- **內建 `/diff` 已模組化（`diff` Mod）**：Claude Code 互動式 `/diff` 檢視面板即以內建 `diff` Mod 實作，可停用或替換為自訂版本；CLI 與 Desktop App 皆可透過 `/plugin` 安裝含 Mod 的外掛（見[官方 Mods 文章](https://claude.com/resources/articles/claude-code-mods)）。
+- **企業級保護傘（`sec-default` Mod）**：Team / Enterprise 與受 managed settings 管理的機器內建 `sec-default` Mod，會在洋蔥模型最外層（`prepend` tier）優先載入並採 fail-closed 設計，用來防止使用者自訂 Mod 繞過組織的 permission deny-list、託管規則或 MCP allowlist。依 [mods README](https://github.com/anthropics/claude-code/blob/main/mods/README.md)，觸發條件還包含 `managed-mcp.json`，且託管的 `prependPlugins` 是例外。它是政策層防護，不是作業系統層隔離，不能說任意惡意宿主程式碼都繞不過；保護範圍與限制見 [sec-default README](https://github.com/anthropics/claude-code/blob/main/mods/sec-default/README.md)。
+- **未受管理環境的安全提醒（無沙盒隔離）**：Mods 直接在 Claude Code 宿主進程內執行，**具備與 Claude Code 相同的本機系統權限且無沙盒隔離**；未受管理的個人環境不應預設有 `sec-default` 這一層（有沒有取決於機器是否符合 managed 設定條件，不是看訂閱身分），因此僅能安裝經審查的信任來源，亦印證 `T-20261018-10` 將核心高危防護維持於外部獨立閘門（`harness-guard`／`agent-relay`）的必要性。
 
 ### 1.5 補充評估：官方內建 Side Agent Mod `cc-plugin-you-should-know@builtin`（2026-11-15）
 
-- **功能與啟用方式**：`v2.1.287` 同步內建官方範例 Mod `cc-plugin-you-should-know@builtin`（預設關閉），透過 `/plugin enable cc-plugin-you-should-know@builtin` 啟用。其機制是在背景派駐一個輕量旁路觀察代理（Side Agent），掃描長任務與對話產出，當偵測到「完成報告未提及但 diff 確實有改動」或遺漏邊界條件時，於 `AbovePrompt` 區域跳出簡短提醒。
+- **功能與啟用方式**：`v2.1.287` 同步內建官方範例 Mod `cc-plugin-you-should-know@builtin`（預設關閉），透過 `/plugin enable cc-plugin-you-should-know@builtin` 啟用。啟用指令見 [2.1.287 官方更新日誌](https://code.claude.com/docs/en/changelog#2-1-287)。以下機制描述超出該條更新日誌的內容，未查證：在背景派駐一個輕量旁路觀察代理（Side Agent），掃描長任務與對話產出，當偵測到「完成報告未提及但 diff 確實有改動」或遺漏邊界條件時，於 `AbovePrompt` 區域跳出簡短提醒。
 - **版本前置與隱私限制**：
-  1. 僅限 **Anthropic 第一方直連 session**，且**必須開啟 Telemetry（遙測回傳）**才可運作（Bedrock / Vertex / Foundry 或關閉 Telemetry 環境不適用；同版 `v2.1.287` 亦將 Opus 4.7+ 與 Fable 在 Bedrock／Vertex／Foundry 的預設 context 調升至 1M）。
+  1. 僅限 **Anthropic 第一方直連 session**，且**必須開啟 Telemetry（遙測回傳）**才可運作（Bedrock / Vertex / Foundry 或關閉 Telemetry 環境不適用；同版 `v2.1.287` 亦將 Opus 4.7+ 與 Fable 在 Bedrock／Vertex／Foundry 的預設 context 調升至 1M，Claude apps gateway 亦同）。
   2. 屬於輔助性質的輕量提醒，不能取代實際檢視 `git diff` 與自動化測試。
 - **與現有審查流程之定位區隔（暫不新增任務）**：
-  - 本系統已透過 `SanHsien/agent-advisor`（獨立 fresh-context 審查者）與 `pytest` / `verify_inbox.py` 建立硬性驗收門檻；`You should know` 提醒僅存在於單一 Claude Code session 內（不會跨工具彙整）。
-  - **操作建議**：日常小改動維持關閉以節省額度與減少雜訊，並避免因 Telemetry 門檻限制工作流；僅在使用第一方 Claude Code 進行大型多檔重構收尾時，可視需要短暫啟用作為額外的盲點提示器。
+  - 本系統的 `SanHsien/agent-advisor` 以 solo 為預設，只有 audit／full 路由才有獨立 fresh-context 審查者，不是每件任務都強制二審；`pytest` / `verify_inbox.py` 只為各自檢查範圍提供證據，不保證事實無誤。`You should know` 提醒僅存在於單一 Claude Code session 內（不會跨工具彙整）。
+  - **操作建議**：日常小改動維持關閉以減少雜訊與額度消耗（省下多少未實測），並避免因 Telemetry 門檻限制工作流；僅在使用第一方 Claude Code 進行大型多檔重構收尾時，可視需要短暫啟用作為額外的盲點提示器。
 
 ---
 
