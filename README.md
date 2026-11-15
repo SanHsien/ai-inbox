@@ -409,6 +409,7 @@
 | 2026-11-14 | 🟡 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 1 / 2（+1 不做） |
 | 2026-11-14 | 🟢 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 2 / 2 |
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
+| 2026-11-15 | ⚪ | [YouTube「小說改編 AI 漫劇全流程（47 分鐘）」逐字稿拆解：導流話術查證與手工流程評估](./notes/2026-11-15-ai-comic-drama-novel-adaptation-fact-check.md) | `ai-video`, `ai-drama`, `fact-check` | 0 / 0 |
 | 2026-11-15 | ⚪ | [AI-Native 一人接案公司：從賣工時轉向「建置＋月費維運」與多角色可重複服務系統](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) | `ai-agency`, `freelance`, `retainer-model` | 0 / 0（+2 不做） |
 | 2026-11-15 | ⚪ | [Amazon 亞馬遜聯盟分潤與台灣電商（蝦皮／酷澎／聯盟網／momo）分潤計畫查證評估](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md) | `affiliate-marketing`, `amazon-associates`, `shopee-affiliate` | 0 / 0 |
 | 2026-11-15 | 🟢 | [免剪輯軟體 17 秒 AI 商業廣告管線：Audio-First 節奏表、綠幕角色解耦與 FFmpeg Chroma Key 合成評估](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | `ai-video`, `audio-first`, `chroma-key` | 1 / 1 |
@@ -499,6 +500,7 @@
 - 全端部署與自動化落地：[HanSun 全端建置部署手冊](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md)、[LINE家庭群組Bot與Agent引導部署](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md)、[陳鍾誠Cloudflare一鍵部署評估](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md)
 - 開源教材與商業案例查核：[GitHub 開源 AI 工具矩陣](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md)、[海外一手副業案例與影音萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)、[臉書發文收益宣稱查核](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md)、[AI Engineering from Scratch 教材評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md)
 - 社群動態與帳號合規：[Muse跨區註冊與邀請碼評析](./notes/2026-11-10-asha-muse-registration-vpn-referral-evaluation.md)
+- AI漫劇話術查證：[AI漫劇教學話術查證](./notes/2026-11-15-ai-comic-drama-novel-adaptation-fact-check.md)
 - 電商分潤真假查證：[亞馬遜與蝦皮分潤查證](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md)
 - ChatGPT分發紅利：[ChatGPT MCP分發紅利](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md)
 <!-- END GENERATED: clusters -->
