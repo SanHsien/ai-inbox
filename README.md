@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 227 項任務：🔴 未做 14／🟡 進行中 0／🟢 已做 141／⚪ 不做 72
+> 共 228 項任務：🔴 未做 15／🟡 進行中 0／🟢 已做 141／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -60,6 +60,7 @@
 | `T-20261115-10` | 🔴 未做 | 低 | 查驗 OpenAI Apps SDK 上架與 OAuth 2.1 契約規範，評估以 Cloudflare Workers 零成本託管 1 個具引流價值的垂直 MCP 微工具可行性 | 研究評估筆記／規格備忘（`C:\GitHub\ai-inbox\docs\` 或對應微工具專案，先不立新 repo） | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | 2026-11-15 |
 | `T-20261115-11` | 🔴 未做 | 低 | 於 `SanHsien/video-autopilot-kit` 評估補入「Audio-First 秒數對齊＋FFmpeg 綠幕 Chroma Key（含 `despill` 抗綠邊）合成模組」 | `C:\GitHub\video-autopilot-kit`（或本機合成工具腳本） | [2026-11-15-audio-first-greenscreen-ai-commercial-pipeline](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | 2026-11-15 |
 | `T-20261115-13` | 🔴 未做 | 低 | 評估於 `SanHsien/agent-relay` 的 `result` 回報與 `accept` 驗收清單支援顯示 Demo 影片附件路徑（`refs` / `result` 證據整合，不另開 Repo） | `C:\GitHub\agent-relay`（`SPEC.md`、`agent_relay/cli.py`） | [2026-11-15-cross-agent-pr-demo-video-delivery-workflow](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | 2026-11-15 |
+| `T-20261115-14` | 🔴 未做 | 低 | 視需求將 `photo-riso-poster`（精簡純 `SKILL.md`）收錄至 `SanHsien/agent-assets` 並以 Antigravity `image-generator` 實測 1 組照片／文字主題海報 | `C:\GitHub\agent-assets\skills\`（或個人本地 `~/.gemini/config/skills/`） | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
@@ -411,6 +412,7 @@
 | 2026-11-15 | 🔴 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 0 / 2 |
 | 2026-11-15 | 🔴 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 0 / 2 |
 | 2026-11-15 | 🔴 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 0 / 1 |
+| 2026-11-15 | 🔴 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 0 / 2 |
 | 2026-11-15 | 🔴 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 0 / 1 |
 <!-- END GENERATED: index -->
@@ -454,6 +456,7 @@
 - AI影片剪輯：[Editkin免費AI剪輯](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md)
 - 綠幕合成廣告管線：[Audio-First綠幕廣告管線](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md)
 - 前端WebGPU修圖：[WebGPU修圖Prompt評估](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md)
+- 證據導向視覺Skill：[PhotoRisoPoster海報Skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md)
 - 向量幾何Logo與MCP：[Rikyū幾何Logo與MCP](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
