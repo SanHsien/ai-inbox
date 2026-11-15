@@ -39,23 +39,20 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 229 項任務：🔴 未做 6／🟡 進行中 0／🟢 已做 146／⚪ 不做 77
+> 共 229 項任務：🔴 未做 3／🟡 進行中 0／🟢 已做 149／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261115-04` | 🔴 未做 | 中 | 唯讀審查 Cloudflare security-audit-skill 的執行契約與成本，訂出 Windows 可採用的最小範圍 | `SanHsien/ai-inbox` 的 `docs/cloudflare-security-audit-readonly-review.md`。 | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
-| `T-20261115-01` | 🔴 未做 | 低 | 唯讀評估 Pi 在 Windows 原生環境的安全、訂閱授權與現有 agent-relay 分工，不安裝或連接帳號 | `SanHsien/ai-inbox` 的 `docs/pi-hybrid-harness-readonly-assessment.md`。 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
-| `T-20261115-03` | 🔴 未做 | 低 | 唯讀比較 LogoLoom 與現有 SVG 產出方式，釐清額度、依賴與安全邊界 | `SanHsien/ai-inbox` 的 `docs/local-svg-logo-options-review.md`。 | [2026-11-15-rikyu-geometric-vector-logo-mcp](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | 2026-11-15 |
 | `T-20261115-14` | 🔴 未做 | 低 | 視需求將 `photo-riso-poster`（精簡純 `SKILL.md`）收錄至 `SanHsien/agent-assets` 並以 Antigravity `image-generator` 實測 1 組照片／文字主題海報 | `C:\GitHub\agent-assets\skills\`（或個人本地 `~/.gemini/config/skills/`） | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | 2026-11-15 |
 | `T-20261115-15` | 🔴 未做 | 低 | 在本機 Claude Code / Claude Desktop 評估安裝 `openai/codex-plugin-cc`，驗證 `/codex:adversarial-review` 與既有 `ai-review`／`agent-relay` 之分工邊界 | 本機 Claude Code 插件環境與 `C:\GitHub\ai-inbox\docs\` | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 146 項）</summary>
+<details><summary>展開查看已完成任務（共 149 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -200,6 +197,9 @@
 | `T-20261114-01` | 2026-11-14 | 將 GPT-6.1 Terra 額度、credits 單價與 Fast 倍率核實結果增補進模型速查表 | `docs/model-burn-rate-routing-matrix.md` 新增第 9 節（9.1–9.6，約 66 行）。數字取自 2026-11-14 讀取的官方頁：Terra 35–285 對 Sol 15–160、Terra credits 25/1.25/125 對 Sol 50/2.5/250、Fast 2.5x／2x。線索中「額度增加」依官方原文「Overall Work and Codex plan limits are unchanged」標為措辭不精確。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
 | `T-20261114-04` | 2026-11-14 | `tools/verify_inbox.py` 新增檢查：筆記裡沒有任務 ID 的待辦核取方塊一律報錯，並清掉 11-11 至 11-14 六篇筆記的殘留清單 | 完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
 | `T-20261114-05` | 2026-11-15 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | 完成（2026-11-15）：Antigravity 初版 2044f9b 經獨立審查判先修，Codex 修正為 88addb6、0cabfe3（SanHsien/agent-relay main，CI 與 CodeQL 綠燈）。recommend 必須是選項代號、answer 只接受 question、選項須在清單內、已答題不可重答、可一次回答多題且任一失敗整批不送；另補 note 禁止換行、選項代號拒絕不可見字元、SPEC 中英補 ask／answer 流程與舊格式升級說明。整合者沙盒外實跑：Python 3.14 與 3.11 各 485 tests OK、doc parity PASS、links 0 broken、mutation 25/25 killed；Fable 複審四項必修全部通過。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
+| `T-20261115-01` | 2026-11-15 | 唯讀評估 Pi 在 Windows 原生環境的安全、訂閱授權與現有 agent-relay 分工，不安裝或連接帳號 | 完成（2026-11-15）：docs/pi-hybrid-harness-readonly-assessment.md，固定 earendil-works/pi c3cc916。安裝期有 husky prepare 與 8 個 install script；執行期 worktree 不是 OS 隔離；三家訂閱授權證據狀態逐家列出；與 agent-relay／advisor 能力重疊；結論暫不採納。唯讀評估，Codex 撰寫，整合者重產索引並補驗證段；Fable 獨立複審抽查來源事實全部吻合；未執行任何第三方程式。 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) |
+| `T-20261115-03` | 2026-11-15 | 唯讀比較 LogoLoom 與現有 SVG 產出方式，釐清額度、依賴與安全邊界 | 完成（2026-11-15）：docs/local-svg-logo-options-review.md，固定 mcpware/logoloom 9e5de3e。原始碼有未固定版本的 npx -y vtracer-cli 自動備援，以及用字串拼接的 shell 指令；設計仍耗上游 agent 額度；結論暫不安裝。唯讀評估，Codex 撰寫，整合者重產索引並補驗證段；Fable 獨立複審抽查來源事實全部吻合；未執行任何第三方程式。 | [2026-11-15-rikyu-geometric-vector-logo-mcp](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) |
+| `T-20261115-04` | 2026-11-15 | 唯讀審查 Cloudflare security-audit-skill 的執行契約與成本，訂出 Windows 可採用的最小範圍 | 完成（2026-11-15）：docs/cloudflare-security-audit-readonly-review.md，固定 cloudflare/security-audit-skill c1c8a8c。含檔案清冊 C1–C9；最低代理預算 quick 6、standard 7（SKILL.md:123）；Windows 不能強制的沙盒限制；needs_validation 只用在 finding 層；動態測試前提；結論暫不採納動態執行。唯讀評估，Codex 撰寫，整合者重產索引並補驗證段；Fable 獨立複審抽查來源事實全部吻合；未執行任何第三方程式。 | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) |
 | `T-20261115-05` | 2026-11-15 | 在 agent-advisor 的 Codex 審查契約補上證據缺口與防禦縱深的區分，保留既有三種最終裁決 | 完成（2026-11-15）：SanHsien/agent-advisor 9f7a53c、cecaf62（main，CI 綠燈）。Codex reviewer 契約把證據不足標為 finding 層的 needs_validation，防禦縱深標 hardening；最終 verdict 仍只有 ship／fix-first／rethink；只有 needs_validation 的 fix-first 須交新的 fresh reviewer 重判，主代理不可自驗後回報完成。docs/reviewer-evidence-gap-contract.md 有四個固定案例。Fable 獨立複審兩輪，第二輪通過：6 個 mutation 中 5 個被測試抓到，存活的同義改寫屬字串型契約測試的已知限制。dev_check 沙盒外 PASSED（76 tests）。其他平台是否同步已列入 agent-advisor ROADMAP。 | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) |
 | `T-20261115-06` | 2026-11-15 | 修正模型路由文件的證據分級，補上符合現行 solo／delegate／audit／full 的成本示例 | 完成（2026-11-15，commit 87d0d1a、442d073）：docs/model-burn-rate-routing-matrix.md 第 0 節證據分五級，新增第 10 節（10.2 把 5 倍、3.5 倍、12 倍、省 60–70% 拆成不同性質的數字；10.3 路由與配對照抄已安裝 orchestration SKILL.md；10.4 solo／delegate／audit 三個書面案例加 full 例外；10.5 成本公式；10.6 換 session 前核對清單），筆記同步改標社群宣稱。未重跑 benchmark，第 9 節沒動。Fable 獨立複審後修 2 處必修。 | [2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) |
 | `T-20261115-10` | 2026-11-15 | 依 OpenAI 一手文件修正上架、驗證與託管成本假設，交付單份可行性檢核表 | 完成（2026-11-15，commit 68d71fe、4b9098e）：docs/openai-plugin-submission-feasibility.md 22 列檢核表，逐項附 developers.openai.com 與 Cloudflare 官方頁、查證日 2026-11-15。結論是暫不開發：只有少數 plugin 獲加強曝光且不能申請；plugin 只能做實體商品交易，不能賣訂閱；唯一候選 public_apis_indexer 沒有對外需求；Workers Free 有額度上限，不是零成本。Fable 獨立複審抽查 15 項一手來源全部相符。 | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) |
@@ -410,14 +410,14 @@
 | 2026-11-15 | 🟢 | [免剪輯軟體 17 秒 AI 商業廣告管線：Audio-First 節奏表、綠幕角色解耦與 FFmpeg Chroma Key 合成評估](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | `ai-video`, `audio-first`, `chroma-key` | 1 / 1 |
 | 2026-11-15 | ⚪ | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 0（+1 不做） |
 | 2026-11-15 | 🟢 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 1 / 1 |
-| 2026-11-15 | 🟡 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 1 / 2 |
+| 2026-11-15 | 🟢 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 2 / 2 |
 | 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
 | 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |
 | 2026-11-15 | 🔴 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 0 / 1 |
 | 2026-11-15 | 🔴 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 0 / 1 |
-| 2026-11-15 | 🔴 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 0 / 1（+1 不做） |
+| 2026-11-15 | 🟢 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 1 / 1（+1 不做） |
 | 2026-11-15 | ⚪ | [POUND0423 單檔影片／圖片故障特效（Glitch VFX）工具查證與技術評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md) | `glitch-effect`, `webgl`, `canvas` | 0 / 0 |
-| 2026-11-15 | 🔴 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 0 / 1 |
+| 2026-11-15 | 🟢 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 1 / 1 |
 | 2026-11-15 | ⚪ | [Runway MCP ＋ 程式化動態圖形（報紙剪貼拼貼 60 秒短片）工作流與分權 Prompt 評估](./notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md) | `runway-mcp`, `motion-graphics`, `remotion` | 0 / 0 |
 <!-- END GENERATED: index -->
 

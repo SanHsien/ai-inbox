@@ -6,7 +6,7 @@ source_platform: "GitHub"
 author: "paul800901（參考目標 404）；核心基準：earendil-works/pi"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "混合型Harness"
 short_title: "Pi混合型Harness"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[paul800901/K-harness（目前公開不可存取，API 回 404）](https://github.com/paul800901/K-harness) ｜ [官方上游參考：earendil-works/pi](https://github.com/earendil-works/pi)
 - **發布平台 / 作者**：`GitHub` / `earendil-works/pi`（原 `badlogic/pi-mono`，Mario Zechner，MIT License，121,989 stars）
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 > **查證註記**：使用者提供的參考專案 `paul800901/K-harness` 經 GitHub API 與 HTTP 實查皆回傳 `404 Not Found`，且 `paul800901` 公開倉庫清單中亦無該專案（可能已轉私有或移除；[API 回 404](https://api.github.com/repos/paul800901/K-harness) 只能確認目前公開請求不可存取，不能確定已刪除）。本分析以 `pi` 官方上游倉庫 `earendil-works/pi` 原始碼與文件（`providers.md`、`cli-integration.md`、`windows.md`、`security.md`、`custom-provider.md`）為事實基準。
 
@@ -95,12 +95,12 @@ tags:
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-01`**｜**[優先級：低]** 唯讀評估 Pi 在 Windows 原生環境的安全、訂閱授權與現有 agent-relay 分工，不安裝或連接帳號
+- [x] **`T-20261115-01`**｜**[優先級：低]** 唯讀評估 Pi 在 Windows 原生環境的安全、訂閱授權與現有 agent-relay 分工，不安裝或連接帳號
   - **目標範圍**：`SanHsien/ai-inbox` 的 `docs/pi-hybrid-harness-readonly-assessment.md`。
   - **具體做法**：固定 Pi commit，唯讀檢查 package／lockfile、安裝入口、extensions、providers、security 與 Windows 文件；區分作業系統隔離、project trust 與 worktree。對照現有 relay／advisor 已有能力，列真正新增的使用者價值。逐家列官方 CLI 委派與直接 provider 授權／費用的差別，確認不了就記未查證；不擷取憑證、不測 OAuth、不跑第三方腳本。
   - **驗收標準（DoD）**：產出上述報告，含固定 commit／來源 URL、安裝期與執行期風險、Windows 前提、三家授權證據狀態、既有能力重疊表與採納／不採納結論。不得承諾免費訂閱接入，不得把資料夾或 worktree 稱作 OS 沙盒；對本報告相關文件變更執行 repo 規定檢查並保存命令與結果。**不以未安裝當作本任務缺件，也不宣稱通過動態實測。**
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15）：docs/pi-hybrid-harness-readonly-assessment.md，固定 earendil-works/pi c3cc916。安裝期有 husky prepare 與 8 個 install script；執行期 worktree 不是 OS 隔離；三家訂閱授權證據狀態逐家列出；與 agent-relay／advisor 能力重疊；結論暫不採納。唯讀評估，Codex 撰寫，整合者重產索引並補驗證段；Fable 獨立複審抽查來源事實全部吻合；未執行任何第三方程式。
 
 - [ ] **`T-20261115-02`**｜**[優先級：低]** 實作 Pi 混合型擴充套件 `pi-hybrid-relay`（於 Pi 內統一委派 `codex` CLI、`claude` CLI、Antigravity 頂層對話與 `agent-relay` 問答）
   - **狀態**：⚪ 不做（2026-11-15 獨立審查：依賴的 T-20261115-01 尚無採納結論；一次包四種委派、工具 Hook、TUI 與跨機回收，成本遠超介面實驗，且現有 relay／cortex 已處理派工。日後確認有 UI 痛點，再提單一 relay 包裝切片）
