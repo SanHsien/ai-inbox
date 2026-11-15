@@ -6,7 +6,7 @@ source_platform: "Social / Forum"
 author: "匿名社群分享"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: archived
 cluster: 1
 cluster_role: "一人接案Agency系統"
 short_title: "AI一人接案Agency"
@@ -24,7 +24,7 @@ tags:
 - **來源連結**：`N/A`（社群兩篇連續文章：〈AI 接案商業模式〉與〈AI-Native Agency 組織架構〉）
 - **發布平台 / 作者**：`社群平台` / `匿名作者`
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md`](./2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md)（需求解壓縮、價值報價法與外部裁判 DoD）
   - [`notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md`](./2026-10-17-hansun-fullstack-agent-deployment-manual.md)（全端建站規格與上線 QA 稽核）
@@ -53,7 +53,7 @@ tags:
 - **Why（為解決什麼問題 / 痛點）**：單人用單一對話框接案只會變成「打字比較快的 Freelancer」，仍被自己的時間天花板鎖死；唯有把每次接案拆成標準角色流水線並將經驗沉澱為可複用資產，才能用一套系統承接多個客戶與月費維運。
 - **How（核心運作機制）**：把專案從「幫我做個網站」拆解成研究、策略、文案、UI/UX、程式、SEO、獨立 Review、QA 與人類最終把關；每完成一案就把可重複步驟固化成 Skill / SOP / Template。
 - **When & Where（適用時機與場景）**：網站建置、SEO/GEO、AI 自動化、企業知識庫、程式開發、市場與競爭者研究等具備高重複性的 B2B 服務。
-- **Key Metrics / Numbers（舉例數字，非實證基準）**：文中「12 萬建置＋每月 2.5 萬、10 個客戶＝每月 30 萬」為商業模式舉例計算；實際成效視獲客能力、客戶留存率與月費交付邊界控管而定。
+- **Key Metrics / Numbers（舉例數字，非實證基準）**：文中「12 萬建置＋每月 2.5 萬、10 個客戶＝每月 30 萬」為商業模式舉例計算，而且算錯：2.5 萬 × 10 是每月 25 萬，要每客戶 3 萬才是 30 萬；實際成效視獲客能力、客戶留存率與月費交付邊界控管而定。
 
 ---
 
@@ -65,7 +65,7 @@ tags:
   - **獨立 Reviewer & QA 閘門**：[`docs/production-smoke-security-checklist.md`](../docs/production-smoke-security-checklist.md) ＋ `SanHsien/agent-advisor`（`advisor-pro-reviewer`）＋ `SanHsien/harness-guard`
   - **多角色派工與跨機協作**：`SanHsien/agent-relay` ＋ [`templates/team-dispatch-skill-template.md`](../templates/team-dispatch-skill-template.md)
   - **交付後客戶開單維運**：[`templates/feedback-desk-agent-prompt.md`](../templates/feedback-desk-agent-prompt.md)
-- **目前真正缺的三塊拼圖（高優先補齊項目）**：
+- **若日後要經營接案才需要補的三塊**（目前沒有維護者要經營接案公司的需求證據，所以不是待辦；`T-20261115-08`、`T-20261115-09` 已關閉）：
   1. **缺一條龍「接案營運總綱（Playbook）」**：上述四份範本目前各自獨立，缺一份明確對映「接案 7 階段 $\rightarrow$ 調用哪支現有範本／哪個 Agent $\rightarrow$ 產出什麼交付物 $\rightarrow$ 何時人類批准」的總控文件。
   2. **缺「月費維運（Retainer）邊界與報價範本」**：若月費方案沒有白紙黑字切開「例行維運（安全更新、數據月報、SEO/GEO 微調、小修）」與「新功能變更單（CR）」，月費很容易變成「每月 2.5 萬包山包海無限加班」。
   3. **缺「結案資產沉澱檢查點」**：每次專案結案時，沒有強制觸發「把這次踩過的坑與重複流程蒸餾回 `ai-inbox/templates/` 或 `workflow-skill-creator`」的收尾清單。
@@ -73,10 +73,11 @@ tags:
 ### 2.1 補充查證：網友留言評估（入門提示詞 vs. 國外 B2B Lead Gen 工具鏈）
 
 1. **留言 1（通用提示詞詢問 AI 接案架構）**：這類問題只適合當作初始概念掃盲；通用模型給出的是抽象教科書架構，沒有真實行業名單、驗證管道、合規或定價邊界，無法直接作為接案業務引擎。
-2. **留言 2（國外流行的 AI Lead Gen 關鍵詞與 API 工具鏈）— 查證屬實，但有嚴格合規紅線**：
-   - **主流 B2B Outbound 技術棧**：**Discovery**（Google Places API / Apify 按區域與行業找名單）$\rightarrow$ **Enrichment**（Apollo.io + **Clay** Waterfall 多源驗證企業信箱，並由 Claygent 讀目標官網自動產出診斷切入點）$\rightarrow$ **Outreach**（Instantly.ai / Smartlead 多信箱輪替預熱、壓低退信率）。
+2. **留言 2（國外流行的 AI Lead Gen 關鍵詞與 API 工具鏈）— 工具名稱為留言所列，現行價格、條款與是否主流都未查證；另有合規紅線**：
+   - 這些服務多數要另外付費。本 repo 不增加付費，不把這條工具鏈當預設實作。
+   - **留言所列的 B2B Outbound 技術棧**：**Discovery**（Google Places API / Apify 按區域與行業找名單）$\rightarrow$ **Enrichment**（Apollo.io + **Clay** Waterfall 多源驗證企業信箱，並由 Claygent 讀目標官網自動產出診斷切入點）$\rightarrow$ **Outreach**（Instantly.ai / Smartlead 多信箱輪替預熱、壓低退信率）。
    - **合規與實務風險（不可直接盲目照搬）**：
-     - 美國受 **CAN-SPAM** 規範（須實體地址、誠實主旨、10 天內處理退訂）；歐盟／英國受 **GDPR** 嚴格限制（無明確同意原則禁止對個人工作信箱冷發信，德國／奧地利尤嚴）；台灣進行 B2B 開發須遵守《個人資料保護法》與公開來源合法性，切勿購買黑名單或對社群／LINE 進行未授權批量私訊。
+     - 美國受 **CAN-SPAM** 規範（須實體地址、誠實主旨、[10 個工作天內](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business)處理退訂）。英國依 [ICO 的 B2B 行銷指引](https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/business-to-business-marketing/)，寄給公司（corporate subscriber）的信箱不一律需要 PECR 同意，寄給個人或獨資業者才需要；只要處理到個資，仍另受 UK GDPR 約束。歐盟各國規定不同，不能壓成一條規則，各國細節未查證。台灣進行 B2B 開發須遵守《個人資料保護法》與公開來源合法性，切勿購買黑名單或對社群／LINE 進行未授權批量私訊。
      - 不可使用主網域直接發冷開發信，避免聲譽受損影響正常客戶溝通；API 串接須遵守各平台速率與 ToS（避免無頭硬爬導致封號）。
 
 ---
@@ -84,6 +85,7 @@ tags:
 ## 3. 拆解待辦事項（Action Items）
 
 - [ ] **`T-20261115-08`**｜**[優先級：高]** 建立《AI-Native 一人接案營運總綱》（`docs/ai-agency-delivery-playbook.md`），串聯現有診斷、建站、審查與維運範本成端到端流水線
+  - **狀態**：⚪ 不做（2026-11-15 獨立審查：沒有維護者經營接案業務、客戶、預算或月費交付責任的需求證據，候選獲客服務多須額外付費。日後明確要做，先定案型、客戶與交付範圍再寫商業文件）
   - **目標範圍**：`C:\GitHub\ai-inbox\docs\ai-agency-delivery-playbook.md`（參考並連結現有 `templates/client-requirement-decomposition-prompt.md`、`templates/fullstack-website-builder-skill.md`、`docs/production-smoke-security-checklist.md`、`templates/feedback-desk-agent-prompt.md`）
   - **具體做法**：
     1. 繪製 7 階段接案流水線對照表（獲客診斷 $\rightarrow$ 報價簽約 $\rightarrow$ Research/Strategy $\rightarrow$ Developer/Writer $\rightarrow$ 獨立 Reviewer/QA $\rightarrow$ 人類終審交付 $\rightarrow$ 月費維運），每階段明確綁定維護者現有的範本／工具／`agent-relay` 角色，並於第 1 階段納入合規 B2B Lead Gen 關鍵詞與官網診斷切入流程（註明 GDPR / CAN-SPAM / 個資法與網域隔離紅線）。
@@ -94,6 +96,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
 
 - [ ] **`T-20261115-09`**｜**[優先級：中]** 建立「建置導入＋月費維運（Retainer）提案與邊界範本」（`templates/agency-retainer-proposal-template.md`）
+  - **狀態**：⚪ 不做（2026-11-15 獨立審查：同 T-20261115-08，沒有接案需求證據；SLA 與商業條款須有真實服務邊界，不能由 AI 假設客戶與報價）
   - **目標範圍**：`C:\GitHub\ai-inbox\templates\agency-retainer-proposal-template.md`
   - **具體做法**：
     1. 設計可套用於網站／AI 自動化／SEO-GEO 案型的標準提案結構：第一階段一次性導入（含 DoD 驗收標準）、第二階段月費維運（SLA、每月固定交付物如數據月報／備份／安全修補／固定額度微調）。

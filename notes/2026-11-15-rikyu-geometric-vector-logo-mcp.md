@@ -28,7 +28,7 @@ tags:
 
 > **實查澄清**：
 > 1. 原貼文連結 `https://rikyu.ai/design/logo` 目前對外回傳 **HTTP 404**，該產品已改版整合為 **Rikyū Studio**（`https://rikyu.ai/`），涵蓋 Vector、Graphics、Websites、Mobile apps、Print、3D 與 Videos。
-> 2. **關於「可以接 MCP，不消耗額度」的說法與現行官網事實不符**：實測 `https://rikyu.ai/mcp` 確實為有效的 Streamable HTTP MCP 端點（`Allow: POST`、`Content-Type: application/json`），但官網定價卡片明確將 `MCP integration` 與 `Commercial use included` 列於付費方案（Basic［已停售］1,200 credits/月、Pro 16,000 credits/月、Max 48,000 credits/月）；**Free（$0/月）僅贈送一次性 2,000 credits 且標註 `Personal use only`，未包含 MCP integration**。
+> 2. **關於「可以接 MCP，不消耗額度」的說法與現行官網事實不符**：`https://rikyu.ai/mcp` 只觀察到 HTTP 回應標頭（`Allow: POST`、`Content-Type: application/json`），這不能單獨證明它是可用的 MCP 端點；協定初始化、工具列舉與授權條件都**未實測**。[官網](https://rikyu.ai/)定價卡片明確將 `MCP integration` 與 `Commercial use included` 列於付費方案（Basic［已停售］1,200 credits/月、Pro 16,000 credits/月、Max 48,000 credits/月；Pro／Max 繼承 Basic 的 MCP 與商用）；**Free（$0/月）僅贈送一次性 2,000 credits 且標註 `Personal use only`，未包含 MCP integration**。
 
 ---
 
@@ -54,20 +54,18 @@ tags:
   - `SanHsien/ai-inbox` 既有前端／視覺規範（`docs/anti-ai-slop-frontend.md`、`templates/single-file-creative-coding-skill.md`）以及未來需快速產出網站 Favicon、Logo、SVG 插圖的前端建站任務。
 - **落差與採納判斷**：
   - **值得採納的核心洞察**：
-    - 「AI 設計工具真正的分水嶺不是生圖速度，而是理解**比例、幾何構造、網格與可編輯向量（SVG）**」這個判斷完全成立。在前端與開發工作流中，讓模型先規劃幾何圖元（`circle` / `rect` / `path` / viewBox 格線系統）再做 SVGO 清理與多尺寸匯出，遠比生成 PNG 後再轉向量可靠。
+    - 「AI 設計工具真正的分水嶺不是生圖速度，而是理解**比例、幾何構造、網格與可編輯向量（SVG）**」這是合理的工程偏好，不是比較實驗的結論。對幾何標誌來說，讓模型先規劃幾何圖元（`circle` / `rect` / `path` / viewBox 格線系統）再做 SVGO 清理與多尺寸匯出，通常比生成 PNG 後再轉向量好控制；不能推廣成所有影像或品牌素材的品質結論。
   - **不適用 / 需避坑的部分**：
     - **閉源 Credit 制與條款變化風險**：Rikyū 為閉源商業 SaaS，不僅舊路徑 `/design/logo` 已 404，早期宣傳的免費／免額度體驗也已收斂為「Free 僅 2,000 一次性點數＋限個人、MCP 綁定付費訂閱」。不建議把個人核心自動化管線強綁在未開源的付費 MCP 端點上。
-    - **真正「本地零額度消耗」的替代路線**：若目標是在 Claude Code / Codex / Antigravity 中零成本產出幾何向量 Logo 與全套 Brand Kit，可評估本地開源 MCP（如 `mcpware/logoloom`）或直接將「構造幾何 SVG 設計規則 + SVGO 清理」封裝為本地 Skill。
+    - **不綁付費端點的替代路線（不是零成本）**：可評估本地開源 MCP [`mcpware/logoloom`](https://github.com/mcpware/logoloom/blob/main/README.md)，或把「構造幾何 SVG 設計規則 + SVGO 清理」封裝為本地 Skill。LogoLoom 的 README 說明 SVG 是先由 Claude 設計，它只做轉字型路徑、優化與匯出的本機後處理；後處理不另收 API 費，但設計那一步仍消耗 agent 的訂閱額度或 token。「純本地、無外部回傳」目前只是作者宣稱：[`package.json`](https://github.com/mcpware/logoloom/blob/main/package.json) 依賴 MCP SDK、sharp、SVGO、opentype.js，依賴與安裝期的網路行為**未審查**。
 
 ---
 
 ## 3. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-03`**｜**[優先級：低]** 安全審查並評估本地零額度幾何向量 Logo 方案（`mcpware/logoloom` 或自建構造幾何 SVG + SVGO Skill）
-  - **目標範圍**：`C:\GitHub\_sandbox\`（唯讀／沙盒審查）與 `C:\GitHub\ai-inbox\templates\`
-  - **具體做法**：
-    1. 針對開源 MCP `mcpware/logoloom`（或同類純本地 SVG 品牌套件生成工具）執行安全審查（檢視原始碼、依賴與無外部回傳），確認無違反零信任規範。
-    2. 若無需額外 MCP 即可達成，評估在本地蒸餾一份「構造幾何 SVG Logo 設計 Skill」（規範 viewBox、黃金比例／網格約束、基礎圖元組合、SVGO 優化與多尺寸輸出），實現真正零外部額度消耗。
-  - **驗收標準（DoD）**：產出審查／實測紀錄，或交付一份可通過 `verify_inbox.py` 的本地幾何 SVG Logo 生成範本，並實測產出至少 1 組乾淨可用於前端專案的 SVG Logo。
+- [ ] **`T-20261115-03`**｜**[優先級：低]** 唯讀比較 LogoLoom 與現有 SVG 產出方式，釐清額度、依賴與安全邊界
+  - **目標範圍**：`SanHsien/ai-inbox` 的 `docs/local-svg-logo-options-review.md`。
+  - **具體做法**：固定 LogoLoom commit，靜態檢查 MCP 入口、檔案寫入路徑、SVG／字型處理、子程序、網路呼叫、package 與鎖檔是否齊全；標示未能檢查的間接依賴。對照「由既有 agent 直接產 SVG」是否已足夠，分清設計模型成本與本機後處理成本；不執行 npx、npm、安裝或 MCP 工具。
+  - **驗收標準（DoD）**：上述報告含資料流 ASCII 圖、來源 commit／URL、已查與未查風險、模型額度說明、Windows 相依性及明確採納結論。若沒有新增價值，可據此不採納；不得以「沒有 API key」宣稱全程零成本或已證實無外連。文件檢查結果附證據；不新增關鍵字裁判或全域 Skill。
   - **完成日期**：*（完成時填 YYYY-MM-DD）*
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
