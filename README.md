@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 229 項任務：🔴 未做 3／🟡 進行中 0／🟢 已做 149／⚪ 不做 77
+> 共 230 項任務：🔴 未做 4／🟡 進行中 0／🟢 已做 149／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -49,6 +49,7 @@
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 | `T-20261115-14` | 🔴 未做 | 低 | 唯讀評估 photo-riso-poster 的構圖規則、授權與提示詞安全，提出是否值得納入共用 Skill 的決策 | 本 repo `docs/photo-riso-poster-readonly-assessment.md`；未來候選為 `SanHsien/agent-assets`（私有），本任務不修改該 repo 或 `~/.gemini`。 | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | 2026-11-15 |
 | `T-20261115-15` | 🔴 未做 | 低 | 唯讀評估 codex-plugin-cc 與既有 ai-review／agent-relay 的 Windows 權限與 hook 邊界，決定是否值得另案試用 | 本 repo `docs/codex-plugin-cc-readonly-assessment.md`；僅讀已安裝工具的非機密規格，不修改 Claude／Codex 全域配置或 hooks。 | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | 2026-11-15 |
+| `T-20261115-16` | 🔴 未做 | 低 | 審查 `Raymondhou0917/speak-human-tw` 之台灣在地化詞表與 38 種 AI 痕跡規則，評估補強至 `verify_zhtw_vocab.py`／`agent-assets` | `C:\GitHub\ai-inbox\tools\verify_zhtw_vocab.py`、`verify_no_slop.py` 與 `C:\GitHub\agent-assets\skills\` | [2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
@@ -417,6 +418,7 @@
 | 2026-11-15 | 🔴 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 0 / 1 |
 | 2026-11-15 | 🟢 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 1 / 1（+1 不做） |
 | 2026-11-15 | ⚪ | [POUND0423 單檔影片／圖片故障特效（Glitch VFX）工具查證與技術評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md) | `glitch-effect`, `webgl`, `canvas` | 0 / 0 |
+| 2026-11-15 | 🔴 | [Raymondhou0917 雙倉庫評估：speak-human-tw（去 AI 味 Skill）與 claude-code-resources（入門資源站）](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md) | `skill`, `zh-tw`, `de-ai` | 0 / 1 |
 | 2026-11-15 | 🟢 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 1 / 1 |
 | 2026-11-15 | ⚪ | [Runway MCP ＋ 程式化動態圖形（報紙剪貼拼貼 60 秒短片）工作流與分權 Prompt 評估](./notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md) | `runway-mcp`, `motion-graphics`, `remotion` | 0 / 0 |
 <!-- END GENERATED: index -->
@@ -477,6 +479,7 @@
 - 人生指南Skill：[台灣版人生指南](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md)
 - 資安稽核Harness：[Cloudflare資安稽核Skill](./notes/2026-11-15-cloudflare-security-audit-skill.md)
 - Codex插件協作：[CodexPluginCC雙AI協作](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md)
+- 繁中去AI味與資源評估：[說人話Skill與CC資源評估](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
