@@ -16,6 +16,7 @@ skip_code=True（CLI 預設）先保護程式碼、成對中文引號與 URL／�
 [REVIEW] 僅提示人工確認，不影響結束碼；[ALERT] 詞彙問題才使檢查失敗。
 連結目的地限同一行，標題照常檢查；不是完整 Markdown 或語義解析器。
 未加引號的產品名稱仍無專名保護；不判斷標題、語義、標點或最終成品佔位。
+兩側字集仍可能誤排除罕見組合（例如「接收視頻寬高」、「回收視頻道具」）。
 「支持」未加入自動替換。skip_code=False 保留既有全文替換模式。
 """
 
@@ -82,19 +83,19 @@ ALL_RULES: Tuple[Tuple[str, str, str], ...] = GLOBAL_VOCAB_RULES + DEGRADED_AND_
 _BACKTICK_RUN_RE = re.compile(r"`+")
 _FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 _BARE_URL_RE = re.compile(
-    r"(?:https?://|ftp://|\bwww\.)[^\s<>`，。；：、（）「」『』【】“”‘’〈〉《》—…！？\uff00-\uffef]+"
+    r"(?:https?://|ftp://|(?<![A-Za-z0-9_])www\.)[^\s<>`，。；：、（）「」『』【】“”‘’〈〉《》—…！？\uff00-\uffef]+"
 )
-_AUTOLINK_RE = re.compile(r"<(?:https?://|ftp://|www\.)[^<>\s]+>")
+_AUTOLINK_RE = re.compile(r"<(?:https?://|ftp://|(?<![A-Za-z0-9_])www\.)[^<>\s]+>")
 _QUOTE_LIMIT = 200
 _REFERENCE_RE = re.compile(r"(?m)^ {0,3}\[(?!\^)[^\]\n]+\]:[ \t]*(<[^<>\n]+>|[^\s]+)")
 # Match immediate neighbours, independent of the surrounding sentence.
 _CONTEXT_EXCEPTIONS = {
-    "視頻": (("電衛監檢透收", "道率譜段寬"),),
+    "視頻": (("電衛監檢透收巡探注審", "道率譜段寬繁"),),
     "服務器": (("", "材"),),
-    "軟件": (("柔鬆", ""),),
+    "軟件": (("柔鬆", "數"),),
     "硬件": (("堅", ""),),
 }
-_PROTECTED_START_RE = re.compile(r"[「『]|\]\(|<(?=(?:https?://|ftp://|www\.))|(?:https?://|ftp://|\bwww\.)")
+_PROTECTED_START_RE = re.compile(r"[「『]|\]\(|<(?=(?:https?://|ftp://|(?<![A-Za-z0-9_])www\.))|(?:https?://|ftp://|(?<![A-Za-z0-9_])www\.)")
 
 
 def _inline_parts(line: str) -> List[Tuple[bool, str]]:
@@ -226,7 +227,7 @@ def _protected_parts(text: str, url_hints: Optional[List[Tuple[int, str]]] = Non
     for reference in _REFERENCE_RE.finditer(prose):
         destination = reference.group(1)
         if not (destination.startswith("<") or any(c in destination for c in ("/", "#", "://"))
-                or re.search(r"\.[A-Za-z0-9][A-Za-z0-9._-]*$", destination)):
+                or re.search(r"\.(?![0-9]+(?:\.[0-9]+)*$)[A-Za-z0-9][A-Za-z0-9._-]*$", destination)):
             continue
         start, end = reference.span(1)
         spans.append((start, end))
