@@ -6,7 +6,7 @@ source_platform: "Blog / AI Post Hub"
 author: "AI Post Hub（Grok Bot + Cursor Cloud Agent 案例）"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "PR錄影證據交付"
 short_title: "跨Agent PR錄影交付"
@@ -25,7 +25,7 @@ tags:
 - **來源連結**：[AI Post Hub: Grok Bot + Cursor PR 與 Demo 影片工作流](https://www.aiposthub.com/grok-bot-cursor-coding-pr-video-update/)
 - **發布平台 / 作者**：`AI Post Hub`
 - **分析日期**：`2026-11-15`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -81,12 +81,12 @@ tags:
 
 ## 4. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261115-12`**｜**[優先級：中]** 建立以假資料錄影與離線驗收為核心的 PR Demo 證據技能，明確分開錄製、引用與上傳
+- [x] **`T-20261115-12`**｜**[優先級：中]** 建立以假資料錄影與離線驗收為核心的 PR Demo 證據技能，明確分開錄製、引用與上傳
   - **目標範圍**：`SanHsien/agent-assets`（私有）；預定新增 `skills/pr-demo-evidence/SKILL.md`、`skills/pr-demo-evidence/scripts/compress-demo.ps1`、`skills/pr-demo-evidence/examples/demo.html`、`skills/pr-demo-evidence/VALIDATION.md`。這些是建議新增路徑，本輪未查其是否已存在。
   - **具體做法**：先讀 SSOT repo 指引、確認現有技能是否重複。依 agent-safety-checks 的螢幕／錄影隱私規範，先限制為本機合成測試頁、獨立 context、無登入與假資料；錄製前完成許可判斷，錄製後依規範檢查，不合格素材丟棄。以已安裝 Playwright 與 ffmpeg 做一筆最小錄製／壓縮；未安裝所需元件就停，不下載。文件示範 gh 的顯式 `--repo SanHsien/<repo>` 與重複 `--ref`，區分 PR URL 與僅本機可讀路徑。
   - **驗收標準（DoD）**：先有測試通過證據再錄製；影片可完整解碼、具有非零時長與預期尺寸，大小低於技能設定上限，並記實際工具版本。至少驗證一個壞輸入／轉檔失敗案例，保留原檔且回非零碼；隱私檢查與清除期限有紀錄。上述 VALIDATION.md 列來源 SHA、執行命令、影音摘要與限制；實際影片保存在 repo 外。不得把 help 支援旗標寫成上傳成功；本任務不建立 PR、不上傳、不派 relay 工單、不寫全域 `~/.gemini`／`~/.claude`／`~/.codex` 設定，安裝同步另依各 agent 載入契約處理。
-  - **完成日期**：*（完成時填 YYYY-MM-DD）*
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*
+  - **完成日期**：2026-11-15
+  - **實作紀錄 / 證據**：完成（2026-11-15，SanHsien/agent-assets（私有） main 6d3ab8d、f808065、2d3312c、eceedf0，CI 綠）：skills/pr-demo-evidence（SKILL.md、scripts/record-demo.py、scripts/compress-demo.ps1、examples/demo.html、VALIDATION.md）＋25 項測試，ASSET_REGISTER 登記為候選、未核准發布。用系統 Edge 157 以 headless 逐格截取頁面＋系統 ffmpeg 實錄，h264 1280x720、2.4 秒、完整解碼結束碼 0。錄前錄後都做隱私檢查且 fail-closed：fill 值、表單值、短暫文字、iframe／img／XHR 讀本機檔、optgroup label、open shadow root 等反例都會擋下並刪檔。Fable 獨立複審兩輪通過。限制：Playwright 內建錄影器（--capture video）未實測，closed shadow root 與 CSS content 看不到，gh 附件旗標未實測。不建 PR、不上傳。
 
 - [ ] **`T-20261115-13`**｜**[優先級：低]** 評估於 `SanHsien/agent-relay` 的 `result` 回報與 `accept` 驗收清單支援顯示 Demo 影片附件路徑（`refs` / `result` 證據整合，不另開 Repo）
   - **狀態**：⚪ 不做（2026-11-15 獨立審查：envelope@1 已接受 refs 字串、CLI 已有可重複的 --ref，沒有無法保存或讀取影片引用的反例，也沒有高亮顯示的使用需求與驗收案例；先由 T-20261115-12 說明證據交付方式，不改 protocol 或 accept）

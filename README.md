@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 229 項任務：🔴 未做 7／🟡 進行中 0／🟢 已做 145／⚪ 不做 77
+> 共 229 項任務：🔴 未做 6／🟡 進行中 0／🟢 已做 146／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -47,7 +47,6 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261115-04` | 🔴 未做 | 中 | 唯讀審查 Cloudflare security-audit-skill 的執行契約與成本，訂出 Windows 可採用的最小範圍 | `SanHsien/ai-inbox` 的 `docs/cloudflare-security-audit-readonly-review.md`。 | [2026-11-15-cloudflare-security-audit-skill](./notes/2026-11-15-cloudflare-security-audit-skill.md) | 2026-11-15 |
-| `T-20261115-12` | 🔴 未做 | 中 | 建立以假資料錄影與離線驗收為核心的 PR Demo 證據技能，明確分開錄製、引用與上傳 | `SanHsien/agent-assets`（私有）；預定新增 `skills/pr-demo-evidence/SKILL.md`、`skills/pr-demo-evidence/scripts/compress-demo.ps1`、`skills/pr-demo-evidence/examples/demo.html`、`skills/pr-demo-evidence/VALIDATION.md`。這些是建議新增路徑，本輪未查其是否已存在。 | [2026-11-15-cross-agent-pr-demo-video-delivery-workflow](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 | `T-20261115-01` | 🔴 未做 | 低 | 唯讀評估 Pi 在 Windows 原生環境的安全、訂閱授權與現有 agent-relay 分工，不安裝或連接帳號 | `SanHsien/ai-inbox` 的 `docs/pi-hybrid-harness-readonly-assessment.md`。 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | 2026-11-15 |
 | `T-20261115-03` | 🔴 未做 | 低 | 唯讀比較 LogoLoom 與現有 SVG 產出方式，釐清額度、依賴與安全邊界 | `SanHsien/ai-inbox` 的 `docs/local-svg-logo-options-review.md`。 | [2026-11-15-rikyu-geometric-vector-logo-mcp](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | 2026-11-15 |
@@ -56,7 +55,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 145 項）</summary>
+<details><summary>展開查看已完成任務（共 146 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -205,6 +204,7 @@
 | `T-20261115-06` | 2026-11-15 | 修正模型路由文件的證據分級，補上符合現行 solo／delegate／audit／full 的成本示例 | 完成（2026-11-15，commit 87d0d1a、442d073）：docs/model-burn-rate-routing-matrix.md 第 0 節證據分五級，新增第 10 節（10.2 把 5 倍、3.5 倍、12 倍、省 60–70% 拆成不同性質的數字；10.3 路由與配對照抄已安裝 orchestration SKILL.md；10.4 solo／delegate／audit 三個書面案例加 full 例外；10.5 成本公式；10.6 換 session 前核對清單），筆記同步改標社群宣稱。未重跑 benchmark，第 9 節沒動。Fable 獨立複審後修 2 處必修。 | [2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) |
 | `T-20261115-10` | 2026-11-15 | 依 OpenAI 一手文件修正上架、驗證與託管成本假設，交付單份可行性檢核表 | 完成（2026-11-15，commit 68d71fe、4b9098e）：docs/openai-plugin-submission-feasibility.md 22 列檢核表，逐項附 developers.openai.com 與 Cloudflare 官方頁、查證日 2026-11-15。結論是暫不開發：只有少數 plugin 獲加強曝光且不能申請；plugin 只能做實體商品交易，不能賣訂閱；唯一候選 public_apis_indexer 沒有對外需求；Workers Free 有額度上限，不是零成本。Fable 獨立複審抽查 15 項一手來源全部相符。 | [2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) |
 | `T-20261115-11` | 2026-11-15 | 在 video-autopilot-kit 以合成素材實作本機 Audio-First 綠幕合成切片，驗證時長、畫面與音量 | 完成（2026-11-15，SanHsien/video-autopilot-kit main f3d335f、4484386，CI 綠）：src/audio_first_compositor.py＋23 項測試＋docs/audio-first-compositor-validation.md。ffmpeg 9.0.2 實測：時長差 0.61 格、h264＋aac 可完整解碼、前景 (252,0,0)、背景 (0,0,254)、ducking 28.87 dB；帶 alpha 的綠幕會拒絕；despill 與 duck_ratio 有測試守住；不覆寫輸出。只用本機合成素材，不呼叫雲端服務。Codex 初稿在沙盒內無法執行 ffmpeg，改由 Fable 完成實測；Fable 獨立複審通過，建議項另修。 | [2026-11-15-audio-first-greenscreen-ai-commercial-pipeline](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) |
+| `T-20261115-12` | 2026-11-15 | 建立以假資料錄影與離線驗收為核心的 PR Demo 證據技能，明確分開錄製、引用與上傳 | 完成（2026-11-15，SanHsien/agent-assets（私有） main 6d3ab8d、f808065、2d3312c、eceedf0，CI 綠）：skills/pr-demo-evidence（SKILL.md、scripts/record-demo.py、scripts/compress-demo.ps1、examples/demo.html、VALIDATION.md）＋25 項測試，ASSET_REGISTER 登記為候選、未核准發布。用系統 Edge 157 以 headless 逐格截取頁面＋系統 ffmpeg 實錄，h264 1280x720、2.4 秒、完整解碼結束碼 0。錄前錄後都做隱私檢查且 fail-closed：fill 值、表單值、短暫文字、iframe／img／XHR 讀本機檔、optgroup label、open shadow root 等反例都會擋下並刪檔。Fable 獨立複審兩輪通過。限制：Playwright 內建錄影器（--capture video）未實測，closed shadow root 與 CSS content 看不到，gh 附件旗標未實測。不建 PR、不上傳。 | [2026-11-15-cross-agent-pr-demo-video-delivery-workflow](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) |
 
 </details>
 
@@ -411,7 +411,7 @@
 | 2026-11-15 | ⚪ | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 0（+1 不做） |
 | 2026-11-15 | 🟢 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 1 / 1 |
 | 2026-11-15 | 🟡 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 1 / 2 |
-| 2026-11-15 | 🔴 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 0 / 1（+1 不做） |
+| 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
 | 2026-11-15 | 🟢 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 1 / 1 |
 | 2026-11-15 | 🔴 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 0 / 1 |
 | 2026-11-15 | 🔴 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 0 / 1 |
