@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 228 項任務：🔴 未做 15／🟡 進行中 0／🟢 已做 141／⚪ 不做 72
+> 共 229 項任務：🔴 未做 16／🟡 進行中 0／🟢 已做 141／⚪ 不做 72
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -61,6 +61,7 @@
 | `T-20261115-11` | 🔴 未做 | 低 | 於 `SanHsien/video-autopilot-kit` 評估補入「Audio-First 秒數對齊＋FFmpeg 綠幕 Chroma Key（含 `despill` 抗綠邊）合成模組」 | `C:\GitHub\video-autopilot-kit`（或本機合成工具腳本） | [2026-11-15-audio-first-greenscreen-ai-commercial-pipeline](./notes/2026-11-15-audio-first-greenscreen-ai-commercial-pipeline.md) | 2026-11-15 |
 | `T-20261115-13` | 🔴 未做 | 低 | 評估於 `SanHsien/agent-relay` 的 `result` 回報與 `accept` 驗收清單支援顯示 Demo 影片附件路徑（`refs` / `result` 證據整合，不另開 Repo） | `C:\GitHub\agent-relay`（`SPEC.md`、`agent_relay/cli.py`） | [2026-11-15-cross-agent-pr-demo-video-delivery-workflow](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | 2026-11-15 |
 | `T-20261115-14` | 🔴 未做 | 低 | 視需求將 `photo-riso-poster`（精簡純 `SKILL.md`）收錄至 `SanHsien/agent-assets` 並以 Antigravity `image-generator` 實測 1 組照片／文字主題海報 | `C:\GitHub\agent-assets\skills\`（或個人本地 `~/.gemini/config/skills/`） | [2026-11-15-photo-riso-poster-evidence-abstraction-skill](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | 2026-11-15 |
+| `T-20261115-15` | 🔴 未做 | 低 | 在本機 Claude Code / Claude Desktop 評估安裝 `openai/codex-plugin-cc`，驗證 `/codex:adversarial-review` 與既有 `ai-review`／`agent-relay` 之分工邊界 | 本機 Claude Code 插件環境與 `C:\GitHub\ai-inbox\docs\` | [2026-11-15-openai-codex-plugin-cc-collaboration](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | 2026-11-15 |
 
 ### 🟢 已做（Done）
 
@@ -412,6 +413,7 @@
 | 2026-11-15 | 🔴 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 0 / 2 |
 | 2026-11-15 | 🔴 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 0 / 2 |
 | 2026-11-15 | 🔴 | [多模型分權省額與防假綠實戰評估：「$20×3 打敗 $200」PM／實作／QA 路由對照](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md) | `model-routing`, `cost-optimization`, `multi-agent` | 0 / 1 |
+| 2026-11-15 | 🔴 | [openai/codex-plugin-cc：在 Claude Code 內直接叫用 Codex 協作與對抗式審查評估](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md) | `claude-code`, `codex`, `codex-plugin-cc` | 0 / 1 |
 | 2026-11-15 | 🔴 | [luckdvr/photo-riso-poster：證據導向抽象與 2–3 色 Riso 印刷風海報 Skill 查證評估](./notes/2026-11-15-photo-riso-poster-evidence-abstraction-skill.md) | `skill`, `risograph`, `visual-abstraction` | 0 / 1 |
 | 2026-11-15 | 🔴 | [Agent Harness 深度解析與 Pi 混合型架構設計：串接 Codex CLI、Claude Code 與 Antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) | `agent-harness`, `pi-coding-agent`, `codex-cli` | 0 / 2 |
 | 2026-11-15 | ⚪ | [POUND0423 單檔影片／圖片故障特效（Glitch VFX）工具查證與技術評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md) | `glitch-effect`, `webgl`, `canvas` | 0 / 0 |
@@ -474,6 +476,7 @@
 - 免費算力整合：[Muse指揮10免費工具](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md)
 - 人生指南Skill：[台灣版人生指南](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md)
 - 資安稽核Harness：[Cloudflare資安稽核Skill](./notes/2026-11-15-cloudflare-security-audit-skill.md)
+- Codex插件協作：[CodexPluginCC雙AI協作](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
