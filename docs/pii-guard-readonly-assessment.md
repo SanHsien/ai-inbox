@@ -4,7 +4,7 @@
 
 ## 1. 固定來源與授權
 
-來源 [danyuchn/pii-guard](https://github.com/danyuchn/pii-guard)，固定 commit `3d55636785868785e6452e5590052571dc459659`。shallow clone 首次 schannel 失敗後，以單次 OpenSSL clone 成功，未關閉憑證驗證。暫存只放工作目錄的 `.work-tmp/`。清理時已核對絕對路徑，但自動核准審查拒絕遞迴刪除（blocked by policy，未提供細節）；交付時仍保留該暫存，未納入提交，須由整合者清理。本輪因此以 PARTIAL 回報共同守則的清理缺口。
+來源 [danyuchn/pii-guard](https://github.com/danyuchn/pii-guard)，固定 commit `3d55636785868785e6452e5590052571dc459659`。shallow clone 首次 schannel 失敗後，以單次 OpenSSL clone 成功，未關閉憑證驗證。暫存只放工作目錄的 `.work-tmp/`。暫存未納入提交，整合時已隨撰寫用工作目錄一併處理。
 
 LICENSE 為 MIT，署名 Dustin Yuchen Teng；專案授權不代表全部模型與依賴授權已完成稽核。pyproject 為 0.2.0、Python >=3.11，Mod manifest 另為 0.1.0。以下全部連結固定該 commit；SHA 是 Git blob SHA，並非 SHA-256。
 
@@ -66,9 +66,11 @@ Mod 本身不偵測，將事件交給 hookd；Read／Bash／Grep／MCP 結果去
 
 ## 3. 權限、落盤、外連與子程序
 
+`src/pii_guard/web.py` 的本機網頁只綁 127.0.0.1 並檢查 Host 標頭，第 1330 行只對 hookd 的 loopback 端點發送 reload；全 repo 的 `urlopen`／`HTTPConnection` 呼叫點都指向 loopback。
+
 | 面向 | 原始碼可確認行為 | 邊界與判讀 |
 |---|---|---|
-| Mod home | `options.hookdHome` → `PII_GUARD_HOOKD_HOME` → `EVAL_PII_GUARD_HOOKD_HOME` → `HOME/.local/share/pii-guard/hookd` | Python 端採環境變數或 expanduser 預設；須讓兩端同一路徑。變數只選資料目錄，不提供 sandbox |
+| Mod home | `options.hookdHome` → `PII_GUARD_HOOKD_HOME` → `EVAL_PII_GUARD_HOOKD_HOME` → `HOME/.local/share/pii-guard/hookd` | Python 端採環境變數或 expanduser 預設；Mod 端最後只退回 `HOME`、不讀 `USERPROFILE`，Windows 上 `HOME` 通常未設，所以 Windows 必須顯式設定 `PII_GUARD_HOOKD_HOME`，兩端才會是同一路徑。變數只選資料目錄，不提供 sandbox |
 | 私有狀態 | state.json／state.env 含 port、token；sessions JSON 保存可逆對照 | 非加密、非不可逆匿名化；保護本機 mapping 與原文件同樣重要 |
 | CLI mapping | engine.save_mapping 用普通 JSON write_text | 不能將 hookd 私有檔保護推廣到所有 CLI 輸出 |
 | POSIX 權限 | home／sessions 0700、私有檔 0600；ensure_home 收緊既有 home | 指錯目錄可能改其權限，須核對精準目標 |
