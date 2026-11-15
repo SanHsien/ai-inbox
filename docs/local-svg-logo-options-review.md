@@ -87,4 +87,4 @@ Windows 不能照抄 README 的 apt 指令；vtracer／potrace 要有相容執�
 
 來源版本／URL、ASCII、已查／未查、模型用量、Windows 相依性及不採納結論均見上文。文件檢查紀錄如下；沒有將未安裝視為缺件，也沒有宣稱動態安全或圖像品質通過。
 
-2026-11-15 三份評估文件齊備後，執行 `python tools/verify_zhtw_vocab.py --check docs && python tools/verify_inbox.py`：繁中檢查結束碼 0；inbox 檢查結束碼 1。inbox 讀到 117 篇筆記、229 項任務，僅回報 README 自動區塊過期、導覽漏列本輪三份新報告。因本次授權禁止修改 README，未重產索引或放寬驗證器，文件 gate 仍未通過；依共同守則未提交，保留工作樹供整合者更新索引後逐份提交。notes／README／ROADMAP 未修改，未 push。
+2026-11-15 整合時先執行 `python tools/build_index.py` 把本輪三份報告列入 README，再執行 `python tools/verify_zhtw_vocab.py --check docs && python tools/verify_inbox.py`：兩者結束碼 0（117 篇筆記、229 項任務）。撰寫時 README 尚未重產，inbox 檢查曾回 1，原因只有 README 過期與漏列報告。
