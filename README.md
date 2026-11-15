@@ -39,13 +39,14 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 231 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 153／⚪ 不做 77
+> 共 232 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 153／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
+| `T-20261115-18` | 🔴 未做 | 中 | 對 `agent-assets`、`ai-inbox` 與 `agent-relay` 執行 `/claude-api prompt-audit` 只讀稽核，並盤點程式端 Claude API 相容性 | `C:\GitHub\agent-assets`、`C:\GitHub\ai-inbox`、`C:\GitHub\agent-relay` | [2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration](./notes/2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration.md) | 2026-11-15 |
 | `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
 
 ### 🟢 已做（Done）
@@ -413,6 +414,7 @@
 | 2026-11-15 | ⚪ | [純瀏覽器 WebGPU AI 修圖與影片工具 Prompt 評估：參考專案查證與一次全包空殼風險分析](./notes/2026-11-15-browser-webgpu-photo-video-editor-prompt-eval.md) | `webgpu`, `onnx-runtime-web`, `webcodecs` | 0 / 0（+1 不做） |
 | 2026-11-15 | 🟢 | [ChatGPT Apps（MCP 主動推薦）流量分發評估與「粗暴上架 5 個外掛」現實檢核](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md) | `openai-apps-sdk`, `mcp`, `distribution-channel` | 1 / 1 |
 | 2026-11-15 | ⚪ | [ChatGPT Dots 自訂權限規則（Settings > Personalization > Permissions）安全邊界評估](./notes/2026-11-15-chatgpt-dots-custom-permissions-eval.md) | `chatgpt-dots`, `permissions`, `safety-barrier` | 0 / 0 |
+| 2026-11-15 | 🔴 | [升級 Claude Opus 5.5 前置檢查：/claude-api prompt-audit、API 破壞性變更與成本結構評估](./notes/2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration.md) | `claude-opus-5-5`, `prompt-audit`, `claude-api` | 0 / 1 |
 | 2026-11-15 | 🟢 | [Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺](./notes/2026-11-15-cloudflare-security-audit-skill.md) | `security-audit`, `cloudflare`, `harness-engineering` | 2 / 2 |
 | 2026-11-15 | 🟢 | [跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) | `pr-automation`, `demo-video`, `playwright` | 1 / 1（+1 不做） |
 | 2026-11-15 | 🟢 | [danyuchn/pii-guard：台灣個資可逆遮罩與 Claude Mod 唯讀評估](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md) | `pii-guard`, `claude-mods`, `privacy` | 1 / 1 |
@@ -482,6 +484,7 @@
 - 免費算力整合：[Muse指揮10免費工具](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md)
 - 人生指南Skill：[台灣版人生指南](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md)
 - Dots權限規則評估：[ChatGPT Dots權限評估](./notes/2026-11-15-chatgpt-dots-custom-permissions-eval.md)
+- Opus5.5遷移與稽核：[Opus5.5稽核與遷移](./notes/2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration.md)
 - 資安稽核Harness：[Cloudflare資安稽核Skill](./notes/2026-11-15-cloudflare-security-audit-skill.md)
 - 台灣個資遮罩Mod：[PII-Guard個資遮罩Mod](./notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md)
 - Codex插件協作：[CodexPluginCC雙AI協作](./notes/2026-11-15-openai-codex-plugin-cc-collaboration.md)
