@@ -2,7 +2,7 @@
 
 評估日期：2026-11-15。任務：T-20261115-15（經獨立審查改寫為唯讀評估）。作者：Claude Code。
 
-**結論：現階段不安裝。** 三條呼叫鏈的用途已被既有的 ai-review 與 agent-relay 涵蓋，外掛多出的便利（在 Claude 對話內直接看 git 差異的原生審查、背景工作查詢）不足以抵銷它帶來的三個邊界問題：rescue 預設可寫且不鎖定可寫範圍、所有 Codex 執行都沒有逾時、Stop hook 一律註冊。本文是靜態閱讀結果，**沒有安裝、登入、啟動任何模型後端，也沒有改任何全域設定或 hooks**；凡是執行期行為都標「未實測」，不寫成相容或無衝突。
+**結論：現階段不安裝。** 三條呼叫鏈的用途已被既有的 ai-review 與 agent-relay 涵蓋，外掛多出的便利（在 Claude 對話內直接看 git 差異的原生審查、背景工作查詢）不足以抵銷它帶來的三個邊界問題：rescue 預設可寫且不鎖定可寫範圍、三條呼叫鏈的 Codex 執行都沒有逾時、Stop hook 一律註冊。本文是靜態閱讀結果，**沒有安裝、登入、啟動任何模型後端，也沒有改任何全域設定或 hooks**；凡是執行期行為都標「未實測」，不寫成相容或無衝突。
 
 與原任務的差異：原任務要求安裝並實測 `/codex:adversarial-review`。審查後改為先做唯讀評估，本文不產生「已安裝／無衝突／比較省額度」的宣稱。
 
@@ -36,7 +36,7 @@
 
 | 工具 | 來源 | 版本 |
 | --- | --- | --- |
-| ai-review skill | [SanHsien/MyR2D2](https://github.com/SanHsien/MyR2D2) 的 `skills/ai-review/SKILL.md`（本機安裝版 0.9.1） | commit `1a85057b6804e25cc63af0fb0f287278a4d021c5`，SKILL.md blob `107ca9c6c8a2f2c995715e19bb11920a1232975f` |
+| ai-review skill | [SanHsien/agent-astromech](https://github.com/SanHsien/agent-astromech)（原名 MyR2D2） 的 `skills/ai-review/SKILL.md`（本機安裝版 0.9.1） | commit `1a85057b6804e25cc63af0fb0f287278a4d021c5`，SKILL.md blob `107ca9c6c8a2f2c995715e19bb11920a1232975f` |
 | agent-relay | [SanHsien/agent-relay](https://github.com/SanHsien/agent-relay) 的 `README.md`、`SPEC.md` | commit `0cabfe33c46bc0ca80234fad579c2ea8ba82896c`，blob `cfd7c06c0ab52db9e8cb035c844168f139650989`、`104b3494808d8db87d04fc9c083ac55bcc9d5971` |
 
 ## 2. 三條呼叫鏈
@@ -107,15 +107,16 @@
    │  Stop hook（逾時 900 秒，一律註冊，S3）
    ▼
 gate 關（預設）──▶ 只在 stderr 提醒還有工作在跑 ──▶ 放行
-gate 開 ──▶ 跑一次 Codex task（唯讀、保留 thread、上限 15 分鐘）
+gate 開 ──▶ 找不到 codex 或 app-server ──▶ 只寫 stderr ──▶ 放行
+        └▶ 跑一次 Codex task（唯讀、保留 thread、上限 15 分鐘）
               ├─ 首行 ALLOW ──▶ 放行
               └─ 首行 BLOCK、逾時、非零結束、空輸出、JSON 解析失敗
                     ──▶ decision: block ──▶ Claude 繼續做 ──▶ 再次 Stop ──▶ 再跑一次
 ```
 
 - gate 預設關閉（S10 `state.mjs` 第 23 行），要 `/codex:setup --enable-review-gate` 才會開，沒有隱性啟用的路徑。
-- **Stop hook 本身無法關閉**：gate 關著時，每次停下仍會啟動一次 node、讀狀態檔、跑 `git rev-parse`。與既有的全域 Stop hook 並存時的執行順序與總耗時未實測。
-- **gate 開啟後的迴圈沒有程式上的終止條件**：hook 沒有檢查 `stop_hook_active`（全庫搜尋零筆），而且**除了 ALLOW 以外的結果全部擋下**（S8 第 120 行起）。Codex 額度用完、未登入或逾時時，每次停下都會被擋，Claude 會一直被推回去工作。Claude Code 自己有沒有另一層防迴圈機制，本次未查證。官方 README 也明寫 gate 可能造成長迴圈並快速耗盡用量。
+- **外掛沒有提供單獨關閉此 hook 的選項**：gate 關著時，每次停下仍會啟動一次 node、讀狀態檔、跑 `git rev-parse`。與既有的全域 Stop hook 並存時的執行順序與總耗時未實測。
+- **gate 開啟後的迴圈沒有程式上的終止條件**：hook 沒有檢查 `stop_hook_active`（全庫搜尋零筆），而且審查一旦實際執行，**除了 ALLOW 以外全部擋下**（S8 第 112–139 行）。例外有兩個：gate 開著但找不到 codex 或 app-server 時只寫 stderr 就放行（第 159–164 行）；hook 本身丟例外時結束碼 1、不輸出 block（第 178–184 行）。可用性檢查只看 `codex --version` 與 `codex app-server --help`，不查登入，所以下面的情況仍會被擋。Codex 額度用完、未登入或逾時時，每次停下都會被擋，Claude 會一直被推回去工作。Claude Code 自己有沒有另一層防迴圈機制，本次未查證。官方 README 也明寫 gate 可能造成長迴圈並快速耗盡用量。
 - gate 的每次審查都是一次保留 thread 的 Codex 執行，會在 Codex 家目錄累積對話。
 - 提示詞（含 Claude 上一則回覆全文）以單一命令列參數傳給子行程（S8 第 105 行）。Windows 的命令列長度上限約 32,767 字元，回覆很長時可能啟動失敗，而失敗會被當成擋下。這是讀碼推論，未實測。
 
@@ -154,7 +155,7 @@ gate 開 ──▶ 跑一次 Codex task（唯讀、保留 thread、上限 15 分
 
 1. **用途已涵蓋**：跨模型審查有 ai-review，交辦實作有 agent-relay，兩者的邊界都比外掛嚴格。
 2. **rescue 的預設與本機紀律相反**：模型可以不經使用者要求就主動呼叫子 agent，預設可寫、直接改目前工作樹、不鎖可寫範圍、沒有逾時。agent-relay 已經用實測證明不鎖 `writable_roots` 會寫出範圍外。
-3. **Stop hook 無法單獨停用**：裝了就多一個每次停下都會執行的 hook，即使 gate 永遠不開。
+3. **外掛沒有提供單獨停用 Stop hook 的選項**：裝了就多一個每次停下都會執行的 hook，即使 gate 永遠不開。
 4. **Windows 沒有上游驗證**：第 4 節的每一項都要自己實測。
 5. **第三方安全審計未完成**：SkillSpector 未執行。依任務的驗收標準，審計未通過不建議安裝。
 
