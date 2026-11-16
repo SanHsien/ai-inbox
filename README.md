@@ -449,6 +449,7 @@
 | 2026-11-16 | ⚪ | [Threads 案例評估：@chia.hsun301 一人公司 AI 產能月報與商業變現結構](./notes/2026-11-16-chia-hsun301-ai-solo-operator-roi.md) | `ai-workflow`, `solo-operator`, `cosyvoice-3` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Facebook 貼文與留言評估：陳盟升（Darkschen）兩顆 5TB Google Drive 邊載邊傳備份開源大模型](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md) | `open-weights`, `google-drive`, `backup` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文與留言串評估：不依賴單一 AI 的本地 Skill/Handoff/Memory 工作流](./notes/2026-11-16-isaac-wong-ai-agnostic-local-workflow-comments.md) | `claude-code`, `handoff`, `markdown-memory` | 0 / 0 |
+| 2026-11-16 | ⚪ | [Claude Taiwan 貼文評估：Jack Liu《重開機一鍵復原》工具開發與 Claude 協作四原則](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md) | `vibe-coding`, `windows`, `reboot-restore` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -523,6 +524,7 @@
 - 四種AI工作模式地圖：[Rei四種AI工作模式](./notes/2026-11-15-rei-four-ai-work-modes-claude-codex-eval.md)
 - 一人公司AI變現：[一人公司AI產能月報](./notes/2026-11-16-chia-hsun301-ai-solo-operator-roi.md)
 - 開源模型雲端冷備：[開源大模型Drive備份](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md)
+- 重開機一鍵復原心得：[重開機一鍵復原心得](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
