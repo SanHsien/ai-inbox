@@ -1,0 +1,5 @@
+{
+ "a": {"module": "durations", "prompt": "在目前資料夾建立 durations.py，實作 parse_duration(text: str) -> int：把像 \"1h30m\"、\"45s\"、\"2d 3h\"、\"1h 0m 5s\" 的字串轉成總秒數。單位 d/h/m/s 不分大小寫，數字與單位之間、各段之間可以有空白；同一單位重複出現、未知單位、負數、空字串或沒有任何數字段都要 raise ValueError。另外寫 test_durations.py（unittest）涵蓋正常與錯誤案例，並執行 python -m unittest 確認通過。只用標準函式庫。"},
+ "b": {"module": "romans", "prompt": "在目前資料夾建立 romans.py，實作 to_roman(n: int) -> str 與 from_roman(s: str) -> int，範圍 1..3999。to_roman 超出範圍或非 int（bool 也算非法）要 raise ValueError；from_roman 只接受標準最簡寫法（例如拒絕 IIII、VV、IC、MMMM、空字串與小寫），非法輸入 raise ValueError，兩者互為反函式。另外寫 test_romans.py（unittest）並執行 python -m unittest 確認通過。只用標準函式庫。"},
+ "c": {"module": "slugs", "prompt": "在目前資料夾建立 slugs.py，實作 slugify(text: str, max_len: int = 50) -> str：轉小寫；把重音字母轉成無重音 ASCII（例如 é→e、ü→u）；非英數字元一律視為分隔，連續分隔合併成單一 '-'；去掉頭尾 '-'；截斷到 max_len 時不可在尾端留下 '-'，也不可把最後一個詞截一半（若第一個詞本身超過 max_len 才允許硬截）；結果為空時回傳 'n-a'；max_len 小於 1 要 raise ValueError。另外寫 test_slugs.py（unittest）並執行 python -m unittest 確認通過。只用標準函式庫。"}
+}

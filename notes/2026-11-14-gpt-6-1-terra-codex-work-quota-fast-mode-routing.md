@@ -6,7 +6,7 @@ source_platform: "OpenAI 官方文件（使用者提供線索，未附原始出�
 author: "使用者提供 + 官方頁核實"
 analyzed_at: 2026-11-14
 analyzed_by: "Antigravity"
-status: in-progress
+status: done
 cluster: "1"
 cluster_role: "Terra額度路由"
 short_title: "Terra額度與Fast倍率核實"
@@ -88,15 +88,15 @@ Credits / 100 萬 tokens（輸入／快取輸入／輸出）
   - **驗收標準（DoD）**：不執行。
   - **實作紀錄 / 證據**：*（不做，無實作）*
 
-- [ ] **`T-20261114-03`**｜**[優先級：低]** 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節
-  - **狀態**：🔴 未做（需要連續使用一段時間才有資料；不能靠讀文件完成）
+- [x] **`T-20261114-03`**｜**[優先級：低]** 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節
   - **目標範圍**：`docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位）
   - **具體做法**：
     1. 選 3 個同類型日常任務，分別用 Terra 與 Sol 6.1 的 Standard 模式完成，記錄開始與結束時儀表板的 5 小時額度百分比。
     2. 對輸出做同一份驗收（測試通過、人工審查），記錄品質差異。
     3. 同一任務各跑一次 Fast，確認 2.5x 是否與儀表板相符。
   - **驗收標準（DoD）**：`docs/model-burn-rate-routing-matrix.md` 第 9 節新增「本機實測」小節，含任務描述、各模式額度消耗與品質結論；沒有實測資料時不得填寫。
-  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
+  - **完成日期**：2026-11-16
+  - **實作紀錄 / 證據**：完成（2026-11-16）：docs/model-burn-rate-routing-matrix.md 新增 9.7「本機實測」，第 0 節新增【本機實測】分級；原始資料、任務、隱藏驗收測試與腳本放在 docs/evidence/terra-sol-burn-2026-11-16/。3 個小任務 × Terra／Sol 6.1 Standard，加上任務 a 兩邊各跑一次 Fast，共 8 次（2 次撞上游 502 已重跑）。結果：品質全部通過隱藏驗收、看不出差異；Standard 每次多半只動 1 個百分點，解析度不足以驗證 Terra 約 2 倍；Sol Fast 一次 5 點、Standard 1 點，Terra Fast 2 點；Sol Fast 這次反而較慢。限制：每組只有 1 次樣本、額度為帳號共用。
 
 ## 5. 評估結論
 

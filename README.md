@@ -39,18 +39,18 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 235 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 157／⚪ 不做 77
+> 共 235 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 158／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261114-03` | 🔴 未做 | 低 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | `docs/model-burn-rate-routing-matrix.md`（只補第 9 節的實測欄位） | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | 2026-11-14 |
+| *（目前沒有未完成任務）* | - | - | - | - | - | - |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 157 項）</summary>
+<details><summary>展開查看已完成任務（共 158 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -193,6 +193,7 @@
 | `T-20261108-05` | 2026-11-14 | 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核 | 修正兩輪（2026-11-14）：用 tomllib／json（JSONC 去註解）解析 wrangler 設定並遞迴找子目錄；遍歷 vars 與 env.*.vars 所有型別；敏感鍵名涵蓋 TOKEN/KEY/SECRET/PASSWORD/CREDENTIAL，值掃內嵌帳密與 rk_live_ 等樣式；.dev.vars 與 .dev.vars.* 須被 .gitignore 忽略並處理 ! 否定規則；checklist 的 KV 延遲依官方文件更正。原審查與 Opus 新繞過共 8 例由 exit 0 變 1。限制：鍵名含 KEY 的一般變數會誤報。 | [2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) |
 | `T-20261108-06` | 2026-11-14 | 新增 `tools/check_external_refs.py`：掃描 `notes/` 內的 GitHub repo 與 arXiv 連結，確認存在、是否改名或封存 | 完成（2026-11-14）：tools/check_external_refs.py＋tests（404、改名、封存、私有略過、arXiv、壞快取、gh 輸出 UTF-8 解碼等）。實跑 94 個連結：92 OK，2 個 404 是筆記刻意記錄的「尚未 Fork」，1 改名、1 封存；證據 docs/evidence/external-refs-check-2026-11.md。整合者實跑時抓到 gh 輸出以 cp950 解碼而崩潰的 bug，已修並加回歸測試。 | [2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) |
 | `T-20261114-01` | 2026-11-14 | 將 GPT-6.1 Terra 額度、credits 單價與 Fast 倍率核實結果增補進模型速查表 | `docs/model-burn-rate-routing-matrix.md` 新增第 9 節（9.1–9.6，約 66 行）。數字取自 2026-11-14 讀取的官方頁：Terra 35–285 對 Sol 15–160、Terra credits 25/1.25/125 對 Sol 50/2.5/250、Fast 2.5x／2x。線索中「額度增加」依官方原文「Overall Work and Codex plan limits are unchanged」標為措辭不精確。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
+| `T-20261114-03` | 2026-11-16 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | 完成（2026-11-16）：docs/model-burn-rate-routing-matrix.md 新增 9.7「本機實測」，第 0 節新增【本機實測】分級；原始資料、任務、隱藏驗收測試與腳本放在 docs/evidence/terra-sol-burn-2026-11-16/。3 個小任務 × Terra／Sol 6.1 Standard，加上任務 a 兩邊各跑一次 Fast，共 8 次（2 次撞上游 502 已重跑）。結果：品質全部通過隱藏驗收、看不出差異；Standard 每次多半只動 1 個百分點，解析度不足以驗證 Terra 約 2 倍；Sol Fast 一次 5 點、Standard 1 點，Terra Fast 2 點；Sol Fast 這次反而較慢。限制：每組只有 1 次樣本、額度為帳號共用。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
 | `T-20261114-04` | 2026-11-14 | `tools/verify_inbox.py` 新增檢查：筆記裡沒有任務 ID 的待辦核取方塊一律報錯，並清掉 11-11 至 11-14 六篇筆記的殘留清單 | 完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
 | `T-20261114-05` | 2026-11-15 | 在 `agent-relay` 實作非同步結構化決策問答（`ask`／待拍板佇列篩選與回傳，不另起 Web 服務） | 完成（2026-11-15）：Antigravity 初版 2044f9b 經獨立審查判先修，Codex 修正為 88addb6、0cabfe3（SanHsien/agent-relay main，CI 與 CodeQL 綠燈）。recommend 必須是選項代號、answer 只接受 question、選項須在清單內、已答題不可重答、可一次回答多題且任一失敗整批不送；另補 note 禁止換行、選項代號拒絕不可見字元、SPEC 中英補 ask／answer 流程與舊格式升級說明。整合者沙盒外實跑：Python 3.14 與 3.11 各 485 tests OK、doc parity PASS、links 0 broken、mutation 25/25 killed；Fable 複審四項必修全部通過。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
 | `T-20261115-01` | 2026-11-15 | 唯讀評估 Pi 在 Windows 原生環境的安全、訂閱授權與現有 agent-relay 分工，不安裝或連接帳號 | 完成（2026-11-15）：docs/pi-hybrid-harness-readonly-assessment.md，固定 earendil-works/pi c3cc916。安裝期有 husky prepare 與 8 個 install script；執行期 worktree 不是 OS 隔離；三家訂閱授權證據狀態逐家列出；與 agent-relay／advisor 能力重疊；結論暫不採納。唯讀評估，Codex 撰寫，整合者重產索引並補驗證段；Fable 獨立複審抽查來源事實全部吻合；未執行任何第三方程式。 | [2026-11-15-pi-hybrid-harness-codex-claude-antigravity](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md) |
@@ -408,7 +409,7 @@
 | 2026-11-13 | ⚪ | [Editkin：免費 Windows 本地優先 AI 剪輯器（0.16 起轉閉源 freeware，原始碼凍結於 0.15）](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md) | `editkin`, `video-editing`, `local-first` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
-| 2026-11-14 | 🟡 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 1 / 2（+1 不做） |
+| 2026-11-14 | 🟢 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 2 / 2（+1 不做） |
 | 2026-11-14 | 🟢 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 2 / 2 |
 | 2026-11-14 | ⚪ | [Will 保哥改寫《高性價比人生指南》台灣版：772 條建議 + life-decision-guide skill（未逐條核完）](./notes/2026-11-14-will-baoge-howtolivebetter-taiwan-edition-life-guide.md) | `howtolivebetter`, `doggy8088`, `life-guide` | 0 / 0 |
 | 2026-11-15 | ⚪ | [YouTube「小說改編 AI 漫劇全流程（47 分鐘）」逐字稿拆解：導流話術查證與手工流程評估](./notes/2026-11-15-ai-comic-drama-novel-adaptation-fact-check.md) | `ai-video`, `ai-drama`, `fact-check` | 0 / 0 |
