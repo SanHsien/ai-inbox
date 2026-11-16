@@ -39,14 +39,20 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 235 項任務：🔴 未做 0／🟡 進行中 0／🟢 已做 158／⚪ 不做 77
+> 共 242 項任務：🔴 未做 7／🟡 進行中 0／🟢 已做 158／⚪ 不做 77
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| *（目前沒有未完成任務）* | - | - | - | - | - | - |
+| `T-20261017-35` | 🔴 未做 | 中 | 實測開源論文閱讀器 PaperRead，並更正雙語閱讀指南比錯對象的問題 | `docs/academic-bilingual-paper-reader-guide.md` 與本機隔離環境（`C:\GitHub\_sandbox\paperread`） | [2026-10-17-moonlight-bilingual-paper-reader](./notes/2026-10-17-moonlight-bilingual-paper-reader.md) | 2026-10-17 |
+| `T-20261018-19` | 🔴 未做 | 中 | 依官方 `cursor/plugins` 的 pstack 更正 `docs/pstack-agent-playbooks.md` 與其驗證器的錯誤前提 | `docs/pstack-agent-playbooks.md`、`tools/verify_pstack_and_fullstack_specs.py`、`tests/test_verify_pstack_and_fullstack_specs.py` | [2026-10-18-pstack-spacex-engineer-ai-coding-workflow](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md) | 2026-10-18 |
+| `T-20261026-36` | 🔴 未做 | 中 | 在評選矩陣補上貼文實際測的四包與作者的挑選提示詞 | `docs/agent-skills-curation-and-context-budget-spec.md` | [2026-10-26-github-trending-agent-skills-benchmark](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | 2026-10-26 |
+| `T-20261026-35` | 🔴 未做 | 低 | 在 Buzz 心跳規格補上「回合結束但沒送出訊息」的偵測與排查順序 | `docs/buzz-nas-deployment-and-heartbeat-spec.md` | [2026-10-26-block-buzz-nostr-agent-workspace](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | 2026-10-26 |
+| `T-20261107-06` | 🔴 未做 | 低 | 為 `tools/verify_zhtw_vocab.py` 補 `粘貼→貼上` 與數字被誤轉成「數位」的語境規則與測試 | `tools/verify_zhtw_vocab.py`、`tests/test_verify_zhtw_vocab.py` | [2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | 2026-11-07 |
+| `T-20261108-07` | 🔴 未做 | 低 | 查證原生顧問功能的計費與快取行為，並在 `SanHsien/agent-advisor` 的成本規則補上「顧問呼叫成本隨對話長度成長」警語 | `SanHsien/agent-advisor` 的 `claude/plugins/agent-advisor-claude/skills/orchestration/references/cost-policy.md`；本 repo 的 `docs/claude-advisor-cost-check.md`（查證紀錄） | [2026-11-08-claude-code-builtin-advisor-command-evaluation](./notes/2026-11-08-claude-code-builtin-advisor-command-evaluation.md) | 2026-11-08 |
+| `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
 
 ### 🟢 已做（Done）
 
@@ -319,7 +325,7 @@
 | 2026-10-17 | 🟢 | [HanSun 全端網站從零建置部署手冊：Codex/Claude 驅動的商業系統架構與 6 大 Agent 轉化實踐](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md) | `fullstack-architecture`, `agent-workflow`, `supabase` | 2 / 2 |
 | 2026-10-17 | ⚪ | [Meta SAM 3.1 視覺分割模型解析：從點選框選到文字提示、32 FPS 串流追蹤與 Agent 雙階段打碼流水線](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md) | `computer-vision`, `meta-sam`, `video-segmentation` | 0 / 0（+2 不做） |
 | 2026-10-17 | ⚪ | [Claude 混合模型分工實踐：/model opusplan 與 /advisor 雙軌架構緩解 Token 焦慮](./notes/2026-10-17-model-routing-opusplan-advisor.md) | `model-routing`, `claude-code`, `token-optimization` | 0 / 0（+2 不做） |
-| 2026-10-17 | 🟢 | [AI 學術論文雙語閱讀利器：Moonlight 雙欄對照、公式保護與開源替代 (MinerU/Zotero) 技術解析](./notes/2026-10-17-moonlight-bilingual-paper-reader.md) | `paper-reading`, `ai-tools`, `bilingual-translation` | 3 / 3 |
+| 2026-10-17 | 🟡 | [AI 學術論文雙語閱讀：開源 PaperRead 雙欄對照、公式保護與 MinerU/Zotero/Moonlight 對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md) | `paper-reading`, `ai-tools`, `bilingual-translation` | 3 / 4 |
 | 2026-10-17 | ⚪ | [Reelbird：免費開源螢幕錄影神器（原生 Swift、S3/R2 自託管、即時網址與 Agent MCP 整合）](./notes/2026-10-17-reelbird-open-source-screen-recorder.md) | `screen-recording`, `mcp`, `agent-tools` | 0 / 0（+2 不做） |
 | 2026-10-17 | 🟢 | [對抗 AI 罐頭設計：Shipper 釋出 92 萬字元 epstein.md 終結 Vibe Coding 視覺審美疲勞](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md) | `anti-ai-slop`, `design-system`, `frontend-ui` | 2 / 2 |
 | 2026-10-17 | 🟢 | [TasteSkill v2：解析 247 個得獎網站重構的 AI 前端藝術指導與截圖評審閉環](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md) | `taste-skill`, `agent-skills`, `anti-slop` | 2 / 2 |
@@ -329,7 +335,7 @@
 | 2026-10-18 | 🟢 | [CLI-Anything：終結脆弱 GUI 點擊，將任意軟體自動升級為 Agent-Native CLI 與 Skill 的通用框架解構](./notes/2026-10-18-cli-anything-agent-native-computer-use.md) | `cli-anything`, `agent-native`, `computer-use` | 2 / 2 |
 | 2026-10-18 | 🟢 | [desktop-sense：為 Coding Agent 賦予本機螢幕即時視覺感知（Local-First Screen Context）與嚴格隱私防護架構解構](./notes/2026-10-18-desktop-sense-local-screen-context.md) | `desktop-sense`, `local-first`, `screen-context` | 1 / 1（+1 不做） |
 | 2026-10-18 | 🟢 | [多 Agent 生產力工廠實戰架構：Magpie 統一網關、Herdr 終端復用、Obsidian 接棒交接與額度感知動態路由解構](./notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md) | `multi-agent-factory`, `magpie`, `herdr` | 3 / 3 |
-| 2026-10-18 | 🟢 | [SpaceX 前首席工程師 Lauren Tan 的 pstack 方法論：以嚴謹工程紀律重構 AI 協同開發（/poteto-mode 核心路由、Playbooks、TDD 驗證與對抗性審查深度解構）](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md) | `pstack`, `poteto-mode`, `ai-coding-workflow` | 3 / 3 |
+| 2026-10-18 | 🟡 | [Lauren Tan（poteto）的 pstack 方法論：以嚴謹工程紀律重構 AI 協同開發（/poteto-mode 核心路由、23 套 Playbook、TDD 驗證與多模型審查解構）](./notes/2026-10-18-pstack-spacex-engineer-ai-coding-workflow.md) | `pstack`, `poteto-mode`, `ai-coding-workflow` | 3 / 4 |
 | 2026-10-18 | 🟢 | [靶心人故事編輯器：許榮哲故事模型與 Generative UI 互動產品設計 Prompt 深度解構](./notes/2026-10-18-target-story-generative-ui-editor.md) | `generative-ui`, `storytelling-structure`, `target-story-formula` | 2 / 2 |
 | 2026-10-19 | 🟢 | [「AI 共同大腦（AI Shared Brain）」工業級架構全景規劃：集中知識中樞、打卡審計、結構化交接記憶與額度感知動態調度的工程實踐](./notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md) | `ai-shared-brain`, `multi-agent-architecture`, `central-knowledge-hub` | 2 / 2 |
 | 2026-10-19 | 🟢 | [Google Android 團隊官方 30 個 Agent Skills 解構：終結過時 API 幻覺、Jetpack Compose 遷移、Play Billing 審查與跨終端（Wear/TV/Auto/XR）開發閉環](./notes/2026-10-19-android-official-skills-google-coding-agent.md) | `android-skills`, `jetpack-compose`, `google-play-billing` | 2 / 2 |
@@ -349,15 +355,15 @@
 | 2026-10-26 | 🟢 | [AI 接案的確定性交付工程：需求解壓縮、價值報價法、外部裁判 DoD 與 Session 工具鏈降維打擊](./notes/2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md) | `ai-freelance`, `value-based-pricing`, `scope-management` | 3 / 3 |
 | 2026-10-26 | 🟢 | [AI 共用記憶系統全景分析：從 Going Li 三 Agent 同腦架構、社團留言實踐到 Leoceeport 工程範本](./notes/2026-10-26-ai-shared-memory-template-team-collaboration.md) | `shared-memory`, `git-workflow`, `context-optimization` | 3 / 3 |
 | 2026-10-26 | 🟢 | [answer-me-with-html 深度評估：AI Agent 視覺化工件輸出與 8x Token 節流工程實踐](./notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md) | `generative-ui`, `visual-artifacts`, `agent-skills` | 2 / 2 |
-| 2026-10-26 | 🟢 | [Block Buzz 深度解析：基於 Nostr 協議的去中心化人機協同工作區與 ACP/MCP 代理人架構](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | `nostr-protocol`, `multi-agent-collaboration`, `acp-protocol` | 4 / 4 |
+| 2026-10-26 | 🟡 | [Block Buzz 深度解析：基於 Nostr 協議的去中心化人機協同工作區與 ACP/MCP 代理人架構](./notes/2026-10-26-block-buzz-nostr-agent-workspace.md) | `nostr-protocol`, `multi-agent-collaboration`, `acp-protocol` | 4 / 5 |
 | 2026-10-26 | 🟢 | [ChatGPT-6.1 生態系全景評測：GPT Work、Codex 與 Skills 的進階落地方案與 Session 工具鏈實戰映射](./notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md) | `chatgpt-6-1`, `gpt-work`, `codex` | 2 / 2（+1 不做） |
 | 2026-10-26 | 🟢 | [Codync 深度解析：Grok Bot / Dots / Muse 開源平替、ACP 多代理群聊與配額自動 Fallback 架構](./notes/2026-10-26-codync-open-source-agent-relay-fallback.md) | `multi-agent-orchestration`, `acp-protocol`, `rate-limit-fallback` | 2 / 2（+1 不做） |
-| 2026-10-26 | 🟢 | [GitHub 萬星熱門 Agent Skills 實測評估：從矽谷大神技能包到「按需載入」的工程治理防線](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | `agent-skills`, `skill-curation`, `context-optimization` | 3 / 3 |
+| 2026-10-26 | 🟡 | [GitHub 萬星熱門 Agent Skills 實測評估：從矽谷大神技能包到「按需載入」的工程治理防線](./notes/2026-10-26-github-trending-agent-skills-benchmark.md) | `agent-skills`, `skill-curation`, `context-optimization` | 3 / 4 |
 | 2026-10-26 | 🟢 | [多模型連續開發實測：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐](./notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md) | `cost-control`, `model-routing`, `prompt-caching` | 1 / 1（+2 不做） |
 | 2026-10-26 | 🟢 | [TOML v1.1 繁中規格解析與 Agent 設定檔工程：從 YAML 陷阱走向無歧義強型別配置](./notes/2026-10-26-toml-v11-specification-and-config-engineering.md) | `toml`, `configuration`, `standard-spec` | 2 / 2 |
 | 2026-10-28 | 🟢 | [開源 AI Agent 工單與跨代理交接系統 feedback-desk：Cloudflare Workers 無伺服器架構、MCP 整合與客戶協同實踐](./notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md) | `feedback-desk`, `ai-ticketing`, `agent-handoff` | 3 / 3 |
 | 2026-10-28 | 🟢 | [軟體計價機制繞過與 Client OAuth 鑑權破綻：Grok 訂閱轉本地 OpenAI 相容 API 的技術解構與資安防禦](./notes/2026-10-28-grok-oauth-subscription-proxy-api-bypass.md) | `grok-oauth`, `api-billing-bypass`, `oauth-pkce` | 3 / 3 |
-| 2026-10-28 | 🟢 | [Andrej Karpathy 版 CLAUDE.md 四大黃金準則解構：從軟性文字勸導到機械硬閘門的工程加固實踐](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | `karpathy-rules`, `claude-md`, `agents-md` | 3 / 3 |
+| 2026-10-28 | 🟢 | [依 Karpathy 觀察整理的 CLAUDE.md 四大準則解構：從軟性文字勸導到機械硬閘門的工程加固實踐](./notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md) | `karpathy-rules`, `claude-md`, `agents-md` | 3 / 3 |
 | 2026-10-28 | 🟢 | [四 Agent 雲端與本機派工協定：Claude 拆單、Antigravity 審查、Hermes 通訊與 GOBOT 雲端值守架構解構](./notes/2026-10-28-multi-agent-team-dispatch-five-roads-going-li.md) | `multi-agent`, `team-dispatch`, `claudecode` | 3 / 3 |
 | 2026-10-28 | 🟢 | [編譯器專家 Thorsten Ball 的 15 條 Agent 工作實戰哲學：無可辯駁證據、SDLC 端到端可視與爆破半徑審查解構](./notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md) | `thorsten-ball`, `agent-philosophy`, `irrefutable-evidence` | 3 / 3 |
 | 2026-10-31 | ⚪ | [Claude Code 四級模型分工架構解構：Opus 主線規劃、Sonnet 執行實作、Fable 驗收打分與 JEV 快速決策的 Token 經濟學實踐](./notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md) | `claude-code`, `hierarchical-orchestration`, `model-selection` | 0 / 0（+3 不做） |
@@ -378,9 +384,9 @@
 | 2026-11-01 | ⚪ | [Claude Code 四角色動態調用原則解構：主 Session 拍板、規格驅動開工、里程碑檢查點與布林決策 API 實戰](./notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md) | `claude-code`, `agent-dispatch-rules`, `runtime-orchestration` | 0 / 0（+3 不做） |
 | 2026-11-01 | 🟢 | [Vercel Labs agent-desktop 開源架構解構：告別截圖猜座標、作業系統無障礙樹（Accessibility Tree）操作與生產級 Computer Use](./notes/2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use.md) | `agent-desktop`, `vercel-labs`, `computer-use` | 3 / 3 |
 | 2026-11-01 | ⚪ | [Will 保哥 Claude Code 動態工作流實測解構：Opus 5.5 主控 + Haiku 5.5 驅動 283 個子代理、7 小時續航週配額消耗 <10% 的大規模並行工程學](./notes/2026-11-01-will-claude-code-opus-haiku-dynamic-workflows-benchmark.md) | `claude-code`, `dynamic-workflows`, `opus-5-5` | 0 / 0（+3 不做） |
-| 2026-11-02 | 🟢 | [Google 官方開源 Elephant-Goldfish Model (EGM) 架構解構：大象長記憶規劃、金魚零上下文對抗審查與軟體設計工業化](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | `google`, `elephant-goldfish-model`, `egm` | 2 / 2（+1 不做） |
+| 2026-11-02 | 🟢 | [Google 開源 Elephant-Goldfish Model (EGM) 架構解構：大象長記憶規劃、金魚零上下文對抗審查與軟體設計工業化](./notes/2026-11-02-google-elephant-goldfish-model-software-design-review.md) | `google`, `elephant-goldfish-model`, `egm` | 2 / 2（+1 不做） |
 | 2026-11-02 | 🟢 | [「麥克風的市場求生手冊」給 Agent 的 8 條極簡治病規約：終結 Codex 過度設計、無休止審查與規則通膨](./notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md) | `agent-rules`, `anti-overengineering`, `codex` | 3 / 3 |
-| 2026-11-02 | ⚪ | [OpenCut 開源 CapCut 替代品深度解析：97K Stars 多軌剪輯、Rust 跨端核心、MCP Server 與無頭自動化渲染架構](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | `opencut`, `capcut-alternative`, `video-editor` | 0 / 0（+3 不做） |
+| 2026-11-02 | ⚪ | [OpenCut 開源 CapCut 替代品解析：97K Stars 多軌剪輯，以及重寫中的 Rust 核心、MCP Server 與無頭渲染規劃](./notes/2026-11-02-opencut-open-source-capcut-alternative-video-editor.md) | `opencut`, `capcut-alternative`, `video-editor` | 0 / 0（+3 不做） |
 | 2026-11-04 | 🟢 | [Nicholas Lin 醫師 GCP Vertex AI 盜用案深度鑑別診斷：假 Claude Code 釣魚、AMOS 竊密木馬、Cookie 劫持與 LLMJacking 雲端算力變現攻擊鏈](./notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) | `llmjacking`, `gcp`, `vertex-ai` | 3 / 3 |
 | 2026-11-06 | ⚪ | [風雪之閣「IDA 接上 AI，逆向工程最後一哩路」貼文評估：ida-pro-mcp／GhidraMCP 現況查證與既有 REA 逆向流水線對照](./notes/2026-11-06-fengxue-ida-pro-ai-mcp-reverse-engineering-concern.md) | `reverse-engineering`, `ida-pro`, `ghidra` | 0 / 0 |
 | 2026-11-06 | ⚪ | [Threads「臉書發文賺得比月薪多」貼文查核：作者自曝後台數據反證、複製貼上農場訊號與副業引流話術](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md) | `fact-check`, `facebook-content-monetization`, `engagement-farming` | 0 / 0 |
@@ -388,26 +394,26 @@
 | 2026-11-07 | ⚪ | [GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照](./notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md) | `model-routing`, `github-copilot-fusion`, `cascade` | 0 / 0 |
 | 2026-11-07 | 🟢 | [AI Engineering from Scratch（rohitg00）開源教材深度評估：20 階段 542 堂課、18 個 AI 助教 Skills、80+ 本地評分專案，與繁中翻譯評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md) | `ai-engineering-from-scratch`, `curriculum`, `agent-skills` | 1 / 1 |
 | 2026-11-07 | ⚪ | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
-| 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 3 / 3 |
+| 2026-11-07 | 🟡 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 3 / 4 |
 | 2026-11-08 | 🟢 | [Agent Autoloop 架構深挖：約 2,000 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) | `agent-autoloop`, `event-sourcing`, `zero-cost-suspend` | 1 / 1 |
 | 2026-11-08 | 🟢 | [陳鍾誠教授分享「AI 寫網站＋Cloudflare `npx wrangler deploy` 一鍵上線」評估：免虛擬主機全端免費全家桶（Workers/KV/D1/R2）與 Wrangler 機密防洩漏稽核](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) | `cloudflare-workers`, `wrangler-deploy`, `serverless-fullstack` | 1 / 1 |
-| 2026-11-08 | ⚪ | [Claude Code 原生 `/advisor` 指令與伺服端 `advisor_20260301` 工具評估：Sonnet 主模型＋Opus/Fable 顧問機制與本地 `SanHsien/agent-advisor` 架構對比](./notes/2026-11-08-claude-code-builtin-advisor-command-evaluation.md) | `claude-code`, `advisor-mode`, `model-routing` | 0 / 0 |
+| 2026-11-08 | 🔴 | [Claude Code 原生 `/advisor` 指令與伺服端 `advisor_20260301` 工具評估：Sonnet 主模型＋Opus/Fable 顧問機制與本地 `SanHsien/agent-advisor` 架構對比](./notes/2026-11-08-claude-code-builtin-advisor-command-evaluation.md) | `claude-code`, `advisor-mode`, `model-routing` | 0 / 1 |
 | 2026-11-08 | 🟢 | [Claude Code 垂直領域 Skill 與 MCP 生態系全盤點：影音配音聽覺自審、YouTube/IG 確定性腳本、前端反 AI Slop 五件套與 Claudex 跨模型互審](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) | `claude-code`, `agent-skills`, `earshot` | 2 / 2 |
-| 2026-11-08 | ⚪ | [黑暗執行緒推薦「Motion Library 動態收藏」：327 種網頁特效的 AI 提示詞庫、CSS/GSAP 實作與 Agent Skill 整合評估](./notes/2026-11-08-darkthread-kittenjam-motion-library-frontend-animation-prompts.md) | `motion-library`, `frontend-animation`, `darkthread` | 0 / 0 |
+| 2026-11-08 | ⚪ | [黑暗執行緒推薦「Motion Library 動態收藏」：300 多種網頁特效的 AI 提示詞庫、CSS/GSAP 實作與 Agent Skill 整合評估](./notes/2026-11-08-darkthread-kittenjam-motion-library-frontend-animation-prompts.md) | `motion-library`, `frontend-animation`, `darkthread` | 0 / 0 |
 | 2026-11-08 | ⚪ | [評析 Dustin GMAT 推薦「claude-work-mode」：Claude Code 三態工作流（auto/out/wrap）、批次確認集中化與外派節流閘門架構深挖](./notes/2026-11-08-dustin-gmat-danyuchn-claude-work-mode-session-modes.md) | `claude-code`, `claude-work-mode`, `work-mode` | 0 / 0 |
 | 2026-11-08 | 🟢 | [Frigate 開源本地 AI NVR 架構解析：RTSP 舊鏡頭改造、Intel OpenVINO 內顯加速、語意搜尋與 ClearCam 對照](./notes/2026-11-08-frigate-nvr-rtsp-openvino-local-ai-camera.md) | `frigate`, `smart-nvr`, `rtsp` | 1 / 1 |
 | 2026-11-08 | 🟢 | [Google Research 開源 Harness²（Harness Squared）：無標準答案開放世界的雙層遞迴 Agent Harness 自我優化框架](./notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md) | `google-research`, `harness2`, `agent-harness` | 1 / 1 |
 | 2026-11-08 | ⚪ | [評析 Threads 爆款「Claude 8 條提示詞 90 天 YouTube 變現」：泛用角色提示詞的淺層缺陷、搬運破綻與工業級 Agent Skill 實證對照](./notes/2026-11-08-jackiechin073-claude-youtube-8-prompts-vs-agent-skills.md) | `youtube-strategy`, `prompt-engineering`, `mega-prompts` | 0 / 0 |
 | 2026-11-08 | ⚪ | [開源專案 `JustVugg/colibri` 解構：VRAM/RAM/NVMe 三層式 MoE 推理引擎、零生成 `System One`（Jev API 相容）決策端點與本機 RTX 3060 適配評估](./notes/2026-11-08-justvugg-colibri-hierarchical-moe-inference-engine.md) | `colibri`, `moe-inference`, `expert-offloading` | 0 / 0 |
 | 2026-11-08 | ⚪ | [評析 Threads 推薦「OpenMausBot」：開源 Grok Bot 替代方案、雙行程 Harness 架構與 Local VM / Bot Box 沙盒安全邊界深挖](./notes/2026-11-08-otto-scope-openmausbot-local-vm-agent-fleet.md) | `openmausbot`, `grok-bot-alternative`, `agent-sandbox` | 0 / 0 |
-| 2026-11-08 | ⚪ | [Frigate 0.18.2 實測圖解與踩雷拆解：Tapo C200 RTSP 雙串流、OpenVINO 模型張量契約與 GHSA Root RCE 漏洞防護](./notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md) | `frigate`, `tapo-c200`, `rtsp` | 0 / 0 |
+| 2026-11-08 | ⚪ | [Frigate 0.18.2 實測圖解與踩雷拆解：以測試影片驗證的 OpenVINO 模型張量契約、Tapo C200 接法（雙串流未實測）與 GHSA Root RCE 漏洞防護](./notes/2026-11-08-takyhill-frigate-tapo-c200-openvino-pitfalls.md) | `frigate`, `tapo-c200`, `rtsp` | 0 / 0 |
 | 2026-11-09 | ⚪ | [評析「一股GoodJob」GitHub 週榜 5 大 Claude Skills：Hallmark 反 Slop、claude-mem 跨會話記憶、Game Studios 遊戲工坊、Claude SEO 與 OpenMontage 影音管線](./notes/2026-11-09-goodjobai-five-trending-claude-skills.md) | `claude-code`, `agent-skills`, `hallmark` | 0 / 0 |
 | 2026-11-10 | ⚪ | [評析 Threads 冠妙 Asha「Muse 跨區註冊與 10 億 Token 邀請碼」：加拿大節點規避年齡驗證、VPN 試用陷阱與 ToS 封號資安評估](./notes/2026-11-10-asha-muse-registration-vpn-referral-evaluation.md) | `meta-muse`, `vpn-bypass`, `referral-program` | 0 / 0 |
 | 2026-11-10 | ⚪ | [評析陳盟升（Darks）「Claude Code 突破 5 小時額度牆自我喚醒術」：無人值守長駐 Agent 的背景排程範式、夜間死循環熔斷與落盤對帳防線](./notes/2026-11-10-darkschen-claude-code-5-hour-limit-self-wakeup-loop.md) | `claude-code`, `rate-limit`, `5-hour-window` | 0 / 0 |
 | 2026-11-11 | ⚪ | [Meta Astryx 開源設計系統：8 年內建、agent-ready、150+ 元件](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md) | `design-system`, `meta`, `astryx` | 0 / 0 |
-| 2026-11-12 | ⚪ | [Claude Duet 申請送 3 次 resets：Fable 5.2 發布時機與配額策略](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md) | `claude`, `claude-duet`, `fable-5-2` | 0 / 0 |
+| 2026-11-12 | ⚪ | [Claude Duet 研究預覽附贈 limit resets（Pro 3 次、Max／Ultra 1 次，12/15 到期）](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md) | `claude`, `claude-duet`, `fable-5-2` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Editkin：免費 Windows 本地優先 AI 剪輯器（0.16 起轉閉源 freeware，原始碼凍結於 0.15）](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md) | `editkin`, `video-editing`, `local-first` | 0 / 0 |
-| 2026-11-13 | ⚪ | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 0 |
+| 2026-11-13 | 🔴 | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 1 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
 | 2026-11-14 | 🟢 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 2 / 2（+1 不做） |
 | 2026-11-14 | 🟢 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 2 / 2 |
@@ -441,6 +447,7 @@
 | 2026-11-15 | 🟢 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 1 / 1 |
 | 2026-11-15 | ⚪ | [Runway MCP ＋ 程式化動態圖形（報紙剪貼拼貼 60 秒短片）工作流與分權 Prompt 評估](./notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md) | `runway-mcp`, `motion-graphics`, `remotion` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Threads 案例評估：@chia.hsun301 一人公司 AI 產能月報與商業變現結構](./notes/2026-11-16-chia-hsun301-ai-solo-operator-roi.md) | `ai-workflow`, `solo-operator`, `cosyvoice-3` | 0 / 0 |
+| 2026-11-16 | ⚪ | [Facebook 貼文與留言評估：陳盟升（Darkschen）兩顆 5TB Google Drive 邊載邊傳備份開源大模型](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md) | `open-weights`, `google-drive`, `backup` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文與留言串評估：不依賴單一 AI 的本地 Skill/Handoff/Memory 工作流](./notes/2026-11-16-isaac-wong-ai-agnostic-local-workflow-comments.md) | `claude-code`, `handoff`, `markdown-memory` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -515,9 +522,10 @@
 - 繁中去AI味與資源評估：[說人話Skill與CC資源評估](./notes/2026-11-15-raymondhou-speak-human-tw-and-cc-resources-eval.md)
 - 四種AI工作模式地圖：[Rei四種AI工作模式](./notes/2026-11-15-rei-four-ai-work-modes-claude-codex-eval.md)
 - 一人公司AI變現：[一人公司AI產能月報](./notes/2026-11-16-chia-hsun301-ai-solo-operator-roi.md)
+- 開源模型雲端冷備：[開源大模型Drive備份](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
-- 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[Moonlight 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
+- 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
 - 全端部署與自動化落地：[HanSun 全端建置部署手冊](./notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md)、[LINE家庭群組Bot與Agent引導部署](./notes/2026-11-01-castlen3-line-family-comment-bot-agent-onboarding-n8n.md)、[陳鍾誠Cloudflare一鍵部署評估](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md)
 - 開源教材與商業案例查核：[GitHub 開源 AI 工具矩陣](./notes/2026-10-17-github-open-source-ai-toolkit-matrix.md)、[海外一手副業案例與影音萃取管線](./notes/2026-10-31-global-solopreneur-case-study-and-video-intelligence-pipeline.md)、[臉書發文收益宣稱查核](./notes/2026-11-06-threads-facebook-post-income-claim-fact-check.md)、[AI Engineering from Scratch 教材評估](./notes/2026-11-07-rohitg00-ai-engineering-from-scratch-curriculum-evaluation.md)
 - 社群動態與帳號合規：[Muse跨區註冊與邀請碼評析](./notes/2026-11-10-asha-muse-registration-vpn-referral-evaluation.md)
@@ -701,7 +709,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/pi-hybrid-harness-readonly-assessment.md`](./docs/pi-hybrid-harness-readonly-assessment.md) | Pi 混合型 Harness 唯讀評估 |
 | [`docs/pii-guard-readonly-assessment.md`](./docs/pii-guard-readonly-assessment.md) | pii-guard 唯讀採納評估 |
 | [`docs/production-smoke-security-checklist.md`](./docs/production-smoke-security-checklist.md) | 全端網站上線前 QA 與資安稽核檢核表 (Production Smoke & Security Checklist) |
-| [`docs/pstack-agent-playbooks.md`](./docs/pstack-agent-playbooks.md) | pstack 技能庫與 Playbooks 跨 Agent CLI 移植規格書 |
+| [`docs/pstack-agent-playbooks.md`](./docs/pstack-agent-playbooks.md) | pstack 技能庫與 Playbooks：官方結構與跨 Agent CLI 使用說明 |
 | [`docs/pstack-governance-integration.md`](./docs/pstack-governance-integration.md) | pstack 工程防線與 agent-governance-toolkit 運行期政策檢查整合實踐 |
 | [`docs/rea-sandbox-evaluation-evidence.md`](./docs/rea-sandbox-evaluation-evidence.md) | REA（Reverse Engineer Anything）沙盒環境實測報告 |
 | [`docs/reverse-engineering-pipeline-spec.md`](./docs/reverse-engineering-pipeline-spec.md) | REA + CLI-Anything 逆向分析與功能重造流水線規格 (Reverse Engineering Pipeline Spec) |
