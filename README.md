@@ -441,6 +441,7 @@
 | 2026-11-15 | 🟢 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 1 / 1 |
 | 2026-11-15 | ⚪ | [Runway MCP ＋ 程式化動態圖形（報紙剪貼拼貼 60 秒短片）工作流與分權 Prompt 評估](./notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md) | `runway-mcp`, `motion-graphics`, `remotion` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Threads 案例評估：@chia.hsun301 一人公司 AI 產能月報與商業變現結構](./notes/2026-11-16-chia-hsun301-ai-solo-operator-roi.md) | `ai-workflow`, `solo-operator`, `cosyvoice-3` | 0 / 0 |
+| 2026-11-16 | ⚪ | [Claude Taiwan 貼文與留言串評估：不依賴單一 AI 的本地 Skill/Handoff/Memory 工作流](./notes/2026-11-16-isaac-wong-ai-agnostic-local-workflow-comments.md) | `claude-code`, `handoff`, `markdown-memory` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -470,6 +471,7 @@
 - 24x7常駐Agent：[24x7地端Agent架構](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md)
 - 多模型省額角色路由：[多AI分權省額路由](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md)
 - 混合型Harness：[Pi混合型Harness](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md)
+- 記憶交接與去噪對照：[不綁定單一AI本地系統](./notes/2026-11-16-isaac-wong-ai-agnostic-local-workflow-comments.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
