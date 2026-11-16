@@ -10,6 +10,11 @@ status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "跨 CLI 與階層派工"
 short_title: "Herdr 終端復用 + Magpie 統一網關"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "原 Threads 貼文沒留連結，貼文的圖片與留言都沒看到（總數未知）；改看 repo：magpie README 6 張圖看了 3 張（另 3 張只讀替代文字），herdr 示範影片沒播放，issue 留言讀到 2 則"
+source_images: 3
+source_replies: 2
 tags:
   - multi-agent-factory
   - magpie
@@ -25,6 +30,30 @@ tags:
 - **發布平台 / 作者**：`Threads 對話節錄` / `yetone & herdrdev 社群實戰者`
 - **分析日期**：`2026-10-18`
 - **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：本篇的起點是一段 Threads 對話節錄，**筆記沒有留下原貼文連結，所以那則貼文的圖片與留言無法回頭看**。這次改看兩個官方 repo：`yetone/magpie` 的 README 全文與 3 張主要圖（另 3 張介面截圖只讀了替代文字）、`herdrdev/herdr` 的 README 全文（它只有一支示範影片，沒有播放），以及 magpie 一則與額度相關的 issue 留言。
+
+- **作者圖片**（magpie README）：
+  - 圖 1（Agents 頁）：一張清單，每個 agent 一列、右邊下拉選模型並有開關。畫面上是 Claude Code、Codex、Gemini CLI、Antigravity CLI、OpenCode、Zed、Hermes Agent 等 8 個，下方寫還有 21 個；左下有「Budget／Focus」兩組可切換的設定檔。
+  - 圖 2（架構圖）：左邊是各家 agent（列了 4 個加「另外 40 多個」），中間是本機閘道 `127.0.0.1:3425`，同時說四種協定（OpenAI Chat、OpenAI Responses、Anthropic Messages、Gemini）並互相轉譯；閘道內有「路由群組（fail-over／smart／pace 三種策略）」與「外掛與中介層」；右邊是 API 金鑰、訂閱帳號、本機模型三類供應來源。
+  - 圖 3（Masking 頁）：**原稿完全沒提的功能**。閘道在請求離開本機前把機密值（金鑰、密碼、電子郵件）換成佔位符，回應回來再換回去；畫面顯示 7 天內遮了 5,812 個值，並逐筆列出哪個 agent 送往哪家供應商時遮了什麼。
+- **作者留言補充**（magpie issue #606，維護者 yetone 回覆）：
+  - 透過 magpie 使用 Claude 訂閱時，magpie 實際上是啟動真正的 Claude Code 程式、用 `claude -p` 無頭模式驅動，目的是讓請求仍被算成 Claude Code 自己的流量。
+  - 這條路會比直接用多耗額度的原因：系統提示詞疊兩份（Claude Code 自己的加上呼叫方的）、提示詞快取接不上時整段歷史重寫（每個對話只保留最多 6 個程序、閒置最長 1 小時）。
+- **網友留言重點**：
+  - 同一則 issue，一位貢獻者實測：同帳號、同模型下，改成真正互動式的 Claude Code 路徑後，同樣的 5 小時額度大約能多做 1.8 到 2 倍的工作量；樣本不大，他自己也說不足以證明社群流傳的「固定 3 倍」。
+  - herdr 留言數最多的 issue 多半是 Windows 相關（多行貼上在第一個換行就送出、遠端連線逾時、長輸入後 Enter 掉字），都已關閉。代表 herdr **有 Windows 原生版**，但 Windows 路徑是近期才穩定下來的。
+- **對分析的影響**：
+  - **修正 1.2 第 2 點 herdr 的狀態種類**：官方 README 只有 working／blocked／idle 三種，原稿寫的「Completed／Errored」與 1.1 圖中的「Done」查無依據，已改寫。
+  - **修正 1.2 第 1 點 magpie 的容錯說明**：自動換帳號或換模型的前提是同一供應商有第二個帳號，或已設定路由群組；只有一個帳號又沒設群組時，錯誤會照樣傳回 agent。README 自己這樣寫，已補上。
+  - **新增一項風險**（原稿沒有）：把 Claude 訂閱接到 magpie 再給其他 agent 用，額度可能消耗得比直接用快，依據是 issue #606 的維護者說明與實測。這支持當初「不啟用 magpie 閘道」的結果。
+  - **新增一項可參考的設計**：magpie 的機密遮罩（送出前換佔位符、回來再還原）。代價是模型看不到真值，遇到「為什麼這個金鑰被拒」這類要看值的任務做不了。暫不開新任務，記在 2.2。
+  - `T-20261018-15` 目標範圍寫的「Linux 專用 tmux/Herdr」不精確：herdr 有 Windows 安裝指令，該任務的證據也已實測 herdr 0.9.1 Windows 原生可用。任務已完成，文字不改。
+  - 授權與規模（2026-11-16 查 GitHub API）：magpie 為 MIT、約 3.7 萬星；herdr 為 Apache-2.0、約 5.1 萬星。
 
 ---
 
@@ -51,7 +80,7 @@ tags:
 │    └─ 以 Markdown + Frontmatter 記錄前車之鑑與任務狀態，實現無縫接力交接   │
 │                                                                        │
 │ 3. Herdr Agent-Native 終端復用器 (Multiplexer & PTY Supervisor)         │
-│    └─ 即時感知各 Pane 狀態 (Working / Idle / Done / Blocked)，支援互派任務 │
+│    └─ 即時感知各 Pane 狀態 (Working / Blocked / Idle)，支援互派任務        │
 │                                                                        │
 │ 4. Magpie 統一本地網關與配額容錯 (Unified Gateway & Failover)            │
 │    └─ 統一 API 轉發、跨模型混搭 (Codex 跑 DeepSeek)、RateLimit 自動轉移  │
@@ -92,10 +121,12 @@ tags:
    - 官方站點：`usemagpie.ai`。
    - **痛點解決**：各家 Coding Agent（Claude Code, Codex, Aider, OpenCode）原本各自綁定特定設定。Magpie 在本地提供統一的 OpenAI/Anthropic 相容 Gateway。
    - **混搭突破**：支援將 **Codex 指向 DeepSeek-V3/R1**、或將 **Claude Code 指向 Kimi / GLM**，大幅降低日常施工成本。
-   - **自動容錯（Failover）**：內建 Quota 監控，當某家模型遇到 429 Rate Limit 或額度耗盡時，自動秒級容錯切換至備援 Key 或模型。
+   - **自動容錯（Failover）**：內建 Quota 監控，當某家模型遇到 429 Rate Limit 或額度耗盡時，自動容錯切換至備援 Key 或模型。**前提**：同一供應商要有第二個帳號，或已把多個模型設成路由群組（策略有 fail-over／smart／pace）；只有一個帳號又沒有群組時無處可切，錯誤會照樣傳回 agent。
+   - **機密遮罩**：請求離開本機前把金鑰、密碼等換成佔位符，回應回來再還原；模型因此看不到真值。
+   - **額度風險**：經 magpie 使用 Claude 訂閱時走的是 `claude -p` 無頭模式，維護者在 issue #606 說明系統提示詞會疊加、快取接不上時會整段重寫；有使用者實測額度效率約為互動式的一半（樣本不大）。
 2. **`herdrdev/herdr` (Rust 打造的 Agent-Native 終端復用器)**：
    - 官方站點：`herdr.dev`。
-   - **非傳統 tmux**：傳統 tmux 只能分屏文字；Herdr 原生解析 PTY 的輸出狀態，直接在 UI/Statusline 標示各 Agent 是處於「Thinking/Working」、「Waiting User Input」、「Completed」還是「Errored」。
+   - **非傳統 tmux**：傳統 tmux 只能分屏文字；Herdr 原生解析 PTY 的輸出狀態，直接在介面標示各 pane 的 agent 狀態。官方 README 只列三種：**working（執行中）、blocked（停下來等回答）、idle（閒置）**；原稿寫的 Completed／Errored 查無依據。
    - **Agent 互派工（Agent-to-Agent Socket API）**：Agent 可以透過 Herdr 提供的 Socket API 主動在相鄰 Pane 召喚另一個 Agent 執行子任務，並監聽其完成訊號。
 3. **`ORCA` / `OrcaRouter` (智慧動態模型路由與多 Agent 開發環境)**：
    - **OrcaRouter**：動態分析 Prompt 語意複雜度，自動選擇性價比最高之模型（大腦 vs. 施工）。
@@ -122,6 +153,7 @@ tags:
   1. **導入 Magpie 解決多 CLI 的模型配置與 Rate Limit 容錯**：評估在 Windows 11 本地以 Magpie 作為統一 Local Gateway，方便 Claude Code / Codex / OpenCode 無痛共用模型與代理。
   2. **實作「複雜度與配額感知前置分派 Hook（Pre-Dispatch Hook）」**：撰寫腳本在任務開工前，自動評估工單規模並檢查額度，直接輸出推薦模型與分派命令。
   3. **規範化集中技能庫的「打卡簽出/簽入日誌」**：在共享 Skills 或共同維護文件夾時，規範 Agent 異動時自動追加 ChangeLog。
+  4. **（2026-11-16 補）送出前遮罩機密的做法可參考**：magpie 在閘道層把機密換成佔位符再送給供應商。若日後本機代理層要加類似功能可比照，但要保留「不遮罩清單」給需要看真值的任務。
 - **不適用 / 需調整的部分**：
   1. **避免過度依賴雲端 Google Drive 同步**：跨 Agent 代碼寫入若放在雲端同步資料夾易產生檔案鎖定（File Lock）與同步延遲衝突，代碼與 Git 專案仍應維持本地原生目錄（`C:\GitHub\<repo>`），雲端資料中心僅適合存放唯讀知識庫與共用 Prompt。
 

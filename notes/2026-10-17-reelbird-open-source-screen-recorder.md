@@ -3,13 +3,17 @@ id: 2026-10-17-reelbird-open-source-screen-recorder
 title: "Reelbird：免費開源螢幕錄影神器（原生 Swift、S3/R2 自託管、即時網址與 Agent MCP 整合）"
 source_url: "https://github.com/btahir/reelbird"
 source_platform: "GitHub"
-author: "btahir (Bashir Tahir)"
+author: "btahir"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: archived
 cluster: "2"
 cluster_role: "開源剪輯與動效提示庫"
 short_title: "Reelbird 開源螢幕錄影"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 6
+source_replies: 0
 tags:
   - screen-recording
   - mcp
@@ -21,10 +25,34 @@ tags:
 # Reelbird：免費開源螢幕錄影神器（原生 Swift、S3/R2 自託管、即時網址與 Agent MCP 整合）
 
 - **來源倉庫**：[GitHub - btahir/reelbird](https://github.com/btahir/reelbird)
-- **專案作者**：`btahir (Bashir Tahir)`
+- **專案作者**：`btahir`（GitHub 個人檔案顯示名稱為 Bilal）
 - **分析日期**：`2026-10-17`
 - **當前狀態**：`⚪ 封存不做 (Archived)`
 - **授權協議**：`MIT License`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：來源是 GitHub repo，沒有社群貼文。看了現行 README 全文與 6 張圖。repo 重審時 49 顆星，issue 與 Discussions 都是 0 則，沒有留言可讀。
+
+- **作者圖片**（README 6 張）：
+  - 圖 1 橫幅：標語「錄螢幕、送連結、之後再修」，下方是編輯器畫面。
+  - 圖 2 示範動畫：錄一個待辦清單 app，游標點擊處自動放大。
+  - 圖 3 編輯器（縮放）：上方預覽含圓形鏡頭畫面；右側 Zoom 面板有自動／手動／關閉三段、強度滑桿、單一縮放的深度（1.8x）與「跟隨游標」；下方時間軸有影片軌、音訊波形、一排縮放區段。右上有 Copy Link 與 Export。
+  - 圖 4 錄製來源選擇：分螢幕／視窗／區域三頁，列出各 app 視窗縮圖；下方開關有麥克風、鏡頭、系統音訊、**邊錄邊分享（停止時連結已複製）**，畫質 60 fps。
+  - 圖 5 編輯器（音訊）：人聲增強分四級、自動音量、系統音訊在人聲下自動壓低、一鍵剪掉長靜音。
+  - 圖 6 分享視窗：顯示一條 r2.dev 的公開連結，說明「目前播的是快錄版，按 Update Link 才發布編輯結果」，另有停止分享。
+- **作者留言補充**（README 現況，原筆記沒寫或寫錯的）：
+  - 有付費方案 **Reelbird Pro（每月 5 美元）**：不想自己設 bucket 的人用官方代管連結，附觀看統計。app 本身免費、分享到自己的 bucket 免費。
+  - 比較表多一欄 **OpenScreen**（MIT、免費、支援 Mac／Windows／Linux，但不產生分享連結）。
+  - 「不規劃支援 Windows 與 Linux」README 有明寫，原筆記正確。
+  - MCP 工具不只錄製：還有標記點、專案檢視、編輯（裁切、鏡頭位置、速度）、模糊區域、找出並遮蔽敏感資訊等。
+- **網友留言重點**：無（issue 0、Discussions 0）。專案才建立一個月（2026-10-13）、49 顆星，沒有第三方實測回報可佐證 README 的說法。
+- **對分析的影響**：
+  - 作者欄的「Bashir Tahir」查無依據，GitHub 個人檔案顯示的名字是 Bilal；已改成只寫帳號 `btahir`。
+  - 1.1 節與比較表的「100% 免費」「無後台伺服器」補上 Pro 代管方案；「只有登入 Pro 時才連 Reelbird 伺服器」。
+  - Windows 替代方案補上 OpenScreen。兩個任務本來就是「不做」，狀態不變。
 
 ---
 
@@ -37,7 +65,7 @@ tags:
 - **Reelbird 解法**：**「停錄即分享、後續同網址精修、無伺服器自託管、完全開源 MIT」**。
   - **即時網址（Share-while-recording）**：邊錄邊推流（HLS / S3 分段上傳）至自己的 Cloudflare R2 / AWS S3，錄影按下停止瞬間，公開分享網址已在剪貼簿中。
   - **原地精修不換網址（Update Link）**：後續在編輯器內加入自動縮放（Auto-zoom）、平滑游標、音量平衡（-16 LUFS）、敏感資訊模糊、Apple 原生字幕等，點擊更新後直接覆蓋雲端檔案，原始分享網址不變。
-  - **原生高效無外依賴**：100% 原生 Swift 6.2，基於 macOS 15+ 系統框架（ScreenCaptureKit, Metal, Apple Speech, Foundation Models），無第三方依賴、無後台伺服器、無遙測收集。
+  - **原生高效無外依賴**：100% 原生 Swift 6.2，基於 macOS 15+ 系統框架（ScreenCaptureKit, Metal, Apple Speech, Foundation Models），無第三方依賴、無遙測收集；分享到自己的 bucket 時不經任何 Reelbird 伺服器，只有登入付費的 Reelbird Pro 代管（每月 5 美元，附觀看統計）才會連官方伺服器。
   - **原生支援 Coding Agent（CLI & MCP）**：內建 `reelbird mcp`，讓 Claude Code、Codex、Cursor 等 Agent 能在交付程式碼後自動錄製展示 Demo，並回傳連結。
 
 ### 1.2 系統架構與 Agent 錄影管線可視化
@@ -78,7 +106,7 @@ tags:
 
 | 特性 | Reelbird | Loom | Screen Studio | Cap (Open Source) |
 | :--- | :--- | :--- | :--- | :--- |
-| **價格與授權** | 100% 免費 (MIT) | 免費受限 / $18/月起 | $29/月 (商業閉源) | 免費個人 / $29/年 (AGPLv3) |
+| **價格與授權** | 免費 (MIT)；選用 Pro 代管 $5/月 | 免費受限 / $18/月起 | $29/月 (商業閉源) | 免費個人 / $29/年 (AGPLv3) |
 | **儲存方式** | 自託管 (Cloudflare R2 / S3) | Loom 官方雲端 | 官方或本機導出 | Cap 雲端或自託管 |
 | **停錄即出連結** | ✅ 有（推流至 R2） | ✅ 有（上傳 Loom） | ❌ 需等待導出 | ✅ Instant 模式 |
 | **同連結精修更新** | ✅ 支援（無縫替換） | ❌ 無自動縮放精修 | ❌ 導出後才生連結 | ⚠️ 兩模式分離 |
@@ -103,7 +131,7 @@ tags:
     - **平台限制**：Reelbird 深度綁定 macOS 專屬底層 API（ScreenCaptureKit, Metal, Apple Speech），官方表明**不計畫支援 Windows 與 Linux**。
     - **Windows 原生因應方案**：維護者的工作環境為 Windows 11，若要在 Windows 上實現類似的「Agent 自動錄 Demo」：
       - 方案 A（Web 應用）：使用 Playwright / Puppeteer 內建 `recordVideo` 搭配 headless 瀏覽器錄製操作 Demo。
-      - 方案 B（系統桌面）：調研開源跨平台的 **Cap**（支援 Windows）或透過 OBS CLI / FFmpeg 錄影腳本封裝為 Windows 本地 MCP 工具。
+      - 方案 B（系統桌面）：調研開源跨平台的 **Cap**（Windows 為 beta）或 README 比較表列出的 **OpenScreen**（MIT、免費、支援 Windows，但不產生分享連結），或透過 OBS CLI / FFmpeg 錄影腳本封裝為 Windows 本地 MCP 工具。
 
 ---
 

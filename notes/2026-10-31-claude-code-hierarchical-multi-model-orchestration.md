@@ -10,6 +10,9 @@ status: archived
 cluster: "1"
 cluster_role: "模型路由與配額分流"
 short_title: "Claude Code四級模型分工架構"
+source_review: unavailable
+source_reviewed_at: 2026-11-16
+source_review_note: "2026-11-16 重審時貼文網址被 Threads 導回首頁並回 invalid_post（已刪除或失效），作者個人頁未登入會被導到登入頁；圖片與留言都看不到"
 tags:
   - claude-code
   - hierarchical-orchestration
@@ -32,6 +35,21 @@ tags:
   - [`notes/2026-10-26-llm-burn-rate-cache-routing-benchmark.md`](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md)（LLM 燒錢率、Cache 命中率與智慧路由 Benchmark）
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 專案規範四大硬閘門）
   - [`notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md`](./2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)（跨 CLI 子代理編排與路由分發）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：原貼文已讀不到。開 `https://www.threads.com/@0xalpha.ai/post/DeO8nihElfh` 兩次都被導回 Threads 首頁（網址帶 `error=invalid_post`），作者個人頁未登入會被導到登入頁。
+
+- **作者圖片**：看不到。原貼文講的是「這個 Claude Code 設定」，很可能附了設定截圖或連結，但本筆記當初沒有記錄，現在也無法補看。
+- **作者留言補充**：看不到。
+- **網友留言重點**：看不到。
+- **對分析的影響**：本篇唯一的原始依據是分析主題欄引用的那一句貼文文字。以下內容沒有原文可核對，閱讀時請當成本 repo 的推演，不是作者的說法：
+  1. 「JEV」是什麼（模型、規則引擎或某個工具的名稱）原貼文沒有解釋，第 2 節把它當成「輕量模型或規則式引擎」是推測。
+  2. 第 2.2 節的成本降幅（60%～75%）、單次任務金額與 Opus 上下文維持在 8,000～15,000 token，都沒有出處，是當初分析時的估計，未經實測。
+  3. 四層的 L1～L4 編號、Task Packet、DoD 驗收等細節是本 repo 套用既有派工慣例的延伸。
+  - 三項任務先前已標為不做，本次重審沒有新資訊足以改變這個判斷。
 
 ---
 

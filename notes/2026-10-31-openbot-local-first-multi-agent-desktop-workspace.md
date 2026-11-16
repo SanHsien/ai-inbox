@@ -10,6 +10,10 @@ status: archived
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "OpenBot本地優先Agent工作台"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 1
+source_replies: 1
 tags:
   - openbot
   - local-first
@@ -37,6 +41,23 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：Threads 主文、圖片、留言區，以及 GitHub README 與 repo 資料都看過。
+
+- **作者圖片**：1 張自製宣傳卡：標「GitHub Trending Top 9／2026.10.29」，中間是桌面視窗連到三個機器人的示意圖與 openbot 字樣，下方三個標籤是 TypeScript、3,476 星、今日 +1,054，底部列 Electron、Local-first、AI Agents、TypeScript 與 repo 網址。可確認兩件事：桌面殼是 Electron；貼文當天的星數是 3,476。
+- **作者留言補充**：作者在第 1 則回覆貼出 GitHub 連結 `nightly-labs/openbot`，並問讀者在不在意資料上雲。沒有技術補充。
+- **網友留言重點**：無。留言區只有作者自己那 1 則。GitHub 那邊 2026-11-16 查到未關閉的 issue 與 PR 合計 2,950 筆，留言最多的幾則是 MCP 登入失敗、想用既有 Chrome 設定檔、想要多個隔離的瀏覽器設定檔、ACP 工作階段沒有暴露電腦操作工具等，多為整合面的錯誤回報與功能請求。
+- **對分析的影響**：貼文與留言沒有新資訊，但對照 README 後，原筆記有四處與事實不符，已改正文：
+  1. **Agent 是以完全存取、免逐次確認的方式執行**：README 開頭就有警告——Agent 以 `danger-full-access` 與 `approvalPolicy: never` 執行，首次啟動同意後，讀寫檔案、執行指令、連網、操控內嵌瀏覽器都不再逐次確認。原筆記架構圖寫「檔案操作權限沙盒化，防止跨目錄污染」，與此相反：每個 Agent 有自己的工作目錄，但那不是權限沙盒。這一點與本機「不採用破沙盒旗標」的規則直接衝突，是不採用的主要理由。
+  2. **不是開源授權**：README 標示 PolyForm Noncommercial 1.0.0，原始碼公開但禁止商業使用（GitHub API 的授權欄為 NOASSERTION）。原筆記與貼文都稱「開源」，已加註。
+  3. **「資料不出門」說過頭了**：README 自己寫「local-first, not offline-only」——各家 Agent 仍連回各自的雲端服務，瀏覽的網頁走網路，外掛可能連自己的服務；另有選用的 OpenBot 帳號（帳號 API 在 Cloudflare Workers 與 D1）。原筆記的「零數據出境」「100% 數據自主」已改。
+  4. **細節出處**：SolidJS、SQLite、EventBus、ACP 模式這些實作細節，貼文與 README 開頭都沒有寫，是原分析的推測；README 寫明的是 FIFO 佇列（可暫停、續跑、取消、當機後保留）、Agent 間訊息與檔案傳送、內嵌瀏覽器、選用的 `cua-driver` 電腦操作、自動壓縮上下文。
+  5. 支援的 Agent 比原筆記列的多（另含 OpenCode、Cursor CLI、Cline、Devin、GitHub Copilot CLI、Mistral Vibe、Hermes 等，經 ACP 接入）；安裝檔有 macOS、Windows x64、Linux AppImage。星數 2026-11-16 為 8,106。
+  - 任務維持原判斷，本次重審沒有讓任何任務該重開；反而多了「全權限執行」這個不採用的理由。
+
+---
+
 ## 1. 核心內容摘要：問題背景與「本地優先」典範轉移（Executive Summary）
 
 目前市場上的 AI Agent 平台大多朝向「雲端託管、封閉式 SaaS、每分鐘算力計費」發展，但對於企業工程團隊與專業開發者而言，存在兩大致命痛點：
@@ -45,7 +66,7 @@ tags:
 2. **重疊訂閱與平台綁定（Vendor Lock-in）**：開發者往往已經訂閱了 Claude Pro/Max、ChatGPT Plus/Team、Grok 或本機配備高階顯卡，但雲端 Agent 平台常強制收取額外的標註費與加價 Token。
 
 **OpenBot 的破局之道——「本地優先（Local-First）」**：
-OpenBot 扮演一個純本地的**「AI 代理人桌面管弦樂團調度器」**，所有工作區配置、任務佇列狀態、對話歷史與瀏覽器 Cookie 全數留在本機（SQLite + 本地檔案系統），直接復用開發者現有的 CLI 授權（Claude Code, Codex, Grok, Ollama），零額外中介成本、零數據出境。
+OpenBot 扮演一個純本地的**「AI 代理人桌面管弦樂團調度器」**，所有工作區配置、任務佇列狀態、對話歷史與瀏覽器 Cookie 全數留在本機（SQLite + 本地檔案系統），直接復用開發者現有的 CLI 授權（Claude Code, Codex, Grok, Ollama），不另收中介費用。但 README 自己說明這是「local-first, not offline-only」：各家 Agent 仍會連回各自的雲端服務，並不是零資料出境（2026-11-16 更正）。授權是 PolyForm Noncommercial 1.0.0，原始碼公開但禁止商業使用，不算開源授權。
 
 ---
 
@@ -85,6 +106,8 @@ OpenBot 扮演一個純本地的**「AI 代理人桌面管弦樂團調度器」*
 ```
 
 ### 關鍵技術亮點：
+
+> ⚠️ 2026-11-16 加註：上圖的「檔案操作權限沙盒化」不成立。README 警告 Agent 以 `danger-full-access`、`approvalPolicy: never` 執行，首次同意後讀寫檔案、跑指令、連網、操控瀏覽器都不再確認；各 Agent 只是工作目錄分開。圖中的 SolidJS、SQLite、EventBus 也是原分析的推測，README 開頭沒有寫。
 1. **多執行期適配器（Multi-Provider Adapters）**：
    支援 Agent Client Protocol（ACP）標準與本機處理程序注入，無縫調度 Claude Code、Codex App Server、Grok 等異構代理，亦支援將完全離線的本機大模型（Ollama Llama-3 / Qwen-2.5-Coder）納入隊列。
 2. **崩潰安全 FIFO 任務佇列（Crash-Safe Queue）**：
@@ -100,7 +123,7 @@ OpenBot 扮演一個純本地的**「AI 代理人桌面管弦樂團調度器」*
 
 | 特性維度 | 雲端 Agent 平台（如 Manus、Devin） | 終端單體 CLI（如純 Claude Code） | OpenBot 本地優先桌面工作台 |
 | :--- | :--- | :--- | :--- |
-| **數據存放** | 雲端第三方伺服器（隱私風險高） | 本機終端 | 本機磁碟與 SQLite（100% 數據自主） |
+| **數據存放** | 雲端第三方伺服器（隱私風險高） | 本機終端 | 工作區、佇列與對話存本機；模型推論仍送各家雲端 |
 | **模型綁定** | 強制綁定平台指定模型與計費 | 單一模型（Anthropic / OpenAI） | 任意混搭（Claude + Codex + Grok + Ollama） |
 | **多 Agent 協作** | 黑盒內部多代理 | 單線循序執行 | 可視化 A2A 佇列與跨代理廣播 |
 | **任務狀態管理** | 依賴雲端 Webhook | 終端中斷即終止 | 本機 FIFO 佇列，支援暫停/恢復/重試 |

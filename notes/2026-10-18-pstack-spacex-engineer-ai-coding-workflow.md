@@ -1,6 +1,6 @@
 ---
 id: 2026-10-18-pstack-spacex-engineer-ai-coding-workflow
-title: "SpaceX 前首席工程師 Lauren Tan 的 pstack 方法論：以嚴謹工程紀律重構 AI 協同開發（/poteto-mode 核心路由、Playbooks、TDD 驗證與對抗性審查深度解構）"
+title: "Lauren Tan（poteto）的 pstack 方法論：以嚴謹工程紀律重構 AI 協同開發（/poteto-mode 核心路由、22 套 Playbook、TDD 驗證與多模型審查解構）"
 source_url: "https://www.threads.com/@mengshyue.tsai/post/DenWauFklqQ"
 source_platform: "Threads / YouTube / GitHub"
 author: "Lauren Tan (@poteto) / 轉載分享：MengShyue Tsai (@mengshyue.tsai)"
@@ -10,6 +10,11 @@ status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "工程紀律與設計審查"
 short_title: "pstack 方法論與 TDD 驗證"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "Threads 貼文顯示 16 則回覆，未登入只讀到作者 3 則（3／16）；作者留言貼的第二支影片（EP435）沒看；YouTube 留言讀到已載入的 19 則（總數未知）；貼文無圖"
+source_images: 0
+source_replies: 22
 tags:
   - pstack
   - poteto-mode
@@ -19,12 +24,39 @@ tags:
   - agent-skills
 ---
 
-# SpaceX 前首席工程師 Lauren Tan 的 pstack 方法論：以嚴謹工程紀律重構 AI 協同開發（/poteto-mode 核心路由、Playbooks、TDD 驗證與對抗性審查深度解構）
+# Lauren Tan（poteto）的 pstack 方法論：以嚴謹工程紀律重構 AI 協同開發（/poteto-mode 核心路由、22 套 Playbook、TDD 驗證與多模型審查解構）
 
-- **來源連結**：[Threads 原貼文 (MengShyue Tsai)](https://www.threads.com/@mengshyue.tsai/post/DenWauFklqQ)（短網址：[threads.com/share/BAXyuLT-xc](https://www.threads.com/share/BAXyuLT-xc/)）｜ [YouTube 影片解說](https://www.youtube.com/watch?v=b7-2w2T2Lqs) ｜ [Cursor 官方插件倉庫 (cursor/plugins)](https://github.com/cursor/plugins/tree/main/pstack) ｜ [社群開源版 open-pstack](https://github.com/ericlitman/open-pstack)
+- **來源連結**：[Threads 原貼文 (MengShyue Tsai)](https://www.threads.com/@mengshyue.tsai/post/DenWauFklqQ)（短網址：[threads.com/share/BAXyuLT-xc](https://www.threads.com/share/BAXyuLT-xc/)）｜ [YouTube 影片解說](https://www.youtube.com/watch?v=b7-2w2T2Lqs) ｜ [Cursor 官方插件倉庫 (cursor/plugins)](https://github.com/cursor/plugins/tree/main/pstack) ｜ [社群移植版 pstack-claude（轉貼者推薦）](https://github.com/michael-denyer/pstack-claude) ｜ [社群移植版 open-pstack](https://github.com/ericlitman/open-pstack)
 - **發布平台 / 原作者**：`Threads / YouTube` / 原創者：`Lauren Tan (@poteto)`、社群分享：`MengShyue Tsai (@mengshyue.tsai)`
 - **分析日期**：`2026-10-18`
 - **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：看了 Threads 貼文與作者自己的 3 則留言（貼文顯示 16 則回覆，其餘要登入才看得到）、YouTube 解說影片的說明欄、**完整字幕**（約 7 分鐘，這次用 `yt_dlp` 抓到）與已載入的留言 10 串加 9 則回覆，並直接核對官方 repo `cursor/plugins` 的 `pstack/` 目錄與 README。作者留言貼的第二支影片（另一個頻道的 EP435）沒有看。
+
+- **作者圖片**：無。貼文與留言只有連結預覽卡（兩支 YouTube 影片封面、兩張 GitHub 卡片），作者沒有另外上傳圖片。
+- **作者留言補充**（Threads 轉貼者 @mengshyue.tsai 的三則留言）：
+  - 官方版在 `cursor/plugins`。
+  - **Claude Code 社群移植版他貼的是 `michael-denyer/pstack-claude`**（查 GitHub API：約 4,400 星，涵蓋 Claude Code、Codex、Antigravity、Gemini、OpenCode 等多種工具），不是本筆記原本寫的 `ericlitman/open-pstack`（約 580 星，只做 Claude Code 與 Codex）。兩個 repo 都存在。
+  - 另一支延伸影片（EP435，談 Cursor 工程師一個月 2,000 個 PR、讓 AI 自己合併），本次未看。
+- **影片說明欄與字幕重點**（原稿寫作時沒有依字幕分析）：
+  - 結構是 **24 條原則 → 23 套 playbook → 30 個 skill**，三者都是 Markdown 檔；`/poteto-mode` 是唯一入口，先讀原則、再挑 playbook、需要時叫其他 skill。（以上是影片的說法。官方現況（2026-11-17 以 GitHub API 列 `cursor/plugins` 目錄樹）：`pstack/skills/` 共 58 個目錄，其中 **34 個 skill、24 個 `principle-` 原則**，影片說的「30 個 skill」是錄影當時的數字；playbook 在 commit `bf0c7cd`（2026-11-15）是 23 套，到 commit `2f87c85`（2026-11-16）少了 `orchestrate.md`、剩 22 套。本筆記其餘「23 套」的寫法都是指 `bf0c7cd` 當時的清單。）
+  - 影片示範的六個可單獨使用的 skill：`/recall`（翻最近七天的對話、PR、issue 整理進度）、`/tdd`（先寫測試並親眼看它失敗才改）、`/interrogate`（把改動交給多個模型各自挑毛病，結論分成一定要改／由你決定／先記下來／不用理四類，**只給結論、不動程式**）、`/no-comments`（逐條審註解，只是複述程式的刪掉、說明外部限制的留下）、`/create-verification-skill`（替專案產生一份驗證專用 skill，交付前自己先完整跑一遍，還會故意把修好的問題放回去確認驗證抓得到）、`/bro`（用白話重講一次）。
+  - 說明欄寫明**官方 README 就有 Claude Code 的安裝方式**：先 `/plugin marketplace add cursor/plugins`，再 `/plugin install pstack@cursor-plugins`；指令在 Claude Code 裡會多一個前綴，例如 `/pstack:poteto-mode`；第一次先跑 `/setup-pstack` 選模型。
+- **網友留言重點**（YouTube）：
+  - 最多人回應的一串在談成本：整套跑下來會派子代理、找多個模型互審，**很燒 token**，適合願意大量投入 AI 成本的公司；頻道主回覆認同，建議額度吃緊的人只挑單一 skill 用。
+  - 有人提醒第一次要先跑 `/setup-pstack`；有人問需要多大的 context；有人問會不會藏惡意程式（看不到有實質內容的回答）；有人建議直接讀 poteto 的原文，因為摘要省掉很多細節。
+  - 沒有人回報在 Claude Code 上的完整實測結果。
+- **對分析的影響**：
+  - **作者背景改寫，標題拿掉「SpaceX 前首席工程師」**。貼文與影片說的是「待過 Netflix、Meta、Cursor，**現在是** SpaceX 首席工程師」；原稿卻寫成「曾任 SpaceX、現任 Cursor」，順序相反。而官方 README 的自我介紹只寫 Meta、Netflix、Cursor 與 React 核心團隊，並說這是她每天在 Cursor 用的 skill，**完全沒提 SpaceX**。SpaceX 這個頭銜只出現在轉述的影片與貼文，本次無法從第一手來源查證，已在 1.1 標明。
+  - **「五大 Playbook」是錯的，官方是 23 套（2026-11-16 查證時；隔天上游移除 `orchestrate.md`，現為 22 套）**。直接列目錄確認：除了原稿寫的 bug-fix、feature、refactoring、investigation、perf-issue 之外，還有 autonomous-run、babysit、eval、hillclimb、multi-phase-plan、opening-a-pr、orchestrate、pause-safely、prototype、runtime-forensics、session-pickup、shipping、trace-forensics、visual-parity、worktree-cleanup 等。已改 1.1 的圖與 1.2 的說明。
+  - **第 2 節「要靠社群移植版才能在 Claude Code 用」是錯的**：官方 README 直接提供 Claude Code 安裝指令。已改寫，並補上轉貼者推薦的 `pstack-claude`。
+  - **`/interrogate` 與 `/arena` 的描述修正**：`/interrogate` 是多模型交叉審查且不改程式；`/arena` 是讓幾個模型各寫一版再挑最好的部分。原稿寫成「同一模型用挑剔視角逐行質疑」「多個 Prompt 獨立嘗試」，已改。
+  - 1.2 流程圖最後一格「Commit & PR 自動交付」沒有來源依據（影片示範到驗證與審查為止），保留圖但在圖下加註。
+  - **新增任務 `T-20261018-19`**：已完成的 `docs/pstack-agent-playbooks.md`（`T-20261018-17`）與它的驗證器（`T-20261025-08`）都是照「五大 Playbook、前 SpaceX、open-pstack」這些錯誤前提寫的，需要依官方 repo 更正。原任務不改狀態，另開新任務處理；本筆記狀態因此由已完成改為進行中。
 
 ---
 
@@ -34,7 +66,7 @@ tags:
 
 隨著 Cursor、Claude Code、Codex 等 AI 程式開發工具的普及，許多開發者陷入了「Vibe Coding」的陷阱：輸入一段模糊的 Prompt，讓 AI 吐出大量未經測試的程式碼，看到沒報錯就以為完成了。
 
-曾任 **SpaceX 首席軟體工程師**、現任 **Cursor 技術成員**、前 **React Core Team** 成員 **Lauren Tan（@poteto）**，在其官方影片與開源外掛中提出了一整套革命性的工作流——**`pstack`（Evidence-First Coding Agent Framework）**。
+**Lauren Tan（@poteto）** 是 React 核心團隊成員（負責 React Compiler），官方 README 自述待過 Meta、Netflix、Cursor，並說 pstack 是她每天在 Cursor 用的 skill。轉述的貼文與解說影片另稱她「現在是 SpaceX 首席工程師」，官方 README 沒有這個說法，**未查證**。她把自己的做法開源成外掛 **`pstack`**：24 條原則、23 套 playbook、30 個 skill（數字依解說影片；官方 `skills/` 目錄另含以 `principle-` 開頭的原則檔）。官方目錄現況是 34 個 skill＋24 個 `principle-` 原則，playbook 由 23 套（commit `bf0c7cd`，2026-11-15）變為 22 套（commit `2f87c85`，2026-11-16，少了 `orchestrate.md`），查證方式見第 0 段。
 
 `pstack` 的核心哲學是：**AI Agent 不是替你盲目打字的打字機，而是必須在嚴密軟體工程紀律與約束下運作的初中級工程師夥伴**。如果沒有嚴格的工程防線（Guardrails）、重現測試（Reproduction Tests）與執行期驗證閉環（Runtime Verification），AI 只會以極高的速度放大技術債與幽靈錯誤。
 
@@ -46,7 +78,7 @@ tags:
 │    └─ 使用者輸入目標：/poteto-mode <task description>                    │
 │                                                                        │
 │ 2. 總控動態路由器 (The Core Router: /poteto-mode)                      │
-│    └─ 語意分析 ──> 自動匹配專屬 Engineering Playbook                    │
+│    └─ 先讀原則 ──> 從 22 套 Playbook 挑一套（下列僅舉 5 套）            │
 │       ├─ Bug-fix Playbook (嚴格遵循 TDD 重現失敗案例)                    │
 │       ├─ Feature Playbook (事前架構設計與邊界檢查)                       │
 │       ├─ Refactoring Playbook (行為保持與回歸防護)                      │
@@ -113,19 +145,22 @@ tags:
   +-----------------------+
 ```
 
+> 上圖最後一格「Commit & PR 自動交付」沒有來源依據，解說影片只示範到驗證與審查；官方另有 `opening-a-pr`、`shipping` 等 playbook，但是否自動交付未查證。
+
 1. **`/poteto-mode` 總控路由**：
    - 使用者只需輸入一句自然語言需求，如 `/poteto-mode 修復購物車結帳時超時未清空購物清單的 bug`。
    - `poteto-mode` 充當總架構師，不會直接動手改檔，而是先選擇適配的 **Playbook**，並自動列出結構化任務清單與驗收條件。
-2. **Playbook 專題作業指導手冊**：
+2. **Playbook 專題作業指導手冊**（官方共 22 套，以下三套為例；完整清單見第 0 節）：
    - **Bug-fix Playbook**：要求 **「No Reproduction, No Fix」**。在寫下任何修正代碼前，必須先寫出一支確定會失敗的測試（Red Test）來證明錯誤存在；修正後必須讓該測試轉為綠燈（Green），並確保沒有任何原有測試回歸。
    - **Refactoring Playbook**：禁止改動外部 API 與行為，只允許做結構調整與簡化，且重構前後必須具備完整的字元級或行為級測試保護。
    - **Performance Playbook**：修效能前必須先採集基準數據（Benchmark），修完後對比記憶體與 CPU 差異，禁止主觀感覺。
 3. **專業輔助子技能陣容（Modular Skills）**：
    - **`/how` 與 `/why`**：追蹤特定函式或模組的呼叫鏈（Call Chain），並探詢當初架構這樣設計的理由（避免破壞原有設計意圖）。
    - **`/architect`**：在動工前產出架構設計藍圖、邊界防禦與型別定義。
-   - **`/arena`**：對棘手問題啟動「競技場模式」，同時讓多個 Prompt 或方法獨立嘗試，評估哪一種實作最具可讀性與效能。
+   - **`/arena`**：讓幾個不同的模型各寫一版，再挑出各版最好的部分。
    - **`/swarm`**：將大任務拆成互不干擾的批次，並行派發給多個子代理。
-   - **`/interrogate`**：對抗性審查，用挑剔的視角逐行質疑剛剛寫好的程式碼，主動揪出型別未處理的 `null/undefined`、並發競爭危害或未捕獲的例外。
+   - **`/interrogate`**：把改動同時交給不同的模型各自挑毛病，多個模型都抓到的問題最可信；結論分成「一定要改／由你決定／先記下來／不用理」四類。它只給結論，**不會自己改程式**。
+   - **其他可單獨用的 skill（依解說影片）**：`/recall`（整理最近七天做到哪）、`/tdd`（先看測試失敗再改）、`/no-comments`（審註解）、`/create-verification-skill`（替專案產生驗證 skill）、`/bro`（白話重講）。
 
 ---
 
@@ -133,9 +168,11 @@ tags:
 
 - **官方上游**：位於 Cursor Plugins 生態目錄中（`github.com/cursor/plugins/tree/main/pstack`）。
   - 在 Cursor 環境中可直接透過 `/add-plugin pstack` 安裝啟用。
+  - **Claude Code 官方也支援**（README 載明）：`/plugin marketplace add cursor/plugins` 後 `/plugin install pstack@cursor-plugins`；指令會多一個前綴（`/pstack:poteto-mode`），第一次先跑 `/pstack:setup-pstack` 選模型；只有 Cursor 才有的功能（如 bugbot、automations）會略過並提示。授權為 MIT。
+- **社群移植版（`pstack-claude`）**：`github.com/michael-denyer/pstack-claude`，原貼文作者在留言推薦的版本，涵蓋 Claude Code、Codex、Antigravity、Gemini、OpenCode 等。
 - **社群開源移植版（`open-pstack`）**：
   - 專案網址：`github.com/ericlitman/open-pstack`
-  - 該社群專案將 Lauren Tan 針對 Cursor 打造的插件解耦，抽離出通用的 Model/Provider Registry 與 Command-Line Runner，使開發者能在 **Claude Code**、**Codex CLI**、**Antigravity** 或原生 Terminal 中以標準的 `SKILL.md` 形式直接調用 `pstack`。
+  - repo 自述是給 Claude Code 與 Codex 用、追蹤官方上游的版本。原稿寫的「抽離出通用的 Model/Provider Registry 與 Command-Line Runner」與支援 Antigravity 兩點，這次沒有在 repo 說明中看到，未查證。
 
 ---
 
@@ -178,6 +215,17 @@ tags:
   - **驗收標準（DoD）**：執行 `python tools/verify_pstack_and_fullstack_specs.py` 回傳 exit 0，且 `python -m unittest discover -s tests -p "test_verify_pstack_and_fullstack_specs.py"` 與 `pytest` 全數通過（至少 6 項測試）。
   - **完成日期**：2026-10-25
   - **實作紀錄 / 證據**：實作 `tools/verify_pstack_and_fullstack_specs.py`，完整支援純 Python 標準庫解析與四大文件規格校驗；實作安全檔案讀取輔助函式 `load_content` 杜絕多行字串在 Linux CI / Windows 上觸發 `ENAMETOOLONG`；實作 `tests/test_verify_pstack_and_fullstack_specs.py`（繼承 `unittest.TestCase`），提供 7 項單元測試，全面覆蓋真實文件驗證、各規格核心缺漏反例攔截、安全載入邊界與 CLI 進入點退出碼；經真實終端執行 `python tools/verify_pstack_and_fullstack_specs.py`（exit 0）、`python -m unittest discover -s tests -p "test_verify_pstack_and_fullstack_specs.py"`（7/7 passed, exit 0）與 `python -m pytest tests/test_verify_pstack_and_fullstack_specs.py -q`（7 passed, exit 0）全數綠燈驗收。
+
+- [x] **`T-20261018-19`**｜**[優先級：中]** 依官方 `cursor/plugins` 的 pstack 更正 `docs/pstack-agent-playbooks.md` 與其驗證器的錯誤前提
+  - **目標範圍**：`docs/pstack-agent-playbooks.md`、`tools/verify_pstack_and_fullstack_specs.py`、`tests/test_verify_pstack_and_fullstack_specs.py`
+  - **具體做法**：
+    1. 讀官方 `pstack/README.md`、`pstack/docs/harness/claude-code.md` 與 `pstack/skills/poteto-mode/playbooks/` 目錄，把文件裡「五大 Playbook」改成官方 23 套的實際清單（可分「本環境會用到」與「僅列名」兩組），skill 清單改依官方 `skills/` 目錄。
+    2. 作者背景改為官方 README 的自述；「前 SpaceX 首席工程師」「SpaceX 內部遙測」等列改標未查證或刪除；`description: SpaceX Evidence-First orchestration router.` 這類杜撰的範例欄位一併改掉。
+    3. Claude Code 一節改寫為官方安裝方式（`/plugin marketplace add cursor/plugins`、`/plugin install pstack@cursor-plugins`、指令前綴 `pstack:`），社群移植版補上 `michael-denyer/pstack-claude`。
+    4. 驗證器若寫死「五大 Playbook」的名稱或數量，改成檢查文件列出的 playbook 檔名都真的存在於官方目錄清單（清單以常數附上查證日期），並同步調整測試。
+  - **驗收標準（DoD）**：`docs/pstack-agent-playbooks.md` 內不再出現「五大」「5 大」Playbook 與未標註的 SpaceX 頭銜；文件列出的每個 playbook 名稱都能在官方 `pstack/skills/poteto-mode/playbooks/` 目錄找到；`python tools/verify_pstack_and_fullstack_specs.py` 回傳 exit 0，`python -m unittest discover -s tests -p "test_verify_pstack_and_fullstack_specs.py"` 全數通過。
+  - **完成日期**：2026-11-17
+  - **實作紀錄 / 證據**：依官方 cursor/plugins pstack（commit bf0c7cd，2026-11-16 以 GitHub API 列目錄並讀 README、harness/claude-code.md、poteto-mode SKILL.md 與五份 playbook）重寫 docs/pstack-agent-playbooks.md：改為官方 23 套 playbook 與 34 skill＋24 原則、作者背景改 README 自述、SpaceX 頭銜標未查證、刪除無依據內容；驗證器改以 23 個官方檔名清單雙向比對並攔截「五大 Playbook」；verify_pstack_and_fullstack_specs.py exit 0，unittest 8/8 通過。 2026-11-17 重查上游移除 orchestrate.md，文件、驗證器與測試改為 22 套。
 
 ---
 

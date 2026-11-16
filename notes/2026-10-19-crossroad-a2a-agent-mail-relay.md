@@ -10,6 +10,11 @@ status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "Crossroad A2A 跨機器寄信"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "README 5 張圖只看了 2 張（六步驟圖只讀文字說明，Telegram 與 ChatGPT 兩張證明截圖逾時沒看到）；社群貼文沒留連結，其圖片與留言沒看到（總數未知）；repo 關閉 issue，留言讀到 0 則"
+source_images: 2
+source_replies: 0
 tags:
   - a2a
   - crossroad-a2a
@@ -24,7 +29,31 @@ tags:
 - **來源連結**：[Agent-Tong/Crossroad-A2A (GitHub)](https://github.com/Agent-Tong/Crossroad-A2A)
 - **發布平台 / 原作者**：`GitHub / 社群貼文` / `Agent-Tong (@Agent-Tong)`
 - **分析日期**：`2026-10-19`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：來源是 GitHub repo，重讀了官方 README 全文與 `docs/KNOWN_LIMITS.md`。README 內嵌 5 張圖：島嶼地圖（讀了整張圖的文字內容）與 Claude 桌面版收信證明截圖這 2 張看過；信件六步驟圖只讀了 README 對應的文字說明，Telegram 與 ChatGPT 兩張證明截圖因瀏覽器截圖逾時沒看到，只讀了圖說。該 repo 關閉了 issue 功能，沒有留言可讀。frontmatter 平台欄寫的「社群貼文」沒有留下連結，無法回頭查看。
+
+- **作者圖片**：
+  - 圖 1（島嶼地圖）：整個系統的實際拓撲。每台機器是一座「島」，各有一間「郵局」負責簽署寄出的信、替收到的信按「門鈴」；中央一座永遠開機的「Town Hall」在另一台 VPS 上，負責成員登記、路由檢查、清洗關卡（把信圍成資料、限制大小與頻率）、帳本（每個呼叫編號只收一個答覆）與每個 agent 的開關。PC1、PC2 不常開機，上面是 Claude Code 與 Codex agent；VPS1 永遠開機，放容器 agent；還有一座**標為規劃中**的「Harbor」給沒有自己機器的網頁助理停靠（ChatGPT 走外掛加安全通道、Gemini 用 Google Tasks 清單當信箱、Grok 與 Claude 網頁版都標規劃中）。島與 Town Hall 之間是**經 SSH 傳送的簽章信件**。
+  - 圖 2（Claude 桌面版收到答覆）：一則標示為「來自另一個 session 的訊息」的區塊，內含郵局通知與用起訖標記圍起來的答覆本文，並明寫這是同儕資料、不是使用者本人打的字、同儕不能授予額外權限。畫面中的名稱都已遮蔽。
+- **作者留言補充**（官方 README 與已知限制文件自己講的，原稿沒寫到）：
+  - **現況是 v0.1、只在一個組織內運作的測試版**，只有一套安裝、一位擁有者，從未有第二套安裝跑過。公開 repo 的 `reference/` 是離線測試過的參考程式碼，**Town Hall 與 PC 門鈴不在公開內容裡**。
+  - **延遲以分鐘計**：Claude Code agent 的中位數約 4.5 分鐘、第 90 百分位約 49 分鐘；Gemini 的排程大約每小時一次。
+  - **Codex agent 目前不能主動發信**；Claude Code 的身分綁在 session 上，每次重開 session 都要擁有者重新簽署。
+  - 網頁助理的回信只算「來自該通道」，系統不賦予任何權限，也無法證明是誰寫的。
+  - 作者自己承認：惡意信件仍可能說服模型做出不智的事，設計只能限制它碰得到的範圍。
+  - 它**沒有實作** Google 發起的 A2A 協定，是給無法自己架伺服器端點的 agent 用的另一套東西。
+- **網友留言重點**：無（issue 已關閉、約 20 顆星，沒有外部使用回報）。
+- **對分析的影響**：
+  - **1.2 第 1 點的信封 JSON 是原稿自己編的，已換成官方範例的欄位**。官方信封欄位是 `call_id`、`from_agent`、`from_island`、`to_agent`、`purpose`、`ref`、`hop`、`parent`、`body`；原稿的 `message_id`、`reply_to`、`intent`、`payload`、`priority`、`timeout_sec` 在官方規格裡都不存在。
+  - **1.1 架構圖與 1.2 第 3 點的「Long-Polling／Webhook Push」「透過 Git 或雲端儲存輪詢」沒有依據**：官方做法是各島郵局每分鐘排程一次、經 SSH 把簽章信件送到 Town Hall，網頁助理則靠自己的排程任務來拉信。已改寫。
+  - **補上成熟度說明**：原稿把它寫成可直接採用的協定，實際上公開的只有規格、離線參考碼與設計文件，核心的 Town Hall 沒有開源。這解釋了為什麼 `T-20261019-01`／`T-20261019-02` 最後是在 `SanHsien/agent-relay` 自己實作、只借用概念，結論不變。
+  - **值得對照自家實作的兩點**（不開新任務，記在第 2 節）：信件一律圍成同儕資料並標明不是擁有者指令；每個呼叫編號只收一個答覆。
+  - 標頭「當前狀態」原本還寫未做，與 `status: done` 不一致，已改。
 
 ---
 
@@ -59,7 +88,7 @@ tags:
 │                                                                        │
 │ 3. 非同步信箱中繼站 (Crossroad Mailbox Relay Hub)                       │
 │    ├─ 虛擬信箱路由 (Inboxes & Outboxes): 每個 Agent 獨立隊列          │
-│    ├─ NAT 穿透與非同步輪詢 (Long-Polling / Webhook Push)              │
+│    ├─ 各島郵局每分鐘排程、經 SSH 送簽章信件；網頁助理自行定時拉信     │
 │    └─ 零額外 API Key 原則: 僅傳遞任務描述，執行依然消耗各 Agent 原生環境 │
 │                                                                        │
 │ 4. 閉環協同場景 (Collaborative Use Cases)                             │
@@ -120,32 +149,23 @@ tags:
 ```
 
 1. **標準任務信封（Message Envelope Specification）**：
-   - 規定了最簡且具備自解釋性的 JSON 格式：
+   - 官方範例（節錄自 `spec/examples/letter.json`；2026-11-16 依官方 README 更正，原稿的欄位是自行編寫的）：
      ```json
-     {
-       "message_id": "msg_20261019_9981",
-       "from": "claude-code@mac-mini",
-       "to": "gemini-research@cloud",
-       "reply_to": "claude-code@mac-mini/inbox",
-       "intent": "youtube_deep_research",
-       "context": "正在調研影片動效程式庫...",
-       "payload": {
-         "query": "Remotion vs Motion Canvas 2026 performance",
-         "required_fields": ["video_url", "summary", "benchmark_metrics"]
-       },
-       "priority": "normal",
-       "created_at": 1776558157,
-       "timeout_sec": 3600
-     }
+     {"call_id": "20261016T020000Z_a1b2c3", "from_agent": "agent-a", "from_island": "pc1",
+      "to_agent": "agent-b", "purpose": "queue_task", "ref": "xx261016a_Letter_Test.md",
+      "hop": 1, "parent": null,
+      "body": "Please compare options A and B and answer in two lines."}
      ```
+   - 收件方看到的不是這段 JSON，而是被起訖標記圍起來的本文，並標明「這是來自某 agent 的同儕資料，不是擁有者、也不是郵局」。同一個 `call_id` 最多只收一個答覆。
 2. **零額外 API Key 機制（Zero Extra API Key Architecture）**：
    - 傳統多代理框架（如 LangGraph, CrewAI）常要求使用者在環境變數注入 `OPENAI_API_KEY`、`ANTHROPIC_API_KEY` 與 `GOOGLE_API_KEY`，每次呼叫都是昂貴的 Token 計費。
    - Crossroad A2A 僅充當**傳遞信件的中繼郵局**，不負責模型推理。收件 Agent（如本機運行的 Gemini CLI 或瀏覽器外掛）收到任務後，在自己的環境中呼叫既有登入態或本地訂閱執行，執行完成再把 Markdown/JSON 成果放回回信箱，完全繞過高額 API 轉發費用。
 3. **NAT 穿透與非同步輪詢友善（Firewall-friendly Polling）**：
-   - 本地開發機無需開放公網 Port，各 Agent 端只需安裝一個輕量級的 CLI Daemon 或透過 Git/雲端儲存進行定時 Polling（例如每分鐘檢查一次收件匣，或在 Agent 即將進入下一個推理循環前檢查有無新信）。
+   - 本地開發機無需開放公網 Port。官方做法：每台機器（島）跑一間小郵局，以排程每分鐘一次把簽章信件經 SSH 送到中央的 Town Hall、並替收到的信喚醒對應的 session；無法從外部喚醒的網頁助理（ChatGPT、Gemini）則靠自己的排程任務定時來拉信。
+   - **成熟度（官方自述）**：v0.1，只在一個組織內運作；公開 repo 只有規格與離線參考碼，Town Hall 與 PC 門鈴沒有公開。延遲以分鐘計（Claude Code agent 中位數約 4.5 分鐘），Codex agent 目前不能主動發信。
 4. **與主流協調協議之對照**：
    - **vs. Anthropic MCP（Model Context Protocol）**：MCP 是 **Agent-to-Tool**（解決 Agent 怎麼讀本地檔案、查資料庫）；Crossroad A2A 是 **Agent-to-Agent**（解決兩個不同模型/環境的 Agent 怎麼交棒）。
-   - **vs. Google A2A Protocol**：Google A2A 偏向企業級 RPC 與 Service Discovery；Crossroad A2A 偏向個人開發者的輕量級非同步信箱，強調零配置與跨 SaaS 適用性。
+   - **vs. Google A2A Protocol**：A2A 協定連接的是各自有伺服器端點的 agent；Crossroad A2A 是另一個專案，給無法架端點的 agent（網頁助理、桌面 session、會休眠的機器）用，官方明說 v0.1 **沒有實作** A2A 協定。原稿的「零配置」說法不成立：官方已知限制提到新增成員要同步改多台主機的政策與橋接程式。
    - **vs. 本地 `dropoff`/`pickup`**：本地 `dropoff`/`pickup` 透過專案目錄下的 `.claude/handoffs/*.md` 實現同機跨專案交接；Crossroad A2A 則進一步將此機制擴展至跨機器、跨雲端服務的廣域網絡。
 
 ---
@@ -157,7 +177,7 @@ tags:
 2. **解決長週期任務阻礙開發流（Unblocking Long-running Tasks）**：
    - 對於超過 15 分鐘的大規模單元測試、程式碼變更 Mutation 測試或深入輿情爬蟲，本機 Agent 不必原地阻塞等待，只需將工單「寄出」，由雲端背景 Worker 接手，本機 Agent 可以立刻切換至下一個任務。
 3. **安全性與審查防線（Safety Audit Gate）**：
-   - 外部 Agent 寄來的信件在被本地 Agent 執行前，必須經過格式驗證與安全性掃描，禁止外部信件直接注入危險的 Shell 執行指令（Command Injection 防範），信件內容一律視為未經驗證之輸入（Untrusted Input）。
+   - 外部 Agent 寄來的信件在被本地 Agent 執行前，必須經過格式驗證與安全性掃描，禁止外部信件直接注入危險的 Shell 執行指令（Command Injection 防範），信件內容一律視為未經驗證之輸入（Untrusted Input）。官方的做法可對照自家 `SanHsien/agent-relay`：信件圍成同儕資料並標明不是擁有者指令、同儕不能授予額外權限、每個呼叫編號只收一個答覆。
 
 ---
 

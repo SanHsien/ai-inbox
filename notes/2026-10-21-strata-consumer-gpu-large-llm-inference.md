@@ -11,6 +11,11 @@ status: archived # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "Strata 12GB 顯卡運行 125B 大模型"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "平台欄寫的社群貼文沒留連結，貼文的圖片與留言都沒看到（總數未知）；改看 repo README 2 張圖與 4 則 issue 的 10 則留言"
+source_images: 2
+source_replies: 10
 tags:
   - strata
   - local-llm
@@ -30,6 +35,25 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：本篇原始來源是 GitHub repo（frontmatter 寫「社群貼文」但沒有留下貼文連結，無從回看）。這次看了 README 全文、README 內 2 張截圖、`docs/MODELS.md` 的記憶體需求段，以及 4 則 issue 的留言共 10 則（#6072、#6074、#6090、#6082，其中 #6082 無留言）。
+
+- **作者圖片**：共 2 張（README 內的產品截圖；商標與徽章不計）。
+  - 圖 1（桌面 App）：左側對話、右側即時預覽 `index.html`；使用的模型是 Qwen3.8-Flash-Next 的 Gyro-S 量化版，介面有 Subagents、Skills、Monitor、Models 等入口，輸入框旁有「Bypass permissions」選項。
+  - 圖 2（終端監控）：服務位址 `http://127.0.0.1:18500`、模型 Gyro-S、上下文 32K；RTX 5070，VRAM 10.4／12 GB，快取 3,099 個專家；系統 RAM 用到 47.7／63 GB；生成 45.1 tok/s；近期請求的 prompt 大多命中重用快取。
+- **作者留言補充**：README 現況與本筆記寫作時有出入：安裝改成 `curl … | sh`／`irm … | iex` 一行指令與桌面安裝檔；模型清單列出 Qwen3.8-Flash-Next 與 Qwen3.6-35B-A3B 兩種。`docs/MODELS.md` 寫明：32 GB RAM 配 12～16 GB 顯卡只跑得動 coding 專用的 Coder 量化版；一般尺寸要 48 GB（Q2_0、IQ2_XS）到 64 GB RAM。
+- **網友留言重點**：
+  - #6072（為何無預警移除 DeepSeek）：留言者整理的說法是，維護者先前拒絕支援其他 MoE 架構，衍生出分支專案 Project Maya；Strata 之後把 Maya 的 DeepSeek 引擎移植回來，引發出處與治理爭議，現在已移除 DeepSeek 支援。這是留言者的推測，未經維護者證實。另有人貼出自行保留該引擎的分支。
+  - #6074（效能回報）：兩位使用者用 16 GB 顯卡實測新版 prompt 讀取速度，一位在 20K 長度退步 13%、其他長度持平或小幅進步；另一位在 Windows 上 16K～32K 進步 20% 以上。兩人的機器都是 96 GB 等級的 RAM。
+  - #6090 只有機器人的格式提醒。
+- **對分析的影響**：
+  - 原筆記 1.1 寫「12 GB 顯卡＋32 GB RAM 即可流暢運行 125B」。依 `docs/MODELS.md` 與圖 2（12 GB 顯卡那台實際用了近 48 GB RAM），這個組合只適用 coding 專用的最小量化版；已在 1.1 補上限制。
+  - 原筆記寫 API「預設 8080 埠」，圖 2 顯示的是 18500；已在 1.1 註明以實際啟動畫面為準。
+  - 安裝指令是遠端腳本直接管線執行，依全域規則不可照跑；加上 DeepSeek 支援被移除的治理爭議，兩點都支持本篇兩項任務維持「不做」、筆記維持封存。任務未增減。
+
+---
+
 ## 1. 核心內容摘要
 
 ### 1.1 核心主張：打破硬體壁壘，消費級 12GB/16GB 顯卡流暢執行 125B 旗艦級 MoE 模型
@@ -37,9 +61,9 @@ tags:
 過去要運行 100B+ 參數等級的頂級大語言模型（如 125B 的 Qwen3.8-Flash-Next），傳統做法通常需要高昂的資料中心級伺服器（數百 GB VRAM）或要價不菲的高配統一記憶體硬體（如 128GB/256GB Mac Studio）。
 
 **Strata**（MIT 開源協議）透過極具創意的**三層動態卸載架構（Tiered Offloading）與投機解碼技術**，徹底打破了此一硬體天花板：
-- **極低硬體門檻**：只需 **12GB 顯存的消費級顯卡（RTX 20/30/40/50 系列，如 RTX 3080 Ti 12GB）+ 32GB 系統 RAM**，即可在本地流暢運行 125B 參數的 Qwen3.8-Flash-Next；
+- **極低硬體門檻**：只需 **12GB 顯存的消費級顯卡（RTX 20/30/40/50 系列，如 RTX 3080 Ti 12GB）+ 32GB 系統 RAM**，即可在本地運行 125B 參數的 Qwen3.8-Flash-Next（2026-11-16 補：依官方 `docs/MODELS.md`，32 GB RAM 配 12～16 GB 顯卡只跑得動 coding 專用的 Coder 量化版；一般尺寸要 48～64 GB RAM）；
 - **全平台覆蓋**：支援 Windows 10/11、Linux、macOS，涵蓋 NVIDIA (CUDA)、AMD (ROCm/HIP)、Intel Arc 與 Apple Silicon；
-- **原生 Agent 與 API 相容**：直接提供標準 **OpenAI 與 Anthropic API 兼容端點**（預設 8080 埠），Claude Code、Codex CLI、Antigravity、OpenCode 等 Coding Agent 可零改動直接串接。
+- **原生 Agent 與 API 相容**：直接提供標準 **OpenAI 與 Anthropic API 兼容端點**（原分析記為預設 8080 埠；README 現行截圖顯示的是 `127.0.0.1:18500`，以實際啟動畫面為準），Claude Code、Codex CLI、Antigravity、OpenCode 等 Coding Agent 可零改動直接串接。
 
 ### 1.2 技術架構與「圖書館分層」黑科技原理
 

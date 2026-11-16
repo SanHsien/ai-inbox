@@ -29,7 +29,7 @@
 來源筆記寫「v1.1 放寬無引號鍵可用 Unicode 非 ASCII 字符（`名稱 = "測試"`）」。
 **官方 1.1.0 規格不是這樣**：tag `1.1.0` 的 `toml.md` 仍寫「Bare keys may only contain ASCII letters, ASCII digits, underscores, and dashes」，CHANGELOG 的 1.1.0 段也沒有這一項。
 實測也一致：`名稱 = "測試"` 在本機 tomllib 報 `Invalid statement`，要寫成 `"名稱" = "測試"`。中文鍵一律加引號。
-（筆記資料來源是第三方繁中譯本，是否譯者另有說明未查證。）
+（2026-11-16 查明：筆記引用的第三方繁中譯本 [v1.1.0 頁](https://toml.gh.miniasp.com/tw/v1.1.0)寫的同樣是「裸鍵只能包含 ASCII 字母、ASCII 數字、底線與連字號」，與 [toml.io v1.1.0](https://toml.io/en/v1.1.0) 一致。譯本沒有錯，錯在原筆記的分析；來源筆記已更正。）
 
 ## 3. 實測：本機 `tomllib` 對 1.0／1.1 語法
 
@@ -195,4 +195,5 @@ python tools/toml_validator.py . --profile pep621 --require project.name:str
 
 - Python 3.15 `tomllib` 的實際行為（本機無 3.15）。
 - `tomlkit` 的 1.1 支援與第 5.2 節範例的執行結果。
-- 第三方繁中譯本（`toml.gh.miniasp.com`）關於 Unicode 裸鍵的說法來源。
+
+已查明（2026-11-16）：舊版把「第三方繁中譯本關於 Unicode 裸鍵的說法來源」列為未查證。對照 toml.io v1.1.0、tag `1.1.0` 的 `toml.md` 與繁中譯本 v1.1.0 頁後確認，三者都寫裸鍵只限 ASCII 字母、數字、底線與連字號；「v1.1 放寬 Unicode 裸鍵」是原筆記分析的錯，不是譯本的說法（見第 2 節）。

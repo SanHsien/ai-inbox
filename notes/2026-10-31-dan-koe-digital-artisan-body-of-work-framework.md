@@ -2,14 +2,19 @@
 id: 2026-10-31-dan-koe-digital-artisan-body-of-work-framework
 title: "Dan Koe「網紅已死，經驗時代來臨」數位匠人架構解構：思想博物館、5 視角切角重構與一人公司作品集閉環"
 source_url: "https://www.threads.com/share/BAb6GnHykL/"
-source_platform: "Threads (@insight.log_by_yubin) / Substack (Dan Koe)"
-author: "Daily Insight (育斌, @insight.log_by_yubin) / Dan Koe"
+source_platform: "Threads (@daily_insight_10min) / Substack (Dan Koe)"
+author: "Daily Insight (育斌, @daily_insight_10min，原 @insight.log_by_yubin) / Dan Koe"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: archived
 cluster: "3"
 cluster_role: "高槓桿思維與工作流"
 short_title: "Dan Koe數位匠人與經驗時代架構"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "貼文顯示 13 則回覆，只讀到作者接的 5 則（5／13），各則底下的回覆未登入無法展開；圖看了 1／1 張"
+source_images: 1
+source_replies: 5
 tags:
   - dan-koe
   - digital-artisan
@@ -24,14 +29,35 @@ tags:
 
 # Dan Koe「網紅已死，經驗時代來臨」數位匠人架構解構：思想博物館、5 視角切角重構與一人公司作品集閉環
 
-- **來源連結**：[Threads 原文分享 (@insight.log_by_yubin)](https://www.threads.com/share/BAb6GnHykL/) ｜ [貼文永久網址](https://www.threads.com/@insight.log_by_yubin/post/DfDxxnAE0cY) ｜ [Dan Koe 原文：The influencer is dead. The Age of Experience is here.](https://letters.thedankoe.com/p/the-influencer-is-dead-the-age-of)
-- **核心作者**：Daily Insight（育斌，@insight.log_by_yubin 導讀推薦）／ Dan Koe（年收數億台幣一人公司實踐者、暢銷書作者與數位思想家）
+- **來源連結**：[Threads 原文分享 (@daily_insight_10min)](https://www.threads.com/share/BAb6GnHykL/) ｜ [貼文永久網址](https://www.threads.com/@daily_insight_10min/post/DfDxxnAE0cY) ｜ [Dan Koe 原文：The influencer is dead. The Age of Experience is here.](https://letters.thedankoe.com/p/the-influencer-is-dead-the-age-of)
+- **核心作者**：Daily Insight（育斌，@daily_insight_10min 導讀推薦；帳號原名 @insight.log_by_yubin）／ Dan Koe（年收數億台幣一人公司實踐者、暢銷書作者與數位思想家）
 - **分析主題**：解構 Dan Koe 提出的重磅長文《網紅已死，經驗時代來臨（The influencer is dead. The Age of Experience is here.）》。深度拆解「網紅（Influencer）vs 個人品牌（Personal Brand）vs 數位匠人（Artisan）」三大創作者原型的底層驅動力差，闡述生成式 AI 泛濫時代下「個人獨特視角（Perspective）與真實生活經驗（Lived Experience）」作為終極護城河的商業本質，並提煉「思想博物館、5 視角切角重構、信號捕捉、數位產品閉環」的 4 階段執行計畫。
 - **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md`](./2026-10-24-felix-rieseberg-how-to-be-more-ambitious.md)（Felix Rieseberg AI 野心四維框架與個人槓桿放大）
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 硬化工程哲學：專業工作流與抗噪自律）
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（Thorsten Ball 15 條實戰哲學：無可辯駁證據與長期資產沉澱）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：Threads 主文、圖片與留言區看過。分享連結現在導向 `@daily_insight_10min`，帳號已改名（原筆記記的是 `@insight.log_by_yubin`）。
+
+- **作者圖片**：1 張。是 Dan Koe（@thedankoe）10 月 21 日 X 長文的截圖：黑白插畫封面（一個人站在叢林小徑盡頭）、標題〈The influencer is dead. The Age of Experience is here.〉與開頭兩行，講每天都看到非技術背景的人靠 30 天挑戰這類簡單數位產品做出百萬美元級的發售。可確認導讀的對象是 X 長文版本。
+- **作者留言補充**：作者在留言區接了 5 則，前 4 則才是貼文主體「4 階段執行計畫」，第 5 則是連結：
+  1. 第 1 階段：建立「靈感博物館」，把筆記分成「給我靈感的貼文（Favorite）」與「已被大眾驗證的貼文（Validated）」兩類。
+  2. 第 2 階段：找高密度的資訊來源（經典書、有深度的部落格、少數實力派創作者）。
+  3. 第 3 階段：重新定義獨特視角，說要從 5 個角度切入，但只列了 3 個（尊敬的思想家會怎麼說、我反對哪些通俗看法、過去的自己最想聽到什麼）。
+  4. 第 4 階段：用內容回饋做產品（反應最好的題目先做 1 頁免費指南，再延伸成 30 天挑戰、電子書或社群）。
+  5. 「查看 Dan Koe 的系統與模板」加一個 `eden.so/r/…` 連結，網址形式是推薦碼連結。
+- **網友留言重點**：無可讀內容。主文的回覆數顯示 13，但頁面上列出的只有作者自己接的 5 則（頁面沒有出現「登入查看更多回覆」的提示，13 應是含串內各層回覆的總數）；作者那幾則底下各有 1 則左右的回覆，未登入無法展開。
+- **對分析的影響**：
+  1. 作者帳號更新為現名，貼文永久網址一併改。
+  2. 導讀者的 4 階段編排與本筆記架構圖不同：導讀把「找高密度資訊來源」獨立成第 2 階段、沒有「市場訊號捕捉」這一階段；本筆記的編排是當初對照 Dan Koe 原文重排的。兩者內容不衝突，但引用時不要把本筆記的階段編號當成導讀貼文的說法。
+  3. 導讀貼文的 5 個切角只列出 3 個；本筆記第 2.2 節的另外 2 個與各切角的英文名稱（Thinker Lens 等）不是出自這則貼文。
+  4. 貼文最後一則是推薦碼連結，這則導讀有導購性質，評估時應留意。
+  - 三項任務先前已因交付內容捏造被退回並標為不做，本次重審沒有新資訊改變判斷。
 
 ---
 

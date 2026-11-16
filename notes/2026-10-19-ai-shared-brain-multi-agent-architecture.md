@@ -10,6 +10,9 @@ status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "記憶繼承與共用大腦"
 short_title: "AI 共同大腦全景規劃"
+source_review: unavailable
+source_reviewed_at: 2026-11-16
+source_review_note: "本篇是內部架構規劃，source_url 指向本 repo；引用的社群交流節錄沒有留下原貼文連結，無法回頭看原貼文的圖片與留言"
 tags:
   - ai-shared-brain
   - multi-agent-architecture
@@ -24,7 +27,22 @@ tags:
 - **來源連結**：[SanHsien/ai-inbox (GitHub)](https://github.com/SanHsien/ai-inbox) ｜ 實戰社群「多 Agent 工廠」交流節錄
 - **發布平台 / 提案者**：`內部架構規劃 / 實戰協作論壇` / `AI 協同開發實戰者 ＆ Antigravity`
 - **分析日期**：`2026-10-19`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：本篇不是對單一外部文章的分析，而是內部整理的架構規劃。`source_url` 指向本 repo 自己；標頭提到的「實戰社群『多 Agent 工廠』交流節錄」與 [多 Agent 工廠筆記](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md) 是同一段 Threads 對話，兩篇都沒有留下原貼文連結，所以**原貼文的圖片與留言無法回頭查看**，`source_review` 記為 `unavailable`。
+
+- **作者圖片**：看不到（無原貼文連結）。
+- **作者留言補充**：看不到。
+- **網友留言重點**：看不到。
+- **對分析的影響**：
+  - 本篇的事實依據只剩兩類：本 repo 與 `SanHsien` 各 repo 的實際內容（1.3 的盤點表），以及文中提到的外部工具官方資料。後者在重審 [多 Agent 工廠筆記](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md) 時已核對 `herdrdev/herdr` 官方 README，據此修正本篇一處：**herdr 的 pane 狀態官方只有 working／blocked／idle 三種**，原稿架構圖與 1.2 第 4 點寫的「Waiting Input／Done／Error」查無依據，已改。
+  - 1.2 第 3 點列的模型名稱（Claude 3.7、DeepSeek-V3）是寫作當時的舉例，沒有來源可核對，維持原樣；實際路由以 `SanHsien/agent-relay` 的 `relay advise` 為準。
+  - 標頭「當前狀態」原本還寫著未做，與 frontmatter `status: done`、兩項任務皆已完成不一致，已改成已完成。
+  - 任務與結論不變。
 
 ---
 
@@ -58,7 +76,7 @@ tags:
 │    └─ 指揮官 Agent 前置評估工單規模 ──> 動態指派性價比最高之模型施工     │
 │                                                                        │
 │ 4. 異構 Agent 終端復用與信箱中繼 (Multiplexer & Mailbox Relay)          │
-│    ├─ Herdr: 狀態感知終端復用 (Working / Waiting Input / Done / Error)  │
+│    ├─ Herdr: 狀態感知終端復用 (Working / Blocked / Idle)                │
 │    └─ Crossroad A2A: 跨機器、跨 SaaS 非同步寄信與 Telegram 門鈴通知     │
 └────────────────────────────────────────────────────────────────────────┘
 ```
@@ -120,7 +138,7 @@ tags:
    - 透過輕量守護進程定期監控 Anthropic、OpenAI、Google 等服務的 Token 消耗與重置時間。
    - 指揮官依據工單特性動態派工：高推理架構規劃派給 Claude 3.7 / Opus；大規模機械重構或測試編寫派給 Codex / DeepSeek-V3；跨平台多模態查核派給 Gemini；完成後自動互派審查。
 4. **多終端監控與非同步信箱（Herdr Multiplexer + Crossroad A2A）**：
-   - 使用 Herdr 等狀態感知終端復用器，即時監控各 Pane 的進度狀態（Working、Waiting User Input、Done）；
+   - 使用 Herdr 等狀態感知終端復用器，即時監控各 Pane 的進度狀態（官方為 working、blocked、idle 三種）；
    - 超過 15 分鐘的長運行任務（如大型編譯或爬蟲），透過 Crossroad A2A 寄信給背景 Worker，完成後透過 Telegram 通知開發者，完全釋放本地終端。
 
 ---

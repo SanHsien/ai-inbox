@@ -10,6 +10,11 @@ status: done
 cluster: "3"
 cluster_role: "外掛生態與設定治理"
 short_title: "GitHub 必裝 Skill 實測"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "貼文顯示 67 則回覆，未登入只讀到 15／67 則；作者沒有上傳圖片（0／0 張）"
+source_images: 0
+source_replies: 15
 tags:
   - agent-skills
   - skill-curation
@@ -32,10 +37,42 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀 Threads 貼文與留言串（作者留言 6 則、網友留言 9 則；貼文顯示共 67 則回覆，其餘未登入載不出來）。
+
+- **作者圖片**：作者沒有上傳圖片。留言裡的 4 張圖是 GitHub 連結的自動預覽卡（對應下面四個 repo），不是作者的實測截圖，未計入。
+- **作者留言補充**（實測結果全部放在留言，主貼文只有引言）：
+  1. **GBrain**（[`garrytan/gbrain`](https://github.com/garrytan/gbrain)）：讓 AI 記住工作習慣。作者先交代「週報每週五交主管、固定三段」，開新對話叫它寫週報，格式與收件人都記得。
+  2. **grill-me**（在 [`mattpocock/skills`](https://github.com/mattpocock/skills) 裡）：把計畫問到沒漏洞。作者說要辦 40 人尾牙、預算 3 萬，它一次回 6 個沒想到的問題，每題附建議答案。
+  3. **GStack**（[`garrytan/gstack`](https://github.com/garrytan/gstack)）：Garry Tan 自用的整套流程。丟一個 App 點子不會馬上做，先像創投一樣追問需求有沒有證據。
+  4. **Awesome Agent Skills**（[`VoltAgent/awesome-agent-skills`](https://github.com/VoltAgent/awesome-agent-skills)）：收錄上千個 skill 的目錄；作者提醒目錄裡的不要看到就裝。
+  5. 作者的三步挑選法：把需求講清楚讓 AI 換多種說法搜尋；不只看星數，看近期更新與範例；先叫 AI 做安全檢查。這次 AI 找了 5 個候選，還提醒其中被推薦的那個會把會議內容拿去上網搜尋、要先拿掉，而且全程沒有安裝任何東西。
+  6. 作者附一段找 skill 的提示詞：要求多種搜尋說法、列 3～5 個候選、逐一檢查更新狀況、說明、範例、issue 處理、讀取哪些資料、需要哪些權限、是否外傳資料，用表格比較後推薦一個，確認前不安裝不執行。
+- **網友留言重點**：多數是「存」「晚點看」。buoplife 說搭檔也是全部裝起來，最常用的仍只有一兩個，並問作者天天用的是哪一包（未見作者回覆）。
+- **對分析的影響**：
+  - **原筆記的「四大 Skill 包」寫錯了**。原分析沒讀留言，把四包寫成 superpowers、skill-creator／find-skills、Vercel React 規範、Office 文件四類；貼文實際測的是上面四個 repo。第 1 節已補上實際清單，第 2 節標明那四類是本筆記自己的分類、不是貼文內容。
+  - 2.2 的「Skill 膨脹」三點是本筆記的延伸論述，貼文沒有這些內容，也沒有量測數據；已加註。貼文真正的重點是「怎麼挑、先做安全檢查、確認前不安裝」。
+  - 四個 repo 現況（2026-11-16 以 GitHub API 查）：gbrain 約 3.3 萬星、mattpocock/skills 約 32.6 萬星、gstack 約 14.2 萬星、awesome-agent-skills 約 3.7 萬星，都是 MIT 授權、近期仍有更新。
+  - 已完成的 `T-20261026-17` 產出的評選矩陣比的是原筆記那四類，沒有涵蓋貼文實際的四包；本次不改它的狀態，新增 `T-20261026-36` 補評。
+
+---
+
 ## 1. 核心內容摘要與生態現況（Key Insights）
 
 社群作者「一股GoodJob」（`@good_job_ai`）實測了 GitHub 上由矽谷工程師與社群大神開源、獲得數萬人收藏的四大熱門 Agent Skill 包，並點出一個極具工程價值的核心洞察：
 > **「很多人都會推薦 GitHub 上面一定要裝的幾個必裝 Skill，都是矽谷幾個大神寫出來的。我叫 AI 把 GitHub 上幾萬人收藏的 4 包全部裝起來跑了一次。雖然不是每一個都用得到，但我還是每一個都去測試了……」**
+
+### 1.0 貼文實際測的四包（2026-11-16 依作者留言更正）
+
+| 貼文測的對象 | Repo | 作者實測的情境與結果 |
+| :--- | :--- | :--- |
+| GBrain | [`garrytan/gbrain`](https://github.com/garrytan/gbrain) | 交代週報格式與收件人後，開新對話仍照格式寫 |
+| grill-me | [`mattpocock/skills`](https://github.com/mattpocock/skills) | 對「40 人尾牙、預算 3 萬」一次問出 6 個漏洞並附建議答案 |
+| GStack | [`garrytan/gstack`](https://github.com/garrytan/gstack) | 丟 App 點子不直接做，先追問需求證據 |
+| Awesome Agent Skills | [`VoltAgent/awesome-agent-skills`](https://github.com/VoltAgent/awesome-agent-skills) | 上千個 skill 的目錄；作者提醒不要看到就裝 |
+
+作者另外給了挑 skill 的三步驟與一段提示詞（多種說法搜尋、不只看星數、先做安全檢查、確認前不安裝），見第 0 節。
 
 ### 1.1 什麼是 Agent Skill？（Skill vs Prompt）
 隨著 Anthropic、Claude Code、Codex 與 Antigravity 全面支援 **Agent Skills 開放標準**，AI 擴充能力已從過去鬆散的「提示詞工程（Prompt Engineering）」走向**「工作流程式碼化（Workflow-as-Code）」**：
@@ -46,7 +83,9 @@ tags:
 
 ## 2. 深入技術拆解：GitHub 4 大萬星熱門 Skill 包深度對比（Deep Dive）
 
-社群實測的高頻推薦四大技能領域涵蓋了現代 Agent 的核心作業場景：
+（2026-11-16 註：以下四類是本筆記對熱門技能生態的分類整理，**不是貼文實測的四包**；貼文實測對象見 1.0。）
+
+高頻推薦的四大技能領域涵蓋了現代 Agent 的核心作業場景：
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -85,7 +124,9 @@ tags:
 | **4. 文件工件型**<br>（如 Anthropic 官方 Office 4 件套） | 具備對 `.docx`、`.pptx`、`.xlsx` 與 `.pdf` 的標準程式化讀寫與樣式排版能力 | 產出標準企業級報告與簡報大綱，告別終端陽春純文字輸出 | 相依特定的 Python/Node 外部庫，若未配置執行環境易報錯 |
 
 ### 2.2 核心工程警訊：Skill 膨脹與上下文退化（Skill Bloat & Context Degradation）
-許多開發者誤以為「Skill 裝越多，Agent 就越強」，實測卻發現嚴重的反效果：
+（2026-11-16 註：本小節是本筆記的延伸論述，貼文沒有這些內容，也沒有量測數據。）
+
+許多開發者誤以為「Skill 裝越多，Agent 就越強」，實際上常見以下反效果：
 1. **System Prompt 預算暴增**：
    每個已安裝的 Skill 都會將描述注入初始上下文。若安裝數十個 Skill，模型在還沒開始處理使用者問題前，就已經燒掉上萬 Tokens。
 2. **注意力稀釋（Attention Dilution）**：
@@ -147,6 +188,13 @@ tags:
   - **驗收標準（DoD）**：產出 `templates/lightweight-skill-template.md`，以 `Test-Path templates/lightweight-skill-template.md` 驗證存在。
   - **完成日期**：2026-10-26
   - **實作紀錄 / 證據**：templates/lightweight-skill-template.md（81 行）：範本本身跑 audit_skills_context_budget.py --strict 無 ERROR／WARN。獨立驗收（fresh-context 審查員，2026-10-26）通過。
+
+- [x] **`T-20261026-36`**｜**[優先級：中]** 在評選矩陣補上貼文實際測的四包與作者的挑選提示詞
+  - **目標範圍**：`docs/agent-skills-curation-and-context-budget-spec.md`
+  - **具體做法**：(1) 新增一節，以唯讀方式（只讀 README 與 `SKILL.md`，不安裝不執行）評估 `garrytan/gbrain`、`mattpocock/skills` 的 grill-me、`garrytan/gstack`、`VoltAgent/awesome-agent-skills`：各自做什麼、`SKILL.md` 大小是否在 8KB 內、會讀寫哪些資料、與維護者已安裝技能是否重疊（gstack 系列已在用）；(2) 把作者「先理解需求、多種說法搜尋、逐項安全檢查、確認前不安裝」的挑選提示詞改寫成本 repo 的查核清單，並對照既有的 `skill-vetting` 流程，列出缺的檢查項；(3) 在文件開頭註明原矩陣的四類是分類整理、不是貼文實測對象。
+  - **驗收標準（DoD）**：`docs/agent-skills-curation-and-context-budget-spec.md` 有四個 repo 的評估表（含查證日期與星數出處）與挑選查核清單；`python tools/verify_inbox.py` 通過。
+  - **完成日期**：2026-11-17
+  - **實作紀錄 / 證據**：docs/agent-skills-curation-and-context-budget-spec.md 新增第 11 節四個 repo 唯讀評估（2026-11-17 gh api 星數與 SKILL.md 大小）與第 12 節挑選查核清單及 skill-vetting 缺口對照；檔頭與第 2、5、10 節改正「四大體系不是貼文實測對象」。未安裝、未執行、未重現作者實測。
 
 ---
 

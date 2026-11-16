@@ -10,6 +10,11 @@ status: archived
 cluster: "1"
 cluster_role: "會話模式與節奏控制"
 short_title: "Claude-Work-Mode三態架構深挖"
+source_review: partial
+source_reviewed_at: 2026-11-17
+source_review_note: "Threads 留言讀到 21 則／共 50 則，其餘要登入；貼文的 GitHub 連結預覽卡只讀標題文字。"
+source_images: 8
+source_replies: 21
 tags:
   - claude-code
   - claude-work-mode
@@ -23,7 +28,7 @@ tags:
 
 # 評析 Dustin GMAT 推薦「claude-work-mode」：Claude Code 三態工作流（auto/out/wrap）、批次確認集中化與外派節流閘門架構深挖
 
-- **來源貼文**：[Threads 貼文 `@dustin_gmat`（9.9K 觀看，142 讚）](https://www.threads.com/share/_gD_V1h27)（短網址 `_gD_V1h27`，真實 URL `https://www.threads.com/@dustin_gmat/post/DfeccsumJrq`）
+- **來源貼文**：[Threads 貼文 `@dustin_gmat`（初次分析時 9.9K 觀看、142 讚；2026-11-16 重看為 6.2 萬次瀏覽、662 讚、50 則回覆）](https://www.threads.com/share/_gD_V1h27)（短網址 `_gD_V1h27`，真實 URL `https://www.threads.com/@dustin_gmat/post/DfeccsumJrq`）
 - **官方開源 GitHub 倉庫（主動深挖查證）**：
   - [`danyuchn/claude-work-mode`](https://github.com/danyuchn/claude-work-mode)（MIT 授權，由 Dustin / danyuchn 開發，附中英雙語完整說明與展示影片）
 - **分析日期**：`2026-11-08`
@@ -35,10 +40,40 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 以未登入的內建瀏覽器重看 Threads 貼文：貼文文字、作者釘選留言裡的 60 秒概念影片（抽 8 格看過）、留言 21 則（含作者 2 則；貼文標示 50 則回覆，其餘要登入才看得到；Threads 的留言是捲到才載入，逐段捲動收集）。貼文本身沒有圖片，只有一張 GitHub 連結預覽卡（只讀了卡片標題文字）。
+
+- **作者圖片／影片**：貼文本身無圖。作者在釘選留言補了一支 60 秒概念影片（全是模擬終端機畫面加大標題，共看 8 格）：
+  - 格 1–2「用 Claude Code 最累：一直停下來問」：示範請它更新 12 個頁面的導覽列，講了「中間不用問我」還是每步停下來問。
+  - 格 3「auto 模式：本機可回復，不再對話打斷」：`/work-mode auto` 後 12 頁一次改完並跑測試；畫面註明金流、刪除、發信這類真正有風險的事才停下確認。
+  - 格 4「out 模式：大批工作外派，省下主額度」：示範逐條分類 1,000 筆使用者回饋，自動外派給背景子代理或外部模型，主線只抽樣驗收；畫面字樣寫省下 20% 以上的週額度。
+  - 格 5–6「準備收工時：模型開始旁生枝節」：要它彙整進度，它卻提測試覆蓋率偏低、要不要順便重構 CSS。
+  - 格 7「wrap 模式：拒絕旁生枝節，聚焦決策」：只列出要使用者決定的事，每項帶類別標籤（對外、金流）與建議。
+  - 格 8 總結畫面：指令寫成 `/work-mode auto out wrap`，狀態列顯示三個模式同時啟用。
+- **作者留言補充**：
+  - 釘選留言說明上面那支概念影片是用 AGY（Antigravity）做的，並說只要讓 Claude 先寫好規則，Gemini 也能有正常水準的表現。
+  - 有網友回報連結打開沒東西，作者回覆是 GitHub 那邊的問題，晚點就會正常。
+- **網友留言重點**：
+  - `meta.ai`（Meta 的 AI 帳號，被網友點名問原理）回覆的摘要：三個模式靠 `UserPromptSubmit` hook 注入 `additionalContext` 並寫狀態檔；auto 把原本會跳確認的地方改成拒絕並附理由；另有 PreToolUse 的 shell gates；`/at` 指令用來判斷人在桌機還是手機、切換回覆格式。這是 AI 生成的回覆，不能當一手資料，但前兩點與本筆記第 3 節依原始碼查到的一致；`/at` 是原筆記沒寫到的指令，未另查原始碼確認。
+  - `jwenlovecats` 問這工具對 Codex 有沒有用，可見範圍內沒有人回答。
+  - `ai_future88888` 建議額度節省要自己記錄前後用量才看得出來；`andy_chen0214` 提到另一個工具 ponytail 很省 token（未說明是什麼）。
+  - `tysys1955` 說自己是硬寫了一套動作準則（沒到某個等級的問題不要問），因為每次等它確認很煩——同一個痛點的另一種解法。
+  - 其餘十多則是「晚點丟給我的 agent 看」「先存」這類回應與兩則引用轉發，沒有實測回報或反駁。
+- **對分析的影響**：
+  1. **「三態切換」的說法補正**：影片最後一格顯示三個模式可以同時啟用（`/work-mode auto out wrap`），不是三選一。第 2 節開頭已補一句。
+  2. **成效數字的性質**：貼文的「人工干預少 70%、額度省 30%」與影片的「省下 20% 以上週額度」都是作者自述，兩處數字不一致，貼文、影片與留言都沒有附量測方法。第 1 節引用處已加註。
+  3. 影片是概念示意（模擬畫面），不是實機錄影，不能當功能驗證。
+  4. 仍維持歸檔、不開任務。
+
+---
+
 ## 1. 核心內容摘要與痛點還原（Executive Summary）
 
 Threads 作者 Dustin（`@dustin_gmat`）分享其開源專案 `claude-work-mode`：
 > 「應該是我用 Claude Code 以來開發過最自豪的工具，讓我的人工干預少了 70%、Claude 額度節省 30%、context switching 所造成的注意力耗損都消失了。」
+
+（上述百分比是作者自述，貼文、影片與留言都沒有量測方法；影片裡另寫「省下 20% 以上週額度」，兩處數字不一致。）
 
 其解決了重度使用 Coding Agent 時的三大核心痛點：
 1. **注意力碎片化（Attention Fragmentation）**：傳統模式下，Agent 每進行一次檔案修改、本地 commit 或測試，都中途暫停等待人類授權，迫使工程師頻繁切換注意力。
@@ -49,7 +84,7 @@ Threads 作者 Dustin（`@dustin_gmat`）分享其開源專案 `claude-work-mode
 
 ## 2. 三態工作流（Session Work Modes）核心機制
 
-`claude-work-mode` 以單一斜線指令 `/work-mode` 動態切換當前會話狀態，模式僅作用於當前 Session，不永久污染全域環境：
+`claude-work-mode` 以單一斜線指令 `/work-mode` 動態切換當前會話狀態，模式僅作用於當前 Session，不永久污染全域環境；三個模式可疊加啟用（作者概念影片最後示範 `/work-mode auto out wrap` 同時開啟三者）：
 
 ```
 +-----------------------------------------------------------------------------------+

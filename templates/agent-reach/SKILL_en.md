@@ -25,6 +25,8 @@ metadata:
 16 platforms, multiple backends each. **When this skill exists, use it for
 these platforms — do not invent your own approach.**
 
+> ⚠️ **Warning added by the ai-inbox maintainer on 2026-11-16 (not upstream text)**: the upstream README states that the first time a login-backed platform is used, the tool copies that site's login from your Chrome into its own dedicated browser (usually your main account). Before PR #474, `configure --from-browser chrome` collected cookies for all supported platforms at once. This conflicts with a "do not read browser cookies" rule. The "must not read browser cookies" lines below are rules for the agent; they do not mean the tool itself leaves your login state alone. Use only the no-login channels. Do not enable login-backed platforms on a Chrome profile that holds a main account, and do not run `configure --from-browser`. A user also reported a XiaoHongShu ban warning (issue #498). Evidence: section 0 of the [source note](../../notes/2026-10-17-agent-reach-social-intelligence.md).
+
 ## Standing rules (apply for the whole session)
 
 1. **Health-check before acting**: for multi-backend/login-backed platforms (XiaoHongShu /

@@ -9,7 +9,7 @@ tests/test_verify_re_and_android_specs.py
 5. REA 沙盒實測證據 SHA-256 比對或 MATCH 缺失反例攔截。
 6. REA 沙盒實測證據 ASAR 解包統計或原始碼隔離政策缺失反例攔截。
 7. REA 沙盒實測證據系統 PATH 零污染或全域登錄檔零變更結論缺失反例攔截。
-8. Android 官方 Skills 數量不足 33 個或核心關鍵技能遺漏反例攔截。
+8. Android 官方 Skills 數量不足 37 個或核心關鍵技能遺漏反例攔截。
 9. Android 官方 Skills XML 轉 Compose 或 Play Billing 合規防線缺失反例攔截。
 10. Android CLI 在 Windows 11 之 Registry PATH 違規或超過 1 GB 硬閘門缺失反例攔截。
 11. CLI main() 執行成功 (exit 0) 與指定無效目錄之失敗 (exit 1) 驗證。
@@ -139,16 +139,16 @@ class TestVerifyReAndAndroidSpecs(unittest.TestCase):
         self.assertTrue(any("PATH" in e or "環境清潔度" in e for e in errors), f"未攔截 PATH 零污染結論缺失：{errors}")
 
     def test_android_skills_count_and_key_skills(self):
-        """8. 反例攔截：Android 官方 Skills 清單不足 33 個或核心技能遺漏。"""
+        """8. 反例攔截：Android 官方 Skills 清單不足 37 個或核心技能遺漏。"""
         raw = (REPO_ROOT / "docs" / "android-official-skills-anti-hallucination.md").read_text(encoding="utf-8")
 
         # 破壞數量宣告
-        bad_claim = raw.replace("33 個 Skills", "20 個 Skills").replace("33 個", "20 個")
+        bad_claim = raw.replace("37 個 Skills", "20 個 Skills").replace("37 個", "20 個")
         # 刪減表格列
         lines = [line for line in bad_claim.splitlines() if not line.startswith("| 3")]
         bad_count_text = "\n".join(lines)
         errors_count = vre.verify_android_skills_anti_hallucination(bad_count_text)
-        self.assertTrue(any("不足 33 個" in e for e in errors_count), f"未攔截 Skills 數量不足：{errors_count}")
+        self.assertTrue(any("不足 37 個" in e for e in errors_count), f"未攔截 Skills 數量不足：{errors_count}")
 
         # 遺漏核心技能
         no_compose_skill = raw.replace("migrate-xml-views-to-jetpack-compose", "legacy-converter")
@@ -156,17 +156,17 @@ class TestVerifyReAndAndroidSpecs(unittest.TestCase):
         self.assertTrue(any("遺漏核心關鍵技能" in e for e in errors_key), f"未攔截關鍵技能遺漏：{errors_key}")
 
     def test_android_skills_table_padding_and_duplicates_rejected(self):
-        """反例：灌水(重複編號/缺 SKILL.md 路徑的數字列)不得湊成 33 個。"""
+        """反例：灌水(重複編號/缺 SKILL.md 路徑的數字列)不得湊成 37 個。"""
         raw = (REPO_ROOT / "docs" / "android-official-skills-anti-hallucination.md").read_text(encoding="utf-8")
         self.assertEqual(vre.verify_android_skills_anti_hallucination(raw), [])
         lines = raw.splitlines()
         # 把最後一個編號列改成與前一列相同編號(重複)
-        idx = [i for i, l in enumerate(lines) if l.startswith("| 33 |")][0]
-        dup = "\n".join(lines[:idx] + [lines[idx].replace("| 33 |", "| 32 |", 1)] + lines[idx + 1:])
-        self.assertTrue(any("不足 33 個" in e for e in vre.verify_android_skills_anti_hallucination(dup)))
+        idx = [i for i, l in enumerate(lines) if l.startswith("| 37 |")][0]
+        dup = "\n".join(lines[:idx] + [lines[idx].replace("| 37 |", "| 36 |", 1)] + lines[idx + 1:])
+        self.assertTrue(any("不足 37 個" in e for e in vre.verify_android_skills_anti_hallucination(dup)))
         # 移除 SKILL.md 路徑的數字列不算數
         nopath = "\n".join(l.replace("SKILL.md", "README.txt") if l.startswith("| 5 |") else l for l in lines)
-        self.assertTrue(any("不足 33 個" in e for e in vre.verify_android_skills_anti_hallucination(nopath)))
+        self.assertTrue(any("不足 37 個" in e for e in vre.verify_android_skills_anti_hallucination(nopath)))
 
     def test_android_skills_compose_and_play_billing_guardrails(self):
         """9. 反例攔截：XML 轉 Compose 防幻覺或 Play Billing 合規防線缺漏。"""

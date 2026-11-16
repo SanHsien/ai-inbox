@@ -10,6 +10,10 @@ status: archived
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "Zeabur OSS開源與Installer自建"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 1
+source_replies: 3
 tags:
   - zeabur
   - zeabur-oss
@@ -24,7 +28,7 @@ tags:
 
 # Zeabur 商業關站全面轉向開源：Zeabur OSS Apache-2.0、Installer 一鍵安裝、K8s 無額外狀態架構與自建私有 PaaS 實戰
 
-- **來源連結**：[Threads 原文分享 (@_xox._.xox._.xox._.xox._.xox_)](https://www.threads.com/share/BAjeqlHOXc/) ｜ [貼文永久網址](https://www.threads.com/@_xox._.xox._.xox._.xox._.xox_/post/DfD8l9vAX0L) ｜ [Zeabur OSS 官方文檔 (oss.zeabur.com)](https://oss.zeabur.com/) ｜ [Zeabur GitHub 倉庫](https://github.com/zeabur/zeabur) ｜ [Zeabur 官方公告：Next chapter of Zeabur](https://zeabur.com/blog/next-chapter-of-zeabur)
+- **來源連結**：[Threads 原文分享 (@_xox._.xox._.xox._.xox._.xox_)](https://www.threads.com/share/BAjeqlHOXc/) ｜ [貼文永久網址](https://www.threads.com/@_xox._.xox._.xox._.xox._.xox_/post/DfD8l9vAX0L) ｜ [Zeabur OSS 官方文檔 (oss.zeabur.com)](https://oss.zeabur.com/) ｜ [Zeabur OSS GitHub 倉庫（貼文所附）](https://github.com/zeabur-oss/zeabur) ｜ Zeabur 官方公告 `zeabur.com/blog/next-chapter-of-zeabur`（2026-11-16 查證回 404，未能確認）
 - **核心作者**：‎ǼǾՖ唯一ی‎（@_xox._.xox._.xox._.xox._.xox_）／ 林沅霖（Zeabur 創辦人）
 - **分析主題**：解構知名雲端部署平台 Zeabur 在歷經資安風波後，官方正式宣佈商業雲端服務將於 2026 年底逐步結束營運，並將平台核心資產全面重構、以 **Apache-2.0 協議開源為「Zeabur OSS」**，同時推出 **Zeabur Installer** 一鍵安裝套件。深入探討其「No Extra State（無內部資料庫、無自定義 CRD、純 K8s 原生投影）」極簡架構、WebAuthn/Passkey 安全驗證、K3s 單機與 Helm 叢集三大部署模式，以及開發者如何藉此擺脫公有雲綁定、搭建 100% 數據自主的私有 Sovereign PaaS。
 - **當前狀態**：`⚪ 已封存 (Archived)`
@@ -32,6 +36,27 @@ tags:
   - [`notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md`](./2026-10-31-zeabur-open-source-paas-architecture-analysis.md)（Zeabur 開源 PaaS 架構解構：zbpack 打包與多租戶資安反思）
   - [`notes/2026-10-23-zeabur-october-2026-security-incident.md`](./2026-10-23-zeabur-october-2026-security-incident.md)（Zeabur 遭黑客攻擊事件反思：本地 OAuth 憑證、專案隔離與微服務架構）
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（Thorsten Ball 15 條實戰哲學：端到端 SDLC 可視與無可辯駁證據）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀貼文與全部 3 則留言，並對照 `zeabur-oss/zeabur` 的 README 與 `docs/install/`。
+
+- **作者圖片**：貼文沒有上傳圖片，只有 1 張連結預覽卡：`zeabur-oss/zeabur` 的 repo 卡片（標語是「像 PaaS 一樣部署，拿到的是標準 Kubernetes 物件」，右側是套用前預覽 YAML 的畫面）。
+- **作者留言補充**：無。貼文本文只有一段話加 repo 連結，連結是 [`zeabur-oss/zeabur`](https://github.com/zeabur-oss/zeabur)。
+- **網友留言重點**：
+  - `burajali2026`：開源了但建議再等等，這種關站後的開源不一定有人持續補漏洞。
+  - `kuma.mycat`：反問為什麼不用 Coolify。
+  - `lucasfutures`：玩笑話，無技術內容。
+- **對分析的影響**：
+  - 原貼文只有一句話；本篇第 1～2 節的細節是分析者自行補充的，重審時逐項對照官方 repo：
+    - repo 連結原本寫 `zeabur/zeabur`，改成貼文實際給的 `zeabur-oss/zeabur`。
+    - 2.3 節的單機安裝指令 `curl … oss.zeabur.com/install.sh | bash` 查證回 404；Helm 的 `charts.zeabur.com` 網域連不上。官方文件寫的 chart 位置是 `oci://ghcr.io/zeabur-oss/charts/zeabur`，而且要先裝好 Zeabur Identity。兩段指令已改寫。
+    - 來源列的官方公告網址 `zeabur.com/blog/next-chapter-of-zeabur` 本次查證回 404，已標註未能確認。
+    - 「4GB+ RAM」「5 分鐘完成」「Traefik／cert-manager」在 README 與安裝文件裡沒找到依據，已標為未查證。
+  - 網友提到的維護風險（關站後是否有人補漏洞）與替代品 Coolify 補進第 3 節，作為不採用的理由之一。查 repo 時 `zeabur-oss/zeabur` 仍有進行中的 PR（v0.3.0 里程碑），目前不是棄置狀態，但長期維護仍不確定。
+  - 任務維持關閉。
 
 ---
 
@@ -90,17 +115,14 @@ tags:
 
 ### 2.3 規範三：Zeabur Installer 三大部署模式落地
 1. **單台 Linux 伺服器一鍵自建（Single Node via Web Installer）**：
-   - 官方提供瀏覽器端 Web Installer 工具，僅需在一台平價 VPS（如 Hetzner、DigitalOcean、自架伺服器，建議 4GB+ RAM）上執行安裝指令：
-     ```bash
-     curl -fsSL https://oss.zeabur.com/install.sh | bash
-     ```
-   - Installer 自動檢測作業系統環境，自動拉起 K3s 輕量 Kubernetes、Traefik Ingress、Zeabur Identity 與 Zeabur Platform，5 分鐘內完成整套 PaaS 架設。
+   - 官方 README 的說法是：在一台 Linux 伺服器上，安裝器（`zeabur-installer`）會裝好 K3s（或 RKE2）、Zeabur Identity 與 Zeabur。實際步驟以官方文件「Install on a single server」為準。
+   - **2026-11-16 更正**：本節原本寫的 `curl … oss.zeabur.com/install.sh | bash` 查證回 404，不是官方指令，已移除。「建議 4GB+ RAM」「5 分鐘完成」「自動拉起 Traefik」在 README 與安裝文件裡找不到依據，未查證。
 2. **既有 Kubernetes 叢集導入（Helm Chart Deployment）**：
-   - 適用於企業既有雲端叢集（AWS EKS、GCP GKE 或 Civo），透過 Helm Repo 一鍵部署：
+   - 適用於既有叢集。官方文件（`docs/install/existing-cluster.mdx`）的前提是先裝好 Zeabur Identity、在裡面註冊用戶端並把 client secret 存進叢集，再用 Helm 安裝；chart 發布在 OCI registry：
      ```bash
-     helm repo add zeabur https://charts.zeabur.com
-     helm install zeabur zeabur/zeabur -n zeabur-system --create-namespace
+     helm install zeabur oci://ghcr.io/zeabur-oss/charts/zeabur --version <version> ...
      ```
+   - **2026-11-16 更正**：原本寫的 `helm repo add zeabur https://charts.zeabur.com` 網域連不上，不是官方做法，已改成文件記載的 OCI 位置；完整參數看官方文件。
 3. **本地開發者模式（zeaburctl ui）**：
    - 本地機器執行 `zeaburctl ui`，直接讀取本地 `~/.kube/config`，在瀏覽器以圖形化介面直觀管理任意連線的 K8s 叢集。
 
@@ -118,6 +140,7 @@ tags:
   1. **補齊「私有 Sovereign PaaS」終極落地拼圖**：
      - 本篇筆記與剛收錄的 `notes/2026-10-31-zeabur-open-source-paas-architecture-analysis.md` 構成完整閉環：前者解構了 PaaS 核心打包與資安架構，本篇則給出了**「官方停運背景下的開源重生（Zeabur OSS）與實際自建操作指南」**。
      - 解決了個人開發者與 AI Agent 在面對中心化託管服務關站時的應對策略，提供自主可控的基礎設施標準。
+     - **留言補充的保留意見**（2026-11-16 重審）：網友 `burajali2026` 提醒關站後的開源不一定有人持續補漏洞，建議觀望；`kuma.mycat` 提出替代品 Coolify。這兩點支持本篇任務「不做」的決定：真有自架需求時，應先比較 Coolify 等維護中的方案。
   2. **工程化沉澱為 K8s 資源檢驗工具與部署範本**：
      - 開發專屬的 Zeabur OSS 資源合規檢查工具（`tools/audit_zeabur_oss_k8s_spec.py`），驗證 K8s 資源配置是否符合無額外狀態標準與資安規範。
      - 產出標準化單機 K3s / Helm 一鍵部署腳本與 CLAUDE.md 運維範本（`templates/zeabur-oss-installer-setup.md`）。

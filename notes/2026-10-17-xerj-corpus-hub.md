@@ -12,6 +12,11 @@ status: archived
 cluster: "3"
 cluster_role: "跨網情報與知識檢索"
 short_title: "XERJ Corpus Hub"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "貼文顯示 3 則回覆，未登入只讀到 2／3 則；圖看了 1／1 張"
+source_images: 1
+source_replies: 2
 tags:
   - agent-memory
   - retrieval-augmented-generation
@@ -32,6 +37,22 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：看了 Threads 貼文文字、作者附的 1 張圖與留言區。貼文顯示 3 則回覆，未登入只看得到 2 則。
+
+- **作者圖片**（1 張）：
+  - 圖 1：hub.xerj.org 首頁截圖。右上角統計是 515 個 live corpora、11 個領域、**548 筆 registry rows**、78.6 GB pinned text。下方領域分頁依序是 SEC、DB、NET、CRYPTO、WEB、API、OPS、LAW、HEALTH、AI、WRITE，另有地區篩選（DE／EU／UK／US／GLOBAL）。畫面停在 SEC（資安）領域：**50 個 corpus、56.1 GB**，其中最大的兩個是歷年 exploit PoC 集（2023 年那包 33.0 GB、約 127 萬個檔案；2024 年那包 7.6 GB）。
+- **作者留言補充**：作者只留了自己的 AI 社群（Skool）邀請連結，沒有技術補充或勘誤。
+- **網友留言重點**：@zhup_gg 一則玩笑式回覆（「加入私有記憶庫」），沒有實測或反駁。
+- **對分析的影響**：
+  - 修正 1.2 的規模說明：78.6 GB 不是平均分布在 11 個領域，**約七成（56.1 GB）集中在資安領域，光兩包 exploit PoC 就約 40 GB**。貼文說的「整門領域知識」在其他領域其實量很小。
+  - 新增一項風險：資安類語料是漏洞利用程式碼，拉進本機可能觸發防毒攔截，也不適合讓 agent 無限制檢索。這讓「不引入」的封存結論更站得住。
+  - 「515 個活 corpus」與截圖一致；另有 548 筆登錄列，代表約 33 筆尚未上線或已下架，貼文沒提。
+  - 「七道關卡」圖中看不到細項，本筆記 1.2 只列出四道，其餘三道未能從貼文或圖片查證，維持原樣不補。
+
+---
+
 ## 1. 核心內容與開源專案全貌
 
 ### 1.1 核心主張與技術痛點
@@ -43,6 +64,7 @@ tags:
 
 ### 1.2 關鍵規模與技術規格
 - **規模數據**：收錄 **515 個活 corpus**、跨 **11 個領域**、總量約 **78.6 GB**。
+  - 依作者附圖（hub 首頁截圖）：資安（SEC）一個領域就佔 50 個 corpus、56.1 GB，其中兩包 exploit PoC 集合計約 40 GB；其餘 10 個領域合計約 22 GB。
 - **七道授權與檢索關卡**：
   1. **Pinned Source**：所有專案與依賴均鎖死在精確 Commit SHA，確保版本重現性，不受上游 force-push 或刪庫影響。
   2. **Human-Reviewed License**：人工審核授權協議（不單靠機器掃描），避免 Agent 引用有法律爭議的程式碼。
@@ -82,6 +104,7 @@ Agent ──(xerj corpus add / xerj code 精準檢索)────────�
     2. **XERJ 混合檢索能力**：XERJ 支援 Autoindex（自動為代碼、PDF、SQLite、CSV 建模）與 MCP，可評估作為本地 Coding 工具的一環。
   - **不適用 / 需調整的部分**：
     1. **儲存策略**：78.6 GB 語料不可全拉，必須維持按需拉取單一語料包（On-demand）。
+    3. **資安語料風險**：最大宗的語料是漏洞利用程式碼，下載到本機可能被防毒軟體攔截，也不宜開放給 agent 任意檢索。
     2. **路徑相容性**：注意 Windows 反斜線 `\` 與 Git Bash / PowerShell 的路徑相容問題。
 
 ---

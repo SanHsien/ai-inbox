@@ -10,6 +10,11 @@ status: done
 cluster: 3
 cluster_role: "Opus5.5遷移與稽核"
 short_title: "Opus5.5稽核與遷移"
+source_reviewed_at: 2026-11-17
+source_review: partial
+source_review_note: "原社群整理文沒有留下連結，找不到，貼文的圖（含 Usage 頁截圖）與留言沒看到；只重看了官方 changelog，官方文件頁沒有圖也沒有留言區"
+source_images: 0
+source_replies: 0
 tags:
   - claude-opus-5-5
   - prompt-audit
@@ -25,6 +30,20 @@ tags:
 - **發布平台 / 作者**：`社群實戰整理`（作者宣稱最低版本需求 Claude Code `2.1.283+` / 本機環境宣稱 `2.1.322`，皆未經本輪獨立查證）
 - **分析日期**：`2026-11-15`
 - **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-17 重審。`source_url` 是官方 changelog；真正的來源是一篇沒留連結的社群整理文，找不到原文。
+
+- **作者圖片**：看不到。原筆記提到貼文有一張 Usage 頁「Reset for free」截圖，本輪沒有看到那張圖。官方 changelog 頁沒有圖片。
+- **作者留言補充**：看不到。
+- **網友留言重點**：看不到。官方文件頁沒有留言區。
+- **對分析的影響**：
+  - 用瀏覽器重看官方 changelog，兩個指令的原文都在：`/doctor prompt-audit`（別名 `/checkup prompt-audit`）稽核 CLAUDE.md、skills、agents、commands；`claude-api` skill 另有 `prompt-audit` 子指令稽核提示詞與 tool descriptions。與第 1.1 節的區分一致，不用改。
+  - 作者宣稱的最低版本 `2.1.283+` 仍未查證（changelog 出現這個版號的地方是 Remote Control 的條件，不是 prompt-audit 的版本需求）。
+  - 貼文的圖與留言沒看到，無法檢驗作者其他說法；結論與 `T-20261115-18` 不受影響。
 
 ---
 

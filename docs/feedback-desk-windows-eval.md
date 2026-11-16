@@ -97,5 +97,18 @@ npm error code 1
    - 若將 `scripts/build.mjs` 調整為指定 `.cmd` 並賦予 `{ shell: true }`，建置即可產出 `dist/cli.js`。
    - 手動以 `node dist/cli.js init --name test-desk` 執行時，能正確產出 `wrangler.jsonc` 並複製 `.feedback-desk/migrations/`、`.feedback-desk/public/` 與 `.feedback-desk/worker/` 構件。
 
+### 4.3 上游 issue #1：裝得起來之後，原生 Windows 仍會壞（2026-11-16 補）
+
+本節不是本機實測，內容取自上游 [issue #1](https://github.com/aixwangtw/feedback-desk/issues/1)（使用者回報，2026-10-19 建立；2026-11-16 以 GitHub API 查得狀態為開啟、0 則留言）。回報者的環境是 Windows 11、Node 26、feedback-desk `main`（`03f59f5`）。
+
+| 回報的問題 | 原因（回報者指出的位置） | 受影響指令 |
+| :--- | :--- | :--- |
+| 子程序參數沒有跳脫 | `src/cli/runtime.ts` 的 `runProcess` 在 win32 用 `shell: true`，參數只以空白串接 | `mcp install --claude`（JSON 的雙引號被吃掉）；`bootstrap`、`account recover`（寫 D1 的 SQL 被拆成多個參數，wrangler 只收到 `--command SELECT`） |
+| MCP 標頭輔助指令用 POSIX 單引號 | `writeHelper` 以單引號包路徑，而 cmd.exe 不認單引號 | Codex 在 Windows 呼叫 `http_headers_helper` 時結束碼 1，伺服器收不到請求 |
+
+所以第 4.2 節第 3 點的手動修補只解決「建置與 `init`」；`mcp install`、`bootstrap` 在原生 Windows 仍會失敗，除非上游修正或自行再修補 `runProcess`。本機沒有重現這兩個問題（本次評估不部署，未執行 `mcp install`、`bootstrap`）。
+
 ## 5. 評估結論
 結論：在 upstream 未發布預建置 npm 套件或未修正 scripts/build.mjs 的 Windows 原生子行程呼叫前，官方文檔記載之 npx --allow-git=all github:aixwangtw/feedback-desk 於 Windows 11 原生環境無法直接執行，必須透過 WSL（或由維護者採用本地 clone 手動修補建置腳本）方可運作。
+
+補充（2026-11-16）：手動修補建置腳本只能讓 `init` 跑起來；依上游 issue #1，`mcp install`、`bootstrap` 在原生 Windows 仍會失敗。要完整使用請走 WSL。

@@ -10,6 +10,11 @@ status: done
 cluster: 1
 cluster_role: "混合型Harness"
 short_title: "Pi混合型Harness"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_images: 0
+source_replies: 15
+source_review_note: "K-harness 仍是 404，內容完全看不到；pi README 只有標誌與吉祥物兩張小圖，未放大看；pi 未關閉的 issue／PR 約 259 個，只讀 3 則（#9361、#7547、#581）的本文與各前 4 則留言，#7547 共 96 則"
 tags:
   - agent-harness
   - pi-coding-agent
@@ -28,6 +33,23 @@ tags:
 - **當前狀態**：`🟢 已完成 (Done)`
 
 > **查證註記**：使用者提供的參考專案 `paul800901/K-harness` 經 GitHub API 與 HTTP 實查皆回傳 `404 Not Found`，且 `paul800901` 公開倉庫清單中亦無該專案（可能已轉私有或移除；[API 回 404](https://api.github.com/repos/paul800901/K-harness) 只能確認目前公開請求不可存取，不能確定已刪除）。本分析以 `pi` 官方上游倉庫 `earendil-works/pi` 原始碼與文件（`providers.md`、`cli-integration.md`、`windows.md`、`security.md`、`custom-provider.md`）為事實基準。
+
+---
+
+## 0. 原始資料盤點
+
+> 貼文文字、作者上傳的每張圖片（含輪播）、作者留言補充、網友留言（展開到底）都要看過，見 AGENTS.md 第 3 節。
+
+- **作者圖片**：`paul800901/K-harness` 2026-11-16 再查仍回 404，該帳號 15 個公開 repo 裡也沒有它，README 與圖都看不到。上游 `earendil-works/pi` 的 README 只有標誌與吉祥物兩張小圖和徽章，沒有架構圖或截圖。
+- **作者留言補充**：無（K-harness 看不到）。
+- **網友留言重點**（pi 的 issue，讀 3 則本文＋各前 4 則留言）：
+  - [#9361](https://github.com/earendil-works/pi/issues/9361)（未關閉）：Windows 上只要載入擴充，設定檔的 `shellPath` 會不定時被忽略，退回去用 PATH 上第一個 `bash.exe`；有開 WSL 的機器那會是 `C:\Windows\System32\bash.exe`（WSL 啟動器），指令就跑進 Linux 環境。協作者的判斷是某些擴充換掉了內建 bash 工具卻沒讀設定，並承認設定管理沒有好好開放給擴充。
+  - [#7547](https://github.com/earendil-works/pi/issues/7547)（未關閉，96 則）：協作者彙整 Windows 四種跑法（Git Bash、WSL bash、純 PowerShell、整個放 WSL2），說每一種都有小毛病；有留言說 Git Bash 很糟、WSL bash 常弄壞路徑、PowerShell 相對堪用但很多擴充不支援。
+  - [#581](https://github.com/earendil-works/pi/issues/581)（已關閉，2026-01）：Claude 的 OAuth token 在第三方工具回 400，訊息是該憑證只授權給 Claude Code 使用；留言指出其他同類工具也應 Anthropic 要求拿掉這種支援。
+- **對分析的影響**：
+  1. 第 2 節「Windows 終端與安全邊界」補上 #9361：維護者是 Windows 原生、不用 WSL，而本篇設計正好要寫擴充，這是直接踩得到的問題。
+  2. #581 是「不要把訂閱憑證接進 Pi」的實例，補進第 1 節的不建議做法；與 `docs/pi-hybrid-harness-readonly-assessment.md` 的 Anthropic 那一列結論一致，`T-20261115-01` 不需重開。
+  3. 結論不變：暫不採納，`T-20261115-02` 維持不做。
 
 ---
 
@@ -50,7 +72,7 @@ tags:
     - **[provider 目錄](https://github.com/earendil-works/pi/tree/main/packages/ai/src/providers)未列 `antigravity`**；這不能證明全倉所有 extension 都沒有相關整合。
     - Pi 支援某個 provider 或 token（見官方 [`providers.md`](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/providers.md)），不等於廠商允許第三方工具使用特定訂閱憑證；各家訂閱能否接 Pi **未查證**。
   - **關鍵架構分層（避免違規反代，改用「大腦 + 委派核心」雙層混合）**：
-    - ❌ **不建議的做法**：試圖用非官方 OAuth 擷取或反代腳本把三家桌面／訂閱憑證硬接到 `pi.registerProvider()` 當作免費模型 API（易觸發帳號封鎖、且違反憑證安全原則）。
+    - ❌ **不建議的做法**：試圖用非官方 OAuth 擷取或反代腳本把三家桌面／訂閱憑證硬接到 `pi.registerProvider()` 當作免費模型 API（易觸發帳號封鎖、且違反憑證安全原則）。實例：pi 的 [#581](https://github.com/earendil-works/pi/issues/581) 記錄 2026-01 起 Claude 的 OAuth token 在第三方工具被回 400，訊息是該憑證只授權給 Claude Code 使用。
     - **待驗證的雙層設計**（只呼叫各家官方 CLI，不碰憑證；是否合規、Pi 控制平面自己用哪個模型、會不會另耗 API 費用，都還沒查證）：
 
 ```text
@@ -89,7 +111,7 @@ tags:
   - **不適用 / 需調整的部分**：
     1. **不要用 Pi 重寫一個全新的 `agent-relay` 或 `agent-cortex`**：維護者已經有經過實測的 `agent-relay`（含 `ask`/`answer`、worktree 隔離、SSH 簽章驗證；測試結果以該 repo 當前驗收為準，本筆記未重跑），重複造輪子只會分散維護精力；Pi 應定位為**人類面向的前端指揮台（Commander TUI）＋ 即時編寫工具**，長任務與跨機派工仍交給 `agent-relay`。
     2. **Antigravity 不可透過非官方 API/OAuth 塞進 `pi-ai`**：現有做法是 `agent-relay send --to antigravity --ref antigravity-session:new`，依據是 relay 自己的相容性契約（[`SPEC.md`](https://github.com/SanHsien/agent-relay/blob/main/SPEC.md)），不是 Google 官方保證；`language_server.exe agentapi` 是否為官方穩定 API **未查證**。
-    3. **Windows 終端與安全邊界**：Pi 本身沒有內建 OS 沙盒（官方 [`security.md`](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/security.md) 明言工具以當前使用者權限執行、工作目錄不限制可存取路徑，project trust 也不是安全邊界）。資料夾與 git worktree 只是分開檔案，**不是 OS 隔離**；在 Windows 上委派破壞性或大規模實作任務時，不要放任 Pi 直接在主分支裸跑。
+    3. **Windows 終端與安全邊界**：Pi 本身沒有內建 OS 沙盒（官方 [`security.md`](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/security.md) 明言工具以當前使用者權限執行、工作目錄不限制可存取路徑，project trust 也不是安全邊界）。資料夾與 git worktree 只是分開檔案，**不是 OS 隔離**；在 Windows 上委派破壞性或大規模實作任務時，不要放任 Pi 直接在主分支裸跑。另有未關閉的 [#9361](https://github.com/earendil-works/pi/issues/9361)：載入擴充後 `shellPath` 設定會不定時被忽略，退回 PATH 上的 `bash.exe`，有開 WSL 的機器會把指令送進 WSL；本篇設計要靠擴充，在 Windows 原生環境要先確認這個問題的現況。
 
 ---
 

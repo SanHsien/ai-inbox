@@ -10,6 +10,11 @@ status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "feedback-desk 客戶工單與 AI 交接"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "原始 Threads 貼文沒留連結，其圖片與留言沒看到（總數未知）；改看作者介紹文與 README 共 10 張圖；repo 的 issue／PR 沒有留言回覆（0 則）"
+source_images: 10
+source_replies: 0
 tags:
   - feedback-desk
   - ticketing
@@ -33,16 +38,47 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：原筆記註明沒讀的作者介紹文（`aixwang.dev/blog/feedback-desk`，2026-10-18 發布、11-07 更新）這次全文讀完，文內 9 張圖與 README 的 1 張圖都看過；repo 的 2 則 issue 與 1 個 PR 也讀了（都沒有留言回覆）。原始 Threads 貼文沒有留下連結，無從回看；介紹文頁面沒有留言區。
+
+- **作者圖片**：共 10 張（介紹文 9 張、README 1 張），介紹文註明截圖用的是假資料。
+  - 圖 1：文章封面。
+  - 圖 2：團隊端問題清單。頁籤是「等工程師／等客戶／已完成／全部」，列表五欄（編號、標題、狀態、建立者、最後更新），頁首鈴鐺展開列出客戶新留言與一則待審留言。
+  - 圖 3～4：單張詳情（電腦版從右側滑出、手機版整頁），含說明、相簿、活動紀錄與「完成」按鈕。
+  - 圖 5～6：留言可拖入圖片與影片並預覽；客戶端可直接播放團隊附的操作影片。
+  - 圖 7：右下角留言面板自動打開，顯示一則「待審留言」與送出、捨棄、編輯按鈕。
+  - 圖 8～9：團隊按「完成」後跳出可改字的確認留言；客戶端在該留言上按「通過」。
+  - 圖 10（README）：命令列裝置碼授權頁，要使用者自己輸入終端機上的授權碼。
+- **作者留言補充**（介紹文內容，取代原筆記「介紹文未讀」的缺口）：
+  - 狀態只有固定 3 種：等工程師、等客戶、已完成；狀態跟著留言自動切換，網頁上沒有改狀態的選單。**團隊和 AI 都不能自己結案，一定要客戶按「通過」。**
+  - 「待審」指的是**待審留言**：AI 或排程先擬好、客戶看不到的草稿留言，團隊按「送出」才發出。它不是一種工單狀態。
+  - AI 用 MCP 或 CLI 改別人認領中的單時會先停下，確認接手才繼續，並記錄這次接手；認領與交接紀錄只有團隊看得到。
+  - 附件上限：一則留言最多 5 個檔，圖片 10 MB、影片 50 MB。
+  - 定位：不是專案管理工具，沒有排程、優先順序、報表；文中拿 Jira／JSM 的計價對照。
+  - 作者自己的用法：Claude Code 排程定時掃新單、夥伴用 Codex；寫給客戶的留言規則另開源在 `aixwangtw/de-ai-slop`。
+- **網友留言重點**：
+  - issue #1（使用者回報，未回覆）：原生 Windows 下 CLI 以 `shell: true` 啟動子程序、參數不跳脫，`mcp install --claude` 的 JSON 引號被吃掉、寫 D1 的 SQL 被拆成多個參數，`mcp install`、`bootstrap` 會失敗。
+  - issue #2（同一位使用者）：`laravel` 分支自動處理同時傳 `--sandbox` 與 `--approve-for-me`，Codex CLI 直接拒絕，新單自動處理全數失敗。
+  - PR #3（未合併）：新增 Docker 自行託管，內網主機不需 Cloudflare 帳號。
+- **對分析的影響**：
+  - 第 1 節的流程原寫「狀態『待審核』→客戶確認→『已完成』」，與現行設計不符；已改成三種狀態加「待審留言」。
+  - issue #1 補強 `T-20261024-03` 的結論：除了該任務實測到的安裝階段失敗，就算裝得起來，原生 Windows 的 `mcp install`、`bootstrap` 也會壞。結論「需 WSL」不變，已在第 2 節「平台限制」補上。
+  - PR #3 若合併，不想用 Cloudflare 帳號時多一條自架路線；目前未合併，只記錄，不開新任務。
+
+---
+
 ## 1. 核心內容摘要（5W1H 初篩）
 
 - **Who**：接案開發者 aixwangtw，同時做 3 個專案，每案有客戶、夥伴與各自的 AI。
-- **What**：開源工單／回報系統。客戶開單附截圖，開發端（人或 AI）讀單、修改、寫附圖的調整說明、改成「待審核」，客戶確認後結案。
+- **What**：開源工單／回報系統。客戶開單附截圖，開發端（人或 AI）讀單、修改、在單上留言寫附圖的調整說明，單自動轉為「等客戶」，客戶按「通過」後結案（2026-11-16 依作者介紹文更正：狀態只有等工程師／等客戶／已完成三種，團隊與 AI 都不能自行結案）。
 - **Why**：訊息散落多處，沒有統一 API 讓 AI 讀需求與互相交接。
 - **How**：
 
 ```text
 客戶開單(+截圖) → CC 排程定時讀單 → AI 修改並驗證 → 寫簡潔調整說明
-      → 狀態「待審核」 → 客戶確認 → 「已完成」
+      → 留言後狀態自動變「等客戶」 → 客戶按「通過」 → 「已完成」
+      （AI 可先寫「待審留言」草稿，團隊送出後客戶才看得到）
 多 AI：認領（誰在處理）＋交接紀錄（下一個人/AI 讀單先看到）
       每個動作記錄「帳號＋AI 工具」，如「王小明（Codex）」
 ```
@@ -62,7 +98,7 @@ tags:
 - **安裝**：npm 套件尚未發佈，一律用 `npx --allow-git=all github:aixwangtw/feedback-desk <子命令>`；需 Node 20+、Cloudflare 免費帳號、啟用 R2。
 - **主要子命令**：`init`、`deploy`、`bootstrap`、`login`（裝置碼授權）、`project create`、`client create`、`developer create`、`mcp install`、`mcp token --agent`。
 - **AI 接入**：`mcp install` 為 Claude Code 與 Codex 各發獨立 token，存 `~/.config/feedback-desk/mcp/`；設定檔不含 token。其他 agent 以環境變數 `FEEDBACK_DESK_MCP_TOKEN` 與 `Authorization: Bearer` 標頭接入。
-- **平台限制**：README 的指令說明寫「Linux、macOS 終端機（Windows 可用 WSL）」，而本機是 **Windows 11 原生、無 WSL**，原生可行性未知。
+- **平台限制**：README 的指令說明寫「Linux、macOS 終端機（Windows 可用 WSL）」，而本機是 **Windows 11 原生、無 WSL**，原生可行性未知。（2026-11-16 補：repo issue #1 有使用者回報原生 Windows 下子程序參數未跳脫，`mcp install`、`bootstrap` 會失敗，尚無修正。）
 - **安全面**：`login` 的 token 預設不會到期（可 `--expires` 設定）；README 提示不要在非自己發起的 login 頁面授權。部署提示詞明確要求 AI 不看密碼、不把 token 寫進對話。
 
 ---

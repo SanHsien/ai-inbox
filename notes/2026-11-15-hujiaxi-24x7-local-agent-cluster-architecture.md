@@ -3,13 +3,18 @@ id: "2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture"
 title: "胡嘉璽 24×7 地端多機 Agent 實戰架構：Remote Control、Herdr + Tailscale、Git 技能同步與 Windows 11 落地評估"
 source_url: "https://code.claude.com/docs/en/remote-control"
 source_platform: "Facebook (Generative AI 技術交流中心)"
-author: "胡嘉璽（作者宣稱，原貼文未獨立查證）"
+author: "胡嘉璽"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
 status: done
 cluster: 1
 cluster_role: "24x7常駐Agent"
 short_title: "24x7地端Agent架構"
+source_reviewed_at: 2026-11-17
+source_review: partial
+source_review_note: "作者 4 張圖都放大看過；頁面顯示 34 則留言，未登入只能用「最相關」排序，展開到底讀到 30 則（讀到 30／共 34 則）；留言裡網友貼的 3 張圖沒有放大看"
+source_images: 4
+source_replies: 30
 tags:
   - 24x7-agent
   - remote-control
@@ -22,8 +27,8 @@ tags:
 
 # 胡嘉璽 24×7 地端多機 Agent 實戰架構：Remote Control、Herdr + Tailscale、Git 技能同步與 Windows 11 落地評估
 
-- **來源連結**：[官方 Remote Control](https://code.claude.com/docs/en/remote-control) ｜ [terminal README](https://raw.githubusercontent.com/SuperCodeAgents/herdr-terminal/master/README.md) ｜ [core README](https://raw.githubusercontent.com/herdrdev/herdr-core/master/README.md) ｜ [Git 官方 pull 文件](https://git-scm.com/docs/git-pull) ｜ [Tailscale unattended 官方文件](https://tailscale.com/docs/how-to/run-unattended) ｜ [Facebook 原貼文（來源頁 Cache miss，未查證）](https://www.facebook.com/groups/gaitech/permalink/1840405647143642/)
-- **發布平台 / 作者**：`Facebook 公開社團` / `胡嘉璽`（原貼文網頁工具 Cache miss 未能獨立取得；3 台 Mac、8 個 Tart VM、2 個 Ultra 帳號等細節屬作者宣稱，未經獨立查證）
+- **來源連結**：[官方 Remote Control](https://code.claude.com/docs/en/remote-control) ｜ [terminal README](https://raw.githubusercontent.com/SuperCodeAgents/herdr-terminal/master/README.md) ｜ [core README](https://raw.githubusercontent.com/herdrdev/herdr-core/master/README.md) ｜ [Git 官方 pull 文件](https://git-scm.com/docs/git-pull) ｜ [Tailscale unattended 官方文件](https://tailscale.com/docs/how-to/run-unattended) ｜ [Facebook 原貼文](https://www.facebook.com/groups/gaitech/permalink/1840405647143642/)（2026-11-17 已用瀏覽器讀到全文、圖片與留言）
+- **發布平台 / 作者**：`Facebook 公開社團` / `胡嘉璽`（2026-11-14 發文；3 台 Mac、8 個 Tart VM、2 個 Ultra 帳號等細節已與貼文原文核對，仍屬作者自述，硬體規模無法另外驗證）
 - **分析日期**：`2026-11-15`
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
@@ -33,21 +38,52 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-17 用未登入的瀏覽器重看。**原筆記寫「Facebook 原貼文 Cache miss、未查證」，這次讀得到全文、4 張圖與留言**（貼文日期 2026-11-14，458 個心情、106 次分享）。
+
+- **作者圖片**：
+  - 圖 1：Herdr App 的**Windows 桌面版**畫面。左側「Spaces」列出本機與 5 台遠端機器，另有兩個雲端 bot 項目；下方顯示 9 個 agents。右側是一個 Claude Code 工作階段（工作目錄在 `F:\`），狀態列顯示 Fable 5.2、中等推理、上下文 361k/1M、**`bypass permissions on`**。
+  - 圖 2：同一個工作階段在 Claude 網頁版 Code 介面的樣子，右側面板標示 Remote Control、上下文已用 36%（360.5k／1M）及各類別占用；左下角顯示 Ultra 方案。
+  - 圖 3：Claude Code 設定的 Config 分頁，搜尋 remote，「Enable Remote Control for all sessions」值是 true。
+  - 圖 4：Windows 檔案總管對資料夾按右鍵的選單，有「在 Herdr 中開啟」一項。
+- **作者留言補充**：
+  - 回答「8 個 agent 的記憶怎麼串」：大部分 agent 的工作各自獨立；靠 Claude Code 內建的跨工作階段記憶；所有工作階段都能存取同一台 NAS 上的資料夾，需要時寫進去；共用技能寫成 agent skill 進版控，固定時間各自同步更新。**本篇第 1 節第 3 點「共享儲存與 Git 技能同步」就是出自這則留言，不是貼文正文。**
+  - 已經連續跑了幾個月，除了例行更新系統重開機之外大多沒停；不是每次都能精準完成；唯一的限制是額度用完。
+  - 最新一則：現在週一額度就用掉 50%，覺得 Ultra 的額度變少了。
+  - 雲端的兩個 bot 其實有開放使用本機電腦，他在某些虛擬機裡就是用其中一個。
+  - 回應質疑：他沒有做不完的工作要一直跑，重點是 agent 一直在線。
+- **網友留言重點**：
+  - 質疑「24×7」的定義：有人認為任務一定有斷點、Claude Code 常要人按下一步，設一堆排程不算真正的自主 agent。反方回應可以讓 Claude 自己設排程醒來接續。
+  - 額度是共同痛點：另一位 Max 訂戶說 24×7 很燒額度，他會控制到重置前一天才全部用完。
+  - 交接做法：有人說每個工作階段結束都寫交接檔（做到哪、待辦增減），下一個模型接手先讀它。
+  - 風險提醒：有人指出哪天 Claude Code 限制某類用途，整套工作流就停擺。
+  - 其他：有人用多家模型分頻道以省錢；有人問每月花費，作者沒有回答。
+- **對分析的影響**：
+  - **撤除「原貼文未查證」**：3 台 Mac、8 個 agent、每個一台 Tart 虛擬機、兩個 Ultra 帳號、Remote Control 預設開、Herdr 加 Tailscale，都與貼文原文一致。仍是作者自述，硬體規模無法另外驗證。已改 frontmatter、來源行、作者行、第 1 節、第 1.1 節。
+  - **更正 Herdr 的 Windows 判斷依據**：原筆記只憑 README 推論「Windows 支援有前提」。圖 1、圖 4 顯示作者實際在 Windows 上用 Herdr App，並有檔案總管右鍵整合。App 在 Windows 可用這點有圖為證；README 提到的 `sh` 相依是否仍影響 App，圖上看不出來。已改第 1 節第 2 點。
+  - **新增安全觀察**：圖 1 的工作階段開著 `bypass permissions`，又同時被 Remote Control 遠端操控。這正是第 2 節「嚴禁全域關閉沙盒或繞過權限檢查」要擋的組合；這套架構的便利有一部分來自關掉權限確認，不可照抄。已補進第 2 節。
+  - **「純雲端無法存取本機」要打折**：作者自己在留言承認雲端 bot 也能開放使用本機電腦，與第 1 節 Why 的保留一致。已補一句。
+  - 額度是這套做法的實際上限（作者與網友都提到），已補進第 1 節。
+  - `T-20261115-20`、`T-20261115-21` 的產出不依賴貼文細節，結論不變。
+
+---
+
 ## 1. 核心內容摘要（5W1H 初篩與實查）
 
-- **Who / What**：原作者分享其「24×7 全時運行地端 Agent 架構」（3 台 Mac、8 個 Tart VM、2 個 Claude Code Ultra 帳號等硬體規模為作者宣稱，未經獨立查證，不作為維護者現況）。
+- **Who / What**：原作者分享其「24×7 全時運行地端 Agent 架構」（3 台 Mac、8 個 Tart VM、2 個 Claude Code Ultra 帳號等硬體規模為作者自述，已與貼文原文核對，不作為維護者現況）。作者在留言說已連續跑了幾個月，實際上限是訂閱額度（最近週一就用掉 50%）。
 - **Why（作者宣稱之純雲端限制）**：
-  - 原作者提及「純雲端無法存取本機／NAS」：此屬該案例未配置所需通道或授權之限制（作者宣稱），不能概括推導為所有雲端架構均無法透過受控 connector、VPN 或代理存取本機。
+  - 原作者提及「純雲端無法存取本機／NAS」：此屬該案例未配置所需通道或授權之限制（作者宣稱），不能概括推導為所有雲端架構均無法透過受控 connector、VPN 或代理存取本機。作者自己也在留言承認，他用的兩個雲端 bot 都有開放使用本機電腦。
 - **How（核心技術實查與邊界）**：
   1. **Claude Remote Control 實查**：官方確有此功能（`claude remote-control` 或 `/remote-control`），但需符合訂閱與登入條件，API key 不支援。工作仍於本機執行，僅建立對外 HTTPS，無須新增入站防火牆規則，亦非將 Tailscale 視為必要依賴。「所有 session 預設開啟」為可選設定而非通用既定事實。主機與本機程序仍需存活，自動重連無法保證停電或休眠期間持續運作。
-  2. **Herdr 終端復用實查**：不可無版本區分地宣稱「無縫替換 PowerShell」。舊版 terminal README 僅支援 Linux/macOS；現行 `herdr-core` README 雖具 Windows x86_64 二進位檔，但部分模板與 quoted shell command 仍依賴 `sh` 環境。此屬元件與版本差異，需固定元件、版本與 Windows 前提。
+  2. **Herdr 終端復用實查**：不可無版本區分地宣稱「無縫替換 PowerShell」。舊版 terminal README 僅支援 Linux/macOS；現行 `herdr-core` README 雖具 Windows x86_64 二進位檔，但部分模板與 quoted shell command 仍依賴 `sh` 環境。此屬元件與版本差異，需固定元件、版本與 Windows 前提。貼文附圖顯示作者實際在 Windows 上使用 Herdr App（含檔案總管右鍵「在 Herdr 中開啟」），App 在 Windows 可用有圖為證；`sh` 相依是否仍影響 App，圖上看不出來。
   3. **共享儲存與 Git 技能同步（安全邊界）**：
      - 多 session 共享 NAS 或目錄交換。
      - **「唯讀同步」概念糾正**：`git pull --ff-only` 仍會寫入並更新工作樹；`git fetch` 亦會寫入 `.git`。fast-forward 僅代表線性合併，不等於只讀、不等於安全審查、不等於技能熱更新；dirty tree 檢查亦無法防禦拉進惡意 hooks 或技能。憑證、本機設定與私有記憶絕不可與共享技能混雜同步。
 
 ### 1.1 CQR 論證檢驗（Claim - Evidence - Reasoning）
 - **主張（Claim）**：地端多機 Agent 透過 Remote Control 與排程同步可構建持續運作工作流，需評估 Windows 11 落地規格。
-- **證據（Evidence）**：[官方 Remote Control](https://code.claude.com/docs/en/remote-control)、[Git 官方 pull 文件](https://git-scm.com/docs/git-pull)、[Tailscale unattended 官方文件](https://tailscale.com/docs/how-to/run-unattended)、[core README](https://raw.githubusercontent.com/herdrdev/herdr-core/master/README.md)；Facebook 貼文 Cache miss（未查證）。
+- **證據（Evidence）**：[官方 Remote Control](https://code.claude.com/docs/en/remote-control)、[Git 官方 pull 文件](https://git-scm.com/docs/git-pull)、[Tailscale unattended 官方文件](https://tailscale.com/docs/how-to/run-unattended)、[core README](https://raw.githubusercontent.com/herdrdev/herdr-core/master/README.md)；Facebook 原貼文（2026-11-17 已讀到全文、4 張圖與 30 則留言）。
 - **推論（Reasoning）**：Remote Control 具備官方基礎，但不能由 AI 代改電源與系統安全；Git ff-only 並非唯讀亦無法保證熱更新安全；Windows 落地須以唯讀腳本與人工規格為交付邊界。
 
 ---
@@ -60,7 +96,7 @@ tags:
   - **跨代理派工**：`SanHsien/agent-relay` 已具備跨終端派工與驗收機制。
 - **交付邊界與安全鐵律**：
   1. **禁止代改系統設定**：自動登入非 24×7 必然條件；AI 嚴禁修改電源、NIC、休眠、防火牆、登錄檔、服務、Task Scheduler、Tailscale 或遠端控制設定。Tailscale 無人值守運行須由維護者手動設定，不自動停用 key expiry。
-  2. **安全閘門提醒**：嚴禁全域關閉沙盒或繞過權限檢查。
+  2. **安全閘門提醒**：嚴禁全域關閉沙盒或繞過權限檢查。貼文附圖裡作者的工作階段正是開著 `bypass permissions` 又接受 Remote Control 遠端操控；這套架構的便利有一部分來自關掉權限確認，不可照抄。
   3. **Windows 三問核對**：
      - *同生共死*：同機 session 內的 loop 無法偵測主機休眠或離線，規格須揭露盲區。
      - *既有機制*：已有 Windows Task Scheduler 與資產漂移檢查（已有相關流程文件；實際排程是否啟用尚未查證），relay 亦有輪詢機制，不重造同步 daemon。

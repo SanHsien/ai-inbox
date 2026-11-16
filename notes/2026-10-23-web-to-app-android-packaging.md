@@ -10,6 +10,11 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "逆向工程與軟體封裝"
 short_title: "WebToApp 網站轉 Android App"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "原筆記提到的社群貼文沒留連結，其圖片與留言沒看到（總數未知）；改看 GitHub README 16 張圖與 issue 留言 5 則"
+source_images: 16
+source_replies: 5
 tags:
   - webtoapp
   - android
@@ -30,6 +35,25 @@ tags:
 - **相關交叉參照**：
   - [`notes/2026-10-19-android-official-skills-google-coding-agent.md`](./2026-10-19-android-official-skills-google-coding-agent.md)（Android 官方 Agent Skills）
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code 官方插件目錄）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：來源是 GitHub README（簡中版）。原筆記提到的「貼文」沒有留下連結，無從回看。這次看了 README 全文、README 內 16 張 App 截圖，以及 issue #1496、#308 的留言共 5 則與 #1582 的標題（無留言）；Discussions 共 13 則，多數無回覆。
+
+- **作者圖片**：共 16 張手機截圖（圖示與徽章不計），依 README 的說明文字與畫面內容整理：
+  - 圖 1～4：主頁的應用清單、12 種應用類型的建立面板（網頁、多站、HTML、離線包、前端專案、WordPress、Node.js、PHP、Python、Go 等）、單一應用的操作選單（建置 APK、分享 APK、匯出原始碼、清快取、刪除）、工具箱選單（Agent、AI 設定、外掛、本地建置環境、連接埠管理、瀏覽器核心、Hosts 封鎖、Google Play、資料備份）。
+  - 圖 5～11：編輯器各卡片——圖示／名稱／網址與站點分析、啟動碼（本地啟動碼或線上驗證、每次啟動都驗證）、全螢幕與方向、懸浮視窗、啟動畫面／背景音樂／公告彈窗／自動翻譯、外掛與廣告攔截、自訂 DNS／裝置偽裝／開機自啟／APK 匯出設定。
+  - 圖 12～13：Agent 介面與一段實際對話，Agent 先問要包哪種 App（網址包裝、HTML、後端服務、媒體應用）再動手。
+  - 圖 14：本地建置環境頁，顯示核心工具鏈「未安裝」，Node.js、npm 等要另外下載。
+  - 圖 15～16：內建外掛清單（內容增強、深色模式、元素封鎖、頁內搜尋、媒體下載、隱私保護等）與「關於」頁。
+- **作者留言補充**：issue #1496（Google billing）中，repo 擁有者表示正考慮**移除 Google Play 相關功能**，原因是它妨礙 F-Droid 上架與合規，之後可能改放到別的 App 實作。#308 中擁有者表示準備同時上架 F-Droid 與 Google Play（尚未完成）。
+- **網友留言重點**：#308 有使用者要求上架 F-Droid；#1582 回報「CORS 繞過」功能會把跨來源的 POST 送出兩次（非冪等請求重送），目前未修；其餘 open issue 為功能請求。
+- **對分析的影響**：
+  - 圖 6、圖 11 顯示產出的 App 可加啟動碼、裝置偽裝、廣告攔截等功能；圖 14 顯示 Node 等執行環境不是開箱即有，要在手機上另外下載。已補進第 2 節。
+  - 擁有者考慮移除 Google Play 功能這一點，直接影響「AAB 簽名上架」的賣點與 `docs/web-to-app-freelance-workflow.md` 的上架步驟；已在第 2 節「風險面」與第 3 節「不採納」各補一句。`T-20261023-04` 已完成，狀態不動，是否要回頭修訂該文件列在重審回報裡交整合者決定。
+  - #1582 的重複送出問題補進風險面：表單送出、下單類網站若開啟 CORS 繞過要先測。
 
 ---
 
@@ -56,6 +80,9 @@ tags:
 - 打包輸出：APK、AAB；本地 apksig V1/V2/V3 簽名。
 - 執行環境：Node.js / PHP / Python / Go / WordPress（App 內嵌）。
 - AI Agent：自然語言生成 App；LLM Key 可輪換。
+- 截圖可見的附加功能（2026-11-16 補）：啟動碼（本地或線上驗證）、裝置偽裝、自訂 DNS、廣告攔截、開機自啟；Node.js、npm 等建置工具鏈要在手機上另外安裝，不是開箱即有。
+- 上架路徑的不確定性（2026-11-16 補）：repo 擁有者在 issue #1496 表示考慮移除 Google Play 相關功能以利 F-Droid 上架，AAB 上架流程可能改動，報價前要先確認當時版本還有沒有這個功能。
+- 已知未修問題（2026-11-16 補）：issue #1582 回報 CORS 繞過會把跨來源 POST 送出兩次，含表單送出或下單的網站要先測再交付。
 - 風險面：內嵌多語言 runtime 增加 APK 體積與攻擊面；自動管理 keystore 需確認備份與保管方式；AI Agent 需自備 LLM Key，不得寫入程式碼或對話。
 
 ---
@@ -68,7 +95,7 @@ tags:
 - **落差與採納判斷**：
   - **值得採納**：先在 Windows 11 實測可行性與產物品質，再決定是否進入接案流程。
   - **需調整**：手機端流程不一定能在 Windows 自動化；Unlicense 不保證品質與安全，需審視簽名與權限。
-  - **不採納**：不在未實測前承諾客戶「手機內跑 WordPress」等進階能力。
+  - **不採納**：不在未實測前承諾客戶「手機內跑 WordPress」等進階能力；也不把「可直接上架 Google Play」寫成固定承諾（見第 2 節上架路徑的不確定性）。
 
 ---
 

@@ -27,6 +27,8 @@ metadata:
 
 16 平台、多后端。**本 skill 存在时必须用它访问这些平台，不要自己发明方案。**
 
+> ⚠️ **使用前警示（ai-inbox 維護者 2026-11-16 補，非上游原文）**：上游 README 寫明，需要登入的平台第一次使用時，工具「會把你 Chrome 裡這個網站的登入複製一份」到它的專用瀏覽器（通常是主帳號）；PR #474 之前的 `configure --from-browser chrome` 更會一次抓所有支援平台的 cookie。這與「不讀瀏覽器 Cookie」的規則衝突。本範本下方寫的「不读取浏览器 Cookie」是給 Agent 的行為規定，不代表工具本身不會複製登入狀態。因此：只用免登入渠道；要登入的平台不要在存有主帳號的 Chrome 上啟用，也不要執行 `configure --from-browser`；另有使用者回報小紅書封號警告（issue #498）。依據見 [來源筆記](../../notes/2026-10-17-agent-reach-social-intelligence.md) 第 0 段。
+
 ## 常驻规则（全程适用）
 
 1. **动手前先体检**：多后端/登录态平台（小红书/Reddit/B站/Twitter/Facebook/Instagram/Boss直聘）先跑

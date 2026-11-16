@@ -2,7 +2,7 @@
 id: 2026-10-31-zeabur-open-source-paas-architecture-analysis
 title: "Zeabur 開源 PaaS 平台架構解構：zbpack 零配置打包、Wonder Mesh 邊緣網格、AI DevOps 整合與多租戶資安硬化反思"
 source_url: "https://www.threads.com/share/BAW6t_9fzD/"
-source_platform: "Threads (@cab_late) / GitHub (zeabur/zeabur)"
+source_platform: "Threads (@cab_late) / GitHub (zeabur-oss/zeabur)"
 author: "CabLate (AI 實戰分享, @cab_late) / Zeabur"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
@@ -10,6 +10,11 @@ status: archived
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "Zeabur開源PaaS架構與資安反思"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "頁面顯示共 29 則回覆，未登入只讀到 14／29 則（作者 2 則＋網友 12 則）；貼文無上傳圖片，看了 2 張連結預覽卡"
+source_images: 2
+source_replies: 14
 tags:
   - zeabur
   - open-source-paas
@@ -24,9 +29,9 @@ tags:
 
 # Zeabur 開源 PaaS 平台架構解構：zbpack 零配置打包、Wonder Mesh 邊緣網格、AI DevOps 整合與多租戶資安硬化反思
 
-- **來源連結**：[Threads 原文分享 (@cab_late)](https://www.threads.com/share/BAW6t_9fzD/) ｜ [貼文永久網址](https://www.threads.com/@cab_late/post/DfELWgMHyAw) ｜ [GitHub (zeabur/zeabur)](https://github.com/zeabur/zeabur) ｜ [GitHub (zeabur/zbpack)](https://github.com/zeabur/zbpack) ｜ [Zeabur 官方文檔](https://zeabur.com/docs)
+- **來源連結**：[Threads 原文分享 (@cab_late)](https://www.threads.com/share/BAW6t_9fzD/) ｜ [貼文永久網址](https://www.threads.com/@cab_late/post/DfELWgMHyAw) ｜ [GitHub (zeabur-oss/zeabur)](https://github.com/zeabur-oss/zeabur) ｜ [作者後續文章](https://cablate.com/articles/zeabur-open-source-read-with-ai/) ｜ [GitHub (zeabur/zbpack)](https://github.com/zeabur/zbpack) ｜ [Zeabur 官方文檔](https://zeabur.com/docs)
 - **核心作者**：CabLate（AI 實戰分享，@cab_late 評論推薦）／ Zeabur 官方團隊
-- **分析主題**：解構雲原生 PaaS 部署平台 **Zeabur** 開源其平台與周邊工具鏈（`zeabur/zeabur`、`zbpack`、`openab`、`agent-skills`）引發的架構反思。跳脫社群單純圍繞資安事件的情緒化攻防，深入剖析其「zbpack 零 Dockerfile 智慧構建」、「Wonder Mesh（WireGuard 邊緣計算網格）」、「AI-Native DevOps（Claude Code Plugin / MCP / zbplan 自動修復）」與「多租戶隔離／構建沙盒資安硬化」等現代雲端部署平台的工程設計精髓，提煉為個人開發者或團隊自建 PaaS 與產品落地的架構參考。
+- **分析主題**：解構雲原生 PaaS 部署平台 **Zeabur** 開源其自架版平台（`zeabur-oss/zeabur`，作者實際讀了 `zeabur`、`builder`、`zbpack`、`cli`、`catalog`、`identity` 六個 repo）引發的架構反思。跳脫社群單純圍繞資安事件的情緒化攻防，深入剖析其「zbpack 零 Dockerfile 智慧構建」、「Wonder Mesh（WireGuard 邊緣計算網格）」、「AI-Native DevOps（Claude Code Plugin / MCP / zbplan 自動修復）」與「多租戶隔離／構建沙盒資安硬化」等現代雲端部署平台的工程設計精髓，提煉為個人開發者或團隊自建 PaaS 與產品落地的架構參考。
 - **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-23-zeabur-october-2026-security-incident.md`](./2026-10-23-zeabur-october-2026-security-incident.md)（Zeabur 遭黑客攻擊事件反思：本地 OAuth 憑證、專案隔離與微服務架構）
@@ -35,11 +40,38 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀貼文、作者 2 則補充、可見的 12 則網友留言與回覆（頁面顯示共 29 則，其餘要登入才看得到），並讀了作者補充連結的文章與 `zeabur-oss/zeabur` README。
+
+- **作者圖片**：貼文本身沒有上傳圖片。留言區有 2 張連結預覽卡：圖 1 是 `zeabur-oss/zeabur` 的 repo 卡片（標語是「像 PaaS 一樣部署，拿到的是標準 Kubernetes 物件」，右側是套用前預覽 YAML 變更的畫面）；圖 2 是作者自己文章的封面卡（標題為「讓 AI 拆完 6 個 repo 挖出的設計與資安教訓」）。
+- **作者留言補充**：
+  - 第 1 則（10-29）給專案連結，是 [`zeabur-oss/zeabur`](https://github.com/zeabur-oss/zeabur)，**不是** `zeabur/zeabur`。
+  - 第 2 則（11-01）說後來真的派 AI 把開源的 repo 全讀完，寫成文章 [〈Zeabur 開源了，不用它也值得讀〉](https://cablate.com/articles/zeabur-open-source-read-with-ai/)。文章重點：
+    - 讀的是 6 個 repo：`zeabur`、`builder`、`zbpack`、`cli`、`catalog`、`identity`。
+    - 好設計：管理層不養資料庫，直接拿 Kubernetes 當唯一正本（`crates/zeabur-kube`）；Webhook 驗簽後仍回 Git 查證版本；每次建置開獨立 Job，registry 推送權限只發給那一次建置。
+    - 黏著體驗：`zbpack` 自動辨識框架；把「出事時」做成診斷器，逐段追 DNS、入口、憑證、Pod 並翻成白話（`crates/zeabur-gaps`）；改設定前先列出會不會重啟或掉資料（`crates/zeabur-plan`）。
+    - 資安要避開的寫法：建置時把使用者變數寫進 Dockerfile `ENV`（會留在映像層）；CLI 把 token 明文存在本機設定檔，`--debug` 可能把 token 印進日誌；建置服務用 privileged 模式，官方文件寫明同一叢集的使用者必須彼此信任。
+    - 根目錄 `.claude/skills/` 放了 8 個團隊寫給 AI 用的 Skill（規格撰寫、叢集測試、介面用字等）。
+    - 附一段可貼給 Claude Code 的三步指令：先畫模組地圖與一條核心請求路徑，再問三題（好設計／留人細節／資安邊界），每個結論都要附檔案路徑。
+    - 作者自述已在兩次外洩與 10-17 停運公告後把服務搬到 Railway。
+- **網友留言重點**：多為聲援開源或閒聊，沒有技術更正。較有內容的三則：`darrell_tw_` 轉述常見酸言「都被駭了，自己裝不會再被駭嗎」；`feather._yc` 認為就算不上正式環境，架在自己的叢集做原型也很好用；`impl_works` 說讀別人的系統是進步最快的方式。
+- **對分析的影響**：
+  - 來源連結與分析主題原本寫 `zeabur/zeabur`，依作者第 1 則留言改成 `zeabur-oss/zeabur`（`zeabur/zeabur` 是另一個既有 repo，簡介為一鍵部署平台，不是這次開源的自架版）。
+  - 分析主題原本列「`zeabur/zeabur`、`zbpack`、`openab`、`agent-skills`」，依作者文章改成實際讀的 6 個 repo。
+  - 第 1、2 節的架構圖與「四大規範」（Wonder Mesh、stratus、InsForge、zbplan、MCP Server 等）描述的是 Zeabur **雲端商業版**的產品面，不是這次開源的程式碼；作者文章與 `zeabur-oss/zeabur` README 都沒有提到這些元件。已在第 1 節開頭加註，並在 2.4 節補上作者從原始碼實際挖到的三個資安寫法。
+  - 第 2.4 節原本的資安要點是通用清單（gVisor、SSRF、eBPF 等），沒有對應到原始碼；作者文章指出開源版建置服務實際上是 privileged 模式，與該節「避免特權容器」的建議相反，已寫明。
+  - 任務維持關閉，理由不變。
+
+---
+
 ## 1. 核心內容摘要：問題背景與 PaaS 架構拓撲（Executive Summary）
 
 在現代軟體開發中，開發者常在兩極之間掙扎：一端是繁重的公有雲（AWS/GCP/Azure），配置 VPC、IAM、Kubernetes、安全組門檻極高；另一端是傳統 VPS 或自架伺服器，需要手動維護 SSH、Nginx 反向代理、SSL 憑證更新與備份。
 
 面對社群對 Zeabur 近期資安事件的爭論，技術作者 CabLate 提出了極具洞察力的觀點：**「與其情緒化嘲諷誰要用、誰想被駭，不如讓 AI 深入分析人家 PaaS 服務是怎麼做的——有什麼好設計、為什麼讓使用者高度黏著、做了什麼體驗優化、為什麼會產生資安問題、還有哪些潛在漏洞？這正是開發者未來開發產品或自架雲原生服務的最佳參考文件。」**
+
+> **2026-11-16 重審註記**：下方架構圖與第 2 節描述的是 Zeabur 雲端商業版的產品面（Wonder Mesh、stratus、InsForge、zbplan、MCP Server 等），由分析者自行彙整，**不是**這次開源的 `zeabur-oss/zeabur` 內容。開源版的實際設計（不養資料庫、以 Kubernetes 為唯一正本、診斷器、變更預覽）見第 0 節作者文章重點。
 
 Zeabur 的核心架構亮點在於**「降低認知負載（Low Cognitive Load）與 AI 原生操作」**，其整體架構拓撲如下：
 
@@ -95,7 +127,10 @@ Zeabur 的核心架構亮點在於**「降低認知負載（Low Cognitive Load�
   - 當遇到特殊編譯錯誤時，`zbplan` 模組介入分析 Build Log，自動調整建置參數或補齊遺漏的系統依賴（如 `build-essential`、`openssl`），形成自動建置與修復的閉環。
 
 ### 2.4 規範四：PaaS 多租戶資安硬化與防禦縱深反思
-從資安工程視角檢視，PaaS 平台必須在靈活性與安全性之間取得極度嚴謹的平衡，以下為核心資安防護要點：
+從資安工程視角檢視，PaaS 平台必須在靈活性與安全性之間取得極度嚴謹的平衡，以下為核心資安防護要點（通用清單，未對應原始碼）：
+
+> **作者從開源原始碼實際挖到的三個寫法**（依作者 11-01 補充的文章）：建置時把使用者變數寫進 Dockerfile `ENV`，密鑰會留在映像層；CLI 把登入 token 明文存本機設定檔，`--debug` 可能印進日誌；開源版建置服務用 privileged 模式、同 Namespace 共用快取、網路隔離只擋進向，官方文件因此要求同一叢集的使用者彼此信任。下方第 1 點「避免特權容器」是理想做法，開源版本身並未做到。
+
 1. **多租戶沙盒隔離（Container Sandbox Hardening）**：
    - 避免使用特權容器（Privileged Containers）或危險的 Docker-in-Docker（DinD）。
    - 採用無根構建（Rootless BuildKit）與 gVisor / Firecracker 微虛擬機技術，防範底層 Linux Kernel 逃逸漏洞。

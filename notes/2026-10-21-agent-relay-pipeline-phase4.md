@@ -10,6 +10,10 @@ status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "agent-relay Phase 4：工人擴充、跨機器回傳與驗收合併"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 0
+source_replies: 0
 tags:
   - agent-workflow
   - multi-agent
@@ -22,6 +26,17 @@ tags:
 - **發布平台 / 作者**：`GitHub` / `SanHsien`
 - **分析日期**：`2026-10-21`
 - **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：來源是維護者自己的 repo `SanHsien/agent-relay`，不是社群貼文。本篇是依 repo 內的實作與實測紀錄寫的規劃筆記。
+
+- **作者圖片**：無。README 只有一個 CI 狀態徽章，沒有架構圖或截圖。
+- **作者留言補充**：無（repo 未開 Discussions）。
+- **網友留言重點**：無。repo 的 issue 數為 0（`gh issue list --state all` 無結果）。
+- **對分析的影響**：沒有圖片或留言可供比對，正文與任務未改。
 
 ---
 

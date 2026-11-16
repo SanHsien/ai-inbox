@@ -10,6 +10,11 @@ status: archived
 cluster: 2
 cluster_role: "前端WebGPU修圖"
 short_title: "WebGPU修圖Prompt評估"
+source_reviewed_at: 2026-11-17
+source_review: partial
+source_review_note: "原社群貼文沒有留下連結，找不到，貼文的圖與留言沒看到；只看了兩個參考 repo 的 README、2 張示範圖與 5 則 issue（讀到 5／共 5 則）"
+source_images: 2
+source_replies: 5
 tags:
   - webgpu
   - onnx-runtime-web
@@ -30,6 +35,26 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-17 用瀏覽器重看。原社群貼文沒有留下連結（作者匿名），貼文本身的圖片與留言**沒看到**；以下只涵蓋兩個參考 repo。
+
+- **作者圖片**：
+  - 社群貼文：看不到（沒有連結）。
+  - `xiaowu89/skill-matting` README：只有 3 個徽章，沒有示範圖。
+  - `lxulxu/WatermarkRemover` README 圖 1（原始畫格）：舞台表演畫面，右上角有影音平台的半透明水印。圖 2（去除後）：同一畫格，右上角水印消失，背景紋理補得自然；這是作者挑的單一示範，不是品質基準。另有一張 star 歷史圖，與分析無關。
+- **作者留言補充**：無（兩個 repo 的 issue 裡作者都沒有實質回覆）。
+- **網友留言重點**（GitHub issue）：
+  - skill-matting #1：有人照 README 的影片去背指令執行就報「Path 參數為空字串」；錯誤輸出裡帶有廠商的聯絡帳號提示，可見這個 skill 是商業公司的導流工具。未關閉。
+  - WatermarkRemover #14：去除效果好，但大螢幕或亮色背景下仍看得出水印輪廓，希望加區域模糊。
+  - WatermarkRemover #12、#15、#11：相依套件版本衝突（`huggingface_hub` 拿掉 `cached_download`）、wheel 建置失敗、GPU 沒被用到；都是安裝環境問題。
+- **對分析的影響**：
+  - 補上 README 寫明的事實：skill-matting **首次使用要連網從魔搭（ModelScope，中國服務）下載模型與執行檔**，Lite 模型約 88.6 MB、Full 約 440 MB。原筆記只寫了遙測，沒寫模型下載來源；這讓「目前不安裝」的結論更站得住。已改第 1 節 How。
+  - WatermarkRemover 是包 LaMa 模型（`lama_cleaner`）的腳本，需 Python 3.10、手動框選水印區域，且同批影片尺寸與水印位置必須一致；已補進第 1 節 How。
+  - 封存結論與 `T-20261115-07` 不做的判斷不變。
+
+---
+
 ## 1. 核心內容摘要（5W1H 初篩）
 
 - **Who（參考來源與對象）**：社群分享以 Claude Opus 5.5 建置「純前端離線版美圖秀秀＋影片去水印／去背／放大」的完整規格 Prompt，並引用兩個開源桌面專案作為演算法參考。
@@ -38,8 +63,8 @@ tags:
   - **互動體驗**：游標中心滾輪縮放、空白鍵拖曳、前後對比線、進度顯示與取消回滾、PNG/JPG/WebP/透明 WebM 匯出。
 - **Why（訴求痛點）**：免安裝桌面軟體、保護隱私（檔案不離機）、不消耗雲端推論伺服器費用。
 - **How（參考專案實況查證）**：
-  - `xiaowu89/skill-matting`（MIT）：並非純 JS，實為封裝成 Agent Skill 的 `scripts/matting.ps1`，透過 `vision.cpp` + `ggml` + `BiRefNet` 在本機執行圖片／影片去背。**腳本內含遙測**：[`scripts/matting.ps1` 第 73～115 行](https://github.com/xiaowu89/skill-matting/blob/master/scripts/matting.ps1#L73)會建立或重用裝置識別碼（來源含主機名稱與網卡資訊的雜湊），向一個以 base64 保存的追蹤網址發 POST；第 1025～1026 行在圖片／影片命令開始時呼叫。這是靜態讀原始碼的結果，沒有實際執行抓包；沒有證據顯示它上傳圖片本體，但「本機推論」不等於全程不連網。目前不安裝這個 skill。
-  - `lxulxu/WatermarkRemover`（**GPL-3.0**）：單檔 Python 腳本 `watermark_remover.py`，針對影片固定區域逐格修補去水印。
+  - `xiaowu89/skill-matting`（MIT）：並非純 JS，實為封裝成 Agent Skill 的 `scripts/matting.ps1`，透過 `vision.cpp` + `ggml` + `BiRefNet` 在本機執行圖片／影片去背。**腳本內含遙測**：[`scripts/matting.ps1` 第 73～115 行](https://github.com/xiaowu89/skill-matting/blob/master/scripts/matting.ps1#L73)會建立或重用裝置識別碼（來源含主機名稱與網卡資訊的雜湊），向一個以 base64 保存的追蹤網址發 POST；第 1025～1026 行在圖片／影片命令開始時呼叫。這是靜態讀原始碼的結果，沒有實際執行抓包；沒有證據顯示它上傳圖片本體，但「本機推論」不等於全程不連網。README 另寫明首次使用要連網從魔搭（ModelScope，中國服務）下載模型與執行檔（Lite 約 88.6 MB、Full 約 440 MB）（2026-11-17 查 README）。目前不安裝這個 skill。
+  - `lxulxu/WatermarkRemover`（**GPL-3.0**）：單檔 Python 腳本 `watermark_remover.py`，包 LaMa 模型（`lama_cleaner`）對影片固定區域逐格修補去水印。README 寫明需 Python 3.10、執行時手動框選水印區域，同一批影片的尺寸與水印位置必須一致，不支援會移動的水印（2026-11-17 查 README）。
 - **When & Where（適用邊界）**：純前端 WebGPU/ONNX 適合單張靜態圖片即時編輯；若硬要單靠單頁瀏覽器一次承載多組大型超解析＋影片逐格推理＋音軌重新封裝，極易受限於瀏覽器記憶體與 WebGPU 限制。
 - **Key Metrics / Numbers（實務技術規模）**：包含 3 種超解析模型＋MI-GAN＋U²-Net，ONNX 權重總和通常達數百 MB；影片 4K 逐格推理與編碼屬高度耗時／高顯存負載。
 

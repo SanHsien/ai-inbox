@@ -10,6 +10,11 @@ status: archived
 cluster: "1"
 cluster_role: "模型路由與配額分流"
 short_title: "colibri三層MoE推理與System One決策"
+source_review: partial
+source_reviewed_at: 2026-11-17
+source_review_note: "Threads 留言讀到 18 則／共 43 則，其餘要登入；作者留言裡的 GitHub Releases 預覽卡只讀標題。"
+source_images: 1
+source_replies: 26
 tags:
   - colibri
   - moe-inference
@@ -26,12 +31,37 @@ tags:
 
 - **來源連結**：[Threads 分享短網址](https://www.threads.com/share/_791NkszU) ｜ [貼文永久網址 (@shipped_ai)](https://www.threads.com/@shipped_ai/post/DfQi-FRmfpw) ｜ [官方 GitHub (`JustVugg/colibri`)](https://github.com/JustVugg/colibri) ｜ [官方繁體中文 README (`README.zh-TW.md`)](https://github.com/JustVugg/colibri/blob/main/README.zh-TW.md)
 - **核心作者**：`@shipped_ai`（Threads 整理介紹）／ Vincenzo Fornaro（`JustVugg`，`colibri` 作者）
-- **專案數據（2026-11-08 實查 GitHub API）**：`48,798 Stars`、`5,691 Forks`、`Apache-2.0 License`，最新版本 `v2.1.0`
+- **專案數據（2026-11-08 實查 GitHub API）**：`48,798 Stars`、`5,691 Forks`、`Apache-2.0 License`，最新版本 `v2.1.0`（2026-11-16 複查：51,506 Stars、6,223 Forks，最新版仍為 `v2.1.0`）
 - **歸屬集群**：集群 1：多 Agent 編排、模型路由與 Context 治理（角色：`模型路由與配額分流`）
 - **當前狀態**：`⚪ 已封存 (Archived)`（已完成架構深挖、CQR 速度吞吐量實證檢驗與本機 `msi-P50` 32GB RAM + RTX 3060 12GB 適配精算；因本機主力開發走雲端 Opus/Codex/Gemini 且本地超大 MoE 模型需 23GB–429GB 磁碟空間，不自動下載模型或衍生重複建置任務）
 - **相關交叉參照**：
   - [`notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md`](./2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)（四級模型分工中的 L4 JEV 快速決策層）
   - [`notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md`](./2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)（JEV「只回答是／否、選哪個」的二元與枚舉決策 API）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 以未登入的內建瀏覽器重看 Threads 貼文：貼文文字、作者圖片 1 張（開原圖看過）、留言 18 則（含作者接續的 3 則串文；貼文標示 43 則回覆，其餘要登入才看得到；留言是捲到才載入，逐段捲動收集）。作者留言裡的 GitHub Releases 連結預覽卡只讀了標題。另以 GitHub API 讀留言數最多的 8 則 issue／PR 摘要，其中 #1405 讀了內文與最後 8 則回覆。
+
+- **作者圖片**：圖 1 是轉介帳號自製的宣傳圖卡（筆電與蜂鳥的生成圖），大字寫 744B 開源大模型常駐記憶體只要 9.9 GB，小字補「8 GB 的電腦就能起步，但是速度要看你的硬碟」，標籤寫 GitHub 4.6 萬星。沒有任何實測畫面或數據圖。
+- **作者留言補充**（3 則接續串文）：
+  - 解釋 MoE 稀疏啟用與「常用的放 RAM、其餘留硬碟按需讀取」的原理，列出支援的模型家族，並提到別人發布的 GGUF 檔也能直接讀。
+  - **自己先把限制講明**：8 GB 只夠跑小模型；跑 744B 的 GLM-5.2 官方建議至少 16 GB 記憶體、要 429 GB 硬碟；25 GB 記憶體筆電冷啟動只有每秒 0.05～0.1 個 token，128 GB 的機器約 1.83 個；較實際是從 Qwen3.6-35B 起步，8 核桌機 CPU 約每秒 6 個 token。安裝方式是 Windows 點兩下 `START-HERE.bat`。
+  - 最後一則貼 repo 與 v2.1.0 版本說明連結。
+- **網友留言重點**：
+  - 對速度的失望是主調：`fatwenccc` 看到 Qwen3.6 35B 只有 6 tok/s 就打消念頭；`learnrpg` 抱怨應該先把速度寫在最前面；`scalvaria` 認為低於 60 tok/s 都算雞肋；`scsnakechen` 嘲諷這樣說的話人腦加紙筆也能跑模型。
+  - `jude_qiu`：肯定作者把速度直接寫出來，「能跑」和「能用」是兩回事；認為這證明硬碟可以當權重層，日後頻寬與快取命中率提高才會變可用。
+  - `zwy_4493`：提到另一個同類引擎 Strata，自稱在 12GB 顯示記憶體的筆電加 64GB RAM 上跑 763B 模型有約 5 token/s（非全精度，且有大量 SSD 寫入）；`dolannatw` 認為意義不大，少量 VRAM 加主記憶體的做法比較實用。兩則都是留言者自述，未查證。
+  - `meta.ai`（Meta 的 AI 帳號，被點名回答，非一手資料）：用一堆樹莓派或 PS5 不會變快，瓶頸是硬碟到記憶體的頻寬；要提速是加 RAM、換高速 NVMe、開 Vulkan。
+  - **GitHub issue #1405（Windows CUDA DLL）**：有使用者照文件在 Windows 建 CUDA DLL 失敗（找不到 `cuda-dll` 的 make 目標）。作者 2026-09-14 回覆確認當時的 Windows 發行壓縮檔只有引擎執行檔、沒有 CUDA DLL，CI 已能建出可攜的 DLL，剩下是把它放進發行檔。這則 issue 到 2026-11-16 仍是開啟狀態；v2.1.0 的發行檔有沒有附 DLL，本筆記未查。同一串裡另有一個實測：模型放在 SATA SSD 上時，GLM-5.2 約 12 秒才出一個字，作者回覆這就是該硬碟的上限。
+  - 其他熱門 issue 集中在安裝包（Ubuntu 上裝不起來、希望提供 deb）、預取的 I/O 佇列深度、AMD 顯卡上的效能退化，顯示安裝與跨硬體效能仍在收斂。
+- **對分析的影響**：
+  1. 原筆記第 3 節「能跑通不等於能日常互動」的判斷，與作者自己的補充串文及多數留言一致；留言沒有人回報比 README 更好的實測數字。結論不變。
+  2. **第 4 節的本機適配表要加一個前提**：原筆記寫 RTX 3060「完全符合 Windows CUDA DLL 的要求」，那只是運算能力版本符合。依 issue #1405，Windows 發行檔曾經不含 CUDA DLL、自行建置也有人失敗，所以 Tier S 與 Tier A 的 CUDA 數字在本機能否直接取得，要先確認發行檔有附 DLL。已在第 4 節 GPU 那一行與表格下方加註。
+  3. **磁碟種類也是前提**：SATA SSD 的實測（12 秒一個字）說明 Tier B、Tier C 這類要從硬碟串流的檔位，必須是 NVMe 才有討論空間。已在表格下方加註。
+  4. 專案數據更新註記：2026-11-16 以 API 查為 51,506 Stars、6,223 Forks，最新版仍是 v2.1.0。
+  5. 維持歸檔、不開任務。
 
 ---
 
@@ -103,7 +133,7 @@ tags:
 
 實測本機（Windows 11 原生）硬體規格如下：
 - **CPU / RAM**：`31.9 GB Total RAM`（日常開發常駐後可用約 `6.6–12 GB`）
-- **GPU**：`NVIDIA GeForce RTX 3060 (12,288 MiB VRAM, Compute Capability 8.6)`（完全符合 `colibri` Windows CUDA DLL `compute_cap >= 8.0` 要求）
+- **GPU**：`NVIDIA GeForce RTX 3060 (12,288 MiB VRAM, Compute Capability 8.6)`（運算能力版本符合 `colibri` Windows CUDA DLL `compute_cap >= 8.0` 的要求；但 Windows 發行檔是否附 CUDA DLL 要先確認，見第 0 節 issue #1405）
 - **磁碟可用空間**：`C:\` 剩餘 `233.5 GB`
 
 對照 `JustVugg/colibri` 的硬體規劃器（`c/resource_plan.py`），本機各檔位適配結論如下表：
@@ -114,6 +144,8 @@ tags:
 | **Tier A：本地 Coding / 工具呼叫甜區** | `qwen3-coder-30b` / `qwen36-35b` / `Flint-40B` | `19–23 GB` | `8–10 GB` / `18–20 GB` | **預估可執行（30–60+ tok/s，預估，未實測）**：RTX 3060 12GB VRAM 比官方基準機 C（RTX 3070 8GB，實測 30 tok/s）多出 4GB VRAM，開啟 `CUDA` + `Q36_DN_GPU=1` 可將稠密層、DeltaNet 與熱點專家放入 12GB VRAM，其餘專家放 32GB RAM。 |
 | **Tier B：中型硬碟串流 MoE** | `deepseek-v4-flash-reap` (150B) / `deepseek-v4-flash` (284B) | `85 GB` / `167 GB` | `16 / 32 GB` | **勉強可跑但慢（~1 tok/s）**：167 GB 會吃掉 `C:\` 71% 剩餘空間，僅適合外接高速 NVMe 實驗。 |
 | **Tier C：超巨型 MoE** | `glm-5.2` (744B) / `kimi-k3` (2.8T) | `429 GB` / `1.56 TB` | `16–64 GB` | **不適用**：`C:\` 可用空間（233.5 GB）放不下 429 GB 權重檔。 |
+
+> 兩個前提（2026-11-16 依 GitHub issue #1405 補）：(1) 表中所有 CUDA 數字都假設 Windows 上拿得到 `coli_cuda.dll`；該 issue 顯示發行檔曾經不含這個 DLL、自行建置也有人失敗，啟用前先確認。(2) Tier B、Tier C 靠硬碟串流，同一則 issue 有人把模型放在 SATA SSD 上實測約 12 秒一個字，非 NVMe 不必考慮。
 
 ### 評估結論（歸檔備查，不自動下載大檔或衍生新任務）
 

@@ -10,6 +10,11 @@ status: archived
 cluster: "1"
 cluster_role: "Agent排程與額度管理"
 short_title: "ClaudeCode五小時額度自喚醒"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "未登入、「最相關」排序下讀到 36 則／共 41 則留言，其餘 5 則被排序過濾；作者圖 1 張已看"
+source_images: 1
+source_replies: 36
 tags:
   - claude-code
   - rate-limit
@@ -31,6 +36,31 @@ tags:
 - **相關交叉參照**：
   - [`notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md`](./2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md)（Agent Autoloop 事件溯源與零 Cost 凍結）
   - [`notes/2026-11-08-dustin-gmat-danyuchn-claude-work-mode-session-modes.md`](./2026-11-08-dustin-gmat-danyuchn-claude-work-mode-session-modes.md)（會話模式與節奏控制）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 以未登入瀏覽器重看原貼文（發文時間 2026-11-06）。貼文顯示 41 則留言；「最相關」排序下讀到 36 則（9 則主留言＋27 則回覆，全部展開），其餘 5 則被排序過濾、未登入看不到。
+
+- **作者圖片**：1 張。圖 1 是 Claude 用量設定頁截圖（方案標示 Team）：目前工作階段已用 66%、上午 5:30 重設；每週限制「所有模型」7%、「Fable」0%，週二下午 6:00 重設。圖只證明作者在 Team 席位上碰到 5 小時額度，沒有呈現任何設定步驟或指令。
+- **作者留言補充**：
+  - 被問「怎麼設定」時，作者兩次回同一句：直接跟 Claude 講，叫它設背景執行、額度恢復時自己叫醒自己。沒有腳本、沒有設定檔，做法就是一句自然語言指示。
+  - 作者自述已很久不直接用 Claude Code，是用自己搭的系統去呼叫 Claude Code，跑的是背景 session。
+  - 作者是 Ultra 方案，另有創業計畫給的 5 個高級席位（額度較少）。
+- **網友留言重點**：
+  - **楊朝舜（附 3 張終端截圖）**：近期 Claude Code 撞到用量上限後會自己續跑，畫面出現 `Usage limit reached · continuing automatically at 4am · esc to cancel`，重置後出現 `Usage limit reset · Continuing automatically`。他貼出自己問 Claude 得到的整理：這是 Claude Code v2.1.234 新增的「Continue automatically at usage limit」，預設開啟，可在 `/config` 關閉，`-p` 與背景 session 不適用。唐鎮宇也回覆這是近期新增功能。
+  - **Logan Wu**：直接用 `/goal` 好像就會自己接著做。
+  - **黃弘典**：透過 t3code 用 Claude，撞到 rate limit 後會自己恢復。
+  - **Zeng Kao Chen**：做法是叫 agent 自己檢查額度、設定喚醒時間，三家都能用（作者回：這就是貼文寫的方法）。
+  - **Arvin Hung**：Codex 不行，只能叫它邊做邊監控額度，快到時停下、自己設排程任務在重置後繼續。
+  - **redial168**：稱這是「額度預熱／Auto-resume」；作者澄清不是預熱，是一路做到撞限額、時間到再繼續。
+  - Jeremy Huang 一串（10 則回覆）是聊方案與帳號數量，與技術無關。
+- **對分析的影響**：
+  - **查證結果：Claude Code 已內建這個能力。** 官方文件 [Interactive mode › Wait for a usage limit to reset](https://code.claude.com/docs/en/interactive-mode.md)（2026-11-16 查）寫明：v2.1.234 起，以 claude.ai 訂閱登入的互動式 session 撞到用量上限時，會留在原 session 等待，重置後自動接續，預設開啟；電腦睡眠超過約 30 分鐘則要按 Enter 才繼續。留言者截圖裡的提示文字與官方文件一致。
+  - 因此原貼文「叫 Claude 自己設背景喚醒」在**互動式訂閱 session** 已不必要；仍有用的情境是 `-p`／背景 session／外部系統呼叫（作者自己的用法）與 Codex 等沒有內建續跑的工具。本文第 2 節新增「範式 0」，第 4 節結論同步改寫。
+  - 留言者截圖裡的其他細節（連續自動接續 3 次後停止、`autoContinueAtUsageLimit` 設定鍵、`CLAUDE_CODE_RETRY_WATCHDOG`）是該留言者的 Claude 轉述，本次只查證了官方文件「功能存在、版本、預設開啟、睡眠行為」四點，其餘標為未查證。
+  - 原稿標題與第 1 節把這招寫成「突破額度牆」；實際上貼文與留言都只是「等額度重置後接續」，沒有繞過額度。標題不改（保留檢索用詞），在此註明。
 
 ---
 
@@ -60,7 +90,13 @@ AI 自動化專家陳盟升（Darks）在 Facebook 分享其使用 Claude Code �
 
 ## 2. 長駐 Agent「自我喚醒 / 額度恢復接續」的四種工程實作範式
 
-在實務中，使 Agent 具備「自己叫醒自己」能力主要有四種技術路徑：
+在實務中，使 Agent 具備「自己叫醒自己」能力主要有四種技術路徑；另有一種不必自己做的「範式 0」（2026-11-16 依留言與官方文件補上）：
+
+### 2.0 範式 0：Claude Code 內建的自動接續（不用設定）
+- **來源**：留言者楊朝舜的終端截圖，經官方文件 [Wait for a usage limit to reset](https://code.claude.com/docs/en/interactive-mode.md) 查證。
+- **機制**：Claude Code v2.1.234 起，以 claude.ai 訂閱登入的互動式 session 撞到用量上限時留在原 session 等待，重置後自動提示 Claude 從中斷處接續（不會重送使用者上一則訊息），預設開啟。
+- **限制**：session 要開著；電腦睡眠超過約 30 分鐘且額度在睡眠中重置時，要按 Enter 才繼續。`-p`／背景 session 是否適用，官方文件該節只講互動式 session，留言者轉述為「不適用」（未另行查證）。
+- **含意**：下列範式 A～D 只在「非互動式執行」或「非 Claude Code 的工具」才需要。
 
 ### 2.1 範式 A：原生排程器與響應式喚醒（Native Reactive Timer）
 - **代表系統**：Antigravity `schedule` 工具 / LangGraph Pause-Resume。
@@ -118,6 +154,7 @@ AI 自動化專家陳盟升（Darks）在 Facebook 分享其使用 Claude Code �
 ## 4. 評估結論與處置
 
 1. **實用性判定**：
-   - 陳盟升分享的「背景自我喚醒」是高階 Agent 使用者邁向「無人值守自主開發」的標誌性技巧，本質是將 Agent 從「同步阻塞等待」解耦為「非阻塞定時事件驅動」。
+   - 陳盟升分享的「背景自我喚醒」本質是將 Agent 從「同步阻塞等待」解耦為「非阻塞定時事件驅動」。作者在留言說明做法只是一句自然語言指示，沒有腳本。
+   - 2026-11-16 補：Claude Code v2.1.234 起互動式訂閱 session 已內建重置後自動接續（見 2.0），這招對一般使用者已不必要；只剩 `-p`／背景 session／外部系統呼叫與 Codex 等工具仍需要自己安排喚醒。
 2. **處置決策**：
    - 本庫系統已內建 `schedule` 工具與嚴格的派工對帳機制，本篇筆記建檔為技術方法論與夜間防弊範本，標記為 **`status: archived` 歸檔備查**，不衍生獨立代碼任務。

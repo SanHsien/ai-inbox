@@ -11,6 +11,11 @@ status: archived
 cluster: 3
 cluster_role: "專案配置推薦外掛"
 short_title: "claude-code-setup外掛"
+source_reviewed_at: 2026-11-17
+source_review: partial
+source_review_note: "作者附圖 1 張已放大看過；未登入的 Facebook 頁面不顯示留言數也不顯示任何留言，無法確認有沒有留言（讀到 0 則，總數不明）"
+source_images: 1
+source_replies: 0
 tags:
   - claude-code
   - claude-desktop
@@ -30,6 +35,18 @@ tags:
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Anthropic 官方 Claude Code 插件生態目錄）
   - [`notes/2026-10-23-claude-plugin-security-guidance.md`](./2026-10-23-claude-plugin-security-guidance.md)（Anthropic 官方 `security-guidance` 安全外掛）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-17 用未登入的瀏覽器重看 Facebook 原貼文。
+
+- **作者圖片**：
+  - 圖 1（唯一一張）：作者請 AI 整理的中文說明卡。上半是「推薦的五大類別」表：MCP Servers（例：Playwright、Context7）、Skills、Hooks（存檔自動排版、push 前型別檢查、阻擋修改敏感檔案）、Subagents（資安／效能／公司規範審查）、Slash Commands（`/test`、`/pr-review`、`/explain`）。下半是在 VS Code 終端機的兩行安裝指令，以及裝好後輸入 `recommend automations for this project`。圖上寫明「只分析、不改任何檔案」。
+- **作者留言補充**：看不到（見下）。
+- **網友留言重點**：未登入時頁面只顯示 188 個心情、97 次分享，沒有留言數也沒有留言內容；無法分辨是沒有留言還是要登入才看得到。
+- **對分析的影響**：圖片內容與本篇第 1 節讀原始碼的結果一致（五類建議、唯讀、兩行安裝指令），沒有要更正的地方。貼文作者只是轉介並說「跑完覺得不錯」，沒有給出他專案的實際建議清單，所以沒有實測數據可引用。封存結論不變。
 
 ---
 

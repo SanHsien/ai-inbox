@@ -45,6 +45,27 @@ def rel(path: Path) -> str:
         return path.name
 
 
+SOURCE_REVIEW_VALUES = ("full", "partial", "unavailable")
+
+
+def check_source_review(name: str, meta: dict) -> list[str]:
+    """原始資料（文字、作者圖片、留言）是否全部看過：見 AGENTS.md 第 3 節。"""
+    review = str(meta.get("source_review", "")).strip()
+    if review not in SOURCE_REVIEW_VALUES:
+        return [f"{name}: frontmatter 'source_review' 需為 {'/'.join(SOURCE_REVIEW_VALUES)}（貼文文字、作者圖片、留言都要看過）"]
+    errors = []
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(meta.get("source_reviewed_at", "")).strip()):
+        errors.append(f"{name}: 'source_reviewed_at' 需為 YYYY-MM-DD（原始資料重審日期）")
+    if review in ("partial", "unavailable") and not str(meta.get("source_review_note", "")).strip():
+        errors.append(f"{name}: source_review 為 {review} 時要填 'source_review_note' 說明哪些沒看到、為什麼")
+    if review == "unavailable":
+        return errors
+    for key in ("source_images", "source_replies"):
+        if not re.fullmatch(r"\d+", str(meta.get(key, "")).strip()):
+            errors.append(f"{name}: source_review 為 {review} 時 '{key}' 需為非負整數（實際看過的數量，可為 0）")
+    return errors
+
+
 def check_notes(notes: list[bi.Note]) -> list[str]:
     errors = []
     for n in notes:
@@ -73,6 +94,8 @@ def check_notes(notes: list[bi.Note]) -> list[str]:
         role = n.meta.get("cluster_role", "")
         if role and len(role) > bi.MAX_CLUSTER_ROLE_LEN:
             errors.append(f"{name}: frontmatter 'cluster_role' 長度 {len(role)} 超過上限 {bi.MAX_CLUSTER_ROLE_LEN} 字元")
+
+        errors.extend(check_source_review(name, n.meta))
 
         status = n.meta.get("status", "")
         if status and status not in bi.STATUSES:

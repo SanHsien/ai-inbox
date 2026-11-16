@@ -81,7 +81,7 @@
 - [ ] **`.dev.vars` 機密隔離**：本地機密放入 `.dev.vars` 並忽略 `.dev.vars*`；不要將機密放入 `wrangler.toml` / `wrangler.json` / `wrangler.jsonc` 的 `vars` 或 `env.*.vars`。[Cloudflare Secrets](https://developers.cloudflare.com/workers/configuration/secrets/)、[設定格式](https://developers.cloudflare.com/workers/wrangler/configuration/)。
 - [ ] **Production 機密注入**：依本檢核表政策，用 `npx wrangler secret put <KEY>` 管理正式環境機密，不隨原始碼提交；此命令由官方 [Secrets 文件](https://developers.cloudflare.com/workers/configuration/secrets/) 說明。
 - [ ] **D1 參數化查詢與遷移版控**：本檢核表要求用 `prepare("... ?1").bind(...)` 綁定使用者輸入，並將結構變更寫入遷移檔；API 與 `wrangler d1 migrations apply` 用法見 [Prepared statements](https://developers.cloudflare.com/d1/worker-api/prepared-statements/)、[Migrations](https://developers.cloudflare.com/d1/reference/migrations/)。
-- [ ] **KV 最終一致性邊界**：其他地區可能需 60 秒或更久才看見更新，並非 60 秒上限；提高 `cacheTtl` 也會影響快取期限，寫入所在地立即可見亦無保證。本檢核表禁止用 KV 單獨處理庫存扣減、餘額計算或防重放鎖；需要原子操作或交易時應另行設計，官方建議考慮 Durable Objects。[How KV works](https://developers.cloudflare.com/kv/concepts/how-kv-works/)。
+- [ ] **KV 最終一致性邊界**：其他地區可能需 60 秒或更久才看見更新，並非 60 秒上限；提高 `cacheTtl` 也會影響快取期限，寫入所在地立即可見亦無保證。本檢核表禁止用 KV 單獨處理庫存扣減、餘額計算或防重放鎖；需要原子操作或交易時應另行設計，官方建議考慮 Durable Objects。[How KV works](https://developers.cloudflare.com/kv/concepts/how-kv-works/)。方案加註（2026-11-17 查官方定價頁，頁面標示 2026-11-13 更新）：Workers Free 方案可以用 Durable Objects，但只限 SQLite 儲存後端；免費額度為每天 100,000 次請求、13,000 GB-s 運算時間，超過後該類操作會直接報錯，額度於 00:00 UTC 重置。key-value 儲存後端只開放給已有該類 namespace 的付費帳號。額度會調整，採用前請重看 [Durable Objects Pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/)。
 - [ ] **R2 公開桶權限**：R2 bucket 預設不公開；本檢核表要求只有公開素材才開啟公開存取，私人檔案另作存取驗證。[Public buckets](https://developers.cloudflare.com/r2/buckets/public-buckets/)。
 
 ### 本機工具的檢查範圍與結束碼

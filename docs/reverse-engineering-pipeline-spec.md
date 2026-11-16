@@ -14,7 +14,7 @@
 | :--- | :--- | :--- | :--- |
 | **CLI-Anything** | **行為探針與驅動層**<br>動態參數探測、命令樹建立、CLI Harness 生成 | **核心採用** | 提供確定性 CLI 輸入與 stdout `--json` 捕獲，取代脆弱的視覺點擊。<br>輸出：`execution_trace.json`、CLI Command Schema。 |
 | **REA (morluto/rea)** | **結構理解與逆向核心**<br>Chrome CDP 網路觀測、ASAR 解包、JS AST 審查、Ghidra/JADX 反編譯 | **核心採用** | 透過 MCP 提供開箱即用的跨平台靜態與動態逆向工具鏈。<br>輸出：`decompiled_source/`、API 協議分析報告、函數呼叫圖。 |
-| **desktop-sense** | **本機螢幕截圖與 OCR 視覺感知** | **【選用、未採用】** | **未採用理由**：<br>1. **隱私與安全防線**：全域截圖容易在公開對話或日誌中洩漏桌面機密與個人隱私；<br>2. **效率低下**：多模態截圖 Token 消耗巨大且有坐標抖動；<br>3. **替代方案成熟**：REA 之 CDP 模式與 CLI-Anything 結構化 stdout 已能 100% 覆蓋行為觀測需求，無需依賴視覺點擊。 |
+| **desktop-sense** | **本機螢幕截圖與 OCR 視覺感知** | **【選用、未採用】** | **未採用理由**：<br>1. **隱私與安全防線**：全域截圖容易在公開對話或日誌中洩漏桌面機密與個人隱私；而且它不是純本機工具——依上游 README，程式本身不連網，但預設的背景分析會把最新截圖與去識別化的 OCR 文字透過使用者自己的 `claude` CLI 送到雲端模型，自動研究會把錯誤訊息送去網路搜尋，要改用全本機模式或關掉 `analyzer.enabled`、`research.enabled` 畫面才不離開本機（2026-11-16 補，見[來源筆記](../notes/2026-10-18-desktop-sense-local-screen-context.md)第 0 段）；<br>2. **效率低下**：多模態截圖 Token 消耗巨大且有坐標抖動；<br>3. **替代方案成熟**：REA 之 CDP 模式與 CLI-Anything 結構化 stdout 已能 100% 覆蓋行為觀測需求，無需依賴視覺點擊。 |
 
 ---
 

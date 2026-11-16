@@ -10,6 +10,10 @@ status: archived
 cluster: "1"
 cluster_role: "記憶繼承與共用大腦"
 short_title: "Claude-Mem 跨 Session 記憶"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 1
+source_replies: 6
 tags:
   - context-management
   - long-term-memory
@@ -23,10 +27,29 @@ tags:
 
 - **來源連結**：[thedotmack/claude-mem (GitHub)](https://github.com/thedotmack/claude-mem)
 - **專案作者**：`thedotmack`
-- **開源協議**：`Apache-2.0`（9k+ GitHub Stars）
+- **開源協議**：`Apache-2.0`（約 11.7 萬 GitHub Stars，2026-11-16 GitHub API）
 - **分析日期**：`2026-10-17`
 - **當前狀態**：`⚪ 封存不做 (Archived)`
 - **相關交叉參照**：[`notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md`](./2026-10-17-claude-code-idle-compaction-cc-session-reader.md)
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：來源是 GitHub repo，沒有社群貼文。看了現行 README、README 的 1 張示範動畫，以及留言最多的 6 則 PR。
+
+- **作者圖片**：1 張示範動畫（`cm-preview.gif`）。左半是 Claude Code 終端機在跑多個子任務，右半是本機網頁檢視器（localhost:37777）即時跳出一張張觀察卡片，每張有類型標籤、標題與一句摘要。README 其餘的圖是標誌、贊助商與 star 走勢圖，不算。
+- **作者留言補充**（README 現況，原筆記沒寫到的）：
+  - 安裝是 `npx claude-mem install`；安裝程式預設會要求在瀏覽器登入 claude-mem 帳號，選用官方 observer 會開始 30 天免費試用。可用 `--provider` 或 `CLAUDE_MEM_ONLINE_OPTIN=false` 跳過登入。
+  - **匿名使用統計預設開啟**，要自己下指令關掉；雲端同步是選用。
+  - 工具截圖預設會留一份轉檔副本在本機 `~/.claude-mem/media-v1/`。
+  - 儲存是 SQLite（`~/.claude-mem/claude-mem.db`）加 Chroma 向量搜尋；搜尋走三步（索引 → 時間線 → 細節）。
+  - 支援的不只 Claude Code，還有 Codex、OpenCode、Antigravity CLI 等。
+- **網友留言重點**：讀到的 6 則都是功能 PR（多機共用同一個 worker、在 API 連線層攔截流量的 wire gateway、My Work 檢視器、錯誤處理清理、Sleep Agent）。看得出專案往「多機、雲端、團隊共用」擴張，沒有讀到對原筆記主張的反駁。
+- **對分析的影響**：
+  - 星數「9k+」是錯的，GitHub API 回報約 11.7 萬，已改。
+  - 1.3 節的檢索工具名稱 `search_memory` 與 README 不符，現行是 `search`／`timeline` 再取細節的三步流程，已改。
+  - 第 2 節補上「預設要登入帳號、匿名統計預設開啟、截圖預設留存」三點。這些讓原本「不做」的決定更站得住，任務狀態不變。
 
 ---
 
@@ -84,7 +107,7 @@ tags:
    - 標籤化管理記憶：`decision`、`bugfix`、`pattern`、`todo`，避免無結構的文字流水帳。
 3. **分層記憶檢索（Hierarchical Retrieval）**：
    - **Tier 1 (Timeline Overview)**：Session 開場或 Compact 後，僅注入最近數筆時間線索引（~500 tokens）。
-   - **Tier 2 (On-demand MCP Query)**：當 Agent 遭遇特定錯誤或需要歷史決策時，主動調用 `search_memory` 進行向量或關鍵字檢索，按需提取深度細節。
+   - **Tier 2 (On-demand MCP Query)**：當 Agent 遭遇特定錯誤或需要歷史決策時，主動調用 MCP 搜尋工具（README 現行為三步：`search` 取索引 → `timeline` 看前後脈絡 → 再取完整細節），按需提取深度細節。
 
 ---
 
@@ -93,6 +116,7 @@ tags:
 - **對應現有系統 / 專案**：
   - **與 `agent-handoff` 及 `pickup/dropoff` 互補**：現有的 `agent-handoff` 依賴手動或特定指令產出 `HANDOFF.md`；`claude-mem` 則是自動、持續且非同步地在背景記錄，兩者可形成「自動底層日誌 + 主動交接協議」的立體防護。
   - **適配 Windows 11 原生環境**：需驗證 Hook 在 Windows PowerShell 環境下的執行效能，確保不會因背景進程喚醒造成指令阻塞。
+  - **預設行為要留意（2026-11-16 依 README 補）**：安裝程式預設要求登入 claude-mem 帳號並啟動 30 天試用；匿名使用統計預設開啟；工具截圖預設在本機留副本。要用的話得逐項關掉。
   - **符合本庫「零機密洩漏」規範**：外置記憶儲存時必須嚴格執行敏感資訊遮蔽（Redaction），禁止將 API Keys、Tokens 或個人認證資訊寫入持久化資料庫。
 
 - **落差與採納判斷**：

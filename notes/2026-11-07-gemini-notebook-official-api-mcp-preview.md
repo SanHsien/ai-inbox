@@ -10,6 +10,11 @@ status: done
 cluster: "3"
 cluster_role: "跨網情報與知識檢索"
 short_title: "Gemini Notebook MCP 預覽評估"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "未登入只讀到 10 則留言（共 13 則）；8 張輪播圖已逐張看完"
+source_images: 8
+source_replies: 10
 tags:
   - gemini-notebook
   - notebooklm
@@ -23,7 +28,7 @@ tags:
 
 - **來源連結**：[Threads 貼文：@be.ai.curator](https://www.threads.com/@be.ai.curator/post/DfY954CkZ9V) ｜ [分享短網址](https://www.threads.com/share/BAbZwU2wnu)
 - **官方文件**：[Gemini Notebook API：Model Context Protocol (MCP)](https://developers.google.com/notebook/docs/mcp)、[Authentication](https://developers.google.com/notebook/docs/authentication)
-- **抓取時間**：2026-11-07（貼文約 1 天前，20.5K views）
+- **抓取時間**：2026-11-07（貼文 2026-11-06 發布；2026-11-16 重審時 2.1 萬次瀏覽、279 讚、13 則留言）
 - **歸屬集群**：集群 3（角色：`Google 研究工具 MCP 接入評估`）
 - **評估結論**：`🟡 消息屬實、目前僅支援寫入無查詢 API；已將靜態 Bearer Token 與 cloud-platform 全權 scope 風險轉為自動化稽核規則`
 - **相關交叉參照**：
@@ -31,10 +36,44 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入可讀主文、8 張輪播圖（逐張放大到原尺寸看過）、作者留言與連結預覽卡、10 則留言。
+
+- **作者圖片**（8 張輪播，皆為作者自製圖卡，標「操作示意」，不是官方畫面截圖）：
+  - 圖 1 封面：改名後第一次開放給個人 Google 帳號，預覽期間免費，含 MCP。
+  - 圖 2：Claude Code、Cursor 接上官方 MCP 伺服器後能開新筆記本、加資料。
+  - 圖 3：可加入 4 種來源（公開網頁、有字幕的 YouTube、純文字、Markdown），每份最多 50 萬字。
+  - 圖 4：三種用法：追蹤的 YouTube 頻道出新片就加入、一個題目 30 個網頁一次建好、Markdown 筆記整批搬入。三種都是「寫入」。
+  - 圖 5：能做（建筆記本、改名、加網頁／YouTube、純文字／Markdown、讀取和列出來源）與還不能做（問問題、語音摘要、傳 PDF、接雲端硬碟、**刪除**、Workspace 帳號）。
+  - 圖 6：各方案上限：免費 100 本／每本 50 個來源；Google AI Plus 200 本／100 個；Pro 500 本／300 個；Ultra 500 本／600 個。
+  - 圖 7：分工示意，Gemini Notebook 負責資料庫／研究／筆記，Claude Code 與 Codex 負責開發／測試／除錯。
+  - 圖 8：三步開始用：個人 Gmail 先登入 Gemini Notebook 一次、複製官方 MCP 網址、貼給 AI 叫它帶你裝。
+- **作者留言補充**（2 則）：
+  - 放官方 MCP 設定頁連結（預覽卡是 Google for Developers 的「Model Context Protocol (MCP)｜Gemini Notebook API」頁，與本筆記引用的官方文件同一頁），並提醒帳號要先用個人 Gmail 登入過 Gemini Notebook 至少一次。
+  - 回 `lockislunatic`：目前免費，之後額度跟著 Google 訂閱走。
+- **網友留言重點**（頁面標示 13 則，未登入讀到 10 則含作者 2 則）：
+  - `zhenheco`：工具接越多要維護的流程越多，只為每週跑三次以上的事接工具。
+  - `aj.admin.ai`：先挑一個每週重複的資料整理任務試，確認匯入後來源連結與引用有沒有保留，再決定要不要接。
+  - `zz950907`：當研究前置處理器，研究時叫 AI 先查筆記本。與官方 API 不符，見第 2 節。
+  - `ai_future88888`：把「收集來源」和「產出判斷」分兩段，客戶個資與未公開報價不要放進測試資料。
+  - `flipped_education`：使用習慣已漸漸移到能持續對話產出的 Claude／Codex。
+  - `lockislunatic`：問能不能接訂閱。其餘為「存」與附和。
+  - 沒有任何留言提到要建 GCP 專案或憑證風險。
+- **對分析的影響**：
+  - 圖 5 多列了兩項官方限制：不能刪除、不能接雲端硬碟。這與第 2 節「7 個工具沒有 delete」一致；已補進第 1 節與第 3 節。**不能刪除**代表 agent 批次建立的筆記本與來源只能由人到網頁介面清理，是新增的營運風險。
+  - 圖 3 的單一來源 50 萬字上限、圖 6 的方案額度表，原筆記沒有，已補進第 1 節（來源是作者圖卡，未對照官方文件）。
+  - 圖 8 把安裝寫成三步，完全沒提 GCP 專案、`gcloud`、ADC 與 token；第 3 節的門檻分析正好補上這段落差，已在第 3 節開頭寫明。
+  - 作者說明額度之後跟著 Google 訂閱，已補進第 1 節。
+  - 既有任務 `T-20261107-05` 的範圍不受影響，不新增任務。
+
+---
+
 ## 1. 貼文重點
 
 - Gemini Notebook（2026-07-16 起由 NotebookLM 改名；未查證，官方文件頁未見此說明）推出個人用官方 API 與 MCP 預覽版：AI 工具可以自己**建筆記本、加入網頁、有字幕的 YouTube、純文字**。
-- 作者自己標明限制：**不能問問題、不能產生語音摘要、不能傳 PDF，Workspace 帳號還不開放**。
+- 作者自己標明限制：**不能問問題、不能產生語音摘要、不能傳 PDF，Workspace 帳號還不開放**。圖卡另列兩項：**不能刪除、不能接雲端硬碟**。
+- 圖卡列出的量：單一來源最多 50 萬字；免費 100 本／每本 50 個來源，Google AI Plus 200／100，Pro 500／300，Ultra 500／600（作者整理，未對照官方文件）。作者在留言說目前免費，之後額度跟著 Google 訂閱。
 - 作者主張：從額度分工角度，beta 免費值得先接，可分擔 Grok／Claude Code／Codex 研究影片的額度。
 - 值得留意的留言：
   - `zhenheco`：工具接越多，要維護的流程越多；只為每週跑三次以上的事接工具。
@@ -63,7 +102,7 @@ Agent ──create_source──► Gemini Notebook ──► 人在網頁 UI 問
 
 ## 3. 接入門檻與憑證風險
 
-官方安裝流程要求：
+作者圖卡把安裝寫成三步（個人 Gmail 先登入一次、複製官方 MCP 網址、貼給 AI 帶你裝），沒有提到下列前置條件。官方安裝流程要求：
 
 1. 一個 **GCP 專案**，並執行 `gcloud services enable notebook.googleapis.com`。
 2. 以 ADC 登入，scope 同時包含 `cloud-platform` 與 `notebook`。
@@ -74,6 +113,7 @@ Agent ──create_source──► Gemini Notebook ──► 人在網頁 UI 問
 - **憑證進指令列與設定檔**：與「API key、token 不進程式碼、指令列、對話」的硬閘門衝突。
 - **ADC 帶 `cloud-platform` 全權 scope**：本機一旦被竊（參照 Nicholas Lin 案的 AMOS 竊密鏈），拿到的是整個 GCP 專案權限，不只 Notebook。
 - **Access token 有效期短（Google OAuth 通常約 1 小時；文件未載明，屬 OAuth 一般行為）**：靜態寫入 header 會很快失效，要另外處理更新，否則會**默默失敗**。
+- **建了刪不掉**：這一版沒有刪除工具，agent 誤建或測試用的筆記本與來源，只能由人到網頁介面清理；批次匯入前要先想好命名與數量上限。
 - 若要試，應開一個**專用、未綁計費帳戶的 GCP 專案**，只開 `notebook.googleapis.com`，並用包裝腳本即時取 token，不把 token 寫入任何檔案。
 
 ## 4. 評估

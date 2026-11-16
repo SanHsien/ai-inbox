@@ -10,6 +10,9 @@ status: done
 cluster: 2
 cluster_role: "綠幕合成廣告管線"
 short_title: "Audio-First綠幕廣告管線"
+source_review: unavailable
+source_reviewed_at: 2026-11-17
+source_review_note: "建檔時只有轉貼的貼文文字，沒有原始貼文連結、作者與平台，無法開啟原貼查看 17 秒成品影片、圖片與留言"
 tags:
   - ai-video
   - audio-first
@@ -29,6 +32,17 @@ tags:
   - [`notes/2026-10-18-awesome-opus5-5-videos-prompt-zoo.md`](./2026-10-18-awesome-opus5-5-videos-prompt-zoo.md)（Remotion / 程式化影片生成）
   - [`notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md`](./2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md)（數位人與 ElevenLabs 配音工作流）
   - [`notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md`](./2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md)（Windows 本機 AI 剪輯工具）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-17 重審。本篇 `source_url` 為 N/A：建檔時拿到的是轉貼的貼文文字，沒有原始貼文連結、作者帳號或平台。依 AGENTS.md 第 3 節，不人肉搜尋轉貼來源。
+
+- **作者圖片**：看不到。貼文主題是一支 17 秒的廣告成品，但成品影片、綠幕分鏡圖、節奏表截圖都沒看到——也就是說，這條管線「做出來長什麼樣、去背邊緣乾不乾淨、對嘴準不準」完全沒有畫面可以檢驗。
+- **作者留言補充**：看不到。作者是否在留言放了提示詞、FFmpeg 指令或成本，無從得知。
+- **網友留言重點**：看不到。沒有其他人的實測回報或質疑可用來對照。
+- **對分析的影響**：沒有新資料，內容不改。5W1H 已註明模型名稱、版本與能力都是貼文宣稱；這裡再補一點：成品品質同樣是未見過的宣稱。本篇已完成的任務是依文字描述在本機重做「Audio-First 節奏表＋綠幕合成」這兩個技巧，其驗收依據是本機產出，不依賴原貼成品，所以任務狀態不受影響。
 
 ---
 

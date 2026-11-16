@@ -10,6 +10,11 @@ status: done
 cluster: "2"
 cluster_role: "提示詞工程與上下文"
 short_title: "Claude垂直領域Skill與MCP生態盤點"
+source_review: partial
+source_reviewed_at: 2026-11-17
+source_review_note: "8 則 IG 貼文未登入各只顯示最新 4～12 則留言，共讀 88 則；各則留言總數約 5,155／1,496／2.2 萬／1,592／1,950／4,730／538／6,908。影片為抽格（每支 5～8 格），未取逐字稿。"
+source_images: 51
+source_replies: 88
 tags:
   - claude-code
   - agent-skills
@@ -44,6 +49,30 @@ tags:
 - **相關交叉參照**：
   - [`notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md`](./2026-10-17-tasteskill-v2-anti-slop-frontend.md)（Taste-Skill v2 前端反 AI Slop 規則）
   - [`notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md`](./2026-11-08-google-research-harness2-recursive-agent-harnessing.md)（Google Research Harness² 8 大模組與沙盒防弊契約）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 以未登入的內建瀏覽器重看 8 則 IG 貼文：說明文字全文、影片抽格（每支 5～8 格，字幕燒在畫面上）、兩則輪播各 7 張、留言區可見部分。未登入時每則只顯示最新 12 則留言（`DfFHkoEOs-F` 只顯示 4 則），共讀 88 則；各則留言總數依序約 5,155／1,496／2.2 萬／1,592／1,950／4,730／538／6,908，其餘要登入才看得到。
+
+- **作者圖片／影片畫面**（共 51 格／張）：
+  - `DfMpBTvh_Yj`（@kwons_en，48 秒，8 格）：片頭大字「千萬不要再用 Claude 剪影片了」；Openverse 畫面顯示約 522 萬個音效；MMAudio 論文頁（CVPR 2025）；時間軸上音效對齊剪點的示意；Earshot 的 GitHub 頁與終端機 `earshot` 指令；「關門聲」搜尋結果清單；片尾要觀眾留言「音效」。畫面都是示意動畫，沒有實際跑指令的輸出。
+  - `DfRwxagKLG9`（@airi_aimagic，57 秒，7 格）：依序是寫腳本（畫面字樣為 21 種開頭公式）、剪輯清單、排一週、爆款引擎（倍數排行示意）、三步安裝（Claude Code → 貼 GitHub 連結 → `/yt-script`）、留言「YOUTUBE」。
+  - `DfKHNzYq_s7`（@airi_aimagic，88 秒，5 格）：`/ig-reel`、`/ig-plan` 週曆（每天互動 20 分鐘）、爆款排名長條圖、三步安裝（畫面上有 `instagram-agent-skill` 連結字樣）。
+  - `DfPQ-yeEzYJ`（@its_hana_digital，輪播 7 張）：封面寫「我訓練 Claude 寫 IG 內容，90 天漲了 8,000 位粉絲」；第 2～5 張是四個填空式提示詞範本的節錄（爆紅內容產生器、Hook 製造機、Reel 腳本寫手、社會認同轉換器），各自規定角色、產出結構、字數與禁止事項；第 6 張說明有效的原因是交代了角色、考量與輸出架構；第 7 張要觀眾留言「Claude」領全文。**整組圖沒有提到任何 GitHub 專案、Skill 或 `voice.md`**。
+  - `DebpuRpkfnw`（@chloemakesdesign，56 秒，7 格）：五個工具各一格，背景是對應的 GitHub／文件頁（`ui-ux-pro-max-skill`、`impeccable`、`21st-dev/magic-mcp`、Figma MCP 文件、`ChromeDevTools/chrome-devtools-mcp`），片尾是五項清單與留言「美感」。
+  - `DfFHkoEOs-F`（@hsing.daily，42 秒，5 格）：26 種開頭公式選單、爆款改寫示意（原片 12.4 倍 → 改成自己的版本）、主頁評分 72/100、13 個 Skill 的指令方塊。
+  - `DfMnV6sGAUE`（@renakeung，輪播 7 張，平台標示「AI 內容」）：第 2 張三件事（寫腳本、找爆款用「跟自己平均比的倍數」、排一週）；第 3 張三步安裝；第 4 張先跑的 5 個指令；**第 5 張「中文用之前先知道 3 件事」：26 種開頭公式的例句都是英文、打分工具量不到中文字所以分數只能參考、去 AI 味功能會把中文破折號改壞**；第 6 張 `voice.md` 做法（整理 3 支最滿意的 Reels 逐字稿，請 Claude 照著寫 `voice.md`，13 個技能動筆前都會先讀）；第 7 張留言「我要裝」。
+  - `DdX7C1YP5Kj`（@lynexaai，53 秒，5 格）：Claude 與 GPT 圖示放進同一個流程、一份中文的實作計畫文件（含目標與可觀察的驗收條件）交給 GPT 審、兩個 AI 互換角色的示意。
+- **作者留言補充**：可見範圍內 8 則都沒有作者留言；安裝連結一律走私訊（留言關鍵字 → 私訊），貼文與留言區都沒有公開連結。
+- **網友留言重點**：讀到的 88 則幾乎全是領取用的關鍵字（「音效」「YouTube」「Skill」「Claude」「美感」「Reel」「我要裝」「計畫」）與表情符號，沒有實測回報、反駁或出處更正。
+- **對分析的影響**：
+  1. **修正 `DfPQ-yeEzYJ` 的歸類**：原筆記把它算進「圍繞 Jake Schincariol 姊妹專案的 5 則」，並說它對應 `voice.md`。看完 7 張圖，這篇是獨立的四個結構化提示詞範本，與那兩個 repo 無關；`voice.md` 的做法出自 `DfMnV6sGAUE` 第 6 張。已改 2.2 節開頭與第 3 點。
+  2. **補上中文使用限制**：`DfMnV6sGAUE` 第 5 張指出這套 IG 技能對中文的三個限制，已補進 2.2 節。這與原筆記列的 `beats.py` 以 165 wpm 估秒數、`humanize.py` 清破折號是同一件事的兩面：這些確定性工具是照英文設計的，中文內容的分數與自動改寫不能直接採信。
+  3. **貼文數字與 README 不一致之處**（正文維持 README 查證值）：`DebpuRpkfnw` 說明文字寫 UI UX Pro Max「192 套配色」（README 的 192 是推理規則數）、Impeccable「59 條規則」（2026-11-14 查 README 為 62 條）；`DfRwxagKLG9` 寫 YouTube 版 21 種開頭公式、IG 版 26 種；`DfFHkoEOs-F` 寫 3,000 多顆星、`DfMnV6sGAUE` 寫 4 千多顆星，都是發文當時的數字。
+  4. `DfPQ-yeEzYJ` 封面的「90 天漲 8,000 粉」是作者自述，圖文沒有附任何後台數據，不當作成效證據。
+  5. 任務不變：已完成的兩個任務針對的是技能包安全檢查與外部連結巡檢，不受上述修正影響。
 
 ---
 
@@ -83,7 +112,7 @@ tags:
 
 ### 2.2 主題二：YouTube 與 Instagram 確定性自媒體工作流（`DfRwxagKLG9`、`DfKHNzYq_s7`、`DfFHkoEOs-F`、`DfMnV6sGAUE`、`DfPQ-yeEzYJ`）
 
-這 5 則貼文共同圍繞同一位作者 **Jake Schincariol** 開源的姊妹專案與結構化提示詞原則（其中 `@airi_aimagic` 分別以 `DfRwxagKLG9` 介紹 YouTube 11 Skills、以 `DfKHNzYq_s7` 介紹 Instagram 13 Skills 的 `/ig-reel` 26 種開頭公式打分、`/ig-comment`、`/ig-reply`、`/ig-profile`、`/ig-plan`、`/ig-viral` 與「只寫草稿、不給 IG 密碼」之安全邊界）：
+其中 4 則（`DfRwxagKLG9`、`DfKHNzYq_s7`、`DfFHkoEOs-F`、`DfMnV6sGAUE`）圍繞同一位作者 **Jake Schincariol** 開源的姊妹專案；`DfPQ-yeEzYJ` 是獨立的四個結構化提示詞範本，沒有提到這兩個 repo（2026-11-16 看完輪播 7 張後修正），因主題同為「用具體約束取代空泛指令」而併在本節（其中 `@airi_aimagic` 分別以 `DfRwxagKLG9` 介紹 YouTube 11 Skills、以 `DfKHNzYq_s7` 介紹 Instagram 13 Skills 的 `/ig-reel` 26 種開頭公式打分、`/ig-comment`、`/ig-reply`、`/ig-profile`、`/ig-plan`、`/ig-viral` 與「只寫草稿、不給 IG 密碼」之安全邊界）：
 
 | 專案名稱 | 規模與指令數 | 內建零依賴 Python 確定性工具 | 關鍵設計亮點與 CQR 實測限制 |
 | :--- | :--- | :--- | :--- |
@@ -93,7 +122,9 @@ tags:
 - **CQR 實證亮點（作者於 README 誠實公開的負面實驗結果）**：
   1. **`hookscore.py` 能抓出爛開頭（AUC `0.83`），但無法預測爆款（AUC `0.56`）**（出處：[instagram-agent-skill README](https://github.com/Jakeschincariol/instagram-agent-skill#readme) 第 225-242 行附近的實測段落；該段說明 74 筆語料是 YouTube Shorts 的前 3 秒自動字幕，非 Reels，且為作者自述、本筆記未重現；此數字僅屬 IG 庫，不套用於上方 YouTube 庫那一列）：在 74 支真實短影音上，五項評分維度中只有 `SPECIFICITY`（具體數字或專有名詞）能有效區分高低表現（中位數差 60 分），`STAKES` 與 `ADDRESS` 中位數完全相同。
   2. **草稿唯讀鐵律（Nothing gets posted until you say yes）**：兩個專案皆刻意不接自動發文爬蟲，避免違反平台條款遭封鎖，且未知數據一律輸出 `{{your number}}` 佔位符，絕不捏造案例數據。
-  3. **`voice.md` 與具體約束（對應 `@its_hana_digital` `DfPQ-yeEzYJ`）**：必須先提供 3 支過往影片或填寫 `~/.claude/{youtube,instagram}/voice.md` 建立個人語氣、受眾與禁忌詞，才能消除千篇一律的 AI 腔調。
+  3. **`voice.md`（對應 `@renakeung` `DfMnV6sGAUE` 第 6 張圖）**：先提供 3 支過往影片逐字稿或填寫 `~/.claude/{youtube,instagram}/voice.md` 建立個人語氣、受眾與禁忌詞，13 個技能動筆前都會先讀，用來消除千篇一律的 AI 腔調。
+  4. **具體約束（對應 `@its_hana_digital` `DfPQ-yeEzYJ`）**：與上述 repo 無關的四個填空式提示詞範本，共同點是每個都寫明角色、產出結構、字數上限與禁止事項。
+  5. **中文使用限制（`DfMnV6sGAUE` 第 5 張圖，轉述者自述、本筆記未重現）**：26 種開頭公式的例句都是英文；打分工具量不到中文字，分數只能參考；去 AI 味功能會把中文破折號改壞。用在中文內容時，`hookscore.py`、`beats.py`（165 wpm 是英文語速）與 `humanize.py` 的輸出都要人工複核。
 
 ### 2.3 主題三：消除「一眼 AI 介面」的前端設計五件套（`DebpuRpkfnw`）
 

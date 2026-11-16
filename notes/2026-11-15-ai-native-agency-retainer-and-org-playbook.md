@@ -10,6 +10,9 @@ status: archived
 cluster: 1
 cluster_role: "一人接案Agency系統"
 short_title: "AI一人接案Agency"
+source_review: unavailable
+source_reviewed_at: 2026-11-17
+source_review_note: "建檔時維護者只提供轉貼的文字（兩篇文章與兩則留言），沒有原始貼文連結、作者與平台，無法開啟原貼查看圖片與完整留言"
 tags:
   - ai-agency
   - freelance
@@ -29,6 +32,17 @@ tags:
   - [`notes/2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md`](./2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md)（需求解壓縮、價值報價法與外部裁判 DoD）
   - [`notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md`](./2026-10-17-hansun-fullstack-agent-deployment-manual.md)（全端建站規格與上線 QA 稽核）
   - [`notes/2026-10-24-feedback-desk-client-ticket-ai-handoff.md`](./2026-10-24-feedback-desk-client-ticket-ai-handoff.md)（客戶工單流轉與 AI 維運交接）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-17 重審。本篇 `source_url` 為 N/A：建檔時拿到的是轉貼的文字（兩篇連續文章〈AI 接案商業模式〉〈AI-Native Agency 組織架構〉與兩則網友留言），沒有原始貼文連結、作者帳號或平台。依 AGENTS.md 第 3 節，不人肉搜尋轉貼來源。
+
+- **作者圖片**：看不到。不知道原貼文有沒有附圖（例如組織架構圖、報價表）；本文的 ASCII 流程圖是建檔時依文字重畫的，不是原圖。
+- **作者留言補充**：看不到。
+- **網友留言重點**：只有建檔時一併轉貼進來的兩則（通用提示詞問法、國外 B2B Lead Gen 工具鏈），已在 2.1 節評估；原貼文底下其餘留言無從查看，也無法確認這兩則是否被作者回應或被其他人反駁。
+- **對分析的影響**：沒有新資料，內容不改。本篇結論建立在轉貼文字上，文中的金額試算（原文算錯之處已在 5W1H 註明）與工具鏈都無法回到原貼核對；若日後取得原始連結，應補看圖片與留言再把 `source_review` 改掉。
 
 ---
 

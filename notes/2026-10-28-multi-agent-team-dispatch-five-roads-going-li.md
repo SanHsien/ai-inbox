@@ -10,6 +10,11 @@ status: done
 cluster: "1"
 cluster_role: "跨 CLI 與階層派工"
 short_title: "Going Li 四 Agent 派工與五路工具流"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "Facebook 貼文顯示 18 則留言，未登入只讀到 17／18 則；圖看了 2／2 張"
+source_images: 2
+source_replies: 17
 tags:
   - multi-agent
   - team-dispatch
@@ -32,6 +37,28 @@ tags:
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（Thorsten Ball 15 條 Agent 實戰哲學：非同步排程喚醒與無可辯駁證據）
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 四大黃金原則工程加固：先定位再動手）
   - [`notes/2026-10-26-ai-shared-memory-template-team-collaboration.md`](./2026-10-26-ai-shared-memory-template-team-collaboration.md)（AI 共用記憶系統三跳索引與動詞寫入契約）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀 Facebook 社團貼文（文字、2 張作者圖、可見留言 17 則／貼文顯示 18 則）。
+
+- **作者圖片**：
+  - 圖 1「一句話怎麼派出去：從接力改成派工」：左半是主視覺（負責人交棒給 Claude Code，拆成三棒分給 Hermes、Antigravity、GOBOT，最後回到記憶庫）；右半是派工單樣貌——每一塊列出這一塊做什麼、派給誰、怎麼派與怎麼回，派工技能放在 `~/.claude/skills/team-dispatch`，對 GOBOT 是寫進 GitHub 派工檔、對 Hermes 是下排程指令並把結果推到 Discord、對 Antigravity 是寫進交接板。下排四步：先列表不先動手、各走各的通道、四態加證據回報、做完回記憶庫。圖上另註明 GOBOT 看不到作者的 Mac，GitHub 連線唯讀，所以只給一把限單一 repo 的 token。
+  - 圖 2「二十個工具，五條路」：五列（做影片、做圖像、做程式與系統、整理文字與資料、調度隊員），每列三到五種產出，各寫出主力流程與替代工具；每列左側另列共用零件。
+  - 原筆記的拓撲圖、四步閉環與 2.3 的五路矩陣已經涵蓋這兩張圖的內容，這次核對沒有發現出入。
+- **作者留言補充**：
+  - 有人問 Codex 與 GPT 怎麼掛進這個流程，作者說會讓 GPT 與 Gemini 交互使用、Codex 與 Claude Code 交互使用，而不是再多開一條派工通道；追問原因時回答是因為他的 ChatGPT 沒有付費。
+  - 有人問 Grok Bot 是什麼，作者貼一支介紹影片的連結；沒有公開 `team-dispatch` 技能或派工檔的原始碼，也沒有教學。
+- **網友留言重點**：
+  - Chen John Lin 問 Grok Bot 能不能取代自架的 n8n，並說仍用 n8n 的原因是不消耗 token。
+  - **Paul Chiu 的補充**：只能取代一部分。條件與動作都固定的工作用 n8n 預先定好流程比較可預期，也方便設重試、去重、失敗通知與查執行紀錄；AI Agent 適合需要理解內容、判斷例外的部分。他的做法是 n8n 管排程與流程控制，需要判斷時才交給 AI，結果檢查過才執行後續動作；「能在背景持續工作」與「能可靠維持一套自動化流程」是兩種要分開驗證的能力。
+  - 其餘是稱讚與詢問教學（未獲回覆）。
+- **對分析的影響**：
+  - 正文的架構與數據不需更正。
+  - 2.2 把雲端 Agent 每小時巡檢寫成解法，但沒有提代價；依 Paul Chiu 與 Chen John Lin 的留言，在第 3 節補一條邊界：固定條件的排程交給不耗 token 的確定性排程器，Agent 只接需要判斷的部分。這與維護者「純機械檢查用 shell、不派 Agent」的既有規則一致，所以不新增任務。
+  - 補記成熟度：作者沒有公開實作，Codex／GPT 尚未接進這套流程。
 
 ---
 
@@ -152,6 +179,10 @@ Going Li 提出了具備高度實戰價值的**「一棒接過，三棒同時派
      - 借鑑備援鍵設錯的教訓，撰寫驗證器檢查工具流設定檔與備援模型健全度。
   3. **四大 Agent 專屬通道規範加固**：
      - 現有全域規範已規定 Antigravity、Claude、Codex、Hermes 的頂層派工與回報通道，進一步結合 Going Li 的 GitHub 派工檔與交接板機制，形成完整的雲端＋本機多端閉環。
+
+- **邊界（2026-11-16 依留言補）**：
+  - 雲端 Agent 每小時巡檢會持續消耗 token。留言中 Paul Chiu 指出，條件與動作都固定的工作用確定性排程器（如 n8n、Task Scheduler）比較可預期，也好設重試與失敗通知；Agent 只接需要理解內容或判斷例外的部分，而且結果要先檢查才執行後續動作。
+  - 作者沒有公開 `team-dispatch` 技能與派工檔的實作，Codex／GPT 也還沒接進這套流程；本篇是依貼文與圖片重建的架構，不是對原始碼的分析。
 
 ---
 

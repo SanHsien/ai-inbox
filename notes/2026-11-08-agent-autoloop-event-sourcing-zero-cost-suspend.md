@@ -10,6 +10,10 @@ status: done
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "Agent-Autoloop事件溯源與掛起零消耗"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 1
+source_replies: 1
 tags:
   - agent-autoloop
   - event-sourcing
@@ -24,7 +28,7 @@ tags:
 
 - **來源連結**：[Threads 原文分享](https://www.threads.com/share/BBhKdG9xii) ｜ [貼文永久網址 (@leeunhn)](https://www.threads.com/@leeunhn/post/DfUMk5hlLLV) ｜ [GitHub (KKKKhazix/agent-autoloop)](https://github.com/KKKKhazix/agent-autoloop) ｜ [安全邊界文件 (SECURITY.md)](https://github.com/KKKKhazix/agent-autoloop/blob/main/SECURITY.md)
 - **核心作者**：李昀翰（`@leeunhn` 推薦）／ Khazix（`@KKKKhazix`，專案作者）
-- **分析主題**：解構在 GitHub 迅速斬獲 3,929 Stars、713 Forks 的命令列 Agent 背景自動化中台 **`KKKKhazix/agent-autoloop`**（TypeScript，Node 24+，零外部執行期依賴）。剖析其「掛起零消耗（提問後行程立即退出，0 RSS / 0 Token 等待人類拍板）」、「kernel/ 約 2,000 行（11 檔實數 2,057）的純函式事件溯源內核（SQLite WAL+FULL 單一交易落盤）」、「SQL 參數化式指令資料分離」與「8 跳 TTL 強制熔斷」四大機制，以及 `SECURITY.md` 揭露的反自問自答、PR 零檢出審查與 Windows Codex 沙盒 ACL 收斂防線。
+- **分析主題**：解構在 GitHub 快速累積星數（Threads 貼文發布時 1,796，本筆記撰寫時 3,929 Stars、713 Forks，2026-11-16 重審時 5,649 Stars、1,045 Forks）的命令列 Agent 背景自動化中台 **`KKKKhazix/agent-autoloop`**（TypeScript，Node 24+，零外部執行期依賴）。剖析其「掛起零消耗（提問後行程立即退出，0 RSS / 0 Token 等待人類拍板）」、「kernel/ 約 2,000 行（11 檔實數 2,057）的純函式事件溯源內核（SQLite WAL+FULL 單一交易落盤）」、「SQL 參數化式指令資料分離」與「8 跳 TTL 強制熔斷」四大機制，以及 `SECURITY.md` 揭露的反自問自答、PR 零檢出審查與 Windows Codex 沙盒 ACL 收斂防線。
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-21-agent-relay-pipeline-phase4.md`](./2026-10-21-agent-relay-pipeline-phase4.md)（`SanHsien/agent-relay` 跨機器派工、並發／花費上限與驗收合併）
@@ -33,14 +37,35 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：Threads 未登入可讀主文、連結預覽卡與唯一 1 則留言；GitHub 端看 README 架構圖，並以 GitHub API 讀留言數最多的 issue。
+
+- **作者圖片**：Threads 貼文沒有上傳圖片，只有 GitHub 連結預覽卡（repo 名稱與簡體中文簡介）。README 有 1 張圖，放大看過：
+  - 圖 1 `docs/architecture.svg` 架構圖：內核在中間，四周都是外掛。左邊事件外掛（定時任務、GitHub、業務系統、輪詢腳本）送新事件進來；右邊 Agent 外掛（Claude Code、Codex、DeepSeek Harness、Pi、OpenClaw）接活並交結果；下方通道外掛（桌面通知、飛書、釘釘／企微、Slack／Discord）把卡片送給人；人點一下後接回原對話。內核框內列四項機制（掛起零消耗、事件溯源、指令資料分離、跳數熔斷），最下方是內建的程式碼交付流水線（審、跑檢查、合、上線、核對線上版本）。與第 2 節的四大機制逐項一致。
+- **作者留言補充**：無。轉貼者 `leeunhn` 沒有在留言區補充，也沒有回覆唯一一則提問。
+- **網友留言重點**（Threads 共 1 則，已讀）：
+  - `linlin496781`：問會不會自動做一堆不相干的事、浪費 token。沒有人回答；本筆記 2.1 第 4 點的跳數熔斷就是對應機制。
+- **上游 issue 重點**（GitHub API，2026-11-16）：
+  - Issue #17「希望有 Windows 版本」（20 則留言，已關閉）：專案作者 11 月 4 日先說沒有原生 Windows 計畫、建議用 WSL2；11 月 5 日改口要做；**11 月 6 日發布原生 Windows 版（v1.6.1）**，安裝腳本是 `install.ps1`，背景服務是目前帳號自己的登入工作，不需要管理員權限。有使用者回報在 Windows 10 非管理員帳號、含中文的路徑下跑通兩輪閉環。WSL2 路線另有人回報 `VmmemWSL` 佔約 1.1 GB 記憶體。
+  - Issue #285（已關閉）：Antigravity 的命令列 `agy` 自帶 ACP 伺服器，用內建的 ACP 外掛就能接，設定寫 `["agy", "acp"]`；作者確認 agy 1.5.5 在 Windows 上跑通多輪問答與會話續接，並已寫進 README（#298）。
+- **對分析的影響**：
+  - 星數有三個時間點：Threads 貼文寫 1,796（2026-11-04）、本筆記撰寫時 3,929、重審時 5,649（1,045 Forks）。已在分析主題補註。
+  - 第 1 節 Who 與 Where 原本只提社群移植版 `yangfan27/agent-autoloop-win`，沒寫官方已在 v1.6.1 支援原生 Windows；已更正。這對 Windows 原生環境是關鍵差異：不必走 WSL2，也不必用第三方移植版。
+  - 官方 Windows 安裝指令是把遠端腳本直接交給 PowerShell 執行的寫法，與本機「不直接執行遠端安裝腳本」的規則衝突；若要試裝，應先把 `install.ps1` 下載成檔案讀過再跑。已補進第 1 節。
+  - 補上 Antigravity 可經 ACP 接入（第 1 節 What）。
+  - 四大機制、三道資安防線與既有任務 `T-20261108-02` 的內容不受影響；不新增任務。
+
+---
+
 ## 1. 核心內容摘要：5W1H 初篩與內核拓撲（Executive Summary）
 
 | 維度 | 核心內容 |
 | :--- | :--- |
-| **Who（主體）** | 開源專案 **`KKKKhazix/agent-autoloop`**（MIT License，3,929 Stars），以及社群衍生的 Windows 移植版 `yangfan27/agent-autoloop-win`。 |
-| **What（核心定位）** | 專為命令列 Coding Agent（Claude Code、Codex、ACP 協定代理、DeepSeek Harness、Hermes、Gemini CLI 等）設計的本機背景事件調度中台。 |
+| **Who（主體）** | 開源專案 **`KKKKhazix/agent-autoloop`**（MIT License，3,929 Stars）。官方自 v1.6.1（2026-11-06）起支援原生 Windows；在那之前有社群移植版 `yangfan27/agent-autoloop-win`。 |
+| **What（核心定位）** | 專為命令列 Coding Agent（Claude Code、Codex、ACP 協定代理、DeepSeek Harness、Hermes、Gemini CLI 等；Antigravity 的 `agy` 可經內建 ACP 外掛接入，見上游 Issue #285）設計的本機背景事件調度中台。 |
 | **Why（解決痛點）** | 1. 傳統 CLI Agent 需人工盯著終端機等待下一步，視窗關閉或斷線即中斷。<br>2. 常駐等待人類確認時佔用行程與記憶體，若靠輪詢還會白燒 Token。<br>3. 接上外部事件（如 GitHub Issue / Webhook）後，面臨 Prompt Injection、無限派工迴圈與 Agent 自行核准高風險操作的失控風險。 |
-| **Where（部署環境）** | Windows / macOS / Linux 本機（Node 24+，無須公網伺服器，透過飛書、釘釘、企微、Slack、Discord 或桌面通知推送拍板卡片）。 |
+| **Where（部署環境）** | Windows / macOS / Linux 本機（原生 Windows 自 v1.6.1 起由 `install.ps1` 安裝，不需管理員權限；官方範例是遠端腳本直接執行，試裝前應先下載讀過；Node 24+，無須公網伺服器，透過飛書、釘釘、企微、Slack、Discord 或桌面通知推送拍板卡片）。 |
 | **When（觸發場景）** | 每日定時早報、GitHub Issue 自動跟進、線上告警排查、使用者回饋修復、網站巡檢與 `deliver` 標籤驅動的 PR 自動審查合併流水線。 |
 | **How（運作契約）** | Agent 不需接入 SDK 或修改原始碼，只需在最後一條回覆末尾附帶 ```` ```agent-autoloop {"ask": [...]} ``` ```` JSON 回執區塊，行程隨即退出；人類拍板後中台自動以 `--resume` 接續原會話 ID 完成剩餘工作。 |
 

@@ -74,11 +74,13 @@
 - **完整簽名方案支援**：
   - **APK 簽名**：全面啟用 APK Signature Scheme **V1 (Jar Signing)**、**V2 (Full APK)** 與 **V3 (Key Rotation)**，確保從舊版 Android 7.0 到最新 Android 16/17 均能通過驗證。
   - **AAB 簽名**：輸出符合 Google Play 規範的 Android App Bundle (`.aab`)，並包含完整的 JAR v1 PKCS#7 簽名塊。
+  - **上架前先確認版本（2026-11-16 補）**：上游擁有者在 [issue #1496](https://github.com/shiahonb777/web-to-app/issues/1496)（2026-11-15 留言，issue 仍開啟）表示考慮移除 Google Play 相關功能，理由是它妨礙 F-Droid 上架與合規，日後可能改在別的 App 實作。報價與動工前，先在當時要用的版本確認「Google Play」工具與 AAB 輸出還在；不在的話，改用 Android 官方工具鏈產出 AAB，或把交付範圍改成只交 APK。不要對客戶承諾「用本工具一定能上架 Google Play」。
 - **金鑰歸檔與備份作業**：
   - 將 `.jks` / `.p12` 金鑰檔、別名（Alias）、金鑰庫密碼（Storepass）與私鑰密碼（Keypass）安全封裝於密碼管理器中，並以獨立加密封包方式交接給客戶備份。
 
 ### 5. 步驟五：上架材料準備與應用商店送審（Store Assets & Submission）
 若專案包含上架 Google Play Store 或第三方應用商店，需協助客戶完備以下官方材料：
+> 動工前先照步驟四「上架前先確認版本」檢查工具是否仍能輸出 AAB（上游 issue #1496）。
 - **開發者帳號準備**：
   - 指引客戶註冊 Google Play Console 組織或個人開發者帳號（需繳納 25 美元一次性註冊費，並完成雙證件身分驗證與 D-U-N-S 企業編碼核驗）。
 - **商品詳情材料（Store Listing Assets）**：

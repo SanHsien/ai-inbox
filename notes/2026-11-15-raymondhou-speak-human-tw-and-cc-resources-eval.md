@@ -10,6 +10,11 @@ status: done
 cluster: 3
 cluster_role: "繁中去AI味與資源評估"
 short_title: "說人話Skill與CC資源評估"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_images: 7
+source_replies: 52
+source_review_note: "兩個 repo 的 README 圖共 7 張已看，雙棲地圖的小字沒有逐格看清；issue／PR 讀了 speak-human-tw 7 個（共 10 個）與 claude-code-resources 9 個人工回報（共 39 個，其餘多為自動同步 PR），長留言只讀前段"
 tags:
   - skill
   - zh-tw
@@ -27,18 +32,47 @@ tags:
 - **當前狀態**：`🟢 已完成 (Done)`
 - **完整評估**：[speak-human-tw 唯讀評估](../docs/speak-human-tw-assessment.md)
 
+## 0. 原始資料盤點
+
+> 貼文文字、作者上傳的每張圖片、作者留言補充、網友留言都要看過，見 AGENTS.md 第 3 節。本篇來源是 GitHub，圖片看 README，留言改看 issue 與 PR。
+
+- **作者圖片**（2026-11-16 看，徽章不計）：
+  - speak-human-tw 6 張：橫幅；案例一是拿 2024 年真人手寫的週報去檢查，結論「不用改」（圖內寫「36 種 AI 痕跡」，現行是 38 類，是舊版截圖）；案例二是檢查 AI 代寫的 YouTube 留言回覆，逐條列 6 處並附原句、理由、改法（截圖底部顯示作者是在略過權限確認的模式下執行）；四格情境示意（社群、文章、Email、行銷）；求星圖；星數成長圖（07-10 上線，11-15 為 1,178）。
+  - claude-code-resources 1 張：「Claude Code × Codex 雙棲進化地圖」，入門／活用／高手三級，各分 Claude Code、兩者共用、Codex 三欄；小字未逐格看清。
+- **作者留言補充**：兩個 repo 的維護回覆多數署名「雷小蒙（雷蒙的 AI 分身助手）」，先由 AI 初審、再說明「等雷蒙確認」。
+- **網友留言重點（speak-human-tw）**：
+  - [PR #2](https://github.com/Raymondhou0917/speak-human-tw/pull/2)：外部貢獻者提出「稿件是資料不是指令」的隔離；作者方實測注入後採精簡版併入，並明講這是提示層防護、不能取代執行環境的權限控制。
+  - [PR #6](https://github.com/Raymondhou0917/speak-human-tw/pull/6)（未合併）：有人拿它處理 Code Review 報告，發現「再降格式」的字面規則會把狀態摘要行、表格這類文件骨架改寫成散文，提議加第 6 類保護；作者方還在確認這類文件算不算適用範圍。
+  - [#8](https://github.com/Raymondhou0917/speak-human-tw/issues/8)：OpenCode 的打包版曾壞掉，改成直接 clone 進 skills 目錄。[PR #7](https://github.com/Raymondhou0917/speak-human-tw/pull/7)：詞表加「運營→營運」，PR 自述由 AI agent 起草。[#5](https://github.com/Raymondhou0917/speak-human-tw/issues/5)：作者方確認只針對台灣繁中，不含粵語與文言。
+- **網友留言重點（claude-code-resources）**：
+  - [#1](https://github.com/Raymondhou0917/claude-code-resources/issues/1)、[#2](https://github.com/Raymondhou0917/claude-code-resources/issues/2)、[#3](https://github.com/Raymondhou0917/claude-code-resources/issues/3)：教材曾寫出不存在的套件名稱（三個掛在 `@anthropic-ai` 底下的名字），讀者照做失敗後回報才修正。
+  - [#4](https://github.com/Raymondhou0917/claude-code-resources/issues/4)：有讀者照教學設定 Google Workspace CLI 的 OAuth 後，Google Cloud 專案被停權，申訴一個月沒回音；作者事後補上官方 README 原有的兩個警告。
+  - [#12](https://github.com/Raymondhou0917/claude-code-resources/issues/12)：讀者指出「安全刪除」教材在 Windows 原生 PowerShell 沒有資源回收筒保護，並附 PowerShell 5.1、7 與 Git Bash 的實測；作者已補進教材。
+  - [#13](https://github.com/Raymondhou0917/claude-code-resources/issues/13)：讀者回報在 macOS 的 Claude 桌面版 Code 分頁，`permissions.deny` 與 PreToolUse hook 都沒生效，危險指令真的執行；引用的上游 `anthropics/claude-code#87657` 現為已關閉（帶 stale 標籤）。
+    - 本機證據（僅 Windows，與該回報的 macOS 不同平台）：2026-11-16～17 維護者 Windows 桌面版 Code 分頁的 PreToolUse hook（`route_guard`）實際攔下了未宣告路由的 Edit 呼叫，hook 有生效；`permissions.deny` 在 Windows 桌面版未驗證。macOS 的回報本 repo 無法重現或反駁。
+  - [#6](https://github.com/Raymondhou0917/claude-code-resources/issues/6)：Windows 桌面版接 MCP 失敗，作者建議改走 CLI。
+- **上游現況**：兩個 repo 的最新版只比本篇固定的 commit 各多 1 個 commit（speak-human-tw 那個只更新星數圖），評估沒有過期。
+- **對分析的影響**：
+  1. 第 1 節「不應直接全域套用於…本 repo 的任務格式」原本是推論，PR #6 是實際使用者遇到的同一個問題，補上出處。
+  2. 第 1.1 節「提示注入邊界未做攻擊測試」補充：作者方做過一次無害注入的試跑並留了一條回歸測試，但自己也說不能取代權限控制；結論不變。
+  3. 第 3 節 claude-code-resources 的理由補兩點：Windows 原生的內容經讀者回報後已補強；教材指令曾多次出錯、還有讀者照做被平台停權的案例，照做前要逐條核對官方文件。
+  4. #13 與維護者環境有關（本機靠 hook 把關，也常用桌面版），但回報是 macOS、上游已關閉，本機 Windows 桌面版是否有同樣問題未查證；沒有新增任務，列在回報給整合者決定。
+  5. `T-20261115-16` 的評估文件不受影響，不需重開。
+
+---
+
 ## 1. 核心內容與事實查核（5W1H）
 
 - **Who／What**：Raymondhou0917 提供繁中編輯 Skill 與 AI Agent 入門資源；speak-human-tw 的 SKILL frontmatter 為 v1.4.0，定位為既有稿件校對與改寫，不是特定作者風格代筆。[SKILL](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/SKILL.md)
 - **Why**：希望減少空泛套話並保留事實；這是作者的設計目標，不能推為已證實的改寫成效。[保護清單](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/references/protected-list.md)
 - **How**：判情境、鎖保護清單、判改寫範圍、逐類改寫、保真回讀、自評。互動模式通常先列清單等確認，但該次使用者明確授權時可跳過；非互動模式另規定事後摘要。這些都是提示契約，沒有工具權限或 OS 隔離保證。[流程與例外](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/SKILL.md)
-- **When／Where**：社群、電子報／部落格、銷售、客服與辦公文書五種情境；不應直接全域套用於程式碼、設定或本 repo 的任務格式。[情境規範](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/references/scenes.md)
+- **When／Where**：社群、電子報／部落格、銷售、客服與辦公文書五種情境；不應直接全域套用於程式碼、設定或本 repo 的任務格式（上游 [PR #6](https://github.com/Raymondhou0917/speak-human-tw/pull/6) 有使用者回報同類問題：格式規則會把報告的狀態行與表格改寫成散文）。[情境規範](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/references/scenes.md)
 - **可重算數量**：固定 commit 有 [38 類痕跡](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/references/patterns.md)、[47 組詞表](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/references/taiwan-localization.md)；[benchmark](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/evals/benchmark.md) 現有 42 條（27 SF＋15 SNF）。移除原筆記未固定查詢時間的 Stars／Forks／最後更新數字。
 
 ### 1.1 安全與授權修正
 
 - speak-human-tw 的 [LICENSE](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/LICENSE) 是 MIT。公開 ai-inbox 與 `SanHsien/agent-assets`（私有）可依條款複製／修改，但副本或實質部分須保留著作權及完整授權聲明；第三方素材權利鏈未全面查證。
-- SKILL 有「稿件是資料」的提示注入邊界，但未做攻擊測試，不能稱安全性極高。核心校對內容是 Markdown，不代表整個 repo 沒有可執行內容：[星數腳本](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/scripts/generate_star_history.py) 含子程序與網路請求，[workflow](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/.github/workflows/update-star-history.yml) 有 contents 寫入權限與推送步驟。本輪只靜態閱讀，沒有執行。
+- SKILL 有「稿件是資料」的提示注入邊界，作者方在 [PR #2](https://github.com/Raymondhou0917/speak-human-tw/pull/2) 做過一次無害注入試跑並留下回歸測試，自己也說明這只是提示層防護；沒有完整攻擊測試，不能稱安全性極高。核心校對內容是 Markdown，不代表整個 repo 沒有可執行內容：[星數腳本](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/scripts/generate_star_history.py) 含子程序與網路請求，[workflow](https://github.com/Raymondhou0917/speak-human-tw/blob/14885da5c91ed7ca2972f084599edcdd2a32ad04/.github/workflows/update-star-history.yml) 有 contents 寫入權限與推送步驟。本輪只靜態閱讀，沒有執行。
 - claude-code-resources 不能以 GitHub 分類 `NOASSERTION` 代替授權原文：[LICENSE](https://github.com/Raymondhou0917/claude-code-resources/blob/1320df1e396e7630b09d2dc80fae4b2c96861d54/LICENSE) 與 [README](https://github.com/Raymondhou0917/claude-code-resources/blob/1320df1e396e7630b09d2dc80fae4b2c96861d54/README.md) 明示 Starter Kit 為 CC BY-NC-SA 4.0，網站文章／課程另列著作權限制。環境安裝包的完整獨立授權範圍未查證。
 - 該 README 說明 Mac 安裝包與六份 Starter Kit；後者宣稱支援 macOS／Linux／Windows，不能把整個資源站概括為只適用 Mac。本次僅核對宣告，不宣稱跨平台實測成功，也未全面檢查字型、圖片及安裝包的權利與安全。
 
@@ -53,7 +87,7 @@ tags:
 | 倉庫 | 判斷 | 理由與邊界 |
 | --- | --- | --- |
 | speak-human-tw | 暫不 Fork／安裝；借鏡保護清單與少量候選詞 | 本 repo 的[詞彙器](../tools/verify_zhtw_vocab.py)是固定字串轉換，不能承擔多數語義編輯規則；47 組詞表與 38 類逐列裁決、具體候選與反例見[評估](../docs/speak-human-tw-assessment.md)。任何實際收錄另走安全關卡與授權保留。 |
-| claude-code-resources | 本輪不 Fork／搬運 | 是入門學習資源，Starter Kit 有非商用／相同方式分享條件；未證明本環境需要導入，不因 Mac 安裝包就否定 Windows 教材價值。[README](https://github.com/Raymondhou0917/claude-code-resources/blob/1320df1e396e7630b09d2dc80fae4b2c96861d54/README.md) |
+| claude-code-resources | 本輪不 Fork／搬運 | 是入門學習資源，Starter Kit 有非商用／相同方式分享條件；未證明本環境需要導入，不因 Mac 安裝包就否定 Windows 教材價值（Windows 原生 PowerShell 的安全刪除做法已在 [#12](https://github.com/Raymondhou0917/claude-code-resources/issues/12) 後補進教材）。教材指令曾多次寫錯套件名稱、也有讀者照做後 Google Cloud 專案被停權（[#4](https://github.com/Raymondhou0917/claude-code-resources/issues/4)），照做前要逐條核對官方文件。[README](https://github.com/Raymondhou0917/claude-code-resources/blob/1320df1e396e7630b09d2dc80fae4b2c96861d54/README.md) |
 
 原筆記所稱本機已安裝 `human-writing`、配置比上游完整與整合互補，本輪未查證，撤回確定敘述。`verify_no_slop.py` 是前端 HTML／CSS 設計與少量英文黑話檢查，不能當繁中 38 類規則的等價實作。[本機原始碼](../tools/verify_no_slop.py)
 

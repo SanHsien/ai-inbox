@@ -6,6 +6,20 @@
 
 ---
 
+## 0. 名稱出處與本 repo 的改編
+
+5W1H → CQR → KSU 三層流程出自王啟樺的學術閱讀框架（[來源筆記](../notes/2026-10-17-academic-reading-framework.md)，依據是作者貼文的 10 張輪播圖）。**本範本沿用三層流程與縮寫，但 CQR、KSU 各欄位的定義是本 repo 的改編，不是作者原版。** 引用本範本時請用下表分清楚：
+
+| 縮寫 | 作者原版（圖 5、圖 7） | 本 repo 改編版（本範本採用） | 差異 |
+| :--- | :--- | :--- | :--- |
+| **CQR** | **C**laim（作者的核心主張）／**Q**uestion（有哪些疑問或漏洞）／**R**elation（與我的研究有何關聯） | Claim（主張）／Evidence（證據）／Reasoning（推論） | 改編版參考 Toulmin 論證模型，專查證據能不能推出主張，涵蓋原版的 Claim 與 Question；原版的 Relation 沒有獨立欄位，由 KSU 的 Usable 承接 |
+| **KSU** | **K**ey Points（關鍵點，1–2 句總結）／**S**upporting Evidence（支撐證據，2–3 個）／**U**se Cases（應用情境） | Searchable（可搜尋）／Recyclable（可復用）／Usable（可應用待辦） | 「可搜尋、可回收、可應用」在原貼文是筆記該有的品質（圖 8 寫的是「可搜尋、可引用、可發展」），不是 K、S、U 三個字母的意思；改編版把這三項品質直接當成欄位，所以字母對不上（改編版沒有 K） |
+| **5W1H** | Who／What／When／Where／Why／How 六問（圖 3） | 同六問，另加 Key Metrics | Key Metrics 是本 repo 加的 |
+
+要照作者原版做筆記時：CQR 寫主張、疑問、關聯三項；KSU 寫 1–2 句總結、2–3 個證據、下一個應用情境。
+
+---
+
 ## 1. 閱讀與知識沉澱流水線架構 (ASCII 流程圖)
 
 ```text

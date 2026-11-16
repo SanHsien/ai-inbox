@@ -48,7 +48,7 @@
 | 第四條叫 "Goal-Driven Verification" | 原 repo 叫 **Goal-Driven Execution**，口號是 "Define success criteria. Loop until verified." 本文沿用原名，需要指本 repo 的檢查時才說「驗證」。 |
 | Karpathy 指出四種毒性偏差，第四種是「自欺欺人：程式剛生出來就聲稱已修好」 | Karpathy 貼文沒有這一項。貼文談的是假設、複雜化、順手改動；「測試先行、給成功標準」是他講的槓桿，不是在講模型謊報完成。「謊報完成」是工程上真實存在的風險，但不應掛 Karpathy 的名。 |
 | 上下文超過 50K／100K token 後會遺忘 Surgical Changes | **未驗證**。找不到一手數據。本文不引用這兩個數字。 |
-| 來源是 Threads 貼文（@easyanythinghk） | **未驗證**。本次沒有讀到該貼文。Karpathy 原文與 forrestchang repo 已直接查證，本文不依賴 Threads 貼文。 |
+| 來源是 Threads 貼文（@easyanythinghk） | 撰寫本文時沒有讀到該貼文。2026-11-16 重審來源筆記時已讀：貼文寫「Karpathy 親手整理」是錯的，留言有人更正出處、貼文作者也認同（見來源筆記第 0 段），與第 1 節的查證結果一致。本文仍只依賴直接查證過的 Karpathy 原文與 forrestchang repo。 |
 | 「社群爆紅」 | 2026-11-02 以 GitHub API 查到該 repo 約 22.8 萬 star，事實成立；但 star 數不代表規則有效，本文沒有找到任何對照實驗。 |
 
 > 這份文件的立場：四原則是好的**檢查清單**（出處是 Karpathy 的觀察），但它們是寫給人與模型讀的文字。要讓它們在長對話後仍然成立，需要機械檢查；而機械檢查只能涵蓋其中可量測的部分。

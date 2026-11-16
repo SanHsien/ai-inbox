@@ -10,6 +10,11 @@ status: done
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "feedback-desk 開源 Agent 工單系統"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "Facebook 貼文顯示 7 則留言，未登入只讀到 5／7 則；圖看了 2／2 張"
+source_images: 2
+source_replies: 5
 tags:
   - feedback-desk
   - ai-ticketing
@@ -34,6 +39,25 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀 Facebook 社團貼文（文字、1 張作者圖、可見留言 5 則／貼文顯示 7 則）、作者部落格專文（1 張封面圖、無留言區）與 GitHub repo 的 issue（3 則，都沒有留言）。
+
+- **作者圖片**：
+  - 貼文圖 1：客戶端「問題清單」畫面（示範專案是老師回報題庫問題）。上方用三行白話解釋狀態——待處理是已收到回報、待審核是開發者已改好並寫了調整說明請對方確認、已完成是對方確認修復；清單欄位有編號、標題、狀態下拉、建立者、圖片、調整說明、建立日期、最後更新與操作，可切換列表／看板，共 4 張單（待處理 1、待審核 1、已完成 2）。
+  - 部落格封面圖：標題卡（開源工具、客戶工單與 AI 交接），沒有技術資訊。
+- **作者留言補充**：
+  - 回覆方世弘「是 backend + http + cli 嗎」：是，再多一個 MCP；一個 Cloudflare Worker（Hono）同時提供 Web UI、HTTP API 與遠端 MCP，資料存 D1、附件存 R2；CLI 用 TypeScript 寫，日常操作打 HTTP API，部署指令包一層 wrangler。
+  - 留言放 GitHub 與部落格連結。
+- **網友留言重點**：蔡蘭釗表示要試用；沒有實測回報或反駁。GitHub issue 有三則：#1 原生 Windows 下 CLI 子程序參數沒有跳脫，`mcp install` 與 `bootstrap` 會失敗；#2 Laravel 分支的自動處理同時傳兩個互斥參數時 Codex 拒絕執行；#3 是新增 Docker 自行託管的 PR（未合併）。
+- **對分析的影響**：
+  - 貼文寫明作者只用 Claude Code 與 Codex 實測過，**OpenClaw 與 Hermes Agent 的接法是照官方 MCP 文件寫的、還沒實測**；原筆記把四種 Agent 並列為已支援，第 1 節已補上這個區別。
+  - 貼文提到有兩個版本（Cloudflare 版、功能較多的 Laravel 主機版），原筆記只寫 Cloudflare 版，已補。
+  - 第 3 節補上 Windows 限制：維護者是原生 Windows 環境，上游 issue #1 顯示 CLI 的 `mcp install`、`bootstrap` 在原生 Windows 會失敗，導入前要先確認是否修復。
+  - repo 現況（2026-11-16）：38 星、MIT、近期仍有更新。已完成任務都是規格與範本，不受影響。
+
+---
+
 ## 1. 核心內容摘要：feedback-desk 的背景與架構全貌（Executive Summary）
 
 在 AI 接案與多專案開發場景中，通常同時存在「非技術客戶」、「人類開發團隊」與「多款 AI Coding Agents（Claude Code、Codex、Hermes Agent、OpenClaw 等）」。傳統協同模式面臨嚴重的三方溝通摩擦：
@@ -42,7 +66,7 @@ tags:
 3. **AI 協同孤島**：多個 AI 同時介入時缺乏防撞單機制；中途切換模型（如從 Claude Code 切換至 Codex）時上下文丟失，缺乏統一的交接紀錄（Handoff）。
 4. **模型黑話（AI Slop）泛濫**：AI 向客戶回報時充斥程式碼、檔名與內部架構詞彙，客戶看不懂究竟改了什麼、該如何驗收。
 
-為了解決這些問題，王士麟開源了 **feedback-desk**（MIT 授權），以極簡架構打通非技術客戶與多 Agent 協同的最後一哩路：
+為了解決這些問題，王士麟開源了 **feedback-desk**（MIT 授權），以極簡架構打通非技術客戶與多 Agent 協同的最後一哩路。有兩個版本：只用 Cloudflare 免費方案的 Cloudflare 版，以及架在自己主機、功能較多的 Laravel 版。作者自述只用 Claude Code 與 Codex 實測過；OpenClaw 與 Hermes Agent 的接法是照官方 MCP 文件寫的，尚未實測（見第 0 節）。Cloudflare 版架構如下：
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -124,6 +148,7 @@ tags:
   2. **規格文檔化與外部裁判**：
      - 將 `feedback-desk` 的 MCP 工具調用契約、狀態流轉硬閘門、以及去 AI 腔提示詞模板規格化，納入 `ai-inbox` 的標準文檔與模板庫。
      - 撰寫自動化外部裁判腳本，靜態檢查工單交接格式與調整說明的合規性。
+  3. **導入前的 Windows 限制**（2026-11-16 補）：上游 [aixwangtw/feedback-desk#1](https://github.com/aixwangtw/feedback-desk/issues/1) 回報原生 Windows 下 CLI 子程序參數沒有跳脫，`mcp install` 與 `bootstrap` 會失敗（查證當天仍開啟）。維護者是原生 Windows 環境，要實際部署得先確認這則已修，或改用手動設定 MCP。
 
 ---
 

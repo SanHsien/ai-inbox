@@ -10,6 +10,11 @@ status: archived
 cluster: "1"
 cluster_role: "模型路由與配額分流"
 short_title: "/model opusplan 與 /advisor 雙軌架構"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "貼文顯示 15 則回覆，未登入只讀到 11／15 則；貼文無圖（0／0 張）"
+source_images: 0
+source_replies: 11
 tags:
   - model-routing
   - claude-code
@@ -28,12 +33,32 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：貼文文字與未登入看得到的 11 則留言（含作者 5 則回覆）都讀過。貼文顯示 15 則回覆，其餘 4 則未登入看不到。
+
+- **作者圖片**：無。這是純文字貼文。
+- **作者留言補充**：5 則都是「感謝補充／分享」，等於認同下面網友的更正，沒有自己加新內容。
+- **網友留言重點**：
+  - `ryan_ilili`：opusplan 一年前就有了。`b95505017` 附上 Claude Code 團隊成員在 X 的貼文連結，說去年（2025 年）8 月就有。→ 貼文開頭「最近 Claude 加了一個新的 model 叫 opusplan」**不對**，作者也回了感謝補充。
+  - `kaka.terminal`：opusplan 是看模式切換的——在 plan mode 裡才用 Opus，退出來動手做就換 Sonnet；要讓 Opus 出場得先按 Shift+Tab 進 plan mode 再下指令。
+  - `alert.human`：除了切模型，開 prompt caching 也省，規劃階段的 context 在執行階段被反覆引用時命中快取。（這則語氣像自動回覆帳號，內容是常識，未另外查證。）
+  - `an.ler.13`：context 管理與 workflow 規劃做好，省 token 的效果也很明顯。
+- **對分析的影響**：
+  - 1.1 節補上「opusplan 不是新功能，2025 年 8 月就有」，並補貼文原有但原筆記漏掉的背景：作者說舊的 4 系列模型不穩，以前是「Fable 設計、Opus 執行」，Opus 5 之後變穩才改成現在的組合。
+  - 1.2 節第 1 點補上觸發條件：不進 plan mode，opusplan 全程就是 Sonnet。原筆記寫「自動啟用旗艦模型」容易讓人以為不用切模式。
+  - 兩個任務原本就是「不做」，結論不變。`T-20261017-12` 的做法（別名帶 `--model opusplan`）若日後重開，要記得光設模型不夠，還得進 plan mode。
+
+---
+
 ## 1. 核心內容摘要與模型分工機制
 
 ### 1.1 核心主張與技術痛點
 - **痛點**：AI Coding Agent 每天頻繁執行大量讀檔、改字、跑測試等機械性工作。若全時段無腦使用頂級旗艦模型（如 Opus），Token 消耗速度極快、容易撞到配額上限並引發「Token 焦慮」；但若全時段降級使用輕量模型（如 Sonnet 或 Flash），又容易在架構設計或複雜重構時「降智」出錯。
 - **解法（模型動態分工）**：**「大腦設計用頂級模型，四肢執行交給快省模型」**。
   - 作者分享當前最穩定的組合為：**`/model opusplan`** 搭配 **`/advisor fable`**，聲稱可覆蓋 90% 的複雜工程需求，兼顧頂級智商與成本控制。
+  - **背景（貼文原文）**：作者說這種分工概念早就有人做，但舊的 4 系列模型不夠穩，複雜工作他以前是「Fable 設計、Opus 執行」；Opus 5 之後穩定度變高，日常使用上 Opus 5.5 與 Fable 5.1 差異不大，才改用現在的組合。
+  - **更正（留言）**：貼文說 opusplan 是「最近新加的」，網友指出 2025 年 8 月就有了，作者回覆認同。
 
 ### 1.2 兩大分工維度對比（階段分工 vs 決策求助）
 
@@ -62,6 +87,7 @@ tags:
 
 1. **`opusplan`（Plan-then-Execute 階段分工）**：
    - 在計畫階段（Plan Mode）自動啟用旗艦模型（如 Opus）做深度推理與架構拆解；一旦計畫拍板進入實作，自動切換為高性價比模型（如 Sonnet）寫代碼與執行驗收。
+   - **觸發條件（留言補充）**：切換是跟著模式走的。要先按 Shift+Tab 進 plan mode，Opus 才會出場；沒進 plan mode 直接下指令，全程都是 Sonnet。
 2. **`advisor`（On-demand Escalation 顧問模式）**：
    - 輕量主力模型在執行過程中，遇到關鍵決策點時主動向後台頂級顧問（如 Fable / Opus）請益，避免整段 Session 浸泡在昂貴模型上下文。
 

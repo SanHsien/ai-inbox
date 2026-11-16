@@ -10,6 +10,9 @@ status: archived
 cluster: 2
 cluster_role: "MCP圖資與程式化動畫"
 short_title: "RunwayMCP拼貼動畫Prompt"
+source_review: unavailable
+source_reviewed_at: 2026-11-16
+source_review_note: "source_url 是 MCP 端點不是貼文；原社群貼文與示範短片沒有留下連結或截圖，圖片、影片與留言無從查看"
 tags:
   - runway-mcp
   - motion-graphics
@@ -32,6 +35,17 @@ tags:
 > **MCP 實查結果**：
 > Runway 官方有兩個入口，用途不同：一般使用者的圖影生成 MCP 見 [runway.com/mcp](https://runway.com/mcp)；開發者端見 [dev.runwayml.com/mcp](https://dev.runwayml.com/mcp)（有客戶端連線設定）與 [dev.runwayml.com/agents](https://dev.runwayml.com/agents)，不可混為同一介面。託管端點 `https://mcp.runwayml.com/mcp` 查證時回應 401，只證實需要驗證；OAuth 連線與工具清單未查證。開源倉庫 [`runwayml/runway-api-mcp-server`](https://github.com/runwayml/runway-api-mcp-server) 已於 2026-09-30 封存，README 引導改用上述入口，舊實作僅供歷史參考。
 > 本篇 `source_url` 是 MCP 端點，不是社群貼文；原貼文、影片與逐字稿都沒有可回溯來源，以下示範內容與提示詞皆為社群轉述，未查證。
+
+---
+
+## 0. 原始資料盤點
+
+> 貼文文字、作者上傳的每張圖片（含輪播）、作者留言補充、網友留言（展開到底）都要看過，見 AGENTS.md 第 3 節。
+
+- **作者圖片**：看不到。本篇 `source_url` 是 Runway 的 MCP 端點（需驗證，回 401），不是社群貼文；原貼文與那支 60 秒示範短片都沒有留下連結或截圖。
+- **作者留言補充**：看不到（同上）。
+- **網友留言重點**：看不到（同上）。
+- **對分析的影響**：沒有新資料。第 1 節的示範內容、Prompt 模板與「推理強度設中間值」仍全部是未查證的社群轉述，沒有成品畫面可以判斷剪報風格、文字是否亂碼或節奏好壞；結論不變。日後找到原貼文再補看影片與留言。
 
 ---
 

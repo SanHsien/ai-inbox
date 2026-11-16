@@ -10,6 +10,9 @@ status: archived
 cluster: "1"
 cluster_role: "跨 CLI 與階層派工"
 short_title: "Claude Code四角色動態調用原則"
+source_review: unavailable
+source_reviewed_at: 2026-11-16
+source_review_note: "2026-11-16 開原貼文網址兩次（threads.com 與 threads.net）都被導回 Threads 首頁並帶 error=invalid_post；作者個人頁未登入會導到登入頁。貼文可能已刪除或改為不公開。"
 tags:
   - claude-code
   - agent-dispatch-rules
@@ -32,6 +35,20 @@ tags:
   - [`2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](https://github.com/SanHsien/claude-context-audit/blob/main/notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
   - [`notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md`](./2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)（Magpie 本地 AI 模型網關智慧路由）
   - [`notes/2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md`](./2026-10-28-karpathy-claude-md-four-rules-engineering-hardening.md)（Karpathy 專案規範四大硬閘門）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：原貼文已讀不到。開 `https://www.threads.com/@0xalpha.ai/post/DeQTEQwE7Gz` 兩次（含 threads.net 網域）都被導回 Threads 首頁，網址帶 `error=invalid_post`；作者個人頁未登入會被導到登入頁。同作者前一篇（[`2026-10-31-claude-code-hierarchical-multi-model-orchestration`](./2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)）也是同樣狀況。
+
+- **作者圖片**：看不到。貼文開頭提到「影片裡的四個角色」，表示這串是接在一支影片之後，影片與任何附圖都沒看到。
+- **作者留言補充**：看不到。貼文帶 🧵 記號，原本應該有後續串文，內容未知。
+- **網友留言重點**：看不到。
+- **對分析的影響**：
+  - 本篇唯一留存的原文是「分析主題」裡引用的那段話（四個角色各一句、加上「強模型不要拿去做雜事」）。第 1、2 節的狀態機圖、三個觸發條件、布林／列舉輸出格式，都是分析者從這幾句話延伸出來的，不是作者原話。
+  - 2.2 節「單次解決率提升至 85% 以上」與 2.4 節「延遲小於 200ms、徹底免疫幻覺」在留存的原文裡沒有出處，無法查證，已在該處加註；請勿引用這兩個數字。
+  - 沒有新資料可以修正或補充，任務維持關閉。
 
 ---
 
@@ -104,7 +121,7 @@ tags:
 ### 2.2 準則二：Sonnet 規格驅動開工（Spec-Driven Invocation）
 
 - **定義**：Sonnet 不參與前期發散性討論，只有在「輸入具備明確檔案路徑、清晰介面定義與可驗證的測試命令」時才被喚醒。
-- **防止幻覺**：若規格模糊，Sonnet 容易依賴模型先驗知識胡亂猜測，產生大量「看起來合理但脫離專案現狀」的無效代碼；強制「見規格才開工」可將 Sonnet 的單次解決率（First-Pass Rate）提升至 85% 以上。
+- **防止幻覺**：若規格模糊，Sonnet 容易依賴模型先驗知識胡亂猜測，產生大量「看起來合理但脫離專案現狀」的無效代碼；強制「見規格才開工」可將 Sonnet 的單次解決率（First-Pass Rate）提升至 85% 以上（2026-11-16 重審：這個數字在留存的原文裡沒有出處，原貼文已讀不到，無法查證）。
 
 ### 2.3 準則三：Fable 里程碑檢查點（Milestone-Only Evaluation）
 
@@ -122,7 +139,7 @@ tags:
   - *「這個改動是否超過 5 個檔案的爆破半徑？」* -> `true`
   - *「這條測試指令失敗是否屬於暫態網路問題？」* -> `false`
   - *「當前任務應該路由至 Daily-Coding 還是 Long-Context？」* -> `"daily-coding"`
-- **工程效益**：利用輕量模型（如 Haiku 或 Flash）搭配 JSON Schema 嚴格限制（Structured Outputs），解析零開銷、延遲小於 200ms、且徹底免疫幻覺。
+- **工程效益**：利用輕量模型（如 Haiku 或 Flash）搭配 JSON Schema 嚴格限制（Structured Outputs），解析零開銷、延遲小於 200ms、且徹底免疫幻覺（2026-11-16 重審：延遲數字與「免疫幻覺」沒有出處，無法查證；結構化輸出只保證格式，不保證判斷正確）。
 
 ---
 

@@ -18,6 +18,8 @@ skip_code=True（CLI 預設）先保護程式碼、成對中文引號與 URL／�
 未加引號的產品名稱仍無專名保護；不判斷標題、語義、標點或最終成品佔位。
 兩側字集仍可能誤排除罕見組合（例如「接收視頻寬高」、「回收視頻道具」）。
 「支持」未加入自動替換。skip_code=False 保留既有全文替換模式。
+「數位」（digital）不整詞替換：只收「同樣的數位」「關鍵數位」兩個數字被誤轉的片語，
+後接「轉、簽、相…」等 digital 複合詞開頭字時不動；其餘位置的誤轉抓不到，字集外的複合詞也可能誤改。
 """
 
 import argparse
@@ -59,6 +61,7 @@ GLOBAL_VOCAB_RULES: Tuple[Tuple[str, str, str], ...] = (
     ("中間件", "中介軟體", "技術術語：middleware"),
     ("重定向", "重新導向", "技術術語：redirect"),
     ("摁下", "按下", "台灣繁體中文慣用動詞（禁用大陸用語「摁下」）"),
+    ("粘貼", "貼上", "台灣慣用「貼上」（paste）；「粘貼」為大陸用語"),
 )
 
 # 第二階段：OpenCC (cn -> tw2) 二次轉換退化修補與語境多義詞還原（源自 doggy8088/answer-me-with-html@zh-tw vocab.mjs）
@@ -76,6 +79,10 @@ DEGRADED_AND_CONTEXT_RULES: Tuple[Tuple[str, str, str], ...] = (
     ("渲染時會打印", "渲染時會輸出", "終端機 stdout 語境應為「輸出」而非紙本「打印/列印」"),
     ("並打印路徑", "並輸出路徑", "終端機 stdout 語境應為「輸出」"),
     ("參考檔案", "參考文件", "Documentation 語境被轉為「參考檔案」，應還原為「參考文件」"),
+    # 「數字」被誤轉成「數位」：台灣的「數位」是 digital 的正確用詞，不可整詞替換，只收片語。
+    # 後面接「轉型／簽章／相機…」時是 digital 的意思，由 _CONTEXT_EXCEPTIONS 排除。
+    ("同樣的數位", "同樣的數字", "簡體「数字」（number）被誤轉為「數位」（digital）"),
+    ("關鍵數位", "關鍵數字", "簡體「数字」（number）被誤轉為「數位」（digital）"),
 )
 
 ALL_RULES: Tuple[Tuple[str, str, str], ...] = GLOBAL_VOCAB_RULES + DEGRADED_AND_CONTEXT_RULES
@@ -89,7 +96,11 @@ _AUTOLINK_RE = re.compile(r"<(?:https?://|ftp://|(?<![A-Za-z0-9_])www\.)[^<>\s]+
 _QUOTE_LIMIT = 200
 _REFERENCE_RE = re.compile(r"(?m)^ {0,3}\[(?!\^)[^\]\n]+\]:[ \t]*(<[^<>\n]+>|[^\s]+)")
 # Match immediate neighbours, independent of the surrounding sentence.
+# 「數位」後面接這些字時是 digital 複合詞的開頭（數位轉型、數位簽章、數位相機…），不是數字。
+_DIGITAL_COMPOUND_NEXT = "轉化簽相技基資科服工平產經內媒行身治建政憑金貨學落孿素人能發部版時電訊影音板裝設"
 _CONTEXT_EXCEPTIONS = {
+    "同樣的數位": (("", _DIGITAL_COMPOUND_NEXT),),
+    "關鍵數位": (("", _DIGITAL_COMPOUND_NEXT),),
     "視頻": (("電衛監檢透收巡探注審", "道率譜段寬繁"),),
     "服務器": (("", "材"),),
     "軟件": (("柔鬆", "數"),),
@@ -443,10 +454,13 @@ def _main(argv: Optional[Sequence[str]] = None) -> int:
 
     if args.fix is not None:
         for fpath in fix_files:
-            orig = fpath.read_text(encoding="utf-8")
+            # newline="" 保留原檔換行：Windows 上預設的文字模式會把 LF 全部寫成 CRLF。
+            with fpath.open(encoding="utf-8", newline="") as handle:
+                orig = handle.read()
             fixed = apply_zhtw_vocab(orig, skip_code=True)
             if fixed != orig:
-                fpath.write_text(fixed, encoding="utf-8")
+                with fpath.open("w", encoding="utf-8", newline="") as handle:
+                    handle.write(fixed)
                 print(f"[FIXED] {fpath}")
 
     if args.check is not None:

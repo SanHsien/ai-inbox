@@ -10,6 +10,11 @@ status: archived
 cluster: "3"
 cluster_role: "螢幕感知與瀏覽器代理"
 short_title: "clearcam開源智慧NVR與VLM摘要"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "README 15 張截圖只放大看了 2 張，其餘 13 張只看縮圖總覽；Threads 貼文圖 1／1 張看過，留言 0／0 則"
+source_images: 3
+source_replies: 0
 tags:
   - clearcam
   - smart-nvr
@@ -36,6 +41,27 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：Threads 貼文、貼文連到的 MeekShark 評測全文、GitHub README（文字與圖）都看過。
+
+- **作者圖片**：
+  - Threads 貼文只有 1 張圖：GitHub 的 repo 預覽卡（`roryclear/clearcam`，1 位貢獻者、0 個 issue、約 2k 星、212 個 fork），沒有額外資訊。
+  - README 共 15 張截圖，放大看了 2 張關鍵圖，其餘只看過縮圖總覽（網頁主控台的攝影機畫面與車輛事件縮圖牆、iOS App 的即時畫面與事件列表、幾組通知與對應片段）：
+    - `notif.jpg`：手機鎖定畫面上兩則通知，一則是「AI Summary (Front)」加一句英文畫面描述，另一則是「Event Detected (Front)／Open to View」。可見 AI 摘要是在一般事件通知之外另發的一則。
+    - `zone.PNG`：網頁的「Edit Zone」對話框，在畫面上點出多邊形偵測區，另有「只偵測區域外」勾選框與偵測門檻（圖中為 50%）。
+- **作者留言補充**：無。貼文本身只有一段簡介加 MeekShark 連結。
+- **網友留言重點**：無。貼文底下沒有任何回覆（互動數只有讚 47、轉發 10、分享 65，主文之後直接就是「相關串文」）。MeekShark 文章的留言數為 0。GitHub open issue 為 0。
+- **對分析的影響**：對照 README 與 MeekShark 全文後，修正與補充如下：
+  1. **Windows 目前不能直接跑**：README 的系統需求把 Windows 劃掉，註明還差一個 ffmpeg 修正；只列 Mac、Linux、ffmpeg、Python 3.11 以上。原筆記沒寫，已補進第 1 節。維護者的主機是 Windows，這是「不做」之外另一個實際門檻。
+  2. **遠端查看與官方手機推播是付費功能**：README 的 Clearcam Premium 包含遠端看即時畫面、事件通知、遠端看事件片段與端到端加密；自架核心與「通知網址改指自己的服務」免費。原筆記把 App 推播與端到端加密遠端查看寫成開源即有，已在架構圖下方加註。
+  3. **加速參數只有 `DEV=AMD`、`DEV=NV` 與 `BEAM=2`**：README 沒有 `DEV=METAL`，也沒提 ROCm、OpenCL；第 2.1 節已改。
+  4. **以下內容在 README、MeekShark 都找不到出處，是原分析的推演**，已在各段標明：事件前回溯 5 秒、SQLite 中繼資料庫、「儲存空間利用率提升 90%」「程式碼精簡 90%」、第 2.4 節的 Webhook JSON 欄位（README 只說通知網址可改，並附一支 Pushover 範例伺服器 `utils/sample_server.py`，沒有公布酬載格式）。
+  5. 星數：貼文與 MeekShark 寫 2,120，2026-11-16 查 GitHub API 為 2,660；授權 GPL-3.0。
+  - 三項任務維持「不做」：原因（沒有攝影機與部署需求）沒變，再加上 Windows 尚未支援。
+
+---
+
 ## 1. 核心內容摘要：問題背景與邊緣 NVR 管線拓撲（Executive Summary）
 
 在家庭安全、小型辦公室與邊緣物理環境監控領域，使用者通常面臨兩大棘手痛點：
@@ -47,7 +73,8 @@ tags:
 - **微型推論引擎 tinygrad（摒棄龐大 PyTorch）**：採用 George Hotz 打造的輕量級深度學習編譯框架 tinygrad，免除動輒數 GB 的 PyTorch 與複雜 CUDA 版本環境依賴，原生支援 AMD GPU、NVIDIA GPU 與 Apple Silicon（Metal）硬體加速。
 - **雙階 CV 檢測追蹤（YOLOv9 + OC-SORT）**：僅在畫面中識別出特定目標（人、車輛、寵物）並發生實際位移軌跡時，才動態觸發事件剪輯與短影片保存，儲存空間利用率提升 90% 以上。
 - **多模態 VLM 自然語言事件摘要（Qwen3 VL）**：事件觸發後，截取關鍵幀餵給 Qwen3 VL 模型，自動產出一秒看懂的自然語言描述（例如「快遞員在走廊放下包裹後離開」、「一輛黑色轎車倒車停入車庫」），免去點開影片的確認成本。
-- **開放生態與自定義通知（Bring Your Own Notifications）**：支援 Webhook 介面，將結構化事件與文字摘要直接派發至 Home Assistant、Pushover、n8n、Telegram 或自建 AI Agent，作為物理世界感知觸發器。
+- **開放生態與自定義通知（Bring Your Own Notifications）**：通知要送到哪個網址可以在設定裡改，README 點名 Home Assistant、Pushover、n8n 或任何自己的程式（Telegram、AI Agent 是本筆記的延伸舉例）。
+- **平台與收費（2026-11-16 補）**：README 的系統需求只列 Mac 與 Linux，Windows 被劃掉（還差一個 ffmpeg 修正）；另需 ffmpeg 與 Python 3.11 以上。自架核心免費（GPL-3.0）；遠端看即時畫面與事件片段、官方 App 的事件推播屬於付費的 Clearcam Premium。
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -85,14 +112,14 @@ tags:
   - 傳統 CV 專案嚴重依賴肥大的 PyTorch（動輒 3~5GB 容器鏡像）與特定的 cuDNN 版本，在小型主機（如 N100 小主機、Mac Mini）上部署極易發生資源匱乏。
   - clearcam 全面基於 `tinygrad` 實作 YOLOv9 與 Qwen 模型推論，代碼精簡度高達 90%，冷啟動速度顯著提升。
 - **多平台硬體加速指令（Multi-Backend Acceleration）**：
-  - 透過環境變數無縫切換後端硬體：`DEV=NV`（NVIDIA CUDA）、`DEV=AMD`（AMD ROCm/OpenCL）、`DEV=METAL`（Apple Silicon M 系列），甚至支援 `BEAM=2` 啟用 tinygrad 的核心搜尋編譯優化（Kernel Search Optimization），大幅降低 CPU 佔用。
+  - README 寫到的只有兩種：CPU 被拿去跑推論時改用 `DEV=AMD` 或 `DEV=NV`；`BEAM=2` 可再提高效能，代價是第一次執行要等。README 沒有 `DEV=METAL`，也沒有提 ROCm、OpenCL（2026-11-16 依 README 更正）。
 
 ### 2.2 規範二：YOLOv9 + OC-SORT 多目標連續追蹤與抗噪機制
 - **OC-SORT（Observation-Centric SORT）算法優勢**：
   - 傳統 Kalman 濾波在目標被短暫遮擋（如車輛經過路樹、快遞員被門柱擋住）時，極易丟失 Track ID 或產生 ID Switch，造成重複告警。
   - OC-SORT 結合觀測值中心動量（Observation-Centric Momentum）與虛擬軌跡平滑，即使目標在畫面中停留靜止或短暫遮蔽，也能維持同一軌跡識別。
 - **動態事件錄製與 ROI 感興趣區域過濾**：
-  - 只有物體進入預先劃定的 ROI Zone（例如家門口前 3 公尺走道、車庫捲門前方），系統才觸發事件錄像，自動向前回溯緩衝區 5 秒並向後錄製至物體離開，徹底擺脫全天候傻錄。
+  - 網頁的「Edit Zone」可在畫面上點出多邊形偵測區，另有「只偵測區域外」選項與偵測門檻（README 截圖可見）。「向前回溯 5 秒、錄到物體離開」是原分析的推演，README 沒有寫。
 
 ### 2.3 規範三：Qwen3 VL 視覺語言模型之事件語意摘要管線
 - **告別「無效警報疲勞（Alert Fatigue）」**：
@@ -106,7 +133,7 @@ tags:
 - **錄像不出家門（Local Data Sovereignty）**：
   - 所有 RTSP 串流、MP4 錄像檔案、SQLite 元數據與 VLM 推論完全在本地區域網運行，不經過任何中心化雲端伺服器。
 - **Agent 與自動化工作流聯動**：
-  - 內建開放的 Notification URL 設置，事件觸發時以標準 JSON 格式拋出 Webhook：
+  - 設定裡可改通知網址。**下面的 JSON 是本筆記自擬的示意，不是 clearcam 的實際酬載**；README 沒有公布欄位格式，只附一支 Pushover 範例伺服器（`utils/sample_server.py`），要接就得先讀那支程式：
     ```json
     {
       "camera": "Front_Door",

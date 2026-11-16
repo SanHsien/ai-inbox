@@ -10,6 +10,11 @@ status: done
 cluster: "2"
 cluster_role: "審美防線與字型排版"
 short_title: "Shipper 反 AI 罐頭設計"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "Shipper 在 X 的原始貼文回覆要登入，讀到 0 則（總數未知）；Threads 留言讀到 6／6 則；27 秒影片只抽看 8 個畫面"
+source_images: 8
+source_replies: 6
 tags:
   - anti-ai-slop
   - design-system
@@ -21,9 +26,30 @@ tags:
 # 對抗 AI 罐頭設計：Shipper 釋出 92 萬字元 epstein.md 終結 Vibe Coding 視覺審美疲勞
 
 - **來源貼文**：[Threads @kufutw 貼文](https://www.threads.com/@kufutw/post/Dei87mJmgvR)
-- **原始發起**：Shipper (`@shipper_now`)
+- **原始發起**：Shipper (`@shipper_now`)，[X 原貼文](https://x.com/shipper_now/status/2110637576935891122)（2026-10-15）
 - **分析日期**：`2026-10-17`
 - **當前狀態**：`🟢 已做 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：Threads 貼文文字、附的 1 支 27 秒影片（抽看 8 個畫面）、6 則留言（作者 3 則、網友 3 則）都看過；另看了作者留言連結的 Shipper 在 X 的原始貼文本文（X 的回覆要登入，沒看到）。
+
+- **作者圖片**（1 支影片，抽 8 個畫面）：是 Shipper 產品的宣傳短片，**沒有出現 epstein.md 的內容**。畫面依序是品牌字樣、輸入框打字「做一個 Airbnb 風格的租車平台」、分階段的任務清單（第一階段打勾完成、第二階段待做）、使用者管理後台、多語系勾選、螢幕上的數據分析面板、收尾品牌字樣。風格是白底、細邊框、綠色重點色。
+- **作者留言補充**（3 則，等於貼文正文）：
+  - 第 1 則：檔案超過 **927,400 個字元**，附 Shipper 在 X 的原貼文連結。
+  - 第 2 則：禁用清單（卡片陰影、Emoji、綠色 LIVE 標籤、藍紫漸層、350 個 AI 常用詞）；Shipper 說這是團隊 11 個月、每天約 8 小時刷 X，持續把觀察到的問題加進自家 AI 開發工具累積出來的。
+  - 第 3 則：這不是新模型，是 Markdown 規則；**目前缺乏公開測試，證明它在不同 AI 開發工具上有效**。
+- **網友留言重點**：
+  - `benhoooooooo`：「又一個 AI slop」（5 個讚，三則裡最多）。
+  - `leo_2783_`：質疑讀一次的 token 量（留言寫約 23k；以 92 萬字元估算實際會遠高於此）。
+  - `vlk.dimitrov`：拿檔名開玩笑。
+- **對分析的影響**：
+  - 字元數統一為 927,400+（原寫「82 萬～92 萬」沒有依據），已改。
+  - X 原貼文與 Threads 貼文**都沒有給檔案下載連結**，Shipper 說的是「加進我們 vibe coding 介面的 codebase」。原筆記寫成「釋出一份可放進 AGENTS.md／.cursorrules 的規範檔」，但檔案是否公開、怎麼取得，來源沒說；已在 1.2 節標明。
+  - 1.2 節「正向工程標準」那一行（純色高對比、語意化排版、格線對齊）原貼文沒有，是分析時的延伸，已標明。
+  - 補上轉述者自己的保留意見（無公開測試）與網友的質疑。兩個已完成任務是依「禁用清單」自己蒸餾規範與寫掃描腳本，不依賴拿到原檔，不受影響。
 
 ---
 
@@ -41,12 +67,13 @@ tags:
 ### 1.2 Shipper 的解法：92 萬字元的負向約束規格 `epstein.md`
 - **核心哲學**：**「好設計不是告訴 AI 要做什麼，而是嚴格禁止它做什麼（Negative Constraints）」**。
 - **做法**：
-  - 由 Web 開發工具 **Shipper** (`@shipper_now`) 推出一份超過 82 萬～92 萬字元的超大 Markdown 規範檔（`epstein.md`）。
-  - 將其作為 Coding Agent（Claude Code, Cursor, Codex）的全域系統規則或專案規範（類似 `AGENTS.md` / `.cursorrules`）。
+  - 由 AI 應用開發平台 **Shipper** (`@shipper_now`) 介紹一份超過 927,400 字元的超大 Markdown 規則檔（`epstein.md`）。Shipper 說這是團隊 11 個月、每天約 8 小時刷 X，持續把看到的設計問題加進自家開發工具累積出來的。
+  - **取得方式不明**：X 原貼文與 Threads 轉述都沒有給檔案下載連結，原話是「加進我們 vibe coding 介面的 codebase」。能不能拿來當 Claude Code／Cursor 的專案規則（類似 `AGENTS.md` / `.cursorrules`）是本筆記的推想，來源沒說。
+  - **效果未經驗證**：轉述者自己寫明，目前缺乏公開測試證明這份規則在不同 AI 開發工具上有效；留言區也有人回「又一個 AI slop」、質疑一次要吃的 token 量。
   - **強硬禁令（Explicit Banning）**：
     - ❌ **視覺禁令**：嚴禁無腦 box-shadow、嚴禁未經說明的 Emoji、嚴禁藍紫漸層、嚴禁虛構的 LIVE 標籤。
     - ❌ **文案黑名單**：嚴格過濾 350+ 個 AI 高頻陳腔濫調，強制使用清晰、具體、活人感的技術與產品描述。
-    - ✅ **正向工程標準**：回歸簡潔、純色高對比、語意化排版（Semantic Typography）、真實留白與扎實的格線對齊。
+    - ✅ **正向工程標準**（原貼文沒有這一項，是本筆記依禁令反推的延伸）：回歸簡潔、純色高對比、語意化排版（Semantic Typography）、真實留白與扎實的格線對齊。
 
 ### 1.3 罐頭 AI 設計 vs 反 Slop 工程規範對比
 

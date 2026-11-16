@@ -14,6 +14,7 @@ public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
+| `partial` 筆記登入補讀 | 維護者在內建瀏覽器登入 Threads／X／Facebook | 所有 `source_review: partial` 筆記逐篇補讀留言、放大看圖；讀全的改 `full` 並更新數字與第 0 段，新資訊照 SOP 第 3 節檢討任務與產出檔；`verify_inbox.py` 通過 | Claude（Fable 子 agent 分批） | [重審 SOP](docs/source-review-sop.md) 第 5 節；首輪後 `partial` 94 篇 |
 | Windows 常駐 Agent 人工設定與恢復驗收 | 維護者確定要部署，已確認既有排程 owner、登入前提與本機回復管道 | 依規格逐項人工驗收外網、鎖屏、登出、重啟及有界限觀察；分別記結果與限制，不以一次成功稱 24×7 穩定 | 維護者 | [維運規格](docs/windows-24x7-agent-ops-spec.md)、[唯讀證據](docs/evidence/windows-agent-ops-readonly-check.md)；本輪只有文件與工具 |
 | 詞彙檢查器：未加引號的專名保護、`支持→支援` 技術受詞白名單 | 實際出現專名被誤改（例如產品名含 `數據庫`），或需要擋 `支持 UTF-8` 這類用詞 | 先寫出誤改實例的回歸測試再改 `tools/verify_zhtw_vocab.py`；`支持` 只在白名單受詞前替換，`支持開源社群` 等反例不變；`--verify-idempotent --check notes docs templates README.md` 通過 | Codex | [評估第 6 節](docs/speak-human-tw-assessment.md)；引號、URL 保護與五條候選規則已於 2026-11-15 完成 |
 | pii-guard 隔離動態驗證（採納條件） | 固定版本雙重靜態審計完成、SkillSpector 入口恢復，且另獲隔離實測授權 | 依評估第 8 節，只用一組假資料驗證 Windows ACL、離線／超時、Edit 與載入／既有 hook 相容性；遇停止條件即停，不改全域設定 | 維護者另行指派 | [唯讀評估](docs/pii-guard-readonly-assessment.md)（T-20261115-17，未結案） |

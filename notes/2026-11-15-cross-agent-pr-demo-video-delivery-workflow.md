@@ -3,13 +3,18 @@ id: "2026-11-15-cross-agent-pr-demo-video-delivery-workflow"
 title: "跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案"
 source_url: "https://www.aiposthub.com/grok-bot-cursor-coding-pr-video-update/"
 source_platform: "Blog / AI Post Hub"
-author: "AI Post Hub（Grok Bot + Cursor Cloud Agent 案例）"
+author: "Philo／AI Post Hub（Grok Bot + Cursor Cloud Agent 案例）"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
 status: done
 cluster: 1
 cluster_role: "PR錄影證據交付"
 short_title: "跨Agent PR錄影交付"
+source_reviewed_at: 2026-11-17
+source_review: partial
+source_review_note: "內嵌的 1 支 YouTube 影片只讀字幕、沒看畫面；文章圖 3／3 張看過；文章無留言區（0／0 則）"
+source_images: 4
+source_replies: 0
 tags:
   - pr-automation
   - demo-video
@@ -23,16 +28,35 @@ tags:
 # 跨 Agent PR + Demo 影片交付工作流評估：Grok Bot 案例拆解與本機免新 Repo 整合方案
 
 - **來源連結**：[AI Post Hub: Grok Bot + Cursor PR 與 Demo 影片工作流](https://www.aiposthub.com/grok-bot-cursor-coding-pr-video-update/)
-- **發布平台 / 作者**：`AI Post Hub`
+- **發布平台 / 作者**：`AI Post Hub` / `Philo`（2026-10-01）
 - **分析日期**：`2026-11-15`
 - **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-17 用瀏覽器重看 AI Post Hub 原文：3 張圖都放大看過，內嵌的 1 支 YouTube 影片讀了字幕（計入圖片數，共 4）。文章沒有留言區。
+
+- **作者圖片**（文章署名 Philo，2026-10-01；圖片都轉自官方）：
+  - 圖 1（官方公告示意圖，文中出現兩次）：桌面 App 對話。使用者要求 Cursor 專案修復 CSV 匯出逾時 → Bot 回「已交給該專案」→ 回報完成，附兩個 PR（分批串流匯出、加匯出進度提示）與一段 14 秒的操作影片縮圖（進度條 64%）→ 使用者說看起來可以、出貨 → Bot 回報兩個 PR 已 squash 合併到 main。畫面裡**沒有測試結果**。
+  - 圖 2（官方工程指南）：手機畫面，Bot 回報一張 PR 卡片（Done、11 個檔案、+439／-17，有「View PR」「Open in Cursor」按鈕）；下一則訊息卻寫同一個 PR「仍是草稿、CI 還是紅的」。
+  - 圖 3（官方工程指南）：共享表格的 PR 追蹤板，欄位是任務名稱、負責的 Bot、階段（Working／Watching 3/3／Ready for review）、PR 編號。
+  - 影片（官方產品介紹，1 分 46 秒）：使用者訪談式宣傳片，講 Bot 在自己的雲端電腦上工作、可互相交辦；沒有提到 PR 或錄影交付，對本篇沒有新資訊。
+- **作者留言補充**：無（文章沒有留言區）。
+- **網友留言重點**：無（文章沒有留言區）。
+- **對分析的影響**：
+  - 圖 2 是官方自己的圖，卻顯示「卡片標 Done、CI 仍紅」；這比文字更直接支持本篇「不可只錄影不測」「Demo 影片不等於測試通過」的閘門順序。已補進第 1 節 Why。
+  - 圖 1 的流程是使用者看完影片就讓 Bot 合併到 main，沒有任何測試證據；`pr-demo-evidence` 技能要求先有測試通過證據再錄製，方向正確。
+  - 圖 3 的「階段」欄（Watching n/3、Ready for review）是可參考的追蹤欄位設計，但 `T-20261115-13` 已判定不做，不重開。
+  - 補上文章作者與日期（原筆記只寫站名）。其餘結論與任務不變。
 
 ---
 
 ## 1. 核心內容摘要（5W1H 初篩）
 
 - **Who / What**：Grok Bot 整合 Cursor Cloud Agent，將傳統「Agent 回報我改好了」升級為「**自動拆解派工 $\rightarrow$ 開出 PR $\rightarrow$ 附帶實機操作 Demo 影片與修改摘要 $\rightarrow$ 人類審核合併**」（官方示範為修復 CSV 匯出逾時，帶回 2 個 PR、進度提示與 1 段操作 Demo；這是產品示意，不是可重現的修復 benchmark。[xAI 工程指南](https://x.ai/bot/guides/grok-bot-for-engineering)支持「委派 Cursor、查看 PR 證據」這個流程，不能據此證明修復品質）。另介紹官方 Engineering Bot 角色範本（Projects Manager / QA Bot / Engineering Lead / Nightly Audit Engineer）。
-- **Why**：單純「貼 Diff + 說我改好了」讓人類驗收成本極高；附帶操作影片能讓 PM、設計師或忙碌的維護者幾十秒內確認畫面行為是否符合預期（但貼文亦誠實提醒：**Demo 影片 $\neq$ 測試通過**，邊界條件與權限仍須靠測試與 Code Review）。
+- **Why**：單純「貼 Diff + 說我改好了」讓人類驗收成本極高；附帶操作影片能讓 PM、設計師或忙碌的維護者幾十秒內確認畫面行為是否符合預期（但貼文亦誠實提醒：**Demo 影片 $\neq$ 測試通過**，邊界條件與權限仍須靠測試與 Code Review）。文中轉載的官方工程指南截圖就有一例：PR 卡片標示 Done，下一則訊息卻說同一個 PR 仍是草稿、CI 還是紅的。
 - **How（跨 Agent 通用等效技術拆解，非 Grok Bot 專利）**：
   - 經實查業界開源實作（Playwright `recordVideo`、Testreel / Argo、`charmbracelet/vhs`）與本機工具現況，支援 Tool Use / Shell 的 Agent（Claude Code、Codex CLI、Antigravity、Hermes、Pi）理論上可共用下面這套流程。這是規格目標：各 agent 的錄影、檔案讀取、技能載入位置與權限都還沒逐一實測。
 

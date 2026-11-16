@@ -3,7 +3,8 @@
 tests/test_verify_pstack_and_fullstack_specs.py
 測試 tools/verify_pstack_and_fullstack_specs.py 外部裁判驗證器：
 1. 真實 4 份規格與手冊文件全數驗證通過。
-2. pstack Playbooks 文件缺漏反例攔截（缺少 /poteto-mode、Playbooks、CLI 規格、實例不足）。
+2. pstack Playbooks 文件缺漏反例攔截（缺少 /poteto-mode、官方 Playbook 缺漏或多列、CLI 規格、實例不足、
+   「五大 Playbook」與未標註的 SpaceX 頭銜）。
 3. Claude 外掛評測文件缺漏反例攔截（缺少推薦外掛、缺少排除項目、缺少未查證標註）。
 4. 全端商業建站規範缺漏反例攔截（缺少軟刪除、定價快照、事件流水帳、狀態機狀態、Webhook 對帳）。
 5. 主體資產盤點與論證規範缺漏反例攔截（缺少盤點維度、缺少 Claim+Proof、缺少示範表格）。
@@ -42,11 +43,18 @@ class TestVerifyPstackAndFullstackSpecs(unittest.TestCase):
         errors = vps.verify_pstack_playbooks(no_router)
         self.assertTrue(any("缺少 `/poteto-mode`" in e for e in errors), f"未攔截路由器缺失：{errors}")
 
-        # 2.2 缺少某一核心 Playbook（例如 Bug-fix）
-        import re
-        no_bugfix = re.sub(r"(?i)bug-fix", "custom-task", raw)
-        errors_bf = vps.verify_pstack_playbooks(no_bugfix)
-        self.assertTrue(any("Bug-fix" in e for e in errors_bf), f"未攔截 Bug-fix Playbook 缺失：{errors_bf}")
+        # 2.2 缺少某一套官方 Playbook（每一套都要擋得到），改掉的檔名同時算「官方沒有」
+        for filename in vps.OFFICIAL_PLAYBOOK_FILES:
+            dropped = raw.replace(f"playbooks/{filename}", f"playbooks/x-{filename}")
+            errors_pb = vps.verify_pstack_playbooks(dropped)
+            self.assertTrue(
+                any("缺少以下官方 Playbook" in e and filename in e for e in errors_pb),
+                f"未攔截 {filename} 缺失：{errors_pb}",
+            )
+            self.assertTrue(
+                any("官方 playbooks 目錄沒有的檔名" in e and f"x-{filename}" in e for e in errors_pb),
+                f"未攔截杜撰的 playbook 檔名：{errors_pb}",
+            )
 
         # 2.3 缺少特定 CLI（例如 Antigravity）
         no_ag = raw.replace("Antigravity", "OtherCLI")
@@ -57,6 +65,37 @@ class TestVerifyPstackAndFullstackSpecs(unittest.TestCase):
         reduced_examples = raw.replace("### 實例 2：", "### 略過 2：").replace("### 實例 3：", "### 略過 3：")
         errors_ex = vps.verify_pstack_playbooks(reduced_examples)
         self.assertTrue(any("實例對照數量不足" in e for e in errors_ex), f"未攔截實例不足：{errors_ex}")
+
+    def test_pstack_official_playbook_list_and_corrected_premises(self):
+        """2b. 官方清單常數正確，且已更正的錯誤前提（五大 Playbook、未標註的 SpaceX）會被擋下。"""
+        raw = (REPO_ROOT / "docs" / "pstack-agent-playbooks.md").read_text(encoding="utf-8")
+
+        # 官方清單：22 套、不重複、含原本誤以為是全部的五套
+        files = vps.OFFICIAL_PLAYBOOK_FILES
+        self.assertEqual(len(files), 22)
+        self.assertEqual(len(set(files)), 22)
+        for name in ("bug-fix.md", "feature.md", "refactoring.md", "investigation.md", "perf-issue.md"):
+            self.assertIn(name, files)
+        self.assertRegex(vps.OFFICIAL_PLAYBOOKS_VERIFIED_AT, r"^\d{4}-\d{2}-\d{2}$")
+
+        # 真實文件：列出的 playbook 檔名與官方清單完全一致
+        self.assertEqual(set(vps.PLAYBOOK_REF_RE.findall(raw)), set(files))
+
+        # 多列一個官方沒有的 playbook
+        extra = raw + "\n另有 `playbooks/made-up.md`。\n"
+        errors_extra = vps.verify_pstack_playbooks(extra)
+        self.assertTrue(any("made-up.md" in e for e in errors_extra), f"未攔截杜撰 playbook：{errors_extra}")
+
+        # 「五大／5 大 Playbook」
+        for phrase in ("## 4. 五大核心 Playbooks 規格拆解", "定義 5 大 Playbooks 的規格"):
+            errors_five = vps.verify_pstack_playbooks(raw + f"\n{phrase}\n")
+            self.assertTrue(any("五大" in e for e in errors_five), f"未攔截「{phrase}」：{errors_five}")
+
+        # 未標註的 SpaceX 頭銜；標了「未查證」則放行
+        errors_sx = vps.verify_pstack_playbooks(raw + "\n作者是前 SpaceX 首席工程師。\n")
+        self.assertTrue(any("SpaceX" in e for e in errors_sx), f"未攔截未標註的 SpaceX 頭銜：{errors_sx}")
+        labeled = raw + "\n轉述來源稱作者任職 SpaceX，未查證。\n"
+        self.assertEqual(vps.verify_pstack_playbooks(labeled), [])
 
     def test_claude_plugins_review_missing_plugins_or_unverified(self):
         """3. 反例攔截：Claude 外掛評測缺少推薦、排除或未查證標註。"""

@@ -3,13 +3,17 @@ id: 2026-10-18-target-story-generative-ui-editor
 title: "靶心人故事編輯器：許榮哲故事模型與 Generative UI 互動產品設計 Prompt 深度解構"
 source_url: "https://www.facebook.com/share/p/19Lq7Nti4U/"
 source_platform: "Facebook"
-author: "故事結構分析師 / Generative UI 產品設計師"
+author: "張永錫（故事模型出自許榮哲）"
 analyzed_at: 2026-10-18
 analyzed_by: "Antigravity"
 status: done
 cluster: "2"
 cluster_role: "視覺工件與互動 UI"
 short_title: "靶心人故事編輯器"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 1
+source_replies: 6
 tags:
   - generative-ui
   - storytelling-structure
@@ -23,13 +27,37 @@ tags:
 # 靶心人故事編輯器：許榮哲故事模型與 Generative UI 互動產品設計 Prompt 深度解構
 
 - **來源連結**：[Facebook 貼文原址](https://www.facebook.com/share/p/19Lq7Nti4U/)
-- **分析主題**：靶心人故事編輯器｜Generative UI Prompt
+- **發布平台 / 作者**：`Facebook` / `張永錫`（貼文標註與許榮哲；靶心人公式與三伏三冒為許榮哲的故事模型）
+- **分析主題**：靶心人故事編輯器｜Generative UI Prompt（原為 ChatGPT 對話內互動介面而寫）
 - **分析日期**：`2026-10-18`
 - **當前狀態**：`🟢 已做 (Done)`
 - **相關交叉參照**：
   - `ai-short-drama-screenwriter`（劇本短劇編劇技能庫）
   - `generative_ui`（Antigravity 內建生成式 UI 規範）
   - `verification-protocol`（保真度與防幻覺檢驗協定）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：看了 Facebook 貼文本文、作者附的 1 張圖與留言區全部 6 則（含作者 3 則）。留言裡另有一張小貼圖，不算內容。
+
+- **作者圖片**（1 張）：
+  - 圖 1：這份 Prompt 在 ChatGPT 裡實際跑出來的畫面（深色介面）。最上方是標題「靶心人故事編輯器」與文章名，右上有「複製結構」按鈕；下面三個分頁是「故事總圖／九宮・因果／三伏三冒」，另有「標準／放大」顯示切換。總圖確實是三欄四排：左欄 A 目標、B 阻礙、C 努力，右欄 G 結局、F 轉彎、E 意外，中欄三個向右的箭頭圖形 H1–H3，最下排中央是 D 結果。示範文章是一篇把棒球九宮格目標法改用在羽球訓練計畫的短文。**畫面上 G 結局與 E 意外兩格直接顯示「缺失」，H1、H3 兩條箭頭也是「缺失」，只有 H2 判為「強」**：也就是作者自己的示範就沒有湊滿七個節點。
+- **作者留言補充**：
+  - 第一則留言就是完整 Prompt（本筆記 1.2 的規格即出自這裡，不再重貼）。
+  - 作者另外說明這個工具的定位：用來檢查**大約 1,000 字的文稿**有沒有照劇情結構寫，有結構讀者比較好讀。
+  - 貼文本文交代了背景：這是為 ChatGPT 新推出的對話內互動介面功能（作者稱 Intelligent UI，搭配 GPT-6）寫的，手機版與網頁版都能跑；以前要另外寫程式才做得出這種介面。
+- **網友留言重點**：
+  - 一位網友認為可以拿來當**校稿工具**。
+  - 同一位網友提到使用心得：ChatGPT 常要求貼全文或截圖，會有隱私被侵犯的感覺，後來改成遮掉關鍵字再問。
+  - 沒有人回報 Prompt 跑不出來或結果不對。
+- **對分析的影響**：
+  - **修正作者欄**：原本填的「故事結構分析師 / Generative UI 產品設計師」是 Prompt 裡給模型的角色設定，不是作者。貼文作者是張永錫（貼文標註與許榮哲一起），靶心人公式與三伏三冒出自許榮哲。已改 frontmatter 與標頭。
+  - **補上適用平台**：這份 Prompt 是為 ChatGPT 的對話內互動介面寫的，交付方式一節也寫明「在目前 ChatGPT 對話中建立」。原稿第 2 節直接對應到 Antigravity 的 `generative_ui`，沒交代原始平台，已補一句。
+  - **補上適用範圍**：約 1,000 字的短文結構檢查，不是長篇小說或劇本的完整分析工具。原稿第 2 節把它當成短劇、廣告腳本的「結構化驗收門檻」，適用範圍講得比作者自己說的大，已加註。
+  - 附圖證實「缺失就直接標缺失」在實際輸出中有被遵守，示範文章七個節點缺兩個。已完成的 `T-20261018-04` 驗證器有把「缺失」當成合法值（查 `tools/verify_story_structure.py` 確認），不需重開。
+  - 附圖的分頁結構是三個（故事總圖／九宮・因果／三伏三冒），九宮與因果編輯合在同一頁；本 repo 的 `assets/target-story-editor/index.html` 若分頁不同屬實作差異，不影響任務結論。
 
 ---
 
@@ -122,7 +150,7 @@ tags:
   - **Antigravity 內建 `generative_ui` Skill**：
     Antigravity 原生支援內嵌 HTML/React 的 Generative UI 互動卡片。本 Prompt 的規格為 Antigravity 產出高階互動型審查工具（如 PRD 審查器、架構因果圖、代碼變更影響編輯器）提供了標準典範。
   - **劇本創作與短劇工作流（`ai-short-drama-screenwriter`）**：
-    在短劇、廣告腳本與產品故事的開發中，將此編輯器作為結構化驗收門檻，能精準過濾掉「節奏拖沓、意外未由努力引起、結局低於目標」的平庸劇本。
+    在短劇、廣告腳本與產品故事的開發中，將此編輯器作為結構化驗收門檻，能過濾掉「節奏拖沓、意外未由努力引起、結局低於目標」的劇本。（作者自述的定位是檢查約 1,000 字的短文有沒有劇情結構；用在長篇劇本是本筆記的延伸，未經作者或網友實測。）
   - **因果審查與防幻覺哲學（`buddhist-method` / `verification-protocol`）**：
     Prompt 中「時間先後不等於因果」與「無證據即填缺失」的原則，正是工程防幻覺與如實客觀的具體體現。
 

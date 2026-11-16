@@ -10,6 +10,11 @@ status: done
 cluster: "3"
 cluster_role: "螢幕感知與瀏覽器代理"
 short_title: "desktop-sense 本機螢幕上下文"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "README 唯一一張示範動圖只看了第一個畫面與圖說，沒有逐格看完（1／1 張未看全）；issue 0 則，留言 0／0 則"
+source_images: 1
+source_replies: 0
 tags:
   - desktop-sense
   - local-first
@@ -32,6 +37,22 @@ tags:
   - [`notes/2026-10-17-claude-mem-autocompact-context.md`](./2026-10-17-claude-mem-autocompact-context.md)（上下文與記憶管理）
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code Hook 機制）
   - [`notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md`](./2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)（跨 CLI 工具鏈編排）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：來源是 GitHub repo，重讀了 README 全文（含「安全模型與限制」「費用」兩段）、README 唯一一張圖，並查了 issue。本篇沒有對應的社群貼文。
+
+- **作者圖片**（1 張動圖）：
+  - 圖 1（示範動圖）：分步驟展示流程。第一步是終端裡 `tsc` 建置失敗、出現一個 TypeScript 型別錯誤；圖說寫的後續是 desktop-sense 從畫面認出錯誤，使用者直接問 Claude Code「為什麼失敗」就得到回答，不用截圖或貼上。只看了第一個畫面與圖說，沒有逐格看完。
+- **作者留言補充**：無（repo 沒有 Discussions，issue 數為 0）。
+- **網友留言重點**：無。2026-11-16 查 GitHub API：18 顆星、2 個 fork、0 則 issue，最後推送 2026-10-12。**這是很小、幾乎沒有外部使用回報的個人專案**，本筆記的功能描述全部來自作者自己的 README，沒有第三方驗證。
+- **對分析的影響**：
+  - **修正 1.3 第 1 點「完全不與第三方遠端連線」**：README 寫得更細：程式本身不連網、不開連接埠，但**預設的背景分析會把最新一張截圖與去識別化的 OCR 文字，透過使用者自己的 `claude` CLI 送到雲端模型**；自動研究會把錯誤訊息那一行送去網路搜尋。只有改成全本機模式或把 `analyzer.enabled`、`research.enabled` 關掉，畫面才不會離開本機。已改寫。
+  - **修正 1.2 B 的模型與費用**：README 只寫 Haiku（沒寫版本號），每次約 0.002 美元、每小時上限 12 次；自動研究用的是 **Sonnet 加網路搜尋**，每天上限 8 次、每次上限 0.50 美元。原稿寫「Claude 3.5 Haiku」且沒提 Sonnet 與費用上限，已改寫。
+  - **補上作者自己列的四項安全限制**（原稿只寫優點）：提示詞注入只能降低、不能消除；`data/` 沒有加密，同帳號下的惡意程式讀得到，而且 agent 自己的對話紀錄也會留下注入過的畫面內容；敏感視窗與金鑰偵測都是盡力而為（靠標題關鍵字與 OCR 辨識正確）；它不會執行指令也不改權限。已加在 1.3 末尾。
+  - 這些更正讓 `T-20261018-05`「不做」的理由更充分（預設會把截圖送上雲端、專案幾乎沒有外部驗證）。`T-20261018-06` 蒸餾出的規範不受影響。
 
 ---
 
@@ -88,10 +109,10 @@ tags:
 #### B. 錯誤雷達與主動調查（Error Radar & Auto-Research）
 1. **錯誤雷達（Error Radar）**：
    - 透過本機 OCR 即時掃描畫面中的常見錯誤特徵（`Traceback`、`npm ERR!`、`error TS...`、編譯崩潰等）。
-   - 背景調用輕量模型（預設 Claude 3.5 Haiku，每小時上限 12 次；或本機 Ollama），產生修復建議並彈出 Windows 系統原生通知。
+   - 背景調用輕量模型（預設 Haiku，README 未寫版本號，每次約 0.002 美元、每小時上限 12 次；或本機 Ollama），產生修復建議並彈出 Windows 系統原生通知。
    - 防抖機制：相同錯誤 30 分鐘內最多分析 1 次，瀏覽器/影片中的錯誤每 30 分鐘最多 1 次。
 2. **自動調研（Auto-Research）**：
-   - 當終端或編輯器中**同一個錯誤連續出現兩次**，守護進程自動使用 Web 搜尋檢索 **GitHub Issues、Stack Overflow 與 Reddit**，在開發者提出問題前便已備妥最佳解答與參考連結。
+   - 當終端或編輯器中**同一個錯誤連續出現兩次**，守護進程自動使用 Web 搜尋檢索 **GitHub Issues、Stack Overflow 與 Reddit**，在開發者提出問題前便已備妥最佳解答與參考連結。這一段用的是 Sonnet 加網路搜尋，每天上限 8 次、每次上限 0.50 美元。
    - 新開專案時，主動搜尋既有開源替代專案，避免重複造輪子。
 
 #### C. 「觀看除錯」串流模式（Watch Me Mode）
@@ -105,7 +126,7 @@ tags:
 本工具在安全性與隱私架構上展現了極高的工程成熟度：
 
 1. **零外部伺服器與全本地儲存（Zero Telemetry）**：
-   - 程式本身不開設任何監聽 Port，完全不與第三方遠端連線。
+   - 程式本身不開設任何監聽 Port、不送遙測。但**預設的背景分析會把最新截圖與去識別化的 OCR 文字經由使用者自己的 `claude` CLI 送到雲端模型**，自動研究會把錯誤訊息那一行送去網路搜尋；要畫面完全不離開本機，得改用全本機模式或關掉 `analyzer.enabled` 與 `research.enabled`。
    - 截圖、OCR 文本、時間軸皆存於本地 `data/` 目錄，限制僅當前作業系統使用者權限可讀。
    - 截圖保留 48 小時自動刪除，時間軸 30 天清理，搜尋記錄 90 天過期。
 2. **敏感視窗黑名單攔截（Sensitive Window Filter）**：
@@ -119,6 +140,10 @@ tags:
    - 背景分析器執行 `claude` 時強制開啟 `--safe-mode` 與 `--restricted`，在空白工作目錄執行，杜絕讀取專案 CLAUDE.md 或呼叫本機代碼執行工具。
 5. **全離線模式（Fully Local Mode）**：
    - 支援將背景分析後端切換至 **Ollama（`gemma3:4b` 或 `qwen2.5vl:7b`）** 或 LM Studio（相容 OpenAI API）。在該模式下完全離線、零 Token 費用，任何畫面資料絕不上雲。
+6. **作者自己列出的限制（2026-11-16 補）**：
+   - 提示詞注入只能降低、不能消除；若讓 agent 免確認執行指令，風險由使用者自負。
+   - `data/` 沒有加密，同一個帳號下執行的任何程式（含惡意程式）都讀得到；agent 的對話紀錄也會留下收到的畫面內容。
+   - 敏感視窗靠 app 名稱與標題關鍵字比對、金鑰偵測靠 OCR 讀對字，都是盡力而為。
 
 ---
 

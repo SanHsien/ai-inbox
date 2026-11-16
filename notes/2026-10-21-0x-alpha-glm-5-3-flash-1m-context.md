@@ -11,6 +11,9 @@ status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "模型路由與配額分流"
 short_title: "0x Alpha (GLM-5.3-Flash) 1M 模型"
+source_review: unavailable
+source_reviewed_at: 2026-11-16
+source_review_note: "2026-11-16 重審：Threads 貼文網址回 invalid_post（已刪除或不公開），作者個人頁導向登入頁；貼文圖片與留言都看不到"
 tags:
   - 0x-alpha
   - glm-5-3-flash
@@ -27,6 +30,17 @@ tags:
 - **發布平台 / 原作者**：`Threads / OpenRouter` / `0x Alpha (@0xalpha.ai) / 智譜 AI (Z.ai)`
 - **分析日期**：`2026-10-21`
 - **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：來源 Threads 貼文打不開。貼文網址（`threads.com` 與 `threads.net` 各試一次）都被導回首頁並帶 `error=invalid_post`；作者個人頁 `@0xalpha.ai` 未登入時直接導向登入頁，無法確認帳號是否還在。
+
+- **作者圖片**：看不到（貼文已刪除或不公開）。
+- **作者留言補充**：看不到。
+- **網友留言重點**：看不到。
+- **對分析的影響**：本篇的參數量（320B／18B 活躍）、1M 上下文、MIT 開源、「8 月 26 日揭牌」與「Doom Loop」社群回報，都無法回頭對照原貼文的圖片與留言，也沒有留言可用來檢驗；這些數字應視為原分析當時的轉述，引用前請以 `zai-org/GLM-5` 與 Hugging Face 模型卡為準。正文與任務未改。
 
 ---
 

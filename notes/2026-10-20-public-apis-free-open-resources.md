@@ -11,6 +11,10 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "跨網情報與知識檢索"
 short_title: "Public APIs 免費 API 資源庫"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 5
+source_replies: 0
 tags:
   - public-apis
   - free-apis
@@ -25,6 +29,25 @@ tags:
 - **發布平台 / 原作者**：`電腦王阿達 / GitHub` / `電腦王阿達 (Rocky) / public-apis 社群`
 - **分析日期**：`2026-10-20`
 - **當前狀態**：`🟢 已做 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：電腦王阿達原文全文與文內 5 張圖都看過；該文沒有留言區（頁面無留言元件），留言數為 0。
+
+- **作者圖片**：共 5 張，都是 GitHub 與 API 文件的截圖。
+  - 圖 1：`public-apis` repo 首頁。右欄顯示約 475k stars、52.5k forks、1,503 位貢獻者；README 最上方不是 API 清單，而是贊助商 APILayer 的宣傳區塊（「One account. One API key」）。
+  - 圖 2：README 的 Index 分類選單（Animals、Anime、Anti-Malware、Art & Design……Games & Comics）。
+  - 圖 3：Animals 分類表格，欄位為 API／Description／Auth／HTTPS／CORS；同一分類裡 `No`、`apiKey` 混雜，CORS 也有 `No`。
+  - 圖 4：Games & Comics 分類表格，可見 `OAuth`（Battle.net）、`apiKey`（Brawl Stars），以及多筆 CORS 為 `Unknown`。
+  - 圖 5：CheapShark API 文件頁，標明完全免費、不需 API Key，但有速率限制（超量回 429 並暫時封鎖）、要求帶 User-Agent，並請使用者導流回其網站。
+- **作者留言補充**：無（文章無留言區）。
+- **網友留言重點**：無。
+- **對分析的影響**：
+  - 圖 3、圖 4 顯示清單內 CORS 標 `Unknown` 與需金鑰的項目不少，圖 5 顯示「免金鑰」的 API 仍有速率限制與使用條件。原筆記「注意事項與限制」已寫到速率限制，另在該段補一條：`Unknown` 不可當成可跨域，篩選只取明確標 `Yes` 的項目。
+  - 圖 1 顯示 README 開頭是贊助商區塊，補在同一段：讓 Agent 讀 README 選 API 時，贊助商推薦不等於清單收錄的免金鑰 API。
+  - 星數圖片為 475k、原文與本筆記寫「超過 47 萬」，一致，不改。任務不需增減。
 
 ---
 
@@ -96,6 +119,8 @@ tags:
   - 避免傳統開發時頻繁在申請 API Key、處理信用驗證與跨域代理上耗費時間。
 - **注意事項與限制**：
   - 「免費不等於無限量」：多數免費 API 設有 Rate Limit（如每小時 100~500 次請求）或隨時有服務終止（Deprecation）風險；
+  - CORS 欄標 `Unknown` 的項目不可當成可跨域：原文截圖的 Games & Comics 分類就有多筆 `Unknown`，篩選前端直連名單時只取明確標 `Yes` 的；
+  - README 開頭是贊助商（APILayer）的宣傳區塊，不屬於社群收錄的清單，讓 Agent 讀 README 選 API 時要略過；
   - 生產環境（Production）仍應使用具 SLA 保障之官方付費服務，Public APIs 應嚴格定位於「原型驗證、AI 概念展示、測試資料與教學練習」。
 
 ---

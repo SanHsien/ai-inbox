@@ -10,6 +10,11 @@ status: done
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "Codync 開源 Agent 中繼"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "Threads 貼文顯示 6 則回覆，未登入只讀到 4／6 則；上游 issue 只看標題與狀態；圖看了上游 README 2／2 張（貼文無圖）"
+source_images: 2
+source_replies: 4
 tags:
   - multi-agent-orchestration
   - acp-protocol
@@ -34,9 +39,30 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀 Threads 引介貼文（文字、無圖、可見留言 4 則／貼文顯示 6 則），另看上游 README 的 2 張圖與 issue 清單。
+
+- **作者圖片**：
+  - Threads 貼文沒有附圖。
+  - 上游 README 圖 1 `launch-film`：宣傳影片封面，寫著已在 App Store 上架。
+  - 上游 README 圖 2 `desktop-macos`：桌面版主畫面，左欄是四個以用途命名的 Bot（每日規劃、寫作、程式審查、研究），底下都標 Claude Code 與個人工作區；右側是空狀態與「New Bot」按鈕，左下有 Extensions 入口。
+- **作者留言補充**：貼文作者回覆網友時承認**還沒用它跑過完整專案**，打算假期再試；貼文四個亮點是整理 README，不是使用心得。
+- **網友留言重點**：
+  - sapplex 提出反對意見：自動 fallback 是雙面刃——額度用完換另一家模型，兩個模型對專案架構的理解與程式風格不同，接手後容易風格跑掉，審查成本反而變高；他的做法是規劃與審查交給強模型、零碎補碼與寫測試交給便宜模型，按任務分工而不是用完就切。
+  - hanbingjheng 認同「沿用已付費額度」與「額度用完自動換下一家」是最實際的兩點。
+  - 上游 issue（只看標題與狀態）：#444 Claude Code 登出時 fallback 提示誤報成用量上限；#470 Agent 回合以錯誤結束時 Bot 靜默、沒有改用備援；#264 Windows 防毒軟體擋住程式；#405 有人要求等額度重置後自動續跑。
+- **對分析的影響**：
+  - 第 1 節開頭補一句：引介者未實測。
+  - 第 3 節「不採納／邊界考量」補上 sapplex 的反對意見與上游 #444、#470 顯示的兩個失效模式，提醒 fallback 不是無條件開啟。
+  - 4.5 節原寫 iOS App 送審中，README 現在顯示已上架，已更正。
+  - 已完成任務不需重開：`T-20261026-21` 的實作只在辨識到限流時改派，而且避免來回切換，方向與 sapplex 的顧慮不衝突。
+
+---
+
 ## 1. 核心內容摘要與專案背景（Key Insights）
 
-社群作者「it.oppa.twhk」引介了目前在開源社群迅速竄紅的專案 **`Codync`（`leepokai/Codync`）**，該專案主打作為 **xAI Grok Bot、OpenAI Dots 與 Meta Muse 的完全開源平替**。
+社群作者「it.oppa.twhk」引介了目前在開源社群迅速竄紅的專案 **`Codync`（`leepokai/Codync`）**，該專案主打作為 **xAI Grok Bot、OpenAI Dots 與 Meta Muse 的完全開源平替**。引介者在留言承認自己還沒用它跑過完整專案，貼文亮點是 README 的整理，不是實測（見第 0 節）。
 
 ### 1.1 商業遠端 Agent 軟體的痛點與 Codync 的顛覆
 商業 Agent 工具（如 Grok Bot、Dots、Muse）雖然支援手機遠端操控 AI 開發，但存在三大致命缺陷：
@@ -117,6 +143,7 @@ Codync 提出 **BYOA（Bring Your Own Agent）** 與 **BYOS（Bring Your Own Sub
 
 - **不採納／邊界考量**：
   - 現階段不需要為個人工作站額外維護一套專屬的 iOS App 編譯流水線；我們優先吸收其 Rust Daemon 中的 Fallback 路由邏輯與 ACP 狀態管理核心。
+  - 自動 fallback 有代價（2026-11-16 依留言補）：Threads 網友 sapplex 指出，中途換模型會讓程式風格與架構理解不一致，審查成本上升；按任務分工（強模型規劃與審查、便宜模型補碼與寫測試）通常比用完就切更省。上游 issue 也顯示兩個失效模式：登出被誤判成用量上限（#444）、回合以錯誤結束時沒有啟用備援而且靜默（#470）。所以 fallback 只該在確認是限流時觸發，接手後的產出要另外審查。
 
 ---
 
@@ -159,7 +186,7 @@ Codync 提出 **BYOA（Bring Your Own Agent）** 與 **BYOS（Bring Your Own Sub
 
 ## 4.5 2026-11-15 追蹤補充：Remote Desktop 與內建 `product-launch-film` Skill
 
-- **專案最新進展（2026-11-15 GitHub API 實查）**：`leepokai/Codync` 已成長至 **2,094 stars**（Apache-2.0、Rust、最後更新 `2026-11-14`），除支援 Mac/Linux/Windows、Tailscale 與 Cloudflare Relay 外，新增 **Remote Desktop 遠端桌面操控**與 iOS App（送審中）。
+- **專案最新進展（2026-11-15 GitHub API 實查）**：`leepokai/Codync` 已成長至 **2,094 stars**（Apache-2.0、Rust、最後更新 `2026-11-14`），除支援 Mac/Linux/Windows、Tailscale 與 Cloudflare Relay 外，新增 **Remote Desktop 遠端桌面操控**與 iOS App（11-15 記為送審中；2026-11-16 看 README 已顯示在 App Store 上架）。
 - **意外亮點：`.claude/skills/product-launch-film/` 產品發表影片 Skill**：
   - 倉庫內隨附了作者用於製作 Codync 宣傳片的完整 Skill（純 Markdown 規範＋靜態範本，可唯讀參考，遵守 Apache-2.0 授權），採 **HyperFrames（單一 `index.html` + GSAP timeline）**，將 60–90 秒 1080p60 發表影片嚴格拆為四階段簽核：**Story（`BRIEF.md` 節奏表）$\rightarrow$ Look（關鍵影格靜圖）$\rightarrow$ Motion（30fps 草稿）$\rightarrow$ Finish（SFX 音效＋60fps 成片）**，並附帶字型與 `sfx/*.mp3` 資產結構，極適合未來為 `agent-relay` 或接案產品製作發表短片時借鑑。
 
@@ -168,7 +195,7 @@ Codync 提出 **BYOA（Bring Your Own Agent）** 與 **BYOS（Bring Your Own Sub
 ## 5. 關聯筆記與相關任務（Related Notes & Tasks）
 
 - **模型燒額率與配額調度**：
-  - [多模型開發實測與燒額矩陣](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md) ｜ 關聯任務：`T-20261026-01`、`T-20261026-02`
+  - [多模型開發燒額觀察（單一來源）](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md) ｜ 關聯任務：`T-20261026-01`、`T-20261026-02`
 - **工作區與 ACP/MCP 雙協議解耦**：
   - [Block Buzz 協同工作區](./2026-10-26-block-buzz-nostr-agent-workspace.md) ｜ 關聯任務：`T-20261026-08`、`T-20261026-09`
 - **A2A 通訊與跨機器中繼**：

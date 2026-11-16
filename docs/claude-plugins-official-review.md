@@ -1,6 +1,7 @@
 # Anthropic 官方 Claude Code 外掛清單深度檢閱與工作流適配報告
 
-> 本檢閱報告直接讀取開源倉庫 [`anthropics/claude-plugins-official`](https://github.com/anthropics/claude-plugins-official) 之實際內容（涵蓋 40 個官方第一方插件 `plugins/` 與 100+ 第三方驗證插件 `external_plugins/`）。  
+> 本檢閱報告直接讀取開源倉庫 [`anthropics/claude-plugins-official`](https://github.com/anthropics/claude-plugins-official) 之實際內容（檢閱當時記為 `plugins/` 40 個、第三方 100 個以上；2026-11-17 以 GitHub API 重查：`plugins/` 43 個目錄、`external_plugins/` 14 個目錄，`marketplace.json` 共 317 筆，其中 262 筆指向外部 repo）。  
+> ⚠️ **2026-11-16 更正**：舊版把 `external_plugins/` 稱為「第三方驗證插件」「生態驗證插件」，這是錯的。上游 README 的警語是 Anthropic **不控制**插件內含的 MCP server、檔案或其他軟體，也**無法驗證**它們會照預期運作或日後不變；被收錄在這個目錄不代表內容經過安全審查。安裝任何一個（含下方推薦項）之前都要自己看過內容，第三方技能包另依維護者規則先過靜態檢查。README 也寫明 `marketplace.json` 的第三方條目會逐步移除，第三方改到 claude.ai 的目錄後台送件。依據見[來源筆記](../notes/2026-10-17-claude-plugins-official-directory.md)第 0 段。  
 > 檢閱基準：維護者工作流環境（**Windows 11 原生**、Python/TypeScript、多 Agent 協作、Git 個人 fork 規範、嚴格零機密與品質閘門）。  
 > 交付形式：以 `ai-inbox` 範本（`docs/claude-plugins-official-review.md`）交付。
 
@@ -10,7 +11,7 @@
 
 官方倉庫將插件生態分為兩大維度：
 1. **官方原生插件 (`plugins/`)**：由 Anthropic 團隊第一方維護，聚焦於代碼品質、LSP 語言支援、安全防護、技能建立與工作流管理。
-2. **生態驗證插件 (`external_plugins/`)**：由各大生態廠商（如 Asana, Atlassian, Playwright, Supabase, Stripe 等）提供之 MCP 或工具整合。
+2. **第三方插件 (`external_plugins/`)**：送件方式改版前收錄的第三方整合（2026-11-17 目錄內有 Asana、Context7、Firebase、GitHub、GitLab、Laravel Boost、Linear、Playwright、Serena、Terraform），加上 Anthropic 自己的頻道插件（Discord、fakechat、iMessage、Telegram）。Anthropic 不驗證其內容。
 
 ---
 
@@ -68,7 +69,7 @@
 # 1. 查詢已安裝外掛狀態
 /plugin list
 
-# 2. 安裝官方精選安全輔助插件
+# 2. 安裝 Anthropic 自家的安全輔助插件
 /plugin install security-guidance@claude-plugins-official
 
 # 3. 執行本機 Skill 結構驗證（示意；模組路徑與參數未查證，請以外掛實際提供的腳本為準）

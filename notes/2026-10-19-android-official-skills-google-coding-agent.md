@@ -11,6 +11,11 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "外掛生態與設定治理"
 short_title: "Google Android 官方 Agent Skills"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "平台欄寫的社群貼文沒留連結，貼文的圖片與留言都沒看到（總數未知）；改看官方 repo，讀了 2 則 issue 內文、底下回覆沒逐則讀；README 無圖"
+source_images: 0
+source_replies: 2
 tags:
   - android-skills
   - jetpack-compose
@@ -29,6 +34,31 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：來源是 GitHub repo，重讀了官方 README 全文、列出全部 `SKILL.md` 路徑，並讀了兩則 issue 的內文（沒有逐則讀底下回覆）。frontmatter 的平台欄寫了「社群貼文」，但筆記沒有留下那則貼文的連結，所以貼文的圖片與留言無法回頭查看。
+
+- **作者圖片**：無。官方 README 是純文字，沒有圖片。
+- **作者留言補充**（官方 README 自己的說明，原稿沒寫到的部分）：
+  - **只做模型表現差的地方**：README 明說技能開發聚焦在評測顯示模型表現不佳的用例，並點名「基礎的 Jetpack Compose 最佳實踐」這種模型已經會的領域**不優先做**。
+  - **Claude Code 與 Codex 有官方外掛安裝方式**：Claude Code 用 `/plugin marketplace add android/skills` 再 `/plugin install android-skills@android-skills`；Codex 有對應的 `codex plugin` 指令。
+  - `android skills add` 不加 `--all` 時只會裝 `android-cli` 這一個技能；沒有偵測到任何 agent 目錄時，預設裝到 Gemini／Antigravity 的技能目錄。
+  - 不接受外部貢獻，只收 issue；並附免責聲明要使用者自行複查結果。
+- **網友留言重點**（issue）：
+  - #61（未關閉）：有人指出 **`android-cli` 這個技能會直接叫 agent 用 `curl … | bash` 把 Android CLI 裝到使用者機器上**（系統層級安裝），而不是告知使用者、讓使用者決定；建議改成「前置需求」寫法。這與本 repo 的規則（外部來源不直接執行安裝腳本）直接相關。
+  - #143（未關閉）：用 Antigravity 的外掛安裝指令直接裝這個 repo 會失敗（偵測不到外掛結構），目前仍要走 Android CLI。
+- **對分析的影響**：
+  - **技能數量**：標題與正文的「30 個」是貼文當時的說法；`T-20261019-05` 於 2026-10-23 實查為 33 個；2026-11-16 再列目錄是 **37 個**。數量持續增加，標題保留原貼文說法，正文已加註。
+  - **星數**：原稿寫 8K+，2026-11-16 查 GitHub API 為約 1.06 萬。授權 Apache-2.0 無誤。
+  - **1.1 架構圖與 1.2 第 3 點的技能內容有幾處與實際目錄不符，已在 1.2 末尾加一段「與實際目錄對照」**：
+    - 沒有「Scoped Storage／Photo Picker」「執行期權限流水線」這樣的技能；安全類實際是 `android-intent-security` 與 `android-permissions-security` 兩個。
+    - Compose 類實際是 XML 轉 Compose 遷移、Compose 效能、自適應版面、手寫筆跡（ink）；沒有教「State Hoisting 基礎」的技能，官方還明說基礎 Compose 不優先做。
+    - 車用只有「停車時可用的 app」一個技能，不是完整的車載範本 API；TV 是 Leanback 轉 Compose for TV 的遷移；XR 是顯示型眼鏡與投影硬體兩個技能；Wear 是 Compose Material 3 與小工具。
+    - 原稿沒提到的類別：裝置端 AI（AppFunctions、LiteRT、ML Kit GenAI）、AGP 9 升級、CameraX、身分驗證、Media3 Cast、iOS 轉 Android、ANR 稽核、R8 分析、Profiler、edge-to-edge、Glance 小工具、測試環境設定。
+  - **新增一項風險提醒**：`android-cli` 技能會指示 agent 自動執行安裝腳本（issue #61）。已完成的 `T-20261019-06` 當時就是自行審查安裝腳本後改用暫存沙盒手動下載，做法與這則 issue 的顧慮一致，不需重開；日後若用官方外掛方式整包安裝，要留意這個技能。
+
+---
+
 ## 1. 核心內容摘要
 
 ### 1.1 核心主張：官方跳下來帶路，解決 AI 開發 Android App 的「過時知識詛咒」
@@ -39,7 +69,7 @@ tags:
 3. **權限處理漏洞**：忽略 Android 13/14/15 逐步收緊的 Scoped Storage、照片選擇器（Photo Picker）與細微化通知權限；
 4. **跨設備生態盲區**：對 Wear OS（手錶）、Android TV（電視）、Android for Cars（車載系統）以及新興的 Android XR（延展實境眼鏡）缺乏架構規範認知。
 
-為了徹底解決這些卡關痛點，**Google Android 官方團隊親自打造並開源了 `android/skills`**（8K+ Stars，Apache-2.0 協議），針對團隊實測出 AI 最容易卡住的盲區，一口氣釋出 **30 個標準化 Agent Skills**，透過一條指令：
+為了徹底解決這些卡關痛點，**Google Android 官方團隊親自打造並開源了 `android/skills`**（分析當時 8K+ Stars，2026-11-16 約 1.06 萬；Apache-2.0 協議），針對團隊評測出模型表現不佳的用例釋出標準化 Agent Skills（貼文當時稱 **30 個**；2026-10-23 實查 33 個，2026-11-16 為 37 個），透過一條指令：
 ```bash
 android skills add --all
 ```
@@ -118,6 +148,10 @@ android skills add --all
    - **Play Billing 與政策合規**：對齊最新的 Play Billing Library，並在代碼層級提供政策檢查清單（Checklist），在開發期就攔截違規行為。
    - **安全與權限審查**：強制依循最小權限原則（Principle of Least Privilege），主動將高危權限替換為系統級 Picker 或無權限替代方案。
    - **多元硬體設備適配**：涵蓋智慧手錶（Wear OS）、智慧電視（Android TV）、車用系統（Android Auto）及空間計算（Android XR），消除跨平台開發障礙。
+4. **與實際目錄對照（2026-11-16 補，以官方 repo 目錄為準）**：
+   - 上面的分類是依貼文敘述整理的，部分項目在官方目錄裡沒有對應技能（例如 Scoped Storage、Photo Picker、執行期權限流水線、State Hoisting 基礎）。官方 README 明說只做模型表現差的用例，基礎 Compose 不優先。
+   - 實際 37 個技能的類別：建置系統（AGP 9 升級）、相機（CameraX）、車用（停車時可用的 app）、裝置端 AI（AppFunctions、LiteRT、ML Kit GenAI）、開發工具（android-cli）、身分驗證、Compose（自適應、ink、效能、XML 遷移）、媒體（Media3 Cast）、iOS 轉 Android、導覽（Navigation 3、navigation-event）、效能（ANR 稽核、R8 分析）、Play（Engage SDK、Billing 升級、政策洞察）、Profiler、安全（intent、permissions）、系統（edge-to-edge、Glance）、測試、TV（Leanback 轉 Compose）、Wear（Compose M3、小工具）、XR（顯示型眼鏡、投影硬體）。
+   - Claude Code 可用官方外掛方式安裝：`/plugin marketplace add android/skills`、`/plugin install android-skills@android-skills`。注意 `android-cli` 技能會指示 agent 直接執行安裝腳本（官方 issue #61），整包安裝前先看過。
 
 ---
 

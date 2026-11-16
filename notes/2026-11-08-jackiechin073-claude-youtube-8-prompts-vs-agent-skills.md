@@ -3,13 +3,18 @@ id: 2026-11-08-jackiechin073-claude-youtube-8-prompts-vs-agent-skills
 title: "評析 Threads 爆款「Claude 8 條提示詞 90 天 YouTube 變現」：泛用角色提示詞的淺層缺陷、搬運破綻與工業級 Agent Skill 實證對照"
 source_url: "https://www.threads.com/share/BAULONe9ZF"
 source_platform: "Threads (@jackiechin073) / GitHub"
-author: "jackie (@jackiechin073) / 海外 Growth Hacker 轉譯"
+author: "jackie (@jackiechin073)（疑為轉譯海外貼文，原串未標出處，未查證）"
 analyzed_at: 2026-11-08
 analyzed_by: "Antigravity"
 status: archived
 cluster: "2"
 cluster_role: "提示詞工程與自媒體"
 short_title: "YouTube八大提示詞vsAgentSkill對照"
+source_review: partial
+source_reviewed_at: 2026-11-17
+source_review_note: "Threads 回覆讀到 24 則（作者 8、網友 16）／共 142 則，其餘要登入。"
+source_images: 0
+source_replies: 24
 tags:
   - youtube-strategy
   - prompt-engineering
@@ -23,7 +28,7 @@ tags:
 
 # 評析 Threads 爆款「Claude 8 條提示詞 90 天 YouTube 變現」：泛用角色提示詞的淺層缺陷、搬運破綻與工業級 Agent Skill 實證對照
 
-- **來源貼文**：[Threads 貼文 `@jackiechin073`（177K 觀看，1.4K 讚）](https://www.threads.com/share/BAULONe9ZF)（短網址 `BAULONe9ZF`，真實 URL `https://www.threads.com/@jackiechin073/post/DfdhtfLlElV`）
+- **來源貼文**：[Threads 貼文 `@jackiechin073`（初次分析時 177K 觀看、1.4K 讚；2026-11-16 重看為 24 萬次瀏覽、1,850 讚、142 則回覆）](https://www.threads.com/share/BAULONe9ZF)（短網址 `BAULONe9ZF`，真實 URL `https://www.threads.com/@jackiechin073/post/DfdhtfLlElV`）
 - **關聯官方與開源專案（主動深挖對照）**：
   - [`Jakeschincariol/youtube-agent-skill`](https://github.com/Jakeschincariol/youtube-agent-skill)（4,992 Stars，MIT，11 個專用 Skills 與 6 支確定性 Python 評估工具）
   - [`AgriciDaniel/youtuber`](https://github.com/AgriciDaniel/youtuber)（YouTube Brain：156 個官方規範出處的知識庫與 Agent Skill 層）
@@ -33,6 +38,25 @@ tags:
 - **相關交叉參照**：
   - [`notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md`](./2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md)（YouTube/IG 確定性腳本與 Hook 評分實證）
   - [`notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md`](./2026-10-17-tasteskill-v2-anti-slop-frontend.md)（消除模型平均化模板陷阱）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 以未登入的內建瀏覽器重看 Threads 貼文：貼文文字、作者接在下面的 8 則串文。另讀到網友留言 16 則（貼文標示 142 則回覆，其餘要登入才看得到；留言是捲到才載入，逐段捲動收集）。
+
+- **作者圖片**：無（主貼文與 8 則串文都沒有圖片、影片或連結預覽卡）。
+- **作者留言補充**：8 則串文就是 8 條提示詞本體，內容與本筆記第 1 節的整理一致；第 8 則確實是與 YouTube 無關的「接到第一個客戶後繼續發私信」。整串沒有出處連結，也沒有任何成效截圖或數據。
+- **網友留言重點**（16 則）：
+  - 質疑為主：`shadox_fox` 說一時分不出是不是反串（36 讚，可見留言中最高）；`lokmp_o` 說這沒什麼用、應該不會有人真的信；`yoyo6sage` 提醒 YouTube 也有 AI 內容審查；`whypuss_fun` 也說沒用（但理由是把貼文誤解成要自己做出一個 YouTube）。
+  - 其餘是「留」「keep」、請人幫忙總結，以及 5 則不加評論的引用轉發。
+  - 讀到的留言裡沒有人指出第 8 則貼錯，也沒有人回報照做的結果或補出處。
+- **對分析的影響**：
+  1. 原筆記的貼文還原與「第 8 則錯置」的判斷，逐則對過原文，無誤。
+  2. 「90 天做到變現門檻」在原串沒有任何佐證（無截圖、無數據、無出處），維持原結論。
+  3. 可見留言的風向是不信，與本筆記的評價一致；提到 YouTube 的 AI 內容審查那則，對應 2.3 節的營利政策風險。
+  4. 原筆記作者欄寫「海外 Growth Hacker 轉譯」是推測：原串以簡體中文書寫、沒有標示來源，看不到的留言也無從佐證，保留但屬未查證。
+  5. 僅更新來源貼文的觀看與按讚數；結論與處置不變，無新增任務。
 
 ---
 

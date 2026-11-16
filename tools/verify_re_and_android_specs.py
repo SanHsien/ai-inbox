@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 tools/verify_re_and_android_specs.py
-逆向工程流水線（REA + CLI-Anything）與 Android 官方 33 Skills 防幻覺規範之「外部裁判」結構驗證器（純 Python stdlib）。
+逆向工程流水線（REA + CLI-Anything）與 Android 官方 Skills（2026-11-16 盤點為 37 個）防幻覺規範之「外部裁判」結構驗證器（純 Python stdlib）。
 
 驗證目標：
 1. docs/reverse-engineering-pipeline-spec.md：
@@ -13,7 +13,7 @@ tools/verify_re_and_android_specs.py
    - 驗證 Electron app.asar 解包統計與原始碼隔離政策；
    - 驗證系統環境變數 PATH 與全域登錄檔零變更/零污染結論，及未改寫正式 Agent 配置。
 3. docs/android-official-skills-anti-hallucination.md：
-   - 驗證 33 個官方 Skills 完整盤點表格與代表性技能；
+   - 驗證 37 個官方 Skills 完整盤點表格與代表性技能（數量見 EXPECTED_ANDROID_SKILLS）；
    - 驗證 XML View 遷移至 Jetpack Compose 之現代防幻覺規範（廢除 findViewById/ViewBinding/synthetic、UDF、LazyColumn 等）；
    - 驗證 Google Play Billing 與 Policy Insights 政策合規審查防線（AcknowledgePurchaseParams、Data Safety 與權限宣告一致性）。
 4. docs/android-cli-plugin-windows-validation.md：
@@ -163,22 +163,28 @@ def verify_rea_sandbox_evidence(source: Union[Path, str]) -> List[str]:
     return errors
 
 
+# android/skills 上游目錄的 SKILL.md 數量：2026-10-23 首次盤點 33 個，2026-11-16 以 GitHub API 重列為 37 個。
+# 上游會再增減；重新盤點文件時，這個數字要跟著文件的表格一起改。
+EXPECTED_ANDROID_SKILLS = 37
+
+
 @doc_guard
 def verify_android_skills_anti_hallucination(source: Union[Path, str]) -> List[str]:
     """驗證 docs/android-official-skills-anti-hallucination.md：
 
-    - 驗證 33 個官方 Skills 全景盤點表格與代表性技能
+    - 驗證 EXPECTED_ANDROID_SKILLS 個官方 Skills 全景盤點表格與代表性技能
     - 驗證 XML View 遷移至 Jetpack Compose 之現代防幻覺規範
     - 驗證 Google Play Billing 與 Policy Insights 政策合規審查防線
     """
     text = load_content(source)
     errors: List[str] = []
 
-    # 1. 驗證 33 個官方 Skills 清單
-    has_33_claim = "33 個" in text or "33 個 Skills" in text
+    # 1. 驗證官方 Skills 清單（數量與文件盤點日的上游目錄一致）
+    expected = EXPECTED_ANDROID_SKILLS
+    has_count_claim = f"{expected} 個" in text
 
     # 解析 Markdown 表格項目
-    # 每列必須是「| 編號 | ... | `路徑/SKILL.md` | ...」，編號需恰為 1..33 不重複
+    # 每列必須是「| 編號 | ... | `路徑/SKILL.md` | ...」，編號需恰為 1..EXPECTED_ANDROID_SKILLS 不重複
     # （避免任何以數字開頭的表格列、重複編號或缺路徑的空列灌水湊數）
     table_numbers: List[int] = []
     for line in text.splitlines():
@@ -187,11 +193,11 @@ def verify_android_skills_anti_hallucination(source: Union[Path, str]) -> List[s
             table_numbers.append(int(row.group(1)))
 
     skill_count = len(table_numbers)
-    numbering_ok = sorted(table_numbers) == list(range(1, 34))
-    if not (has_33_claim and numbering_ok):
+    numbering_ok = sorted(table_numbers) == list(range(1, expected + 1))
+    if not (has_count_claim and numbering_ok):
         errors.append(
-            f"官方 Skills 清單盤點不足 33 個或編號異常（含 SKILL.md 路徑的表格列解析出 {skill_count} 個，"
-            f"編號需恰為 1~33 且不重複）"
+            f"官方 Skills 清單盤點不足 {expected} 個或編號異常（含 SKILL.md 路徑的表格列解析出 {skill_count} 個，"
+            f"編號需恰為 1~{expected} 且不重複）"
         )
 
     # 檢查關鍵代表性技能存在
@@ -295,7 +301,7 @@ def verify_all_specs(repo_root: Optional[Path] = None) -> Tuple[bool, Dict[str, 
 def main(argv: Optional[List[str]] = None) -> int:
     ensure_utf8_output()
     parser = argparse.ArgumentParser(
-        description="逆向工程流水線（REA + CLI-Anything）與 Android 官方 33 Skills 防幻覺規範之外部裁判結構驗證器"
+        description="逆向工程流水線（REA + CLI-Anything）與 Android 官方 Skills 防幻覺規範之外部裁判結構驗證器"
     )
     parser.add_argument(
         "--repo-root",

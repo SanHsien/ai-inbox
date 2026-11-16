@@ -10,6 +10,9 @@ status: archived
 cluster: 2
 cluster_role: "16格關鍵幀舞步"
 short_title: "16格舞步表轉影片Prompt"
+source_review: unavailable
+source_reviewed_at: 2026-11-16
+source_review_note: "source_url 是作者個人頁不是單篇貼文；未登入只顯示最近 6 則貼文（2026-11-14 到 11-16，都是 renoise MCP 動畫短片），找不到 16 格舞步表那一則，圖片、影片與留言都沒看到"
 tags:
   - ai-video
   - keyframe-sheet
@@ -27,6 +30,17 @@ tags:
 - **當前狀態**：`⚪ 封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-11-15-higgsfield-mcp-opus55-video-review-report.md`](./2026-11-15-higgsfield-mcp-opus55-video-review-report.md)（角色一致性與連續性控制）
+
+---
+
+## 0. 原始資料盤點
+
+> 貼文文字、作者上傳的每張圖片（含輪播）、作者留言補充、網友留言（展開到底）都要看過，見 AGENTS.md 第 3 節。
+
+- **作者圖片**：看不到。筆記只留作者個人頁 `https://x.com/Mayz1169`，沒有單篇貼文連結。2026-11-16 未登入開個人頁，只列出最近 6 則貼文（11-14 到 11-16，內容都是用 renoise MCP 做的動畫短片），沒有 16 格舞步表那一則；另用網路搜尋也沒找到原貼文。舞步表成品圖與影片都沒看到。
+- **作者留言補充**：看不到（同上）。
+- **網友留言重點**：看不到（同上）。
+- **對分析的影響**：第 1 節的兩階段 Prompt 模板與「GPT Image 2.5 產表＋Grok 產片」的工具組合仍是轉述，沒有對照原貼文、成品圖或留言裡的實測回報；結論不變，可信度維持「未查證的轉述」。個人頁只確認帳號存在：顯示名稱 Kiki，自介是 AI 視覺創作者，約 1.2 萬位跟隨者。日後拿到單篇貼文連結再補看。
 
 ---
 

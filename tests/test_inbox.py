@@ -22,6 +22,10 @@ status: {status} # pending | in-progress | done | archived
 cluster: 1
 cluster_role: "訊息傳輸"
 short_title: "測試短標題"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 2
+source_replies: 0
 tags:
   - a
   - b
@@ -71,6 +75,19 @@ class ParseTest(unittest.TestCase):
 
     def test_valid_note_has_no_errors(self):
         self.assertEqual(vi.check_notes([make_note(self.tmp)]), [])
+
+    def test_source_review_rules(self):
+        ok = {"source_review": "full", "source_reviewed_at": "2026-11-16", "source_images": "3", "source_replies": "0"}
+        self.assertTrue(vi.check_source_review("n.md", {**ok, "source_reviewed_at": ""}))  # 缺重審日期
+        self.assertEqual(vi.check_source_review("n.md", ok), [])
+        self.assertTrue(vi.check_source_review("n.md", {}))  # 沒填
+        self.assertTrue(vi.check_source_review("n.md", {"source_review": "text-only"}))  # 只看文字不算
+        self.assertTrue(vi.check_source_review("n.md", {"source_review": "full", "source_images": "3"}))  # 缺留言數
+        self.assertTrue(vi.check_source_review("n.md", {**ok, "source_replies": "-1"}))
+        self.assertTrue(vi.check_source_review("n.md", {"source_review": "unavailable"}))  # 缺原因
+        self.assertTrue(vi.check_source_review("n.md", {**ok, "source_review": "partial"}))  # partial 缺說明
+        self.assertEqual(vi.check_source_review("n.md", {**ok, "source_review": "partial", "source_review_note": "留言要登入，讀到 8／共 13 則"}), [])
+        self.assertEqual(vi.check_source_review("n.md", {"source_review": "unavailable", "source_reviewed_at": "2026-11-16", "source_review_note": "貼文已刪除"}), [])
 
     def test_status_mismatch_detected(self):
         errs = vi.check_notes([make_note(self.tmp, status="pending")])

@@ -12,6 +12,10 @@ status: done
 cluster: "3"
 cluster_role: "外掛生態與設定治理"
 short_title: "Claude Code 官方插件目錄"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 1
+source_replies: 7
 tags:
   - claude-code
   - agent-plugins
@@ -22,10 +26,27 @@ tags:
 
 # Anthropic 官方 Claude Code 插件生態目錄：解構標準化外掛、Skills 與 MCP 整合
 
-- **來源貼文**：[Threads 分享連結](https://www.threads.com/share/BAX6-awXHR/)（登載於 `@easyanythinghk`） ｜ `2026-10-19` 社群後續追蹤（「幾天內累積 41k stars，不用再到處翻隨機 repo」）
+- **來源貼文**：[Threads 分享連結](https://www.threads.com/share/BAX6-awXHR/)（登載於 `@easyanythinghk`） ｜ `2026-10-19` 社群後續追蹤（貼文原話是「累積 4 萬顆星、單日 +1,552」，附圖寫 40,886；不是幾天內衝到）
 - **官方 GitHub**：[`anthropics/claude-plugins-official`](https://github.com/anthropics/claude-plugins-official)
 - **分析日期**：`2026-10-17`（`2026-10-19` 補充最新社群追蹤）
 - **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：Threads 貼文（分享連結導向 `@easyanythinghk` 的貼文）文字、1 張圖、1 則留言都看過；另看了官方 repo 現行 README 與留言最多的 6 則 issue／PR。
+
+- **作者圖片**：1 張自製資訊卡。標「GITHUB TRENDING・TOP 1・2026.10.17」，repo 名稱、一句英文定位、三個標籤：語言 Python、星數 **40,886（當日 +1,552）**、授權 Apache-2.0，底部列 MCP／Skills／Open Source／Claude Code。
+- **作者留言補充**：1 則，貼 repo 連結並問讀者最缺什麼功能，沒有技術補充。
+- **網友留言重點**：Threads 上沒有網友留言。GitHub issue 有三件事與本篇有關：
+  - README 開頭已改版：第三方插件一律改到 claude.ai 的目錄後台送件，**這個 repo 的 PR 沒人看**，`marketplace.json` 之後只留 Anthropic 自己的插件。
+  - README 的警語：Anthropic **不控制、也不驗證**插件裡的 MCP server、檔案或其他軟體，安裝前要自己確認可信。
+  - #7024：約 2026-11-05 起，目錄只接受「已驗證組織」送出的 command hook 與本機 MCP server；#1272：有人的插件後台顯示已發布，卻沒出現在市集。
+- **對分析的影響**：
+  - 「上線幾天內突破 4.1 萬星」是錯的。貼文寫的是「累積 4 萬顆星、單日 +1,552」，圖上是 40,886；repo 建立於 2025-11-20，是累積將近一年的數字。1.1 節與來源行已改。
+  - 「經官方審核、提供安全篩選」說過頭了，與 README 警語相反。1.1、1.2 節已改成「官方整理的目錄，不代表內容經過安全驗證」。
+  - `T-20261017-08` 的個人插件走自己的 marketplace，不經官方目錄，不受送件規則影響；任務狀態未動。日後若要把個人插件送進官方目錄，含 command hook 的會被擋（#7024），這點記在第 2 節。
 
 ---
 
@@ -33,12 +54,12 @@ tags:
 
 ### 1.1 核心主題與社群熱度
 - **專案定位**：Anthropic 官方推出的 **Claude Code 插件市場官方目錄（Official Plugin Directory）**。
-- **熱度數據**：在 GitHub 上線幾天內即突破 **4.1 萬顆星（41k+ Stars）**，登上 GitHub Trending 榜首，為當前終端 Coding Agent 生態最受矚目的標準化外掛生態。
-- **解決的痛點**：過去使用 Claude Code 時，開發者需要手動到處翻找隨機 GitHub repo、自行拼裝 MCP Server 配置、寫 Shell 腳本；該專案將經由官方審核與挑選的高品質外掛統一收錄、標準化打包，提供開箱即用的安全外掛生態。
+- **熱度數據**：2026-10-17 登上 GitHub Trending 第一名，當時累積約 **4.09 萬顆星**（單日 +1,552）。repo 建立於 2025-11-20，這是將近一年累積的數字，不是上線幾天衝出來的。
+- **解決的痛點**：過去使用 Claude Code 時，開發者需要手動到處翻找隨機 GitHub repo、自行拼裝 MCP Server 配置、寫 Shell 腳本；該專案把 Anthropic 自家插件與早期收錄的第三方插件集中在一處、用統一格式打包，一行指令就能裝。注意 README 明寫 Anthropic 不控制也不驗證插件內容，「官方目錄」不等於「安全掛保證」。
 
 ### 1.2 2026-10-19 社群追蹤反響：從「野蠻生長」到「官方驗證」
 社群開發者普遍共鳴在於**「認知負擔與資安風險的雙重下降」**：
-1. **擺脫隨機 Repo 的資安隱患**：過去散落於個人倉庫的插件可能含有惡意腳本或供應鏈投毒風險；官方公開市場（Official Curated Marketplace）提供了基礎的安全篩選與版本維護。
+1. **擺脫隨機 Repo 的資安隱患**：過去散落於個人倉庫的插件可能含有惡意腳本或供應鏈投毒風險；官方目錄集中了來源，比到處找 repo 好查證；但 README 警語說安裝前仍要自己確認可信，不能當成已做過安全篩選。
 2. **安裝體驗極簡化**：透過一鍵指令（如 `/plugin install <plugin-name>@claude-plugins-official`）即可即裝即用，免去繁瑣的環境變數手動配置。
 3. **任務對齊確認**：本項目的核心價值已完全收錄於既有任務 **`T-20261017-07`**（官方精選外掛清單檢閱）與 **`T-20261017-08`**（個人工具標準 Plugin 打包規範），無重複新增任務之必要，維持任務追蹤單一真實來源（Single Source of Truth）。
 
@@ -75,6 +96,7 @@ Claude Code Plugin 將一個完整能力封裝為獨立套件，通常包含：
     1. **審閱官方精選插件庫**：挑選適合現有開發流程的官方插件（如自動化審查、資安掃描），避免重複造輪子。
     2. **外掛結構標準化**：未來若開發自製的跨 Agent 工具（如 `ai-inbox-helper` 或專屬 Skill），可比照官方 Plugin 規範打包，支援一鍵安裝。
   - **不適用 / 需注意的部分**：
+    - 送件規則已變：第三方插件改到 claude.ai 目錄後台送件，repo 的 PR 沒人看；約 2026-11-05 起含 command hook 或本機 MCP server 的插件只收已驗證組織的（issue #7024）。個人插件維持走自己的 marketplace。
     - Windows 原生相容性：部分社群提交的 Plugin 可能預設假定 POSIX 環境（Linux/macOS），在 Windows 11 下需注意 Shell 路徑與行尾符號。
 
 ---

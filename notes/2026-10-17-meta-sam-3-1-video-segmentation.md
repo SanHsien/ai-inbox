@@ -10,6 +10,11 @@ status: archived
 cluster: "4"
 cluster_role: "學術論文閱讀與視覺分割"
 short_title: "Meta SAM 3.1 視訊分割"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "「凱文大叔（SubTutor）」的社群內容沒留連結、找不到，那邊的圖與留言沒看到（總數未知）；改看 repo README 4 張圖與 7 則 issue"
+source_images: 4
+source_replies: 7
 tags:
   - computer-vision
   - meta-sam
@@ -28,11 +33,39 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：看了 `facebookresearch/sam3` 的 README、SAM 3.1 發布說明、README 的 4 張圖，以及留言最多的 7 則 issue。筆記提到的「凱文大叔（SubTutor）」那則社群內容沒有留下連結，找不到原文，那邊的圖與留言沒看到。
+
+- **作者圖片**（README）：
+  - 圖 1 架構圖：文字提示（例「a penguin」）走 Text Encoder、影格走 Image Encoder，一起送進 **Detector**（SAM 3 新增）找出當前影格的遮罩；**Tracker**（沿用 SAM 2）把上一格的遮罩傳下來，也接受遮罩／點／框提示與範例框（exemplar）；兩邊結果合併後輸出並寫回 Memory Bank。兩個編碼器來自 PE（Perception Encoder）。
+  - 圖 2 動畫：草地上幾隻狗奔跑的影片分割示範。
+  - 圖 3 動畫：足球員的影片追蹤示範。
+  - 圖 4 SA-Co 資料集拼圖：街景、水果攤、貓、車等畫面配上名詞片語標註（例「白色車牌」「藍色籃子」）；紅字是畫面裡**不存在**的片語（負樣本），用來訓練模型判斷「沒有這東西」。
+- **作者留言補充**（README 與發布說明）：
+  - 模型參數量是 **848M**；偵測器與追蹤器共用一個視覺編碼器。
+  - SAM 3.1 於 2026-03-27 發布，重點是 Object Multiplex（共用記憶的多物件聯合追蹤）；發布說明寫「128 個物件時在單張 H100 上約 7 倍加速」。
+  - 環境要求 Python 3.12 以上；授權是 Meta 自訂的 **SAM License**，不是 MIT／Apache。
+  - SAM 3 Agent 有官方範例 notebook（`examples/sam3_agent.ipynb`）。
+- **網友留言重點**（issue）：
+  - #224（35 則留言，未結）：要求官方提供 ONNX 匯出與 TensorRT 轉換腳本——目前**沒有官方 ONNX 版**。
+  - #408（未結）：問有沒有串流版；可見即時串流不是現成功能。
+  - #163、#330：自訂資料集微調的格式與分割微調支援，問的人多、仍未結。
+  - #317（71 則留言）：想把一張圖的框選概念轉到另一張圖做少樣本分割。
+  - #507、#289：推論時 dtype 不一致、訓練時數值錯誤等執行問題。
+- **對分析的影響**：
+  - 參數量改成 848M（原寫 850M 是約數）。
+  - 「16 FPS 翻倍到 32 FPS」在 repo 的 README 與 3.1 發布說明裡都找不到，那裡只寫 7 倍加速；32 FPS 可能出自 Meta 部落格或轉述者，已在 1.2 節標明未在 repo 查到。
+  - 第 2 節「可考慮量化版 ONNX 模型」與現況不符（#224），已改寫。
+  - 補上授權是 SAM License、要 Python 3.12。兩個任務本來就是「不做」，這些限制讓理由更充分，狀態不變。
+
+---
+
 ## 1. 核心內容摘要與技術深挖
 
 ### 1.1 專用模型（Specialized Model）的崛起：不聊天，專精像素分割
 隨著業界對「對話式通用大模型（LLM）」邊界的認識加深，像 TypeSafe Jev、Meta SAM 這類「不具備通用聊天功能，但在單一垂直領域極致精準、快速」的**專用神經網路模型**正迎來爆發：
-- **SAM 的本質**：約 8.5 億參數（850M）的端到端視覺分割模型（Vision Segmentation Model），其目標不是生成文字或繪製插圖，而是對輸入之圖片或連續視訊影格，依照指定目標**逐像素輸出高精度的二值遮罩（Binary Pixel Mask）**。
+- **SAM 的本質**：848M 參數（README 數字）的端到端視覺分割模型（Vision Segmentation Model），其目標不是生成文字或繪製插圖，而是對輸入之圖片或連續視訊影格，依照指定目標**逐像素輸出高精度的二值遮罩（Binary Pixel Mask）**。
 - **應用場景**：影片後製中的綠幕去背（Rotoscoping）、敏感資訊自動遮蔽（人臉、車牌打馬賽克）、物體顏色替換與局部光影重構。
 
 ### 1.2 SAM 世代演進與 3.1 突破
@@ -41,7 +74,7 @@ Meta 團隊在視覺分割領域持續迭代，演進路徑清晰：
 1. **SAM 1 (2023)**：開創點選（Point）與框選（Bounding Box）的互動式分割（Promptable Segmentation），僅限單張靜態影像，一次僅能處理一個物件。
 2. **SAM 2 (2024)**：引入串流記憶注意力機制（Streaming Memory Attention），具備跨影格追蹤（Video Tracking）能力，但仍高度依賴首幀的手動框選提示。
 3. **SAM 3 (2025 年 11 月)**：突破性原生支援**文字提示（Open-vocabulary Text Prompting）**。輸入短語（如 `"car license plate"`、`"red umbrella"`），即可一次自動找出畫面中所有相符物件，並自動沿時間軸追蹤。
-4. **SAM 3.1 (2026 年 3 月 27 日)**：核心優化**多物件複用批次追蹤（Object Multiplexing & Shared Memory）**。在單張 NVIDIA H100 GPU 上，中等物件密度的視訊推論速度從 16 FPS 翻倍至 **32 FPS**（達成實時 30fps+ 吞吐），在 128 個以上密集物件追蹤時甚至帶來高達 7 倍的效能加速。
+4. **SAM 3.1 (2026 年 3 月 27 日)**：核心優化**多物件複用批次追蹤（Object Multiplexing & Shared Memory）**。官方發布說明寫的是：128 個物件時，在單張 NVIDIA H100 上比 2025 年 11 月版約快 **7 倍**。「16 FPS 翻倍至 32 FPS」這組數字在 repo 的 README 與發布說明裡查不到，出處未查證。
 
 ### 1.3 語意邊界與「SAM 3 Agent」雙階段流水線
 SAM 3.1 本身不是具備多跳邏輯推理能力的 LLM，其自然語言理解存在明確邊界：
@@ -94,7 +127,8 @@ SAM 3.1 本身不是具備多跳邏輯推理能力的 LLM，其自然語言理�
     1. **「專用小模型 + 通用大模型」的分層架構**：通用 LLM 負責聽懂人話、專用模型（SAM 3.1）負責幹重活（32 FPS 像素追蹤），此分工模式效率與性價比最高。
     2. **影片自動後製工具鏈**：凱文大叔的 SubTutor 證明了獨立開發者可透過整合 SAM 打造自動化影視工具。
   - **適用性界線**：
-    - SAM 3.1 依賴 NVIDIA GPU（CUDA）進行高吞吐推論。若在無獨立顯卡的輕量環境，需考慮雲端 API（如 Replicate / Hugging Face Inference Endpoints）或量化版 ONNX 模型。
+    - SAM 3.1 依賴 NVIDIA GPU（CUDA）進行高吞吐推論，環境要 Python 3.12 以上。沒有獨立顯卡時只能考慮雲端 API；官方目前沒有 ONNX／TensorRT 匯出（issue #224 未結），也沒有現成的串流版（issue #408）。
+    - 授權是 Meta 自訂的 SAM License，不是 MIT／Apache，商用或再散布前要先讀條款。
 
 ---
 

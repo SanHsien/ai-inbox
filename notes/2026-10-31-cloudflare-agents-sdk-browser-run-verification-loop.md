@@ -10,6 +10,10 @@ status: archived
 cluster: "3"
 cluster_role: "螢幕感知與瀏覽器代理"
 short_title: "Cloudflare Agents與Browser驗證閉環"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 0
+source_replies: 1
 tags:
   - cloudflare-agents
   - browser-rendering
@@ -32,6 +36,21 @@ tags:
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（編譯器專家 Thorsten Ball 15 條哲學：無可辯駁證據與為 Agent 打造試錯工具）
   - [`2026-10-28-motion-design-agent-harness-opus-55.md`](https://github.com/SanHsien/code-as-video-studio/blob/main/notes/2026-10-28-motion-design-agent-harness-opus-55.md)（代碼驅動 Motion Design：seek(t) 與分鏡自審循環）
   - [`notes/2026-10-17-agent-reach-social-intelligence.md`](./2026-10-17-agent-reach-social-intelligence.md)（Agent-Reach 16 平台連網與情報感知規範）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：Threads 貼文全文與留言區都看過。
+
+- **作者圖片**：無。貼文與作者回覆各帶一張連結預覽卡（GitHub `cloudflare/agents`、Cloudflare Browser Run 文件），是平台自動產生的，不是作者上傳的圖。
+- **作者留言補充**：作者在第 1 則回覆補上兩個官方文件連結：Agents 文件與 Browser Run 文件。文件標題用的產品名是「Browser Run」。
+- **網友留言重點**：無。留言區只有作者自己那 1 則。
+- **對分析的影響**：沒有需要更正的地方，但要分清楚哪些是貼文說的、哪些是本筆記補的：
+  1. 貼文本身只講到：Agent 可操作 JavaScript 網站、點擊填表、截圖檢查、保留瀏覽器工作階段、跨多輪續作、讓人即時接手、可用 CDP 控制 Chromium；以及「寫程式 → 起測試站 → 瀏覽器自動化 → 檢查 UI → 發現問題 → 修正」這條流程；還有一句提醒：內部開發站要有合法的網路連通與存取權限，Agent 不會自動連得進 localhost 或企業內網。
+  2. Durable Objects 休眠喚醒、Code Mode、Cloudflare Tunnel、雙軌自審、CDP 事件名稱等，是本筆記依 Cloudflare 官方文件與 repo 補充的，貼文沒有提。
+  3. 第 2.3 節的「瀏覽操作預設上限 60 秒」「Cookie 以 Cloudflare Secrets 注入」是原分析自擬的防護建議，沒有官方出處，已在該段標明。
+  - 三項任務維持「不做」，本次重審沒有新資訊改變判斷。
 
 ---
 
@@ -110,7 +129,7 @@ Cloudflare 發布的 **Agents SDK (`cloudflare/agents`)** 與 **Browser Renderin
   - 雲端運行的 Browser Run 無法直接存取開發者本機的 `http://localhost:3000` 或公司內網私有 IP。
   - **解法一：Cloudflare Tunnel 穿透**：開發者在本機透過 `cloudflared tunnel --url http://localhost:3000` 建立臨時或固定的加密通道，賦予雲端 Agent 訪問本地開發伺服器的安全權限。
   - **解法二：本地 Runner 適配**：若企業有嚴格資安規範禁止內網穿透，AI Coding 驗證閉環需下沉至本地，採用 Playwright / Puppeteer 本地無頭 Chromium 模式運行。
-- **資安與憑證硬閘門（Security Guardrails）**：
+- **資安與憑證硬閘門（Security Guardrails）**（以下兩點是本筆記自擬的建議，貼文與官方文件沒有這樣規定）：
   - 遵循「憑證不進程式碼、不進對話」原則。Browser 執行的敏感 Session Cookies 必須透過 Cloudflare Secrets 注入，嚴禁在 Agent 日誌中明文回顯。
   - 設定嚴格的超時熔斷機制（預設瀏覽操作上限 60 秒），防止死循環等待耗盡配額。
 

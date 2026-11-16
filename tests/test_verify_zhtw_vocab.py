@@ -383,6 +383,66 @@ class TestVerifyZhtwVocab(unittest.TestCase):
             self.assertEqual(main(["--fix", str(good), str(bad)]), 2)
             self.assertEqual(good.read_text(encoding="utf-8"), "連線埠")
 
+    def test_paste_and_misconverted_number_rules(self):
+        # T-20261107-06：來源是 doggy8088/answer-me-with-html README.zh-TW.md 的殘留詞。
+        cases = {
+            "把提示詞粘貼給你的 Agent": "把提示詞貼上給你的 Agent",
+            "複製粘貼": "複製貼上",
+            "每次都得到同樣的數位": "每次都得到同樣的數字",
+            "同樣的數位。": "同樣的數字。",
+            "面板標題：關鍵數位": "面板標題：關鍵數字",
+            "關鍵數位（MSL、ISN）": "關鍵數字（MSL、ISN）",
+        }
+        for src, expected in cases.items():
+            with self.subTest(src=src):
+                self.assertEqual(vocab.apply_zhtw_vocab(src, skip_code=True), expected)
+                self.assertEqual(vocab.apply_zhtw_vocab(expected, skip_code=True), expected)
+                self.assertTrue(vocab.scan_degraded_vocab(src))
+                self.assertEqual(vocab.scan_degraded_vocab(expected), [])
+
+    def test_digital_compounds_are_not_rewritten(self):
+        # 「數位」是台灣對 digital 的正確用詞：整詞與 digital 複合詞一律不動。
+        preserved = (
+            "數位轉型", "數位簽章", "數位相機", "數位化", "數位",
+            "公司推動數位轉型", "用數位簽章驗證",
+            "關鍵數位轉型專案", "關鍵數位基礎建設", "關鍵數位技術",
+            "同樣的數位相機", "同樣的數位簽章", "同樣的數位轉型路徑",
+        )
+        for text in preserved:
+            with self.subTest(text=text):
+                self.assertEqual(vocab.apply_zhtw_vocab(text, skip_code=True), text)
+                self.assertEqual(vocab.apply_zhtw_vocab(text, skip_code=False), text)
+                self.assertEqual(vocab.scan_degraded_vocab(text), [])
+
+    def test_new_rules_skip_code_quotes_and_backticks(self):
+        text = (
+            "行內 `粘貼` 與 `關鍵數位` 不動；「同樣的數位」是引述也不動。\n"
+            "```text\n粘貼 同樣的數位 關鍵數位\n```\n"
+            "內文的粘貼要改。\n"
+        )
+        fixed = vocab.apply_zhtw_vocab(text, skip_code=True)
+        self.assertIn("`粘貼`", fixed)
+        self.assertIn("`關鍵數位`", fixed)
+        self.assertIn("「同樣的數位」", fixed)
+        self.assertIn("粘貼 同樣的數位 關鍵數位", fixed)
+        self.assertIn("內文的貼上要改。", fixed)
+        hits = vocab.scan_degraded_vocab(text, skip_code=True)
+        self.assertEqual([(h["line"], h["term"]) for h in hits], [(5, "粘貼")])
+        self.assertEqual(vocab.apply_zhtw_vocab(fixed, skip_code=True), fixed)
+
+    def test_fix_preserves_line_endings(self):
+        # --fix 不可改動換行：LF 檔維持 LF，CRLF 檔維持 CRLF（Windows 文字模式會全寫成 CRLF）。
+        with tempfile.TemporaryDirectory() as tmp:
+            for name, eol in (("lf.md", b"\n"), ("crlf.md", b"\r\n")):
+                path = Path(tmp) / name
+                path.write_bytes("第一行粘貼".encode("utf-8") + eol + "第二行".encode("utf-8") + eol)
+                with redirect_stdout(io.StringIO()):
+                    self.assertEqual(vocab.main(["--fix", str(path)]), 0)
+                self.assertEqual(
+                    path.read_bytes(),
+                    "第一行貼上".encode("utf-8") + eol + "第二行".encode("utf-8") + eol,
+                )
+
     def test_all_rules_are_strictly_idempotent(self) -> None:
         ok, failures = verify_idempotence([
             "預設值與環境變數的連接埠設定只影響命令列介面輸出，詳見參考文件。",

@@ -10,6 +10,11 @@ status: done
 cluster: "1"
 cluster_role: "記憶繼承與共用大腦"
 short_title: "Idle Compaction 與 cc-session-reader"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "X 貼文 514 則回覆要登入才看得到，留言讀到 0／514 則；圖看了 1／1 張；source_replies 的 5 是上游 repo 的 PR"
+source_images: 1
+source_replies: 5
 tags:
   - claude-code
   - prompt-caching
@@ -31,14 +36,29 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：X 貼文的文字與 1 張圖看過；貼文底下 514 則回覆要登入 X 才看得到，本次沒有登入，**回覆一則都沒讀到**。另看了上游 `Mapleeeeeeeeeee/cc-session-reader` 的 README 與 5 則 PR。
+
+- **作者圖片**：1 張。Claude Code 終端機畫面，輸入框上方出現一行狀態訊息，意思是「閒置時已壓縮，趕在 prompt cache 過期之前」。圖裡沒有設定鍵或環境變數名稱。
+- **作者留言補充**：看不到（要登入）。貼文本文只講三件事：新增閒置壓縮、在快取過期前（約 1 小時）壓縮長時間閒置的 session、回來時只需重新處理摘要所以省用量。
+- **網友留言重點**：X 回覆看不到。上游 repo 沒有開 issue 討論，讀到的 5 則 PR 都是維護者自己的修正說明，其中 #21 指出 Claude Code 2.1.300 起 session JSONL 多了一種 API request 存檔紀錄，舊版讀取器會把每則訊息重複印一次，已修。
+- **對分析的影響**：
+  - 1.1 節的 `idleCompaction` 設定鍵、`CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS` 環境變數與「預設 200k」，**貼文本文與圖片都沒有**，推測來自作者的回覆串；本次無法對照原文，已在該處標明出處未重新查證。`T-20261017-27` 的本機設定是當時實機驗證過的，不受影響。
+  - 貼文寫的是快取「約 1 小時」過期；1.1 節的「5 分鐘至 1 小時」是本 repo 補的背景，不是貼文內容，已標明。
+  - 1.2 節「使用者提出」那段是維護者自己的想法，不是 Lydia Hallie 的主張，原文已有寫，本次沒改。
+  - 結論與任務不變。
+
+---
+
 ## 1. 核心內容摘要與技術深挖
 
 ### 1.1 背景：Prompt Cache TTL 與閒置壓縮機制（Idle Compaction）
 Anthropic 官方為 Claude Code 引入了新的背景優化機制——**閒置壓縮（Idle Compaction）**：
-- **Prompt Cache 壽命限制**：Anthropic 伺服器端的 Prompt Cache 有效時間（TTL）約為 5 分鐘至 1 小時。當使用者在長會話中暫時離開（如會議、用餐或跨日）超過 1 小時，服務端快取將徹底過期。
+- **Prompt Cache 壽命限制**：Anthropic 伺服器端的 Prompt Cache 有效時間（TTL）約為 5 分鐘至 1 小時（貼文只寫「約 1 小時」，5 分鐘是 API 的另一種快取期限，為本 repo 補充）。當使用者在長會話中暫時離開（如會議、用餐或跨日）超過 1 小時，服務端快取將徹底過期。
 - **快取過期的成本衝擊**：若會話累積至 200k+ tokens，快取失效後使用者送出的下一條指令，必須重新支付高昂的「Cache Write / 全文重新計算」成本，且伴隨明顯的延遲（TTFT）。
 - **官方應對策略**：Claude Code 在 Prompt Cache 即將過期前（約 1 小時），自動在後台觸發 Compact。當使用者返回時，模型只需重新處理壓縮後的「文字摘要（Summary）」，大幅壓低快取未命中成本。
-- **配置參數**：
+- **配置參數**（貼文本文與附圖都沒有這兩項，推測出自作者回覆串；2026-11-16 重審時回覆要登入才看得到，未重新對照原文）：
   - `settings.json`：可設定 `"idleCompaction": false` 選擇退出（opt-out）。
   - 環境變數：`CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS`（自訂觸發閾值，預設為 `200k`）。
 

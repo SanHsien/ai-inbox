@@ -10,6 +10,11 @@ status: done
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "Block Buzz 協同工作區"
+source_review: partial
+source_review_note: "issue #2698 共 38 則留言、#2388 共 8 則留言（2026-11-17 以 GitHub API 查得），兩則合計只讀本文與前幾則留言共 16 則／46 則，各讀幾則當時未分開記錄；README 截圖看了 4／4 張"
+source_reviewed_at: 2026-11-16
+source_images: 4
+source_replies: 16
 tags:
   - nostr-protocol
   - multi-agent-collaboration
@@ -31,6 +36,26 @@ tags:
   - [`notes/2026-10-19-ai-shared-brain-multi-agent-architecture.md`](./2026-10-19-ai-shared-brain-multi-agent-architecture.md)（多 Agent 共同大腦與跨環境同步）
   - [`notes/2026-10-19-crossroad-a2a-agent-mail-relay.md`](./2026-10-19-crossroad-a2a-agent-mail-relay.md)（Agent-to-Agent 通訊與郵件中繼架構）
   - [`notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md`](./2026-10-26-answer-me-with-html-visual-agent-artifacts.md)（工件輸出與互動反饋迴圈）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：來源只有 GitHub repo，沒有社群貼文。看了 README 的 4 張截圖，讀了兩則 issue（#2698 與 #2388）的本文與前幾則留言共 16 則；#2698 共 38 則、#2388 共 8 則，後面的留言沒讀完，所以 `source_review` 記為 `partial`。
+
+- **作者圖片**（README 截圖，都是 macOS 桌面版畫面）：
+  - 圖 1 `channel-thread`：專案頻道裡，成員 @ 一個 Agent 請它整理拍攝計畫，Agent 以條列回覆並 @ 回指定的人；左欄有收件匣、Agents、頻道分組與私訊。
+  - 圖 2 `channel-agents`：工程頻道裡多個 Agent 與人對話，Agent 貼出 GitHub PR 連結、互相 @ 交棒，訊息下方有表情回應。
+  - 圖 3 `create-channel`：新增頻道對話框，可搜尋、篩選、加入既有頻道或建立新頻道。
+  - 圖 4 `media-comments`：影片播放器加右側留言欄，留言釘在特定影格上。
+- **作者留言補充**：維護團隊在 #2388（Windows Support 總表）說核心程式碼應可在 Windows 跑，但整合用的周邊行程有多起失敗回報，團隊手上 Windows 硬體有限，歡迎社群測試與貢獻。
+- **網友留言重點**：
+  - #2698（38 則留言，仍開啟）：`buzz-acp` 的回覆交付是隱含約定——Agent 要自己執行 `buzz messages send` 訊息才會進頻道；模型只把答案寫在 session 文字時，回覆會被靜默丟棄，Activity 面板看得到答案、token 照扣、聊天室空白、沒有任何 log。回報者以同一份提示詞對照，強模型會送出、Sonnet 級模型不會。後續留言指出桌面版 0.5.0 起模型切換生效，這個問題變成預設路徑；有人在自架 relay 的 0.5.1 仍重現；也有人用 Hermes ACP 重現。相關的還有 #2459（CLI 寫入失敗時回覆遺失）、#2265（預設模型沒額度時靜默失敗）。
+  - #2388 留言：社群成員回報 Windows 版的通知、縮到系統匣、安裝 Claude Code ACP 失敗等問題，並各自送 PR；另有 issue 指出 `buzz-acp` 在 Windows 有 38 個測試失敗、更新後畫面空白。
+- **對分析的影響**：
+  - 3.1 把「已讀不回」歸因於額度耗盡，這只是其中一種原因。上游 #2698 顯示更常見的原因是回覆交付約定沒寫明：換成較弱的模型就整批不回，額度正常也會發生。3.1 已補上這個原因。
+  - 已完成的 `T-20261026-27` 設計的是額度心跳，偵測不到「回合正常結束但沒送出訊息」這種情形；新增 `T-20261026-35` 補這一塊（不改動原任務狀態）。
+  - Windows 支援度比原筆記寫的保守：上游自己列為待補的區塊，已在第 3 節「不採納／暫緩評估」補一句。
 
 ---
 
@@ -139,6 +164,7 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
 
 - **不採納／暫緩評估**：
   - 目前不急於在本地生產環境部署整套 Postgres+Redis+MinIO 的完整 Buzz Relay 叢集；現階段聚焦於研究與複用其 `buzz-dev-mcp`、`buzz-agent` 以及 Nostr 簽名工作流。
+  - Windows 支援仍不完整：上游在 [block/buzz#2388](https://github.com/block/buzz/issues/2388) 自述 Windows 測試硬體有限、周邊行程有多起失敗回報（2026-11-16 查）；在 Windows 11 長期常駐前要先看該總表。
 
 ### 3.1 實務心得增補：類 Slack 聊天室私有化常駐、多頻道派工分流與「已讀不回」額度警報
 
@@ -148,6 +174,7 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
   利用不同聊天室頻道對應不同專案或任務目標，並分配指定 Agent 參加特定群組。這樣能以自然頻道邊界物理隔離專案上下文，避免跨專案 Prompt 污染與注意力稀釋。
 - **「已讀不回」額度枯竭警報（Quota Exhaustion Silent Drop）與心跳機制**：
   在實務多 Agent 聊天協同中，最棘手的問題是「Agent 額度耗盡時不會丟出明確例外，而是直接已讀不回」。這揭示了在私有化聊天室協同架構下，必須補齊**「心跳偵測（Heartbeat Probe）與額度枯竭主動廣播退場」**機制，避免指揮官與使用者在頻道中陷入無效等待。
+  （2026-11-16 補：額度耗盡不是唯一原因。上游 [block/buzz#2698](https://github.com/block/buzz/issues/2698) 指出 `buzz-acp` 要 Agent 自己執行 `buzz messages send` 才會把回覆送進頻道，模型只寫在 session 文字時回覆會被靜默丟棄，換成較弱的模型就會整批不回；排查時先分清是哪一種，見 `T-20261026-35`。）
 
 ---
 
@@ -193,6 +220,13 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
   - **驗收標準（DoD）**：產出 Nostr 事件映射對照表與原型評估紀錄於 `agent-relay` 相關文檔。
   - **完成日期**：2026-10-26
   - **實作紀錄 / 證據**：SanHsien/agent-relay docs/nostr-nip01-evaluation.md（中英同步）：欄位映射表、ed25519 對 BIP-340 Schnorr 簽章差異、結論（核心不整合，只留單向橋接）。原型 tools/nostr_adapter_poc.py（commit 34bd57e，只用標準庫）把信件轉成 NIP-01 未簽章事件並無損還原，id 依 NIP-01 規則計算（範例信件 a77af769…e3b0）；15 項新測試全過、在刻意做壞的實作上 5 項轉紅，竄改 content 會被 verify 判 MISMATCH。全 repo 366 tests OK，CI 與 CodeQL success（34bd57e）。限制：標準庫沒有 secp256k1 所以事件不含 sig；沒有 WebSocket 所以未實連 relay；原用的 kind 9001～9004 經 2026-10-26 查 NIPs 登記表與 NIP-29 的 9000-9030 撞號，已在 agent-relay aa7103d 改為 regular 範圍內未登記的 4001～4004（CI success）。
+
+- [x] **`T-20261026-35`**｜**[優先級：低]** 在 Buzz 心跳規格補上「回合結束但沒送出訊息」的偵測與排查順序
+  - **目標範圍**：`docs/buzz-nas-deployment-and-heartbeat-spec.md`
+  - **具體做法**：依上游 [block/buzz#2698](https://github.com/block/buzz/issues/2698)、#2459、#2265 新增一節：(1) 列出「已讀不回」的三種原因（回覆只寫在 session 文字沒執行 `buzz messages send`、CLI 寫入失敗、額度不足）與各自的辨識方法；(2) 在 watchdog 設計加一條規則——被 @ 的回合結束後一段時間內頻道沒有該 Agent 的訊息就標記為交付失敗；(3) 寫明給 Agent 的提示詞要有「session 文字不會送達，必須用 `buzz messages send` 回覆」這一行；(4) 查上游 #2703 是否已合併並記錄版本。
+  - **驗收標準（DoD）**：`docs/buzz-nas-deployment-and-heartbeat-spec.md` 有該節，含三種原因對照表、watchdog 規則與上游修正狀態（附查證日期）；`python tools/verify_inbox.py` 通過。
+  - **完成日期**：2026-11-17
+  - **實作紀錄 / 證據**：docs/buzz-nas-deployment-and-heartbeat-spec.md 新增 4.8 節：三種「已讀不回」原因對照、watchdog NODELIVERY 規則、提示詞交付約定、上游狀態（2026-11-16 GitHub API：#2698/#2459/#2265/#2388 仍開啟，PR #2703 未合併已關閉，無修正版本）。規則為設計，未實作未實測。
 
 ---
 

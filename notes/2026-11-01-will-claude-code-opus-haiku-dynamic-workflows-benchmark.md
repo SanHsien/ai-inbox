@@ -10,6 +10,9 @@ status: archived
 cluster: "1"
 cluster_role: "跨 CLI 與階層派工"
 short_title: "保哥Opus+Haiku動態工作流實測"
+source_review: unavailable
+source_reviewed_at: 2026-11-16
+source_review_note: "source_url 只記到粉絲專頁首頁，沒有單篇貼文網址；2026-11-16 未登入開該頁，Facebook 顯示「目前無法查看此內容」，找不到原貼文、附圖與留言。"
 tags:
   - claude-code
   - dynamic-workflows
@@ -33,6 +36,22 @@ tags:
   - [`notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md`](./2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)（Claude Code 四角色動態調用原則）
   - [`2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](https://github.com/SanHsien/claude-context-audit/blob/main/notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（微軟 TokenEconomizer 黑盒成本控制）
   - [`notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md`](./2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)（Magpie 本地 AI 模型網關智慧路由）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：原始貼文讀不到。筆記的 `source_url` 只記到粉絲專頁首頁（`facebook.com/will.fanpage`），沒有單篇貼文網址；未登入開啟該頁，Facebook 顯示「目前無法查看此內容」，沒有任何貼文可讀。
+
+- **作者圖片**：看不到。原貼文若附有用量截圖或子代理數量畫面，本次無法確認。
+- **作者留言補充**：看不到。筆記 2.3 節引用了一則網友提問（問設定方式），但作者實際怎麼回答沒有留存。
+- **網友留言重點**：看不到。
+- **對分析的影響**：
+  - 本篇留存的原文只有「分析主題」裡引用的那一段（Opus 當主代理、Haiku 當子代理、開 Dynamic workflows、283 個子代理、7 個多小時、週用量不到 10%）與 2.3 節的一句網友提問。其餘都是分析者自行延伸。
+  - 2.3 節的 JSON 設定（`subagentModel`、`features.dynamicWorkflows`、`maxConcurrentSubagents`、`maxTotalSubagents`）與 `--subagent-model` 參數**不是作者給的答案**，也沒有對照 Claude Code 官方文件查證過，不能照抄；已在該節加註。要落地請以官方文件為準。
+  - 2.1 節「Opus 調用不超過 5%」「Haiku 成本為 Opus 的 1/15～1/20」、架構圖裡的「上限 1000 Agents」同樣沒有出處，已加註。
+  - 「7 小時、週用量不到 10%」是作者單次自述、任務還沒跑完時的數字，沒有說明訂閱方案與任務內容，無法重現；引用時請保留這個前提。
+  - 之後若取得單篇貼文網址，應補上 `source_url` 並重審留言（尤其是作者對設定方式的回覆）。任務維持關閉。
 
 ---
 
@@ -94,6 +113,8 @@ Will 保哥所分享的實測數據展現了極致的工程震撼力：
 
 ### 2.1 大腦與四肢的極致解耦（Brain-Muscle Decoupling）
 
+> **2026-11-16 重審註記**：本節「調用次數不超過 5%」「成本僅為 Opus 的 1/15～1/20」與上方架構圖的「上限 1000 Agents」，在留存的原文裡沒有出處，原貼文已讀不到，無法查證。
+
 1. **Opus 5.5 擔任主腦（The Brain）**：
    - 負責理解整體系統相依性（Dependency Graph）、制定執行計畫、分割工單。
    - Opus 僅在流程開頭拆單與結尾驗收時呼叫，調用次數不超過總體步驟的 5%，保留了最高等級的邏輯推理能力，但幾乎不浪費 Token。
@@ -119,6 +140,8 @@ Will 保哥所分享的實測數據展現了極致的工程震撼力：
 針對社群提問：*「請問保哥是怎麼設定的？是 effort 開 UltraCode 模式，model 選 Opus 5.5，然後再用 prompt 指定 Haiku 5.5 當子代理這樣嗎？」*
 
 具體工程設定拆解如下：
+
+> **2026-11-16 重審註記**：以下設定是分析者推測的寫法，**不是作者的回覆**，也沒有對照 Claude Code 官方文件查證；其中的鍵名與參數可能不存在，請勿直接套用。作者實際怎麼回答這則提問，本次讀不到。
 
 ```json
 {

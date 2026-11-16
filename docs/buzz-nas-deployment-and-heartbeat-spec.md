@@ -2,11 +2,12 @@
 
 > 對應任務：`T-20261026-27`，並收攏已關閉的 `T-20261026-31`（內容重複，合併進本文）。來源筆記：[`notes/2026-10-26-block-buzz-nostr-agent-workspace.md`](../notes/2026-10-26-block-buzz-nostr-agent-workspace.md)。
 > 查證基準：本機 `C:\GitHub\buzz`（`SanHsien/buzz`，fork 自 [`block/buzz`](https://github.com/block/buzz)）commit `9e8c9fc`（2026-10-23）。查證日期 2026-10-26。下文「檔案:行號」都指這個 commit。
+> 2026-11-16 補 4.8 節（`T-20261026-35`）：額度耗盡不是「已讀不回」的唯一原因，另有「回合正常結束但沒送出訊息」；該節的查證基準是 `SanHsien/buzz` commit `9252ecf`（2026-11-13）與上游 issue 現況。
 > **範圍與限制**：這是規格文件。部署指令與設定範例讀自原始碼與 repo 內的 compose 檔，**沒有在 NAS 或本機實際部署過 Buzz**（本機 Windows 缺 MSVC 連結器，連編譯都未成功，見 [`docs/evidence/2026-10-26-buzz-windows-build.md`](evidence/2026-10-26-buzz-windows-build.md)）。第 4 節的心跳協議是**新設計，尚未實作**，數值是起始建議，不是實測。
 
 ## 1. 要解的問題
 
-多個 AI Agent 進駐同一個聊天室協作時，最難查的失敗是「已讀不回」：Agent 的額度用完了，但行程還活著，使用者在頻道裡一直等。本文處理三件事：Buzz 在 NAS 怎麼常駐、頻道與 Agent 怎麼切、額度耗盡時怎麼讓頻道知道。
+多個 AI Agent 進駐同一個聊天室協作時，最難查的失敗是「已讀不回」：Agent 的額度用完了，但行程還活著，使用者在頻道裡一直等。額度只是原因之一：模型把答案寫在 session 文字、沒有執行 `buzz messages send`，或送訊息的 CLI 寫入失敗，頻道一樣是空的（4.8）。本文處理三件事：Buzz 在 NAS 怎麼常駐、頻道與 Agent 怎麼切、額度耗盡時怎麼讓頻道知道。
 
 ## 2. NAS 部署拓撲
 
@@ -131,7 +132,7 @@ prompt_tag = "review"
 
 ### 3.3 預算路由
 
-模型怎麼選、各模型耗額多少，**不在本文重複**，以 [`docs/model-burn-rate-routing-matrix.md`](model-burn-rate-routing-matrix.md) 為準（含查證日期與【作者實測】／【官方】標記；數字會變動，使用前先看該文第 1、8 節）。本文只定義「頻道角色 → 模型層級」的對應方式，並用 `BUZZ_ACP_MODEL` 落地：
+模型怎麼選、各模型耗額多少，**不在本文重複**，以 [`docs/model-burn-rate-routing-matrix.md`](model-burn-rate-routing-matrix.md) 為準（含查證日期與【單一來源自述】／【官方】標記；數字會變動，使用前先看該文第 1、8 節）。本文只定義「頻道角色 → 模型層級」的對應方式，並用 `BUZZ_ACP_MODEL` 落地：
 
 | 頻道角色 | 模型層級（原則） | 理由 |
 | --- | --- | --- |
@@ -191,6 +192,7 @@ prompt_tag = "review"
 [QHP] event=NORESP agent=dev-api waited=<seconds> presence=<online|away|missing> channel=<uuid> msg=<event id>
 ```
 
+- `NODELIVERY`（回合結束但頻道沒有訊息）的格式與規則見 4.8.2。
 - `reason`：只能填實際觀察到的值。看到 HTTP 429 但沒有重置時間時 `resume_at=unknown`，不要猜。
 - `resume_at`：只在供應商回應有 `Retry-After` 或重置時間時填（`buzz-agent` 解析 429 的 `Retry-After`，見 `llm.rs:2217`）；其他情況填 `unknown`。
 - 在線狀態同步：發 `EXIT` 後，Agent 端把 kind 20001 的狀態改成 `away`（`buzz-core/src/presence.rs` 的標準值 `online`／`away`／`offline`；WebSocket 路徑也接受其他字串，但各客戶端怎麼顯示未驗證，故用標準值）。`RESUME` 後改回 `online`。
@@ -243,7 +245,90 @@ prompt_tag = "review"
 
 1. `watchdog.py`（標準庫，用 `buzz-cli` 或 WebSocket 客戶端讀頻道；細節要先讀 `buzz-cli` 的指令，本文未讀）。
 2. Agent 端的 `EXIT`：在啟動 `buzz-acp` 的包裝腳本裡監看底層 CLI 的終端錯誤輸出，符合 429／額度字樣時呼叫 `buzz-cli` 發訊息。這是**以字串比對判斷**，容易隨 CLI 版本失效，應該以各 CLI 實際的錯誤輸出樣本做測試，不要憑猜測寫規則。
-3. 驗收（待做）：在測試頻道用一個故意回 429 的假 LLM 端點，確認 (a) 重試用盡後頻道出現 `EXIT` 且 presence 變 `away`；(b) 殺掉 Agent 行程後 `ack_timeout` 內出現 `NORESP presence=missing`；(c) 單次 429 後重試成功時**不**出現 `EXIT`。三項都要有反例才算數。
+3. 驗收（待做）：在測試頻道用一個故意回 429 的假 LLM 端點，確認 (a) 重試用盡後頻道出現 `EXIT` 且 presence 變 `away`；(b) 殺掉 Agent 行程後 `ack_timeout` 內出現 `NORESP presence=missing`；(c) 單次 429 後重試成功時**不**出現 `EXIT`。三項都要有反例才算數。(d) 4.8.2 的規則：用一個只回 session 文字、不執行 `buzz messages send` 的假 Agent，確認出現 `NODELIVERY`；同一個假 Agent 改成有送訊息時**不**出現。
+
+### 4.8 回合結束但沒送出訊息（2026-11-16 補，`T-20261026-35`）
+
+QHP 的 `EXIT` 處理額度耗盡。上游回報顯示另有一類更常見的「已讀不回」：回合正常結束、token 照扣，但頻道沒有任何訊息，也沒有錯誤。原因是 `buzz-acp` 的回覆交付靠 Agent 自己執行 `buzz messages send`；模型寫在 session 的文字只會進 log，不會進頻道（`crates/buzz-acp/src/acp.rs:1836`：`agent_message_chunk` 只做 `tracing::info!`；行號指 `SanHsien/buzz` commit `9252ecf`）。
+
+#### 4.8.1 三種原因對照
+
+| 原因 | 上游 issue | 現象 | 怎麼辨識 | 處理 |
+| --- | --- | --- | --- | --- |
+| A. 回覆只寫在 session 文字，沒執行 `buzz messages send` | [#2698](https://github.com/block/buzz/issues/2698) | Activity 面板看得到答案；回合正常結束；頻道沒有該 Agent 的訊息；沒有錯誤 log | 該回合的工具呼叫裡沒有 `buzz messages send`；用 `buzz messages get --channel <uuid> --since <ts>` 查 relay，只有人類的訊息（#2698 回報者 2026-09-30 的查法） | 提示詞加交付約定（4.8.3）；換成會遵守的模型；watchdog 發 `NODELIVERY`（4.8.2） |
+| B. 有執行 `buzz messages send`，但 CLI 寫入失敗 | [#2459](https://github.com/block/buzz/issues/2459) | 回合正常結束；工具呼叫有送訊息但結束碼非 0（簽章憑證不對、relay 連不上等） | 看該次工具呼叫的結束碼與錯誤輸出；#2698 留言另有「CLI 用的身分與受管 Agent 不同」的案例 | 修 CLI 的憑證與 relay 設定；Agent 包裝腳本看到送訊息失敗要重試或改走 `#ops-alerts` |
+| C. 額度不足或預設模型沒額度 | [#2265](https://github.com/block/buzz/issues/2265) | 回合以錯誤結束或根本沒開始；可能連 Activity 都沒有內容 | 底層 CLI 的錯誤輸出有 429、額度、需要付費額度等字樣 | QHP `EXIT`（4.3～4.6） |
+
+排查順序（由便宜到貴）：
+
+```text
+頻道沒有回覆
+   │
+   ├─ 在線點過期（presence=missing）？ ── 是 ─▶ 行程掛了：重啟 buzz-acp（4.4 的 NORESP）
+   │
+   ├─ 有 [QHP] EXIT 或底層 CLI 有 429／額度錯誤？ ── 是 ─▶ 原因 C：等恢復或換模型
+   │
+   ├─ 回合有結束（有 kind 44200 用量事件）？
+   │        │
+   │        ├─ 工具呼叫裡有 buzz messages send 且失敗 ─▶ 原因 B：修 CLI 憑證／連線
+   │        └─ 工具呼叫裡沒有 buzz messages send ───────▶ 原因 A：補提示詞或換模型
+   │
+   └─ 回合沒有結束 ─▶ 還在跑（看 typing，kind 20002）或卡住：依 ack_timeout 處理
+```
+
+A 與 B 的共同點：行程活著、額度正常、回合成功，4.1 的四種既有訊號全部顯示正常。只有比對「回合結束」與「頻道有沒有訊息」才抓得到。
+
+#### 4.8.2 watchdog 新增規則：交付失敗
+
+在 4.4 的 watchdog 加一條，與 `NORESP` 並列：
+
+- **觸發**：Agent 被 @ 之後，watchdog 看到該 Agent 的回合結束訊號，但從 @ 訊息到回合結束後 `delivery_grace` 內，該頻道（含該討論串）沒有任何該 Agent 簽章的 kind 9 訊息、也沒有 `[QHP] EXIT`。
+- **回合結束訊號**：該 Agent 發出的 kind 44200 用量事件（`buzz-acp/src/usage.rs` 檔頭：每輪結束後由 `TurnCompletionGuard` 發布）。退而求其次：typing（kind 20002）停止超過 `delivery_grace` 且在線點仍有效。44200 事件的實際欄位、是否每種 harness 都會發，**本文未實測**；實作前要先在測試頻道錄一輪確認。
+- **動作**：在原頻道與 `#ops-alerts` 發一則，同一則 @ 訊息只報一次：
+
+```text
+[QHP] event=NODELIVERY agent=dev-api waited=<seconds> turn_end=<ISO8601 UTC|unknown> presence=<online|away> channel=<uuid> msg=<event id>
+```
+
+- **與 `NORESP` 的分界**：`NORESP` 是「沒有任何反應」（沒有 typing、沒有回合結束）；`NODELIVERY` 是「回合跑完了但沒有訊息」。兩者處理方式不同（前者查行程，後者查提示詞與 CLI），所以分開報。
+- **參數**：`delivery_grace` 起始值 30 秒（起始建議，未實測）。要大於 Agent 在回合尾端送訊息的時間。
+- **已知誤報**：上游的基礎提示詞允許 Agent 在「沒有新東西可說」時不發訊息就結束回合（`crates/buzz-acp/src/base_prompt.md:73`）。所以這條規則只對「人類 @ 的訊息」生效（同檔第 72 行要求人類問話一定要回）；Agent 互相 @ 的訊息不套用，否則會把正常的沉默報成失敗。
+- watchdog 仍然不看內容、不呼叫 LLM（4.6 第 3 條不變）：只看作者、kind、時間與 `p`／`e` 標籤。
+
+#### 4.8.3 給 Agent 的提示詞要有這一行
+
+不論上游提示詞怎麼寫，自己的 Agent 設定（角色提示詞或啟動設定）都加上：
+
+```text
+你在 session 裡寫的文字不會送到頻道，使用者看不到。
+要回覆一定要執行 buzz messages send；沒有執行這個指令，這一輪的回覆就等於不存在。
+```
+
+依據與限制：
+
+- 上游的基礎提示詞現在已有同義的規定（`crates/buzz-acp/src/base_prompt.md:71`，commit `9252ecf`：有值得知道的產出就必須用 `buzz messages send` 發布，否則是靜默失敗）。本機 clone 是淺層歷史，查不出這一行從哪個版本開始有。
+- 只靠提示詞不保證有效。#2698 的回報：同一份提示詞，較強的模型會送、Sonnet 級模型不會；2026-08-23 有人回報提示詞加上專用回覆工具仍不穩定；2026-08-28 有人回報在提示詞尾端加強制語句後穩定（單一使用者、單一模型）；2026-09-30 仍有人在桌面版用 Sonnet 級模型重現（連續三輪沒有任何工具呼叫）。所以提示詞是必要條件，4.8.2 的 watchdog 才是保底。
+- 換模型前先在測試頻道 @ 它三次，確認三次都有訊息進頻道，再放進正式頻道。
+
+#### 4.8.4 上游修正狀態（2026-11-16 以 GitHub API 查）
+
+| 項目 | 狀態 | 備註 |
+| --- | --- | --- |
+| issue [#2698](https://github.com/block/buzz/issues/2698)（回覆交付是隱含約定） | 開啟，38 則留言，最後更新 2026-09-30 | 最後一則是 2026-09-30 的重現回報 |
+| issue [#2459](https://github.com/block/buzz/issues/2459)（CLI 寫入失敗時回覆遺失） | 開啟，7 則留言，最後更新 2026-08-28 | |
+| issue [#2265](https://github.com/block/buzz/issues/2265)（預設模型沒額度時靜默失敗） | 開啟，2 則留言，最後更新 2026-08-03 | |
+| issue [#2388](https://github.com/block/buzz/issues/2388)（Windows Support 總表） | 開啟，8 則留言，最後更新 2026-09-28 | 維護團隊自述 Windows 測試硬體有限；Windows 11 常駐前先看這張表 |
+| PR [#2703](https://github.com/block/buzz/pull/2703)（提示詞寫明交付約定等三項修正） | **未合併**，2026-08-15 由提交者自行關閉 | 關閉說明：一個分支混了三項不相干的修正、已與 main 衝突。**沒有對應的修正版本** |
+| PR #3162、#4346、#6296（在提示詞寫明交付約定） | 開啟，未合併 | 最後更新都是 2026-08-19 |
+| PR #3883（沒送訊息時由 harness 代送純文字回覆） | 開啟，未合併 | |
+| PR #5673、#6810（harness 保證送出最終回覆） | 關閉，未合併 | |
+
+結論：
+
+- 到 2026-11-16，上游**沒有合併任何「由 harness 保證送達」或「沒送達時發出警告」的修正**；最新桌面版是 `desktop-v0.5.30`（2026-11-14 UTC 發布）。本機 `SanHsien/buzz`（`9252ecf`）的 `crates/buzz-acp/src` 也查不到這類守衛（`git grep -E "saw_agent_text|unpublished|reply_guard|sent_this_turn"` 無結果）。
+- 已經在程式碼裡的只有提示詞層的規定（4.8.3）。它是不是經由上列 PR 以外的提交進來的、從哪一版開始，未查證。
+- `buzz-acp` 現在有 `post_failure_notice`（`pool.rs:5508`，呼叫點 `lib.rs:5226`），在一批事件被放棄時往頻道貼一則失敗通知。它處理的是回合失敗，不是「回合成功但沒送訊息」；4.1 表格最後一列寫的「沒有找到自動廣播」是 commit `9e8c9fc` 當時的 grep 結果，在 `9252ecf` 已不完全成立。這個通知在額度錯誤時會不會出現，未實測。
+- 所以在上游修好之前，4.8.2 的 watchdog 規則與 4.8.3 的提示詞都要自己做。之後重查上游時，以 #2698 是否關閉、以及關閉它的 PR 為準。
 
 ## 5. 未驗證與限制
 
@@ -251,5 +336,6 @@ prompt_tag = "review"
 - `[channel.UUID]` 被忽略的行為是依 serde 預設的推論，未實測。
 - Buzz 是否會把 ACP 終端錯誤自動貼到頻道：僅 grep 過 `buzz-acp`，未窮盡閱讀。
 - 客戶端如何顯示非標準的 presence 字串、`buzz-cli` 的發訊息介面、44200 用量事件的實際內容：未查。
+- 4.8 節：`NODELIVERY` 規則沒有實作也沒有實測；kind 44200 事件能不能當回合結束訊號、各 harness 是否都會發，未驗證。上游 issue 與 PR 狀態是 2026-11-16 的快照；留言內容只讀了 #2698 最後 8 則與 #2703 的 2 則，其餘依筆記第 0 節。
 - 第 4 節整個協議是新設計；所有門檻值是起始建議，沒有實測依據。
 - 模型名稱、價格、額度不在本文，見 [`docs/model-burn-rate-routing-matrix.md`](model-burn-rate-routing-matrix.md)（該文自己的查證日期為準）。

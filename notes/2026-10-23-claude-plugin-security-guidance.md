@@ -10,6 +10,11 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "security-guidance 三層左移資安外掛"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "貼文顯示 41 則回覆，未登入只讀到 17／41 則；圖看了 1／1 張"
+source_images: 1
+source_replies: 17
 tags:
   - claude-code
   - security-guidance
@@ -34,10 +39,31 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：貼文文字、作者圖片、作者留言、未登入可見的網友留言都看過。貼文顯示 41 則回覆，未登入可見 17 則（含作者 4 則），其餘要登入才看得到。
+
+- **作者圖片**：共 1 張。圖 1 是 X 上 `@ClaudeDevs`（Anthropic 官方開發者帳號）發文的截圖：宣布推出 Claude Code 的安全指導外掛、適用所有 Claude Code 使用者、從外掛市場（`/plugins`）安裝；下方是示範影片的第一格，終端機裡請 Claude 在一個社群網站的程式庫實作 Node.js 反向代理。
+- **作者留言補充**：
+  - 貼出來源連結，指向 `@ClaudeDevs` 的 X 貼文。也就是說，這則 Threads 是轉介官方公告，不是作者自己的實測。
+  - 回覆「官方的為什麼不內建」：Claude Code 內建有 `/security-review`，但要手動觸發；這個外掛是另外啟動一個 Agent 自動掃描，會多用額度。
+  - 被問額外用量多少時，作者說不清楚，只知道模型可以調整。
+- **網友留言重點**：
+  - `kavwang`、`stinghm` 質疑官方工具為何不內建。
+  - `pcedison` 的做法是系統做完後另外叫較小的模型跑資安驗證與紅隊測試，問這個外掛邊寫邊查的額外用量；沒有人給出數字。
+  - `zz950907`：裝了不算完，要把專案的敏感資訊樣式（金鑰格式、內網網域、資料表命名）寫進自訂規則才有用；另提醒多個審查 AI 若都是同一個模型，盲點相同，應分工並錯開模型。
+  - `tobypang` 稱被安全防護擋下（未說明細節）；其餘為卡位、道謝與產品宣傳。
+- **對分析的影響**：
+  - 「Who」補上一手來源是 `@ClaudeDevs` 的官方公告，Threads 作者是轉介者。
+  - 第 3 節「需調整與注意事項」補一條：與內建 `/security-review` 的差別（手動觸發對自動、後者多耗額度），以及額外用量沒有公開數字、留言區也沒人量過，啟用前要自己量。
+  - 留言對自訂規則的建議與本筆記既有的 `claude-security-guidance.md` 範本方向一致。任務未增減。
+
+---
+
 ## 1. 核心內容摘要（5W1H 初篩）
 
 - **Who（作者背景 / 執行機構）**：
-  - 推薦者為社群開發者 `IlyaL (@ilya.liao)`；背後工具為 **Anthropic 官方團隊** 為 Claude Code 開發的官方開源安全外掛 `security-guidance`，收錄於官方插件註冊中心 `anthropics/claude-plugins-official`。
+  - 推薦者為社群開發者 `IlyaL (@ilya.liao)`，其貼文附圖與留言註明一手來源是 X 上 `@ClaudeDevs` 的官方公告；背後工具為 **Anthropic 官方團隊** 為 Claude Code 開發的官方開源安全外掛 `security-guidance`，收錄於官方插件註冊中心 `anthropics/claude-plugins-official`。
 - **What（核心產出 / 做了什麼）**：
   - 釋出並推薦安裝 Claude Code 官方資安檢查外掛：`security-guidance@claude-plugins-official`。
   - 該外掛實踐了**左移資安（Shift-Left Security）**理念，在 Agent 編寫代碼的運行時（Runtime）進行多層次自動檢測，在開發者看見回覆之前即自主揪出並修正潛在漏洞。
@@ -117,6 +143,7 @@ tags:
     1. **本機直接啟用**：在本地 Claude Code 終端中直接安裝並配置，全面提升日常 Coding 抵抗資安盲點的免疫力。
     2. **規格範本標準化**：設計標準的 `.claude/claude-security-guidance.md` 範本，將我們的專案邊界與隱私保護原則寫入，使 Claude Code 的每一次審查都對齊我們的要求。
   - **需調整與注意事項**：
+    - **與內建 `/security-review` 的差別（2026-11-16 補，依作者留言）**：內建指令要手動觸發；本外掛是另起一個 Agent 自動掃描，會多用額度。額外用量官方與留言區都沒有數字，啟用前先在一個小專案量過再決定開哪幾層。
     - **Windows 11 原生路徑相容性**：需明確配置 `SG_AGENTIC_CLI_PATH`，確保 Windows 環境下 Agent SDK 能順利叫起 Claude Code 執行 Layer 3 審查。
     - **Token 開銷調優**：Layer 2/3 預設調用 Opus 模型，對於密集頻繁的小型編修會帶來可觀的 Token 消耗；日常可考慮設定 `SECURITY_REVIEW_MODEL=claude-sonnet-5-5` 或透過 `ENABLE_STOP_REVIEW=0` 只保留 Commit 前的終極把關。
 

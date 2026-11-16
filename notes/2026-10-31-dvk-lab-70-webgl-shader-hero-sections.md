@@ -2,14 +2,18 @@
 id: 2026-10-31-dvk-lab-70-webgl-shader-hero-sections
 title: "DVK Lab 70 款零構建 WebGL Shader Hero Section 解構：原生複製即用、Raymarching 著色器與 AI Agent Generative UI 落地"
 source_url: "https://www.threads.com/share/BAUr1kFwxe/"
-source_platform: "Threads (@ethansavemoneydairy) / X (@Menace_thakur)"
-author: "Ethan (pizza的存錢日記＆＆自我成長, @ethansavemoneydairy) / Manas (@Menace_thakur)"
+source_platform: "Threads (@ethansavemoneydairy) / GitHub (diiviikk5/Hacktemplates)"
+author: "Ethan (pizza的存錢日記＆＆自我成長, @ethansavemoneydairy) / diiviikk5 (專案作者)"
 analyzed_at: 2026-10-31
 analyzed_by: "Antigravity"
 status: done
 cluster: "2"
 cluster_role: "WebGL與3D重建"
 short_title: "DVK Lab 70款WebGL Shader組件"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 3
+source_replies: 3
 tags:
   - dvk-lab
   - webgl-shader
@@ -25,7 +29,7 @@ tags:
 # DVK Lab 70 款零構建 WebGL Shader Hero Section 解構：原生複製即用、Raymarching 著色器與 AI Agent Generative UI 落地
 
 - **來源連結**：[Threads 原文分享 (@ethansavemoneydairy)](https://www.threads.com/share/BAUr1kFwxe/) ｜ [貼文永久網址](https://www.threads.com/@ethansavemoneydairy/post/DfEsaOXgBNx) ｜ [DVK Lab 官方預覽 (dvklab.vercel.app)](https://dvklab.vercel.app)
-- **核心作者**：Ethan（pizza的存錢日記＆＆自我成長，@ethansavemoneydairy 推薦）／ 原始開源作者 Manas（@Menace_thakur）
+- **核心作者**：Ethan（pizza的存錢日記＆＆自我成長，@ethansavemoneydairy 推薦）／ 專案作者 `diiviikk5`（[`diiviikk5/Hacktemplates`](https://github.com/diiviikk5/Hacktemplates)；原筆記寫的「Manas（@Menace_thakur）」查無依據，2026-11-16 更正）
 - **分析主題**：解構收錄 70 款高質感動態 Hero Section 的開源專案 **DVK Lab**。深入剖析其「Zero Build（零構建免配置、複製即用）」架構哲學、WebGL Shader（Vermilion、Relic、Currents、Seascape 流體光影）、3D Raymarching、液態金屬波動（Liquid Metal）與 ASCII Art 字符流特效，並探討 AI Coding Agent（Antigravity、Claude Code）如何在無需外部 npm 依賴的情況下直接將高奢視覺組件注入落地網頁與 Generative UI 中。
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
@@ -35,13 +39,32 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：Threads 主文、影片與留言區都看過。
+
+- **作者圖片**：主文沒有靜態圖，附 1 段約 10 秒的直式螢幕錄影，抽看了 3 個影格（第 1、5、9 秒）：在手機瀏覽器開 `dvklab.vercel.app` 的「Ashborne」模板往下捲——龍眼特寫、火焰與煙霧的全螢幕畫面配大字標題，最後停在戰士剪影與「Wishlist on Steam」「Watch the trailer」兩顆按鈕。這是一個以圖片為底、隨捲動切換場景的遊戲宣傳頁式模板，不是純著色器背景。
+- **作者留言補充**：作者接了 3 則回覆：
+  1. 主文的後半段：第二點（標題被截斷，只剩「Shader × Motion × Typography」，舉例液態金屬、黑洞、漸層流體、ASCII 粒子）、第三點「Full Hero／Background Only」（可複製整個 Hero，也可只取動態背景），以及「程式碼採 MIT License」。
+  2. 預覽站連結 `dvklab.vercel.app`。
+  3. GitHub 連結：[`diiviikk5/Hacktemplates`](https://github.com/diiviikk5/Hacktemplates)。
+- **網友留言重點**：無。留言區只有作者自己的 3 則。
+- **對分析的影響**：
+  1. **原作者更正**：貼文給的 repo 是 `diiviikk5/Hacktemplates`，全文沒有提到「Manas」或 `@Menace_thakur`。原筆記把原作者寫成「印度開發者 Manas（@Menace_thakur）」沒有依據；[`docs/zero-build-shader-hero-sections-spec.md`](../docs/zero-build-shader-hero-sections-spec.md) 查過 repo 只有 `diiviikk5` 一位貢獻者。frontmatter 的作者、平台欄與第 1 節已改成 `diiviikk5`。
+  2. **「零構建」只適用部分模板**：貼文原話是「部分模板直接複製 HTML 就能測試」，不是 70 款全部；影片示範的 Ashborne 就是用圖片素材的捲動體驗（規範文件記載這類屬 Experiences 家族，用到 Lenis 與 GSAP）。第 1 節已加註。
+  3. **MIT 只涵蓋程式碼**：貼文說「程式碼採 MIT License」；規範文件另查到 README 聲明模板裡的參考圖片不在授權範圍。影片裡的龍眼、戰士圖就是這類素材，商用要換圖。
+  4. **第 2.2 節的五大分類與作品名不可靠**：規範文件第 3.3 節已查明 Geometric Void、Chrome Ripple、Mercury Waves、Cyber Swarm、Starfield Drift、Matrix Terminal、ASCII Fluid 在原作 repo 查無此名，五大分類也不是原作的分類。筆記這一節先前沒有同步，已在節首加註。
+  - 三項已完成任務的產出檔都以原作 repo 為準重寫過，本次重審沒有發現需要更正之處。
+
+---
+
 ## 1. 核心內容摘要：問題背景與架構拓撲（Executive Summary）
 
 在現代商業網站或個人專案的 Landing Page 開發中，首頁最醒目的首屏區塊（Hero Section）通常決定了使用者停留的第一印象。然而，在實作高質感動態視覺時，開發者與 AI Coding Agent 面臨兩大痛點：
 1. **依賴地獄與環境構建負擔（Bundler & NPM Hell）**：現代前端動畫庫（如 Three.js、React Three Fiber、Spline 等）通常需要完整的 Node.js、Vite/Webpack、Tailwind 與各類編譯器支援。初學者或 AI Agent 在快速產出概念驗證（PoC）或獨立 HTML 靜態展示時，極易因依賴缺失、版本衝突或跨框架適配問題而受挫。
 2. **AI 生成介面的「塑膠感」與同質化（Visual Slop）**：由大型語言模型直接產出的介面往往充斥著千篇一律的紫色/藍色 Tailwind CSS 漸層與固定卡片，缺乏呼吸感、光影流動與高階物理渲染質感。
 
-印度開發者 Manas 開發並開源的 **DVK Lab**（`dvklab`）打破了這個僵局。該專案收錄了 **70 款頂級動態 Hero Section**，其核心亮點在於**「Zero Build（零構建免配置）」**——將 WebGL 頂點/片段著色器（Vertex/Fragment Shaders）、Canvas 動畫循環與 HTML/CSS 封裝為自包含片段，只需直接複製粘貼純 HTML/JS 即可在任何瀏覽器直接運行：
+GitHub 使用者 `diiviikk5` 開源的 **DVK Lab**（repo 名 `Hacktemplates`）打破了這個僵局。（貼文原話是「部分模板」可直接複製 HTML，不是全部 70 款都零構建。）該專案收錄了 **70 款頂級動態 Hero Section**，其核心亮點在於**「Zero Build（零構建免配置）」**——將 WebGL 頂點/片段著色器（Vertex/Fragment Shaders）、Canvas 動畫循環與 HTML/CSS 封裝為自包含片段，只需直接複製貼上純 HTML/JS 即可在任何瀏覽器直接運行：
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -87,6 +110,8 @@ tags:
   - **離屏與後台節流（Performance Throttling）**：透過 `IntersectionObserver` 或 `document.hidden` 偵測，當 Hero Section 滾動出可見範圍時暫停 `requestAnimationFrame`，節省使用者電池與 GPU 資源。
 
 ### 2.2 規範二：70 款頂級視覺維度分類與 Shader 算法矩陣
+> ⚠️ 2026-11-16 加註：本節的五大分類不是原作的分類，部分「代表作」名稱在原作 repo 查無此名，正確名單見 [`docs/zero-build-shader-hero-sections-spec.md`](../docs/zero-build-shader-hero-sections-spec.md) 第 3 節。以下保留原分析文字供對照。
+
 DVK Lab 收錄之組件可歸納為五大標誌性視覺分類：
 1. **流體光影著色器（Fluids & Aurora Shaders）**：
    - 代表作：Vermilion、Currents、Seascape。

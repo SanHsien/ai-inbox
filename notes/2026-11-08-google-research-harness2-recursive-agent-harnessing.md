@@ -10,6 +10,11 @@ status: done
 cluster: "1"
 cluster_role: "工程紀律與設計審查"
 short_title: "Google Harness²雙層遞迴優化"
+source_review: partial
+source_reviewed_at: 2026-11-17
+source_review_note: "Threads 留言讀到 19 則／共 37 則，其餘要登入；README 的安裝示範 GIF 未看。"
+source_images: 4
+source_replies: 28
 tags:
   - google-research
   - harness2
@@ -23,11 +28,41 @@ tags:
 
 - **來源連結**：[Threads 原文分享](https://www.threads.com/share/_toE5mWj3) ｜ [貼文永久網址 (@wayturn_)](https://www.threads.com/@wayturn_/post/DfR0PG7mTz6) ｜ [GitHub (google-research/harness2)](https://github.com/google-research/harness2) ｜ [官方論文 (arXiv:2610.14224)](https://arxiv.org/pdf/2610.14224)
 - **核心作者**：偉騰（`@wayturn_`）／ Google Research（Ruiyao Xu, Yanfei Chen, Zhongying CuiZhu, Bhavana Dalvi Mishra, Yifei Ming, Han Yu, Rujun Han, Chen-Yu Lee, Tomas Pfister）
-- **分析主題**：剖析 Google Research 開源的 **Harness²（Harness Squared：Recursive Agent Harnessing for an Open World）**（23,026 Stars、2,301 Forks、Apache-2.0 License），在固定語言模型權重且無須標準答案（without ground-truth feedback）的開放世界任務中，透過雙層遞迴（Task-level `Propose–Probe–Compose` 與 Harnessing-level `Experience Reflector`）自動精煉 8 大外部 Harness 模組；並檢視其官方 README 揭露之「關閉沙盒與無網路限制導致公開 Benchmark 答案洩漏」防弊邊界。
+- **分析主題**：剖析 Google Research 開源的 **Harness²（Harness Squared：Recursive Agent Harnessing for an Open World）**（23,026 Stars、2,301 Forks，快照日 2026-11-08；2026-11-16 為 24,072 Stars、2,422 Forks；Apache-2.0 License），在固定語言模型權重且無須標準答案（without ground-truth feedback）的開放世界任務中，透過雙層遞迴（Task-level `Propose–Probe–Compose` 與 Harnessing-level `Experience Reflector`）自動精煉 8 大外部 Harness 模組；並檢視其官方 README 揭露之「關閉沙盒與無網路限制導致公開 Benchmark 答案洩漏」防弊邊界。
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md`](./2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md)（Agent Autoloop 事件溯源與 8 跳 TTL 熔斷防線）
   - [`docs/external-judge-audit.md`](../docs/external-judge-audit.md)（外部裁判防弊與驗證器設計規範）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 以未登入的內建瀏覽器重看 Threads 貼文：貼文文字（無圖、無影片）、留言 19 則（含作者 8 則；貼文標示 37 則回覆，其餘要登入才看得到；留言是捲到才載入，逐段捲動收集）、作者留言裡的 GitHub 連結預覽卡。另看 GitHub README 的 3 張架構圖，並以 GitHub API 讀最近 8 則 issue／PR 的標題與摘要、其中 #201 讀全文與 1 則回覆。README 的安裝示範 GIF 未看。
+
+- **作者圖片**：貼文本身沒有圖。看過的 4 張：
+  - 圖 1（留言區的 GitHub 連結預覽卡）：repo 名稱與統計數字（約 24k Stars、2k Forks、10 位貢獻者）。
+  - 圖 2（README 流程圖）：左邊大框是 Task-Level Recursion，依序為 Agent Executor（拿初始 harness 跑出軌跡與產出）→ Harness Editor（提出 Invariant 與 Domain 兩類修改）→ Candidate Probes（兩類候選各自試跑）→ Harness Composer（合併定稿）；右邊是 Harnessing-Level Recursion，Experience Reflector 反思後更新 Improvement Harness，再帶到下一個任務。
+  - 圖 3（README 元件圖）：8 個元件依執行期角色分組並標了檔名與注入時機：Context construction 有 system prompt、guardrails、memory（這三個每次呼叫都注入）與 skills（呼叫時才載入）；Tool interface 有 tool guidance（每次呼叫）與 scripts（經 bash 執行）；Orchestration 有 subagents（經 task 工具）；Middleware 有 plugin（攔截每次工具呼叫，不經模型裁量）。中間是凍結的模型。
+  - 圖 4（README 擴展模式圖）：Parallel 是 K 組候選各自獨立、最後一起合成；Sequential 是每一步把上一步的結果與累積證據帶到下一步。
+- **作者留言補充**：
+  - 貼出 repo 連結。
+  - 回覆網友時補了一個原貼文沒寫的保留：**試跑與調整本身也會吃 token，能不能省回來要看後面用多少次**。
+  - 回覆權限邊界的留言時表示認同：能調流程不代表能自己擴權。
+  - 用一句話解釋原理：提出幾種提示詞與工具使用規則的改法，拿同一個任務試跑，再看執行差異組合出新設定。
+- **網友留言重點**：
+  - `alert.human`：只改流程不換模型像是在省成本；被作者提醒前期成本後，同意只用一兩次不一定划算。
+  - `applechisonnkonn`：能迭代的只能是流程設定，權限與對外動作不能一起放開，對外訊息要留人工確認。
+  - `more.yu_` 與作者的一串往返：流程自己進化的代價是說不清它為什麼有效，哪天在沒人看的任務上走歪，連要回滾到哪一版都不知道。作者回覆設定版本與執行紀錄要一起留，並說「這次有效、換個任務還有沒有效」才是更值得追的問題。
+  - `hanbingjheng` 說這讓調 agent 像做實驗；作者補一句：**看得出行為變了，跟確認真的變好，是兩件事**（與下面 issue #201 的實測結果正好呼應）。
+  - **GitHub issue #201（第三方實測，2026-11-12）**：回報者把 Propose–Probe–Compose 與持久化的 improvement harness 移植到自己的 agent CLI，在 WorkBuddy-Bench v1.0 的 code 與 office 子集跑兩輪自測。第一輪 80 組配對任務（k=1、parallel）整體分數由 0.890 變 0.877；第二輪 28 組（k=3、刻意挑掉接近滿分的題目）由 0.827 變 0.824，**兩輪都量不到分數提升**。機制本身有在運作（七成以上任務採用了與原本不同的 harness），token 降到約 0.91 倍、回合數與工具錯誤略降。回報者自己列的可能原因：基準分數已高、k 小時候選常常一模一樣、被採用的修改多半只改過程不改產出、效果與重跑雜訊同量級、執行器與論文不同。截至讀取時官方尚未回覆。
+  - 其餘近期 issue／PR 多是正確性修補（不同任務 ID 正規化後撞到同一個目錄、評分綁到舊的執行結果等），顯示評測管線本身還在修。
+- **對分析的影響**：
+  1. **第 3 節的基準數據要加一個反例**：原筆記只列論文的提升幅度。現在補上 issue #201 的第三方實測（不同執行器與模型，量不到提升），並把結論寫成「論文配置內有提升；換執行器後能否重現未獲證實」。
+  2. **補成本面**：作者自己在留言承認試跑會吃 token。第 3 節補一句：Propose–Probe–Compose 每個任務至少多跑數次候選，前期成本要靠重複使用攤回。
+  3. **第 2 節補上元件圖的細節**（各元件的注入時機），原筆記的方塊圖只有分組、沒有這一層。
+  4. Stars 數字更新註記：分析主題寫的 23,026 Stars 是 2026-11-08 的快照，2026-11-16 以 API 查為 24,072 Stars、2,422 Forks。
+  5. 已完成的 `T-20261108-03` 不改狀態；其產出文件需不需要補上述反例，列在本次重審的回報裡交整合者決定。無新增任務。
 
 ---
 
@@ -64,6 +99,8 @@ Harness² 將包覆在基礎模型外部的執行環境拆解為 **4 大執行�
 |   - subagents (子代理角色配置)  |                                 |
 +---------------------------------+---------------------------------+
 ```
+
+各元件何時進入模型的視野（依 README 元件圖，2026-11-16 補）：`system prompt`、`guardrails`、`memory`、`tool guidance` 每次呼叫都注入；`skills` 被呼叫時才載入；`scripts` 經 bash 執行；`subagents` 經 task 工具派出；`plugins` 攔截每一次工具呼叫，不經模型裁量。
 
 ### 雙層遞迴機制（Two Levels of Recursion）
 
@@ -109,6 +146,11 @@ Harness² 將包覆在基礎模型外部的執行環境拆解為 **4 大執行�
 | **WorkBuddy-Bench** | `office` / `web` / `code` | Gemini 3.5 Flash (`72.4`) / GLM-5 (`64.2`) | Gemini 3.5 Flash (`80.8`) / GLM-5 (`75.7`) | **+8.4 分** / **+11.5 分**（單步 `K=1`） |
 | **JobBench** | 專業知識工作任務 | 基準 Harness | 雙層遞迴精煉 Harness | 最高 **+4.5 分** |
 | **LAB (Legal Agent Benchmark)** | 複雜法律條文與合約推理 | 基準 Harness | 雙層遞迴精煉 Harness | Partial pass rate 最高 **+11.8%** |
+
+**第三方重現與成本（2026-11-16 補）**：
+
+- GitHub issue [#201](https://github.com/google-research/harness2/issues/201)（2026-11-12）有人把同一套迴圈移植到自己的執行器，在 WorkBuddy-Bench 的 code 與 office 子集用兩個模型跑了兩輪（80 組與 28 組配對任務），兩輪都量不到分數提升（0.890 → 0.877、0.827 → 0.824），只看到 token 與回合數略降。回報者列出的可能原因包含基準分數已高、候選常常相同、修改多半只改過程、效果與雜訊同量級、執行器與論文不同；官方尚未回覆。所以上表的提升只能讀成「論文配置內的結果」，換執行器或模型後能否重現未獲證實。
+- 貼文作者在留言提醒：試跑與調整本身會吃 token。每個任務至少要多跑數次候選，這筆前期成本要靠調好的 harness 被重複使用才攤得回來。
 
 ### 工程與安全邊界批判（Critical Audit）
 

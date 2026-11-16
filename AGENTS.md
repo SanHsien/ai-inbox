@@ -53,7 +53,7 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
 1. **建立單篇分析檔**：
    - 讀取 `templates/article-analysis.md` 範本。
    - 在 `notes/` 目錄下建立 `YYYY-MM-DD-<slug>.md`（`<slug>` 用英文小寫與連字號，簡明表達主題，例如 `2026-10-17-agent-memory-pruning.md`）。
-   - 填寫 YAML frontmatter、核心觀點摘要、對現有環境（Skills / Hooks / 各專案）的價值評估，並拆解出**具體可驗證的待辦事項（Action Items）**。分析內容依 5W1H 結構初篩；若為包含明確實驗數據或論文發表的 AI 文章，主動填寫 CQR（Claim - Evidence - Reasoning）論證檢驗區塊。
+   - 填寫 YAML frontmatter、核心觀點摘要、對現有環境（Skills / Hooks / 各專案）的價值評估，並拆解出**具體可驗證的待辦事項（Action Items）**。分析內容依 5W1H 結構初篩；若為包含明確實驗數據或論文發表的 AI 文章，主動填寫 CQR（Claim - Evidence - Reasoning）論證檢驗區塊（本 repo 改編版；原作者版本是 Claim - Question - Relation，對照見 `templates/academic-reading-prompt.md` 第 0 節）。
    - 每個待辦事項編號格式為：`T-YYYYMMDD-XX`（例如 `T-20261017-01`）。若同一天有多篇文章，序號接續往後編，確保整個 Repo 內任務 ID 唯一。
 
    - 任務行必須完全照範本格式：``- [ ] **`T-YYYYMMDD-XX`**｜**[優先級：高/中/低]** 標題``，底下至少有 `目標範圍` 與 `驗收標準（DoD）`。格式不符的任務總表讀不到，驗證會失敗。
@@ -105,6 +105,11 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
   - GitHub／arXiv 人工巡檢：`python tools/check_external_refs.py --notes notes`；`--offline` 只列清單、不驗證，`--cache <檔>` 重用快照（無自動到期，重新查證前須刪除）；結束碼 0 表示無錯誤（改名／封存為警告），1 表示失效或無法查證，2 表示輸入／快取／本機讀寫錯誤。僅掃 `notes/*.md`、略過程式碼圍欄及同列標「（私有）」的 GitHub repo，不接 CI；詳見 [工具原始碼](tools/check_external_refs.py)。
   - *社群轉貼者說明*：若使用者提供的是純文字截圖或轉貼內容且未附原 PO，**不需要花時間去人肉搜尋轉貼者是誰**，author 直接填 `社群分享` 或專案作者即可，精力完全聚焦在技術本身、官方 Repo 與任務拆解。
   - *影片來源必取逐字稿*：若來源是 YouTube 等影片，**不可只看標題與說明欄就交差**。先用 `python -m yt_dlp` 抓字幕；若遇到 `HTTP 429` 或無字幕，直接執行 `python tools/video_transcript.py <網址> --out <暫存目錄>`（本機已配妥 RTX 3060 CUDA 加速與 `faster-whisper`），完整步驟與踩坑紀錄見 [`docs/video-transcript-howto.md`](docs/video-transcript-howto.md)。
+- **原始資料要全部納入分析（2026-11-16 維護者指示）**：分析的依據不只是貼文文字，還包括**作者上傳的每一張圖片／影片截圖**（逐張打開看，含輪播第 2 張以後）、**作者自己在留言區的補充**（常放連結、Prompt、勘誤），以及**網友留言**（展開「查看更多留言」與回覆串，讀到底）。網友的補充、反駁、出處更正、實測回報，要拿來檢驗原文主張，與原文衝突時以查證結果為準並寫明。
+  - 筆記 frontmatter 必填 `source_review`：`full`（文字、全部圖片、全部留言都看過）、`partial`（有留言要登入才看得到、或有圖沒看清楚；另填 `source_review_note` 寫讀到幾則／共幾則，之後登入補讀再改 full）或 `unavailable`（來源刪除、需登入看不到等，另填 `source_review_note` 說明原因），以及 `source_reviewed_at`（看完的日期，標記這篇已重審）。`full` 時另填 `source_images`（看過的圖片數）與 `source_replies`（讀過的留言數，含作者回覆），可為 0。`verify_inbox.py` 會擋缺漏。
+  - 筆記正文要有「原始資料盤點」段落：逐張寫出圖片內容重點、整理留言裡的有用資訊（補充、反駁、更正、實測），並寫明這些資料讓分析改了什麼。
+  - 批次重審與 `partial` 補讀的做法見 [`docs/source-review-sop.md`](docs/source-review-sop.md)。
+  - 未登入的內建瀏覽器就能讀 Threads、Facebook 公開貼文的圖片與留言；圖片在瀏覽器裡打開看即可，不必下載進 repo。截圖受版權與隱私限制，只寫重點，不轉貼整段原文。
 - **規劃必須詳盡具體（拒絕空泛）**：分析時重點永遠是「這篇文章的哪個設計／技巧，能解決什麼痛點，或改進哪個具體專案／Skill？」。拆解任務必須包含目標範圍、具體實作步驟與嚴格的 DoD 驗收標準，不留空泛概念。
 - **待辦事項必須可驗收**：不要寫「研究如何優化 prompt」這種無邊界任務；要寫「在 `~/.gemini/config/skills/xxx/SKILL.md` 加入 YYY 檢查步驟，並用 ZZZ 案例實測通過」。
 - **DoD 要寫出產出檔路徑，未達成就不算完成**：DoD 若要求產出本 repo 的檔案，用反引號標出路徑（如 `docs/x.md`），`task_cli.py complete` 與 `verify_inbox.py` 會檢查它存在。DoD 裡的任何一項沒做到（例如「實測」只做了評估），就不可結案；證據裡的「限制」若落在 DoD 範圍內，等於未完成。

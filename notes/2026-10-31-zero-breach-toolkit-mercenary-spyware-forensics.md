@@ -10,6 +10,11 @@ status: archived
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "Zero-Breach-Toolkit間諜軟體鑑識"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "頁面顯示共 29 則回覆，未登入只讀到 11／29 則；貼文無上傳圖片（連結預覽卡圖檔載入空白，只讀卡片文字）"
+source_images: 0
+source_replies: 11
 tags:
   - zero-breach-toolkit
   - mercenary-spyware
@@ -26,7 +31,7 @@ tags:
 # Zero-Breach-Toolkit 開源傭兵間諜軟體鑑識工具解構：跨平台離線檢測、Pegasus/Predator IoC 比對、唯讀數位鑑識與端點防禦實戰
 
 - **來源連結**：[Threads 原文分享 (@leeunhn)](https://www.threads.com/share/BAa4BXlFwW/) ｜ [貼文永久網址](https://www.threads.com/@leeunhn/post/DfFLV0EmppX) ｜ [Zero-Breach-Toolkit 官方 GitHub](https://github.com/interplains/Zero-Breach-Toolkit) ｜ [Amnesty MVT 開源鑑識工具 (mvt.re)](https://mvt.re/) ｜ [Citizen Lab 威脅情報研究](https://citizenlab.ca/)
-- **核心作者**：李昀翰（@leeunhn，數位資安與科技探索者）／ interplains 開源團隊
+- **核心作者**：李昀翰（@leeunhn，轉介者）／ interplains（README 署名製作者為 `archivegenocide`，建立在 `interplains/zero-breach` 之上）
 - **分析主題**：解構在 GitHub 迅速收穫 3,200+ 顆星的熱門開源數位鑑識工具 **Zero-Breach-Toolkit（`interplains/Zero-Breach-Toolkit`）**。深入剖析其如何打破過往「檢測高階間諜軟體必須付費送專業資安實驗室」的高門檻，提供一套完全**「本地離線運行（Offline-First）」**、**「嚴格唯讀（Strictly Read-Only）」**且支援 **Windows、macOS、Linux、Android 設備與 iOS 備份檔**的鑑識掃描器。詳細探討針對國家級/商業傭兵間諜軟體（Mercenary Spyware，如 NSO Group Pegasus、Cytrox Predator、Candiru、Graphite）的侵害指標（IoC）比對機制、鑑識限制與端點安全縱深防禦實戰。
 - **當前狀態**：`⚪ 已封存 (Archived)`
 - **相關交叉參照**：
@@ -37,7 +42,30 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀貼文與可見的 11 則留言（頁面顯示共 29 則，其餘要登入才看得到），並讀了 `interplains/Zero-Breach-Toolkit` 的 README 全文與近期 issue 標題。
+
+- **作者圖片**：貼文沒有上傳圖片，只有 1 張 GitHub 自動產生的 repo 連結預覽卡；卡片圖檔兩次載入都是空白，內容改由卡片文字讀取（repo 簡介：離線檢查已知傭兵間諜軟體，另外檢查可疑連結、郵件、檔案、QR code、帳號、家用網路與附近的追蹤器；有視窗版程式、27 種語言）。README 本身沒有圖片。
+- **作者留言補充**：無。貼文只有一段介紹加 repo 連結。
+- **網友留言重點**：
+  - 質疑工具本身：`ohayo1874`（59 讚，本串最高）說這類工具「幫你找、但本身也可能是木馬」，提醒別在工作場所亂裝，並舉自己多年前裝網路掃描器、半年後才發現有問題的經驗；`vfd_error`、`cat_e5711438` 是同方向的意見。
+  - 反駁：`aiixi_bear` 指出它是開放原始碼。
+  - 其餘是收藏、道謝，無技術內容。
+- **對分析的影響**：
+  - 留言的主要疑慮是「檢測工具本身可不可信」，原筆記沒有處理。對照 README：專案提供下載驗證文件（`docs/VERIFYING.md`）、相依套件用雜湊鎖定安裝，也可以不用打包好的執行檔、直接跑 Python 原始碼；另有一則 issue 回報 GPG 驗證校驗碼失敗。已在第 2 節補「工具本身的可信度」一點：開源不等於已有人審過，要用就驗簽、跑原始碼版、不要在公司設備上直接裝。
+  - README 沒有出現 YARA、YARA-X、STIX2、Google TAG 這些字；第 1、2 節架構圖裡的這幾項是分析者推測，已加註未查證。
+  - README 寫的是「掃描時不發網路請求、封鎖 Python 的網路呼叫」，並明說這**不是**作業系統層級的網路沙箱；第 1 節「阻斷 Socket、杜絕 C2 告警」說得太滿，已加註。指標清單的更新要連網下載，比對才是離線。
+  - iPhone 備份：README 記載加密備份也能檢查（需另裝選用套件），原筆記寫成只能用未加密備份，已更正。
+  - 作者署名：README 寫製作者是 `archivegenocide`，建立在同組織的 `interplains/zero-breach` 之上；已補進核心作者。
+  - 星數：貼文當時 3,219，2026-11-16 查 GitHub API 為 5,125；專案 10-25 才建立，目前已出到第 3 版（新增連結／郵件／檔案／QR code 檢查與帳號、家用網路檢視）。
+  - 任務維持關閉，理由不變（留言的疑慮反而加強「不要自寫比對器、也不要輕易安裝」的判斷）。
+
+---
+
 ## 1. 核心內容摘要：問題背景與商業間諜軟體威脅全景（Executive Summary）
+
+> **2026-11-16 重審註記**：下圖「阻斷 Socket、杜絕 C2 告警」說得太滿。README 的說法是掃描期間不發網路請求、封鎖 Python 的網路呼叫，並明說這不是作業系統層級的網路沙箱。「Google TAG 庫」與第 2 節的「STIX2」「YARA-X」在 README 找不到，屬分析者推測，未查證。
 
 隨著商業傭兵間諜軟體（Mercenary Spyware）在政治異議人士、調查記者、人權律師及企業高階主管設備上屢遭曝光，端點安全面臨前所未有的隱蔽威脅：
 
@@ -102,9 +130,11 @@ Zero-Breach-Toolkit 採用多層解耦的跨平台鑑識架構，核心聚焦於
 1. **無特權／低特權運作（Unprivileged Execution）**：
    在 Windows 上無須 Administrator 最高權限即可檢測用戶態持久化與瀏覽器暫存；在 macOS 上僅需使用者授權終端機「完整磁碟存取權（Full Disk Access）」以讀取沙盒化的 Safari 資料庫。
 2. **行動端備份鑑識支援**：
-   比照 Amnesty 的 Mobile Verification Toolkit（MVT），使用者可使用 iTunes / Finder 產生未加密備份，Toolkit 解析備份內的 `Manifest.db`、`SMS.db`（檢驗簡訊零點擊注入連結）與 Safari 資料庫，完全無須越獄（Jailbreak）或 Root 設備。
+   比照 Amnesty 的 Mobile Verification Toolkit（MVT），使用者可使用 iTunes / Finder 產生備份（加密備份也支援，需另裝選用套件；2026-11-16 依 README 更正），Toolkit 解析備份內的 `Manifest.db`、`SMS.db`（檢驗簡訊零點擊注入連結）與 Safari 資料庫，完全無須越獄（Jailbreak）或 Root 設備。
 3. **「未檢出不等於安全（The Clean Scan Caveat）」資安防線**：
    工具官方文檔明確指出：現代國家級間諜軟體常僅常駐於 RAM 並具備定時自毀（Self-destruct）機制。**單次離線掃描呈陰性（Clean），僅代表「未發現已知歷史殘留痕跡」，絕不構成「設備絕對乾淨」的保證**。對於高風險目標，仍需搭配即時網路異常流量監控與資安救援機構介入。
+4. **工具本身的可信度（2026-11-16 依留言補充）**：
+   留言區最多人按讚的意見是「檢測工具本身也可能是木馬」。開放原始碼只代表可以被審查，不代表已經有人審過；這個專案 2026-10-25 才建立，幾天內衝到數千顆星。要用的話：照 `docs/VERIFYING.md` 驗證下載檔、優先跑 Python 原始碼版而不是打包好的執行檔、不在公司設備上直接安裝。
 
 ---
 

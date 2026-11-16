@@ -10,6 +10,11 @@ status: done
 cluster: "1"
 cluster_role: "桌面操控與代理身分"
 short_title: "GitHub Apps S2S代理人身分認證"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "貼文顯示 4 則回覆，未登入只讀到 3／4 則（原筆記引用的 @alicken 留言沒顯示）；圖看了 3／3 張"
+source_images: 3
+source_replies: 3
 tags:
   - github-copilot
   - server-to-server
@@ -33,6 +38,28 @@ tags:
   - [`notes/2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md`](./2026-10-28-thorsten-ball-how-i-work-with-agents-2026.md)（Thorsten Ball 15 條實戰哲學：爆破半徑審查、不可反駁證據與人類最終裁決）
   - [`notes/2026-10-23-zeabur-october-2026-security-incident.md`](./2026-10-23-zeabur-october-2026-security-incident.md)（Zeabur 資安事件反思：本地 OAuth 憑證洩漏教訓與憑證生命週期輪替）
   - [`notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md`](./2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)（跨 CLI 外包與多 Agent 協同調度管道）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：Threads 主文、3 張輪播圖、留言區，以及 GitHub Changelog 2026-10-27 公告全文都看過。
+
+- **作者圖片**：3 張輪播資訊圖，內容是主文的圖像版，沒有主文以外的技術細節：
+  - 圖 1：封面，標語是「自主 Agent 真正無人值守／GitHub 突發服務端認證」，配 Copilot SDK 與 Server-to-Server Auth 字樣。
+  - 圖 2：「三大優勢」——擺脫個人 Token 綁定與失效、24 小時無人值守（圖上寫可監聽 Jira／GitHub Issue 後自行在分支修復並提 PR）、細粒度最小權限。
+  - 圖 3：「過去的 Copilot（副駕駛，等人按 Tab）對比現在的 Agent（有系統身分，半夜抓蟲、寫測試、發 PR 等主管審）」，加一句問讀者敢不敢讓 Agent 夜間自主提 PR。
+- **作者留言補充**：作者回覆 @ginsengtrycatch 的質疑時說「好像之前 GitHub Apps 產生的 access token 不能用在 Copilot」，語氣是不確定的。
+- **網友留言重點**：主文顯示 4 則回覆，未登入頁面看得到 3 則（含上面作者那則）：
+  - @ginsengtrycatch 反駁：GitHub Apps 本來就能有 App 身分，這不算新東西。
+  - @hackertale：只有一句稱讚，沒有資訊。
+  - 原筆記引用的 @alicken 留言這次沒有顯示，無法核對原話，第 1 節已改成轉述。
+- **對分析的影響**：
+  1. **@ginsengtrycatch 的反駁有一半成立**：App 身分確實早就有，新的是「Copilot 接受組織安裝 App 的權杖」。Changelog 原文是 Copilot SDK 做的服務與 Agent 現在可代表組織發請求、不必依賴登入使用者的憑證（公開預覽）。作者的回覆只是「好像」，原筆記寫成斷言；第 1 節已改成以 Changelog 為依據。
+  2. **筆記正文有多處與官方文件不符**，[`docs/github-apps-s2s-copilot-workload-identity-guide.md`](../docs/github-apps-s2s-copilot-workload-identity-guide.md) 第 0 節在 2026-11-02 已逐項列出，但筆記當時沒有同步。本次改了正文四處：權杖要用 SDK 的明確選項傳入（不是設環境變數）；`app_client_id` 只出現在 AI usage 的 CSV 報表（不是 Audit Log）；`copilot-requests: write` 搭配內建 `GITHUB_TOKEN` 是另一條不需要 App 的路；PAT「30～90 天」查無出處。架構圖裡的「組織級集中配額控管」也要照指南讀：不能替單一 App 設預算。
+  3. 圖 2 的「監聽 Jira」是貼文作者的想像情境，Changelog 沒有提 Jira。
+  4. Changelog 另有三點筆記沒寫清楚：目前是公開預覽；用量算在安裝該 App 的組織並計費；組織的模型政策、預算與花費控管都適用。
+  - 已完成的兩項任務產出以官方文件為準寫成，本次重審沒有發現需要更正之處。
 
 ---
 
@@ -73,9 +100,9 @@ tags:
 
 ### 社群熱議焦點（Threads 架構討論精粹）：
 1. **解除心理負擔與脆弱依賴**（[@alicken](https://www.threads.com/@alicken)）：
-   「這更新解掉的不是單一痛點，是整個代理部署的心理負擔。以前很多人不敢真放手，不是模型不會做，是 token 綁在人身上太脆弱，換人、過期、外洩都直接炸掉。現在有正式系統身分，代理才比較像真的服務，而不是借來跑的實驗品。」
+   大意是：這次更新解掉的是整個代理部署的心理負擔——以前不敢放手是因為權杖綁在個人身上，換人、過期、外洩都會出事；有了正式的系統身分，代理才像一項服務。（2026-11-16 重審時這則留言已不顯示，無法核對原話，改為轉述。）
 2. **釐清過往 GitHub Apps 的認知盲區**（[@ginsengtrycatch](https://www.threads.com/@ginsengtrycatch) vs [@it.oppa.twhk](https://www.threads.com/@it.oppa.twhk)）：
-   過往 GitHub Apps 雖具備 Git/REST API 的機器身分，但**其產生的 Access Token 無法存取 GitHub Copilot 推論端點**（Copilot 過去強制綁定人類使用者的付費 Seat / User Token）。本次更新正式新增了組織層級的 **`Copilot Requests: Read-only`** 權限，首次打通了 Copilot SDK 的純服務端（Server-to-Server）管線。
+   @ginsengtrycatch 質疑「GitHub Apps 本來就有 App 身分」，作者回覆「好像之前 App 的權杖不能用在 Copilot」（語氣不確定）。以官方 Changelog 為準：過去 Copilot SDK 做的服務要依賴登入使用者的憑證，現在可改用組織安裝的 App 代表組織發請求。本次更新正式新增了組織層級的 **`Copilot Requests: Read-only`** 權限，首次打通了 Copilot SDK 的純服務端（Server-to-Server）管線。
 3. **無人值守 SDLC 的真正考驗**：
    自動在夜間抓蟲、跑測試、發 PR 固然令人振奮，但架構設計的關鍵從來不是「能否發 PR」，而是「審核防線、爆破半徑（Blast Radius）與回滾（Rollback）機制是否切得乾淨」。
 
@@ -106,7 +133,7 @@ sequenceDiagram
 
     rect rgb(255, 250, 240)
     Note over App, Copilot: 服務端 AI 代理推論請求
-    App->>SDK: 設定 COPILOT_GITHUB_TOKEN = ghs_xxx<br/>指定 useLoggedInUser = false
+    App->>SDK: 以 gitHubToken 選項傳入 ghs_xxx<br/>指定 useLoggedInUser = false
     SDK->>Copilot: POST /copilot/chat/completions (帶 Bearer ghs_xxx)
     Copilot->>Copilot: 驗證 Organization Copilot 配額與模型政策
     Copilot-->>SDK: 串流返回推論結果 (Streaming Token Response)
@@ -122,12 +149,12 @@ sequenceDiagram
 | 維度 | 舊機制：個人存取權杖（PAT / User Token） | 新機制：GitHub App S2S 認證（2026-10-27） |
 | :--- | :--- | :--- |
 | **身分歸屬（Identity）** | 個人工程師（Human User Seat） | 組織工作負載（Workload-Owned Identity） |
-| **生命週期（TTL）** | 長效（30~90 天，甚至無期限） | 短效動態權杖（1 小時自動過期，JWT 簽名現領） |
+| **生命週期（TTL）** | 長效（原筆記寫「30~90 天」，查無官方出處） | 短效動態權杖（1 小時自動過期，JWT 簽名現領） |
 | **離職／人事變動** | 人員離開或密碼輪替即全面失效 | 與個人解耦，組織持續穩定維運 |
 | **權限控制（Least-Privilege）** | 權限過寬（全庫讀寫，外洩災難高） | 細粒度分配（限定 repo、限定 `Copilot Requests`） |
-| **安全審計（Auditing）** | Audit Log 混同於個人操作 | 獨立 `app_client_id`，AI 操作 100% 可溯源 |
+| **安全審計（Auditing）** | 用量記在個人名下 | AI usage 的 CSV 報表有 `app_client_id` 欄位可辨識 App 用量（不是 Audit Log，網頁畫面上也看不到） |
 | **熔斷機制（Kill-Switch）** | 必須修改或刪除個人 Token，影響工程師本人 | 組織管理後台一鍵「Suspend/Uninstall App」，立即生效 |
-| **CI/CD 原生相容** | 必須在 Secret 中注入明文個人 Token | GitHub Actions 內建 `GITHUB_TOKEN` 支援 `copilot-requests: write` |
+| **CI/CD 原生相容** | 必須在 Secret 中注入明文個人 Token | App 權杖由 workflow 現領；另有一條不需要 App 的路：`permissions:` 加 `copilot-requests: write` 用內建 `GITHUB_TOKEN`（需組織開啟對應政策，見指南第 5 節） |
 
 ---
 

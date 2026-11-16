@@ -1,15 +1,19 @@
 ---
 id: 2026-10-28-karpathy-claude-md-four-rules-engineering-hardening
-title: "Andrej Karpathy 版 CLAUDE.md 四大黃金準則解構：從軟性文字勸導到機械硬閘門的工程加固實踐"
+title: "依 Karpathy 觀察整理的 CLAUDE.md 四大準則解構：從軟性文字勸導到機械硬閘門的工程加固實踐"
 source_url: "https://www.threads.com/share/BAa3ZgQnJW/"
 source_platform: "Threads (dev @easyanythinghk)"
-author: "Andrej Karpathy / dev (@easyanythinghk)"
+author: "forrestchang（andrej-karpathy-skills，依 Andrej Karpathy 的觀察整理）/ dev (@easyanythinghk)"
 analyzed_at: 2026-10-28
 analyzed_by: "Antigravity"
 status: done
 cluster: "1"
 cluster_role: "工程紀律與設計審查"
 short_title: "Karpathy 四大原則工程加固"
+source_review: full
+source_reviewed_at: 2026-11-16
+source_images: 1
+source_replies: 5
 tags:
   - karpathy-rules
   - claude-md
@@ -20,10 +24,10 @@ tags:
   - mechanical-invariants
 ---
 
-# Andrej Karpathy 版 CLAUDE.md 四大黃金準則解構：從軟性文字勸導到機械硬閘門的工程加固實踐
+# 依 Karpathy 觀察整理的 CLAUDE.md 四大準則解構：從軟性文字勸導到機械硬閘門的工程加固實踐
 
 - **來源連結**：[Threads 貼文 (@easyanythinghk)](https://www.threads.com/share/BAa3ZgQnJW/)
-- **核心來源**：Andrej Karpathy 對大型語言模型（LLM）寫代碼痛點的觀察與 GitHub 社群爆紅的 `CLAUDE.md` 準則
+- **核心來源**：[`multica-ai/andrej-karpathy-skills`](https://github.com/multica-ai/andrej-karpathy-skills)（原 `forrestchang/andrej-karpathy-skills`）——其他開發者依 Andrej Karpathy 在 X 的長文整理成的 `CLAUDE.md`，**不是 Karpathy 本人寫的**
 - **分析主題**：Karpathy 程式碼行為四大黃金原則（Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Verification）、軟性提示詞衰減（Prompt Decay）防線、由文字勸導升級為機械硬閘門（Mechanical Invariants）之工程實務
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
@@ -31,6 +35,24 @@ tags:
   - [`notes/2026-10-26-ai-shared-memory-template-team-collaboration.md`](./2026-10-26-ai-shared-memory-template-team-collaboration.md)（三跳索引與動詞寫入契約）
   - [`notes/2026-10-26-github-trending-agent-skills-benchmark.md`](./2026-10-26-github-trending-agent-skills-benchmark.md)（8KB 上下文預算與防注意力稀釋）
   - [`notes/2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md`](./2026-10-26-ai-freelance-certainty-pricing-and-dod-spec.md)（確定性交付與自動化 DoD 驗證）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀 Threads 貼文與留言串（文字、1 張作者圖、留言 5 則含作者 2 則）。
+
+- **作者圖片**：圖 1 是套版的 GitHub Trending 標題卡，只有 repo 名稱 `andrej-karpathy-skills` 與一句英文副標（Karpathy 的 LLM 寫碼陷阱指南），沒有規則內容或實測畫面。
+- **作者留言補充**：留言放 repo 連結 [`multica-ai/andrej-karpathy-skills`](https://github.com/multica-ai/andrej-karpathy-skills)（原 `forrestchang/andrej-karpathy-skills`，舊網址會轉址）；回覆 bounce12340 時認同其出處更正。
+- **網友留言重點**：
+  - **出處更正（bounce12340）**：這個 repo 不是 Karpathy 本人寫的。Karpathy 今年 1 月在 X 發長文談模型會自己亂假設、把 100 行能解決的寫成 1000 行；之後其他開發者依這篇整理成 `CLAUDE.md`，README 也寫明是由他的觀察整理而來。Karpathy 原文還提到，他自己在 `CLAUDE.md` 寫過指示，這些問題照樣發生。
+  - bounce12340 的做法：規則寫成「能檢查的句子」（例如門檻數字不准自己編、要先問），再讓另一個 bot 對著規則審稿。
+  - mielm_ori：貼進去前先自己讀一遍，刪掉不適合專案的規則再存成專案的 `CLAUDE.md`；規則留少數幾條比整包照貼好管。
+- **對分析的影響**：
+  - **標題與作者欄更正**：原標題「Andrej Karpathy 版 CLAUDE.md」與貼文的「Karpathy 親手整理」都不對。已查證 README 第一行標題是 Karpathy-Inspired，內文寫 derived from Karpathy 的觀察並連到他的 X 貼文。標題改為「依 Karpathy 觀察整理的 CLAUDE.md」，作者欄改成 repo 作者，第 1 節補上出處說明。
+  - **補上一個重要事實**：Karpathy 自己說過在 `CLAUDE.md` 寫了指示問題仍會發生。這正好支持本筆記第 2 節「文字規範會失效、要升級成機械檢查」的主軸，已寫進第 2 節開頭。
+  - 留言的兩個做法（規則寫成可檢查的句子＋另一個 Agent 審稿、規則只留少數幾條）與本筆記的硬閘門方向一致，補在第 3 節。
+  - 已完成的 `T-20261028-01` 當時就已分清 Karpathy 原話與 repo 整理，不需重開。repo 現況（2026-11-16）：約 23.4 萬星，GitHub 未偵測到授權檔。
 
 ---
 
@@ -42,7 +64,7 @@ AI 領域權威 Andrej Karpathy 在長期的 AI Coding 實踐中，指出了大�
 3. **順手破壞**：修改一個小功能，卻擅自重構周圍無關的代碼、格式或註解，造成難以追蹤的 Git 污染；
 4. **自欺欺人**：缺乏客觀檢驗標準，程式碼剛生出來就聲稱「已經修好了」，實質完全跑不通。
 
-社群將 Karpathy 的觀察提煉為目前 GitHub 爆紅的專案級行為準則檔案（`CLAUDE.md` / `AGENTS.md`）：
+社群將 Karpathy 的觀察提煉為目前 GitHub 爆紅的專案級行為準則檔案（`CLAUDE.md` / `AGENTS.md`）。四條準則的文字是 repo 作者的整理，不是 Karpathy 的原話；Threads 貼文寫「Karpathy 親手整理」是錯的，留言已有人更正、貼文作者也認同（見第 0 節）：
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -67,6 +89,8 @@ AI 領域權威 Andrej Karpathy 在長期的 AI Coding 實踐中，指出了大�
 ---
 
 ## 2. 深入技術拆解：從「文字勸導」邁向「機械硬閘門」（Deep Dive）
+
+> 2026-11-16 補：Karpathy 在原貼文自己提到，他在 `CLAUDE.md` 寫過指示，這些問題仍然發生（Threads 留言引述）。光靠規則檔不夠，正是本節要談的事。
 
 雖然這四條原則在直覺上非常優雅，但一線資深開發者實測後往往發現：**純文字 Prompt 會隨上下文拉長而發生「軟性衰減（Prompt Decay）」**。當對話超過 50K 或 100K token 時，LLM 會遺忘「Surgical Changes」，再度開始漫無邊際地重構周遭檔案。
 
@@ -121,6 +145,10 @@ AI 領域權威 Andrej Karpathy 在長期的 AI Coding 實踐中，指出了大�
   1. **撰寫規格指南**：產出 `docs/karpathy-rules-mechanical-hardening-spec.md`，詳解四大原則與對應的機械硬防線實作。
   2. **開發 Surgical Changes 審查工具**：實作 `tools/audit_surgical_diff.py`，提供自動判定代碼變更是否符合外科手術式修改之檢查器。
   3. **產出加固版範本**：在 `templates/karpathy-hardened-agents-md.md` 產出開箱即用的 `CLAUDE.md` / `AGENTS.md` 範本，供其他專案一鍵復用。
+
+- **留言帶來的兩個做法（2026-11-16 補）**：
+  - 規則寫成能檢查的句子（例如「門檻數字不准自己編，要先問」），再讓另一個 Agent 對著規則審稿——等於替規則加測試。維護者現有的獨立審查與 hook 已是這個方向。
+  - 貼進專案前先刪掉不適用的規則，只留少數幾條；整包照貼反而難管。
 
 ---
 

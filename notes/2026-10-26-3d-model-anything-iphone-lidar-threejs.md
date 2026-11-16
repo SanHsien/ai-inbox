@@ -10,6 +10,11 @@ status: done
 cluster: "2"
 cluster_role: "WebGL與3D重建"
 short_title: "3D Model Anything"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "YouTube 影片畫面沒有逐格看；Threads 留言只讀到未登入可見的 10 則（總數未知）；YouTube 留言 155／155 則與 issue 留言 1 則讀過；圖看了 1／1 張"
+source_images: 1
+source_replies: 166
 tags:
   - threejs
   - lidar-scanning
@@ -30,6 +35,31 @@ tags:
 - **相關交叉參照**：
   - [`notes/2026-10-18-target-story-generative-ui-editor.md`](./2026-10-18-target-story-generative-ui-editor.md)（Generative UI 互動產品設計與狀態管理）
   - [`notes/2026-10-26-answer-me-with-html-visual-agent-artifacts.md`](./2026-10-26-answer-me-with-html-visual-agent-artifacts.md)（工件輸出與確定性版面計算）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：看了 Threads 引介貼文（文字與未登入可見的 10 則留言）、GitHub README 與 4 則 issue（共 1 則留言）、YouTube 介紹影片的說明欄與全部 155 則留言（以 `yt-dlp` 取得，含作者回覆 14 則）。影片本身的畫面這次沒有逐格看。
+
+- **作者圖片**：共 1 張。
+  - 圖 1（README 首圖，也是影片縮圖）：Wes Bos 俯身看著桌上一個辦公室的微縮模型，手上拎著一張辦公椅放進去；模型裡有書櫃、升降桌、地毯、躺椅、掃地機器人，呈現「把整間房間做成可拿取零件的 3D 模型」。
+  - Threads 貼文本身沒有作者上傳的圖，只有 GitHub 連結卡片。
+- **作者留言補充**：
+  - Threads 引介者 `@leeunhn` 沒有在留言區補充；貼文寫當時 1,199 顆星（2026-11-16 查為 3,031）。
+  - YouTube 說明欄：影片是 OpenAI 合作內容（標 `#ChatGPT_Partner`），重建用的是 Codex 裡的 GPT-6 Astra。
+  - Wes Bos 在留言回覆：從原始檔到成品約 30～40 分鐘；整個專案（含 iPhone App 與影片視覺）沒有用掉多少他每月 200 美元的 Codex 方案額度；RoomPlan 給的幾何很簡單，關鍵在 LLM 做的非程式化建模；Android 應該做得到，他在等有裝置的人送 PR；下一步想接智慧家庭。
+- **網友留言重點**：
+  - 硬體與安裝門檻（多則）：需要有 LiDAR 的 iPhone Pro；多數 Android 手機沒有 LiDAR，有人用 ARCore 自己做，精度明顯較差。issue #1 問沒有 Mac 能否提供預先編好的安裝檔、issue #10 回報 Swift 編譯失敗、issue #15 要求支援無 LiDAR 與非 iOS，都還沒有回覆。
+  - 方法質疑：`@SquintyGears` 認為這條「照片＋JSON 中繼資料」管線不好重現，建議並用 Gaussian splat 再轉網格；另有人指出 RealityScan、Polycam、Luma 等現成工具，Threads 也有人提醒 Apple 本來就有公開的 RoomPlan 範例與做法。
+  - 匯出：issue #3 與多則留言要求匯出到 CAD／Blender；目前只有一個草稿 PR（#24，glTF 匯出）。
+  - 規模與精度：有人問大型建築掃描是否不穩、Threads 有人問精度，都沒有得到答案。`@Mugen3D` 問是否區分「掃描得到的尺寸」與「模型推測的細節」，也沒有回覆。
+  - 隱私：數則留言擔心把住家完整幾何交給 AI 公司，希望能完全離線。
+  - 實作回報：`@SamCastillo` 表示自己做了幾天、每輪迭代都有進步，並送了改善門偵測的 PR（房間一開始接不起來）。
+- **對分析的影響**：
+  - 影片是廠商合作內容、成品來自 LLM 反覆修正而非一鍵轉換，且沒有公開的精度數字；已在第 3 節「不採納／邊界考量」補上，避免把它當成量測級工具引用。
+  - 留言中「掃描尺寸與模型推測要分開標示」這一點，與本筆記空間契約的方向一致，但 `docs/scan-to-threejs-spatial-agent-spec.md` 是否有寫到，這次沒有查；列在重審回報供整合者判斷，已完成的任務狀態不動。
+  - 授權：GitHub API 的授權欄顯示無法判定，但 LICENSE 檔內容是 MIT，本筆記寫 MIT 無誤。任務未增減。
 
 ---
 
@@ -124,6 +154,7 @@ Agent 透過 `agent-browser` 截取渲染畫面，調用 Python 腳本將虛擬�
      - 結合既有 `assets/target-story-editor/` 等 Generative UI 資產，在 `assets/` 建立單檔純靜態 Three.js 空間漫遊展示，作為後續 3D 工件渲染的標準模板。
 
 - **不採納／邊界考量**：
+  - （2026-11-16 依留言與 issue 補）這套流程不是量測級工具：成品靠 LLM 反覆比對照片修正，官方與留言區都沒有精度數字；採集端限定有 LiDAR 的 iPhone／iPad，且要自己用 Mac 編譯 App（無預編安裝檔、有人回報編譯失敗）；目前沒有正式的 CAD／glTF 匯出。介紹影片是 OpenAI 合作內容，引用其效果時要註明。
   - 本 repo 不需要引入完整的 Swift / Xcode iOS App 編譯環境；我們專注於接收標準的 RoomPlan / Capture JSON 數據，並由 Agent 在網頁端完成 Three.js 程式化建模與視覺驗證閉環。
 
 ---

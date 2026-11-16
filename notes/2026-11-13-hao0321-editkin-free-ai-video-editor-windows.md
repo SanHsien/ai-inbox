@@ -10,6 +10,11 @@ status: archived
 cluster: 2
 cluster_role: "AI影片剪輯"
 short_title: "Editkin免費AI剪輯"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "未登入讀到 7 則／共 9 則回覆，其餘 2 則要登入；貼文無作者圖；作者留言的 freetwai 短網址未點開"
+source_images: 0
+source_replies: 7
 tags:
   - editkin
   - video-editing
@@ -32,18 +37,36 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 以未登入瀏覽器重看原貼文（Threads 顯示發文日 2026-11-06）。貼文顯示 9 則回覆；未登入讀到 7 則（作者 3 則＋網友 4 則），其餘 2 則要登入才看得到。
+
+- **作者圖片**：無。主貼文只有一句話，沒有圖也沒有影片。
+- **作者留言補充**：
+  - 第一則留言放了兩個連結：Video Autopilot（VA）走 `freetwai.com/go/...` 短網址（本次未點開，依零信任規則不跟轉址），Editkin 指向 GitHub 的 `v0.16.0` Release 頁。連結預覽卡是 GitHub 自動產生的 Release 卡片，標題「Editkin 0.16.0（Windows x64，未簽章）」，內文第一行就是「沒有數位簽章，SmartScreen 出現時點其他資訊→仍要執行」。
+  - 回覆網友：下一版會直接支援各種不同 AI，好像也會有 CLI；Mac 版「還在製作中」。
+- **網友留言重點**：jayc07 希望有 Linux 版；linda0203tw 希望有 Mac 版；vr_kotodama 道謝。沒有人回報實際剪輯成果或問題。
+- **對分析的影響**：
+  - **簽章狀態補實**：原稿寫「0.17.0 簽章狀態未實測」。Release 卡片與 `v0.17.0` Release 說明（2026-11-16 以 GitHub API 讀取）都由作者自己寫明**未簽章**，並教使用者略過 SmartScreen。風險表該列已改。
+  - **不是只有 Windows**：`v0.16.0` 與 `v0.17.0` 的 Release 附件都有 `universal.dmg`（約 1.43 GB），`v0.17.0` Release 名稱寫「Windows / Mac」；但同一份說明又寫 macOS 版「會在實機驗證後加到這個 Release」、只在一台 Windows 10 電腦做過完整測試，repo 也有 macOS 的未解 bug（#114 AI 連線探測失敗、#115 M5 晶片字幕生成崩潰）。結論：macOS 安裝檔存在但未經作者驗證。5W1H 已補。
+  - **「下一版支援各種 AI」已兌現**：`v0.17.0` 說明列出 Claude Desktop、LM Studio、Cursor、Gemini CLI、Kiro 一鍵連接，另有 12 種 AI 的設定可貼上。
+  - **補上穩定性訊號**：repo 目前 44 個未解 issue，近期幾則都是 0.16.0 的 AI 剪輯流程問題（#111 精靈設定的 profile 沒有建專案工具、#112 傳 3 支素材只匯入第 1 支、#113 Codex MCP 註冊失敗、#116 變速片段 render 失敗），且都是 0 則回覆。`v0.17.0` 說明自稱修好其中幾類，未實測。
+  - 星數 2026-11-16 為 125。結論與處置不變（仍歸檔、不衍生任務）。
+
+---
+
 ## 1. 核心內容摘要（5W1H 初篩）
 
 - **Who**：作者 Hao0321（倉庫 `Hao0321/Editkin`）。
 - **What**：Windows 本地優先 AI 剪輯器，可編輯時間軸 + EditGraph + MCP 命令。
 - **Why**：把 AI 規劃落到可編輯時間軸，而非一鍵黑盒出片。
 - **How**：Editkin 出引擎、Agent 做決策（見下方技術架構）。
-- **When & Where**：Windows x64 桌面；v0.17.0 安裝檔約 1.5 GB（2026-11-14 以 GitHub API 查證）。
+- **When & Where**：Windows x64 桌面；v0.17.0 安裝檔約 1.5 GB（2026-11-14 以 GitHub API 查證）。Release 另附 macOS `universal.dmg`（約 1.43 GB），但作者自述 macOS 版尚未實機驗證（2026-11-16 查）。
 - **Key Metrics / Numbers**：122 stars、GPL-3.0（原始碼版，快照日 2026-11-14 查證）；最新 Release v0.17.0（2026-11-12）。
 
 ### 摘要原文
 
-**@hao0321_studio**（2026-11-05，2.1K views）以一句話介紹「完全免費 AI 自動剪輯 Editkin（Windows）」。貼文本身資訊極少，以下內容來自官方倉庫 `Hao0321/Editkin`、Release 附件與 EULA 的實查。
+**@hao0321_studio**（2026-11-05，Threads 頁面顯示為 2026-11-06；2.1K views）以一句話介紹「完全免費 AI 自動剪輯 Editkin（Windows）」。貼文本身資訊極少，以下內容來自官方倉庫 `Hao0321/Editkin`、Release 附件與 EULA 的實查。
 
 核心事實：
 
@@ -117,12 +140,13 @@ Editkin 本機 MCP tools：prepare → audit → apply → render
 | 項目 | 評估 |
 |------|------|
 | **開源變閉源** | 「開源」宣傳需修正：目前主線是 freeware，原始碼停在 0.15；GPL 凍結版可 fork 但無官方更新 |
-| **未簽章** | 0.15 preview 為 unsigned，會觸發 Windows SmartScreen；0.17.0 簽章狀態未實測 |
+| **未簽章** | 0.15 preview、0.16.0、0.17.0 都未簽章（後兩者由作者在 Release 說明寫明），會觸發 Windows SmartScreen；作者的安裝指示是叫使用者點「仍要執行」 |
+| **穩定性** | 44 個未解 issue（2026-11-16），近期多為 AI 剪輯流程的 bug，皆無回覆；沒有自動更新；作者自述只在一台 Windows 10 電腦做過完整測試 |
 | **安裝檔 1.5 GB** | 內含媒體 runtime/模型，下載與磁碟成本高 |
 | **閉源二進位** | 無法審計；MCP 工具有本機檔案與渲染權限，屬高權限工具 |
 | **第三方衍生套件** | `geniefu/editkin-video-autopilot`（0 stars，自稱 Antigravity 整合 + 64 MCP tools）非官方，依零信任規則不安裝、不執行 |
 | **Kit 遷移** | Video Autopilot Kit 近版更改預設資料夾名稱，升級前需看 CHANGELOG 遷移段 |
-| **未驗證** | 剪輯品質、0.17.0 安裝檔簽章與 SHA256 實比對、MCP 實際可用性均未實測 |
+| **未驗證** | 剪輯品質、0.17.0 安裝檔 SHA256 實比對、MCP 實際可用性均未實測 |
 
 ---
 
@@ -148,7 +172,7 @@ Editkin 本機 MCP tools：prepare → audit → apply → render
 
 **評分：⭐⭐⭐（3/5）**
 
-「AI 規劃落到可編輯時間軸」的設計比一鍵黑盒出片更實用，EULA 對商用友善。扣分：授權由 GPL 轉閉源、安裝檔大、簽章與實際剪輯品質未驗證，且貼文只有一句話，不構成可複製的做法。
+「AI 規劃落到可編輯時間軸」的設計比一鍵黑盒出片更實用，EULA 對商用友善。扣分：授權由 GPL 轉閉源、安裝檔大、未簽章、實際剪輯品質未驗證，且貼文只有一句話，不構成可複製的做法。
 
 **處置**：僅歸檔備查；無可驗收的具體任務，不衍生待辦。若日後試用，建議先比對 `SHA256SUMS.txt` 並在隔離環境安裝（原核取清單因無可驗收 DoD 已刪除）。
 

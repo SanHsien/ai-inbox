@@ -11,6 +11,11 @@ status: done
 cluster: "3"
 cluster_role: "跨網情報與知識檢索"
 short_title: "Agent-Reach"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "原 Threads 貼文沒留連結、找不到，貼文的圖片與留言都沒看到（總數未知）；改看官方 repo README 與 8 則 issue／PR，讀到留言 23 則"
+source_images: 0
+source_replies: 23
 tags:
   - social-media-crawler
   - agent-tools
@@ -29,6 +34,28 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：原筆記沒有留下 Threads 貼文連結，找不到那則貼文，圖片與留言無從查看。本次改看官方 repo 現行 README（v1.6.1 時期）與留言最多的 8 則 issue／PR（含其中兩則的 15 則留言）。
+
+- **作者圖片**：無可分析的圖。README 的圖只有贊助商標誌、微信群 QR 與 star 走勢圖，沒有架構圖或畫面截圖；「首選＋備選」設計是用 mermaid 流程圖寫的，已當文字讀過。
+- **作者留言補充**（repo 作者 `Panniantong` 在 issue 的回覆）：
+  - #33：X 渠道曾整個失效，原因是上游工具的 repo 關閉；作者後來改用自己做的渠道，要重新安裝才生效。
+  - #498：小紅書的封號警告來自平台風控，工具消不掉；建議用小號、降頻、每次少取、只讀。1.6 起登入放在工具自己的專用瀏覽器。
+- **網友留言重點**：
+  - #498：有人用兩天、問不到 15 次就收到小紅書封號警告，擔心波及主帳號。
+  - #108：小紅書登入狀態一直修不好，Agent 還編造了不存在的使用者名稱。
+  - #33：有人回報 X 渠道用不了，換代理也沒用。
+  - PR #474：`configure --from-browser chrome` 原本會抓**所有**支援平台的 cookie 並整串存下來，後來才加 `--platform` 限縮。
+  - PR #480：Jina Reader 被 Cloudflare 擋時會拿到驗證頁而不是內容，後來補了偵測與直連備援。
+- **對分析的影響**：
+  - 1.2 節平台清單改成現行 README 的 14 個渠道三級分法；原寫的「13+」把 X、Facebook、Instagram 當成一般可用，實際是「實驗」級且全部要登入。架構圖裡 X 的後端「Nitter／Jina Reader」不是現況，已改。
+  - 「零 API 費、開箱即用」只對 5 個預設渠道成立，已在 1.1 節補上限制。
+  - 第 2 節「需注意」補兩點：工具會複製 Chrome 裡該網站的登入狀態（與維護者全域規則「不讀瀏覽器 Cookie」衝突）、PyPI 上同名套件不是本專案。
+  - `T-20261017-05` 當時實測「4/16 渠道開箱即用」與上述一致，結論不變；任務狀態未動。
+
+---
+
 ## 1. 核心內容摘要與技術全貌
 
 ### 1.1 核心痛點與主張
@@ -37,6 +64,7 @@ tags:
   2. 登入牆（Login Wall）、反爬蟲升級導致抓取工具頻繁失效。
   3. 各平台工具分散，Agent 需個別安裝多個套件與管理雜亂的金鑰。
 - **Agent-Reach 的解法**：為 AI Agent 提供**統一 CLI 命令列與 Channel 可插拔架構**，實現「零官方 API 費、開箱即用、自帶備援通道（Fallback）」的全網社媒情報獲取能力。
+- **限制（2026-11-16 依現行 README 與 issue 補）**：裝好就能用的只有 B站、V2EX、GitHub、YouTube、網頁 5 個渠道；小紅書、Reddit、X、Facebook、Instagram 都要登入帳號，而且平台風控會警告或封號（issue #498）。
 
 ### 1.2 關鍵功能與架構設計
 
@@ -51,12 +79,14 @@ tags:
     ┌─────────────────┼─────────────────┐
     ▼                 ▼                 ▼
 [Twitter / X]     [YouTube]       [小紅書 / B站]
-  ├─ Nitter         ├─ yt-dlp       ├─ 公開 API
-  └─ Jina Reader    └─ 字幕抽取     └─ Jina Reader
+  ├─ twitter-cli    ├─ yt-dlp       ├─ bili-cli → 公開 API
+  └─ 需登入(實驗級) └─ 字幕抽取     └─ 小紅書需登入
 ```
 
-1. **支援 13+ 主流社群平台**：
-   - 涵蓋 Twitter/X、Reddit、YouTube（支援字幕抽取）、GitHub、Bilibili、小紅書（XiaoHongShu）、Facebook、Instagram、LinkedIn、V2EX、雪球、小宇宙播客等。
+1. **14 個渠道，分三級**（現行 README）：
+   - **預設**（裝好就能用）：bilibili、v2ex、github、youtube、web。
+   - **可選**（多數要登入或 API Key）：xiaohongshu、xueqiu、boss、xiaoyuzhou、linkedin、reddit。
+   - **實驗**（要登入，平台反爬嚴，隨時可能失效）：twitter、facebook、instagram。
 2. **多後端動態路由（Multi-Backend Routing）**：
    - 每個平台通道（Channel）配置「主要後端 + 多個降級備選」。若某後端因反爬或服務中斷失效，系統能自動降級至備援通道，免去頻繁修改代碼的困擾。
 3. **內建健康檢查診斷**：
@@ -78,6 +108,8 @@ tags:
   - **不適用 / 需注意的部分**：
     1. **Windows 11 原生相容性**：需驗證其 CLI 在 Windows PowerShell 下的執行表現及依賴套件（如 Python / Node 環境與 yt-dlp）。
     2. **防封禁與 Cookie 隔離**：若涉及個人帳號 Cookie 存取，需遵循本庫 `SECURITY.md` 規範，避免敏感憑證不慎提交至 Git。
+    3. **會複製瀏覽器登入狀態**：README 寫明要登入的平台第一次使用時，會把 Chrome 裡該網站的登入複製到工具的專用瀏覽器；PR #474 之前的 `configure --from-browser` 甚至一次抓全部平台的 cookie。這與維護者「不讀瀏覽器 Cookie」的規則衝突，要登入的渠道不啟用。
+    4. **PyPI 同名套件不是本專案**：README 警告 PyPI 上的 `agent-reach` 是別人的套件，只能照官方 `docs/install.md` 從 GitHub 安裝。
 
 ---
 

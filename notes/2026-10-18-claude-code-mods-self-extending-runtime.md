@@ -10,6 +10,11 @@ status: done
 cluster: "3"
 cluster_role: "外掛生態與設定治理"
 short_title: "Claude Code Mods"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "兩則 X 貼文的回覆（10 則與 699 則）未登入看不到，留言讀到 0／709 則；教學文 7 段示範影片只讀圖說沒播放，@ClaudeDevs 的 4 支影片只看封面；靜態圖與封面共看了 8 張"
+source_images: 8
+source_replies: 0
 tags:
   - claude-code
   - claude-mods
@@ -27,7 +32,7 @@ tags:
   - [Anthropic 官方入門教學 (claude.dev Blog)](https://claude.dev/blog/getting-started-with-claude-code-mods/)
   - [Anthropic 官方說明 (claude.com Blog)](https://claude.com/blog/claude-code-mods)
   - [Claude Code 官方更新日誌 (v2.1.287)](https://code.claude.com/docs/en/changelog)
-  - [官方公告推文 (@ClaudeDevs on X)](https://x.com/ClaudeDevs/status/2105721434807083061)（原文未能讀取，未查證）
+  - [官方公告推文 (@ClaudeDevs on X)](https://x.com/ClaudeDevs/status/2105721434807083061)（2026-11-16 已讀到原文，重點見第 0 節）
   - [社群貼文分析 (@NFT_Chen on X)](https://x.com/NFT_Chen/status/2105738805785596166)
 - **分析日期**：`2026-10-18`
 - **當前狀態**：`🟢 已完成 (Done)`
@@ -35,6 +40,30 @@ tags:
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code 插件生態）
   - [`notes/2026-10-18-desktop-sense-local-screen-context.md`](./2026-10-18-desktop-sense-local-screen-context.md)（Hook 螢幕注入）
   - [`notes/2026-10-17-model-routing-opusplan-advisor.md`](./2026-10-17-model-routing-opusplan-advisor.md)（模型路由策略）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：看了 claude.dev 教學全文與 3 張靜態圖、@NFT_Chen 的 X 貼文與附圖、@ClaudeDevs 官方公告推文（先前讀不到，這次讀到了）與 4 支影片的封面。教學文沒有留言區；兩則 X 貼文的回覆（各 10 則、699 則）未登入看不到，所以留言數是 0。教學文內 7 段示範影片（FIG A–G）只讀了圖說，沒有播放。
+
+- **作者圖片**：
+  - 教學圖 1：Token Weather 的一行狀態列，顯示「Storm、81% of context、161.1k / 200k、最近幾輪的迷你長條圖、上一輪增加 26.7k」。
+  - 教學圖 2：Blast Radius 在 120 欄終端的畫面。攔下 `git reset --hard`，黃框內列出會被丟棄的 2 個檔案與「未提交的變更無法復原」，下方是「1: Proceed／2: Cancel」。
+  - 教學圖 3：Replay Theater 在 80 欄終端的畫面。提示框上方的洋紅框內有步驟條（第 2 步／共 5 步）、該步的檔名與差異、Prev／Next／Close 按鈕。
+  - @NFT_Chen 附圖：官方說明的中文翻譯截圖，被標黃的重點是「可以自己寫或請 Claude Code 寫」「以外掛形式安裝與分享」，末段寫明 **mod 與 Claude Code 有相同的電腦存取權限、不是沙盒程式，只該從可信來源安裝**。
+  - @ClaudeDevs 影片封面 4 張：一張空白片頭、一張終端底部的 Token Weather 狀態列、兩張桌面 app 內嵌面板的畫面。封面看不出更多細節。
+- **作者留言補充**：
+  - @ClaudeDevs 公告本文只有三點（改行為、改介面、換掉內建功能）與「mod 隨外掛發布，用 `/plugin` 安裝，CLI 與桌面 app 都能用」。
+  - @NFT_Chen 的貼文引用了 Claude Code 團隊成員 Thariq 的推文（談軟體可塑性），並列出安裝「下一步建議」外掛的兩行指令。
+- **網友留言重點**：無（X 回覆未登入看不到）。
+- **對分析的影響**（以官方教學原文為準）：
+  - **修正第 2 節「在 Windows 11 下透過 Node.js 執行」**：官方教學寫的是模組跑在自己的沙盒裡，沒有 DOM 也沒有 Node，對外一切都要經過 `$`（`$.fs`、`$.process`、`$.http` 等）。已改寫。
+  - **修正第 2 節「機械級硬閘門」**：官方教學在 Blast Radius 一節明說它是安全網、不是權限系統，只讀指令文字，`$(…)`、別名、間接呼叫刪除指令的腳本都攔不到，要硬擋請用 permission rules。已改寫，這也支持 `T-20261018-10` 不做的結論。
+  - **1.2 第 1 點「敏感資訊脫敏」與第 5 點「背景小助手」**：這兩項只出現在 @NFT_Chen 的貼文，官方教學與公告都沒有對應段落（教學只提到 `prompt.submit` hook 與 `turn.complete` 事件）。已在正文標為未查證。
+  - **1.4「無沙盒隔離」的說法補上細節**：官方兩處說法並存：執行環境本身是受限的（無 Node），但透過 `$` 能做到的事與 Claude Code 相同，所以對使用者而言仍應視為有完整本機權限。已加註。
+  - 教學補充的事實（正文原本沒有）：每個 hook 每次派發有 10 秒時間上限，等在 `$` 呼叫裡的時間不算；`AGENTS.md` 支援與 `/diff` 面板本身就是用 mod 做的，原始碼在 `anthropics/claude-code` 的 `mods/`；三個範例的完整程式碼在 `anthropics/claude-code-playground`；用對話請 Claude 做出來的 mod 只在當次 session 載入。
+  - 來源連結列的「官方公告推文（原文未能讀取，未查證）」已更新為已讀。
 
 ---
 
@@ -79,7 +108,7 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
 
 #### 1. 改寫行為（Behavior Interception & Rewrite）
 - **攔截高危指令**：透過 `on("tool.call", { tool: "Bash" }, async ($, e, next) => ...)`，在指令執行前進行靜態分析。若檢測到高危刪除（如 `rm -rf`、`Drop Table`），可直接 `return { deny: "..." }`，不呼叫 `next(e)`，直接在終端阻絕風險。
-- **敏感資訊脫敏**：在 Prompt 提交或工具輸出時自動過濾 API Key 或私密憑證。
+- **敏感資訊脫敏**：在 Prompt 提交或工具輸出時自動過濾 API Key 或私密憑證。（此項出自 @NFT_Chen 貼文；官方教學只提到有 `prompt.submit` hook，沒有現成的打碼功能，未查證。）
 
 #### 2. 自定義終端與桌面介面（`ui.render`）
 - 過去終端 UI 完全由官方寫死。Mods 支援掛接 `ui.render` 事件，透過 `$.ui.resolve(e)` 取得 `Box`、`Text` 等元件建構自定義介面：
@@ -97,7 +126,7 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
 - Mods 提供 `$.state.get(key)` 與 `$.state.set(key, val)`，將歷史狀態（如過去 12 次 Turn 的 Token 消耗曲線）保存在宿主進程中，即便 Mod 代碼重新編譯載入，歷史資料依然完好如初。
 
 #### 5. 自動派生背景小助手（Background Turn Assistants）
-- 在 `turn.complete` 時，Mod 可在背景開闢無干擾的分身進程（Sub-agent）自動整理會議筆記、同步文獻或執行程式碼靜態掃描，完全不佔用主對話線路。
+- 在 `turn.complete` 時，Mod 可在背景開闢無干擾的分身進程（Sub-agent）自動整理會議筆記、同步文獻或執行程式碼靜態掃描，完全不佔用主對話線路。（此項出自 @NFT_Chen 貼文「每輪自動開一個分身」；官方教學與公告沒有對應段落，未查證。）
 
 ---
 
@@ -116,7 +145,7 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
 
 - **內建 `/diff` 已模組化（`diff` Mod）**：Claude Code 互動式 `/diff` 檢視面板即以內建 `diff` Mod 實作，可停用或替換為自訂版本；CLI 與 Desktop App 皆可透過 `/plugin` 安裝含 Mod 的外掛（見[官方 Mods 文章](https://claude.com/resources/articles/claude-code-mods)）。
 - **企業級保護傘（`sec-default` Mod）**：Team / Enterprise 與受 managed settings 管理的機器內建 `sec-default` Mod，會在洋蔥模型最外層（`prepend` tier）優先載入並採 fail-closed 設計，用來防止使用者自訂 Mod 繞過組織的 permission deny-list、託管規則或 MCP allowlist。依 [mods README](https://github.com/anthropics/claude-code/blob/main/mods/README.md)，觸發條件還包含 `managed-mcp.json`，且託管的 `prependPlugins` 是例外。它是政策層防護，不是作業系統層隔離，不能說任意惡意宿主程式碼都繞不過；保護範圍與限制見 [sec-default README](https://github.com/anthropics/claude-code/blob/main/mods/sec-default/README.md)。
-- **未受管理環境的安全提醒（無沙盒隔離）**：Mods 直接在 Claude Code 宿主進程內執行，**具備與 Claude Code 相同的本機系統權限且無沙盒隔離**；未受管理的個人環境不應預設有 `sec-default` 這一層（有沒有取決於機器是否符合 managed 設定條件，不是看訂閱身分），因此僅能安裝經審查的信任來源，亦印證 `T-20261018-10` 將核心高危防護維持於外部獨立閘門（`harness-guard`／`agent-relay`）的必要性。
+- **未受管理環境的安全提醒（無沙盒隔離）**：Mods 直接在 Claude Code 宿主進程內執行，**具備與 Claude Code 相同的本機系統權限且無沙盒隔離**（官方教學另寫模組本身跑在沒有 DOM、沒有 Node 的受限環境，但經由 `$` 能做的事與 Claude Code 相同，所以仍應當成有完整本機權限看待）；未受管理的個人環境不應預設有 `sec-default` 這一層（有沒有取決於機器是否符合 managed 設定條件，不是看訂閱身分），因此僅能安裝經審查的信任來源，亦印證 `T-20261018-10` 將核心高危防護維持於外部獨立閘門（`harness-guard`／`agent-relay`）的必要性。
 
 ### 1.5 補充評估：官方內建 Side Agent Mod `cc-plugin-you-should-know@builtin`（2026-11-15）
 
@@ -134,9 +163,9 @@ Anthropic 在 **Claude Code 2.1.287+** 正式開放了 **Mods（外掛模組自�
 
 - **對應現有系統 / 專案**：
   - **Windows 11 原生相容性**：
-    Claude Code Mods 為跨平台 JavaScript/TypeScript 規範，在 Windows 11 下透過 Node.js 執行，路徑支援標準相容。
+    Claude Code Mods 為跨平台 JavaScript/TypeScript 模組。依官方教學，模組跑在 Claude Code 內建的受限環境（沒有 DOM、沒有 Node），讀檔、跑程序、連網都要透過 `$`；不是用本機 Node.js 執行。Windows 11 實測可用（見 `T-20261018-09`）。
   - **大幅強化全域防護（`RULE[user_global]`）**：
-    全域規範要求「嚴禁在專案目錄外讀寫或刪改」、「API Key 不得洩漏」。過去只能靠提示詞約束（Soft Barrier），現在可直接透過 Mod 實作**機械級硬閘門（Hard Barrier）**，在 `tool.call` 階段由程式碼直接拒絕違規行為！
+    全域規範要求「嚴禁在專案目錄外讀寫或刪改」、「API Key 不得洩漏」。過去只能靠提示詞約束（Soft Barrier），Mod 可以在 `tool.call` 階段用程式碼拒絕呼叫，但官方教學明說這類攔截是**安全網、不是權限系統**：它只讀指令文字，`$(…)`、別名與間接呼叫的腳本攔不到，要硬擋應該用 permission rules。所以 Mod 不能當成硬閘門。
   - **與 `desktop-sense`（筆記 20）聯動**：
     `desktop-sense` 原本以 external hook 注入畫面 context，未來可直接重構成為標準 Claude Code Mod，以常駐中介軟體的形式獲得更低延遲與更豐富的終端介面展現。
 

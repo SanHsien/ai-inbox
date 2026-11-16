@@ -10,6 +10,11 @@ status: done
 cluster: "1"
 cluster_role: "Terra額度路由"
 short_title: "Terra額度與Fast倍率核實"
+source_review: partial
+source_review_note: "使用者轉貼的文字線索沒附原始貼文連結，原貼文的圖片與留言都沒看到（總數未知）；改以官方文件頁全文核實（無圖、無留言區）"
+source_reviewed_at: 2026-11-16
+source_images: 0
+source_replies: 0
 tags:
   - gpt-6-1-terra
   - codex
@@ -21,6 +26,20 @@ tags:
 ---
 
 # GPT-6.1 Terra 額度與 Fast 倍率核實
+
+## 0. 原始資料盤點
+
+> 本篇的來源有兩層：使用者轉貼的一段文字線索（沒有附原始貼文連結，所以沒有作者圖片與留言可看），以及用來核實的官方文件頁。2026-11-16 以瀏覽器重讀官方頁全文。
+
+- **作者圖片**：無。線索是純文字，原始貼文不明；官方頁 <https://learn.chatgpt.com/docs/pricing> 正文沒有圖片，資料都在文字與表格裡（方案卡、每 5 小時訊息數表、速度模式倍率表、credits 單價表、功能可用性矩陣）。
+- **作者留言補充**：無（官方文件頁沒有留言區）。
+- **網友留言重點**：無。線索的原始貼文沒有提供，無法查看其留言。
+- **對分析的影響**：
+  - 2026-11-16 重讀官方頁，本篇引用的數字全部仍相符：Terra 35–285、Sol 6.1 15–160（Plus 與 Standard Business 相同）；Terra credits 25／1.25／125、Sol 6.1 50／2.5／250；Fast 訂閱內含 2.5x、credits 2x；Ultrafast 8x／6x；「Overall Work and Codex plan limits are unchanged」與「Terra 不在 Chat 提供」兩句原文都在。
+  - 補兩個原稿沒寫的官方細節（不影響結論）：Terra 不支援 UAE 推論落地；Plus 方案卡的模型清單只列 Sol 6.1 與 Luna，Terra 只出現在頁尾的功能可用性段落與矩陣。
+  - 沒有需要修正的內容，任務狀態不變。
+
+---
 
 ## 1. Executive Summary
 

@@ -3,13 +3,18 @@ id: 2026-11-01-vercel-labs-agent-desktop-accessibility-tree-computer-use
 title: "Vercel Labs agent-desktop 開源架構解構：告別截圖猜座標、作業系統無障礙樹（Accessibility Tree）操作與生產級 Computer Use"
 source_url: "https://www.threads.com/@yrzheee/post/DfKiW50Efc1"
 source_platform: "Threads (@yrzheee & @largitdata)"
-author: "Renzhe Yu (@yrzheee) / LargitData 大數軟體 (@largitdata) / Chris Tate (Vercel Labs)"
+author: "Renzhe Yu (@yrzheee) / LargitData 大數軟體 (@largitdata) / Lahfir（專案作者）、Chris Tate（發布者，Vercel Labs）"
 analyzed_at: 2026-11-01
 analyzed_by: "Antigravity"
 status: done
 cluster: "1"
 cluster_role: "桌面操控與代理身分"
 short_title: "Vercel Labs agent-desktop無障礙樹操作"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "貼文 2（@largitdata）的影片只看了首幀、沒播放；留言讀到 20／20 則（貼文 1 有 15 則、貼文 2 有 5 則）；貼文 1 的圖看了 6／6 張"
+source_images: 8
+source_replies: 20
 tags:
   - agent-desktop
   - vercel-labs
@@ -27,7 +32,7 @@ tags:
 - **來源連結**：
   - [Threads 貼文 1：Renzhe Yu (@yrzheee)](https://www.threads.com/@yrzheee/post/DfKiW50Efc1) ｜ [短網址](https://www.threads.com/share/E6TGj94c_/)
   - [Threads 貼文 2：LargitData 大數軟體 (@largitdata)](https://www.threads.com/@largitdata/post/DfM7e2VEvwr) ｜ [短網址](https://www.threads.com/share/EC0q49Tz8/)
-- **核心作者**：Chris Tate（Vercel Labs，`agent-browser` 與 `agent-desktop` 作者）
+- **核心作者**：Lahfir（`agent-desktop` 作者，剛加入 Vercel Labs）；發布者是 Chris Tate（Vercel Labs，前作 `agent-browser` 的作者）。2026-11-16 依貼文圖卡與 GitHub 貢獻者紀錄更正，原本誤寫成 Chris Tate 是作者。
 - **核心分析者**：Renzhe Yu（@yrzheee）、LargitData 大數軟體（@largitdata）
 - **官方開源專案**：[vercel-labs/agent-desktop](https://github.com/vercel-labs/agent-desktop)（Rust 打造，跨 macOS / Windows / Linux 桌面操作工具）
 - **個人 Fork 倉庫**：[SanHsien/agent-desktop](https://github.com/SanHsien/agent-desktop)（本地路徑 `C:\GitHub\agent-desktop`，已配置 upstream 與個人預設遠端）
@@ -41,6 +46,35 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀兩則貼文。貼文 1（@yrzheee）的 6 張輪播圖逐張放大看過，留言 15 則全讀；貼文 2（@largitdata）看了影片首幀與連結預覽卡，留言 5 則全讀。另查了 `vercel-labs/agent-desktop` 的 README 與 GitHub API。
+
+- **作者圖片**（貼文 1，6 張資訊圖卡）：
+  - 圖 1（封面）：發布影片第 4 秒的畫面，三個帶名字的游標（Claude Code、fx、Cursor）同時在備忘錄、提醒事項、計算機上操作；發布當天 GitHub 3,569 星。
+  - 圖 2（它是什麼）：**專案作者是 Lahfir**（剛加入 Vercel Labs，Chris Tate 在第二則發布貼文點名）；Chris Tate 是發布者，也是前作 `agent-browser` 的作者。**repo 2 月 19 日就建立**，發布時已有 316 次提交、49 個標籤、版本 1.0.2；Linux 支援是 10-28 的 1.0.0 才加入。
+  - 圖 3（原理）：截圖路線每張約 1,000～1,800 輸入 token，另外工具宣告本身約 4,500 token；無障礙樹路線是 snapshot → 回 JSON → `click @ref` → 再 snapshot。圖卡沒有給無障礙樹路線的 token 數字。錯誤碼列了 `STALE_REF`、`AMBIGUOUS_TARGET` 與每個錯誤都有的重試安全欄位。
+  - 圖 4（背景執行與多游標）：游標可以同時動，但鍵鼠輸入權只有一把鎖（Interaction Lease），動作輪流執行。預設走無障礙介面、不搶焦點；要真實鍵鼠得加 `--headed`。引用一位網友的實測（背景完成「規劃並下單買菜」）。
+  - 圖 5（作者實測，無顯示器的 Linux、1.0.2）：snapshot 一次約 **630 毫秒、回傳 83 個 ref**；三次點擊各 **133～170 毫秒**；背景點擊回 `delivered_unverified`（動作送出但不假裝成功，要再 snapshot 確認）；**往文字框寫字在背景模式失敗**，回 `ACTION_NOT_SUPPORTED` 並附下一步建議，改用真實鍵盤輸入 323 毫秒寫入成功（`delivered_verified`）。一開始無障礙權限是 denied，補裝系統元件後才通過。
+  - 圖 6（範圍與注意）：60 個指令、56 個可操作；附 C 介面函式庫，Python、Swift、Go、Ruby、Node 可直接呼叫。平台支援表顯示 Shell surfaces 在 Windows 是「Planned」，Linux 的滑鼠輸入與視窗控制限 X11。三個提醒：多個 agent 共用同一批已登入的應用程式，README 沒有按應用程式分權限，snapshot 可能帶到隱私內容；Anthropic 建議 computer use 放在專用虛擬機或容器裡跑；驗收文件寫明「8/10」是暫定值，不是實測通過率。
+- **作者圖片**（貼文 2）：1 支影片（首幀是官方示範的 macOS 桌面：備忘錄、提醒事項、計算機三個視窗）；1 張 repo 連結預覽卡（專案標語與三個平台名稱）。
+- **作者留言補充**：
+  - 貼文 1 的第 2 則串文是正文的後半（多游標、Linux 實測數字、「它只是手和眼，計畫與判斷還在你的 agent 裡」），內容與圖 4、圖 5 一致。
+  - 貼文 2 作者只補了 repo 連結。
+- **網友留言重點**：
+  - 貼文 1 的技術問答多半是網友 @ Meta AI 機器人得到的回覆（不是作者或專案方的說法，僅供參考）：可以包成 skill、不會直接讀瀏覽器的 Cookie 檔但能操作已登入的頁面、和 MCP 是互補關係（有 API 走 MCP，沒 API 才點介面）。
+  - `dorapen_photo` 說半年前就在自己的 agent 裡做了同樣的事（讀無障礙樹不是新點子）。
+  - 貼文 2：`shawnkevin67` 提到被濫用的疑慮；`ginsengtrycatch` 貼了一支影片，主張就算 AI 會自己點介面，有 API 還是該走 API。
+- **對分析的影響**：
+  - **作者更正**：原筆記把 Chris Tate 寫成 `agent-desktop` 作者與主導者。依圖 2 並查 GitHub 貢獻者（`lahfir` 242 次提交居首），作者是 Lahfir，Chris Tate 是發布者。frontmatter `author`、「核心作者」與 1.2 節已改。
+  - **時間更正**：1.2 節原寫「10 月 31 日正式開源」。10-31 是發布宣傳的日子；repo 建立於 2026-02-19（GitHub API 查證），發布時已是 1.0.2。已改寫。
+  - **token 與延遲數字沒有出處**：2.3 節「JSON 樹約 80～200 tokens、骨架模式 50 以內、降低 90% 以上」與第 3 節「延遲毫秒級」，在兩則貼文、6 張圖卡與上游 README 都找不到（README 全文沒有 token 數字）。作者實測一次 snapshot 就有 83 個 ref，不可能只有 80～200 tokens；實測延遲是 630 毫秒與 133～170 毫秒。已在該處加註並改用實測數字。
+  - **背景模式不是萬能**：原筆記把「不搶焦點」寫成全面成立。圖 5 顯示背景模式下文字輸入會失敗、要退回真實鍵盤；背景點擊的回報是「已送出、未驗證」。已補進 2.3 節。
+  - **隱私與隔離**：圖 6 的三個提醒（共用登入狀態、沒有按應用程式分權限、建議放虛擬機）原筆記沒有，已補進 2.3 節。
+  - 已完成任務的產出檔 [`docs/agent-desktop-computer-use-spec.md`](../docs/agent-desktop-computer-use-spec.md) 的對比表沿用了同一組沒有出處的 token 與延遲數字，已回報整合者；任務狀態不動。
+
+---
+
 ## 1. 來源摘要與背景脈絡
 
 ### 1.1 傳統 Computer Use 的三大致命瓶頸
@@ -50,7 +84,7 @@ tags:
 3. **焦點爭搶與打擾（Screen Hijacking）**：視覺方案通常需要強制將目標應用置於最上層（Foreground），並透過模擬硬體滑鼠軌跡點擊，使用者無法在同台電腦上並行工作。
 
 ### 1.2 `agent-desktop` 的破局思考：回歸 OS 語意結構
-2026 年 10 月 31 日，Vercel Labs 正式開源 `agent-desktop`（由開發 `agent-browser` 的 Chris Tate 主導）。其核心主張為：**電腦看畫面本來就不該靠肉眼截圖，而應直接存取作業系統為讀屏軟體設計的無障礙樹（Accessibility Tree）**。
+2026 年 10 月 31 日，Vercel Labs 的 Chris Tate（`agent-browser` 作者）對外發布 `agent-desktop`；專案作者是 Lahfir，repo 早在 2026-02-19 就建立，發布時已是 1.0.2 版（2026-11-16 更正）。其核心主張為：**電腦看畫面本來就不該靠肉眼截圖，而應直接存取作業系統為讀屏軟體設計的無障礙樹（Accessibility Tree）**。
 - **macOS**：存取 macOS Accessibility API，維護專屬 Command Host 避免物件生命週期失效。
 - **Windows**：存取 UI Automation（UIA）與 Win32 API，在相同 Integrity Level 下完全無須管理員提權。
 - **Linux**：存取 `at-spi2-core`，支援 X11 與 Wayland session。
@@ -115,7 +149,9 @@ tags:
 - **非搶佔式操作（Headless by default）**： Ref 動作直接透過 Accessibility API 驅動底層元件的動作事件，**無須移動系統滑鼠指標，亦無須強搶前景焦點**。使用者可以在螢幕上寫代碼，背景的 Agent 則在另一個視窗默默填寫表單或點選選單。只有明確加上 `--headed` 時才會模擬實體滑鼠軌跡。
 - **Token 降維打擊**：
   - 傳統視覺方案：截圖 1,000～1,800 tokens/次。
-  - `agent-desktop`：精簡 JSON 樹約 80～200 tokens/次，密集視窗支援 `--skeleton`（骨架模式）縮減至 50 tokens 內，降低 90% 以上 Token 成本。
+  - `agent-desktop`：精簡 JSON 樹約 80～200 tokens/次，密集視窗支援 `--skeleton`（骨架模式）縮減至 50 tokens 內，降低 90% 以上 Token 成本。**（2026-11-16 重審：這組數字在貼文、圖卡與上游 README 都沒有出處，請勿引用。轉介者實測一次 snapshot 回傳 83 個 ref，實際 token 量取決於視窗複雜度；可確認的只有「看介面這一步不必送截圖」。）**
+- **實測延遲與背景模式的限制**（依轉介者在無顯示器 Linux 上的實測）：snapshot 約 630 毫秒，點擊 133～170 毫秒。背景點擊回報的是 `delivered_unverified`（已送出、未驗證），要再 snapshot 確認；背景模式往文字框寫字失敗（`ACTION_NOT_SUPPORTED`），改用真實鍵盤輸入才成功。
+- **隱私與隔離**：多個 agent 共用同一批已登入的應用程式，README 沒有按應用程式分權限的機制，snapshot 可能帶到畫面上的隱私內容；Anthropic 對 computer use 的建議是放在專用虛擬機或容器裡跑。
 - **PowerShell 語法防雷規範**：在 Windows PowerShell 環境中，`@token` 是 splatting 展開運算子，因此呼叫時必須加上單引號保護（如 `agent-desktop click '@s8f3k2p9:e8'`）。
 
 ---
@@ -125,7 +161,7 @@ tags:
 | 評估維度 | `agent-desktop` 範式特徵 | 本知識庫與目前 Agent 體系現狀 | 落地借鑑與改進方向 |
 | :--- | :--- | :--- | :--- |
 | **GUI 操控基礎設施** | 純 Rust 底層直讀 OS 無障礙樹，不靠截圖 | 現有 Agent 操作桌面多依賴瀏覽器 Playwright 或無頭 CLI，缺乏通用 OS 級視窗操控能力 | 引入 `agent-desktop` 作為原生 OS 操作 Skill，納入跨平台桌面派工 |
-| **成本與延遲** | 單次 Snapshot 僅需數十 Tokens，延遲毫秒級 | 視覺 Computer Use 成本高昂且多模態 API 延遲動輒 3~5 秒 | 將 a11y tree 作為預設觀察路徑，僅在非標準 Canvas/DirectX 遊戲畫面時才降級為截圖 |
+| **成本與延遲** | 看介面不必送截圖；轉介者實測 snapshot 約 630 毫秒、點擊 133～170 毫秒（原寫「數十 Tokens、毫秒級」無出處） | 視覺 Computer Use 成本高昂且多模態 API 延遲動輒 3~5 秒 | 將 a11y tree 作為預設觀察路徑，僅在非標準 Canvas/DirectX 遊戲畫面時才降級為截圖 |
 | **錯誤防禦與重試** | 內建 `STALE_REF`、多視窗歧義警報與 Disposition 重試安全性 | 目前部分 Agent 在 GUI 腳本失敗時常盲目重試造成無限迴圈（Doom Loop） | 制定「桌面操控安全重試規約」，嚴格檢驗 `disposition.retry == 'safe'` |
 | **平台相容性** | 跨 macOS、Windows（UIA）、Linux（AT-SPI）統一信封架構 | 多數開源 GUI Agent 僅針對 macOS（如 AppleScript）或特定 Linux 沙盒設計 | 支援 Windows 11 原生 UIA 驅動，符合本環境之 Windows 原生部署前提 |
 

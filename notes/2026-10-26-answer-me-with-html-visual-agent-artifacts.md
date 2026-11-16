@@ -10,6 +10,11 @@ status: done
 cluster: "2"
 cluster_role: "視覺工件與互動 UI"
 short_title: "answer-me-with-html 視覺工件"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "貼文顯示 2 則回覆，未登入只讀到 1／2 則；圖看了 4 張（貼文 1／1 張、上游 README 3 張）"
+source_images: 4
+source_replies: 1
 tags:
   - generative-ui
   - visual-artifacts
@@ -32,14 +37,34 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀 Threads 貼文（文字、1 張作者圖、可見留言 1 則／貼文顯示 2 則），另看上游 README 的 3 張示意圖與 issue／PR 清單。
+
+- **作者圖片**：
+  - 貼文圖 1：套版產生的專案資訊卡，列出 repo 名稱、語言 JavaScript、4,376 星、建立日 2026-10-02，以及三條通用賣點（開箱即用、免費開源、JavaScript 打造），多行文字被截斷。圖上沒有任何實測畫面或數據。
+  - 上游 README 圖 `text-vs-page`：同一題（TCP 三向交握）純文字回答與單頁 HTML 的並排對照。
+  - 上游 README 圖 `plain-vs-skill`：直接請模型寫 HTML（9,551 輸出 token、57 秒）對上用 Skill（999 輸出 token、11 秒）的單次對照。
+  - 上游 README 圖 `ste100`：一張以 ASD-STE100 為主題的範例頁（文件結構、句子改寫前後、核可動詞表），是成品展示，不是功能說明。
+- **作者留言補充**：第 1 則留言放 GitHub 連結、領域、語言與星數，沒有額外技術內容。
+- **網友留言重點**：可見留言只有作者自己那 1 則，另 1 則未登入看不到；沒有網友實測或反駁。
+- **對分析的影響**：
+  - 貼文的「阿達實測 3 大亮點」沒有實測依據：圖是套版卡片、文字是 README 的改寫，同帳號其他貼文還留著沒填完的範本字樣，研判是自動產生的推薦帳號。1.1 已改標為「貼文整理」，不再當成實測。
+  - 「本機零依賴」不精確：上游 README 寫明需要 Node.js 20 以上（不用 `npm install`、不用伺服器）。1.1 第 3 點已補上。
+  - 2.2 第 1 點的數字改用上游 README 的基準：手寫 HTML 平均 4,893 token、草稿平均 612 token（約 1/8），時間 31 秒降到 12 秒；README 同時寫明整體帳單只降約 15%，因為每輪還是要讀系統提示與對話。原筆記寫的「4,000+ 降到 500 以內、省 87%」沒有出處，已更正。
+  - 星數：貼文當時 4,376，2026-11-16 查為 6,359。
+  - 已完成任務不受影響（`T-20261026-06` 的證據本來就把上游 8x 標為作者宣稱並自行實測）。
+
+---
+
 ## 1. 核心內容摘要與專案背景（Key Insights）
 
 社群作者阿達（solution.share）推薦了 GitHub 熱門開源神器 **`answer-me-with-html`**（由開發者 QingYunA 開源），該專案上線後迅速獲得社群高度關注，直擊現代 AI Coding Agent 與命令列代理工具的普遍痛點：**「終端文字牆難以吸收」** 與 **「模型手刻龐大 HTML/SVG 嚴重浪費 Token 且易破版」**。
 
-### 1.1 社群貼文實測 3 大亮點整理
+### 1.1 社群貼文列的 3 個亮點（貼文整理，非實測；見第 0 節）
 1. **單頁網頁直覺排版**：將複雜系統架構、比較表格、時序流程與程式碼整合為單頁立體視覺化 HTML，點開即讀，閱讀體驗大幅優於冗長純文字。
 2. **支援主流 Agent 技能（Agent Skill）**：封裝為標準 Agent Skill 結構，支援 Claude Code、Codex CLI、Cursor 等主流 AI 代理工具，支援社群一鍵掛載調用。
-3. **本機零依賴秒開**：產出純靜態、自包含（Self-contained）的 HTML 檔案，無需本機啟動前端 Node.js 伺服器或資料庫環境，離線亦可直接使用瀏覽器開啟。
+3. **本機零依賴秒開**：產出純靜態、自包含（Self-contained）的 HTML 檔案，無需本機啟動前端伺服器或資料庫環境，離線亦可直接使用瀏覽器開啟。但渲染用的 CLI 需要 Node.js 20 以上（上游 README），並非完全零依賴。
 
 ---
 
@@ -94,7 +119,7 @@ tags:
 ### 2.2 核心技術特性解析
 
 1. **8x Token 節省效益（Token Efficiency）**：
-   LLM 不再編寫冗長的 `<div style="...">` 或 `<svg viewBox="...">`，僅以精簡 Markdown 標註結構資訊。實測輸出 Token 從原本的 4,000+ Tokens 驟降至 500 Tokens 以內，節省高達 87% 的輸出額度，生成速度提升數倍。
+   LLM 不再編寫冗長的 `<div style="...">` 或 `<svg viewBox="...">`，僅以精簡 Markdown 標註結構資訊。依上游 README 的基準（9 頁、Claude Sonnet 5.5），手寫 HTML 平均 4,893 token，改寫草稿平均 612 token（約 1/8），時間中位數由 31 秒降到 12 秒；但整體帳單只降約 15%，因為每輪仍要讀系統提示與對話。這是作者自己的量測，不是貼文作者的實測。
 2. **確定性佈局引擎（Deterministic Layout Engine）**：
    節點座標、對齊網格、折線連接器（Orthogonal Connectors）全部交由確定性的演算法腳本計算，杜絕 LLM 空間推理誤差帶來的破版。
 3. **ASD-STE100 受控語言規範整合**：
@@ -152,6 +177,6 @@ tags:
 - **視覺化與 Generative UI 相關**：
   - [靶心人故事編輯器：Generative UI 互動產品設計](./2026-10-18-target-story-generative-ui-editor.md) ｜ 關聯任務：`T-20261018-03`、`T-20261018-04`
 - **模型調度與 Token 節流相關**：
-  - [LLM 燒額率與快取調度基準實測](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md) ｜ 關聯任務：`T-20261026-01`、`T-20261026-02`
+  - [LLM 燒額率與快取調度觀察（單一來源）](./2026-10-26-llm-burn-rate-cache-routing-benchmark.md) ｜ 關聯任務：`T-20261026-01`、`T-20261026-02`
 - **Agent 原生擴充與生態相關**：
   - [Claude Code Mods 執行期架構與設定](./2026-10-18-claude-code-mods-self-extending-runtime.md) ｜ 關聯任務：`T-20261018-09`

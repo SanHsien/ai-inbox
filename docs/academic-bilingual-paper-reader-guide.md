@@ -1,13 +1,16 @@
-# 學術論文雙語排版與公式保護閱讀工具手冊：Moonlight 與開源 MinerU 對比指南
+# 學術論文雙語排版與公式保護閱讀工具手冊：PaperRead、MinerU 與 Moonlight 對照
 
-> 本手冊為學術論文雙語研讀專用工具手冊，針對英文學術論文（尤其是 CV、NLP、Robotics、AI 系統論文）中常見的雙欄排版破碎、數學公式被模型破壞竄改、文獻引用失真三大痛點，提供商業工具 **Moonlight** 與開源本地方案 **MinerU** 的全方位對比、操作指南與工作流選型建議。  
+> 本手冊整理英文學術論文雙語研讀的工具選擇，針對雙欄排版破碎、數學公式被模型改壞、文獻引用失真三個痛點。  
+> 主角是開源的 **PaperRead**（[`YuriyLin/PaperRead`](https://github.com/YuriyLin/PaperRead)），也就是[來源貼文](../notes/2026-10-17-moonlight-bilingual-paper-reader.md)介紹的那一套；**MinerU** 是批次轉檔的搭配工具；**Moonlight** 只留作對照。  
 > 交付形式：以 `ai-inbox` 範本手冊（`docs/academic-bilingual-paper-reader-guide.md`）交付。
+
+> **2026-11-16 更正**：本手冊第一版（`T-20261017-13`）把貼文裡的工具認成商業服務 Moonlight，全篇以 Moonlight 為主角。貼文作者在留言區給的連結是 `YuriyLin/PaperRead`，兩者性質相反（開源、資料在本機，對上雲端商業服務）。本版依 `T-20261017-35` 改以 PaperRead 為主角。第一版的「Moonlight 快速上手」步驟沒有實測依據，已刪除。
 
 ---
 
 ## 1. 學術論文雙語閱讀的核心痛點
 
-傳統機器翻譯（如 Google 翻譯、常見瀏覽器擴充套件）在閱讀學術 PDF 時往往引發嚴重挫折：
+傳統機器翻譯（如 Google 翻譯、常見瀏覽器擴充套件）在閱讀學術 PDF 時常出三種問題：
 
 ```text
 ┌────────────────────────────────────────────────────────┐
@@ -19,107 +22,159 @@
 └────────────────────────────────────────────────────────┘
 ```
 
-1. **雙欄排版斷裂（Column Splitting & Line Breaks）**：
-   - 傳統工具無法正確辨識雙欄排版閱讀順序，常將左欄底部與右欄頂部文字接合，或把行尾連字號（hyphenation）錯誤拼接成無意義單詞。
-2. **數學公式破壞（Formula Corruption）**：
-   - 複雜數學式（如 $\arg\min_{\theta} \mathbb{E}_{x \sim p}[\|f_\theta(x) - y\|^2]$、矩陣上下標、特殊符號 $\nabla, \sum, \prod$）被當作一般英文送入翻譯模型，導致符號遺失、變數被替換為漢字或輸出損壞。
-3. **學術引用與圖表混淆（Citation & Cross-reference Distortion）**：
-   - 文中文獻錨點（如 `[Vaswani et al., 2017]`、`Eq. (4)`、`Fig. 2`）被生硬直譯，破壞學術閱讀的索引便利性。
+1. **雙欄排版斷裂**：工具認不出雙欄的閱讀順序，把左欄底部與右欄頂部接在一起，或把行尾連字號拼成無意義的單詞。
+2. **數學公式破壞**：複雜數學式（如 $\arg\min_{\theta} \mathbb{E}_{x \sim p}[\|f_\theta(x) - y\|^2]$）被當成一般英文送去翻譯，符號遺失或變數被換成漢字。
+3. **引用與圖表混淆**：文中錨點（如 `[Vaswani et al., 2017]`、`Eq. (4)`、`Fig. 2`）被直譯，失去索引功能。
 
 ---
 
-## 2. Moonlight vs. MinerU 全方位對比矩陣
+## 2. 三套工具對照
 
-| 評比維度 | **Moonlight** (`themoonlight.io`) | **MinerU** (`opendatalab/MinerU`) |
+PaperRead 與 MinerU 的欄位依 2026-11-16 讀到的 repo 內容填寫（GitHub API、README、原始碼）；Moonlight 欄未重新查證，只寫性質。
+
+| 評比維度 | **PaperRead** (`YuriyLin/PaperRead`) | **MinerU** (`opendatalab/MinerU`) | **Moonlight** (`themoonlight.io`) |
+| :--- | :--- | :--- | :--- |
+| **定位** | 論文閱讀、文獻探索、筆記整理的本機工作區（貼文介紹的就是這套） | PDF 轉 Markdown／JSON 的文件解析工具 | 雲端商業論文閱讀服務（第一版誤認的對象） |
+| **授權** | `LICENSE` 是 MIT；貼紙素材另有各自授權 | Apache 2.0 加附加條款（達一定規模的商業使用要另取授權） | 商業服務 |
+| **規模（2026-11-16）** | 367 顆星、17 個 fork；2026-10-09 建立，最新版 v1.5.3（2026-11-13） | 約 8.4 萬顆星；最新版 4.2.3（2026-11-16） | 未查證 |
+| **安裝** | Windows x64 安裝檔、macOS arm64 DMG、Linux AppImage；或 Docker 瀏覽器版；或 `pip install -e .` 從原始碼跑 | `uv pip install -U "mineru>=4.0,<5"`，Python 3.11–3.14；預設安裝可用 CPU | 未查證 |
+| **閱讀介面** | 有：左欄譯文、右欄 PDF 原頁，可切原文／譯文／雙語，另有筆記、問 AI、研究面板 | 無，輸出檔要用自己的編輯器看 | 有（未查證細節） |
+| **翻譯模型** | 自己選：本機 CLI（Claude Code、Codex CLI、Antigravity CLI）、雲端 API、本機 Ollama／LM Studio | 不翻譯，只解析 | 服務內建 |
+| **資料去向** | 文獻庫在本機（`~/PaperRead`，JSON 檔）；翻譯與問答的內容送到所選模型 | 預設本機解析；加 `--remote` 才上傳；另有預設開啟的使用統計（不含文件內容，可關） | 文件上傳到服務商 |
+| **批次自動化** | 有整個資料夾匯入與 Zotero 匯入，定位仍是互動閱讀 | 有 CLI，適合接進自動化流程 | 未查證 |
+
+---
+
+## 3. PaperRead：唯讀評估結果（`T-20261017-35`）
+
+> **評估方式與限制**：2026-11-16 用 GitHub API 讀 README、`LICENSE`、`CHANGELOG.md`、`CONTRIBUTING.md`、Docker 設定、檔案樹與幾支關鍵原始檔（`easyread/engines.py`、`prompts.py`、`updates.py`、`netcheck.py`、`cli_models.py`、`selectable_text.py`），對應 commit `22ccc94`（2026-11-14）。  
+> **沒有 clone、沒有安裝、沒有執行。** 本節所有「行為」都是從原始碼與文件讀出來的，不是實測結果；需要實跑才能回答的項目列在 3.5 節。
+
+### 3.1 專案組成
+
+- Python 套件名仍是 `easyread`（沿用上游 [EasyRead](https://github.com/Edwardxlai/easyread)），後端是本機 HTTP 服務，預設開在 `http://127.0.0.1:8765`；桌面版是 Electron 外殼。
+- 語言比例：Python 與 JavaScript 各約 140 萬位元組，另有少量 TypeScript（筆記編輯器）。
+- `tests/` 有 Python 與 Node 兩套測試，GitHub Actions 有 `test.yml`、`docker.yml`、`release.yml`。
+- 檔案樹共 1,033 項，其中 200 多個是貼紙素材。
+
+### 3.2 安裝方式（三選一，都還沒在本機試過）
+
+| 方式 | 指令或檔案 | 讀到的重點 |
 | :--- | :--- | :--- |
-| **工具定位** | 雲端商業 SaaS / Chrome 擴充 / 行動端 App | 本地開源多模態文檔解析工具庫 (GitHub 20k+ ⭐) |
-| **部署門檻** | **零門檻**：安裝瀏覽器擴充功能即可開箱即用 | **需環境**：需 Python 3.10+、PyTorch 與 CUDA GPU 支援 |
-| **閱讀介面** | **原生雙欄同步滾動**：左欄中文對照，右欄原始 PDF，支援原文/雙語/譯文一鍵切換 | **無內建閱讀器**：輸出標準 Markdown/JSON，需搭配 VS Code、Obsidian 等 Markdown 編輯器 |
-| **公式保護能力** | 優良：自動隔離數學區塊並以 KaTeX 漂亮渲染 | **極致頂級**：搭載專用 MFD（公式偵測）與 MFR（公式識別）模型，轉出精準 LaTeX 源碼 |
-| **排版還原度** | 優良：針對學術論文自訂最佳化排版視圖 | **學術級頂級**：完美抽離多欄、標題層級、表格、圖表旁註與腳註 |
-| **數據隱私與合規** | **雲端處理**：PDF 會上傳至服務商雲端解析（適合公開 arXiv 論文） | **100% 本地運算**：完全離線運行，絕對零隱私外洩（適合未公開專利與商務機密） |
-| **費用與配額** | Freemium：提供免費每日額度，高頻使用需付費訂閱 | **完全免費開源**：採 Apache 2.0 / 專用開源協議，無使用次數限制 |
-| **批次與自動化** | 不支援（僅限手動單篇閱讀） | **原生支援**：具備強大 CLI 與 Python API，可整合進自動化文獻解析管線 |
+| 安裝檔 | Releases 的 `PaperRead-Setup-1.5.3.exe`（約 196 MB） | README 沒提程式碼簽章；個人專案的安裝檔，執行前要走第三方程式檢查流程 |
+| Docker | `docker compose up -d` 後開 `http://localhost:8765` | 映像檔用 `python:3.12-slim`；連接埠只綁 `127.0.0.1`；設定檔註明服務沒有登入機制，另有 Host 標頭檢查（PR #3、#4） |
+| 原始碼 | `python -m pip install -e .` 後執行 `easyread` | 需要 Python 3.10 以上；改桌面版另需 Node.js 22 以上 |
+
+### 3.3 公式與引用怎麼處理
+
+PaperRead 的做法是**請模型把公式重寫成 KaTeX 能顯示的 TeX**，不是把公式抽出來隔離、翻完再放回去。依據是 `easyread/prompts.py` 的翻譯規則：
+
+- 行內數學一律寫成 `$TeX$`，行間公式獨立成區塊並保留原編號；看不清楚就標「待核對」，不猜。
+- 數字引用 `[n]` 照原樣保留；作者加年份的引用改寫成站內連結；參考文獻列表不翻譯；腳註用 `[^n]`，與文獻引用分開。
+- 圖、表、公式、章節的交叉參照改寫成可點的站內連結。
+- 另有「裸露 TeX 修復」機制（`repair_guard.py`），格式出錯時只重試出錯的區塊。
+
+這代表公式正不正確要看所接的模型。issue #9（2026-11-14 開，未關）回報的正是這件事：用 3B、4B 的本機小模型時，提示詞裡的公式範例會被照抄進譯文。對照本 repo 的 [`templates/latex-citation-protection-prompt.md`](../templates/latex-citation-protection-prompt.md)：那份範本要求公式逐字不變，PaperRead 的規則是允許模型重排成等價的 TeX，兩者標準不同，不能拿 `tools/verify_academic_and_latex_guard.py` 的逐字比對直接驗 PaperRead 的輸出。
+
+### 3.4 接本機 CLI 時實際執行什麼
+
+讀 `easyread/engines.py` 得到的呼叫方式：
+
+| 模型後端 | 呼叫方式 | 權限範圍 |
+| :--- | :--- | :--- |
+| Claude Code | `claude -p`，帶 `--allowedTools Read`、`--strict-mcp-config`、`--disable-slash-commands`、`--no-session-persistence`；翻譯時再加 `--tools Read` | 只開放讀檔工具，不載入使用者的 MCP 設定 |
+| Codex CLI | `codex exec --sandbox read-only --ephemeral --skip-git-repo-check` | 唯讀沙盒 |
+| Antigravity CLI | 帶 `--dangerously-skip-permissions` | **略過權限確認**，三者中限制最少 |
+
+其他會碰到本機設定或對外連線的地方：
+
+- 會**讀取** `~/.claude/settings.json` 與 `~/.codex/config.toml`、`~/.codex/models_cache.json`，用途是取得模型清單、預設模型與 API 位址；讀到的片段裡沒有寫入這些檔案的程式碼（只讀了部分檔案，不能保證全專案都沒有）。
+- 每天向 `api.github.com` 查一次最新版本，可在設定裡關掉。
+- 文獻搜尋（OpenAlex 等）與雲端模型會對外連線；README 寫明此時相關內容會送到所選服務。
+
+採用建議：接 Claude Code 或 Codex CLI 的限制較嚴；Antigravity CLI 那條路徑帶了略過權限的旗標，本機要用就先不選它。
+
+### 3.5 留言與 issue 提到的兩個限制
+
+| 限制 | 來源 | 從 repo 讀到的現況 | 本機是否重現 |
+| :--- | :--- | :--- | :--- |
+| PDF 原頁是圖片，原文不能複製 | 貼文留言（`_zhi07`），作者回覆改用「雙語」顯示 | `CHANGELOG.md` 的 v1.5.2 列有「PDF 原頁透明文字層」，寫明可複製原文；原始碼有對應的 `easyread/selectable_text.py`。看起來 v1.5.2 之後已處理 | **未實跑** |
+| 背景翻譯或自動儲存時，閱讀位置往上跳 | issue #10（2026-11-14 開） | 仍是開啟狀態、沒有回覆；最新版 v1.5.3 早於這則 issue，所以還沒有修正版 | **未實跑** |
+
+### 3.6 還沒做的部分（照實列出）
+
+`T-20261017-35` 的驗收標準要求「實測段落」。以下項目都要實際執行才能回答，本次派工限定唯讀評估，**全部未做**：
+
+1. 用含密集公式的 arXiv 論文跑一次雙語對照，檢查公式與引用標記是否保留。
+2. 確認問 AI 能否接上本機的 Claude Code 或 Codex CLI。
+3. 在本機重現 3.5 節的兩個限制。
+4. clone 到隔離目錄後的完整安全檢查（本次只讀了部分檔案，沒有掃過全部原始碼與相依套件）。
+
+未實跑的原因：派工範圍排除 clone、安裝與執行；而且照本 repo 規則，第三方程式要先通過檢查流程才能在本機執行。
 
 ---
 
-## 3. Moonlight 快速上手與在線泛讀指南
-
-### 3.1 適用情境
-- 每日瀏覽追蹤 arXiv、OpenReview 最新放出的公開論文。
-- 需要在 5~10 分鐘內快速瀏覽 Abstract、Introduction、Method 大綱與 Conclusion。
-- 手機/平板端移動閱讀，需輕量雙語對照。
-
-### 3.2 操作流程
-1. **安裝擴充功能**：在 Chrome Web Store 安裝 *Moonlight - AI Paper Reading Assistant*。
-2. **開啟論文網頁**：直接造訪 arXiv 論文頁面（例如 `https://arxiv.org/abs/2401.xxxxx`）或直接在瀏覽器打開 PDF 檔案。
-3. **啟動雙語視圖**：點擊瀏覽器側邊的 Moonlight 圖示，頁面自動載入雙欄閱讀視圖：
-   - **左欄（譯文/對照欄）**：重新編排的高清字體中文排版，公式以 LaTeX 區塊獨立保留。
-   - **右欄（原始 PDF 欄）**：保留論文原始向量字體、排版格局與高解析度圖表。
-4. **互動閱讀技巧**：
-   - **雙向游標對齊**：滑鼠懸停於左欄某段，右欄對應原始段落自動高亮，反之亦然。
-   - **雙語切換**：使用頂部快捷鍵切換「僅原文」、「僅譯文」或「雙語交錯」。
-   - **Contextual RAG 提問**：點選特定難懂公式或段落，呼叫側邊欄「Ask Paper AI」要求進一步解釋該變數的物理意義。
-
----
-
-## 4. MinerU 本地私有化深度研讀工作流
+## 4. MinerU：批次轉檔的搭配工具
 
 ### 4.1 適用情境
-- 涉及內部未公開研究、機密專利申請草稿、受 NDA 保護的技術白皮書。
-- 公式極度密集（如純理論數學、高能物理、密碼學、複雜 3D 幾何推導）之重要文獻。
-- 欲建立個人離線向量知識庫（RAG），需將數百篇 PDF 批次轉為高品質 Markdown。
 
-### 4.2 本地安裝與配置
+- 要把大量 PDF 轉成 Markdown，放進自己的筆記庫或檢索流程。
+- 公式極密集的文獻，需要拿到 LaTeX 原始碼而不是畫面。
+- 文件不能離開本機（不加 `--remote`，並關掉使用統計）。
 
-推薦在具備 NVIDIA GPU（至少 8GB VRAM）的環境安裝：
-
-```bash
-# 1. 建立獨立虛擬環境
-conda create -n mineru python=3.10 -y
-conda activate mineru
-
-# 2. 安裝 magic-pdf 與全功能依賴 (含 GPU 支援)
-pip install -U magic-pdf[full] --extra-index-url https://wheels.myhloli.com
-
-# 3. 下載模型權重 (版面分析、公式識別、表格識別模型，約 2GB)
-# 依官方指示自動下載並配置 ~/.magic-pdf.json
-```
-
-### 4.3 CLI 轉檔指令
+### 4.2 安裝與指令（依 2026-11-16 的官方 README，本機未實跑）
 
 ```bash
-# 將單篇 PDF 轉換為包含精準 LaTeX 公式的 Markdown 結構
-magic-pdf -p "paper.pdf" -o "./output" -m auto
+# 建立環境並安裝（Python 3.11–3.14）
+pip install uv
+uv venv .mineru --python 3.12
+uv pip install -U "mineru>=4.0,<5"
 
-# 批次處理整個目錄下的論文
-magic-pdf -p "./papers_dir" -o "./markdown_output" -m auto
+# 解析單篇 PDF；預設在本機處理
+mineru parse "paper.pdf" --json
+
+# 關掉使用統計
+mineru telemetry disable
 ```
 
-### 4.4 結合 LLM 之「公式保護」雙語 Markdown 產出管線
+- 第一版手冊寫的 `pip install magic-pdf[full]` 與 `magic-pdf -p` 是舊版指令，現行 4.x 版已改成上面的 `mineru`。
+- 預設安裝可在只有 CPU 的機器上跑；`full` 附加元件才需要 8 GB 以上顯示記憶體的 NVIDIA 顯示卡。
+- `mineru parse` 加 `--remote` 會把文件送到遠端解析；機密文件不要加。
+- 使用統計預設開啟，README 說明不含文件內容、檔名與路徑；要完全不外送就執行 `mineru telemetry disable`。
 
-MinerU 輸出的 Markdown 結構將數學公式完整封裝在 `$...$` 與 `$$...$$` 中。將其交由 LLM 翻譯為雙語閱讀版時，應使用以下防護策略：
+### 4.3 接上翻譯的流程
+
+MinerU 只負責解析。要得到雙語版，把輸出的 Markdown 交給模型翻譯，並套用公式保護提示詞：
 
 ```text
-[原始 PDF] ──MinerU──▶ [精確 Markdown (含原始 LaTeX)]
+[原始 PDF] ──MinerU──▶ [Markdown（公式是 LaTeX 原始碼）]
                            │
                            ▼
-              [LLM 雙語翻譯 (公式嚴格保護 Prompt)]
+        [模型翻譯，套用 templates/latex-citation-protection-prompt.md]
                            │
                            ▼
-          [雙語對照 Markdown (在 Obsidian / VS Code 閱讀)]
+        [雙語 Markdown] ──▶ tools/verify_academic_and_latex_guard.py 比對公式與引用
 ```
 
 ---
 
-## 5. 總結與選型建議決策樹
+## 5. Moonlight（僅供對照）
+
+- 雲端商業論文閱讀服務，文件要上傳到服務商，所以未公開的論文草稿、專利、受保密協議約束的文件不能用。
+- 第一版手冊列的安裝步驟、介面操作、收費方式都沒有實測或查證依據，本版不再保留；要用請以官方網站為準。
+
+---
+
+## 6. 選型建議
 
 ```text
-欲研讀的論文類型？
-  ├─ 是公開 arXiv / 研討會論文？
-  │    ├─ 需要快速在瀏覽器掃讀、泛讀 ──▶ 【首選 Moonlight】
-  │    └─ 需要做深度筆記、沈澱至個人知識庫 ──▶ 【MinerU 轉檔後存入筆記庫】
+要讀的文件是什麼？
+  ├─ 公開論文（arXiv、研討會）
+  │    ├─ 想要雙欄對照、劃線、問 AI ──▶ PaperRead（先完成第 3.6 節的實測與安全檢查）
+  │    └─ 想批次轉成 Markdown 進筆記庫 ──▶ MinerU
   │
-  └─ 是機密專利、公司內部報告、未發表草稿？
-       └─ 嚴禁上傳任何雲端 ──▶ 【唯一選擇 MinerU 本地離線解析】
+  └─ 機密文件（專利草稿、內部報告、未發表稿）
+       ├─ 只要解析 ──▶ MinerU，不加 --remote，關掉使用統計
+       └─ 要翻譯或問答 ──▶ PaperRead 接本機模型（Ollama／LM Studio）；
+                          接雲端模型或雲端服務（含 Moonlight）都會把內容送出去
 ```

@@ -10,6 +10,11 @@ status: done
 cluster: "1"
 cluster_role: "記憶繼承與共用大腦"
 short_title: "AI 共用記憶與三 Agent 全景"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "Facebook 貼文顯示 32 則留言，未登入只讀到 26／32 則；圖看了 2／2 張"
+source_images: 2
+source_replies: 26
 tags:
   - shared-memory
   - git-workflow
@@ -35,6 +40,27 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀 Facebook 社團貼文（文字、2 張作者圖、可見留言 26 則／貼文顯示共 32 則）與 `Leoceeport/ai-memory-template`（README 無圖、issue 0 則）。
+
+- **作者圖片**：
+  - 圖 1「從記憶分裂到三個 AI 共用一顆大腦」：左欄是過去三種工具各自失憶的情形；右欄把母體分成 L1 全域工程紀律（`CLAUDE.md`）、L2 專屬技能庫（78 支 Skill）、L3 長期經驗記憶（`MEMORY.md` 索引加 14 類分流、300 多則踩坑）與共用 Hooks 四塊。三個 Agent 的掛載方式各不同：Claude Code 原生直接讀寫；Antigravity 靠自建的 `going-claude-bridge` 以外部引用加 symlink 掛載；Hermes 用 `SOUL.md` 加 `agent-handoff` 帳本，圖上標的預設模型是 Gemini 3.5 Flash，Copilot 的 GPT-4o／Sonnet 是備援。
+  - 圖 2「三個 AI 員工怎麼交接班」：四步流程（`agent-handoff status` 先讀禁區與交接簿 → PreToolUse Hook `guard-dangerous-rm.py` 擋危險刪除 → `agent-handoff checkpoint` 寫入帳本並 commit → Stop Hook `sync-claude-experience.py` 把經驗同步回 Obsidian）；附 `HANDOFF.md` 樣貌（目前狀態、已完成項目、給下一位的注意事項）與三條防呆規則：同一專案同一時間只有一個主動寫入者（要平行就各開 git worktree）、記憶只有一個寫入正本、拿不出驗證證據就不能寫「完成」。
+- **作者留言補充**：Going Li 回覆顏志吉時說這套做法「也是聽別人說的、還不成熟」；回覆 Max DDuan「用什麼機制讓三者溝通」時說自己是門外漢，做法是把需求丟給三個 AI、請它們提幾個解法再挑。作者沒有在留言區放 repo 或腳本，`going-claude-bridge`、`agent-handoff` 都沒有公開連結。
+- **網友留言重點**：
+  - 白曄回答 Max DDuan：以 Claude 為主 session，用 subagent 呼叫 Codex CLI 與 Antigravity 給意見、審查、做事並設迴圈；審查不過就改，但主 session 可以反駁，由第三方 AI 或人裁決。
+  - 陳冠維提到 Orca 與 HERDR、TK Lin 推薦 navide.dev（都只有名稱或連結，沒有說明）。
+  - 楊育勳回報自己的 Agent 仍常失憶，目前只用 GitHub 當留言板、正在試 Obsidian。
+  - 可見留言裡**找不到 Leoceeport 的留言**（未登入只看得到 26／32 則）；有一張留言附圖是手機版 Claude 的對話截圖，內容是某專案把開工讀取量由約 13.1k 降到 5.5k tokens，但看不到是誰貼的。
+- **對分析的影響**：
+  - 1.1 補上圖片才有的資訊（記憶三層、Hook 檔名、三條防呆規則、Hermes 預設模型）。
+  - 1.2 第 2 點原本把「檔案中繼／即時通訊」寫得像討論串內容，實際是本筆記自己的拆解；已改成先寫作者與白曄的實際回答，再標明後段是本筆記的整理。
+  - 1.2 第 3 點「Leoceeport 在留言串釋出範本」這次查不到依據，已加註未查證；範本 repo 本身的分析不受影響。
+  - 不新增任務：圖 2 的三條防呆規則，維護者現有規則（單一寫入者、完成必附證據）已涵蓋。
+
+---
+
 ## 1. 核心內容摘要與討論串全景剖析（Key Insights）
 
 本次調研源自 Facebook **Claude Taiwan** 社團熱門討論串，由開發者 Going Li 分享其實戰配置，並引發社群成員（顏志吉、Max DDuan 等）與開源作者 Leoceeport 的深度技術交鋒。
@@ -47,6 +73,8 @@ tags:
   1. **Claude Code（主力工程師）**：負責深度架構與主力代碼開發，直接掌管單一真實資料來源（SSOT）：全域規矩（`CLAUDE.md`）、長期記憶（`MEMORY.md`）與 78 支 Skill。
   2. **Antigravity（架構師與第二主力）**：撰寫本機橋接外掛，以外部引用將 Claude 全域規則與記憶索引動態掛載進來；利用系統 symlink 映射 78 支 Skill；共用危險指令攔截 Hook（禁止危險 `rm`），並在對話結束時透過腳本自動把記憶回寫至 Obsidian 知識庫。
   3. **Hermes Agent（調度與接力手）**：負責反應迅速的輕量任務，背後調用 GitHub Copilot 的 GPT-4o / Sonnet 模型（實現零額外 API 成本備援）；專屬配置 `agent-handoff` CLI，統一管理專案根目錄的 `HANDOFF.md` 交接帳本。
+- **圖片補充（貼文文字沒寫）**：母體分 L1 工程紀律／L2 技能庫／L3 長期記憶（索引加 14 類分流）三層；Hermes 的預設模型是 Gemini 3.5 Flash，Copilot 模型只是備援；另有三條防呆規則——同一專案同時只有一個主動寫入者（平行就開 git worktree）、記憶只有一個寫入正本、沒有驗證證據不能寫「完成」。
+- **成熟度**：作者在留言自述是門外漢、做法是聽來後請 AI 實作，尚不成熟；橋接外掛與 `agent-handoff` 都沒有公開原始碼，無法查證實作細節。
 - **無縫接力工作流**：
   各 Agent 開工第一步均讀取專案禁區與 `HANDOFF.md`；任務切片完成或即將抵達 Token/Rate Limit 上限前，執行 `agent-handoff checkpoint` 記錄 Git commit 與下一步待辦，下一個 Agent 立即無痛接棒。
 - **核心哲學**：個人 AI 工作台的真正護城河不是綁定頂級訂閱，而是長期沉澱的**記憶結構、防呆護欄與跨 AI 交接協定**。
@@ -58,11 +86,12 @@ tags:
    - **優缺點剖析**：屬於「滑動視窗（Sliding Window）」策略。優點是配置簡單、能確保接手者掌握近期脈絡；但缺點是缺乏層級索引，當專案規模擴大或歷史踩坑分散時，載入 10 份文件會快速膨脹 Context 預算，且容易漏掉關鍵的長期歷史架構決策。
 2. **Max DDuan 的核心疑問（跨 Agent 溝通機制）**：
    - **提問關鍵**：「你是用什麼機制讓三者可以互相溝通？」
-   - **技術維度拆解**：跨 Agent 協同本質上有兩種路徑：
+   - **實際得到的回答**：作者說自己是門外漢，是把需求交給三個 AI 提方案再挑，沒有說明機制；白曄則分享自己的做法——Claude 當主 session，用 subagent 呼叫 Codex CLI 與 Antigravity 審查並設迴圈，意見不合時由第三方 AI 或人裁決。
+   - **本筆記的拆解（非留言內容）**：跨 Agent 協同本質上有兩種路徑：
      - **檔案非同步中繼（File-based Handoff）**：Going Li 採用的 `HANDOFF.md` + Git commit。無行程相依、跨機器相容性最強、最不易因連線中斷丟失狀態。
      - **即時行程通訊（RPC / Relay / ACP）**：透過語言伺服器 API、Socket 或 Message Relay（如 Codync / Nostr Relay）進行即時推播，適合需要秒級自動派工的自動化管線。
 3. **Leoceeport 的回饋（泛用型工程範本 `ai-memory-template`）**：
-   - 留言串中釋出開源專案，將 Going Li 的單人跨 Agent 特化架構進一步抽象為**團隊多工程師協作的標準模板**，補足了「三跳查詢防線（3-Hop Query）」與「Git 機械健檢防線」。
+   - （2026-11-16 重審註：未登入可見的 26 則留言裡找不到這則，「在留言串釋出」未查證；以下依 repo 內容分析。）據原分析，作者在留言串中釋出開源專案，將 Going Li 的單人跨 Agent 特化架構進一步抽象為**團隊多工程師協作的標準模板**，補足了「三跳查詢防線（3-Hop Query）」與「Git 機械健檢防線」。
 
 ---
 

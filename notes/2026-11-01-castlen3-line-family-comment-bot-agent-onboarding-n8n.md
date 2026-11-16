@@ -10,6 +10,11 @@ status: done
 cluster: "4"
 cluster_role: "全端部署與自動化落地"
 short_title: "LINE家庭群組Bot與Agent引導部署"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "頁面顯示共 81 則回覆，未登入只讀到 7／81 則；貼文無上傳圖片（連結預覽卡圖檔載入空白，只讀卡片文字）"
+source_images: 0
+source_replies: 7
 tags:
   - line-bot
   - n8n
@@ -33,6 +38,26 @@ tags:
   - [`notes/2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md`](./2026-10-28-feedback-desk-ai-agent-client-ticketing-handoff.md)（開源 Agent 工單系統與跨端交接架構）
   - [`notes/2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md`](./2026-10-31-yetone-magpie-local-ai-gateway-smart-routing.md)（本地 AI 網關與多模型智慧路由）
   - [`2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md`](https://github.com/SanHsien/claude-context-audit/blob/main/notes/2026-10-31-microsoft-tokeneconomizer-experience-driven-cost-control.md)（對話上下文壓縮與 Token 成本控制）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀貼文與可見的 7 則留言（頁面顯示共 81 則，其餘要登入才看得到），並讀了 `castlen3/line-family-comment-bot` 的 README、兩則 issue／PR 與公開工作流程 JSON。
+
+- **作者圖片**：貼文沒有上傳圖片，只有 1 張 GitHub 自動產生的 repo 連結預覽卡；卡片圖檔兩次載入都是空白，內容由卡片文字讀取（repo 簡介：給新手用的 n8n 工作流程，溫暖的 LINE 家庭群組留言機器人）。README 沒有圖片。
+- **作者留言補充**：
+  - 貼文本文的操作建議：裝好後**先把 bot 加成自己的 LINE 好友測試**，確認不會太吵、圖文都正常，再拉進家庭群組。
+  - 回覆 `fufu2000.50`（問 WhatsApp、Signal 行不行）：這兩個沒試過，依經驗 Telegram 最簡單，但台灣長輩幾乎都用 LINE。
+  - 作者自述不是專業開發者，當初也是靠問 AI 一路做出來的，踩過的坑都整理進 `AGENTS.md`。
+- **網友留言重點**：可見的留言都是道謝與收藏，沒有實測回報或更正。唯一的技術問題是上面那則「其他通訊軟體能不能用」。
+- **對分析的影響**：
+  - 節點數：下載公開工作流程 JSON 實數為 27 個節點，與筆記一致。
+  - 記憶視窗：README 寫預設「最近約 5 則」，可在 `Simple Memory` 節點調整；筆記原寫「預設保留最近 5~10 則」，已改成 5 則。
+  - 測試矩陣的出處：README 的測試矩陣是社群成員 `wolfgangyu` 提議（issue #1）並送 PR（#2）後加入的，不是作者一開始就有的設計；已在 2.2 節註明。
+  - 作者建議的上線順序（先私訊測試、再進群組）是「不要太吵」的實際驗收方式，已補進 2.2 節。
+  - README 建議的 agent 寫的是 Codex、Claude Code、Gemini CLI；貼文寫的是 Codex、Claude Code、Antigravity，兩者略有不同，不影響結論。
+  - 已完成任務 `T-20261101-10` 的產出 [`docs/agent-driven-onboarding-and-security-spec.md`](../docs/agent-driven-onboarding-and-security-spec.md) 重審後沒有發現與新資料衝突的地方。
 
 ---
 
@@ -118,7 +143,7 @@ HengYu Lin 提出的核心破局點為：**將開源專案的安裝文件直接�
    - **Context 準備與白名單過濾**：抓取長輩 DisplayName 並載入稱呼對照表（如「林媽媽」、「阿公」），使回應自然親切。
    - **Intent Judge（意圖識別大腦）**：透過前置 Chain 判定文字意圖為「日常關懷」、「健康諮詢／轉傳謠言查證」或「雜訊閒聊」。若為一般群組閒聊且未 @ 機器人，則靜默不插話。
    - **雙 Agent 分流**：
-     - *Normal Chat Agent*：串接 `Simple Memory`（預設保留最近 5~10 則上下文），以溫馨、尊重語氣回應生活近況。
+     - *Normal Chat Agent*：串接 `Simple Memory`（README 寫預設保留最近約 5 則上下文，可調），以溫馨、尊重語氣回應生活近況。
      - *Medical Search Agent*：串接 Wikipedia 工具檢索醫學與健康常識，強制附帶非診斷免責聲明（例如：「這可能需要由專業醫師看診確認喔～」），杜絕醫療幻覺。
 
 2. **多模態視覺管線（Vision Pipeline）**：
@@ -133,7 +158,8 @@ HengYu Lin 提出的核心破局點為：**將開源專案的安裝文件直接�
 - **漸進式架構選擇（Progressive Tiering）**：
   - *本機隱私優先*：引導搭配 LM Studio / Ollama 本地模型，對話不離開家庭內網。
   - *開箱極簡*：引導搭配 Google Gemini API 免費層或 OpenAI-compatible 雲端服務。
-- **家庭防噪驗證（Anti-slop & Anti-chatter matrix）**：建立標準 Test Matrix，包含「圖片暢通」、「貼圖防錯」、「感冒關懷強意圖」、「流鼻水模糊邊界識別」、「群組閒聊靜默過濾」以及「5 分鐘跨輪上下文記憶連貫性」。
+- **家庭防噪驗證（Anti-slop & Anti-chatter matrix）**：建立標準 Test Matrix，包含「圖片暢通」、「貼圖防錯」、「感冒關懷強意圖」、「流鼻水模糊邊界識別」、「群組閒聊靜默過濾」以及「5 分鐘跨輪上下文記憶連貫性」。這份測試矩陣是社群成員 `wolfgangyu` 在 issue #1 提議、PR #2 加入的（2026-11-16 重審補註）。
+- **上線順序**：作者在貼文建議先把 bot 加成自己的 LINE 好友測試，確認不吵、圖文正常，再拉進家庭群組。
 
 ### 2.3 資安防護與開源發布清洗規約（Sanitization & Least Privilege）
 專案建立了完善的開源安全防禦矩陣：

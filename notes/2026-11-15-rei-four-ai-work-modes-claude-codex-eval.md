@@ -1,15 +1,20 @@
 ---
 id: "2026-11-15-rei-four-ai-work-modes-claude-codex-eval"
-title: "Rei「4 種 AI 工作模式完整解析」：Chat vs Cowork/Work vs Claude Code/Codex 選型與落地陷阱評估"
+title: "Eugenia叡一「4 種 AI 工作模式完整解析」：Chat vs Cowork/Work vs Claude Code/Codex 選型與落地陷阱評估"
 source_url: "https://youtu.be/daHC9dnhH-w"
 source_platform: "YouTube"
-author: "Rei"
+author: "Eugenia叡一（@EugeniaWu0）"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
 status: archived
 cluster: 3
 cluster_role: "四種AI工作模式地圖"
-short_title: "Rei四種AI工作模式"
+short_title: "叡一四種AI工作模式"
+source_review: partial
+source_review_note: "影片畫面沒有抽格看，內容依既有逐字稿與說明欄；留言讀到 6／6 則；無靜態圖（0／0 張）"
+source_reviewed_at: 2026-11-16
+source_images: 0
+source_replies: 6
 tags:
   - claude-code
   - codex
@@ -19,15 +24,32 @@ tags:
   - youtube
 ---
 
-# Rei「4 種 AI 工作模式完整解析」：Chat vs Cowork/Work vs Claude Code/Codex 選型與落地陷阱評估
+# Eugenia叡一「4 種 AI 工作模式完整解析」：Chat vs Cowork/Work vs Claude Code/Codex 選型與落地陷阱評估
 
 - **來源連結**：[YouTube 原片（音訊 1,453 秒）](https://youtu.be/daHC9dnhH-w)
-- **發布平台 / 作者**：`YouTube` / `Rei`
+- **發布平台 / 作者**：`YouTube` / `Eugenia叡一（@EugeniaWu0）`（2026-09-27 上架；原筆記誤記為 Rei）
 - **分析日期**：`2026-11-15`
 - **當前狀態**：`⚪ 封存 (Archived)`
 - **相關交叉參照**：
   - [`notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md`](./2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md)（ChatGPT Work 與 Codex Skills 實務比較）
   - [`notes/2026-11-15-openai-codex-plugin-cc-collaboration.md`](./2026-11-15-openai-codex-plugin-cc-collaboration.md)（Claude Code × Codex 雙 AI 協作）
+
+---
+
+## 0. 原始資料盤點
+
+> 貼文文字、作者上傳的每張圖片（含輪播）、作者留言補充、網友留言（展開到底）都要看過，見 AGENTS.md 第 3 節。
+
+- **作者圖片**：影片畫面沒有另外抽格，內容依既有逐字稿與說明欄的 14 個章節時間戳（00:00 四個名字該開哪個 → 23:43 Claude 改版補充）。
+- **作者留言補充**：
+  - 說明欄開頭與結尾都在導流到作者的「SMART 1 對 1 陪跑」面談申請，本片同時是課程行銷內容。影片 2026-09-27 上架，查看時約 4.9 萬次觀看。
+  - 作者回覆網友：自己用每月 100 美元方案，Chat、Cowork、Claude Code 都用，額度通常用不完；並說明長對話、附件、模型、思考強度與工具操作都會增加消耗。
+- **網友留言重點**（6 則全讀）：`@userrock-s7b` 說 Claude 等 5 小時重置後只問一句就用掉 15% 額度，不敢用 Cowork 與 Claude Code；並轉述 ChatGPT 自己的說法「Chat 額度與 Work、Codex 分開算」（未查證，是模型自述不是官方文件）。`@martintsai777` 問「Antigravity 呢？」沒有得到回答。其餘是道謝。
+- **對分析的影響**：
+  1. **作者名更正**：頻道是「Eugenia叡一」（`@EugeniaWu0`），不是「Rei」；原筆記的名字應是逐字稿聽寫的音。標題、作者欄、短標題都已改。
+  2. 第 1 節訂閱原則補上作者自己用 100 美元方案的說法，以及網友「一句話吃 15%」的反例：額度感受因人而異，影片的方案建議只能當起點。
+  3. 補記本片有課程導流；第 1 節末的「商業提醒」正是導流段落的鋪陳。
+  4. 影片只比 Claude 與 OpenAI 兩家，沒有談 Antigravity；結論仍是封存、不開任務。
 
 ---
 
@@ -42,12 +64,12 @@ tags:
 | **知識交付層** | Claude Cowork（片尾註記已整合為新版 Claude 內建長任務能力） | ChatGPT Work | 跨資料整理、研究彙整、產出報告／簡報／試算表 |
 | **專案環境層** | Claude Code | Codex | 深入本機資料夾、讀寫多檔、執行 CLI 指令、做網站與自動化管線（如作者將 5 支 YouTube 影片交由 Codex 跑轉錄與剪輯，自身僅花 1 小時下指令與驗收） |
 
-- **訂閱選擇原則（\$20 / \$100 / \$200）**：兩家各自同一份訂閱即可涵蓋上述三種模式，差別主要在額度與併發任務量；輕度從 \$20 起步，高頻日常內容＋網站＋剪輯流程建議 \$100，長期多大型任務併發再看 \$200。重點不在比較單次生成能力，而是觀察「誰能自己跑測試、發現錯誤並修正、讓你安全檢查 diff」。
+- **訂閱選擇原則（\$20 / \$100 / \$200）**：兩家各自同一份訂閱即可涵蓋上述三種模式，差別主要在額度與併發任務量；輕度從 \$20 起步，高頻日常內容＋網站＋剪輯流程建議 \$100，長期多大型任務併發再看 \$200。作者在留言區說自己用 100 美元方案、三種模式都用也用不完；同一則留言串裡有網友回報 Claude 問一句話就用掉 5 小時額度的 15%，可見額度感受差異很大。重點不在比較單次生成能力，而是觀察「誰能自己跑測試、發現錯誤並修正、讓你安全檢查 diff」。
 - **三大實務陷阱**：
   1. **功能存在 ≠ 自己帳號／作業系統可用**：Web、Mac、Windows、Desktop App 與各付費方案權限更新步調不一，須以當前環境實測為準。
   2. **權限一把梭風險**：切忌一開始就把整台電腦與所有帳號授權給 AI，應從獨立資料夾與低風險任務開始，並確保重要成果由人類檢查。
   3. **把 Skill 當萬靈丹**：Skill 只會照既定規則與資料跑；若目標資料夾混亂、來源未標註、完成定義（DoD）不明，AI 只會更快產出彼此無關的內容。
-- **商業提醒**：AI 把產製門檻壓低後，同質化內容會迅速飽和；真正拉開差距的是工具之前的「市場與對象選擇、最小產品測試、完整變現路徑」。
+- **商業提醒（說明欄顯示本片同時導流到作者的 1 對 1 陪跑課程，這段是鋪陳）**：AI 把產製門檻壓低後，同質化內容會迅速飽和；真正拉開差距的是工具之前的「市場與對象選擇、最小產品測試、完整變現路徑」。
 
 ---
 

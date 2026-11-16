@@ -2,7 +2,8 @@
 
 > 本報告使用 [`templates/academic-reading-prompt.md`](../templates/academic-reading-prompt.md) 所定義之標準架構，對真實世界經典 AI Agent 學術論文進行端到端實測，深入檢驗論文核心主張、實驗數據與推論邊界。  
 > **依據版本**：依下列列出的實際讀取範圍整理，基於固定版本 [arXiv:2310.06770v3](https://arxiv.org/html/2310.06770v3)（2024 年 11 月更新版）。  
-> 交付形式：以 `ai-inbox` 報告範本（`docs/academic-reading-smoke-report.md`）交付。
+> 交付形式：以 `ai-inbox` 報告範本（`docs/academic-reading-smoke-report.md`）交付。  
+> **名稱說明（2026-11-16 補）**：本報告的 CQR（Claim／Evidence／Reasoning）與 KSU（Searchable／Recyclable／Usable）是本 repo 的改編版。框架作者王啟樺的原版是 CQR＝Claim／Question／Relation、KSU＝Key Points／Supporting Evidence／Use Cases；對照表見 [`templates/academic-reading-prompt.md`](../templates/academic-reading-prompt.md) 第 0 節。
 
 ---
 

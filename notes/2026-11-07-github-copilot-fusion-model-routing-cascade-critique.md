@@ -10,6 +10,11 @@ status: archived
 cluster: "1"
 cluster_role: "模型路由與配額分流"
 short_title: "Copilot Fusion 模型分派評估"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "未登入只讀到 9 則留言（共 11 則）；貼文全文與 1 張圖已看完"
+source_images: 1
+source_replies: 9
 tags:
   - model-routing
   - github-copilot-fusion
@@ -23,13 +28,34 @@ tags:
 # GitHub Copilot Fusion 自動模型分派評估：Single／Cascade／Critique 三流程、NeMo Switchyard 軌跡式升級，與既有 orchestration／token-optimizer 路由規則對照
 
 - **來源連結**：[Facebook 社團貼文：Codex 中文社群](https://www.facebook.com/groups/1713764039757273/permalink/1874715543662121/)
-- **發布時間**：2026-11-04 10:26 (UTC+8)（39 reactions、11 留言、12 分享；Facebook 標記為 AI content）
+- **發布時間**：2026-11-04 18:26 (UTC+8)（2026-11-16 重審時：43 個心情、11 則留言、15 次分享；Facebook 標記為「AI 內容」）
 - **歸屬集群**：集群 1（角色：`模型路由與升級策略對照`）
 - **評估結論**：`🟡 中等價值：概念整理好，但與既有路由規則大幅重疊`：不衍生新任務
 - **相關交叉參照**：
   - [`notes/2026-10-17-model-routing-opusplan-advisor.md`](./2026-10-17-model-routing-opusplan-advisor.md)（模型路由與 advisor 模式）
   - [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md)（模型燒錢速率、快取與路由矩陣）
   - [`notes/2026-11-02-microphone-anti-overengineering-eight-agent-rules.md`](./2026-11-02-microphone-anti-overengineering-eight-agent-rules.md)（撞牆兩次即停、兩輪審查上限）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入可讀貼文全文、1 張圖與 9 則留言。
+
+- **作者圖片**：共 1 張，手寫字風格標題卡：「讓 AI 自己選擇適合的模型執行」「模型路由（Model Routing）到自動模型分派（Model Orchestration）」。沒有評測圖表、官方截圖或數據來源，貼文裡的 60 分、成本一半、時間少 40% 都只有文字轉述。
+- **作者留言補充**（4 則，都是回覆網友，沒有補連結或數據出處）：
+  - 回 `Tim Wang`：先有自動路由，品質會慢慢優化。作者沒有反駁「選得太貴」這個實測，也沒有說自己實際用過 Fusion。
+  - 回其他人：選模型是要練的技能，現在連這個都能外包；看看大家在發展什麼沒有壞處。
+- **網友留言重點**（頁面標示 11 則，未登入讀到 9 則含作者 4 則）：
+  - `Tim Wang`（公司內實際用過）：自動選的模型消耗很大，便宜模型能做的事被分給最貴的模型，credit 消耗從十位數變百位數，最後改回手動選；公司配發的 credit 要省著用才撐得到月底。
+  - `Yenhung Wu`：交給它選，燒錢不手軟。與上一則同方向。
+  - `Nathaniel Lee`：直接固定用最強模型、自己驗收修錯就好，不需要這套。
+  - 其餘為玩笑。
+- **對分析的影響**：
+  - 發布時間原寫「10:26 (UTC+8)」，頁面顯示下午 6:26，原值其實是 UTC；互動數一併更新。
+  - 圖片沒有提供任何可查證的數據，所以第 1 節「廠商公布數字，未獨立驗證」的標註維持，並補一句作者未附出處。
+  - 五則網友留言裡沒有任何一則回報「用了有省錢」，兩則回報或認為更貴；作者回覆也只說「會慢慢優化」。第 3 節補上第二則同方向留言與作者的回應。
+  - 結論（不採用自動升級、不衍生任務）不變，反而多一則佐證。
 
 ---
 
@@ -43,7 +69,7 @@ GitHub Copilot Fusion 推出自動模型分派，使用者只選投入程度（S
 | **Cascade** | 便宜模型先做，judge 評估不過就升級 | FrugalGPT cascade |
 | **Critique** | 主模型先寫，其他模型審查，回來修改 | Anthropic Evaluator–Optimizer |
 
-- 作者引用官方數據：Artificial Analysis Coding Agent Index 上 Fusion Max 60 分，比 Claude Code + Opus 5.5 Max 少 2 分，平均 API 成本約一半、時間少約 40%（**廠商公布數字，未獨立驗證**）。
+- 作者引用官方數據：Artificial Analysis Coding Agent Index 上 Fusion Max 60 分，比 Claude Code + Opus 5.5 Max 少 2 分，平均 API 成本約一半、時間少約 40%（**廠商公布數字，未獨立驗證**；貼文與附圖都沒有附評測連結）。
 - 生態系整理：RouteLLM／FrugalGPT（研究）、Not Diamond（自訓 router）、LiteLLM／vLLM Semantic Router（共用分派服務）、OpenRouter（auto router 與評測）。
 - 作者結論：模型選擇正在變成工具內建能力，人的工作前移到「講清需求、定義完成、驗收結果」。
 
@@ -55,6 +81,8 @@ GitHub Copilot Fusion 推出自動模型分派，使用者只選投入程度（S
 ## 3. 最有價值的反證：第一線留言
 
 > Tim Wang：用這個選的模型噴很大，殺雞用牛刀……最後還是手動 routing。gpt-6.1-terra 能做的幫你選 Claude Opus 5.5，本來消耗的 credit 從十位數變百位數。
+
+另一則留言（`Yenhung Wu`）也說交給它選「燒錢不手軟」。作者對這個實測的回覆是「先有自動路由，品質慢慢會優化」，沒有提出反例。
 
 這和官方「成本約一半」的說法相反。合理解讀：**benchmark 的平均成本 ≠ 你的任務分佈下的成本**。當 router 對難度判斷偏保守時，會系統性地選貴模型；而按模型計費下，這筆錢由使用者承擔。
 

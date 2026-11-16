@@ -1,15 +1,18 @@
 ---
 id: 2026-10-26-llm-burn-rate-cache-routing-benchmark
-title: "多模型連續開發實測：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐"
+title: "多模型連續開發燒額觀察（單一來源、出處未留存）：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐"
 source_url: "N/A"
-source_platform: "一線工程實測 (Empirical Benchmark)"
-author: "維護者 (Maintainer)"
+source_platform: "出處未留存（筆記建立時自稱一線工程實測）"
+author: "未留存（筆記建立時標為維護者，無佐證）"
 analyzed_at: 2026-10-26
 analyzed_by: "Antigravity"
 status: done
 cluster: "1"
 cluster_role: "模型路由與配額分流"
-short_title: "Sol/Astra/Luna 燒額與快取實測"
+short_title: "Sol/Astra/Luna 燒額與快取觀察"
+source_review: unavailable
+source_reviewed_at: 2026-11-16
+source_review_note: "source_url 為 N/A，正文沒有任何原始貼文或文章連結可回查圖片與留言"
 tags:
   - cost-control
   - model-routing
@@ -18,15 +21,32 @@ tags:
   - long-running-agent
 ---
 
-# 多模型連續開發實測：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐
+# 多模型連續開發燒額觀察（單一來源、出處未留存）：Sol 6.1 vs Astra 6 vs Luna 6 燒額速率、Prompt Caching 效益與長程 /goal 派工最佳實踐
 
-> **2026-11-14 補充**：官方用量頁已新增 GPT-6.1 Terra（Plus 每 5 小時 35–285 則、credits 單價為 Sol 6.1 的一半）與 Fast 模式倍率（訂閱內含額度 2.5x）。本文的實測只涵蓋 Sol 6.1／Astra 6／Luna 6，不含 Terra；Terra 與 Fast 的官方數字與核對結果見 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 第 9 節與 [`notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md`](./2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md)。
+> **2026-11-14 補充**：官方用量頁已新增 GPT-6.1 Terra（Plus 每 5 小時 35–285 則、credits 單價為 Sol 6.1 的一半）與 Fast 模式倍率（訂閱內含額度 2.5x）。本文的數據只涵蓋 Sol 6.1／Astra 6／Luna 6，不含 Terra；Terra 與 Fast 的官方數字與核對結果見 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 第 9 節與 [`notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md`](./2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md)。
 
-- **資料來源**：`維護者一線連續開發實測數據（2026-10-26）`
+- **資料來源**：出處未留存。筆記建立時（2026-10-26，Antigravity）寫的是「維護者一線連續開發實測數據」，但沒有來源連結、量測紀錄或截圖可佐證；本篇數據一律視為**單一來源、未能複核的觀察值**（見第 0 段）。
 - **評測情境**：搭配 Tibo's Reset 後的多專案高強度連續開發、從零骨架建構與長程自主派工
 - **分析日期**：`2026-10-26`
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：[`notes/2026-10-17-model-routing-opusplan-advisor.md`](./2026-10-17-model-routing-opusplan-advisor.md)、[`notes/2026-10-17-cross-cli-subagent-orchestration-space-bunny.md`](./2026-10-17-cross-cli-subagent-orchestration-space-bunny.md)
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：本篇 `source_url` 為 N/A，正文也沒有任何社群貼文、影片或文章連結，所以沒有原始貼文、圖片或留言可以回查。
+
+- **作者圖片**：無法查看（沒有來源連結，筆記建立時也沒有留下截圖說明）。
+- **作者留言補充**：無法查看。
+- **網友留言重點**：無法查看。
+- **對分析的影響**：
+  - 本篇數據的出處原本有兩種說法：標頭寫「維護者一線連續開發實測」，但 `T-20261026-02`、`T-20261026-03` 的關閉理由寫的是「單篇文章作者的模型選擇建議」。2026-11-17 查本檔 git 歷史的結果：
+    - 首次提交 `939f370`（2026-10-26）就寫「維護者一線連續開發實測數據」、`source_url: "N/A"`，同一提交沒有附任何量測紀錄、截圖或原始連結；之後的提交也沒有補過。
+    - 「單篇文章作者的建議」最早出現在關閉任務的提交 `19ff51c`（另一個 agent 所寫），提交訊息與筆記同樣沒有附文章連結。
+    - 所以兩種說法在 repo 裡都沒有證據，git 歷史無法判定哪個對。
+  - 據此統一說法：標頭、frontmatter 與兩個任務的關閉理由都改成「**單一來源、出處未留存**」，不再寫成維護者實測，也不寫成某篇文章。關閉任務的實質理由（動態數據不寫成永久事實、不寫死成常數）不受出處影響，維持不做。在維護者補上原始來源之前，第 1 節的耗額倍數是**未能複核的觀察值**；正文裡的「實測」都是原筆記的自稱；標題與短標題已於 2026-11-17 拿掉「實測」，改為「燒額觀察（單一來源、出處未留存）」。
+  - 正文未改；官方數字的核對仍以 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 為準。
 
 ---
 
@@ -132,7 +152,7 @@ tags:
   - **實作紀錄 / 證據**：docs/model-burn-rate-routing-matrix.md（127 行）：三模型耗額與價格對照（附查證日與官方出處）、適用場景、快取排版原則、5H 規避策略。獨立驗收（fresh-context 審查員，2026-10-26）通過：API 價格、快取倍率、Plus 每 5 小時訊息數經官方頁逐字核對相符。
 
 - [ ] **`T-20261026-02`**｜**[優先級：中]** 將「骨架搭建降級至 Sol 6.1、極限攻堅再開 Astra 6」與「Luna 6 避開 5H 限制」原則沉澱至 `SanHsien/agent-assets`（私有） 共用偏好庫
-  - **狀態**：⚪ 不做（不做：要寫入的是單篇文章作者的模型選擇建議與耗額倍數（Astra 6 為 Sol 6.1 的 12 倍等），不是維護者的偏好；`SanHsien/agent-assets`（私有） RUNBOOK 也明訂模型名、價格、額度這類動態資料不寫成永久事實。這些數據改附出處與日期收錄在 T-20261026-01 的 docs/model-burn-rate-routing-matrix.md。）
+  - **狀態**：⚪ 不做（不做：要寫入的是單一來源、出處未留存的模型選擇建議與耗額倍數（Astra 6 為 Sol 6.1 的 12 倍等），不是維護者的偏好；`SanHsien/agent-assets`（私有） RUNBOOK 也明訂模型名、價格、額度這類動態資料不寫成永久事實。這些數據改附出處與日期收錄在 T-20261026-01 的 docs/model-burn-rate-routing-matrix.md。）
   - **目標範圍**：`C:\GitHub\agent-assets\knowledge\user_preferences.md`（私有）
   - **具體做法**：
     1. 在 `user_preferences.md` 的模型調度段落中，補充實測耗額數據警示（Astra 6 耗額為 Sol 6.1 的 12 倍）。
@@ -142,7 +162,7 @@ tags:
   - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*
 
 - [ ] **`T-20261026-03`**｜**[優先級：低]** 在 `agent-relay` 派工模組中增加模型耗額等級警示與快取友善結構建議
-  - **狀態**：⚪ 不做（不做：要把單篇文章的模型耗額倍數寫進派工程式，屬於會變動的資料寫死成常數；agent-relay 的 advisor 已經讀本機即時額度（Claude statusline、codex-reset-checker）決定 runtime，比固定倍數準確。耗額數據改附出處與日期收錄於 docs/model-burn-rate-routing-matrix.md（T-20261026-01）。）
+  - **狀態**：⚪ 不做（不做：要把單一來源、出處未留存的模型耗額倍數寫進派工程式，屬於會變動的資料寫死成常數；agent-relay 的 advisor 已經讀本機即時額度（Claude statusline、codex-reset-checker）決定 runtime，比固定倍數準確。耗額數據改附出處與日期收錄於 docs/model-burn-rate-routing-matrix.md（T-20261026-01）。）
   - **目標範圍**：`C:\GitHub\agent-relay\docs\` 與 `agent_relay/advise.py`
   - **具體做法**：
     1. 在 `agent-relay` 派工指南與建議中，標注各模型階層之燃燒速率。

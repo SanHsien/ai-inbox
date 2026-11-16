@@ -1,11 +1,11 @@
 # Google Android 官方 Skills 深度盤點與現代 Android 開發防幻覺手冊
 
 > 本手冊收錄於 `docs/android-official-skills-anti-hallucination.md`，深度解構 Google Android 官方開源之 [`android/skills`](https://github.com/android/skills) 倉庫。
-> **實測說明**：社群文章原稱「官方 30 個 Skills」，經維護者直接檢驗官方 GitHub 最新倉庫內容，目前已實質擴充至 **33 個 Skills**。本手冊完整收錄 33 個 Skills 之相對路徑、職責與防幻覺契約。以 ai-inbox 範本形式交付。
+> **實測說明**：社群文章原稱「官方 30 個 Skills」；2026-10-23 首次盤點為 33 個，**2026-11-16 以 GitHub API 列出 `main` 分支所有 `SKILL.md`，共 37 個**。下表逐列對照過官方目錄：新增 5 個（`mlkit-agent-api`、`ink-app-builder`、`ink-custom-brush-builder`、`ios-to-android`、`glance-appwidget-updates-and-memory`），移除 1 個（`jetpack-compose/theming/styles`，首次盤點時列入，2026-11-16 已不在官方目錄）。新增 5 列的職責摘自各 `SKILL.md` 的 `description`；其餘 32 列只核對路徑存在，職責敘述沿用首次盤點、未逐一重讀。上游由機器人定期更新，數量會再變，使用前請重新列目錄。以 ai-inbox 範本形式交付。
 
 ---
 
-## 1. 官方 33 個 Skills 全景盤點
+## 1. 官方 37 個 Skills 全景盤點（2026-11-16）
 
 | # | 分類領域 | 官方相對路徑 (來源路徑) | Skill 名稱 | 核心職責與防幻覺重點 |
 | :- | :--- | :--- | :--- | :--- |
@@ -16,32 +16,36 @@
 | 5 | **Device AI** | `device-ai/litert/litert-lm/SKILL.md` | `litert-lm` | 於裝置端利用 LiteRT-LM 執行開源大型語言模型 (On-Device LLM)。 |
 | 6 | **Device AI** | `device-ai/litert/litert-runtime/SKILL.md` | `litert-runtime` | 配置並執行 `.tflite` 模型之裝置端硬體加速推論 (NPU/GPU)。 |
 | 7 | **Device AI** | `device-ai/ml-kit-genai-prompt-api/SKILL.md` | `ml-kit-genai-prompt-api` | 整合 ML Kit GenAI Prompt API，執行裝置端摘要與智慧問答。 |
-| 8 | **DevTools** | `devtools/android-cli/SKILL.md` | `android-cli` | 指導安裝與操作 `android` 官方命令列工具（專案建置、模擬器操作）。 |
-| 9 | **Identity** | `identity/restore-credentials/SKILL.md` | `restore-credentials` | 實現 Android 換機無縫登入與憑證自動還原 (Restore Credentials)。 |
-| 10 | **Identity** | `identity/verified-email/SKILL.md` | `verified-email` | 安全取得經過驗證的使用者電子信箱工作流。 |
-| 11 | **Compose** | `jetpack-compose/adaptive/SKILL.md` | `adaptive` | 利用 Adaptive Navigation Suite 適配折疊螢幕、平板與多視窗佈局。 |
-| 12 | **Compose** | `jetpack-compose/jetpack-compose-performance/SKILL.md` | `jetpack-compose-performance` | 診斷與消除不必要的 Recomposition（重組），使用 Stability 標記。 |
-| 13 | **Compose** | `jetpack-compose/migration/migrate-xml-views-to-jetpack-compose/SKILL.md` | `migrate-xml-views-to-jetpack-compose` | 結構化將傳統 XML Layout 遷移為現代 Jetpack Compose 函式。 |
-| 14 | **Compose** | `jetpack-compose/theming/styles/SKILL.md` | `styles` | 整合 Jetpack Compose Styles API 與 Material Theme 3 樣式系統。 |
-| 15 | **Media** | `media/media3-cast-integration/SKILL.md` | `media3-cast-integration` | 整合 Jetpack Media3 與 Google Cast 投影串流。 |
-| 16 | **Navigation** | `navigation/navigation-3/SKILL.md` | `navigation-3` | 遷移至 Jetpack Navigation 3 現代型別安全 (Type-Safe) 導航架構。 |
-| 17 | **Navigation** | `navigation/navigation-event/SKILL.md` | `navigation-event` | 攔截返回手勢並實現 Android 14+ 預測性返回 (Predictive Back) 動畫。 |
-| 18 | **Performance** | `performance/anr-audit-and-fix/SKILL.md` | `anr-audit-and-fix` | 審查主執行緒阻塞風險並解析 ANR 堆疊傾印 (Stack Dump)。 |
-| 19 | **Performance** | `performance/r8-analyzer/SKILL.md` | `r8-analyzer` | 分析 R8 ProGuard 混淆規則，移除冗餘 Keep Rules 並縮小 APK 體積。 |
-| 20 | **Play 生態** | `play/engage-sdk-integration/SKILL.md` | `engage-sdk-integration` | 整合 Google Play Engage SDK 提升個人化內容推薦曝光。 |
-| 21 | **Play 生態** | `play/play-billing-library-version-upgrade/SKILL.md` | `play-billing-library-version-upgrade` | 升級 Play Billing Library 至最新版，消除舊版週期性扣款過期寫法。 |
-| 22 | **Play 生態** | `play/play-policy-insights/SKILL.md` | `play-policy-insights` | 自動化 Google Play 政策合規審查（權限宣告、資料安全 Data Safety）。 |
-| 23 | **Profilers** | `profilers/android-profiler/SKILL.md` | `android-profiler` | 利用 Android Profiler 分析 CPU、Memory、Energy 瓶頸。 |
-| 24 | **Security** | `security/android-intent-security/SKILL.md` | `android-intent-security` | 審查 Intent 劫持、PendingIntent 偽造與非公開 Component 暴露。 |
-| 25 | **Security** | `security/android-permissions-security/SKILL.md` | `android-permissions-security` | 審查 Android 權限最小化原則與 IPC 端點權限保護。 |
-| 26 | **System** | `system/edge-to-edge/SKILL.md` | `edge-to-edge` | 適配 Android 15 強制性邊到邊 (Edge-to-Edge) 與 Insets 避讓處理。 |
-| 27 | **System** | `system/glance-canonical-layouts/SKILL.md` | `glance-canonical-layouts` | 使用 Jetpack Glance 建立符合官方典範佈局之桌面 Widgets。 |
-| 28 | **Testing** | `testing/testing-setup/SKILL.md` | `testing-setup` | 配置 JUnit5、Robolectric 與 Compose Test 現代自動化測試環境。 |
-| 29 | **TV** | `tv/leanback-to-compose-tv-migration/SKILL.md` | `leanback-to-compose-tv-migration` | 將過時的 Android TV Leanback 架構遷移至 Compose for TV。 |
-| 30 | **Wear OS** | `wear/wear-compose-m3/SKILL.md` | `wear-compose-m3` | 穿戴裝置 Wear OS 專用 Material 3 Compose 佈局開發指引。 |
-| 31 | **Wear OS** | `wear/wear-widgets/SKILL.md` | `wear-widgets` | 建立與更新 Wear OS 穿戴錶盤圖塊與 Glance Widgets。 |
-| 32 | **XR (空間運算)** | `xr/display-glasses-with-jetpack-compose-glimmer/SKILL.md` | `display-glasses-with-jetpack-compose-glimmer` | 投影智慧眼鏡 (Display Glasses) 與 Glimmer 輕量 Compose 適配。 |
-| 33 | **XR (空間運算)** | `xr/projected-hardware/SKILL.md` | `projected-hardware` | Android XR 空間硬體感知與感測器管理流程。 |
+| 8 | **Device AI** | `device-ai/mlkit-agent-api/SKILL.md` | `mlkit-agent-api` | 以 ML Kit GenAI Agent API（Gemini Nano、AICore）建立裝置端代理流程：多輪對話、透過 AppFunctions 呼叫工具。 |
+| 9 | **DevTools** | `devtools/android-cli/SKILL.md` | `android-cli` | 指導安裝與操作 `android` 官方命令列工具（專案建置、模擬器操作）。 |
+| 10 | **Identity** | `identity/restore-credentials/SKILL.md` | `restore-credentials` | 實現 Android 換機無縫登入與憑證自動還原 (Restore Credentials)。 |
+| 11 | **Identity** | `identity/verified-email/SKILL.md` | `verified-email` | 安全取得經過驗證的使用者電子信箱工作流。 |
+| 12 | **Compose** | `jetpack-compose/adaptive/SKILL.md` | `adaptive` | 利用 Adaptive Navigation Suite 適配折疊螢幕、平板與多視窗佈局。 |
+| 13 | **Compose** | `jetpack-compose/ink/ink-app-builder/SKILL.md` | `ink-app-builder` | 以 Jetpack Ink（`androidx.ink`）與 Compose 加入手寫與觸控筆繪圖、擦除、復原與筆畫保存；不適用 XML View。 |
+| 14 | **Compose** | `jetpack-compose/ink/ink-custom-brush-builder/SKILL.md` | `ink-custom-brush-builder` | 為 Jetpack Ink 定義自訂筆刷（`BrushFamily`、筆尖形狀、壓力與傾斜感應、材質）。 |
+| 15 | **Compose** | `jetpack-compose/jetpack-compose-performance/SKILL.md` | `jetpack-compose-performance` | 診斷與消除不必要的 Recomposition（重組），使用 Stability 標記。 |
+| 16 | **Compose** | `jetpack-compose/migration/migrate-xml-views-to-jetpack-compose/SKILL.md` | `migrate-xml-views-to-jetpack-compose` | 結構化將傳統 XML Layout 遷移為現代 Jetpack Compose 函式。 |
+| 17 | **Media** | `media/media3-cast-integration/SKILL.md` | `media3-cast-integration` | 整合 Jetpack Media3 與 Google Cast 投影串流。 |
+| 18 | **Migration** | `migration/ios-to-android/SKILL.md` | `ios-to-android` | 把 iOS／Swift 的功能或整個 App 移植到 Android（Compose、Room、Coroutines 與 Flow）。 |
+| 19 | **Navigation** | `navigation/navigation-3/SKILL.md` | `navigation-3` | 遷移至 Jetpack Navigation 3 現代型別安全 (Type-Safe) 導航架構。 |
+| 20 | **Navigation** | `navigation/navigation-event/SKILL.md` | `navigation-event` | 攔截返回手勢並實現 Android 14+ 預測性返回 (Predictive Back) 動畫。 |
+| 21 | **Performance** | `performance/anr-audit-and-fix/SKILL.md` | `anr-audit-and-fix` | 審查主執行緒阻塞風險並解析 ANR 堆疊傾印 (Stack Dump)。 |
+| 22 | **Performance** | `performance/r8-analyzer/SKILL.md` | `r8-analyzer` | 分析 R8 ProGuard 混淆規則，移除冗餘 Keep Rules 並縮小 APK 體積。 |
+| 23 | **Play 生態** | `play/engage-sdk-integration/SKILL.md` | `engage-sdk-integration` | 整合 Google Play Engage SDK 提升個人化內容推薦曝光。 |
+| 24 | **Play 生態** | `play/play-billing-library-version-upgrade/SKILL.md` | `play-billing-library-version-upgrade` | 升級 Play Billing Library 至最新版，消除舊版週期性扣款過期寫法。 |
+| 25 | **Play 生態** | `play/play-policy-insights/SKILL.md` | `play-policy-insights` | 自動化 Google Play 政策合規審查（權限宣告、資料安全 Data Safety）。 |
+| 26 | **Profilers** | `profilers/android-profiler/SKILL.md` | `android-profiler` | 利用 Android Profiler 分析 CPU、Memory、Energy 瓶頸。 |
+| 27 | **Security** | `security/android-intent-security/SKILL.md` | `android-intent-security` | 審查 Intent 劫持、PendingIntent 偽造與非公開 Component 暴露。 |
+| 28 | **Security** | `security/android-permissions-security/SKILL.md` | `android-permissions-security` | 審查 Android 權限最小化原則與 IPC 端點權限保護。 |
+| 29 | **System** | `system/edge-to-edge/SKILL.md` | `edge-to-edge` | 適配 Android 15 強制性邊到邊 (Edge-to-Edge) 與 Insets 避讓處理。 |
+| 30 | **System** | `system/glance-appwidget-updates-and-memory/SKILL.md` | `glance-appwidget-updates-and-memory` | 處理 Glance 桌面小工具的狀態更新、背景同步與 RemoteViews 點陣圖記憶體上限。 |
+| 31 | **System** | `system/glance-canonical-layouts/SKILL.md` | `glance-canonical-layouts` | 使用 Jetpack Glance 建立符合官方典範佈局之桌面 Widgets。 |
+| 32 | **Testing** | `testing/testing-setup/SKILL.md` | `testing-setup` | 配置 JUnit5、Robolectric 與 Compose Test 現代自動化測試環境。 |
+| 33 | **TV** | `tv/leanback-to-compose-tv-migration/SKILL.md` | `leanback-to-compose-tv-migration` | 將過時的 Android TV Leanback 架構遷移至 Compose for TV。 |
+| 34 | **Wear OS** | `wear/wear-compose-m3/SKILL.md` | `wear-compose-m3` | 穿戴裝置 Wear OS 專用 Material 3 Compose 佈局開發指引。 |
+| 35 | **Wear OS** | `wear/wear-widgets/SKILL.md` | `wear-widgets` | 建立與更新 Wear OS 穿戴錶盤圖塊與 Glance Widgets。 |
+| 36 | **XR (空間運算)** | `xr/display-glasses-with-jetpack-compose-glimmer/SKILL.md` | `display-glasses-with-jetpack-compose-glimmer` | 投影智慧眼鏡 (Display Glasses) 與 Glimmer 輕量 Compose 適配。 |
+| 37 | **XR (空間運算)** | `xr/projected-hardware/SKILL.md` | `projected-hardware` | Android XR 空間硬體感知與感測器管理流程。 |
 
 ---
 
@@ -77,4 +81,4 @@ Play 商店審查是 Android 開發者上架的最痛門檻。`play-billing-libr
 
 ## 4. 總結
 
-Google 官方推出 33 個收錄完整的 Agent Skills，證明了「領域專用規則檔（Domain Skills）」能有效終結 LLM 依賴過時訓練資料的盲區。本手冊盤點的清單為現代 Android 跨終端與政策合規提供了確定性的工程基準。
+Google 官方目前（2026-11-16）收錄 37 個 Agent Skills，證明了「領域專用規則檔（Domain Skills）」能有效終結 LLM 依賴過時訓練資料的盲區。本手冊盤點的清單為現代 Android 跨終端與政策合規提供了確定性的工程基準。

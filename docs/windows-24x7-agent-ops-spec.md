@@ -38,6 +38,8 @@
 
 Remote Control 與 VPN 是不同層：前者延續 Claude 工作，後者提供網路通道；VPN 本身不提供終端、桌面或 Agent。Remote Control 不以 Tailscale 為必要相依。安裝入口採官方文件，工具不安裝任何產品、不執行供應商 CLI，也不呼叫登入診斷。
 
+**不可照抄的組合：關閉權限確認＋Remote Control（2026-11-17 補）**：[來源筆記](../notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md)第 0 段記錄，原貼文作者的截圖裡，同一個工作階段狀態列顯示 `bypass permissions on`，同時被 Remote Control 遠端操控，設定頁的「Enable Remote Control for all sessions」也是 true。那套架構的便利有一部分來自關掉權限確認。本規格不採用：會接受 Remote Control 的工作階段，不得以 `bypass permissions`、`--dangerously-skip-permissions` 或等效設定執行；Remote Control 逐次由維護者啟動，不啟用全 session 預設。理由是兩者疊在一起時，任何拿得到該帳號遠端入口的人或被注入的指令，都能在主機上不經確認執行任意工具。這一條是依截圖描述訂的本地規範，本機沒有重現該組合。
+
 ## 唯讀工具介面與停止條件
 
 從 repo 根目錄執行：

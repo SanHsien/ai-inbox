@@ -10,6 +10,11 @@ status: done
 cluster: 3
 cluster_role: "台灣個資遮罩Mod"
 short_title: "PII-Guard個資遮罩Mod"
+source_reviewed_at: 2026-11-17
+source_review: partial
+source_review_note: "README 的示範 GIF 只看到開頭畫格，沒有逐格看完；issue 共 1 則（含 1 則留言）已讀完（讀到 2／共 2 則）"
+source_images: 2
+source_replies: 2
 tags:
   - pii-guard
   - claude-mods
@@ -27,6 +32,24 @@ tags:
 - **當前狀態**：`🟢 已完成 (Done)`
 - **查核證據與裁決**：[唯讀評估報告](../docs/pii-guard-readonly-assessment.md)，含固定來源與 blob SHA。
 - **交叉參照**：[Claude Mods](./2026-10-18-claude-code-mods-self-extending-runtime.md)、[同作者會話模式工具](./2026-11-08-dustin-gmat-danyuchn-claude-work-mode-session-modes.md)。
+
+## 0. 原始資料盤點
+
+> 2026-11-17 用瀏覽器重看 GitHub repo 的 `main`（最後更新 2026-11-15，比本篇固定的 `3d55636` 新，差多少未比對）。來源是 GitHub，沒有社群貼文。
+
+- **作者圖片**：
+  - 圖 1（`docs/annotate-ui.png`）：人工補標頁的靜態截圖。一份虛構判決書，紅色標籤是自動偵測（`ORG-1`、`PERSON-1`、`LOCATION-1` 等），藍色 `MANUAL-1`、`MANUAL-2` 是使用者補遮的證人與法官；頂端顯示「9 個遮蔽、已補遮 2、已放回 0」。
+  - 圖 2（`docs/annotate-demo.gif`）：同一頁的操作動畫，只看到開頭畫格（另一份虛構判決書，18 個遮蔽）。開頭就看得到偵測層的毛病：法院名被切成 `LOCATION-2` 加 `ORG-4` 兩個代號、被告公司名切成 `ORG-3 精密工業 ORG-2`，中間漏了一段原文。README 文字也承認這點。
+- **作者留言補充**：issue #3 由作者以 PR #4 關閉。
+- **網友留言重點**（GitHub issue，共 1 則）：
+  - #3（已關閉）：回報者在 Windows 11、Python 3.13 實測，`audit_manager.py` 與 `local_workflow.py` 在模組頂層 `import fcntl`，導致 quick 模式、本機網頁入口與 4 個測試模組在 Windows 直接壞掉；核心 anonymize／restore、偵測與 eval 能跑。回報者另開了修 eval 誤報的 PR #2。
+- **對分析的影響**：
+  - 圖 2 的開頭畫格直接顯示偵測層會把一個機構名切碎並漏字，補強第 2 節「漏偵測仍可能被模型看見」的判斷。
+  - `main` 的 README 現在有「平台支援」段：Windows 以 `msvcrt` 鎖取代 `flock`、新建私有目錄會收緊 NTFS ACL 並讀回驗證、加強模式在 Windows 以 `LOCAL_MODEL_UNVERIFIED` 拒絕。這與第 3 節「Windows 前提」的描述一致。
+  - issue #3 顯示 Windows 支援是外部回報後才補上的（PR #4）；本篇固定的 `3d55636` 在 PR #4 之前還是之後，未比對。第 3 節「本機未實測」的保留維持不變。
+  - 暫不採納的裁決與 `T-20261115-17` 不變。
+
+---
 
 ## 1. 核心內容摘要（5W1H 初篩）
 

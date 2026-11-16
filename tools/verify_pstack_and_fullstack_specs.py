@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
 tools/verify_pstack_and_fullstack_specs.py
-pstack 五大工程 Playbooks、Claude 官方外掛評測與全端商業建站規範之「外部裁判」結構驗證器（純 Python stdlib）。
+pstack 官方 Playbooks、Claude 官方外掛評測與全端商業建站規範之「外部裁判」結構驗證器（純 Python stdlib）。
 
 驗證目標：
 1. docs/pstack-agent-playbooks.md：
    - 包含 /poteto-mode 路由器規格與跨 CLI (Claude Code, Codex CLI, Antigravity) 提示詞規格；
-   - 完整定義五大核心 Playbooks（Bug-fix, Feature, Refactoring, Investigation, Performance）；
-   - 包含至少 3 個端到端多 CLI 實例對照（Bug-fix, Feature, Refactoring 等）。
+   - 以 `playbooks/<檔名>.md` 列出官方 22 套 playbook，一套不缺，也不得列出官方目錄沒有的檔名；
+   - 不得再出現「五大／5 大 Playbook」的說法；
+   - 提到 SpaceX 的每一行都要標「未查證」（官方 README 沒有這個頭銜）；
+   - 包含至少 3 個使用實例（Bug-fix, Feature, Refactoring 等）。
 2. docs/claude-plugins-official-review.md：
    - 包含 8 款精選推薦外掛（pr-review-toolkit, security-guidance, skill-creator, etc.）；
    - 包含 6 款排除外掛（imessage, swift-lsp, csharp-lsp/jdtls, etc.）；
@@ -45,13 +47,40 @@ from _judge_common import (  # noqa: E402
 # ----------------------------------------------------------------------
 
 # 1. pstack playbooks 規格要求
-REQUIRED_PLAYBOOKS: List[Tuple[str, str]] = [
-    ("Bug-fix", "bug-fix.md"),
-    ("Feature", "feature.md"),
-    ("Refactoring", "refactoring.md"),
-    ("Investigation", "investigation.md"),
-    ("Performance", "perf-issue.md"),
-]
+# 官方 playbook 檔名清單。
+# 依據：GitHub API 列出 cursor/plugins 的 pstack/skills/poteto-mode/playbooks/ 目錄，
+# 查證日期 2026-11-16（bf0c7cd，23 個檔）；2026-11-17 重查上游已移除 orchestrate.md，共 22 個檔。
+# 上游增減 playbook 時，重新列目錄後更新這份清單與查證日期。
+OFFICIAL_PLAYBOOKS_VERIFIED_AT = "2026-11-16"
+OFFICIAL_PLAYBOOK_FILES: Tuple[str, ...] = (
+    "authoring-a-skill.md",
+    "autonomous-run.md",
+    "autopilot-full.md",
+    "autopilot-stack.md",
+    "babysit.md",
+    "bug-fix.md",
+    "eval.md",
+    "feature.md",
+    "hillclimb.md",
+    "investigation.md",
+    "multi-phase-plan.md",
+    "opening-a-pr.md",
+    "pause-safely.md",
+    "perf-issue.md",
+    "prototype.md",
+    "refactoring.md",
+    "runtime-forensics.md",
+    "session-pickup.md",
+    "shipping.md",
+    "trace-forensics.md",
+    "visual-parity.md",
+    "worktree-cleanup.md",
+)
+
+# 文件列出 playbook 的寫法：playbooks/<檔名>.md
+PLAYBOOK_REF_RE = re.compile(r"playbooks/([A-Za-z0-9_-]+\.md)")
+# 已更正的錯誤前提：官方是 22 套，不是五套
+FIVE_PLAYBOOKS_RE = re.compile(r"(?:五|5)\s*大[^\n。]{0,12}Playbook", re.IGNORECASE)
 
 REQUIRED_PSTACK_CLIS: List[str] = [
     "Claude Code",
@@ -152,9 +181,10 @@ def verify_pstack_playbooks(source: Union[str, Path]) -> List[str]:
     """
     驗證 docs/pstack-agent-playbooks.md：
     - 包含 `/poteto-mode` 總控動態路由器章節與說明；
-    - 完整定義五大核心 Playbooks（Bug-fix, Feature, Refactoring, Investigation, Performance）；
-    - 包含跨 CLI（Claude Code, Codex CLI, Antigravity）提示詞規格；
-    - 包含至少 3 個多 CLI 實例對照（End-to-End Walkthroughs）。
+    - 以 `playbooks/<檔名>.md` 列出官方 22 套 playbook，且列出的檔名都在官方目錄清單內；
+    - 不出現「五大／5 大 Playbook」；提到 SpaceX 的行都標「未查證」；
+    - 涵蓋 Claude Code、Codex CLI、Antigravity 三種 CLI 的用法說明；
+    - 包含至少 3 個使用實例。
     """
     text = load_content(source)
     errors: List[str] = []
@@ -176,15 +206,34 @@ def verify_pstack_playbooks(source: Union[str, Path]) -> List[str]:
     if missing_clis:
         errors.append(f"缺少以下 CLI 平台之調用或提示詞規格：{', '.join(missing_clis)}")
 
-    # 3. 五大核心 Playbooks 規格驗證
-    missing_playbooks: List[str] = []
-    for name, filename in REQUIRED_PLAYBOOKS:
-        has_name = bool(re.search(rf"{name}\s*Playbook", text, re.IGNORECASE))
-        has_file = filename in text
-        if not (has_name or has_file):
-            missing_playbooks.append(f"{name} ({filename})")
+    # 3. Playbook 清單對照官方目錄：列出的都要存在，官方有的都要列出
+    listed = set(PLAYBOOK_REF_RE.findall(text))
+    official = set(OFFICIAL_PLAYBOOK_FILES)
+    unknown = sorted(listed - official)
+    if unknown:
+        errors.append(
+            f"列出了官方 playbooks 目錄沒有的檔名（清單查證日期 {OFFICIAL_PLAYBOOKS_VERIFIED_AT}）："
+            f"{', '.join(unknown)}"
+        )
+    missing_playbooks = sorted(official - listed)
     if missing_playbooks:
-        errors.append(f"缺少以下核心 Playbook 規格：{', '.join(missing_playbooks)}")
+        errors.append(
+            f"缺少以下官方 Playbook（需以 playbooks/<檔名> 列出，共 {len(official)} 套）："
+            f"{', '.join(missing_playbooks)}"
+        )
+
+    # 3.1 已更正的錯誤前提不得再出現
+    if FIVE_PLAYBOOKS_RE.search(text):
+        errors.append("出現「五大／5 大 Playbook」的說法；官方是 22 套")
+    unlabeled_spacex = [
+        line.strip()[:40] for line in text.splitlines()
+        if "spacex" in line.lower() and "未查證" not in line
+    ]
+    if unlabeled_spacex:
+        errors.append(
+            "提到 SpaceX 的行沒有標「未查證」（官方 README 沒有這個頭銜）："
+            + "；".join(unlabeled_spacex)
+        )
 
     # 4. 至少 3 個多 CLI 實例對照驗證
     example_matches = re.findall(r"###\s*實例\s*(\d+)[:：]", text)

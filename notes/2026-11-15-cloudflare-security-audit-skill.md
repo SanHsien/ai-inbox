@@ -10,6 +10,11 @@ status: done
 cluster: 3
 cluster_role: "資安稽核Harness"
 short_title: "Cloudflare資安稽核Skill"
+source_reviewed_at: 2026-11-17
+source_review: partial
+source_review_note: "社群解讀貼文（工程師米奇）沒有留下連結，找不到，圖與留言沒看到；repo 有 47 則未關閉 issue，只讀了前 25 則的標題與其中 4 則全文（讀到 4／共 47 則）"
+source_images: 1
+source_replies: 4
 tags:
   - security-audit
   - cloudflare
@@ -25,6 +30,30 @@ tags:
 - **發布平台 / 作者**：`GitHub` / `Cloudflare Security AI Research`（查證數據：MIT License、72,408 stars、最後更新 2026-09-14）
 - **分析日期**：`2026-11-15`
 - **當前狀態**：`🟢 已完成 (Done)`
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-17 用瀏覽器重看 GitHub repo、issue 列表與 Cloudflare 部落格。社群解讀貼文（工程師米奇）沒有留下連結，找不到，那篇的圖與留言**沒看到**。
+
+- **作者圖片**：
+  - repo README：沒有圖片。
+  - Cloudflare 部落格（2026-06-18，作者 Dan Jones、Alexandra Godoi、Grant Bourzikas）：只有 1 張題圖，是機器人拿放大鏡檢查畫面的插畫，沒有資訊量。文中沒有架構圖。
+- **作者留言補充**：無。讀到的 4 則 issue 都沒有維護者回覆。
+- **網友留言重點**（GitHub issue，47 則未關閉、82 個未合併 PR；讀了前 25 則標題與 4 則全文）：
+  - **#117 兩支驗證器在 Windows 完全不能用**：`O_NOFOLLOW`、`O_NONBLOCK` 在 win32 是 undefined，`readFileWithinLimit()` 一律丟錯；回報者在 Windows 11 實測兩支 CLI 都結束碼 1，`validate-findings.test.cjs` 34 項有 7 項失敗。第 4 階段把驗證器當硬閘門，所以 Windows 上的 full audit 走不完。
+  - **#128 代理照 SKILL.md 做，把真實使用者設定檔清空**：Windows 11、沒有 OS 沙盒；代理為了滿足「空環境、scratch 內的 HOME」的要求，沒有另建目錄，而是直接清掉真實家目錄，刪掉代理設定、已裝 skills、SSH 金鑰、對話紀錄與系統 Python，不進回收筒。回報者指出 SKILL.md 只寫要隔離、沒給機制，也沒有 fail-closed 的環境檢查。
+  - **#144 SkillSpector 把這個 skill 自己判成 100 分 CRITICAL／DO_NOT_INSTALL**：14 項全是攻擊類別說明與驗證器測試資料被關鍵字規則命中，回報者逐行看過認為是誤報。
+  - **#134 捏造的 finding 也能通過驗證**：`trace[]`、`evidence[]` 只有檔名、行號與自由文字，驗證器只查結構；回報者拿不相干的檔案行號宣稱 SQL injection，零錯誤通過。
+  - 其他標題：#114（65 個 PR、42 天沒有合併任何一個）、#152 與 #112（兩份獨立稽核，其中一份針對 commit `c1c8a8c`）、#148、#94（目標 repo 可控制輸出路徑）。
+- **對分析的影響**：
+  - **#117 用實測證實**了 [`docs/cloudflare-security-audit-readonly-review.md`](../docs/cloudflare-security-audit-readonly-review.md) 靜態讀碼得到的 Windows 限制，產出檔不用改。
+  - **#128 是新的、更嚴重的風險**：原筆記只寫「缺 OS 沙盒就不跑目標程式」，沒想到代理會把「準備乾淨環境」做成清空真實家目錄。已寫進第 3 節「需注意成本與環境限制」。這是不在 Windows 原生啟動 full audit 的直接理由。
+  - #134 補強第 2 節第 3 點：驗證器通過不代表 finding 是真的。已補一句。
+  - #144 提醒本機的採納檢查（SkillSpector、`--pack` 掃描）對這類資安教材型 skill 會大量誤報，判讀時要逐項看。
+  - #114 顯示上游 PR 幾乎沒在合併，#117、#128 短期內不一定會修。
+  - `T-20261115-04`「暫不採納動態執行」的結論更站得住；`T-20261115-05` 不受影響。stars 數本輪未重查。
 
 ---
 
@@ -73,7 +102,7 @@ tags:
    - `Parent` 是唯一能寫入 `coverage-ledger.json`、`findings.json` 等共用檔的角色；每個 Sub-agent 的 `agent-id` 強制符合 `^[a-z0-9][a-z0-9_-]{0,63}$` 且排除 Windows 保留字（`con`、`prn`、`aux`、`nul`、`com1-9`、`lpt1-9`）。
    - 子代理僅能寫入專屬 `scratch/`；`artifacts/` 由 Parent 保管，晉升（promote）檔案時須透過無跟隨（`no-follow`）目錄描述符逐層驗證常規檔案、link count 為 1 與位元組上限，禁止 glob 複製或解壓縮，防止惡意 repo 透過 symlink 跳脫污染宿主。
 2. **OS 級沙盒是提示詞要求，不是程式強制**：[`SKILL.md`](https://github.com/cloudflare/security-audit-skill/blob/main/skills/security-audit/SKILL.md) 要求執行目標專案建置／測試時無外網、淨空環境變數（僅白名單）、目標唯讀、資源上限；缺完整 OS 沙盒（例如 Windows 11 原生下未掛載隔離容器）就不跑目標程式，把需要動態執行的線索標為 `needs_validation`。這靠執行者照做，Skill 本身不提供 Windows 的 OS 隔離；JSON 驗證器只檢查報告結構，不能證明底層程序真的沒連網、沒越權。
-3. **兩支零依賴 Node.js 驗證器**：`validate-findings.cjs` 與 `validate-coverage-ledger.cjs`（皆附 `.test.cjs`）無第三方 npm 依賴，只須本機具備 Node.js 即可執行確定性 schema 檢查。它們仍是待審的外部程式，不因為零依賴就直接執行。
+3. **兩支零依賴 Node.js 驗證器**：`validate-findings.cjs` 與 `validate-coverage-ledger.cjs`（皆附 `.test.cjs`）無第三方 npm 依賴，在 POSIX 系統只須具備 Node.js 即可執行確定性 schema 檢查；**在 Windows 原生完全不能用**（缺 `O_NOFOLLOW`／`O_NONBLOCK`，[issue #117](https://github.com/cloudflare/security-audit-skill/issues/117) 有實測）。驗證器只查結構，捏造的 finding 也能通過（[issue #134](https://github.com/cloudflare/security-audit-skill/issues/134)）。它們仍是待審的外部程式，不因為零依賴就直接執行。
 
 ---
 
@@ -90,6 +119,7 @@ tags:
   - **需注意成本與環境限制**：
     - `quick` 不是便宜的單代理靜態模式：`SKILL.md` 有 budget gate，完整審查至少預留四次 reconnaissance、coverage critic 與 verifier，獵殺另計；`quick` 只是縮減廣度。`standard` / `deep` 更高。個人日常開發以 `guidance` 模式為主，要跑完整審查先估代理呼叫預算。
     - Windows 11 原生缺乏 POSIX `O_NOFOLLOW` 語意與完整目標沙盒時，應嚴守其規範只做唯讀原始碼審查（將動態驗證留給 `needs_validation` 或容器／CI 環境）。
+    - **已有人在 Windows 11 上出事**：[issue #128](https://github.com/cloudflare/security-audit-skill/issues/128) 回報，沒有 OS 沙盒時，代理為了照 `SKILL.md` 準備「空環境與 scratch 內的 HOME」，直接清空了真實家目錄（代理設定、已裝 skills、SSH 金鑰、系統 Python），不進回收筒。`SKILL.md` 只有文字要求，沒有 fail-closed 的環境檢查。在 Windows 原生不要啟動 full audit。
 
 ---
 

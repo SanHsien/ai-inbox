@@ -10,6 +10,11 @@ status: done
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "Grok OAuth 訂閱轉 API 鑑權破綻解構"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "Facebook 貼文顯示 14 則留言，未登入只讀到 12／14 則；圖看了 1／1 張"
+source_images: 1
+source_replies: 12
 tags:
   - grok-oauth
   - api-billing-bypass
@@ -34,6 +39,26 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：未登入瀏覽器讀 Facebook 貼文（文字、1 張作者圖、可見留言 12 則／貼文顯示 14 則；Facebook 註明「最相關」排序可能濾掉部分留言）。
+
+- **作者圖片**：
+  - 圖 1 是 **magpie**（[`yetone/magpie`](https://github.com/yetone/magpie)）的 Routing 分頁截圖，不是 `grok-oauth`。畫面左邊是四個 Agent（Codex、Claude Code、Crush、OpenCode），中間是本機閘道 `127.0.0.1:3425`（Smart 模式），右邊是七個供應商（其中一個顯示限流、倒數恢復，兩個正在回答）。上方說明 Smart 的排序規則：額度最快重置的帳號先用、用到九成的先等、剛失敗的排最後。下方有三個路由群組（日常寫碼、便宜快速、長上下文）與「上一個請求怎麼被路由」的逐步說明，其中一步是因為上次快取讀取為 0 而換供應商。
+- **作者留言補充**：有人問被發現會不會被刪帳號，作者以賽局回答——現在是誰比較需要誰，並舉微軟靠盜版贏過 OS/2 的例子；意思是廠商未必有動機嚴抓。
+- **網友留言重點**：
+  - **實際被封的回報**：Solarian Felaray 說這種玩法很久了、會被封，他自己被封過，提示詞用法太像 API、用久了就會被封。
+  - Lîm Yǔn Zhōng：xAI 對這種用法的態度和 OpenAI 類似，都不太擋。
+  - Paws C.：會繞過的使用者對廠商來說是一種篩選，可以標記起來觀察用法、拿去訓練。
+  - 達也：Grok 的金流與授權一再出包；Eric Yuen 回說是宣傳策略。廖英凱：通路與 token 目前還是護城河，但 token 之後可能也不是。
+- **對分析的影響**：
+  - **工具更正**：貼文只說「有人寫了一個工具」，沒有點名；原筆記把它寫成 `kimws/grok-oauth`（查證只有 2 星）等專案。從作者附圖看，他指的是 magpie——README 寫明可以把已登入的 Claude、ChatGPT、Copilot、Gemini、Grok 訂閱當成供應商給其他 Agent 用。貼文最後一句「在任何 coding agent 裡把其他模型當原生 subagent」講的也是這種閘道。第 1 節已更正；magpie 本身的分析見 [`2026-10-18-multi-agent-factory-magpie-herdr-routing`](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md)。
+  - **歸屬更正**：2.3 的「四大風險」是本筆記自己的分析，貼文沒有談風險；原句「大齡工程師的發文反映出四大風險」已改。
+  - **封號風險有了實證**：2.3 第 2 點補上留言的實際被封回報與「廠商不太擋」的相反觀察，兩者並列。
+  - `grok-oauth` 的機制解構（第 2 節）是針對該 repo 的分析，仍然成立，但它不是貼文主角。已完成任務不受影響。
+
+---
+
 ## 1. 核心內容摘要：問題背景與技術運作全貌（Executive Summary）
 
 Facebook 知名技術專頁「大齡工程師」於 2026 年 10 月發文感嘆：**「這年頭軟體還真可憐，隨便就被繞過計價機制」**。
@@ -41,7 +66,7 @@ Facebook 知名技術專頁「大齡工程師」於 2026 年 10 月發文感嘆�
 此評述直指當前 AI 產業中普遍存在的**「消費端訂閱 vs 開發者 API 計費鴻溝」**：
 1. **商業計價割裂**：xAI 針對終端用戶推出了 SuperGrok 或 X Premium/Premium+ 訂閱制（固定月費），提供充裕的模型對話額度；但對於開發者，官方 API（`api.x.ai`）採取高昂的 Pay-as-you-go（按 Token 計費），兩者帳務與憑證完全獨立。
 2. **鑑權端點破綻**：官方 Grok CLI 為了讓終端使用者能在命令列登入，採用了標準的 OAuth 2.0 PKCE 授權流程，並將取得的 Bearer Token 存放在本機 `~/.grok/auth.json`。然而，其後端會話代理端點（如 `https://cli-chat-proxy.grok.com/v1`）**僅依賴 HTTP 請求檔頭（Headers）來判斷客戶端身分**。
-3. **社群 Proxy 工具泛濫**：社群開發者（如 `kimws/grok-oauth`、`dvcrn/grok-oauth-proxy`、`iCline` 等）迅速利用此機制建立本機轉接代理，將訂閱 Token 包裝成標準的 OpenAI 相容端點（`http://127.0.0.1:10541/v1`），使任何 Coding Agent（Claude Code、Codex、Hermes Agent、Antigravity、Cursor）皆能以零 API 成本消耗訂閱額度。
+3. **社群 Proxy 工具泛濫**（2026-11-16 更正：貼文沒有點名工具，作者附圖是 [`yetone/magpie`](https://github.com/yetone/magpie) 的路由畫面，magpie 可把已登入的 Grok 等訂閱當供應商給其他 Agent 用；以下列的是同類的小型專案，`kimws/grok-oauth` 查證只有 2 星，不是貼文主角）：社群開發者（如 `kimws/grok-oauth`、`dvcrn/grok-oauth-proxy`、`iCline` 等）迅速利用此機制建立本機轉接代理，將訂閱 Token 包裝成標準的 OpenAI 相容端點（`http://127.0.0.1:10541/v1`），使任何 Coding Agent（Claude Code、Codex、Hermes Agent、Antigravity、Cursor）皆能以零 API 成本消耗訂閱額度。
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
@@ -97,7 +122,7 @@ Facebook 知名技術專頁「大齡工程師」於 2026 年 10 月發文感嘆�
   - 當 upstream 回傳 `401 Unauthorized` 或 Access Token 即將過期時，Proxy 自動讀取 `auth.json` 中的 Refresh Token 發送 POST 至 `https://auth.x.ai/oauth/token`，並將更新後的憑證持久化回本機檔案，實現 Agent 側的完全無感。
 
 ### 2.3 風險剖析：資安威脅與架構脆弱性（Threat & Risk Analysis）
-大齡工程師的發文不僅點出計價問題，更反映出此類架構面臨的四大嚴峻風險：
+貼文只點出計價被繞過，沒有談風險；以下四點是本筆記的分析。其中封號風險有留言佐證：一位網友回報自己因用法太像 API 被封過，也有網友認為 xAI 與 OpenAI 一樣不太擋（見第 0 節）：
 
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐

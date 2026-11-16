@@ -10,6 +10,10 @@ status: pending # pending | in-progress | done | archived
 cluster: 1 # 知識圖譜集群：1 多 Agent 協同｜2 影音視覺與 Generative UI｜3 Agent 工具鏈｜4 研究與全端工程
 cluster_role: "<這篇在集群裡的角色，例如 訊息傳輸、動效字典>"
 short_title: "<知識圖譜顯示的短標題>"
+source_review: full # full（文字、全部圖片、全部留言都看過）| partial（有沒看到的，另填 source_review_note）| unavailable（另填 source_review_note）
+source_reviewed_at: YYYY-MM-DD # 原始資料（圖片、留言）看完的日期
+source_images: 0 # 看過的作者圖片／影片截圖張數
+source_replies: 0 # 讀過的留言數（含作者回覆）
 tags:
   - agent-workflow
   - prompt-engineering
@@ -21,6 +25,17 @@ tags:
 - **發布平台 / 作者**：`<Platform>` / `<Author>`
 - **分析日期**：`YYYY-MM-DD`
 - **當前狀態**：`🔴 未做 (Pending)`
+
+---
+
+## 0. 原始資料盤點
+
+> 貼文文字、作者上傳的每張圖片（含輪播）、作者留言補充、網友留言（展開到底）都要看過，見 AGENTS.md 第 3 節。
+
+- **作者圖片**：（逐張寫重點：圖 1 …、圖 2 …；沒有圖寫「無」）
+- **作者留言補充**：（作者在留言區放的連結、Prompt、勘誤）
+- **網友留言重點**：（補充、反駁、出處更正、實測回報；沒有寫「無」）
+- **對分析的影響**：（這些資料讓本篇結論或任務改了什麼）
 
 ---
 
@@ -39,6 +54,8 @@ tags:
 ## 2. CQR 深入論證檢驗（論文 / 技術報告選填）
 
 > 遇到包含明確實驗數據、基準測試（Benchmarks）或學術論文時，應拆解 CQR 檢驗推論鏈：
+>
+> **名稱出處**：CQR 出自王啟樺的學術閱讀框架，作者原版的三個字母是 **Claim（作者的核心主張）／Question（有哪些疑問或漏洞）／Relation（與我的研究有何關聯）**。下面的 Claim／Evidence／Reasoning 是**本 repo 的改編版**，參考 Toulmin 論證模型，專門檢查證據能不能推出主張；它涵蓋原版的 Claim 與 Question，原版的 Relation 由下一節「啟發與適用性評估」承接。依據見 [`notes/2026-10-17-academic-reading-framework.md`](../notes/2026-10-17-academic-reading-framework.md) 第 0 段（圖 5、圖 6）。
 
 - **Claim（核心主張）**：<作者的主要發現、關鍵論點或性能宣稱>
 - **Evidence（實驗數據 / 消融實驗）**：<作者拿出的具體實驗數據、Ablation Study 或對比基準（如 MMLU / HumanEval / 實測 TPS）>

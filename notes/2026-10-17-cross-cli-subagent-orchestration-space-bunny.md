@@ -10,6 +10,9 @@ status: done
 cluster: "1"
 cluster_role: "跨 CLI 與階層派工"
 short_title: "Opus 規劃顧問 + 多 Agent 降維外包"
+source_review: unavailable
+source_reviewed_at: 2026-11-16
+source_review_note: "原始社群貼文沒有留下連結（source_url 填的是本 repo 自己），找不到原文，圖片與留言無從查看"
 tags:
   - multi-agent-orchestration
   - cross-cli
@@ -27,6 +30,20 @@ tags:
 - **分析日期**：`2026-10-17`
 - **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：[`notes/2026-10-17-model-routing-opusplan-advisor.md`](./2026-10-17-model-routing-opusplan-advisor.md)
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：**看不到原始資料**。本篇來源寫「社群開發者實戰經驗分享」，`source_url` 填的是本 repo 自己的網址，筆記裡沒有留下原貼文的連結、作者帳號或平台，無從找回。
+
+- **作者圖片**：看不到。原貼文有沒有附圖不明。
+- **作者留言補充**：看不到。
+- **網友留言重點**：看不到。
+- **對分析的影響**：
+  - 本篇的內容無法對照原文，哪些是原作者說的、哪些是分析時自行推演的，分不出來。例如 `delegate_cli(tool, task_spec)`、`opencode run --model space-bunny-free` 這類指令寫法，沒有出處可查，當成示意就好，不要當成真實語法。
+  - 「Space Bunny」的身分不靠原貼文：`T-20261017-32` 已直接查 OpenRouter API，確認是 MiniMax M3.1 Flash 的匿名測試名稱且免費端點已下架。這部分有獨立查證，結論不變。
+  - 沒有新增或更動任務。日後若維護者找回原貼文連結，補進 `source_url` 後再重審。
 
 ---
 

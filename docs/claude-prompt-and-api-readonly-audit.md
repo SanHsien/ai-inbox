@@ -25,6 +25,8 @@
 | ai-inbox `templates/agent-reach/SKILL.md` | `2e7a915ecf22dab4a7b6ef2e5b167e1f1ae55c457063fa22c5b2ea48947f9d68` |
 | relay `pyproject.toml` | `d72ff5aff7336b67d5455ec01167d2a507f477d48a2a4fc72d14074e17a43c44` |
 
+> 2026-11-17 註：`templates/agent-reach/SKILL.md` 在本稽核之後於第 28 行後加了一段「會複製 Chrome 登入狀態」的使用前警示，檔案雜湊因此與上表不同；上表是稽核當時的快照，第 2 節引用的第 4、8、28 行位置不變。
+
 搜尋線索包括 provider 名稱、Messages 建立／串流、API endpoint、thinking／tool choice／工具版本；逐處區分執行程式、偵測字串、文件與範例。這不是完整資料流分析，也無法排除動態產生 endpoint、未納入檔案、外部 CLI 或 gateway 內部的 API 呼叫。以下 GitHub 連結是公開來源定位；行號以本機本輪內容為準，未確認遠端 main 相同。
 
 ## 2. 提示檔 findings 與分類

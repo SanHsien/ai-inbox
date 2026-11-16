@@ -10,6 +10,11 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "逆向工程與軟體封裝"
 short_title: "CLI-Anything"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "官方 README 的多支示範動圖（FreeCAD、Blender、Draw.io 等，總數未知）沒有逐支看，README 只看了 2 張主要圖片；Threads 貼文圖 1／1 張、留言 6／6 則都看過"
+source_images: 3
+source_replies: 6
 tags:
   - cli-anything
   - agent-native
@@ -30,6 +35,28 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：看了 Threads 貼文文字、作者附的 1 張圖、留言區全部 6 則（含作者 3 則），並回頭核對官方 repo 的 README、`HARNESS.md` 與 README 內 2 張主要圖片（前導漫畫、架構圖）。README 另有多支示範動圖（FreeCAD、Blender、Draw.io 等）沒有逐支看。
+
+- **作者圖片**：
+  - 貼文圖 1：一張自製的 GitHub Trending 資訊卡。寫著 2026-10-18 排行第 4、Python、54,205 星（當日 +574）、Apache-2.0，四個標籤是 AI Agents／CLI Automation／Agent-Native／Open Source。**沒有任何架構或流程內容**。
+  - README 圖 1（前導漫畫）：三格漫畫，從「軟體很多、CLI 很少」到戴上 CLI-Anything 之後各種軟體都能用指令操作，屬於宣傳圖。
+  - README 圖 2（架構圖）：`/cli-anything <software>` 指令驅動外掛的七個階段，依序是 **1 程式碼分析、2 CLI 設計、3 實作、4 測試規劃、5 測試實作、6 測試文件、7 發布到 PyPI**，產出放在 `agent-harness/` 資料夾，最下方是它所包裝的真實軟體。
+- **作者留言補充**：作者在留言貼了官方 GitHub 連結，其餘兩則是回應網友的閒聊，沒有技術補充。
+- **網友留言重點**：
+  - @more.yu_：真正受衝擊的是花大錢做「AI 整合」的廠商，精心設計的 API 與外掛生態可能被一個 CLI 工具繞過；以後賣的是「繞不過去的理由」。作者回應同意，認為護城河會從 API 轉到資料與信任。
+  - @chloe_cheung55：分享自己在業務端用 Dify 工作流做類似的事，屬於經驗分享，沒有對 CLI-Anything 的實測。
+  - 沒有人回報實際安裝或使用結果，也沒有反駁。
+- **對分析的影響**：
+  - **1.2 的「七階段管線」原本寫錯，已整段改寫**。原稿列的「常駐 Daemon」「Pydantic JSON Schema」「安全沙盒與身分驗證」三個階段在官方資料裡不存在；貼文與附圖也完全沒提七階段。正確的七階段依官方架構圖與 `cli-anything-plugin/HARNESS.md`：程式碼分析、CLI 架構設計、實作、測試規劃、測試實作、測試文件、PyPI 發布，另有 6.5 階段產生 `SKILL.md`。
+  - 原稿 `T-20261018-11` 做法裡的 `cli-anything inspect`／`cli-anything build` 指令不存在；官方入口是在 agent 裡執行 `/cli-anything <軟體路徑或 repo>`，補強用 `/refine`。該任務已完成且實測的是既有的 Mermaid harness，證據不受影響，任務文字不改。
+  - 補上官方自己寫的三項限制（原稿沒有）：要用最強等級的模型才生得好、**要有原始碼**（只有編譯檔的軟體品質會大幅下降）、通常要多跑幾輪 `/refine`。標題的「任意軟體」因此要打折，已在 1.1 加註。
+  - 星數：貼文圖寫 54,205；2026-11-16 查 GitHub API 是 58,788。授權 Apache-2.0 與圖一致。
+  - 2.2「值得採納」第 2 點寫的「Pydantic 驗證」沒有依據，官方只說用 Click 提供 `--json` 結構化輸出；該點的主張（工具要有 `--json` 與 exit code）仍成立，不改。
+
+---
+
 ## 1. 核心內容摘要
 
 ### 1.1 核心主張：從「仿生視覺點擊 (GUI)」走向「確定性指令 (CLI)」
@@ -40,7 +67,7 @@ tags:
 3. **缺乏反饋閉環**：點擊完成後沒有程式碼級別的 Return Code 或 stderr，Agent 必須再截一張圖「猜測」操作是否成功。
 4. **人類專用 vs. 模型原生**：GUI（圖形使用者介面）本質是為人類視覺神經系統設計的；**LLM 的原生語言是純文字、程式碼與結構化資料（JSON/Schema）**。
 
-香港大學數據科學實驗室（HKUDS）提出的 **`CLI-Anything`** 掀起了一場範式轉移：**「不要讓 AI 像人一樣點介面，而是讓軟體像程式庫一樣向 AI 開放 CLI」**。透過全自動化逆向與生成管線，將任意桌面應用程式、本地開源軟體、Web 平台或底層 SDK，直接封裝成具備狀態管理、REPL 與結構化輸出的「Agent-Native 命令列介面（CLI Harness）」，並一鍵輸出符合 Claude Code / Antigravity / OpenClaw 標準的 `SKILL.md`。
+香港大學數據科學實驗室（HKUDS）提出的 **`CLI-Anything`** 掀起了一場範式轉移：**「不要讓 AI 像人一樣點介面，而是讓軟體像程式庫一樣向 AI 開放 CLI」**。透過全自動化逆向與生成管線，將任意桌面應用程式、本地開源軟體、Web 平台或底層 SDK，直接封裝成具備狀態管理、REPL 與結構化輸出的「Agent-Native 命令列介面（CLI Harness）」（前提是拿得到原始碼，見 1.2 的官方限制），並一鍵輸出符合 Claude Code / Antigravity / OpenClaw 標準的 `SKILL.md`。
 
 ```
 [傳統 Computer Use vs. CLI-Anything Agent-Native 範式對比]
@@ -58,43 +85,37 @@ tags:
 
 ---
 
-### 1.2 核心技術架構：7 階段自動化 CLI 生成管線 (7-Stage Pipeline)
+### 1.2 核心技術架構：7 階段自動化 CLI 生成管線 (7-Phase Pipeline)
 
-`CLI-Anything` 具備一整套全自動將既有軟體或原始碼轉化為 Agent-Ready CLI 的引擎，其管線劃分為七大階段：
+> 2026-11-16 依官方架構圖與 `cli-anything-plugin/HARNESS.md` 重寫。原稿列的階段名稱（常駐 Daemon、Pydantic Schema、安全沙盒）查無依據，已移除。
+
+`CLI-Anything` 是裝在 Coding Agent 裡的外掛／技能：在 agent 內執行 `/cli-anything <軟體路徑或 repo>`，由 agent 照 `HARNESS.md` 的七個階段替目標軟體寫出一支 CLI。
 
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│               CLI-Anything 7-Stage Harness Generation Pipeline         │
-├────────────────────────────────────────────────────────────────────────┤
-│ 1. Codebase & API Inspection ── 掃描目標軟體之源碼、API、配置或內部物件架構 │
-│         │                                                              │
-│         ▼                                                              │
-│ 2. Command Tree Extraction  ── 提煉階層式指令樹 (e.g. app domain action) │
-│         │                                                              │
-│         ▼                                                              │
-│ 3. Stateful Daemon / REPL   ── 構建常駐背景行程與 Session，免去冷啟動開銷 │
-│         │                                                              │
-│         ▼                                                              │
-│ 4. Structured JSON Schemas  ── 注入 `--json` 旗標與明確 Pydantic/Type 契約│
-│         │                                                              │
-│         ▼                                                              │
-│ 5. Safe Sandboxing & Auth   ── 注入身份驗證隔離、權限檢查與危險操作確認機制 │
-│         │                                                              │
-│         ▼                                                              │
-│ 6. End-to-End Test Suite    ── 自動合成 CLI 測試用例與契約驗證 (Verify Suite)│
-│         │                                                              │
-│         ▼                                                              │
-│ 7. Agent Skill Synthesis    ── 產出 Claude Code / Antigravity `SKILL.md` 規範│
-└────────────────────────────────────────────────────────────────────────┘
+/cli-anything <software>
+        │
+        ▼
+1. Codebase Analysis   掃原始碼，把 GUI 動作對應到背後的 API
+2. CLI Design          規劃指令群組、狀態模型、輸出格式
+3. Implementation      用 Click 寫出 CLI：REPL、--json 輸出、undo/redo
+4. Test Planning       先寫 TEST.md（單元與端到端測試計畫）
+5. Test Implementation 實作測試
+6. Test Documentation  把測試結果寫回 TEST.md
+   6.5 SKILL.md        從 Click 裝飾器、setup.py、README 自動產生技能說明
+7. PyPI Publishing     建 setup.py，安裝到 PATH（指令名 cli-anything-<軟體>）
+        │
+        ▼
+agent-harness/ 資料夾（產出的 CLI） ──呼叫──> 真實軟體（Blender、LibreOffice…）
 ```
 
-1. **源碼與介面分析 (Inspection)**：自動掃描目標軟體（如 Blender、FreeCAD、GIMP 或內部專案）的 SDK、Python 綁定、C/C++ 標頭檔或 REST/IPC 協定，抽取出所有核心操作集合。
-2. **語意指令樹合成 (Command Tree)**：將扁平或複雜的 API 抽象為符合自然語言直覺的 POSIX CLI 指令，例如 `blender scene add-mesh --type cube` 或 `inkscape layer export --format svg`。
-3. **狀態維護與長效 Daemon (Stateful Harness)**：針對啟動耗時的重型軟體（如 3D 渲染器、CAD 工具），CLI Harness 提供後台 Daemon 與 Socket 通訊機制，避免 Agent 每次下指令都要重新啟動一次主程式。
-4. **純淨確定性輸出 (`--json`)**：所有指令預設或透過 `--json` 提供經過嚴格 Pydantic 驗證的結構化回傳，包含明確的物件 ID、執行狀態、數值資料與標準錯誤碼，徹底消除文字解析幻覺。
-5. **安全閘門與沙盒邊界 (Safety & Sandbox)**：在 CLI 層面攔截高危參數（如未授權覆寫檔案、外部未受控執行），支援唯讀模式與審計日誌。
-6. **自動化測試合成 (Contract Verification)**：系統自動生成單元測試與端到端測試，確認 CLI 每個指令都能正確與軟體核心通訊並回傳預期結果。
-7. **Agent 技能自描述 (SKILL.md Generation)**：自動生成包含參數說明、少樣本範例（Few-shot examples）與最佳實踐的 Agent Skill 說明文檔，讓任何 Coding Agent 能夠直接載入使用。
+- **真的去叫原軟體做事**：產出的 CLI 直接呼叫真實應用程式（例如用 LibreOffice 轉 PDF、用 Blender 算圖），不是另外重寫一套簡化版。
+- **狀態管理**：專案狀態持久化、支援 undo／redo，各 CLI 共用同一套 REPL 介面。
+- **輸出**：`--json` 給 agent 讀，預設輸出給人看；`--help` 讓 agent 自己查用法。
+- **覆蓋不足時**：再跑 `/refine`，由 agent 比對軟體全部功能與目前 CLI 的差距後補指令與測試。
+- **官方列出的限制**：
+  1. 需要最強等級的模型，較弱的模型生出來的 CLI 常不完整。
+  2. **要有原始碼**。只有編譯檔、需要反編譯的軟體，品質與覆蓋率會大幅下降。
+  3. 一次通常生不完，要反覆 `/refine`。
 
 ---
 

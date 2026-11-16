@@ -11,6 +11,11 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "逆向工程與軟體封裝"
 short_title: "REA 逆向工程 MCP Server"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "貼文顯示 28 則回覆，未登入只讀到 16／28 則；圖看了 1／1 張"
+source_images: 1
+source_replies: 16
 tags:
   - reverse-engineering
   - mcp
@@ -27,6 +32,25 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：貼文文字、作者圖片、作者留言、未登入可見的網友留言都看過。貼文顯示 28 則回覆，未登入可見 16 則（含作者 4 則），其餘要登入才看得到。
+
+- **作者圖片**：共 1 張。圖 1 是 `morluto/rea` README 截圖：標語「One MCP for reverse engineering across binaries, applications, and runtime behavior」、徽章列（npm v6.0.0、CI 顯示 failing、Skills 810、MIT、Discord）、GitHub Trending「#1 Repository Of The Day」標章、安裝指令 `npx rea-agents setup`，下方是反組譯器畫面（Mach-O／aarch64 的 `/usr/bin/true`）。
+- **作者留言補充**：釘選留言放 repo 連結 `github.com/morluto/rea`。有人問「需要 API 嗎」，作者答看怎麼用、把網址貼給 GPT 問就行；有人問雲端模型跑這個會不會一直說違反使用條款，作者答「違反它就不會跑」，沒有提供繞過做法。
+- **網友留言重點**：
+  - `more.yu_` 摘 README：分析全在本地跑、每個結論附證據與限制；Showcase 的 Notion 案例是從 renderer 的 clipboard API 追到 preload、IPC 再到 main process；並稱當時近 6 萬 star（留言者說法，未另查證）。
+  - `causecos` 反駁「SaaS 惡夢」：現代 SaaS 的核心價值都收在後端，會把核心功能放在用戶端的產品，本來就準備放棄或靠法律保護。
+  - `zara__4869` 提醒雲端模型可能以違反使用條款拒絕這類請求。
+  - `afterwinglin`：不逆向，只靠一張圖加描述也能生成類似 app。
+  - 其餘為問卷借串、留言卡位，與主題無關。
+- **對分析的影響**：
+  - 圖片證實安裝指令與「GitHub Trending 當日第 1」這兩點，與原筆記一致；另多出一個原筆記沒寫的事實：截圖當下 README 的 CI 徽章是 failing，版本是 npm v6.0.0（本 repo 沙盒實測用的是 v6.7.0，見 `T-20261019-09`）。
+  - 在 1.1 補上 `causecos` 的反駁：REA 能看到的是用戶端（Electron、APK、二進位、瀏覽器流量），後端邏輯逆向不到，「SaaS 惡夢」是貼文作者的說法，不是工具能力的結論。
+  - 雲端模型拒答的疑慮與本筆記 `T-20261026-26` 的合規 Prompt 範本對應，任務不需增減。
+
+---
+
 ## 1. 核心內容摘要
 
 ### 1.1 核心主張：SaaS 的逆向拆解時代——不需要原始碼也能理解與重造功能
@@ -34,6 +58,8 @@ tags:
 原貼文核心敘述：
 
 > 「昨天看到馬上玩了一天，SaaS 的惡夢還是來了，1 天就在 GitHub 登上 #1🔥。基本上讓你用 Agent 可以分析任何應用程式中的功能（即使沒有 source），看你想要優化或是重造都可以。」
+
+> 補充（2026-11-16 重審留言）：「SaaS 惡夢」是貼文作者的形容。留言有人指出現代 SaaS 的核心價值多在後端，REA 分析得到的只有用戶端程式與流量，後端邏輯拿不到；評估時以此為界。
 
 **REA（Reverse Engineer Anything）** 是由 `morluto` 開源的命令列工具暨 **Model Context Protocol (MCP) 伺服器**，專門為 AI Coding Agent（Claude Code、Codex、Cursor、Gemini CLI、Antigravity 等）提供結構化逆向工程能力。其核心價值在於：
 

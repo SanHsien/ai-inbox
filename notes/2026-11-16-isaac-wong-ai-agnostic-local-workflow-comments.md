@@ -7,6 +7,7 @@ author: "Isaac Wong（含 Ghibili Shu / Thlee Eafb / Ray Huang / Jabus Liu 等�
 analyzed_at: "2026-11-16"
 analyzed_by: "antigravity"
 source_review: full
+source_reviewed_at: 2026-11-16
 source_images: 2
 source_replies: 5
 status: archived
@@ -32,6 +33,21 @@ tags:
   - [`notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md`](./2026-10-17-claude-code-idle-compaction-cc-session-reader.md)（Claude Code session 紀錄與讀取架構）
   - [`notes/2026-10-17-claude-mem-autocompact-context.md`](./2026-10-17-claude-mem-autocompact-context.md)（Claude Mem 跨 Session 記憶機制）
   - [`notes/2026-10-26-ai-shared-memory-template-team-collaboration.md`](./2026-10-26-ai-shared-memory-template-team-collaboration.md)（AI 共用記憶與多 Agent 協作範本）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-17 補上本段：照範本格式整理本筆記既有的盤點內容（原本寫在第 1、2 節），沒有重開瀏覽器，也沒有新增資料。
+
+- **作者圖片**（1 張）：資訊圖表，與主文一起提出四點本地化做法（SOP 轉成 Skill 並用 Git 管理、透過 CLI／VS Code 保留本地檔案、Session 交接延續、用 Obsidian Vault 建 Memory 系統）。內容見第 1 節。frontmatter 的 `source_images: 2` 另含留言區 `Ray Huang` 貼的 `cleanupPeriodDays` 截圖 1 張，那張不是作者的圖。
+- **作者留言補充**：筆記既有內容沒有記錄作者本人在留言區的補充。
+- **網友留言重點**（5 串，逐串對照見第 2 節）：
+  - `Thlee Eafb`（反駁／補充）：檔案解決的是「存」，不是「找」與版本有效性；應記錄「決定＋理由＋被否決的選項」，更新時用取代而不是堆疊，Memory 與 Skill／Code 分開管理。
+  - `Ray Huang`（實務陷阱，附截圖）：Claude Code 的 `cleanupPeriodDays` 預設 30 天，啟動時會永久刪除超過期限的 `.jsonl` 對話紀錄；建議調高。另一串談用雲端 Agent 輔助養成地端模型能力。
+  - `Jabus Liu`（反駁）：把交接判斷全交給 Agent，幻覺會污染下一個 session；全量保留紀錄也會累積雜訊。
+  - `Ghibili Shu`、`鍾丞`、`Jabus Liu`（補充）：Markdown 加索引可縮短上下文讀取；YAML frontmatter 利於解析，但巢狀不宜過深。
+- **對分析的影響**：本篇有價值的工程討論主要在留言而不是主文。留言點出的三個陷阱（`cleanupPeriodDays` 30 天刪除、決策版本取代與去噪、交接幻覺防護）逐一對照本機現況後都已有對應做法（第 2 節對照表、第 3 節），所以結論是封存、不開任務。
 
 ---
 

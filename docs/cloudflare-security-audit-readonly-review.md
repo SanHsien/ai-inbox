@@ -59,9 +59,11 @@ Hunter 回傳一個 JSON 物件，包含 units、candidates、hardening、uncove
 | ledger validator | CLI 讀指定 JSON；node:fs／path／util，stdout／stderr 與結束碼同上（C7） | 檢查 canonical ID、狀態與 ownership 字串規則；不等於實際 artifacts 的檔案類型、晉升流程、來源證據或整個審查覆蓋率已成立 |
 | 兩份測試 | 使用 node:test／assert、fs／os／path、child_process；建立 OS 暫存目錄、寫 JSON、spawnSync Node，部分測試 spawn mkfifo、建立 symlink，finally rmSync 清除（C6、C7） | 測試會執行程式、建立／刪除檔案及啟動子程序，不是無副作用資料。未執行，不能報通過數；也沒有因「零依賴」豁免安全審批 |
 
-C6 限制輸入 5 MiB、64 層巢狀、陣列 1,000 筆、錯誤最多 100；C7 限制 5 MiB、10,000 units、巢狀集合 1,000 筆、64 層、遍歷 500,000 values、錯誤最多 100。這些是解析器上限，不是目標程序的 CPU／記憶體／磁碟限額。finding schema 的 additionalProperties=false 與語意檢查可以阻止狀態欄位混用，但不能對抗內容本身造假（C5～C7）。
+C6 限制輸入 5 MiB、64 層巢狀、陣列 1,000 筆、錯誤最多 100；C7 限制 5 MiB、10,000 units、巢狀集合 1,000 筆、64 層、遍歷 500,000 values、錯誤最多 100。這些是解析器上限，不是目標程序的 CPU／記憶體／磁碟限額。finding schema 的 additionalProperties=false 與語意檢查可以阻止狀態欄位混用，但不能對抗內容本身造假（C5～C7）。上游 [issue #134](https://github.com/cloudflare/security-audit-skill/issues/134)（2026-11-05）有實例：`trace[]`、`evidence[]` 只有檔名、行號與自由文字，回報者直接呼叫 `validateDocument`，拿 `report-schema.json` 第 1～3 行宣稱 SQL injection、證據指向 `LICENSE:1`，零錯誤通過。驗證器通過不代表 finding 是真的。
 
 **Windows 的實際程式門檻**：C6 的 readFileWithinLimit（604～648 行）與 C7 同名函式（721～759 行）要求 O_NOFOLLOW、O_NONBLOCK 是非零整數；不足就丟出安全讀取錯誤，不退回普通 readFile。測試亦用 HAS_SAFE_INPUT_OPEN，部分 symlink／FIFO 案例在 win32 跳過。故不能宣稱「只要裝 Node 就可在所有 Windows 上完整使用 CLI」。本輪未執行 Node 能力探測，當前主機可否通過是未查證；不要繞過這個檢查（C6、C7）。
+
+**上游實測佐證（2026-11-17 補）**：[issue #117](https://github.com/cloudflare/security-audit-skill/issues/117)（2026-10-27）的回報者在 Windows x64（NT build 26300）、Node v24.15.0 實測：`fs.constants.O_NOFOLLOW`、`O_NONBLOCK` 都是 `undefined`，兩支 CLI 對任何輸入都以結束碼 1 失敗；`validate-findings.test.cjs` 34 項中 22 過、7 失敗、5 跳過，`validate-coverage-ledger.test.cjs` 31 項中 24 過、0 失敗、7 跳過。第 4 階段把驗證器當硬閘門，所以 Windows 原生的 full audit 走不完結構化輸出。這與上面靜態讀碼的結論一致；該回報針對 2026-10-28 安裝的 `main`，不是本文固定的 commit，本機仍未自行執行。
 
 ## 最低代理呼叫預算
 
@@ -84,7 +86,7 @@ C6 限制輸入 5 MiB、64 層巢狀、陣列 1,000 筆、錯誤最多 100；C7 
 | 必要條件 | 來源契約 | 本輪狀態 |
 |---|---|---|
 | 無外網／必要時獨立 loopback | C1 universal safety | 未配置也未實測；本 session 可上網取來源不等於目標執行具備禁網 |
-| 空環境＋安全允許清單、專屬 home／temp／cache | C1、C3、C4 | 未建立；不得讀取／搬運真憑證來補測 |
+| 空環境＋安全允許清單、專屬 home／temp／cache | C1、C3、C4 | 未建立；不得讀取／搬運真憑證來補測。上游 [issue #128](https://github.com/cloudflare/security-audit-skill/issues/128)（2026-11-01）回報：Windows 11、沒有 OS 沙盒時，代理為了滿足這一條，沒有另建 scratch 目錄而是直接清空真實家目錄（代理設定、已裝 skills、SSH 金鑰、對話紀錄、系統 Python），不進回收筒。SKILL.md 只要求隔離、沒有給機制，也沒有 fail-closed 的環境檢查 |
 | 目標與工具鏈唯讀、只允許 scratch 寫入 | C1 write isolation | clone／worktree 本身不實施此限制；未建立 OS ACL／掛載隔離證據 |
 | CPU、記憶體、程序數、檔案大小、磁碟、時限 | C1 universal safety | 未建立完整限額；spawn timeout 單項不足 |
 | parent 安全晉升 | C1 的 descriptor traversal、no-follow、regular file、link count=1、排他建立與累計大小檢查 | Markdown 給程序，未附已驗證的 Windows 等價實作；reparse point／hardlink／競態行為未測 |
@@ -107,7 +109,7 @@ C6 限制輸入 5 MiB、64 層巢狀、陣列 1,000 筆、錯誤最多 100；C7 
 
 目前可在 Windows 既有人工／agent 唯讀流程參考 C8 的權限追蹤、同權限與跨邊界區分、C4 的證據缺口寫法；不啟動此 Skill、不消耗多模型稽核配額。完整 audit 與兩支 CLI 暫不採納，沒有通過動態測試的結論。
 
-未查項目：實際 Node 平台常數與 CLI 行為、Windows 競態安全 API、沙盒禁網／資源控制、所有 schema interpreter 分支的正確性、完整跨檔／跨帳本一致性與實際來源事實、模型總用量。C9 非逐領域完整稽核；也未執行外部 SkillSpector 或既有安全檢查程式，本報告不能代替採納前的安全審批。
+未查項目（2026-11-17 更新）：Node 平台常數與 CLI 在 Windows 的行為，本機仍未執行，但上游 issue #117 已有第三方實測（兩支 CLI 都不能用），不再是完全未知；捏造的 finding 能通過驗證已有 issue #134 的實例；「準備空環境」可能被代理做成清空真實家目錄已有 issue #128 的事故回報。三則 issue 於 2026-11-17 以 GitHub API 查證時都是 open，維護者均未回覆，都是回報者自述，本庫沒有重現。仍未查：Windows 競態安全 API、沙盒禁網／資源控制、所有 schema interpreter 分支的正確性、完整跨檔／跨帳本一致性與實際來源事實、模型總用量。C9 非逐領域完整稽核；也未執行外部 SkillSpector 或既有安全檢查程式，本報告不能代替採納前的安全審批。日後要跑時注意：上游 [issue #144](https://github.com/cloudflare/security-audit-skill/issues/144)（2026-11-09）回報 SkillSpector 把這個 skill 判成 100 分、DO_NOT_INSTALL，14 項命中都落在攻擊類別說明與驗證器測試資料，回報者逐行看過認為是誤報；這類資安教材型 skill 的掃描結果要逐項判讀，不能只看總分。
 
 若未來另獲動態執行授權，先完成既定第三方 Skill 安全審批，再選能實施上表全部控制的隔離環境。使用單一假資料 fixture、固定來源／工具鏈、禁網與允許清單環境；先驗證越界寫入、外連及超額資源均被 OS 阻止，再在隔離內驗正例／壞 JSON、超限、symlink／特殊檔案的拒絕。Parent 只晉升預先列出的非機密最小證據；任一控制不足就停止，保持未驗證。這是後續驗證條件，不是本輪執行紀錄，也不新增 ROADMAP 工作。
 

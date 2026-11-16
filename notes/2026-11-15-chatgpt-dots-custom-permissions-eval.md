@@ -10,6 +10,9 @@ status: archived
 cluster: 3
 cluster_role: "Dots權限規則評估"
 short_title: "ChatGPT Dots權限評估"
+source_reviewed_at: 2026-11-17
+source_review: unavailable
+source_review_note: "原社群貼文沒有留下連結（source_url 只填產品首頁、作者匿名），找不到原文；設定頁要登入才看得到，沒有登入"
 tags:
   - chatgpt-dots
   - permissions
@@ -27,6 +30,17 @@ tags:
 - **相關交叉參照**：
   - [`docs/karpathy-rules-mechanical-hardening-spec.md`](../docs/karpathy-rules-mechanical-hardening-spec.md)（文字規則 vs 機械防線硬化規格）
   - [`notes/2026-11-15-danyuchn-pii-guard-claude-mod-eval.md`](./2026-11-15-danyuchn-pii-guard-claude-mod-eval.md)（本機 Fail-Closed 個資遮罩與外洩防護）
+
+---
+
+## 0. 原始資料盤點
+
+> 2026-11-17 重審：`source_url` 填的是產品首頁，不是貼文；原社群貼文沒有留下連結，找不到。
+
+- **作者圖片**：看不到（沒有原文連結）。貼文若附了設定頁截圖，本篇沒有看過。
+- **作者留言補充**：看不到。
+- **網友留言重點**：看不到。
+- **對分析的影響**：無法用圖片或留言檢驗。第 1 節「官方機制實況查證」描述的設定路徑、`Auto-review` 與三層權限，要登入帳號才能在設定頁核對，本輪沒有登入，這些敘述維持原筆記的查證程度，沒有新增佐證。封存結論不變。
 
 ---
 

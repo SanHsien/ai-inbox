@@ -1,6 +1,6 @@
 ---
 id: 2026-10-17-hansun-fullstack-agent-deployment-manual
-title: "HanSun 全端網站從零建置部署手冊：Codex/Claude 驅動的商業系統架構與 6 大 Agent 轉化實踐"
+title: "HanSun 網站從零建置與部署技術手冊：Next.js、Supabase、Vercel 與 Agent Workflow"
 source_url: "https://www.hansunarchitects.com/zh-TW/knowledge/hansun-website-build-deployment-technical-manual-2026"
 source_platform: "Web / Blog"
 author: "HanSun Architects (瀚森建築)"
@@ -10,6 +10,11 @@ status: done
 cluster: "4"
 cluster_role: "全端部署與自動化落地"
 short_title: "HanSun 全端建置部署手冊"
+source_review: partial
+source_reviewed_at: 2026-11-16
+source_review_note: "文末放在 Google Drive 的完整手冊（Word 檔）沒看；官網文章全文讀過，文章無圖（0／0 張）、無留言區（0／0 則）"
+source_images: 0
+source_replies: 0
 tags:
   - fullstack-architecture
   - agent-workflow
@@ -19,7 +24,7 @@ tags:
   - security-audit
 ---
 
-# HanSun 全端網站從零建置部署手冊：Codex/Claude 驅動的商業系統架構與 6 大 Agent 轉化實踐
+# HanSun 網站從零建置與部署技術手冊：Next.js、Supabase、Vercel 與 Agent Workflow
 
 - **來源連結**：[HanSun Architects 知識文章](https://www.hansunarchitects.com/zh-TW/knowledge/hansun-website-build-deployment-technical-manual-2026)
 - **發表作者**：`HanSun Architects (瀚森建築)`
@@ -28,16 +33,33 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 重審：官網文章全文（十章，2026-10-15 發布）讀過。文章沒有留言區。文末另有一份放在 Google Drive 的完整手冊（Word 檔），依本 repo 規則不下載，**沒有看**。
+
+- **作者圖片**：文章內文沒有圖，沒有架構圖或截圖。頁面上唯一的圖是文末的官方 LINE QR Code，與內容無關，不計。
+- **作者留言補充**：無。文末只有官方 LINE 的加入說明與防詐提醒。
+- **網友留言重點**：無（頁面沒有留言功能）。
+- **對分析的影響**：
+  - **1.3 節「作者提煉的 6 大 Agent 轉化實踐模式」在網頁文章裡找不到**。文章十章是：學習目標、建置順序、系統與資料流、資料庫與 Migration、報名價格與折價券、金流與通知、Vercel 部署、QA 與安全交接、學員檢查清單、參考文件，沒有 Website Builder Agent、SaaS 範本這六項。可能出自沒看的 Word 完整版，也可能是當初分析時自行延伸。已在 1.3 節標明出處未查證；標題原本也寫了「6 大 Agent 轉化實踐」，已拿掉，改用官網文章自己的標題（`<h1>`：「HanSun 網站從零建置與部署技術手冊｜Next.js、Supabase、Vercel 與 Agent Workflow」）。
+  - 1.1 節三處與原文不符，已改：文章定位是「學員專屬」教材，沒有提團隊是否為非工程背景；通知寫的是 Email／LINE，沒有指名 LINE Notify；回滾寫的是「回到上一個已驗證版本」，沒有說零停機。
+  - 文章有而原筆記沒寫的做法，補進 1.1 節：建置順序是「先資料模型再 UI、先後端計價再前台顯示」；Webhook 除了簽章還要核對金額、幣別、課程與 Email；GitHub 用私有 repo 加明確的正式分支。
+  - 兩個已完成任務依據的價格快照、軟刪除、RLS、Webhook 驗證、檢查清單，文章裡都有，不受影響。
+
+---
+
 ## 1. 核心內容摘要與技術深挖
 
 ### 1.1 案例背景：非傳統工程團隊透過 Agent 打造商業級全端系統
-- **背景**：台灣建築事務所「HanSun Architects（瀚森建築）」團隊由非傳統軟體工程師背景出發，深度借助 **Codex 與 Claude Code**，從零完整建置並維運具備高專業度、多語系、會員登入、課程報名、多元金流與後台管理的官方正式商業網站。
+- **背景**：台灣建築事務所「HanSun Architects（瀚森建築）」把自家官網（多語系、學員登入、課程報名、多元金流、後台管理）的建置與部署做法，寫成給課程學員的技術手冊，工作流用到 **Codex 與 Claude Code**。文章沒有說明團隊的工程背景；「建築事務所所以非工程背景」是推測。
 - **技術架構全貌**：
   - **前端展示與路由**：Next.js App Router (TypeScript) + Tailwind CSS + Framer Motion + `next-intl` (多語系繁中/EN/日文)。
   - **資料層與儲存**：Supabase PostgreSQL + Storage + Migration 腳本化管理 + RLS (Row Level Security)。
   - **金流結算與對帳**：Stripe、LINE Pay、ATM 銀行轉帳（末五碼人工核對）+ 後端防竄改 `pricing_snapshot` 機制。
-  - **通知與防護**：Nodemailer (Email)、LINE Notify、Cloudflare Turnstile (人機防刷)。
-  - **部署與維運**：Vercel (Preview 分支驗證、Production 部署、Log 監控與零停機回滾)。
+  - **通知與防護**：Nodemailer (Email)、LINE 通知（文章未指名用哪個 LINE 服務）、Turnstile (人機防刷)。
+  - **部署與維運**：Vercel (Preview、Production、監控與回滾；回滾是回到上一個已驗證版本)；GitHub 用私有 repo 加明確的正式分支。
+  - **建置順序（文章第二章）**：先做資料模型與 db adapter 再做 UI；先做課程 CRUD 再做報名表；先做後端計價再接前台顯示；先有價格快照再做匯出與對帳；測試與 build 通過後才部署正式環境。
+  - **Webhook 驗證範圍（文章第六章）**：Stripe／LINE Pay 的請求、確認與 webhook 都要核對金額、幣別、課程編號、Email 與 webhook secret，不只驗簽章。
 
 ### 1.2 商業系統資料流與安全邊界可視化
 
@@ -78,7 +100,9 @@ tags:
 ```
 
 ### 1.3 作者提煉的 6 大 Agent 轉化實踐模式
-作者將這份從實戰中淬鍊的手冊，抽象出 6 種極具商業價值的 AI 延伸應用：
+> ⚠️ 2026-11-16 重審：官網文章十章裡**沒有這一段**，出處未查證（可能在未下載的 Word 完整版，也可能是分析時的延伸）。以下保留原內容供參考，不可當成作者的主張引用。
+
+原筆記寫：作者將這份從實戰中淬鍊的手冊，抽象出 6 種極具商業價值的 AI 延伸應用：
 1. **Website Builder Agent**：輸入網站需求，AI 自動規劃專案目錄、Supabase 資料庫綱要、前後端代碼與部署驗收清單。
 2. **SKILLS 技能套件**：將知識拆解為可被 Codex / Claude Code 直接調用的標準化 `SKILL.md`（如初始化、Supabase Migration、金流整合、資安檢查）。
 3. **AI 網站管理控制台 (Admin CMS)**：可視化監控文章、學員報名、資料庫健康度與日誌。

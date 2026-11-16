@@ -10,6 +10,10 @@ status: archived
 cluster: "2"
 cluster_role: "垂直工作流技能包"
 short_title: "GitHub週榜五大ClaudeSkills"
+source_review: full
+source_reviewed_at: 2026-11-17
+source_images: 0
+source_replies: 2
 tags:
   - claude-code
   - agent-skills
@@ -23,7 +27,7 @@ tags:
 
 # 評析「一股GoodJob」GitHub 週榜 5 大 Claude Skills：Hallmark 反 Slop、claude-mem 跨會話記憶、Game Studios 遊戲工坊、Claude SEO 與 OpenMontage 影音管線
 
-- **來源貼文**：[Facebook 一股GoodJob 貼文（`122222789390467716`）](https://www.facebook.com/share/1H8b9odnC2/)（短網址 `1H8b9odnC2`，245 讚，111 次分享）
+- **來源貼文**：[Facebook 一股GoodJob 貼文（`122222789390467716`）](https://www.facebook.com/share/1H8b9odnC2/)（短網址 `1H8b9odnC2`，初次分析時 245 讚、111 次分享；2026-11-16 重看為 270 個心情、2 則留言、121 次分享）
 - **官方開源 GitHub 倉庫（主動深挖查證）**：
   1. [`Nutlope/hallmark`](https://github.com/Nutlope/hallmark)（51,487 Stars，MIT，Together AI / Hassan El Mghari）
   2. [`thedotmack/claude-mem`](https://github.com/thedotmack/claude-mem)（115,232 Stars，Apache-2.0，thedotmack）
@@ -39,9 +43,32 @@ tags:
 
 ---
 
+## 0. 原始資料盤點
+
+> 2026-11-16 以未登入的內建瀏覽器重看 Facebook 貼文：貼文全文、留言 2 則（全部，都是作者自己留的）、留言裡的連結預覽卡。
+
+- **作者圖片**：無。貼文是純文字，沒有圖片或影片。留言區有兩張連結預覽卡（Claude 下載頁的縮圖、粉專訂閱頁的縮圖），沒有資訊內容。
+- **作者留言補充**：
+  - 第 1 則：貼出 Claude 桌面版下載頁與五個 repo 的連結。其中第五個寫的是 `calesthio/OpenMontage`。
+  - 第 2 則：推廣自家付費訂閱（每月 NT$60 的「必裝 skill 中文版」社團），說明卡在英文或不會裝可以進社團問。
+- **網友留言重點**：沒有網友留言（2 則都是作者）。
+- **貼文內文裡原筆記沒寫到的細節**：
+  - 安裝前提：照 Claude 桌面版的 Code 分頁寫，該分頁要 Pro 以上付費方案；網頁版能不能跑，作者說自己沒試過。
+  - 星數是 2026-11-04 查的（Hallmark 4.7 萬、claude-mem 11 萬、Game Studios 3.4 萬、Claude SEO 2.6 萬、OpenMontage 7.6 萬），並附各自「這週多了幾顆」；貼文開頭說最猛的一個 7 天多了 1 萬顆，指的是 Hallmark（+10,517）。
+  - claude-mem：安裝時會要求登入它家帳號，有 30 天免費試用，不想登入可以跳過；**試用結束後，記憶功能改吃使用者自己的 Claude 額度**。
+  - Game Studios 每一步要使用者點頭才動手；Claude SEO 的報告存在使用者自己電腦；OpenMontage 會先給 2 到 3 個企劃與預估費用。
+- **對分析的影響**：
+  1. **OpenMontage 的 repo 路徑查證**：作者留言給的是 `calesthio/OpenMontage`，本筆記寫的是 `OpenMontageInc/OpenMontage`。2026-11-16 直連查證：前者會 301 轉址到後者，GitHub API 回傳的是同一個 repo（非 fork，擁有者為組織帳號），也就是 repo 已從個人帳號轉移到組織。本筆記的連結是現行路徑，不用改；在第 2.5 節補一句說明舊路徑。
+  2. **claude-mem 的成本補充**：原筆記 2.2 節只寫試用與遙測。貼文指出試用後會改用使用者自己的 Claude 額度做記憶壓縮，已補進 2.2 節（此為貼文作者的說法，未對照 README 逐字查證）。
+  3. **星數是不同日期的快照**：本筆記列的星數（合計約 31 萬）是 2026-11-09 分析時查的；貼文寫的是 11-04 的數字（合計約 30 萬）。兩者都對，已在第 1 節註明日期。
+  4. 貼文有明確的商業動機（導向付費社團），但五個專案的描述與本筆記對 README 的查證沒有衝突。
+  5. 維持歸檔、不開任務。
+
+---
+
 ## 1. 核心內容摘要與生態趨勢（Executive Summary）
 
-Facebook 粉專「一股GoodJob」彙整了 2026 年 11 月初 GitHub Trending 週榜上暴漲的 5 款 Claude Code 開源 Skills。這 5 個專案合計斬獲超過 **31 萬顆 GitHub Stars**，代表了當前 Agentic AI 在垂直領域落地的五大主流演進方向：
+Facebook 粉專「一股GoodJob」彙整了 2026 年 11 月初 GitHub Trending 週榜上暴漲的 5 款 Claude Code 開源 Skills。這 5 個專案合計超過 **31 萬顆 GitHub Stars**（本筆記 2026-11-09 查；貼文寫的是 11-04 的數字，合計約 30 萬），代表了當前 Agentic AI 在垂直領域落地的五大主流演進方向：
 
 ```
 +-----------------------------------------------------------------------------------+
@@ -82,6 +109,7 @@ Facebook 粉專「一股GoodJob」彙整了 2026 年 11 月初 GitHub Trending �
 - **運作機制**：透過 Hook 機制即時擷取 Agent 在 Session 中的工具調用與決策軌跡，交由背景 LLM 提取精華並壓縮為語義向量或結構化知識條目；下次開啟全新對話時，依據當前 Prompt 自動檢索關聯記憶並注入上下文。
 - **重要資安與隱私防護須知**：
   - Cloud Sync 為選用（opt-in）；30 天試用屬 claude-mem observer 模型（結帳頁需付款方式）；匿名使用統計預設開啟，可用 `npx claude-mem telemetry disable` 關閉（依 README，2026-11-14 查證）。
+  - 貼文另指出：安裝時會要求登入其帳號（可跳過）；30 天試用結束後，記憶功能改用使用者自己的 Claude 額度（貼文作者說法，未逐字對照 README）。
   - **資安硬原則**：在處理企業專案、私鑰、金鑰或機密代碼時，**絕對禁止將記憶同步至其第三方雲端平台**。使用者應選擇純本機儲存，或利用其標籤過濾功能將機密目錄標記為 `private` 排除上傳。
 
 ### 2.3 Claude Code Game Studios（`Donchitos/Claude-Code-Game-Studios`，37.3K Stars）：敏捷勝過重型文檔
@@ -98,6 +126,7 @@ Facebook 粉專「一股GoodJob」彙整了 2026 年 11 月初 GitHub Trending �
   - 評估網頁是否支援 `llms.txt`、是否相容 WebMCP、是否便於 Agentic Browsing 快速提取資訊，使網頁更易被 Perplexity、SearchGPT 與 Google AI Overviews 引用。
 
 ### 2.5 OpenMontage（`OpenMontageInc/OpenMontage`，78.9K Stars）：逆向節奏與開放資產零成本剪輯
+- **repo 路徑**：貼文作者留言給的舊路徑 `calesthio/OpenMontage` 會轉址到現行的 `OpenMontageInc/OpenMontage`（2026-11-16 直連查證，同一個 repo，已由個人帳號轉移到組織）。
 - **核心功能**：輸入一段現有爆款短影音（YouTube / Reels / TikTok），自動分析其節奏曲線、開頭視覺錨點與分鏡轉換頻率，逆向生成 2～3 個具備相同張力的新腳本。
 - **成本階梯解耦**：
   - **零成本路徑**：調用 NASA、Wikimedia Commons、The Met 等開放典藏真實影像，搭配本地開源 TTS 語音，由本機 Python + FFmpeg 進行全自動裁切對齊與渲染，零成本路徑為選項（開放典藏影像＋本地開源 TTS）；README 範例成本 US$1.33（THE LAST BANANA）。
