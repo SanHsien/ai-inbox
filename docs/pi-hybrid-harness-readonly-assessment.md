@@ -41,12 +41,12 @@ P3 明示工作目錄不阻止存取其他可存取路徑；project trust 也不
 
 Windows 原生是官方列出的使用方式：npm 路徑要求上述 Node 版本；Bash 預設尋找 Git for Windows，模型可透過 defaultTools 選用 PowerShell。PowerShell 工具優先 pwsh，再退回 Windows PowerShell，啟動參數含 NoProfile、NonInteractive、ExecutionPolicy Bypass；這不是取得管理員權限，也不是沙盒。`!`／`!!` 仍走 Bash。Windows Terminal 是文件建議環境；以上只確認文件與程式契約，未測本機安裝或終端行為（P2、P3）。
 
-上游 issue 的 Windows 實測回報（2026-11-17 補；以 GitHub API 查證狀態，內容是回報者自述，本庫沒有重現，細節見[來源筆記](../notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md)第 0 節）：
+上游 issue 的 Windows 實測回報（2026-11-17 補、2026-11-18 再補 #7547 三點；以 GitHub API 查證狀態，內容是回報者自述，本庫沒有重現，細節見[來源筆記](../notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md)第 0 節）：
 
 | 上游 issue | 回報的情形 | 狀態（2026-11-17） | 對本評估的意義 |
 |---|---|---|---|
 | [#9361](https://github.com/earendil-works/pi/issues/9361) | 根因已確定，不是偶發：擴充只要自己重建 bash 工具而沒把設定傳進去，設定檔的 `shellPath` 與 `shellCommandPrefix` 就一定被丟掉；官方附的擴充範例也這樣寫，macOS 上同樣重現。Windows 另有一半：沒有 `shellPath` 可用時會退回 PATH 上第一個 `bash.exe`，開了 WSL 的機器拿到的是 `C:\Windows\System32\bash.exe`（WSL 啟動器），指令就跑進 Linux 環境 | issue 開啟（14 則留言）。修正 PR [#10538](https://github.com/earendil-works/pi/pull/10538) 於 2026-10-06 關閉、**未合併**；最新發行版 v1.5.2 | 混合 harness 要自己寫擴充，這是寫擴充時必須自己處理的事：重建 bash 工具時把工作階段的 shell 設定明確傳進去，不要直接呼叫 `bash`。不是等上游修好就沒事 |
-| [#7547](https://github.com/earendil-works/pi/issues/7547) | 協作者彙整 Windows 四種跑法（Git Bash、WSL bash、純 PowerShell、整個放 WSL2），每一種都有毛病。可選的 PowerShell 工具加入後，多位使用者回報把 bash 整個關掉、只留 PowerShell 錯誤明顯變少；也有人測到兩個工具都開時部分模型仍一律選 bash。PowerShell 工具自己的已知問題：指令太長會在啟動前被 Windows 拒絕、系統語言不是英文時輸出可能亂碼 | issue 開啟（96 則留言） | 與上段「可透過 defaultTools 選用 PowerShell」一致。Windows 原生若要試，關掉 bash、只留 PowerShell 是目前回報最穩的組合；但很多擴充不支援 PowerShell，`!`／`!!` 也仍走 Bash |
+| [#7547](https://github.com/earendil-works/pi/issues/7547) | 協作者彙整 Windows 四種跑法（Git Bash、WSL bash、純 PowerShell、整個放 WSL2），每一種都有毛病。可選的 PowerShell 工具加入後，多位使用者回報把 bash 整個關掉、只留 PowerShell 錯誤明顯變少；也有人測到兩個工具都開時部分模型仍一律選 bash。PowerShell 工具自己的已知問題：指令太長會在啟動前被 Windows 拒絕、系統語言不是英文時輸出可能亂碼。**2026-11-18 再補三點**：(1) 內建 PowerShell 工具**會弄丟原生程式的結束碼**：回報者在 CI 的 Windows 機器上測，`node` 以 7 結束時工具回報 1，後面再接一句指令就回報 0，模型會把失敗當成功（2026-10-05 留言，附修正建議，未見合併）。(2) **權限類擴充多半沒包到 PowerShell 工具**：協作者 2026-08-25 自己提醒權限擴充可能沒有正確包住新的 PowerShell 工具；企業使用者實測「權限擴充配 PowerShell」與「Git Bash 配沙盒工具」都不能用，Windows 上目前沒有一組可用的權限＋沙盒組合。協作者 2026-10-30 明講不會做官方的權限參考方案，頂多補沙盒範例。(3) 在 bash 裡呼叫 PowerShell 指令時，`$` 變數會先被 bash 展開，範圍很窄的比對可能變得很寬，破壞性指令會影響到預期以外的檔案 | issue 開啟（96 則留言） | 與上段「可透過 defaultTools 選用 PowerShell」一致。Windows 原生若要試，關掉 bash、只留 PowerShell 是目前回報最穩的組合；但很多擴充不支援 PowerShell，`!`／`!!` 也仍走 Bash。再補的三點讓「只留 PowerShell」也不能直接信任：結束碼要自己在指令尾端補 `exit $LASTEXITCODE` 或另外檢查輸出；不能假設裝了權限擴充就管得到 PowerShell 工具；兩個工具都開時不要讓模型從 bash 轉呼叫 PowerShell |
 
 ```text
 擴充重建 bash 工具、沒傳設定 ──▶ shellPath／shellCommandPrefix 被丟掉（各平台都會）
@@ -60,7 +60,7 @@ Windows 原生是官方列出的使用方式：npm 路徑要求上述 Node 版�
                          指令跑進 Linux 環境，專案工具找不到
 ```
 
-這兩則不改變本文結論：它們是終端相容性問題，不是隔離能力；Pi 仍然沒有新增強制隔離。
+這兩則不改變本文結論，而且多兩個不採納的理由：PowerShell 工具回報的結束碼不可靠；Windows 上沒有可用的權限＋沙盒組合，上游也明講不做官方權限方案。其餘是終端相容性問題，不是隔離能力；Pi 仍然沒有新增強制隔離。
 
 ## 三家授權與費用證據
 
@@ -69,7 +69,7 @@ Windows 原生是官方列出的使用方式：npm 路徑要求上述 Node 版�
 | 廠商 | 官方產品委派 | 直接 Pi provider | 證據狀態與費用界線 |
 |---|---|---|---|
 | OpenAI | [官方驗證文件](https://developers.openai.com/codex/auth/)區分 ChatGPT 訂閱登入與 API key；可保留官方 Codex CLI 自行驗證 | P5 宣告 openai-codex OAuth／isSubscription，連 ChatGPT backend | 官方 CLI 的兩種驗證方式已查；Pi 使用特定訂閱憑證的廠商明確授權未查證。API key 用量走 API 計費；官方 CLI 仍耗方案用量，不推定免費或無限 |
-| Anthropic | [官方產品文件](https://code.claude.com/docs/en/overview)提供 CLI；[法律與合規文件](https://code.claude.com/docs/en/legal-and-compliance)要求使用原版程式與各自帳號 | P5 接受 API key／OAuth token／bearer token，只代表接得上 | 官方文件將 OAuth 定位於原生應用，且禁止第三方代收／中介 Claude.ai 憑證及代用個人方案。不可把 Max／Pro token 轉接 Pi 當採納路徑；API 或支援的雲端供應商須另核費用 |
+| Anthropic | [官方產品文件](https://code.claude.com/docs/en/overview)提供 CLI；[法律與合規文件](https://code.claude.com/docs/en/legal-and-compliance)要求使用原版程式與各自帳號 | P5 接受 API key／OAuth token／bearer token，只代表接得上 | 官方文件將 OAuth 定位於原生應用，且禁止第三方代收／中介 Claude.ai 憑證及代用個人方案。不可把 Max／Pro token 轉接 Pi 當採納路徑；API 或支援的雲端供應商須另核費用。**上游實例（2026-11-18 補）**：[#581](https://github.com/earendil-works/pi/issues/581)（已關閉，21 則留言）裡，Claude 訂閱憑證在 Pi 回 400；網友比對後發現同一組憑證不帶工具能用、帶 Pi 的工具名稱就被拒，推斷伺服器端在比對工具名稱。維護者先拿掉登入功能，同一天又加回來請大家更新。也就是說，登入功能恢復是**靠繞過伺服器端的工具名稱比對，不是取得 Anthropic 授權**；留言者自己也說隨時會再壞，並擔心帳號被停用。功能還在不代表可以用 |
 | Google | [Antigravity 方案文件](https://antigravity.google/docs/plans)列產品與 CLI 用量；現有 relay 走 Desktop sidecar | P5 目錄有 Google／Vertex，未列 antigravity provider；不推論全倉不存在任何擴充 | 官方方案額度與 API／Vertex 憑證是不同通路。Pi 重用 Antigravity 個人額度的明確授權未查證；不提取 token。relay 的 agentapi 相容契約不等於 Google 官方穩定介面保證 |
 
 官方 CLI 委派的優點是驗證留在官方程式內；仍須遵守各產品條款與本機路由政策，不能據此宣稱所有包裝方式均獲授權。Pi 控制平面若也使用模型，會在下游 CLI 用量以外多消耗一份模型上下文與工具迴圈；本輪未量測 token、沒有美元或節省比例結論（P5 及上列官方文件）。

@@ -10,11 +10,10 @@ status: done
 cluster: 3
 cluster_role: "Codex插件協作"
 short_title: "CodexPluginCC雙AI協作"
-source_review: partial
-source_reviewed_at: 2026-11-17
+source_review: full
+source_reviewed_at: 2026-11-18
 source_images: 17
-source_replies: 79
-source_review_note: "只差 Instagram Reel 的留言 0／430 則（已登入，但內建瀏覽器的窄版面點不開留言面板）。其餘補完：Threads 留言 79／85 則（熱門、最新都捲到底，其餘 6 則平台不顯示）；輪播第 7 張影片抽 5 格、Reel 抽 17 格看過；README 的示範影片檔在 repo 裡不存在（404）；外掛 issue 讀了留言最多的 5 則全部留言，未關閉共 542 個沒有全讀"
+source_replies: 128
 tags:
   - claude-code
   - codex
@@ -52,7 +51,8 @@ tags:
   - `@dragon.5254889`（新讀到）提了三點，都是網友自述、沒有附資料：同一個模型自己審自己容易有相同盲點，換一個沒參與製作的模型較能挑出問題；旗艦模型只做規劃與拍板、日常模型做執行，費用可差一個數量級；**外掛走的是 ChatGPT 帳號而不是 API key，用量與 API 用量是兩本帳，對帳時不要混在一起**。
   - `@ckk225403` 問網頁版能否使用（作者回覆見上）。`@billywindy416158` 說原本就同時用兩家、會試 Opus 5.5。
   - 沒有人回報安裝失敗、Windows 問題或實際用量數字。
-- **Instagram Reel**（[同篇內容的短影片版](https://www.instagram.com/reel/Dd84zr7DZ2L/)，65 秒，2026-11-17 抽 17 格看）：分 7 段把 Threads 輪播重講一次（各有長處、切換成本、桌面版加外掛的畫面、為什麼從 Claude 下指令、Vox 短片分工、請 Codex 提反方意見、即時語音交給 Codex），結尾請觀眾留言「協作」。桌面版那段的畫面是設定 → Plugins → Add marketplace 輸入 `openai/codex-plugin-cc`，與文章步驟一致。沒有新資訊。Reel 顯示 430 則留言，內建瀏覽器點不開留言面板，一則都沒讀到。
+- **Instagram Reel**（[同篇內容的短影片版](https://www.instagram.com/reel/Dd84zr7DZ2L/)，65 秒，2026-11-17 抽 17 格看）：分 7 段把 Threads 輪播重講一次（各有長處、切換成本、桌面版加外掛的畫面、為什麼從 Claude 下指令、Vox 短片分工、請 Codex 提反方意見、即時語音交給 Codex），結尾請觀眾留言「協作」。桌面版那段的畫面是設定 → Plugins → Add marketplace 輸入 `openai/codex-plugin-cc`，與文章步驟一致。沒有新資訊。Reel 顯示 430 則留言；2026-11-17 在 Reel 檢視頁點不開留言面板，2026-11-18 改開貼文頁後讀到第一頁（見下）。
+  - **Reel 留言（2026-11-18 讀到 49／430 則）**：讀到的 24 則留言全部只有關鍵字「協作」，底下各有一則作者的固定回覆（「私訊你了」「已經私訊你囉」「私訊送出」幾種句型輪替），沒有提問、實測或反駁。計數的 430 則約一半是這種作者回覆。這是熱門排序的第一頁，後面的還沒讀到，所以不能斷定整串都沒有實質留言。
 - **外掛 repo**（2026-11-17 用 `gh api` 補讀）：
   - README 的示範影片標籤指向 `./docs/plugin-demo.webm`，但 repo 目前沒有 `docs/` 目錄，整個檔案樹也沒有任何影片檔，直接取檔回 404。所以這支影片看不到，不是沒去看。
   - 未關閉的 issue／PR 現為 542 個，沒有全讀。讀了留言最多的 5 則（都是外部貢獻者開的修正 PR，都還沒合併）的本文與全部留言：[#541](https://github.com/openai/codex-plugin-cc/pull/541)（40 則，多數是反覆呼叫自動審查的指令）、[#652](https://github.com/openai/codex-plugin-cc/pull/652)（12 則）、[#707](https://github.com/openai/codex-plugin-cc/pull/707)（11 則）、[#836](https://github.com/openai/codex-plugin-cc/pull/836)（10 則）、[#623](https://github.com/openai/codex-plugin-cc/pull/623)（9 則）。
@@ -60,6 +60,7 @@ tags:
   - **跨對話互相影響**：#623 要修的是「同一個工作區裡，一個 Claude 對話結束或 `/clear`，會把另一個對話正在跑的前景 rescue 工作一起砍掉」，有使用者留言說日常就遇得到。
   - 截至 2026-11-17 最新發行版仍是 1.0.6，上面這些修正都沒有進發行版；#623 的作者 2026-09-04 留言說 8 月 10 日就請求審查、一直沒人回。
   - 指令目錄現有 8 個指令，含 `transfer`。
+- **留言抽樣判準（2026-11-18）**：Instagram Reel 共 430 則，讀了 49 則，全是留「協作」關鍵字索取資料與作者的固定回覆（留言換私訊導流），沒有任何實測、反駁或更正；依 SOP「留言極多時可抽樣」判斷其餘不重要，標 `full`。Threads 79 則與部落格、外掛 PR 留言已讀完，作者圖片 17 張已全部看過。
 - **對分析的影響**：
   1. 原筆記寫「be-ai-curator 原文與此成本優勢均未查證」。這次原文讀得到，已改寫第 1 節：成本說法是作者自述的使用經驗（文末「資料查核」段自己標明），不是量測。
   2. 第 1 節的指令清單補上文章主推的 `/codex:transfer`，並更正 `/codex:rescue` 的定位：文章把它當「整包交辦」用（例如畫素材），不只是卡關救援。

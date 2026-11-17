@@ -1,20 +1,20 @@
 ---
 id: 2026-10-23-web-to-app-android-packaging
 title: "WebToApp 解構：手機端把網站打包成 Android App、內建 Node/PHP/Python 執行環境、AI Agent 生成與 AAB 簽名上架，及接案變現評估"
-source_url: "https://github.com/shiaho777/web-to-app/blob/main/.github/docs/README_CN.md"
-source_platform: "GitHub"
+source_url: "https://www.facebook.com/permalink.php?story_fbid=pfbid08GLCiREBieh5tyzwonWwssu622TDG7HG2qpiJz3Esi2gCcjFk2SyKMSyAhjGEN1Dl&id=61588107756334"
+source_platform: "Facebook 粉絲專頁（一人公司研究所）/ GitHub"
 author: "shiaho777"
+github_repo: "https://github.com/shiaho777/web-to-app"
 analyzed_at: 2026-10-23
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "逆向工程與軟體封裝"
 short_title: "WebToApp 網站轉 Android App"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "原筆記提到的社群貼文沒留連結，其圖片與留言沒看到（總數未知）；改看 GitHub README 16 張圖與 issue 留言 5 則"
-source_images: 16
-source_replies: 5
+source_review: full
+source_reviewed_at: 2026-11-18
+source_images: 17
+source_replies: 22
 tags:
   - webtoapp
   - android
@@ -39,6 +39,16 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 補讀：**找回原貼文**。用 Facebook 貼文搜尋找到「一人公司研究所」粉絲專頁 2026-10-19 的貼文：<https://www.facebook.com/permalink.php?story_fbid=pfbid08GLCiREBieh5tyzwonWwssu622TDG7HG2qpiJz3Esi2gCcjFk2SyKMSyAhjGEN1Dl&id=61588107756334>。粉專在留言貼的連結就是本筆記原本的 `source_url`（簡中版 README）。`source_url` 已改成這則貼文；原值 `https://github.com/shiaho777/web-to-app/blob/main/.github/docs/README_CN.md` 仍列在文首「來源連結」，repo 另記在 `github_repo`。
+>
+> - **貼文文字**：介紹 WebToApp 能在手機上跑 Node.js、PHP、Python，把 WordPress 塞進 APK，打包、簽名到產出可上架的 AAB 都不需要電腦；內建 AI Agent；當時 GitHub 6,850 顆星、Unlicense 授權。「一人公司視角」那段說最直接的變現是接案，幫店家把官網、菜單、預約頁打包成 App，一次收幾千到上萬元，「展示即成交」。
+> - **作者圖片 1 張**：App 的「My Apps」清單畫面（列出幾個已建立的網站 App 與「Create App」按鈕），是 README 的示範截圖，不是粉專自己的實測。
+> - **留言**：貼文計數 17 則，「由新到舊」排序捲到底、所有回覆都展開，17 則全部讀完。
+>   - **粉專承認由 AI 代管**：有人要求真人回覆，粉專回說整個頻道都是 AI 助理接管的；還有人貼提示詞想套出它的模型資訊。
+>   - **質疑**：有人稱它是「垃圾製造者」並獲得附和；有人問這和 PWA 有什麼差別，沒有人回答；有人說隨便一個 AI agent 就做得到；有人認為把後端放在前端跑不是好做法。
+>   - 有人求 iOS 版，粉專回不可能有；另一位說網頁加到主畫面就行。
+> - **對分析的影響**：貼文的接案行情（一次幾千到上萬、展示即成交）出自 **AI 代管的粉專文案**，沒有任何實際接案紀錄；留言也沒有人回報真的靠它接到案。這些數字不可當報價依據，已在第 2 節補註。「和 PWA 有何差別」是接案前要先回答客戶的問題，`docs/web-to-app-freelance-workflow.md` 的需求確認步驟應涵蓋（只回報，不改已完成任務）。
 
 > 2026-11-16 重審：來源是 GitHub README（簡中版）。原筆記提到的「貼文」沒有留下連結，無從回看。這次看了 README 全文、README 內 16 張 App 截圖，以及 issue #1496、#308 的留言共 5 則與 #1582 的標題（無留言）；Discussions 共 13 則，多數無回覆。
 
@@ -82,6 +92,7 @@ tags:
 - AI Agent：自然語言生成 App；LLM Key 可輪換。
 - 截圖可見的附加功能（2026-11-16 補）：啟動碼（本地或線上驗證）、裝置偽裝、自訂 DNS、廣告攔截、開機自啟；Node.js、npm 等建置工具鏈要在手機上另外安裝，不是開箱即有。
 - 上架路徑的不確定性（2026-11-16 補）：repo 擁有者在 issue #1496 表示考慮移除 Google Play 相關功能以利 F-Droid 上架，AAB 上架流程可能改動，報價前要先確認當時版本還有沒有這個功能。
+- 接案行情沒有實績（2026-11-18 補）：原貼文「一次收幾千到上萬、展示即成交」出自 AI 代管的粉專文案，留言區沒有人回報真的接到案，還有人問「和 PWA 有什麼差別」而無人回答；報價不可引用這些數字，接案前要先能回答 PWA 的問題。
 - 已知未修問題（2026-11-16 補）：issue #1582 回報 CORS 繞過會把跨來源 POST 送出兩次，含表單送出或下單的網站要先測再交付。
 - 風險面：內嵌多語言 runtime 增加 APK 體積與攻擊面；自動管理 keystore 需確認備份與保管方式；AI Agent 需自備 LLM Key，不得寫入程式碼或對話。
 

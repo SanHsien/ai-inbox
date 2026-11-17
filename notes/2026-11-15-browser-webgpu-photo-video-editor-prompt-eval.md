@@ -10,9 +10,9 @@ status: archived
 cluster: 2
 cluster_role: "前端WebGPU修圖"
 short_title: "WebGPU修圖Prompt評估"
-source_reviewed_at: 2026-11-17
+source_reviewed_at: 2026-11-18
 source_review: partial
-source_review_note: "原社群貼文沒有留下連結，找不到，貼文的圖與留言沒看到；只看了兩個參考 repo 的 README、2 張示範圖與 5 則 issue（讀到 5／共 5 則）"
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「skill-matting」、Facebook 貼文搜尋「skill-matting WatermarkRemover WebGPU」「WebGPU 美圖秀秀 去水印 去背 Opus 5.5 Prompt」「純瀏覽器 WebGPU 修圖 去水印 Prompt」；都沒有結果）；替代來源兩個參考 repo 的 README、2 張示範圖與 5 則 issue 已讀完"
 source_images: 2
 source_replies: 5
 tags:
@@ -36,6 +36,8 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 再找原貼文：原貼文搜尋不到（試過：Threads 站內搜尋「skill-matting」、Facebook 貼文搜尋「skill-matting WatermarkRemover WebGPU」「WebGPU 美圖秀秀 去水印 去背 Opus 5.5 Prompt」「純瀏覽器 WebGPU 修圖 去水印 Prompt」；都沒有結果）；替代來源兩個參考 repo 的 README、2 張示範圖與 5 則 issue 已讀完。維持 `partial`。
 
 > 2026-11-17 用瀏覽器重看。原社群貼文沒有留下連結（作者匿名），貼文本身的圖片與留言**沒看到**；以下只涵蓋兩個參考 repo。
 

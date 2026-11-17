@@ -12,8 +12,8 @@ cluster: "3"
 cluster_role: "跨網情報與知識檢索"
 short_title: "Agent-Reach"
 source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "原 Threads 貼文沒留連結、找不到，貼文的圖片與留言都沒看到（總數未知）；改看官方 repo README 與 8 則 issue／PR，讀到留言 23 則"
+source_reviewed_at: 2026-11-18
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「Agent-Reach」「Agent Reach 熱點 Skill」、Facebook 貼文搜尋「Agent-Reach Panniantong」、一般網頁搜尋；只找到日期或內容對不上的貼文，例如 Threads 08-30 的六專案清單、10-26 晚於本筆記的實測文、Facebook 09-24 的簡體介紹）；替代來源官方 repo README 與 8 則 issue／PR（留言 23 則）已讀完"
 source_images: 0
 source_replies: 23
 tags:
@@ -35,6 +35,8 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 再找原貼文：原貼文搜尋不到（試過：Threads 站內搜尋「Agent-Reach」「Agent Reach 熱點 Skill」、Facebook 貼文搜尋「Agent-Reach Panniantong」、一般網頁搜尋；只找到日期或內容對不上的貼文，例如 Threads 08-30 的六專案清單、10-26 晚於本筆記的實測文、Facebook 09-24 的簡體介紹）；替代來源官方 repo README 與 8 則 issue／PR（留言 23 則）已讀完。維持 `partial`。
 
 > 2026-11-16 重審：原筆記沒有留下 Threads 貼文連結，找不到那則貼文，圖片與留言無從查看。本次改看官方 repo 現行 README（v1.6.1 時期）與留言最多的 8 則 issue／PR（含其中兩則的 15 則留言）。
 

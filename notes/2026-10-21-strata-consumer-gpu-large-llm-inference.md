@@ -12,10 +12,10 @@ cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "Strata 12GB 顯卡運行 125B 大模型"
 source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "平台欄寫的社群貼文沒留連結，貼文的圖片與留言都沒看到（總數未知）；改看 repo README 2 張圖與 4 則 issue 的 10 則留言"
-source_images: 2
-source_replies: 10
+source_reviewed_at: 2026-11-18
+source_review_note: "原貼文無法認定（4 則同主題候選貼文的文字、作者圖片與留言都讀過：Threads 09-29、10-05、10-18 各一則與 Facebook 09-29 一則；其中三則寫 12GB 顯示卡要配 64GB 記憶體、一則寫 8GB 顯示卡即可，本筆記原稿寫的卻是 12GB 配 32GB，四則也都沒有原稿的圖書館比喻與 RTX 3080 Ti 範例，無法確定哪一則是來源）；替代來源 repo README 2 張圖與 4 則 issue 的 10 則留言已讀完"
+source_images: 4
+source_replies: 69
 tags:
   - strata
   - local-llm
@@ -36,6 +36,20 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 補讀：原貼文無法認定，維持 `partial`。找到 4 則同主題的候選貼文，**文字、作者自己的圖、留言都讀過**，當成相關來源記在下面；沒有任何一則能確定是本筆記的來源。
+>
+> - **候選 1**（Facebook，陳盟升，2026-09-29）：<https://www.facebook.com/darkschen/posts/pfbid0wFtVNQ9Z34KynK56NeoxZbnhzCAtgiHQsdaSf7NAgXPHHUv4ic6xMU6pYJT45MYql>。只有三行：12GB 顯示卡加 64GB 記憶體就能跑 125B 的 Qwen3.8-Flash-Next，預載速度破千、長上下文每秒 40 到 60 個 token。圖 1 張是 README 截圖（MIT 授權；官方在 RTX 5070 12GB、64GB 記憶體上量到的各量化版本速度表）。留言計數 29 則，顯示 19 則已讀完：有人說量化到這種程度已不堪用；有人反駁說自己用較高位元的量化加 128K 上下文是可用的，只是慢；有人問降智程度與正確率會掉多少，沒有人拿出數字。
+> - **候選 2**（Threads，`@leeunhn`，2026-09-29）：<https://www.threads.com/@leeunhn/post/Dd37dDok7T9>。寫「8GB 以上的 NVIDIA 顯示卡就能跑」、一鍵安裝、相容 OpenAI 與 Anthropic 的 API、當時 1,423 顆星。圖只有 repo 預覽卡。留言計數 12 則，讀到 10 則：第一則就更正「記憶體最低要 64GB」；一位用 RTX 4070 Super 12GB 加 64GB 跑 IQ2_XS 約每秒 60 個 token；一位用 **RTX 3060 12GB、i7-10700K、DDR4 64GB** 跑 IQ3_XXS，聊天約每秒 30、寫程式約 25，顯示卡記憶體用 11GB、系統記憶體用 55GB，寫一個小遊戲約 20 分鐘；有人提醒量化到這個程度，agent 出錯機率會大增。
+> - **候選 3**（Threads，`@jay.janitor_`，2026-10-05）：<https://www.threads.com/@jay.janitor_/post/DeFT7Fcky0F>。寫 12GB 顯示卡加 64GB 記憶體順跑 125B。圖只有 repo 預覽卡。留言計數 23 則，讀到 15 則：一位把 RTX 3060 直通給虛擬機、64GB、256K 上下文跑 IQ3_XXS，一開始每秒 25、上下文過 128K 後掉到 15，而且**只有一個處理槽、不能同時處理多個請求**；一位換到 32GB DDR4 的機器跑 IQ2，結果一直重複輸出文字，結論是要 64GB 才玩得起來；一位說專案更新太快，花了一個週末處理一直當掉的問題，建議調穩就不要亂更新；有人說慢的 DDR4 與 CPU 會變成瓶頸，只有每秒 30。
+> - **候選 4**（Threads，`@atsuki_sammie`，2026-10-18）：<https://www.threads.com/@atsuki_sammie/post/Deoehg2ki7l>。作者用 RTX 3060 12GB 加 64GB 跑 Q3 量化，自稱約每秒 50 個 token，並做了繁體中文安裝助手；續串寫建議配置：RTX 20 系列以上、12GB 顯示卡記憶體、**64GB 記憶體，32GB 只能試部分精簡模型**。作者在留言貼 1 張實測圖：同一道邏輯題，RTX 3060 12GB 跑 IQ2_XS 每秒 62.7、IQ3_S 每秒 55.0，RTX 5080 16GB 跑 IQ3_S 每秒 97.7（測試機是 i9-14900KF 加 DDR5 64GB；圖上註明是單題單次結果）。留言計數 32 則，讀到 15 則，作者一再回覆「這款基本要 64GB，大部分都塞在記憶體」。
+> - **讀取範圍**：Threads 三則各捲到頁尾，讀到的則數少於計數，差額是收合的子回覆與平台不顯示的回覆，沒有逐則點開；留言者自己貼的圖沒有看。
+> - **哪一則最接近**：候選 4。日期在本筆記前三天，而且「RTX 20 系列以上、12GB」的寫法與原稿相同。但它寫的是 64GB，原稿寫 32GB；原稿的圖書館比喻、RTX 3080 Ti 範例、macOS 支援，四則裡都沒有，比較像是分析時從 README 另外讀來或自行延伸的。所以無法認定。
+> - **對分析的影響**：
+>   - **原稿「12GB 加 32GB 記憶體即可流暢執行」站不住**。三則貼文與多位留言者的實測一致指向 64GB；32GB 的實測是一直重複輸出。1.1 節已補註。
+>   - RTX 3060 12GB 的實測速度落差很大：每秒 15 到 30（DDR4 或虛擬機）對上 55 到 63（DDR5 新平台）。記憶體與 CPU 的速度影響很大，不能只看顯示卡。
+>   - 新增兩項使用上的限制：一次只能處理一個請求；專案更新頻繁、穩定性靠自己顧。低位元量化對 agent 任務正確率的影響，留言有人擔心，但沒有人提供數字。
+>   - 結論（封存）不變。以下是 2026-11-16 看 repo 的紀錄。
 
 > 2026-11-16 重審：本篇原始來源是 GitHub repo（frontmatter 寫「社群貼文」但沒有留下貼文連結，無從回看）。這次看了 README 全文、README 內 2 張截圖、`docs/MODELS.md` 的記憶體需求段，以及 4 則 issue 的留言共 10 則（#6072、#6074、#6090、#6082，其中 #6082 無留言）。
 
@@ -61,7 +75,7 @@ tags:
 過去要運行 100B+ 參數等級的頂級大語言模型（如 125B 的 Qwen3.8-Flash-Next），傳統做法通常需要高昂的資料中心級伺服器（數百 GB VRAM）或要價不菲的高配統一記憶體硬體（如 128GB/256GB Mac Studio）。
 
 **Strata**（MIT 開源協議）透過極具創意的**三層動態卸載架構（Tiered Offloading）與投機解碼技術**，徹底打破了此一硬體天花板：
-- **極低硬體門檻**：只需 **12GB 顯存的消費級顯卡（RTX 20/30/40/50 系列，如 RTX 3080 Ti 12GB）+ 32GB 系統 RAM**，即可在本地運行 125B 參數的 Qwen3.8-Flash-Next（2026-11-16 補：依官方 `docs/MODELS.md`，32 GB RAM 配 12～16 GB 顯卡只跑得動 coding 專用的 Coder 量化版；一般尺寸要 48～64 GB RAM）；
+- **極低硬體門檻**：只需 **12GB 顯存的消費級顯卡（RTX 20/30/40/50 系列，如 RTX 3080 Ti 12GB）+ 32GB 系統 RAM**，即可在本地運行 125B 參數的 Qwen3.8-Flash-Next（2026-11-18 補：社群貼文與多位留言者的實測都指向要 64GB，32GB 的實測是一直重複輸出；這句以 64GB 為準）（2026-11-16 補：依官方 `docs/MODELS.md`，32 GB RAM 配 12～16 GB 顯卡只跑得動 coding 專用的 Coder 量化版；一般尺寸要 48～64 GB RAM）；
 - **全平台覆蓋**：支援 Windows 10/11、Linux、macOS，涵蓋 NVIDIA (CUDA)、AMD (ROCm/HIP)、Intel Arc 與 Apple Silicon；
 - **原生 Agent 與 API 相容**：直接提供標準 **OpenAI 與 Anthropic API 兼容端點**（原分析記為預設 8080 埠；README 現行截圖顯示的是 `127.0.0.1:18500`，以實際啟動畫面為準），Claude Code、Codex CLI、Antigravity、OpenCode 等 Coding Agent 可零改動直接串接。
 

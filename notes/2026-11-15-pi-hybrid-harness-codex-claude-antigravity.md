@@ -11,10 +11,10 @@ cluster: 1
 cluster_role: "混合型Harness"
 short_title: "Pi混合型Harness"
 source_review: partial
-source_reviewed_at: 2026-11-17
-source_images: 0
-source_replies: 114
-source_review_note: "K-harness 2026-11-17 再查仍是 404，內容完全看不到，登入也補不了；pi README 只有標誌與吉祥物兩張小圖，未放大看；pi 未關閉的 issue／PR 現為 255 個，讀了 3 則：#9361 留言 14／14 則、#7547 留言 96／96 則（長留言只讀前段）、#581 本文與前 4 則留言"
+source_reviewed_at: 2026-11-18
+source_images: 2
+source_replies: 131
+source_review_note: "原始來源 paul800901/K-harness 仍是 404，改看上游 pi，所以維持 partial。2026-11-18 試過：GitHub API 與網頁直連、作者 15 個公開 repo 與公開事件紀錄、同名 repo 搜尋、程式碼與 issue 全站搜尋、網頁搜尋、Wayback 存檔，都找不到改名或搬家的去處。替代來源已讀全：pi README 圖 2／2 張；#9361 留言 14／14、#7547 留言 96／96（含長留言全文）、#581 留言 21／21；pi 其餘未關閉的 issue／PR（共 255 個）與本篇無關的沒有讀"
 tags:
   - agent-harness
   - pi-coding-agent
@@ -41,6 +41,8 @@ tags:
 > 貼文文字、作者上傳的每張圖片（含輪播）、作者留言補充、網友留言（展開到底）都要看過，見 AGENTS.md 第 3 節。
 
 - **作者圖片**：`paul800901/K-harness` 2026-11-16、2026-11-17 兩次再查都回 404，該帳號 15 個公開 repo 裡也沒有它，README 與圖都看不到。上游 `earendil-works/pi` 的 README 只有標誌與吉祥物兩張小圖和徽章，沒有架構圖或截圖。
+  - 2026-11-18 再找一次去處：API 與網頁直連仍是 404；該帳號公開事件紀錄裡沒有任何 K-harness 的推送、建立或改名事件；GitHub 上找不到同名 repo，全站程式碼與 issue 搜尋「paul800901/K-harness」只命中本筆記自己；網頁搜尋與 Wayback 存檔都沒有結果。GitHub 改名會自動轉址，回 404 表示是刪除或轉私有，不是改名。該帳號名稱相近的 `kai-work-host`（網頁版 GPT 連本機執行的工作主機）README 沒有提到 harness、pi 或 Antigravity，無法認定是同一個專案。
+  - 上游 pi 的兩張圖已放大看：圖 1 是三色方塊拼成的 π 字形標誌；圖 2 是版畫風格的河豚吉祥物（Exy）。都沒有技術資訊。
 - **作者留言補充**：無（K-harness 看不到）。
 - **網友留言重點**（pi 的 issue；2026-11-17 用 `gh api` 把 #9361、#7547 的留言全部讀完，補充寫在各則底下）：
   - [#9361](https://github.com/earendil-works/pi/issues/9361)（未關閉）：Windows 上只要載入擴充，設定檔的 `shellPath` 會不定時被忽略，退回去用 PATH 上第一個 `bash.exe`；有開 WSL 的機器那會是 `C:\Windows\System32\bash.exe`（WSL 啟動器），指令就跑進 Linux 環境。協作者的判斷是某些擴充換掉了內建 bash 工具卻沒讀設定，並承認設定管理沒有好好開放給擴充。
@@ -48,16 +50,19 @@ tags:
     - Windows 特有的另一半：有網友用第三方套件穩定重現，該套件直接呼叫 `bash`，而 Windows 找執行檔時會先找 System32，所以一定拿到 WSL 啟動器，根本不會去看 `shellPath`。
     - 外部貢獻者提的修正（[#10538](https://github.com/earendil-works/pi/pull/10538)）被新貢獻者自動關閉的機制關掉、沒有合併；issue 截至 2026-11-17 仍未關閉，最新發行版是 v1.5.2。
   - [#7547](https://github.com/earendil-works/pi/issues/7547)（未關閉，96 則）：協作者彙整 Windows 四種跑法（Git Bash、WSL bash、純 PowerShell、整個放 WSL2），說每一種都有小毛病；有留言說 Git Bash 很糟、WSL bash 常弄壞路徑、PowerShell 相對堪用但很多擴充不支援。
-    - **補讀後（96／96 則，長留言只讀前段）**：2026-08-24 維護者宣布下一版加入可選的 PowerShell 工具（[#8512](https://github.com/earendil-works/pi/pull/8512)，預設不開）。之後多位 Windows 使用者回報把 bash 整個關掉、只留 PowerShell 後錯誤明顯變少；也有人測到部分模型在兩個工具都開時仍一律選 bash。
+    - **補讀後（96／96 則；2026-11-18 把長留言全文也讀完）**：2026-08-24 維護者宣布下一版加入可選的 PowerShell 工具（[#8512](https://github.com/earendil-works/pi/pull/8512)，預設不開）。之後多位 Windows 使用者回報把 bash 整個關掉、只留 PowerShell 後錯誤明顯變少；也有人測到部分模型在兩個工具都開時仍一律選 bash。
     - PowerShell 工具自己的已知問題：指令太長會在啟動前就被 Windows 拒絕（整段指令塞在命令列參數裡）；系統語言不是英文時輸出可能亂碼。
     - Git Bash 的常見抱怨：模型會寫 `> /dev/null`，在目錄裡留下刪不掉的 `nul` 檔；找不到 `grep` 之類的工具時模型會亂試。維護者的立場是模型的 bash 訓練資料遠多於 PowerShell，不打算把 PowerShell 設成預設。
     - **權限與沙盒**：協作者明講 pi 的立場是預設不做權限控管也不做沙盒，要的人自己找擴充；多位留言者指出 Windows 上沒有開箱即用的沙盒方案，協作者只回了官方沙盒專案的一個 PR 連結（合併狀態本篇未查）。有企業使用者說只好把權限提示當成不完美的替代品。
+    - **2026-11-18 讀完長留言後新增**：(1) 內建 PowerShell 工具**會弄丟原生程式的結束碼**：失敗的指令後面只要再接一句，回報的結束碼就是 0，模型會把失敗當成功（有人在 CI 的 Windows 機器上重現，並附修正建議，尚未見合併）。(2) 在 bash 裡呼叫 PowerShell 指令時，`$` 變數會被 bash 先展開，可能把範圍很窄的比對變成很寬，讓破壞性指令影響到預期以外的檔案。(3) 權限類擴充多半沒有包到新的 PowerShell 工具，企業使用者實測「權限擴充配 PowerShell 不能用、Git Bash 配微軟的沙盒工具也不能用」，目前沒有一組整套可用的組合；協作者明講不會做官方的權限參考方案，頂多補沙盒範例。(4) v1.0 起在 Git Bash 內建終端機（MinTTY）啟動會自動跳去開外部編輯器而卡住，官方建議改用 Windows Terminal。(5) 視窗重新取得焦點的那一下點擊會被當成 Enter，若當下正好是確認提示就等於自動按下同意（#10083，被自動歸類為不排程）。(6) 只開 PowerShell 的設定是在 `settings.json` 寫 `"defaultTools": ["read", "powershell", "edit", "write"]`，但 `!` 開頭的手動指令仍走 bash。
     - 安裝面的坑：獨立執行檔舊版在 Windows 找不到 Git Bash（v1.5.0 修掉）；安裝腳本遇到某些 Node 版本管理工具會想另裝一份 Node；更新後 PowerShell 執行原則擋住啟動腳本。
   - [#581](https://github.com/earendil-works/pi/issues/581)（已關閉，2026-01）：Claude 的 OAuth token 在第三方工具回 400，訊息是該憑證只授權給 Claude Code 使用；留言指出其他同類工具也應 Anthropic 要求拿掉這種支援。
+    - **2026-11-18 讀完 21／21 則**：有網友抓封包比對，發現同一組憑證不帶工具時能用、帶 pi 的工具名稱就被拒，改掉工具名稱又能用，推斷伺服器端是比對工具名稱。維護者當天先拿掉登入功能，幾十分鐘後又加回來並請大家更新，也就是**用繞過偵測的方式恢復**，不是取得授權；留言者自己都說這隨時會再壞，也有人擔心帳號被停用（之後有人問是否有人被停權，無人回答）。這比原先寫的「功能被拿掉」更值得警惕：功能還在，但用了就是違反服務條款並賭帳號。
 - **對分析的影響**：
   1. 第 2 節「Windows 終端與安全邊界」補上 #9361：維護者是 Windows 原生、不用 WSL，而本篇設計正好要寫擴充，這是直接踩得到的問題。
   2. #581 是「不要把訂閱憑證接進 Pi」的實例，補進第 1 節的不建議做法；與 `docs/pi-hybrid-harness-readonly-assessment.md` 的 Anthropic 那一列結論一致，`T-20261115-01` 不需重開。
   3. 結論不變：暫不採納，`T-20261115-02` 維持不做。
+  4. 2026-11-18 補讀後結論仍不變，而且多三個不採納的理由：PowerShell 工具回報的結束碼不可靠、Windows 上沒有整套可用的權限加沙盒組合、訂閱憑證登入是靠繞過偵測維持的。
   4. **2026-11-17 補讀後修正第 2 節一句話**：#9361 不是「不定時」發生，而是「裝了會重建 bash 工具的擴充就一定發生」，修正還沒合併。本篇設計正好要自己寫擴充，所以這是寫擴充時必須自己處理的事（把工作階段的 shell 設定明確傳進去），不是等上游修好就沒事。已改第 2 節。
   5. #7547 的 PowerShell 工具回報與 `docs/pi-hybrid-harness-readonly-assessment.md` 第 42 行「可透過 defaultTools 選用 PowerShell」一致，並多了使用者實測：Windows 原生若要試，關掉 bash、只留 PowerShell 是目前回報最穩的組合。協作者「預設不做權限與沙盒」的說法也與該文件「沒有新增強制隔離能力」的結論一致。`T-20261115-01` 不需重開。
 

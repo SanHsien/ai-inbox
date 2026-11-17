@@ -12,8 +12,8 @@ cluster: "3"
 cluster_role: "外掛生態與設定治理"
 short_title: "Google Android 官方 Agent Skills"
 source_review: partial
-source_reviewed_at: 2026-11-17
-source_review_note: "平台欄寫的社群貼文沒留連結，貼文的圖片與留言都沒看到（總數未知）；改看官方 repo，2 則 issue 的內文與底下回覆 8／8 則已讀完；README 無圖"
+source_reviewed_at: 2026-11-18
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「android/skills」「Android 官方 Skills 30」、Facebook 貼文搜尋「android/skills Google Android 官方 Agent Skills」「github.com/android/skills」「Android 官方 30 個 Skills android skills add」；唯一主題相同的是 Facebook 工程師米奇 2026-04-21 的貼文，已點開讀完，內容與本筆記對不上，不是來源）；替代來源官方 repo 的 2 則 issue 內文與 8 則回覆已讀完，README 無圖"
 source_images: 0
 source_replies: 10
 tags:
@@ -35,6 +35,12 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 補讀：原貼文仍搜尋不到，維持 `partial`（搜尋方式見 frontmatter 的 `source_review_note`）。唯一主題相同的候選已點開核對，**不是來源**：
+>
+> - **候選貼文**：Facebook「工程師米奇」粉絲專頁 2026-04-21，<https://www.facebook.com/geekMickey/posts/pfbid02rZ5deuvNY85SYRcjphn8wEGHEWWokdF7ERWjb7Kx7J3JhtjQmGmYGCfSLVNgeooQl>。內容是介紹 Android Skills 是給 LLM 用的 `SKILL.md` 資源庫，舉的任務有 XML 遷移到 Jetpack Compose、升級 AGP 9、Navigation 3 與 Edge-to-edge、Play Billing 升級與 R8 分析；用 Android CLI 安裝，預設裝到 Gemini／Antigravity 的技能目錄，可用 `--all` 或 `--skill` 指定；提醒官方聲明 AI 會出錯，專案暫不接受外部程式碼貢獻。留言 0 則。附 1 張圖沒有放大看。
+> - **為何對不上**：本筆記的「30 個」、「8K+ Stars」、Wear／TV／Auto／XR 跨裝置、Play 審查與權限等說法，這則貼文都沒有；貼文日期也比本筆記早半年。
+> - **可用的一點**：貼文轉述的「預設安裝到 Gemini／Antigravity 的技能目錄」與「暫不接受外部貢獻」，沒有與本筆記衝突的資訊，正文不改。
 
 > 2026-11-16 重審：來源是 GitHub repo，重讀了官方 README 全文、列出全部 `SKILL.md` 路徑，並讀了兩則 issue 的內文（沒有逐則讀底下回覆）。frontmatter 的平台欄寫了「社群貼文」，但筆記沒有留下那則貼文的連結，所以貼文的圖片與留言無法回頭查看。
 >

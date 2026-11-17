@@ -1,19 +1,19 @@
 ---
 id: 2026-10-17-meta-sam-3-1-video-segmentation
 title: "Meta SAM 3.1 視覺分割模型解析：從點選框選到文字提示、32 FPS 串流追蹤與 Agent 雙階段打碼流水線"
-source_url: "https://github.com/facebookresearch/sam3"
-source_platform: "Web & Meta AI Research"
+source_url: "https://www.facebook.com/permalink.php?story_fbid=pfbid027novn88pLZHSoGu8rv24c3DtDpsHWx9RsgunW3HVWTEP3UiaB6DwH9vipqEaeQKtl&id=61564137718583"
+source_platform: "Facebook 粉絲專頁（凱文大叔教你寫程式）/ Meta AI Research"
 author: "Meta AI / 凱文大叔 (SubTutor)"
+github_repo: "https://github.com/facebookresearch/sam3"
 analyzed_at: 2026-10-17
 analyzed_by: "Antigravity"
 status: archived
 cluster: "4"
 cluster_role: "學術論文閱讀與視覺分割"
 short_title: "Meta SAM 3.1 視訊分割"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "「凱文大叔（SubTutor）」的社群內容沒留連結、找不到，那邊的圖與留言沒看到（總數未知）；改看 repo README 4 張圖與 7 則 issue"
-source_images: 4
+source_review: full
+source_reviewed_at: 2026-11-18
+source_images: 5
 source_replies: 7
 tags:
   - computer-vision
@@ -34,6 +34,17 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 補讀：**找回原貼文**。用 Facebook 貼文搜尋找到「凱文大叔教你寫程式」粉絲專頁 2026-10-06 的貼文：<https://www.facebook.com/permalink.php?story_fbid=pfbid027novn88pLZHSoGu8rv24c3DtDpsHWx9RsgunW3HVWTEP3UiaB6DwH9vipqEaeQKtl&id=61564137718583>。本筆記的「human face 抓到 226 張臉、中文『人臉』是 0」就出自這一則。`source_url` 已改成這則貼文；原值 `https://github.com/facebookresearch/sam3` 移到 `github_repo`。
+>
+> - **貼文文字**：SAM 是不聊天、只做分割的專用模型；SAM 1、2 要點選或拉框，SAM 3（2025 年 11 月）可以直接打字，SAM 3.1（2026-03-27）改進多物件追蹤，Meta 公布在單張 H100 上、物件數量中等的影片從每秒 16 格提升到 32 格。SAM 不是 LLM，約 8.5 億參數，只懂簡短的英文名詞片語；需要推理的長句，Meta 的做法是另外接一個多模態 LLM 拆成名詞片語再交給 SAM（官方稱 SAM 3 Agent）。作者實測同一段影片，輸入 human face 抓到 226 張臉，輸入「人臉」一次都沒有。試用方式是 Meta 的線上展示頁或自己架（需要 NVIDIA 顯示卡）。最後說自己開發的 SubTutor 已經接入，下一篇再介紹怎麼實作。
+> - **作者圖片 1 張**：Meta 線上展示頁的畫面。一張行李箱俯拍照，輸入 charger，畫面標示找到 1 個物件。
+> - **留言**：0 則（貼文頁顯示尚無留言）。
+> - **後續貼文**：往回看了粉專 10-04 到 11-14 的貼文，沒有找到預告的實作篇；10-18 只有一則說字幕功能完成後要做影片特效。
+> - **對分析的影響**：
+>   - 「32 FPS」的條件要寫完整：是 Meta 公布、單張 H100、物件數量中等的影片，從 16 提升到 32；不是一般顯示卡的數字。
+>   - 貼文只說 SubTutor 已接入、實作留待下一篇，**沒有描述打碼流程的細節**。第 1.3 節的「雙階段」前半（LLM 拆句再交給 SAM）是貼文轉述 Meta 的做法，後半的打碼流水線是本筆記的推演，不是凱文大叔公布的實作。
+>   - 226 比 0 的數字是作者單次實測，沒有其他人重現。以下是 2026-11-16 看 repo 的紀錄。
 
 > 2026-11-16 重審：看了 `facebookresearch/sam3` 的 README、SAM 3.1 發布說明、README 的 4 張圖，以及留言最多的 7 則 issue。筆記提到的「凱文大叔（SubTutor）」那則社群內容沒有留下連結，找不到原文，那邊的圖與留言沒看到。
 

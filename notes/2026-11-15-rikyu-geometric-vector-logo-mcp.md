@@ -1,8 +1,8 @@
 ---
 id: "2026-11-15-rikyu-geometric-vector-logo-mcp"
 title: "Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估"
-source_url: "https://rikyu.ai/design/logo"
-source_platform: "Web / Social"
+source_url: "https://www.threads.com/@z.c_0810/post/Db7KrUkE6vw"
+source_platform: "Threads / Web"
 author: "Kaisei Suzuki (@kaiseisuzuk)"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
@@ -10,11 +10,10 @@ status: done
 cluster: 2
 cluster_role: "向量幾何Logo與MCP"
 short_title: "Rikyū幾何Logo與MCP"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_images: 5
-source_replies: 0
-source_review_note: "官網首頁文字與 5 張示範圖已看，官網沒有留言區；筆記所稱的原貼文（X 的 @kaiseisuzuk）沒有單篇連結，貼文的圖與留言未看；/mcp 端點未實測"
+source_review: full
+source_reviewed_at: 2026-11-18
+source_images: 11
+source_replies: 68
 tags:
   - vector-design
   - svg
@@ -27,7 +26,7 @@ tags:
 # Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估
 
 - **來源連結**：[Rikyū Logo（舊路徑 404）](https://rikyu.ai/design/logo) ｜ [Rikyū 首頁](https://rikyu.ai/)
-- **發布平台 / 作者**：`Web` / `Kaisei Suzuki (@kaiseisuzuk)`
+- **發布平台 / 作者**：`Web` / `Kaisei Suzuki (@kaiseisuzuk)`（產品開發者）；觸發分析的貼文是 Threads `@z.c_0810` 的第三方分享（2026-08-12）
 - **分析日期**：`2026-11-15`
 - **當前狀態**：`🟢 已完成 (Done)`
 
@@ -39,10 +38,22 @@ tags:
 
 ## 0. 原始資料盤點
 
+> 2026-11-18 補讀：**找回原貼文**。用 Threads 站內搜尋 `rikyu.ai` 找到 `@z.c_0810` 2026-08-12 的貼文：<https://www.threads.com/@z.c_0810/post/Db7KrUkE6vw>。作者在同一串的第 2 則寫「可以接 MCP，不消耗額度」並附 `rikyu.ai/design/logo`，與本筆記引用的說法和連結完全相同。`source_url` 已改成這則貼文；原值 `https://rikyu.ai/design/logo`（現為 404）保留在文首「來源連結」。
+>
+> - **更正**：先前以為原貼文在開發者的 X 帳號 `@kaiseisuzuk`，其實是 Threads 上**第三方使用者的分享**，不是開發者本人，也不是官方說法。
+> - **貼文文字**：稱 Rikyū 是「目前看到最猛的 AI Logo 工具」，特色是用圓、線條、幾何去構造 Logo；認為 AI 若開始理解比例、幾何、版面與設計規則，才算是在取代設計工具本身。
+> - **作者圖片 6 張**（三組，每組一張構造稿加一張成品）：構造稿是在圖形上疊滿圓、斜線與格線，左下有一段 CONCEPT 說明，右下是成品縮圖；成品分別是圓框裡的飛馬、側身站立的獅子、漢字標準字「表情筋」。都是官方風格的示範圖，不是分享者自己的實測成果。
+> - **留言**：貼文計數 72 則，熱門與最新兩種排序都捲到底，讀到 68 則（另點開 5 則有回覆的留言），差 4 則登入後也不顯示。約一半是「留己看」之類的收藏留言。
+>   - **質疑構造線是事後補畫**：最高讚的留言說這是「先射箭再畫靶」；另有人說以前業界就有畫完圖再補圓和線、讓客戶覺得有料的做法；也有人說圈成這樣沒人看得懂、看起來只是用圓圈描圖。
+>   - **實測回報**：繁體字的標準字做不好，筆劃太複雜、結構不平衡；一位說做出目前最滿意的 Logo，但來回改了 6 版；一位說生成要等很久。
+>   - **「MCP 不消耗額度」沒有人證實**：有人直接問貼文的圖是用 MCP 還是每月 20 美元的 Pro 方案做的，作者沒有回；9 月有一則留言附和「MCP 連上還免費」，沒有附任何證據。
+>   - 其他：有人吐槽 Rikyū 自己的 Logo 沒做好；有人問產出能不能直接進 Illustrator 修改，沒有人回答。
+> - **對分析的影響**：「可以接 MCP，不消耗額度」確認只是分享者的一句話，留言區無人實測證實，與現行官網定價不符的判斷不變。新增一項要留意的質疑：構造線可能是裝飾而非真正的生成依據，現有資料無法判斷。圖片數改為官網 5 張加貼文 6 張。
+
 > 貼文文字、作者上傳的每張圖片（含輪播）、作者留言補充、網友留言（展開到底）都要看過，見 AGENTS.md 第 3 節。
 
 - **作者圖片**：`/design/logo` 2026-11-16 仍是 404。首頁（被導到簡體中文版）的示範圖 5 張都是同一個虛構麵包店品牌 Oddloaf 的成套設計：桌面版網站、取貨票正反面、把麵包拼成字母的廣告圖、手機 App 取貨憑證畫面；另有一段示範對話是把標誌做成壓在麵團上的印章。**首頁已看不到幾何輔助線、比例格線或設計藍圖那類圖**。
-- **作者留言補充**：無。筆記提到的「原貼文」沒有留下單篇連結，只知道官網頁尾連到開發者的 X 帳號 `@kaiseisuzuk`，貼文的圖與留言沒看到。
+- **作者留言補充**（2026-11-16 當時的紀錄，原貼文已於 11-18 找回，見上）：無。筆記提到的「原貼文」沒有留下單篇連結，只知道官網頁尾連到開發者的 X 帳號 `@kaiseisuzuk`，貼文的圖與留言沒看到。
 - **網友留言重點**：無（官網沒有留言區）。
 - **對分析的影響**：
   1. 方案價格補上：Free 0 美元、Basic 5 美元（已停止新訂閱）、Pro 20 美元、Max 50 美元，點數與 MCP 歸屬與原筆記一致。

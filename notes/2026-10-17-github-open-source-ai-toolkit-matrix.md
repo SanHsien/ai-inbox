@@ -11,8 +11,8 @@ cluster: "4"
 cluster_role: "開源教材與商業案例查核"
 short_title: "GitHub 開源 AI 工具矩陣"
 source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "原社群貼文沒留連結，貼文的圖與留言都沒看到（總數未知）；改看 OpenHands README 2 張圖與 6 則 issue／PR"
+source_reviewed_at: 2026-11-18
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「MoneyPrinterTurbo」、Facebook 貼文搜尋「hermes-jev-skills OpenHands MoneyPrinterTurbo LibreChat」；只有介紹單一專案的貼文，沒有同時列出這幾個專案的來源）；替代來源 OpenHands README 2 張圖與 6 則 issue／PR 已讀完"
 source_images: 2
 source_replies: 6
 tags:
@@ -35,6 +35,8 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 再找原貼文：原貼文搜尋不到（試過：Threads 站內搜尋「MoneyPrinterTurbo」、Facebook 貼文搜尋「hermes-jev-skills OpenHands MoneyPrinterTurbo LibreChat」；只有介紹單一專案的貼文，沒有同時列出這幾個專案的來源）；替代來源 OpenHands README 2 張圖與 6 則 issue／PR 已讀完。維持 `partial`。
 
 > 2026-11-16 重審：本篇來源寫「社群高價值專案推薦」，沒有留下原貼文連結，那則貼文的圖與留言看不到。本次改為直連 GitHub API 逐一查證六個專案，並看了 `source_url` 指向的 OpenHands README 兩張圖與留言最多的 6 則 issue／PR。
 

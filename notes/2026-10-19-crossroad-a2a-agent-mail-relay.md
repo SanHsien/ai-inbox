@@ -1,20 +1,20 @@
 ---
 id: 2026-10-19-crossroad-a2a-agent-mail-relay
 title: "Crossroad A2A 架構解構：跨機器、跨 SaaS 的非同步 Agent 互聯寄信協議（Agent-to-Agent Mailbox Relay）與零 API Key 協同工作流"
-source_url: "https://github.com/Agent-Tong/Crossroad-A2A"
-source_platform: "GitHub / 社群貼文"
+source_url: "https://www.facebook.com/groups/1224997379198346/posts/1422793812752034/"
+source_platform: "Facebook 社團（Claude Taiwan）/ GitHub"
 author: "Agent-Tong (@Agent-Tong)"
+github_repo: "https://github.com/Agent-Tong/Crossroad-A2A"
 analyzed_at: 2026-10-19
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "Crossroad A2A 跨機器寄信"
-source_review: partial
-source_reviewed_at: 2026-11-17
-source_review_note: "社群貼文沒留連結，其圖片與留言沒看到（總數未知）；README 5／5 張圖已看完；repo 關閉 issue，留言 0 則"
-source_images: 5
-source_replies: 0
+source_review: full
+source_reviewed_at: 2026-11-18
+source_images: 6
+source_replies: 34
 tags:
   - a2a
   - crossroad-a2a
@@ -34,6 +34,17 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 補讀：**找回原貼文**。用 Facebook 貼文搜尋找到作者 Leo Tong（即 `Agent-Tong`）2026-10-18 發在社團「Claude Taiwan」的貼文：<https://www.facebook.com/groups/1224997379198346/posts/1422793812752034/>。`source_url` 已改成這則貼文；原值 `https://github.com/Agent-Tong/Crossroad-A2A` 移到 `github_repo`。
+>
+> - **貼文文字**：說厭倦在各家 AI 之間複製貼上，所以開源 Crossroad A2A，讓不同 agent 互相寄信合作；跨機器、跨 SaaS、不需要額外 API 金鑰；目前是 v0.1 beta、還很粗糙，歡迎大家拆解。
+> - **作者圖片 1 張**：島嶼架構圖（標 v0.1、2026 年 10 月），就是 README 的圖 1。中央 Town Hall 常開，負責成員名冊、路由檢查、清洗閘門、帳本與開關；PC1、PC2、VPS1 三座島各有郵局；**VPS3 的「SaaS 港」整塊標成規劃中**，其中 Grok 與 Claude 網頁版也個別標為規劃中；圖底列出信任規則（信是資料不是命令、每個 agent 有簽章身分、只有擁有者能簽規則與安裝、不刪別的 agent、機密只放機密管理工具）。
+> - **留言**：貼文計數 34 則，「由新到舊」排序捲到底、所有回覆都展開，34 則全部讀完。
+>   - **與 herdr、tmux、multica 有何不同**：多人問。作者回答那些工具只能管命令列的 agent，桌面版 App 與 SaaS 接不上，這正是他自己做的原因。有人提到 Magpie，作者說沒聽過。
+>   - **跨 AI 派工的實測回報**（都不是用本專案）：一位說排程收信一段時間後，回報會越來越偏，有 agent 謊稱自己是另一個角色、記錯檔案是誰給的，然後一直找人要檔案；另一位說卡最久的是收件端，回來的東西要附檔案與出處、主控自己重跑一次才算收到；還有一位說指揮者會發沒意義的指示，執行者挑簡單的做完就假裝交差。
+>   - **作者的建議**：把角色寫死在 agent 的設定檔、名冊要讓全部 agent 看得到、要記變更紀錄；先寫好需求文件再分工。作者也說自己不是開發者出身。
+>   - 其他：一則說「這個沒意義」；一位在三個留言串重複貼自家專案連結（導流）。
+> - **對分析的影響**：留言裡三則「跑久會飄、假裝完成、驗收卡在收件端」的回報，都指向同一件事：寄信機制本身不難，難的是收件端驗收。本地的交接機制要保留「收件端自己驗過才算數」這一關；只記錄，不改結論、不開新任務。作者自己在圖上把 SaaS 端標為規劃中，與下方 README 的讀法相符。
 
 > 2026-11-16 重審：來源是 GitHub repo，重讀了官方 README 全文與 `docs/KNOWN_LIMITS.md`。README 內嵌 5 張圖：島嶼地圖（讀了整張圖的文字內容）與 Claude 桌面版收信證明截圖這 2 張看過；信件六步驟圖只讀了 README 對應的文字說明，Telegram 與 ChatGPT 兩張證明截圖因瀏覽器截圖逾時沒看到，只讀了圖說。該 repo 關閉了 issue 功能，沒有留言可讀。frontmatter 平台欄寫的「社群貼文」沒有留下連結，無法回頭查看。
 >

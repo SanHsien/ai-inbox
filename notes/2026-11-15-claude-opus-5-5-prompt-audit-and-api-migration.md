@@ -1,19 +1,18 @@
 ---
 id: "2026-11-15-claude-opus-5-5-prompt-audit-and-api-migration"
 title: "升級 Claude Opus 5.5 前置檢查：/claude-api prompt-audit、API 破壞性變更與成本結構評估"
-source_url: "https://code.claude.com/docs/en/changelog"
-source_platform: "Social / Anthropic"
-author: "社群實戰整理（作者宣稱最低版本 Claude Code 2.1.283+ / 本機 2.1.322，未查證）"
+source_url: "https://www.facebook.com/groups/1024463572071191/posts/1794981378352736/"
+source_platform: "Facebook 社團（Generative AI 技術交流中心）/ Anthropic"
+author: "Eric Lu（Facebook 社團貼文）＋ Anthropic 官方文件"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
 status: done
 cluster: 3
 cluster_role: "Opus5.5遷移與稽核"
 short_title: "Opus5.5稽核與遷移"
-source_reviewed_at: 2026-11-17
-source_review: partial
-source_review_note: "原社群整理文沒有留下連結，找不到，貼文的圖（含 Usage 頁截圖）與留言沒看到；只重看了官方 changelog，官方文件頁沒有圖也沒有留言區"
-source_images: 0
+source_reviewed_at: 2026-11-18
+source_review: full
+source_images: 1
 source_replies: 0
 tags:
   - claude-opus-5-5
@@ -27,7 +26,7 @@ tags:
 # 升級 Claude Opus 5.5 前置檢查：/claude-api prompt-audit、API 破壞性變更與成本結構評估
 
 - **來源連結**：[官方 changelog](https://code.claude.com/docs/en/changelog) ｜ [官方 overview](https://platform.claude.com/docs/en/models/opus-5-5/overview) ｜ [Opus 5 overview](https://platform.claude.com/docs/en/models/opus-5/overview) ｜ [官方 migration guide](https://platform.claude.com/docs/en/models/opus-5-5/migration-guide)
-- **發布平台 / 作者**：`社群實戰整理`（作者宣稱最低版本需求 Claude Code `2.1.283+` / 本機環境宣稱 `2.1.322`，皆未經本輪獨立查證）
+- **發布平台 / 作者**：Facebook 社團「Generative AI 技術交流中心」/ `Eric Lu`（2026-09-28 貼文；作者說他在 Claude Code `2.1.283` 確認有 `prompt-audit`，這不是官方的最低版本需求。`2.1.322` 是分析當時本機的版本，不是作者說的）
 - **分析日期**：`2026-11-15`
 - **當前狀態**：`🟢 已完成 (Done)`
 
@@ -35,7 +34,17 @@ tags:
 
 ## 0. 原始資料盤點
 
-> 2026-11-17 重審。`source_url` 是官方 changelog；真正的來源是一篇沒留連結的社群整理文，找不到原文。
+> 2026-11-18 補讀：**找回原貼文**。用 Facebook 貼文搜尋找到 Eric Lu 2026-09-28 發在社團「Generative AI 技術交流中心」的貼文：<https://www.facebook.com/groups/1024463572071191/posts/1794981378352736/>，標題「換 Opus 5.5 之前，建議先做這三件事」，三件事、兩個數字與版本號都和本筆記一致。`source_url` 已改成這則貼文；原值是官方 changelog <https://code.claude.com/docs/en/changelog>（仍列在文首「來源連結」）。
+>
+> - **貼文文字**：一、在 Claude Code 跑 `/claude-api prompt-audit`，檢查 CLAUDE.md、rules、skills、commands、agents，列出檔名、行號與建議改法，不經同意不改檔；作者拿自己的專案跑，抓到 6 處規則互相矛盾。二、有直接呼叫 API 的程式跑 `/claude-api migrate this project to claude-opus-5-5`。三、訂閱者到 Usage 頁按「Reset for free」可免費重置一次額度，作者的帳號顯示 10/23 到期。另補：預設 effort 是 medium、快取讀取從 0.50 美元降到 0.20 美元。最後說明 `prompt-audit` 是他在 Claude Code 2.1.283 確認有的，官方文件當時還沒列，舊版可能沒有。
+> - **作者圖片 1 張**：Usage 頁截圖。方案顯示 Max（20x），三條用量是目前工作階段 19%、本週 35%、Fable 本週 34%；下方 Resets 卡片寫可拿到額外額度來試 Opus 5.5、10 月 23 日到期，右側是「Reset for free」按鈕。
+> - **留言**：0 則（貼文頁顯示尚無留言；另有 298 個讚、156 次分享）。
+> - **對分析的影響**：
+>   - 「2.1.283」是作者**自己確認有這個指令的版本**，不是官方的最低版本需求；貼文裡沒有「2.1.322」這個數字，那是分析當時本機的版本，原本誤記成作者宣稱，已改正作者欄與第 1 節。
+>   - 作者說 `/claude-api prompt-audit` 會掃 skills、commands、agents；官方 changelog 把這個範圍歸在 `/doctor prompt-audit`。第 1.1 節「兩者不可混用」的提醒維持，並以官方說法為準。
+>   - 「抓到 6 處矛盾」是作者單一專案的自述，沒有其他人回報。「Reset for free」截圖證實是限期優惠（10/23 到期），第 1.1 節「已過期、不可當長期福利」的判斷不變。
+
+> 2026-11-17 重審（當時的紀錄；原貼文已於 11-18 找回，見上）。`source_url` 當時是官方 changelog；真正的來源是一篇沒留連結的社群整理文，當時找不到原文。
 
 - **作者圖片**：看不到。原筆記提到貼文有一張 Usage 頁「Reset for free」截圖，本輪沒有看到那張圖。官方 changelog 頁沒有圖片。
 - **作者留言補充**：看不到。
@@ -49,7 +58,7 @@ tags:
 
 ## 1. 核心內容摘要（5W1H 初篩與實查補充）
 
-- **Who（作者背景 / 執行機構）**：社群實戰整理作者（身分未獨立查證；宣稱需求 Claude Code `2.1.283+` / 本機環境 `2.1.322`，未查證）與 Anthropic 官方（模型與 API 發布機構）。
+- **Who（作者背景 / 執行機構）**：Facebook 社團貼文作者 Eric Lu（自述在 Claude Code `2.1.283` 確認有 `prompt-audit`；`2.1.322` 是分析當時本機的版本）與 Anthropic 官方（模型與 API 發布機構）。
 - **What（核心產出 / 做了什麼）**：Anthropic 正式推出 Claude Opus 5.5（`claude-opus-5-5`）；社群提出提示詞衝突稽核（`prompt-audit`）、API 遷移指引與快取降價成本評估。
 - **Why（為解決什麼問題 / 痛點）**：升級新模型時因自適應思考強制開啟、Tool Use 語法嚴格約束、對話歷史簽章綁定等破壞性變更，容易遭遇 API 報錯或靜默行為改變，需預先進行提示詞與相容性盤點。
 - **How（核心架構與關鍵機制）**：

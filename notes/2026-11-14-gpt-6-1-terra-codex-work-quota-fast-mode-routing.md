@@ -11,8 +11,8 @@ cluster: "1"
 cluster_role: "Terra額度路由"
 short_title: "Terra額度與Fast倍率核實"
 source_review: partial
-source_review_note: "使用者轉貼的文字線索沒附原始貼文連結，原貼文的圖片與留言都沒看到（總數未知）；改以官方文件頁全文核實（無圖、無留言區）"
-source_reviewed_at: 2026-11-16
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「Terra Fast 2.5」、Facebook 貼文搜尋「GPT-6.1 Terra Fast 2.5x Plus 額度」「Terra 額度 Sol 2 倍 Fast 2.5 Codex」；沒有內容吻合的貼文）；替代來源官方文件頁全文已讀完（無圖、無留言區）"
+source_reviewed_at: 2026-11-18
 source_images: 0
 source_replies: 0
 tags:
@@ -28,6 +28,8 @@ tags:
 # GPT-6.1 Terra 額度與 Fast 倍率核實
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 再找原貼文：原貼文搜尋不到（試過：Threads 站內搜尋「Terra Fast 2.5」、Facebook 貼文搜尋「GPT-6.1 Terra Fast 2.5x Plus 額度」「Terra 額度 Sol 2 倍 Fast 2.5 Codex」；沒有內容吻合的貼文）；替代來源官方文件頁全文已讀完（無圖、無留言區）。維持 `partial`。
 
 > 本篇的來源有兩層：使用者轉貼的一段文字線索（沒有附原始貼文連結，所以沒有作者圖片與留言可看），以及用來核實的官方文件頁。2026-11-16 以瀏覽器重讀官方頁全文。
 

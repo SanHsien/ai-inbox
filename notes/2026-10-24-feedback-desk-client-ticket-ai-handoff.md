@@ -1,20 +1,20 @@
 ---
 id: 2026-10-24-feedback-desk-client-ticket-ai-handoff
 title: "feedback-desk 解構：客戶開單 × 多 AI 認領與交接的輕量工單系統（Cloudflare Workers 免費版／Laravel 主機版）、MCP 接入 Claude Code 與 Codex，及與本地交接機制的對照"
-source_url: "https://github.com/aixwangtw/feedback-desk"
-source_platform: "Threads / GitHub"
+source_url: "https://www.facebook.com/groups/1224997379198346/posts/1423750565989692/"
+source_platform: "Facebook 社團（Claude Taiwan）/ Threads / GitHub"
 author: "aixwangtw（部落格：aixwang.dev）"
+github_repo: "https://github.com/aixwangtw/feedback-desk"
 analyzed_at: 2026-10-24
 analyzed_by: "Antigravity"
 status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "feedback-desk 客戶工單與 AI 交接"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "原始 Threads 貼文沒留連結，其圖片與留言沒看到（總數未知）；改看作者介紹文與 README 共 10 張圖；repo 的 issue／PR 沒有留言回覆（0 則）"
-source_images: 10
-source_replies: 0
+source_review: full
+source_reviewed_at: 2026-11-18
+source_images: 11
+source_replies: 4
 tags:
   - feedback-desk
   - ticketing
@@ -28,7 +28,7 @@ tags:
 # feedback-desk 解構：客戶開單 × 多 AI 認領與交接的輕量工單系統（Cloudflare Workers 免費版／Laravel 主機版）、MCP 接入 Claude Code 與 Codex，及與本地交接機制的對照
 
 - **來源連結**：[GitHub aixwangtw/feedback-desk](https://github.com/aixwangtw/feedback-desk)；作者介紹文：[aixwang.dev/blog/feedback-desk](https://aixwang.dev/blog/feedback-desk/)（介紹文我未讀取，內容以貼文與 repo README 為準）
-- **發布平台 / 作者**：`Threads` + `GitHub` / `aixwangtw`
+- **發布平台 / 作者**：`Facebook 社團（Claude Taiwan）` + `Threads` + `GitHub` / `aixwangtw`（王士麟；2026-11-18 更正：內容對得上的原貼文在 Facebook 社團，不是 Threads）
 - **查證數據（2026-10-24 以 GitHub API 取得）**：MIT 授權、TypeScript、約 31 Stars、最後推送 2026-10-20、分支 `main`（Cloudflare 版）／`cloudflare`／`laravel`（主機版）
 - **分析日期**：`2026-10-24`
 - **當前狀態**：`🟢 已完成 (Done)`
@@ -39,6 +39,13 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 補讀：**找回原貼文**。原筆記把平台記成 Threads，實際上內容對得上的是作者（王士麟，即 `aixwangtw`）2026-10-20 發在 Facebook 社團「Claude Taiwan」的貼文：<https://www.facebook.com/groups/1224997379198346/posts/1423750565989692/>。同時接 3 個專案、搭配 Opus 5.5 與排程、Cloudflare 版是 Zeabur 倒掉後的替代方案，這幾句都只出現在這一則。`source_url` 已改成這則貼文；原值 `https://github.com/aixwangtw/feedback-desk` 移到 `github_repo`。作者在 Threads（`@alex_wang.ai`）10-18 另有一則較短的版本：<https://www.threads.com/@alex_wang.ai/post/Deo2W1ekhFm>，沒有上述幾句。
+>
+> - **Facebook 貼文文字**：說明動機（訊息分散、沒有統一 API 讓 AI 讀需求與交接）；自己用 Claude Code 同時回 3 個客戶、夥伴用 Codex、用排程定時掃新單、特別調過 AI 寫調整說明的規則；流程是客戶開單、排程讀單、AI 修改並驗證、AI 寫調整說明、客戶確認後標記「已完成」；Cloudflare 免費版與主機版分在不同分支。
+> - **作者圖片 1 張**（Facebook）：「老師題庫回報」的問題清單畫面。狀態有待處理、待審核、已完成三種，**每一列都有可以直接切換狀態的下拉選單**；欄位還有圖片、調整說明、建立日期與編輯、刪除按鈕。Threads 那則另附 1 張圖，沒有放大看（不是本筆記的來源）。
+> - **留言**：Facebook 1 則（作者放介紹文與 repo 連結），已讀完。Threads 計數 3 則已全部讀完：一位質疑客戶講的需求有時連人都聽不懂，要 AI 聽懂是強人所難；作者回覆可以直接在系統上向客戶發問，由 AI 判斷哪些能直接處理、哪些要先確認，這段判斷邏輯會再調整。
+> - **對分析的影響**：貼文與截圖呈現的是 **10 月中的舊版**：狀態是「待處理／待審核／已完成」，而且可以手動切換、客戶確認後「標記」完成。下面 2026-11-16 依作者介紹文（11-07 更新）改寫的三種狀態（等工程師／等客戶／已完成）、「待審」改指留言草稿、只有客戶按「通過」才能結案，是後來的改版。兩種說法各自對應當時的版本，原筆記的寫法在當時並沒有錯；第 1 節維持現行版本。
 
 > 2026-11-16 重審：原筆記註明沒讀的作者介紹文（`aixwang.dev/blog/feedback-desk`，2026-10-18 發布、11-07 更新）這次全文讀完，文內 9 張圖與 README 的 1 張圖都看過；repo 的 2 則 issue 與 1 個 PR 也讀了（都沒有留言回覆）。原始 Threads 貼文沒有留下連結，無從回看；介紹文頁面沒有留言區。
 
@@ -89,6 +96,8 @@ tags:
 - **When & Where**：多人加多 AI 的接案、需要客戶確認閉環的場景。
 
 > [!NOTE]
+> **版本差異（2026-11-18 補）**：本節寫的是 **2026-11-07 更新後的現行版**（等工程師／等客戶／已完成；「待審」是留言草稿；只有客戶按「通過」才結案），於 2026-11-16 依作者介紹文改寫。**2026-10-20 原貼文與截圖呈現的是 10 月中的舊版**：狀態是待處理／待審核／已完成，可以用下拉選單手動切換，客戶確認後「標記」完成。原筆記（2026-10-24）照舊版寫，在當時是對的。
+>
 > 貼文數字與流程已與 README 對照，大致一致。README 明言對 OpenClaw、Hermes、Grok 的 MCP 設定「沒有實際測過」。貼文提到的 Opus 5.5 與排程做法是作者個人搭配，未驗證。
 
 ---

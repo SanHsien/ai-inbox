@@ -11,9 +11,9 @@ cluster: "1"
 cluster_role: "跨 CLI 與階層派工"
 short_title: "Herdr 終端復用 + Magpie 統一網關"
 source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "原 Threads 貼文沒留連結，貼文的圖片與留言都沒看到（總數未知）；改看 repo：magpie README 6 張圖看了 3 張（另 3 張只讀替代文字），herdr 示範影片沒播放，issue 留言讀到 2 則"
-source_images: 3
+source_reviewed_at: 2026-11-18
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「magpie herdr」「magpie」「herdr」、Facebook 貼文搜尋「Magpie Herdr Obsidian 交接」「Magpie Herdr」；Threads 只有 10-25 之後的 Magpie 介紹與零散的 herdr 心得，沒有同時談 Magpie、Herdr、Obsidian 交接與額度路由的對話）；替代來源 magpie README（現行 10 張介面與架構圖）、herdr README 與示範影片、magpie issue #606 已讀完"
+source_images: 10
 source_replies: 2
 tags:
   - multi-agent-factory
@@ -34,6 +34,22 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 補讀：原貼文再找一次仍搜尋不到（搜尋方式見 frontmatter 的 `source_review_note`），維持 `partial`。**替代來源這次補讀完**：magpie 現行 README 的介面圖已增為 10 張（2026-11-16 看了 3 張），其餘 7 張逐張打開看過；herdr 的示範影片（22 秒）抽看 5 格（約第 1、6、11、16、21 秒）。
+>
+> - **magpie 補看的 7 張圖**：
+>   - 選單列面板：每個 agent 一列，右邊下拉選模型，有的多一格可調推理強度或驗證方式；範例是 Claude Code 配 Kimi K3、Codex 配 DeepSeek V4 Pro、Gemini CLI 配 GLM-5.3，另有 OpenCode、Pi、Goose、Cursor、Copilot CLI、Crush；底部是 Budget／Focus 兩組設定檔。
+>   - 模型挑選器：下拉後可搜尋或直接輸入模型代號，清單依供應商分組，第一項是「Default（該 agent 原廠模型）」。
+>   - 新增供應來源：分四區。訂閱登入（Claude、ChatGPT、Cursor、Grok、Copilot、Devin、Gemini CLI、Antigravity）、廠商 API、轉接站、本機（Ollama、LM Studio、自訂網址）。
+>   - Routing 頁：四個 agent 經閘道連到七個供應商的即時連線圖；畫面上 Kimi 顯示「被限流、35 秒後恢復」，請求改由下一個成員回答；下方列三個路由群組（Smart 或 In order 策略），統計欄有「重新路由次數」與「agent 看到的錯誤數」。
+>   - 意圖路由逐步說明：先用一個小模型判斷這一輪屬於哪種請求（例如「寫或修測試」），命中規則後決定群組內誰先上，並列出每一步花的時間。
+>   - 巢狀路由：群組裡可以再放群組，逐層套用規則。
+>   - Usage 頁：各供應商餘額、30 天 token 數、快取讀取量與命中率（範例 88%）、呼叫次數、依牌價估算的花費，以及每日用量長條圖。
+> - **herdr 示範影片**：左側邊欄列出每個 agent 與狀態。抽看的畫面裡出現 **working、blocked、idle、done 四種標籤**（done 是藍點），右側分割窗格同時顯示兩個 agent 的輸出，上方有分頁；中段示範在一個專案分頁裡啟動 Claude Code。影片沒有旁白或字幕。
+> - **對分析的影響**：
+>   - **再修正 herdr 的狀態種類**：2026-11-16 依 README 文字改成「只有 working／blocked／idle 三種」，並說原稿的「Done」查無依據。示範影片裡確實有 `done` 標籤，所以介面上至少有四種狀態；「Done」有依據，「Completed／Errored」仍查無依據。1.2 第 2 點已補註。
+>   - Routing 頁的「限流後自動換下一個、agent 看到 0 個錯誤」是官方示範畫面，佐證容錯切換要先設好路由群組才有；與 11-16 補的前提一致。
+>   - 「額度感知」在 magpie 裡的實際樣貌是 Usage 頁的餘額與用量統計加上限流時換路，不是原稿畫的「分派前先查各家額度與重置倒數再推薦模型」；後者是原貼文作者自己的做法或本筆記的推演，magpie 的圖裡沒有。
 
 > 2026-11-16 重審：本篇的起點是一段 Threads 對話節錄，**筆記沒有留下原貼文連結，所以那則貼文的圖片與留言無法回頭看**。這次改看兩個官方 repo：`yetone/magpie` 的 README 全文與 3 張主要圖（另 3 張介面截圖只讀了替代文字）、`herdrdev/herdr` 的 README 全文（它只有一支示範影片，沒有播放），以及 magpie 一則與額度相關的 issue 留言。
 
@@ -126,7 +142,7 @@ tags:
    - **額度風險**：經 magpie 使用 Claude 訂閱時走的是 `claude -p` 無頭模式，維護者在 issue #606 說明系統提示詞會疊加、快取接不上時會整段重寫；有使用者實測額度效率約為互動式的一半（樣本不大）。
 2. **`herdrdev/herdr` (Rust 打造的 Agent-Native 終端復用器)**：
    - 官方站點：`herdr.dev`。
-   - **非傳統 tmux**：傳統 tmux 只能分屏文字；Herdr 原生解析 PTY 的輸出狀態，直接在介面標示各 pane 的 agent 狀態。官方 README 只列三種：**working（執行中）、blocked（停下來等回答）、idle（閒置）**；原稿寫的 Completed／Errored 查無依據。
+   - **非傳統 tmux**：傳統 tmux 只能分屏文字；Herdr 原生解析 PTY 的輸出狀態，直接在介面標示各 pane 的 agent 狀態。官方 README 只列三種：**working（執行中）、blocked（停下來等回答）、idle（閒置）**；原稿寫的 Completed／Errored 查無依據。（2026-11-18 補：示範影片的側邊欄另有 `done` 標籤，介面上至少四種。）
    - **Agent 互派工（Agent-to-Agent Socket API）**：Agent 可以透過 Herdr 提供的 Socket API 主動在相鄰 Pane 召喚另一個 Agent 執行子任務，並監聽其完成訊號。
 3. **`ORCA` / `OrcaRouter` (智慧動態模型路由與多 Agent 開發環境)**：
    - **OrcaRouter**：動態分析 Prompt 語意複雜度，自動選擇性價比最高之模型（大腦 vs. 施工）。

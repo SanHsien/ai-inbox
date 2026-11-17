@@ -1,20 +1,20 @@
 ---
 id: "2026-11-15-cloudflare-security-audit-skill"
 title: "Cloudflare security-audit-skill 解構：用六階段隔離、對抗式證偽與零依賴閘門馴服 LLM 幻覺"
-source_url: "https://github.com/cloudflare/security-audit-skill"
-source_platform: "GitHub & Social"
+source_url: "https://www.facebook.com/geekMickey/posts/pfbid0AMLTRjqNWeanmNvJuP81D1accS3pM9bjecs6zDVSG6oEP7yNT8tX1b7baXxQEoj4l"
+source_platform: "Facebook 粉絲專頁（工程師米奇）/ GitHub"
 author: "Cloudflare Security AI Research（社群解讀：工程師米奇）"
+github_repo: "https://github.com/cloudflare/security-audit-skill"
 analyzed_at: "2026-11-15"
 analyzed_by: "antigravity"
 status: done
 cluster: 3
 cluster_role: "資安稽核Harness"
 short_title: "Cloudflare資安稽核Skill"
-source_reviewed_at: 2026-11-17
-source_review: partial
-source_review_note: "社群解讀貼文（工程師米奇）沒有留下連結，找不到，圖與留言沒看到；repo 47 則未關閉 issue 已用 gh api 全部讀過（讀到 47／共 47 則，另讀 43 則 issue 留言；長篇內文讀開頭約 1100 字）"
-source_images: 1
-source_replies: 90
+source_reviewed_at: 2026-11-18
+source_review: full
+source_images: 2
+source_replies: 98
 tags:
   - security-audit
   - cloudflare
@@ -34,6 +34,16 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 補讀：**找回社群解讀貼文**。用 Facebook 貼文搜尋找到「工程師米奇」粉絲專頁 2026-06-29 的貼文：<https://www.facebook.com/geekMickey/posts/pfbid0AMLTRjqNWeanmNvJuP81D1accS3pM9bjecs6zDVSG6oEP7yNT8tX1b7baXxQEoj4l>。`source_url` 已改成這則貼文；原值 `https://github.com/cloudflare/security-audit-skill` 移到 `github_repo`。（Threads 上同名的兩個帳號，一個不公開、一個往回查到 7 月都沒有這篇。）
+>
+> - **貼文文字**：介紹六階段流程（偵察、獵殺、驗證、報告、結構化輸出、獨立驗證），獵殺階段有七個攻擊面向；設計原則是只回報能實際利用的問題、每個發現要有具體攻擊情境、缺少縱深防禦不算漏洞、嚴重度看可能性乘以影響；列出報告常見的反模式（把偏離 OWASP 的都當成問題、用「理論上可能」這種字眼、用一堆低風險項目充厚度、不提做得好的地方、太快下結論）；多次執行是累加的，測試顯示單次大約只找到一半；不綁定特定 agent，MIT 授權。
+> - **作者圖片 1 張**：GitHub 的 repo 預覽卡，當時顯示 1 位貢獻者、1 則 issue、約 1k 顆星、78 個 fork。
+> - **留言**：貼文計數 9 則，「由新到舊」排序捲到底，顯示 8 則已全部讀完，差 1 則不顯示。作者在留言放 repo 連結，其餘 7 則都是感謝或推薦，沒有實測、反駁或更正。
+> - **對分析的影響**：
+>   - 貼文寫的是 6 月剛開源時的階段順序（報告排第 4、結構化輸出第 5、獨立驗證第 6）；現行 README 把報告移到最後，並改稱與目標無關的報告。正文流程圖以現行 README 為準，不改。
+>   - 貼文的「單次執行約找到一半」是轉述專案自己的說法，沒有獨立資料；repo issue 裡的實測回報（見下）比這則解讀更能檢驗主張。
+>   - 星數從貼文當時約 1k 到 2026-11-15 查到的 72,408，只記錄，不影響結論。以下是 2026-11-17 重看 repo 的紀錄。
 
 > 2026-11-17 用瀏覽器重看 GitHub repo、issue 列表與 Cloudflare 部落格。社群解讀貼文（工程師米奇）沒有留下連結，找不到，那篇的圖與留言**沒看到**。
 

@@ -2,7 +2,8 @@
 id: 2026-10-24-felix-rieseberg-how-to-be-more-ambitious
 title: "Felix Rieseberg〈How to be more ambitious〉解構：速度／高度／深度／廣度四維 AI 野心框架、深度四問與外部裁判原則，及對本地 Agent 工作流的落地"
 source_url: "https://felixrieseberg.com/how-to-be-more-ambitious-a-tutorial-for-humans-with-models/"
-source_platform: "Blog（社群轉貼：老軒筆記）"
+source_post_url: "https://www.facebook.com/shuansmile/posts/pfbid0xxPvfCvGRnKrQxusuuWnywHThuDzvfXtKaNfXpvysF9fB7byFPvhr8azqxt2Umazl"
+source_platform: "Blog（社群轉貼：Facebook 張瑋軒「老軒筆記」）"
 author: "Felix Rieseberg (Anthropic)"
 analyzed_at: 2026-10-24
 analyzed_by: "Antigravity"
@@ -10,11 +11,10 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "高槓桿思維與工作流"
 short_title: "AI 野心四維框架與深度四問"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "觸發分析的「老軒筆記」轉貼貼文沒留連結，其圖片與留言沒看到（總數未知）；作者原文全文與 1／1 張圖看過，原文無留言區"
+source_review: full
+source_reviewed_at: 2026-11-18
 source_images: 1
-source_replies: 0
+source_replies: 8
 tags:
   - anthropic
   - prompt-engineering
@@ -37,6 +37,13 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 補讀：**找回觸發分析的轉貼貼文**。用 Facebook 貼文搜尋找到張瑋軒 2026-10-19 的貼文（文末標 `#老軒筆記`）：<https://www.facebook.com/shuansmile/posts/pfbid0xxPvfCvGRnKrQxusuuWnywHThuDzvfXtKaNfXpvysF9fB7byFPvhr8azqxt2Umazl>，連結另記在 frontmatter 的 `source_post_url`。`source_url` 維持作者原文，因為原文才是分析對象。同一天「老軒——人生筆記與常談」粉專轉貼了這一則，只加一句「可以存起來」。
+>
+> - **貼文文字**：中文摘要原文的四個面向（速度、高度、深度、廣度）、季度業務檢討的三級範例、「需要開會討論的事就該拉高高度」、深度四問、名詞換成動詞、組夢幻團隊與紅隊、不要只叫 AI 扮演角色而要它做專家真正會做的事，最後整理成開工前自問的四題。貼文沒有附原文連結。
+> - **作者圖片**：0 張。
+> - **留言**：貼文計數 13 則，「由新到舊」排序捲到底，顯示 8 則已全部讀完（5 則留言加 3 則作者回覆，回覆只有貼圖），差 5 則不顯示。內容是感謝與「馬上來用」，一則談 AI 會逐漸理解人的意圖；沒有實測、反駁或更正。
+> - **對分析的影響**：貼文是原文的忠實摘要，沒有與原文衝突或原文沒有的主張；本筆記以原文為準的做法不變，沒有需要改正的地方。
 
 > 2026-11-16 重審：作者網站的原文全文（約 8 分鐘閱讀量）這次逐段讀完，並與本筆記的轉述比對；文首 1 張圖看過。原文頁面沒有留言區。觸發分析的「老軒筆記」貼文當時沒有留下連結，無從回看其圖片與留言。
 
