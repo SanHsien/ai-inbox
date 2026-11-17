@@ -452,6 +452,7 @@
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文與留言串評估：不依賴單一 AI 的本地 Skill/Handoff/Memory 工作流](./notes/2026-11-16-isaac-wong-ai-agnostic-local-workflow-comments.md) | `claude-code`, `handoff`, `markdown-memory` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文評估：Jack Liu《重開機一鍵復原》工具開發與 Claude 協作四原則](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md) | `vibe-coding`, `windows`, `reboot-restore` | 0 / 0 |
 | 2026-11-17 | 🔴 | [Threads 情報與留言評估：Scrapling（D4Vinci/Scrapling）Python 爬蟲框架與原生 MCP Server](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) | `scrapling`, `web-scraping`, `mcp` | 0 / 1 |
+| 2026-11-17 | ⚪ | [Threads 情報評估：Yogurt（FrigadeHQ/yogurt）跨平台本地隱私 AI 會議筆記開源替代品](./notes/2026-11-17-yogurt-local-ai-meeting-notes.md) | `yogurt`, `meeting-notes`, `whisper-cpp` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -528,6 +529,7 @@
 - 開源模型雲端冷備：[開源大模型Drive備份](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md)
 - 重開機一鍵復原心得：[重開機一鍵復原心得](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md)
 - AI爬蟲MCP工具：[Scrapling爬蟲與MCP](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md)
+- 本地會議筆記工具：[Yogurt本地會議筆記](./notes/2026-11-17-yogurt-local-ai-meeting-notes.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
