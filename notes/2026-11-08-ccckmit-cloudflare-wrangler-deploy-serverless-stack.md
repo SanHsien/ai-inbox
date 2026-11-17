@@ -10,11 +10,10 @@ status: done
 cluster: "4"
 cluster_role: "全端部署與自動化落地"
 short_title: "陳鍾誠Cloudflare一鍵部署評估"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "未登入只讀到 18 則留言（共 38 則），頁面註明排序可能濾掉部分回覆；作者留言區 6 張圖已逐張看完"
-source_images: 6
-source_replies: 18
+source_review: full
+source_reviewed_at: 2026-11-17
+source_images: 8
+source_replies: 38
 tags:
   - cloudflare-workers
   - wrangler-deploy
@@ -40,6 +39,7 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：Facebook 未登入可讀貼文全文（2026-11-03 15:42 發布；568 個心情、38 則留言、150 次分享）、作者在留言區貼的 6 張圖與部分留言。
+> 2026-11-17 登入補讀：改用「所有留言」排序、回覆串全部展開，38 則全部讀完；另看了 2 張網友留言附圖。
 
 - **作者圖片**：貼文本身沒有圖。作者在留言區連貼 6 則只有圖片的留言，前 5 張是同一份 Cloudflare 產品整理文件的截圖（文件以他的 `mini-lang-expert` 專案為例），第 6 張是成品畫面。逐張放大看過：
   - 圖 1「算與呈現」：Workers（核心）、Static Assets（和 Worker 綁在一起的靜態目錄，前端靠它）、Pages（上一代產品，**新專案建議改用 Workers + Static Assets**）、Cron Triggers、Durable Objects（單一實例、強一致、WebSocket、鎖）。
@@ -48,12 +48,20 @@ tags:
   - 圖 4「串接與安全」：Queues、Rate Limiting binding（保護公開 API）、Secrets／Variables（密鑰用 `wrangler secret put`，文件舉例他的模型 API 金鑰就是這樣放）、Web Analytics／Observability（已開 `observability.enabled = true`）。
   - 圖 5「選型速查」：靜態網頁用 Static Assets、設定值與簡單狀態用 KV、多張表要 SQL 用 D1、檔案與備份用 R2、**即時協作與強一致計數用 Durable Objects（標示需付費方案）**、背景慢工作用 Queues、定時用 Cron Triggers、呼叫模型要記錄與限流用 AI Gateway。
   - 圖 6：部署在 `workers.dev` 子網域的飲料店點單系統畫面，有登入帳號、點單、訂單、報表、商品分頁與購物車。這是含登入與交易資料的全端應用，不是靜態頁。
-- **作者留言補充**：除上述 6 張圖外，讀到的範圍內沒有文字回覆。貼文末句原筆記漏引：作者說唯一缺點是要照 Cloudflare 的寫法（主要是 Worker），但交給 AI 就沒問題。
-- **網友留言重點**（頁面標示 38 則，未登入讀到 18 則含作者 6 則；頁面註明「最相關」排序可能濾掉部分回覆）：
+  - 網友附圖 2 張（2026-11-17 補看）：`Jey Wang` 的手機截圖，是他部署在 `workers.dev` 的咖啡店預約網站首頁（有「預約體驗」「探索咖啡商品」按鈕）；`林子君` 的手機截圖是網域註冊商後台的網域清單，搭配留言問能不能把自有網域指過去，與本篇分析無關。
+- **作者留言補充**：除上述 6 張圖外另有 2 則文字回覆（2026-11-17 更正，上次寫「沒有文字回覆」是未登入看不到）：回 `阮常恩` 說 GitHub Pages 只有前端、沒有資料庫與後端；回問有沒有書可參考的人說直接叫 coding agent 做就好。貼文末句原筆記漏引：作者說唯一缺點是要照 Cloudflare 的寫法（主要是 Worker），但交給 AI 就沒問題。
+- **網友留言重點**（頁面標示 38 則，全部讀完，含作者 8 則）：
   - `吳佳駿`：建技能或 MCP 讓 Agent 自己發布。`Jey Wang`：本機跑通後直接叫 Agent 部署，只會要求登入授權一次就完成。
   - `Jia-ming Ma`：原本想用 AWS 無伺服器方案；做法是資料庫與外部服務都先套一層介面，同一套程式可以本機容器、AWS 或 Cloudflare 三處部署，用 AI 之後架構規劃要比以往更早做。
   - `Hugo Wong`：反駁「AI 全包」：容量規劃、架構設計、資料搬遷仍要人做；商用還有流程與套件審核，應用若要存取公司內部地端資料或目錄服務，放到邊緣就接不通。
   - `謝昌勳`、`Lin Chin An`：補充還有 SQL／NoSQL／物件儲存與 CDN 防護。
+  - 2026-11-17 補讀到的：
+    - `Jey Wang`（實作回報）：用他稱為 Void 的框架（未查證是哪個專案）做線上預約網站，前後台一起做，後台有預約管理與課程管理，資料庫用 D1，畫面由設計工具直接生成沒調整，並貼出前台與後台登入頁兩個 `workers.dev` 網址。
+    - `Jia-ming Ma` 與 `Hugo Wong` 的後續往返：`Jia-ming Ma` 說指定 Deno 加 Hono 寫 API，多數情況能同時相容 AWS Lambda 與 Cloudflare Workers，小型應用（他估每天約 1,000 活躍使用者）還在免費範圍；`Hugo Wong` 追問商用的套件審核、流程，以及要連公司內部地端資料或目錄服務時怎麼辦；`Jia-ming Ma` 承認不是所有服務都適合，資安、成本、負載要另請專家規劃。
+    - `Timo Yan`：建議改用新的官方腳手架 `create-cloudflare`（C3）。
+    - `QQnice Lin` 說還要一個 API key；`Jia-ming Ma` 回：官方命令列工具直接走瀏覽器 OAuth 登入，不用另外拿 API key。
+    - `William Ho`：他的組合是 Claude 加 Cloudflare 加 Supabase。`阮常恩`：不是大多用 GitHub Pages 嗎（作者回覆見上）。
+    - `樂以虎` 問有沒有 GPU，沒有人回答。`陳永昌`、`Chin Po-Hsun`：自己也這樣用、接案也推薦。其餘為附和。
 - **對分析的影響**：
   - 第 1 節原文引用補上「缺點是要照 Worker 的寫法」這句，這是作者自己承認的鎖定成本；留言裡 `Jia-ming Ma` 的介面隔離做法正是對應解法，已補進第 2 節。
   - 圖 1 寫明 Pages 是上一代產品。第 2 節架構圖把 `*.pages.dev` 與 `*.workers.dev` 並列，已加註新專案以 Workers + Static Assets 為主。
@@ -61,6 +69,12 @@ tags:
   - 圖 4 證實作者自己的專案用 `wrangler secret put` 放模型金鑰，與陷阱一的建議一致。
   - `Jey Wang` 說的「登入授權一次後 Agent 就能自行部署」代表本機會留下可部署到整個 Cloudflare 帳號的登入憑證；這點不在既有任務 `T-20261108-05` 的檢查範圍（該任務只查設定檔與 `.dev.vars`），已在第 2 節加一條提醒，不另開任務。
   - `Hugo Wong` 指出的企業情境限制（內部資料、目錄服務、審核流程）補進第 2 節作為適用範圍說明。
+  - 2026-11-17 補讀 20 則後：
+    - `Jia-ming Ma` 第二段留言確認命令列工具走瀏覽器 OAuth 登入、不需 API key，與上面 `Jey Wang` 那條「本機會留下帳號層級登入憑證」的提醒同方向，多一則佐證；不改任務範圍。
+    - `Jey Wang` 的預約網站是第二個「含登入與交易資料的全端應用」實例（第一個是作者圖 6），佐證這套做法不只用在靜態頁。他貼出的後台登入頁是公開網址，正是 `T-20261108-05` 檢查表要防的情境（後台入口公開、靠應用層驗證），不新增任務。
+    - `Jia-ming Ma` 對遷移限制的讓步，讓第 2 節「適用範圍」的寫法維持不變。
+    - `Timo Yan` 提的 `create-cloudflare` 是建立新專案用的腳手架，本筆記談的是既有專案用 `wrangler deploy` 部署與機密稽核，兩者不衝突，正文不改。
+    - 已完成任務 `T-20261108-05` 的產出不受影響。
 
 ---
 

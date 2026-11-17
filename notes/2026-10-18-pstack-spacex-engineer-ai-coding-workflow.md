@@ -10,11 +10,10 @@ status: done # pending | in-progress | done | archived
 cluster: "1"
 cluster_role: "工程紀律與設計審查"
 short_title: "pstack 方法論與 TDD 驗證"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "Threads 貼文顯示 16 則回覆，未登入只讀到作者 3 則（3／16）；作者留言貼的第二支影片（EP435）沒看；YouTube 留言讀到已載入的 19 則（總數未知）；貼文無圖"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 0
-source_replies: 22
+source_replies: 81
 tags:
   - pstack
   - poteto-mode
@@ -36,26 +35,39 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：看了 Threads 貼文與作者自己的 3 則留言（貼文顯示 16 則回覆，其餘要登入才看得到）、YouTube 解說影片的說明欄、**完整字幕**（約 7 分鐘，這次用 `yt_dlp` 抓到）與已載入的留言 10 串加 9 則回覆，並直接核對官方 repo `cursor/plugins` 的 `pstack/` 目錄與 README。作者留言貼的第二支影片（另一個頻道的 EP435）沒有看。
+> 2026-11-17 登入補讀：Threads 留言兩種排序都捲到底並點進有回覆的子串，讀到 14 則（作者 3 則、網友 11 則）；貼文計數顯示 16，另外 2 則頁面不顯示，已無可再讀。第一支影片的 YouTube 留言用 `yt_dlp` 抓全（42／42 則）。第二支影片 EP435（「AI 懶人報」頻道，約 15 分鐘）用 `yt_dlp` 抓到完整字幕讀完，留言 25／25 則也讀完。並重讀官方 README 對照 EP435 的說法。
 
 - **作者圖片**：無。貼文與留言只有連結預覽卡（兩支 YouTube 影片封面、兩張 GitHub 卡片），作者沒有另外上傳圖片。
 - **作者留言補充**（Threads 轉貼者 @mengshyue.tsai 的三則留言）：
   - 官方版在 `cursor/plugins`。
   - **Claude Code 社群移植版他貼的是 `michael-denyer/pstack-claude`**（查 GitHub API：約 4,400 星，涵蓋 Claude Code、Codex、Antigravity、Gemini、OpenCode 等多種工具），不是本筆記原本寫的 `ericlitman/open-pstack`（約 580 星，只做 Claude Code 與 Codex）。兩個 repo 都存在。
-  - 另一支延伸影片（EP435，談 Cursor 工程師一個月 2,000 個 PR、讓 AI 自己合併），本次未看。
+  - 另一支延伸影片（EP435，談 Cursor 工程師一個月 2,000 個 PR、讓 AI 自己合併），2026-11-17 已讀完字幕，重點見下方「EP435 字幕重點」。
 - **影片說明欄與字幕重點**（原稿寫作時沒有依字幕分析）：
   - 結構是 **24 條原則 → 23 套 playbook → 30 個 skill**，三者都是 Markdown 檔；`/poteto-mode` 是唯一入口，先讀原則、再挑 playbook、需要時叫其他 skill。（以上是影片的說法。官方現況（2026-11-17 以 GitHub API 列 `cursor/plugins` 目錄樹）：`pstack/skills/` 共 58 個目錄，其中 **34 個 skill、24 個 `principle-` 原則**，影片說的「30 個 skill」是錄影當時的數字；playbook 在 commit `bf0c7cd`（2026-11-15）是 23 套，到 commit `2f87c85`（2026-11-16）少了 `orchestrate.md`、剩 22 套。本筆記其餘「23 套」的寫法都是指 `bf0c7cd` 當時的清單。）
   - 影片示範的六個可單獨使用的 skill：`/recall`（翻最近七天的對話、PR、issue 整理進度）、`/tdd`（先寫測試並親眼看它失敗才改）、`/interrogate`（把改動交給多個模型各自挑毛病，結論分成一定要改／由你決定／先記下來／不用理四類，**只給結論、不動程式**）、`/no-comments`（逐條審註解，只是複述程式的刪掉、說明外部限制的留下）、`/create-verification-skill`（替專案產生一份驗證專用 skill，交付前自己先完整跑一遍，還會故意把修好的問題放回去確認驗證抓得到）、`/bro`（用白話重講一次）。
   - 說明欄寫明**官方 README 就有 Claude Code 的安裝方式**：先 `/plugin marketplace add cursor/plugins`，再 `/plugin install pstack@cursor-plugins`；指令在 Claude Code 裡會多一個前綴，例如 `/pstack:poteto-mode`；第一次先跑 `/setup-pstack` 選模型。
+- **EP435 字幕重點**（2026-11-17 補讀；這支是轉述，內容多取自 Matt Pocock 訪問 Lauren 的直播與官方指南）：
+  - **SpaceX 頭銜的來由**：影片說她今年三月加入 Cursor，pstack 是那段時間做出來的；今年八月 Cursor 被 SpaceX 收購，她現在在 SpaceX 的 AI 部門。所以「Cursor 工程師」與「SpaceX 工程師」兩種說法指的是同一份工作。這仍是轉述，官方 README 沒寫，本次也沒有另外查證收購一事。
+  - **敢讓 agent 自己合併，靠的是三件事**：agent 自己驗證（她說整個工具箱最重要的 skill 就是驗證；`/create-verification-skill` 會替專案產生「怎麼開、怎麼操作、怎麼留證據」的說明與一張功能地圖）、寫程式的 agent 不能自己判定過關（只有沒寫這段程式的 agent 的結論才算，測試全綠也不算）、把環境改成很難犯錯（`/correct` 會翻最近的 commit 與審查留言找出重複犯的錯，處理順序是改架構 → 型別／lint／CI → 測試，寫成文件規則排最後）。
+  - **過夜執行的三個條件**：完成標準要能檢查（「做四小時」不算）、留決策紀錄、留出口（卡住就停並寫明原因）。人的工作改成抽樣，抽到問題就回頭改流程。
+  - **與 Matt Pocock 那套的差別**：他的 `grill-me` 是開工前一直問到有共識；pstack 相反，原則是不要卡在人身上，先做再給人看，只有不能回頭的動作才先問。pstack 沒有規劃用的 skill。
+  - **什麼時候不要用**：小又明顯的改動、token 預算有限、結果很難自動驗證的工作。Lauren 自己說她在 token 用不完的公司工作，不是每個人都該照做。影片建議不要整套照抄，用 `/automate-me` 從自己的對話紀錄產生自己的 mode。
+  - **與官方現況不符的兩處**：影片說「一共 54 個 skill」，官方目錄是 34 個 skill＋24 個原則檔（共 58 個目錄），數字對不上；影片說「`setup-pstack` 在 Claude Code 沒有作用」，但官方 README（2026-11-17 重讀）寫明 Claude Code 裡 `/pstack:setup-pstack` 會把模型選擇寫進 `~/.claude/rules/pstack-models.md`。兩處都以官方 README 為準。影片說預設把寫程式交給 Grok；官方 README 現在寫的預設是寫程式、文字與判斷都交給 Opus 5.5，也以 README 為準。
 - **網友留言重點**（YouTube）：
   - 最多人回應的一串在談成本：整套跑下來會派子代理、找多個模型互審，**很燒 token**，適合願意大量投入 AI 成本的公司；頻道主回覆認同，建議額度吃緊的人只挑單一 skill 用。
   - 有人提醒第一次要先跑 `/setup-pstack`；有人問需要多大的 context；有人問會不會藏惡意程式（看不到有實質內容的回答）；有人建議直接讀 poteto 的原文，因為摘要省掉很多細節。
-  - 沒有人回報在 Claude Code 上的完整實測結果。
+  - 沒有人回報在 Claude Code 上的完整實測結果。（2026-11-17 讀完全部留言後修正：仍沒有完整實測報告，但有幾則簡短的使用回報，見下。）
+  - **2026-11-17 補讀到的使用回報**：
+    - 第一支影片：`@howard5526` 說用起來跟平常的 Claude Code 加 Opus 差不多，多了幾個好用的工具，預設就是 TDD 與最小改動；`@kentchen6310` 認為現在的 Claude 不裝 skill 也這樣做事（另一人反駁說沒打好基礎一樣會產出垃圾）；`@bitmale` 說自己在 OpenCode 上搭配另一套精簡輸出的 skill 一起用；`@aneinqi1163` 提醒開源專案近來常藏惡意程式，擔心就先掃描，頻道主回覆說這套主要是 Markdown 文字檔、比較好檢查。
+    - EP435：`@q7567731` 原本質疑 2,000 個 PR 是在修 AI 自己產生的問題，實際用三天後改口說好用，做法是以 Matt Pocock 的 skill 為主、pstack 為輔，**只單獨呼叫 pstack 裡的 skill，不用 `/poteto-mode` 當總入口**；`@slashman413` 說效果取決於模型能力，思考程度至少要中等，換成本機小模型後又慢又會寫出 bug；`@reedthediver0000` 估計大約三個 200 美元的訂閱可以撐住這種用法（另一人回的數字高得多，都沒有依據）；`@jackyyau1559` 指出架構層級的取捨很難用測試或 lint 抓到，只靠抽查能不能保證品質是核心疑問；`@chauchau0825` 提醒兩位當事人都有立場，沒拿出證據的說法不必當真。
+  - Threads 補讀到的 11 則網友留言：`code.with.renfu` 說已經在用、還不錯（沒有細節）；一則是有人叫平台內建的 AI 帳號摘要，該摘要寫「21 條原則、一個月 2,500 個 PR」，與官方的 24 條原則及影片的 2,000 個對不上，是機器產生的內容，不採用；其餘是收藏用短留言與玩笑。
 - **對分析的影響**：
   - **作者背景改寫，標題拿掉「SpaceX 前首席工程師」**。貼文與影片說的是「待過 Netflix、Meta、Cursor，**現在是** SpaceX 首席工程師」；原稿卻寫成「曾任 SpaceX、現任 Cursor」，順序相反。而官方 README 的自我介紹只寫 Meta、Netflix、Cursor 與 React 核心團隊，並說這是她每天在 Cursor 用的 skill，**完全沒提 SpaceX**。SpaceX 這個頭銜只出現在轉述的影片與貼文，本次無法從第一手來源查證，已在 1.1 標明。
   - **「五大 Playbook」是錯的，官方是 23 套（2026-11-16 查證時；隔天上游移除 `orchestrate.md`，現為 22 套）**。直接列目錄確認：除了原稿寫的 bug-fix、feature、refactoring、investigation、perf-issue 之外，還有 autonomous-run、babysit、eval、hillclimb、multi-phase-plan、opening-a-pr、orchestrate、pause-safely、prototype、runtime-forensics、session-pickup、shipping、trace-forensics、visual-parity、worktree-cleanup 等。已改 1.1 的圖與 1.2 的說明。
   - **第 2 節「要靠社群移植版才能在 Claude Code 用」是錯的**：官方 README 直接提供 Claude Code 安裝指令。已改寫，並補上轉貼者推薦的 `pstack-claude`。
   - **`/interrogate` 與 `/arena` 的描述修正**：`/interrogate` 是多模型交叉審查且不改程式；`/arena` 是讓幾個模型各寫一版再挑最好的部分。原稿寫成「同一模型用挑剔視角逐行質疑」「多個 Prompt 獨立嘗試」，已改。
   - 1.2 流程圖最後一格「Commit & PR 自動交付」沒有來源依據（影片示範到驗證與審查為止），保留圖但在圖下加註。
+  - **2026-11-17 補讀後的修正**：(1) 1.1 節 SpaceX 頭銜補上 EP435 的解釋（Cursor 被 SpaceX 收購），仍標為未查證。(2) 第 2 節補上「什麼時候不要用」與網友的使用回報——回報一致指向「挑單一 skill 用」比整套 `/poteto-mode` 實際，這與本 repo 當初只融合驗證與 TDD 防線（`T-20261018-18`）的做法一致。(3) EP435 關於 Claude Code 的兩個說法與官方 README 不符，不採用；`docs/pstack-agent-playbooks.md` 現有內容（`/pstack:setup-pstack` 會寫入 `~/.claude/rules/pstack-models.md`）與 README 一致，不用改。任務不增不減。
   - **新增任務 `T-20261018-19`**：已完成的 `docs/pstack-agent-playbooks.md`（`T-20261018-17`）與它的驗證器（`T-20261025-08`）都是照「五大 Playbook、前 SpaceX、open-pstack」這些錯誤前提寫的，需要依官方 repo 更正。原任務不改狀態，另開新任務處理；本筆記狀態因此由已完成改為進行中。
 
 ---
@@ -66,7 +78,7 @@ tags:
 
 隨著 Cursor、Claude Code、Codex 等 AI 程式開發工具的普及，許多開發者陷入了「Vibe Coding」的陷阱：輸入一段模糊的 Prompt，讓 AI 吐出大量未經測試的程式碼，看到沒報錯就以為完成了。
 
-**Lauren Tan（@poteto）** 是 React 核心團隊成員（負責 React Compiler），官方 README 自述待過 Meta、Netflix、Cursor，並說 pstack 是她每天在 Cursor 用的 skill。轉述的貼文與解說影片另稱她「現在是 SpaceX 首席工程師」，官方 README 沒有這個說法，**未查證**。她把自己的做法開源成外掛 **`pstack`**：24 條原則、23 套 playbook、30 個 skill（數字依解說影片；官方 `skills/` 目錄另含以 `principle-` 開頭的原則檔）。官方目錄現況是 34 個 skill＋24 個 `principle-` 原則，playbook 由 23 套（commit `bf0c7cd`，2026-11-15）變為 22 套（commit `2f87c85`，2026-11-16，少了 `orchestrate.md`），查證方式見第 0 段。
+**Lauren Tan（@poteto）** 是 React 核心團隊成員（負責 React Compiler），官方 README 自述待過 Meta、Netflix、Cursor，並說 pstack 是她每天在 Cursor 用的 skill。轉述的貼文與解說影片另稱她「現在是 SpaceX 首席工程師」，官方 README 沒有這個說法，**未查證**。另一支解說影片（EP435）的解釋是 Cursor 今年八月被 SpaceX 收購、她現在在 SpaceX 的 AI 部門，所以兩種頭銜指同一份工作；這同樣是轉述，本筆記沒有另外查證。她把自己的做法開源成外掛 **`pstack`**：24 條原則、23 套 playbook、30 個 skill（數字依解說影片；官方 `skills/` 目錄另含以 `principle-` 開頭的原則檔）。官方目錄現況是 34 個 skill＋24 個 `principle-` 原則，playbook 由 23 套（commit `bf0c7cd`，2026-11-15）變為 22 套（commit `2f87c85`，2026-11-16，少了 `orchestrate.md`），查證方式見第 0 段。
 
 `pstack` 的核心哲學是：**AI Agent 不是替你盲目打字的打字機，而是必須在嚴密軟體工程紀律與約束下運作的初中級工程師夥伴**。如果沒有嚴格的工程防線（Guardrails）、重現測試（Reproduction Tests）與執行期驗證閉環（Runtime Verification），AI 只會以極高的速度放大技術債與幽靈錯誤。
 
@@ -169,6 +181,7 @@ tags:
 - **官方上游**：位於 Cursor Plugins 生態目錄中（`github.com/cursor/plugins/tree/main/pstack`）。
   - 在 Cursor 環境中可直接透過 `/add-plugin pstack` 安裝啟用。
   - **Claude Code 官方也支援**（README 載明）：`/plugin marketplace add cursor/plugins` 後 `/plugin install pstack@cursor-plugins`；指令會多一個前綴（`/pstack:poteto-mode`），第一次先跑 `/pstack:setup-pstack` 選模型；只有 Cursor 才有的功能（如 bugbot、automations）會略過並提示。授權為 MIT。
+  - **什麼時候不要用**（EP435 轉述官方指南與作者本人的說法）：小又明顯的改動、token 預算有限、結果很難自動驗證的工作。兩支影片的留言區最多人談的也是成本；有實際用過的網友多半只單獨呼叫個別 skill，不用 `/poteto-mode` 當總入口，並提醒效果取決於模型能力。
 - **社群移植版（`pstack-claude`）**：`github.com/michael-denyer/pstack-claude`，原貼文作者在留言推薦的版本，涵蓋 Claude Code、Codex、Antigravity、Gemini、OpenCode 等。
 - **社群開源移植版（`open-pstack`）**：
   - 專案網址：`github.com/ericlitman/open-pstack`

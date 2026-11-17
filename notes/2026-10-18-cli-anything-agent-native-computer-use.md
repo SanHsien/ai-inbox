@@ -10,10 +10,9 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "逆向工程與軟體封裝"
 short_title: "CLI-Anything"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "官方 README 的多支示範動圖（FreeCAD、Blender、Draw.io 等，總數未知）沒有逐支看，README 只看了 2 張主要圖片；Threads 貼文圖 1／1 張、留言 6／6 則都看過"
-source_images: 3
+source_review: full
+source_reviewed_at: 2026-11-17
+source_images: 12
 source_replies: 6
 tags:
   - cli-anything
@@ -38,11 +37,19 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：看了 Threads 貼文文字、作者附的 1 張圖、留言區全部 6 則（含作者 3 則），並回頭核對官方 repo 的 README、`HARNESS.md` 與 README 內 2 張主要圖片（前導漫畫、架構圖）。README 另有多支示範動圖（FreeCAD、Blender、Draw.io 等）沒有逐支看。
+> 2026-11-17 補讀：README 其餘 9 個示範素材都打開看過（6 支動圖各抽 1～2 個畫面、3 張靜態圖）。README 內容圖共 11 張全部看完（專案圖示與星數走勢圖不計）。
 
 - **作者圖片**：
   - 貼文圖 1：一張自製的 GitHub Trending 資訊卡。寫著 2026-10-18 排行第 4、Python、54,205 星（當日 +574）、Apache-2.0，四個標籤是 AI Agents／CLI Automation／Agent-Native／Open Source。**沒有任何架構或流程內容**。
   - README 圖 1（前導漫畫）：三格漫畫，從「軟體很多、CLI 很少」到戴上 CLI-Anything 之後各種軟體都能用指令操作，屬於宣傳圖。
   - README 圖 2（架構圖）：`/cli-anything <software>` 指令驅動外掛的七個階段，依序是 **1 程式碼分析、2 CLI 設計、3 實作、4 測試規劃、5 測試實作、6 測試文件、7 發布到 PyPI**，產出放在 `agent-harness/` 資料夾，最下方是它所包裝的真實軟體。
+  - README 示範素材（2026-11-17 補看）：
+    - 開頭打字動圖：只是終端機打出 `/cli-anything <software>` 的動畫，沒有內容。
+    - FreeCAD 火星車、Blender 軌道無人機兩支動圖：都是同一種自製展示面板——左欄是 agent 逐條送出的指令（每條附狀態），中間是「預覽監視器」顯示目前模型的算圖與幾個視角縮圖，右欄是遙測數字。看得到零件一步步加上去；**畫面是展示面板，不是 FreeCAD／Blender 的原生介面**，agent 是靠 CLI 的預覽輸出檢查成果。
+    - Draw.io 動圖與成品圖：左邊終端機下指令，右邊 Draw.io 視窗跟著長出圖；成品是一張 HTTPS 連線流程的時序圖（TCP 握手、TLS 握手、加密傳輸、斷線四段，標籤清楚）。
+    - Slay the Spire II 動圖：左邊是「控制室」面板（遊戲狀態、模型的思考與送出的指令），右邊是實際遊戲畫面停在地圖。
+    - ArcGIS Pro 動圖：左邊是執行中的 ArcGIS Pro 地圖（多個緩衝區圓形疊在點位上），右邊終端機裡 agent 透過 MCP 呼叫工具，**畫面上有一步在等使用者按是／否核准**。這支示範的是連到「正在執行的軟體」，不是離線產檔。
+    - VideoCaptioner 前後對照圖：同一個影片畫面，處理前字幕是一條有底色的單行，處理後換成雙語、無底色的樣式。
 - **作者留言補充**：作者在留言貼了官方 GitHub 連結，其餘兩則是回應網友的閒聊，沒有技術補充。
 - **網友留言重點**：
   - @more.yu_：真正受衝擊的是花大錢做「AI 整合」的廠商，精心設計的 API 與外掛生態可能被一個 CLI 工具繞過；以後賣的是「繞不過去的理由」。作者回應同意，認為護城河會從 API 轉到資料與信任。
@@ -52,6 +59,7 @@ tags:
   - **1.2 的「七階段管線」原本寫錯，已整段改寫**。原稿列的「常駐 Daemon」「Pydantic JSON Schema」「安全沙盒與身分驗證」三個階段在官方資料裡不存在；貼文與附圖也完全沒提七階段。正確的七階段依官方架構圖與 `cli-anything-plugin/HARNESS.md`：程式碼分析、CLI 架構設計、實作、測試規劃、測試實作、測試文件、PyPI 發布，另有 6.5 階段產生 `SKILL.md`。
   - 原稿 `T-20261018-11` 做法裡的 `cli-anything inspect`／`cli-anything build` 指令不存在；官方入口是在 agent 裡執行 `/cli-anything <軟體路徑或 repo>`，補強用 `/refine`。該任務已完成且實測的是既有的 Mermaid harness，證據不受影響，任務文字不改。
   - 補上官方自己寫的三項限制（原稿沒有）：要用最強等級的模型才生得好、**要有原始碼**（只有編譯檔的軟體品質會大幅下降）、通常要多跑幾輪 `/refine`。標題的「任意軟體」因此要打折，已在 1.1 加註。
+  - 2026-11-17 補看示範素材後：示範涵蓋的都是**有原始碼或有官方腳本介面的軟體**，與官方自己寫的「要有原始碼」限制一致；3D 類示範靠 CLI 算出預覽圖讓 agent 自我檢查，這點原稿沒寫，補在這裡。ArcGIS 那支顯示還有「橋接執行中軟體」的用法，過程需要人核准工具呼叫。沒有與正文衝突的地方，結論與任務不變。
   - 星數：貼文圖寫 54,205；2026-11-16 查 GitHub API 是 58,788。授權 Apache-2.0 與圖一致。
   - 2.2「值得採納」第 2 點寫的「Pydantic 驗證」沒有依據，官方只說用 Click 提供 `--json` 結構化輸出；該點的主張（工具要有 `--json` 與 exit code）仍成立，不改。
 

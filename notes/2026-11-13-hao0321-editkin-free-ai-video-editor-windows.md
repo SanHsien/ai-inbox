@@ -10,11 +10,10 @@ status: archived
 cluster: 2
 cluster_role: "AI影片剪輯"
 short_title: "Editkin免費AI剪輯"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "未登入讀到 7 則／共 9 則回覆，其餘 2 則要登入；貼文無作者圖；作者留言的 freetwai 短網址未點開"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 0
-source_replies: 7
+source_replies: 8
 tags:
   - editkin
   - video-editing
@@ -39,19 +38,20 @@ tags:
 
 ## 0. 原始資料盤點
 
-> 2026-11-16 以未登入瀏覽器重看原貼文（Threads 顯示發文日 2026-11-06）。貼文顯示 9 則回覆；未登入讀到 7 則（作者 3 則＋網友 4 則），其餘 2 則要登入才看得到。
+> 2026-11-16 以未登入瀏覽器重看原貼文（Threads 顯示發文日 2026-11-06），讀到 7 則回覆。2026-11-17 以登入狀態補讀：貼文顯示 9 則回覆，熱門、最新兩種排序都捲到底、子回覆與作者第二則貼文底下的回覆都點開，共讀到 8 則（作者 3 則＋網友 5 則）；剩下 1 則平台不顯示。
 
 - **作者圖片**：無。主貼文只有一句話，沒有圖也沒有影片。
 - **作者留言補充**：
   - 第一則留言放了兩個連結：Video Autopilot（VA）走 `freetwai.com/go/...` 短網址（本次未點開，依零信任規則不跟轉址），Editkin 指向 GitHub 的 `v0.16.0` Release 頁。連結預覽卡是 GitHub 自動產生的 Release 卡片，標題「Editkin 0.16.0（Windows x64，未簽章）」，內文第一行就是「沒有數位簽章，SmartScreen 出現時點其他資訊→仍要執行」。
   - 回覆網友：下一版會直接支援各種不同 AI，好像也會有 CLI；Mac 版「還在製作中」。
-- **網友留言重點**：jayc07 希望有 Linux 版；linda0203tw 希望有 Mac 版；vr_kotodama 道謝。沒有人回報實際剪輯成果或問題。
+- **網友留言重點**：jayc07 希望有 Linux 版（作者回覆後他回了一句好）；linda0203tw 希望有 Mac 版；vr_kotodama 道謝；poyuanhsiao 在作者第二則貼文底下留「存」。沒有人回報實際剪輯成果或問題。
 - **對分析的影響**：
   - **簽章狀態補實**：原稿寫「0.17.0 簽章狀態未實測」。Release 卡片與 `v0.17.0` Release 說明（2026-11-16 以 GitHub API 讀取）都由作者自己寫明**未簽章**，並教使用者略過 SmartScreen。風險表該列已改。
   - **不是只有 Windows**：`v0.16.0` 與 `v0.17.0` 的 Release 附件都有 `universal.dmg`（約 1.43 GB），`v0.17.0` Release 名稱寫「Windows / Mac」；但同一份說明又寫 macOS 版「會在實機驗證後加到這個 Release」、只在一台 Windows 10 電腦做過完整測試，repo 也有 macOS 的未解 bug（#114 AI 連線探測失敗、#115 M5 晶片字幕生成崩潰）。結論：macOS 安裝檔存在但未經作者驗證。5W1H 已補。
   - **「下一版支援各種 AI」已兌現**：`v0.17.0` 說明列出 Claude Desktop、LM Studio、Cursor、Gemini CLI、Kiro 一鍵連接，另有 12 種 AI 的設定可貼上。
   - **補上穩定性訊號**：repo 目前 44 個未解 issue，近期幾則都是 0.16.0 的 AI 剪輯流程問題（#111 精靈設定的 profile 沒有建專案工具、#112 傳 3 支素材只匯入第 1 支、#113 Codex MCP 註冊失敗、#116 變速片段 render 失敗），且都是 0 則回覆。`v0.17.0` 說明自稱修好其中幾類，未實測。
   - 星數 2026-11-16 為 125。結論與處置不變（仍歸檔、不衍生任務）。
+  - 2026-11-17 登入補讀多出的回覆（一句回應、一句收藏）沒有資訊量，分析沒有要改的地方。作者留言的 freetwai 短網址仍未點開（依零信任規則不跟轉址），Video Autopilot Kit 以官方 repo 為準。
 
 ---
 

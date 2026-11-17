@@ -10,11 +10,10 @@ status: done
 cluster: "3"
 cluster_role: "跨網情報與知識檢索"
 short_title: "Gemini Notebook MCP 預覽評估"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "未登入只讀到 10 則留言（共 13 則）；8 張輪播圖已逐張看完"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 8
-source_replies: 10
+source_replies: 11
 tags:
   - gemini-notebook
   - notebooklm
@@ -39,6 +38,7 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：未登入可讀主文、8 張輪播圖（逐張放大到原尺寸看過）、作者留言與連結預覽卡、10 則留言。
+> 2026-11-17 登入補讀：熱門、最新兩種排序都捲到頁尾，並點進有子回覆的留言頁，讀到 11 則；頁面標示 13 則，差的 2 則兩種排序都不顯示（平台隱藏或已刪）。
 
 - **作者圖片**（8 張輪播，皆為作者自製圖卡，標「操作示意」，不是官方畫面截圖）：
   - 圖 1 封面：改名後第一次開放給個人 Google 帳號，預覽期間免費，含 MCP。
@@ -49,10 +49,11 @@ tags:
   - 圖 6：各方案上限：免費 100 本／每本 50 個來源；Google AI Plus 200 本／100 個；Pro 500 本／300 個；Ultra 500 本／600 個。
   - 圖 7：分工示意，Gemini Notebook 負責資料庫／研究／筆記，Claude Code 與 Codex 負責開發／測試／除錯。
   - 圖 8：三步開始用：個人 Gmail 先登入 Gemini Notebook 一次、複製官方 MCP 網址、貼給 AI 叫它帶你裝。
-- **作者留言補充**（2 則）：
+- **作者留言補充**（3 則）：
   - 放官方 MCP 設定頁連結（預覽卡是 Google for Developers 的「Model Context Protocol (MCP)｜Gemini Notebook API」頁，與本筆記引用的官方文件同一頁），並提醒帳號要先用個人 Gmail 登入過 Gemini Notebook 至少一次。
   - 回 `lockislunatic`：目前免費，之後額度跟著 Google 訂閱走。
-- **網友留言重點**（頁面標示 13 則，未登入讀到 10 則含作者 2 則）：
+  - 回 `flipped_education`（2026-11-17 補讀到的長回覆）：NotebookLM 的優勢是快、精確率尚可，處理 YouTube 與沒有付費牆的簡單網頁可以省下爬蟲額度；要問答可在 Gemini App 裡用 @ 指定筆記本，但作者認為 Gemini 現有模型比 Claude、GPT 的頂級模型差一截。作者也承認 Claude Code 原生的資料分析與網路搜尋，加上瀏覽器操作和幾個 skill 就能做到差不多的事，接回 Notebook 主要是想把額度省下來給開發。
+- **網友留言重點**（頁面標示 13 則，讀到 11 則含作者 3 則）：
   - `zhenheco`：工具接越多要維護的流程越多，只為每週跑三次以上的事接工具。
   - `aj.admin.ai`：先挑一個每週重複的資料整理任務試，確認匯入後來源連結與引用有沒有保留，再決定要不要接。
   - `zz950907`：當研究前置處理器，研究時叫 AI 先查筆記本。與官方 API 不符，見第 2 節。
@@ -66,6 +67,7 @@ tags:
   - 圖 8 把安裝寫成三步，完全沒提 GCP 專案、`gcloud`、ADC 與 token；第 3 節的門檻分析正好補上這段落差，已在第 3 節開頭寫明。
   - 作者說明額度之後跟著 Google 訂閱，已補進第 1 節。
   - 既有任務 `T-20261107-05` 的範圍不受影響，不新增任務。
+  - 2026-11-17 補讀：作者自己在回覆裡把這個 MCP 的價值定位成「省額度」，不是能力上的增加，而且說問答要回到 Gemini App 用 @ 筆記本做。這與第 2 節「官方 API 沒有問答工具」一致，也讓 `zz950907`「研究時叫 AI 先查筆記本」的用法更站不住（外部 agent 只能列出與讀取來源，不能對筆記本提問）。結論與任務不變。
 
 ---
 

@@ -10,9 +10,8 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "語音轉錄與生成式媒體"
 short_title: "AI 網紅限動：ChatGPT＋HeyGen＋ElevenLabs"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "影片畫面沒有逐格檢視（播放器載入逾時），介面細節只憑講者口述；無靜態圖（0／0 張）；影片留言 0／0 則"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 0
 source_replies: 0
 tags:
@@ -40,14 +39,21 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：用 `yt-dlp` 重抓影片的說明欄、章節與留言（影片頁在內建瀏覽器只載入播放器，改用工具取資料）。逐字稿沿用原筆記的版本，未重抓。
+>
+> 2026-11-17 補讀：把影片抽格（每 15 秒一格，ElevenLabs 選聲音那段每 3 秒一格）逐張看過操作畫面，畫面內容已補在下面，改標 `full`。
 
-- **作者圖片**：無靜態圖片。影片畫面（操作介面）這次仍未逐格檢視：內建瀏覽器載入嵌入播放器時逾時，試一次後放棄；介面細節仍以講者口述為準，ElevenLabs 兩個聲音名稱的正確拼寫仍未確認。
+- **作者圖片**：無靜態圖片。影片畫面 2026-11-17 已抽格看過，重點如下：
+  - 01:37 起：畫面是 Claude 的新對話頁（模型顯示 Opus 5.5），講者上傳自拍並輸入 `/aiia-prompt-bot` 呼叫提示詞產生器；接著切到生圖介面（講者口述為 ChatGPT），從檔案視窗選圖上傳，字幕提示要在指令最下面加一串字；成品是自拍與 AI 人物同場景的兩張並排照。
+  - 02:20 起（HeyGen）：左側選 Single scene，頁面標題是「What should your avatar say?」；頭像下方的選項依序是頭像模型（Avatar IV）、Motion、預設聲音、直式／橫式（Portrait／Landscape）、解析度 1080p；音檔從「Upload Audio」選剛才下載的 mp3。
+  - 03:35 起（ElevenLabs）：Text to Speech 頁；聲音清單的「My voices」分頁裡，台灣華語（標示 Chinese／Mandarin (Taiwan)）有 `Anna Su`（兩個版本）、`Ling – Steady and Grounded Female Voice with a Taiwanese Accent`、`Kevin Tu`、`Priscilla Yang`、`Neil Chuang`、`Evan` 等；講者選 `Ling`。模型選單選的是 `Eleven v3`。講稿約 58～67 字元，每次產生兩個版本可試聽；講者在句尾加了 `[excited]` 標記調整語氣；輸出 MP3 44.1 kHz。
+  - 07:30 前後：示範 IG「編輯個人檔案」頁的 AI 創作者標示開關。
 - **作者留言補充**：說明欄列出 9 段章節時間（00:19 為什麼需要限動、00:49 工具、01:09 自拍三件事、01:37 ChatGPT、02:20 HeyGen、03:35 ElevenLabs、06:49 五個技巧、07:46 總結），與本筆記第 2 節的時間點一致；另附付費課程報名連結與商業合作信箱。頻道名稱是「ai網紅研究室」（`@aiiamasterclass`），`tangigtutor` 是課程網站與信箱的網域，不是頻道名。
 - **網友留言重點**：無。影片留言數為 0（2026-11-16 查）。
 - **對分析的影響**：
   - frontmatter 的 `author` 與第 1 節「Who」改成頻道實際名稱。
   - 影片資料更新：發布日 2026-10-01（平台顯示日期）、觀看 579 次；片尾「總結」起點依章節為 07:46，原筆記記為 08:08 的是其中推銷課程的段落，已加註。
   - 沒有任何留言可用來檢驗講者宣稱（還原度、不被降權、收入），這些宣稱仍屬未查證；任務未增減。
+  - **2026-11-17 看畫面的結果**：兩個聲音名稱的拼寫確認為 `Anna Su` 與 `Ling`，已改在第 2 節第四步；流程順序（Claude 產指令 → ChatGPT 生圖 → HeyGen → ElevenLabs）與原筆記一致。`docs/video-transcript-howto.md` 的聽寫對照表仍寫這兩個名稱「無法確認拼寫」，該檔這次不改，列在回報裡。任務未增減。
 
 ---
 
@@ -88,7 +94,8 @@ tags:
 
 ### 第四步：ElevenLabs（03:35，最長一段）
 - 左側選 **Text to Speech**，貼入講稿。
-- 聲音選擇：講者推薦適合台灣口音的兩個中文聲音（聽寫為「安納蘇」「令」，自用「令」）；模型選最高；其餘參數通常不用調。
+- 聲音選擇：講者推薦適合台灣口音的兩個中文聲音，畫面上是 ElevenLabs 聲音庫的 `Anna Su` 與 `Ling – Steady and Grounded Female Voice with a Taiwanese Accent`（2026-11-17 看畫面確認；原聽寫為「安納蘇」「令」），講者自用 `Ling`；模型選最高（畫面上是 `Eleven v3`）；其餘參數通常不用調。
+- 語氣可用標記調整：畫面上講者在句尾加了 `[excited]`（影片畫面，口述沒有特別講）。
 - **中文發音問題**：「鍋燒意麵」的「燒」多次念錯；解法是**換成同音的其他字再生成**，成功後下載音檔。
 - **情緒與語速標記**：可在方括號內寫情緒（如 excited）或速度（如 1.2），需用**英文**指令。
 

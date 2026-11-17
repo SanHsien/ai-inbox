@@ -12,10 +12,10 @@ cluster: "3"
 cluster_role: "外掛生態與設定治理"
 short_title: "Google Android 官方 Agent Skills"
 source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "平台欄寫的社群貼文沒留連結，貼文的圖片與留言都沒看到（總數未知）；改看官方 repo，讀了 2 則 issue 內文、底下回覆沒逐則讀；README 無圖"
+source_reviewed_at: 2026-11-17
+source_review_note: "平台欄寫的社群貼文沒留連結，貼文的圖片與留言都沒看到（總數未知）；改看官方 repo，2 則 issue 的內文與底下回覆 8／8 則已讀完；README 無圖"
 source_images: 0
-source_replies: 2
+source_replies: 10
 tags:
   - android-skills
   - jetpack-compose
@@ -37,6 +37,8 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：來源是 GitHub repo，重讀了官方 README 全文、列出全部 `SKILL.md` 路徑，並讀了兩則 issue 的內文（沒有逐則讀底下回覆）。frontmatter 的平台欄寫了「社群貼文」，但筆記沒有留下那則貼文的連結，所以貼文的圖片與留言無法回頭查看。
+>
+> 2026-11-17 補讀：用 `gh api` 把 #61、#143 底下的回覆全部讀完（3 則＋5 則）。社群貼文沒有連結，登入也補不了，維持 `partial`。
 
 - **作者圖片**：無。官方 README 是純文字，沒有圖片。
 - **作者留言補充**（官方 README 自己的說明，原稿沒寫到的部分）：
@@ -47,6 +49,8 @@ tags:
 - **網友留言重點**（issue）：
   - #61（未關閉）：有人指出 **`android-cli` 這個技能會直接叫 agent 用 `curl … | bash` 把 Android CLI 裝到使用者機器上**（系統層級安裝），而不是告知使用者、讓使用者決定；建議改成「前置需求」寫法。這與本 repo 的規則（外部來源不直接執行安裝腳本）直接相關。
   - #143（未關閉）：用 Antigravity 的外掛安裝指令直接裝這個 repo 會失敗（偵測不到外掛結構），目前仍要走 Android CLI。
+  - #61 的回覆（3 則）：官方協作者 `simona-anomis` 先請回報者改到 Android CLI 的問題追蹤系統另開一單；回報者追問「各技能是不是各管各的」後，她說明每個技能有自己的負責人、repo 層也會維持一致，並表示已把問題轉交（2026-07-06）。之後沒有更新，issue 仍未關閉。
+  - #143 的回覆（5 則）：沒有官方回應；內容是重貼原文、貼連結，以及一段與本 repo 無關的貢獻流程文字，沒有新資訊。
 - **對分析的影響**：
   - **技能數量**：標題與正文的「30 個」是貼文當時的說法；`T-20261019-05` 於 2026-10-23 實查為 33 個；2026-11-16 再列目錄是 **37 個**。數量持續增加，標題保留原貼文說法，正文已加註。
   - **星數**：原稿寫 8K+，2026-11-16 查 GitHub API 為約 1.06 萬。授權 Apache-2.0 無誤。
@@ -56,6 +60,7 @@ tags:
     - 車用只有「停車時可用的 app」一個技能，不是完整的車載範本 API；TV 是 Leanback 轉 Compose for TV 的遷移；XR 是顯示型眼鏡與投影硬體兩個技能；Wear 是 Compose Material 3 與小工具。
     - 原稿沒提到的類別：裝置端 AI（AppFunctions、LiteRT、ML Kit GenAI）、AGP 9 升級、CameraX、身分驗證、Media3 Cast、iOS 轉 Android、ANR 稽核、R8 分析、Profiler、edge-to-edge、Glance 小工具、測試環境設定。
   - **新增一項風險提醒**：`android-cli` 技能會指示 agent 自動執行安裝腳本（issue #61）。已完成的 `T-20261019-06` 當時就是自行審查安裝腳本後改用暫存沙盒手動下載，做法與這則 issue 的顧慮一致，不需重開；日後若用官方外掛方式整包安裝，要留意這個技能。
+  - **2026-11-17 補讀結果**：官方已知 #61 的自動安裝問題並轉交，但四個多月沒有修正；#143 仍無官方支援。上面的風險提醒與結論都不變，任務未增減。
 
 ---
 

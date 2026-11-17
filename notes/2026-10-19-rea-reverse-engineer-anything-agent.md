@@ -11,11 +11,10 @@ status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "逆向工程與軟體封裝"
 short_title: "REA 逆向工程 MCP Server"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "貼文顯示 28 則回覆，未登入只讀到 16／28 則；圖看了 1／1 張"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 1
-source_replies: 16
+source_replies: 25
 tags:
   - reverse-engineering
   - mcp
@@ -35,6 +34,8 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：貼文文字、作者圖片、作者留言、未登入可見的網友留言都看過。貼文顯示 28 則回覆，未登入可見 16 則（含作者 4 則），其餘要登入才看得到。
+>
+> 2026-11-17 登入補讀：熱門、最新兩種排序都逐段捲到底並展開回覆串，平台會顯示的 25 則（含作者 6 則）全部讀完。貼文計數是 28 則，剩下 3 則登入後平台也不顯示（頁尾有「部分回覆無法顯示」的提示；其中 2 則掛在 `more.yu_` 那則留言底下，點進該留言頁也是空的），所以改標 `full`。
 
 - **作者圖片**：共 1 張。圖 1 是 `morluto/rea` README 截圖：標語「One MCP for reverse engineering across binaries, applications, and runtime behavior」、徽章列（npm v6.0.0、CI 顯示 failing、Skills 810、MIT、Discord）、GitHub Trending「#1 Repository Of The Day」標章、安裝指令 `npx rea-agents setup`，下方是反組譯器畫面（Mach-O／aarch64 的 `/usr/bin/true`）。
 - **作者留言補充**：釘選留言放 repo 連結 `github.com/morluto/rea`。有人問「需要 API 嗎」，作者答看怎麼用、把網址貼給 GPT 問就行；有人問雲端模型跑這個會不會一直說違反使用條款，作者答「違反它就不會跑」，沒有提供繞過做法。
@@ -44,10 +45,12 @@ tags:
   - `zara__4869` 提醒雲端模型可能以違反使用條款拒絕這類請求。
   - `afterwinglin`：不逆向，只靠一張圖加描述也能生成類似 app。
   - 其餘為問卷借串、留言卡位，與主題無關。
+  - 2026-11-17 補讀的 9 則：`yellow.sc2` 問手機 App 能不能用（無人回答）；`tysys1955` 認為工具只是表層、思路才是關鍵；其餘是熱度閒聊與留名，沒有實測回報，也沒有新的反駁。
 - **對分析的影響**：
   - 圖片證實安裝指令與「GitHub Trending 當日第 1」這兩點，與原筆記一致；另多出一個原筆記沒寫的事實：截圖當下 README 的 CI 徽章是 failing，版本是 npm v6.0.0（本 repo 沙盒實測用的是 v6.7.0，見 `T-20261019-09`）。
   - 在 1.1 補上 `causecos` 的反駁：REA 能看到的是用戶端（Electron、APK、二進位、瀏覽器流量），後端邏輯逆向不到，「SaaS 惡夢」是貼文作者的說法，不是工具能力的結論。
   - 雲端模型拒答的疑慮與本筆記 `T-20261026-26` 的合規 Prompt 範本對應，任務不需增減。
+  - **2026-11-17 補讀結果**：新讀到的留言沒有改變任何判斷，正文無修正、任務未增減。
 
 ---
 

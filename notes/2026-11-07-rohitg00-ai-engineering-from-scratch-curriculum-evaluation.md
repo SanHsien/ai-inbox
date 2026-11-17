@@ -10,11 +10,10 @@ status: done
 cluster: "4"
 cluster_role: "開源教材與商業案例查核"
 short_title: "AI Engineering from Scratch 教材評估"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "Threads 未登入只讀到 11 則留言（共 72 則）；3 張圖與連結預覽卡已看完"
-source_images: 3
-source_replies: 11
+source_review: full
+source_reviewed_at: 2026-11-17
+source_images: 4
+source_replies: 62
 tags:
   - ai-engineering-from-scratch
   - curriculum
@@ -40,20 +39,25 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：Threads 未登入可讀主文、作者 2 則接續留言、3 張圖、GitHub 連結預覽卡與 9 則網友留言；另以 GitHub API 讀上游 issue 與 PR。
+> 2026-11-17 登入補讀：熱門、最新兩種排序都捲到頁尾、「顯示回覆」都點開，兩種排序都是同樣的 62 則；頁面標示 72 則，差的 10 則平台不顯示（隱藏或已刪）。
 
 - **作者圖片**（3 張，都是官方學習網站的畫面截圖，放大到原尺寸看過）：
   - 圖 1：網站首頁。介面選單是繁體中文（目錄、課程目錄、學習路徑、開始課程、探索學習路徑），但主標語「542 lessons. 20 phases…」仍是英文；頂端橫幅宣傳 vLLM、Miles、SGLang、A2A、Docker Sandboxes、Reverse Engineering 六份手冊；右上角星數 76.5K。
   - 圖 2：互動模擬「Inside an AI Agent」，可關掉檢索、工具或驗證器看哪裡壞掉。說明文字是英文。
   - 圖 3：互動模擬「Inside an LLM Serving GPU」，以 NVIDIA L4 或 GB10 走一次請求。說明文字是英文。
   - 連結預覽卡：GitHub repo 卡片，顯示 34 位貢獻者、15 個 issue、11 個 discussion、79k 星、14k fork。
-- **作者留言補充**（2 則接續主文，1 則回覆）：
+  - 圖 4（2026-11-17 補看，作者回 `heegreis` 時附的截圖）：官網手機版選單，項目大多仍是英文（HOW TO LEARN、PROJECTS、MANUALS、CHEAT SHEETS、PRACTICE、INTERVIEWS、SKILLS、BLOGS & GUIDES、NEWSLETTER），只有少數幾項是中文；語系切換「繁體中文」在選單最底下，作者用紅勾標出。右上角星數 76.9K。
+- **作者留言補充**（2 則接續主文，3 則回覆）：
   - 列出二十個階段名稱；說每堂都含提示詞、技能、代理或協定範例；總時數約 320 到 340 小時（主文）。
   - 安裝後在 Codex 輸入 `start-learning`、在 Claude Code 輸入 `/start-learning`，先跑十題定位測驗再建學習計畫，進度記在 `LEARNING.md`。
   - 只想讀教材直接用官網，不必裝技能；用 Codex 帶讀會消耗額度；部分繁中翻譯完整度要留意。
-- **網友留言重點**（頁面標示 72 則，未登入讀到 11 則含作者 3 則）：
+- **網友留言重點**（頁面標示 72 則，讀到 62 則含作者 5 則）：
   - `likesleepbirdzzzz`：有 AI 之後，讀手冊不如直接實機操作，還沒讀完內容就更新了。
   - `empty.valley`：先數學後框架的順序有道理；免費資源最貴的是能不能撐到學完。
-  - 其餘為「留」「存」類留言。沒有人回報實際上完課或裝了技能的心得，也沒有人指出內容錯誤。
+  - `heegreis`（2026-11-17 補讀）：找不到繁體中文入口。作者回覆說那是網頁介面的繁體翻譯，並坦白「用 Google 翻譯還比較全面」，附圖 4 指出語系選單位置；`heegreis` 再回是手機排版把選單底部的語系選擇切掉了。
+  - 作者回 `likesleepbirdzzzz`：可以叫 AI 教你操作。
+  - `shiro_nine_tail_fox`：「收藏從未停止，學習從未開始」。
+  - 其餘約五十則是「留」「存」「感謝分享」類留言。沒有人回報實際上完課或裝了技能的心得，也沒有人指出內容錯誤。
 - **上游 issue／PR**（GitHub API，2026-11-16）：
   - 繁中課文翻譯其實有人在做：`edward821220` 開了 6 個 PR（#564、#568、#569、#572、#588、#589，各對應一冊），目標分支是 `translations`，PR 自述為 AI 翻譯加獨立 AI 審查、非人工審查。2026-11-16 查詢時 6 個都還是 open，尚未合併。
   - Issue #585（open，9 則留言）：同一位貢獻者在逐段對照翻譯時，回報英文原文跨 phase 00–19 有大量自相矛盾與事實錯誤（例如模型參數量、資料集規模前後不一、數字超過所述上限），分多輪列出，僅後兩冊補充就各有數十項。
@@ -62,6 +66,7 @@ tags:
   - 第 1 節繁中翻譯那一列原本只看 `languages.json`，漏了進行中的翻譯 PR；已補上 PR 編號與「未合併、AI 翻譯」的狀態。
   - Issue #585 顯示英文原文有不少未修的事實錯誤。評估結論原寫「高參考價值教材」，已加註「課文數字與敘述需自行對照原始論文，不可直接引用」，並在第 3 節補一條用法提醒。
   - 補上主文的總時數（320 到 340 小時）。星數為重審當下 79,117。
+  - 2026-11-17 補讀：作者自己承認官網繁中不如 Google 翻譯完整，圖 4 的選單也多半是英文，與第 1 節「繁中只到網站介面、而且不完整」的判斷一致，不用改結論；手機版語系選單會被切掉，是實際使用上的小坑，已寫在上面。其餘 50 則沒有新資訊。
   - 既有任務 `T-20261107-01` 借用的是 `tool-call-firewall` 與 `agent-trace-debugger` 兩個專案的設計，不依賴課文內容的正確性，範圍不受影響；不新增任務。
 
 ---

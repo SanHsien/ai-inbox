@@ -76,6 +76,26 @@
 2. **外掛沿用使用者的 Codex 設定**（S13 的 Codex Integration 段）。它只把 `sandbox` 字串交給 app-server，沒有覆寫可寫範圍或網路存取。本機 `config.toml` 裡的 `sandbox_workspace_write.writable_roots`、MCP 伺服器、模型供應商設定都會一併生效。
 3. **取消的範圍**：`/codex:cancel` 不帶編號時只取消目前 Claude 對話的工作；有多筆執行中會要求指定編號。SessionEnd hook 會砍掉該對話仍在執行的工作並刪除紀錄（S9 第 65 行），所以背景工作不會活過 Claude 對話。SessionEnd hook 的逾時只有 5 秒，砍不完會怎樣未實測。
 
+### 上游實測回報：行程累積與跨對話互砍（2026-11-17 補）
+
+上表「逾時：無」與第 3 點的取消範圍是讀程式碼推出來的。上游有三個外部貢獻者的修正 PR，本文與留言裡附了實際跑出來的數字，是同一類問題在使用者端的證據。以下都是回報者自述，本庫沒有重現；PR 狀態於 2026-11-17 以 GitHub API 查證。
+
+| 上游 PR | 回報的情形 | 狀態（2026-11-17） |
+| --- | --- | --- |
+| [#707](https://github.com/openai/codex-plugin-cc/pull/707) | 一個 broker 跑了 2 天 17 小時後累積 1,218 個行程、約 60 GB 記憶體；原因是每個對話串各開一組 MCP 伺服器卻不退訂。另一人回報 8.5 小時累積 12 組 | 開啟，未合併 |
+| [#836](https://github.com/openai/codex-plugin-cc/pull/836) | 正常使用一週後留下 44 個 broker、130 個 `codex app-server` 行程 | 開啟，未合併 |
+| [#623](https://github.com/openai/codex-plugin-cc/pull/623) | 同一個工作區裡，一個 Claude 對話結束或 `/clear`，會把另一個對話正在跑的前景 rescue 工作一起砍掉；有使用者留言說日常就遇得到 | 開啟，未合併 |
+
+```text
+每個對話串開一組 MCP 伺服器 ──▶ 不退訂 ──▶ 行程與記憶體只增不減（#707、#836）
+
+對話 A 結束／clear ──▶ SessionEnd 收掉共用的 broker ──▶ 對話 B 正在跑的工作被砍（#623）
+```
+
+- 到 2026-11-17，最新發行版仍是 1.0.6（2026-07-08 發布），這三項修正都沒有合併，也就沒有進任何發行版。
+- 三則回報的環境都是 1.0.6、macOS。**Windows 上會不會一樣，沒有人測過**；第 4 節的 Windows 限制仍然只是讀碼結果。
+- 對第 3 點的修正：「背景工作不會活過 Claude 對話」只說了一半。依 #623，被砍的不只是自己對話的工作，同工作區其他對話的工作也可能被連帶砍掉。
+
 ### 資料落點
 
 | 資料 | 位置 | 內容 |
@@ -130,7 +150,7 @@ gate 開 ──▶ 找不到 codex 或 app-server ──▶ 只寫 stderr ──
 | 啟動 Codex | Windows 上以 `shell: process.env.SHELL \|\| true` 啟動 `codex app-server`（S6 第 190–195 行）；`taskkill` 與版本檢查也走同一設定（S10 `process.mjs`） | 從 Git Bash 啟動 Claude 時 `SHELL` 通常是 POSIX 路徑，Node 拿它當 shell 會不會成功未實測；沒設時走 `cmd.exe`。git 指令已改成不經 shell |
 | 環境變數傳遞 | SessionStart 寫入的是 POSIX 語法的 `export NAME='值'` | 若 Claude 的指令環境沒有載入這些變數：對話編號過濾失效，狀態會落到系統暫存資料夾；hook 與指令可能讀到不同的狀態資料夾，導致 gate 開關與工作清單對不上。未實測 |
 | broker 管道 | 具名管道 `\\.\pipe\cxc-XXXXXX-codex-app-server`，行程 detached | 管道的存取權限沿用 Node 預設；同機其他行程能不能連上並操作 app-server 未查證 |
-| 取消與清理 | `taskkill /PID <pid> /T /F` 砍整棵行程樹 | 被防毒或權限擋下時的行為未實測；SessionEnd hook 只有 5 秒 |
+| 取消與清理 | `taskkill /PID <pid> /T /F` 砍整棵行程樹 | 被防毒或權限擋下時的行為未實測；SessionEnd hook 只有 5 秒。上游在 macOS 已有 broker 與 `codex app-server` 行程一路累積的回報（第 2 節「上游實測回報」），Windows 上沒有人測過 |
 | 沙箱實際效力 | 外掛只傳 `read-only`／`workspace-write` 字串 | Windows 上的檔案寫入隔離由 Codex 的 Windows 沙箱執行，效力取決於本機設定。agent-relay SPEC 第 7 節記錄過實測：使用者設定檔的 `writable_roots` 會把 workspace-write 撐大，工人曾因此寫進主 repo 的 `.git/hooks`；agent-relay 為此每次都覆寫 `writable_roots=[]`、排除暫存資料夾、關閉網路。**外掛沒有這些覆寫** |
 | 暫存資料夾 | broker 的工作資料夾與狀態退路都在系統暫存資料夾 | 暫存資料夾若在 Codex 的可寫範圍內，rescue 可以改到 broker 檔案；未實測 |
 
@@ -187,7 +207,7 @@ gate 開 ──▶ 找不到 codex 或 app-server ──▶ 只寫 stderr ──
 | 用量 | 執行前後的 Codex 用量畫面。**外掛不回報用量**，查不到就寫「用量未知」，不可推估 |
 | 權限 | Codex thread 紀錄裡實際的 sandbox 與 approval 值；工作樹在執行前後的 `git status` |
 | 資料落點 | 狀態資料夾的實際路徑（是外掛資料夾還是系統暫存資料夾）；`jobs/` 裡留下了什麼 |
-| 行程 | 執行結束後還有沒有殘留的 broker、`codex`、`node` 行程 |
+| 行程 | 執行結束後還有沒有殘留的 broker、`codex`、`node` 行程；記錄執行前、執行後、Claude 對話結束後三個時間點的行程數（上游 PR #707、#836 回報行程會一路累積）。若同工作區開了第二個對話，記錄第一個對話結束時第二個的工作有沒有被砍（PR #623） |
 | hook | Stop hook 每次執行的耗時；與既有全域 hook 並存時有沒有錯誤輸出 |
 
 **逾時與取消**

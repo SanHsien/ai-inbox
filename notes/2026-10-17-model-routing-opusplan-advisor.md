@@ -10,11 +10,10 @@ status: archived
 cluster: "1"
 cluster_role: "模型路由與配額分流"
 short_title: "/model opusplan 與 /advisor 雙軌架構"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "貼文顯示 15 則回覆，未登入只讀到 11／15 則；貼文無圖（0／0 張）"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 0
-source_replies: 11
+source_replies: 15
 tags:
   - model-routing
   - claude-code
@@ -36,17 +35,21 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：貼文文字與未登入看得到的 11 則留言（含作者 5 則回覆）都讀過。貼文顯示 15 則回覆，其餘 4 則未登入看不到。
+> 2026-11-17 登入補讀：15 則回覆全部讀到（15／15，含作者 7 則回覆）。
 
 - **作者圖片**：無。這是純文字貼文。
-- **作者留言補充**：5 則都是「感謝補充／分享」，等於認同下面網友的更正，沒有自己加新內容。
+- **作者留言補充**：7 則都是「感謝補充／分享」，等於認同下面網友的更正，沒有自己加新內容。
 - **網友留言重點**：
   - `ryan_ilili`：opusplan 一年前就有了。`b95505017` 附上 Claude Code 團隊成員在 X 的貼文連結，說去年（2025 年）8 月就有。→ 貼文開頭「最近 Claude 加了一個新的 model 叫 opusplan」**不對**，作者也回了感謝補充。
   - `kaka.terminal`：opusplan 是看模式切換的——在 plan mode 裡才用 Opus，退出來動手做就換 Sonnet；要讓 Opus 出場得先按 Shift+Tab 進 plan mode 再下指令。
   - `alert.human`：除了切模型，開 prompt caching 也省，規劃階段的 context 在執行階段被反覆引用時命中快取。（這則語氣像自動回覆帳號，內容是常識，未另外查證。）
   - `an.ler.13`：context 管理與 workflow 規劃做好，省 token 的效果也很明顯。
+  - `alexcy.tsai`（登入後補讀到，共 2 則）：一則同樣說 opusplan 已經有一年了；另一則是**反對意見**——他說 Anthropic 後來自己講過這種分工不一定比較好：派子 agent 出去等於把整份 context 再複製一份，小模型協作不見得省錢，反而全程用同一個模型時快取很便宜，所以後來官方沒有再推這個做法。作者回「感謝補充」。這則沒有附出處，本次未查到 Anthropic 的原話，列為未查證的說法。
+  - `alert.human` 在作者道謝後又回了一句客套話，沒有內容。
 - **對分析的影響**：
   - 1.1 節補上「opusplan 不是新功能，2025 年 8 月就有」，並補貼文原有但原筆記漏掉的背景：作者說舊的 4 系列模型不穩，以前是「Fable 設計、Opus 執行」，Opus 5 之後變穩才改成現在的組合。
   - 1.2 節第 1 點補上觸發條件：不進 plan mode，opusplan 全程就是 Sonnet。原筆記寫「自動啟用旗艦模型」容易讓人以為不用切模式。
+  - 2026-11-17 補讀到的反對意見（分工不一定省、同一模型的快取更便宜）與本筆記「兩個任務都不做」的結論方向一致，也與 `alert.human` 提的快取互相呼應；因為沒有出處，只記在這裡，正文不改。
   - 兩個任務原本就是「不做」，結論不變。`T-20261017-12` 的做法（別名帶 `--model opusplan`）若日後重開，要記得光設模型不夠，還得進 plan mode。
 
 ---

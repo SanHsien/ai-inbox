@@ -13,6 +13,7 @@
 - [ ] **Client 前綴防禦（NEXT_PUBLIC_ 隔離）**：
   - 只有公開的 URL、公開 Anon Key、公開 Google Analytics ID 允許加上 `NEXT_PUBLIC_`。
   - 後端專用金鑰（`SUPABASE_SERVICE_ROLE_KEY`, `STRIPE_SECRET_KEY`, `LINE_PAY_SECRET`, `RESEND_API_KEY`）**絕對不可加上 `NEXT_PUBLIC_` 前綴**。
+  - 原因：`NEXT_PUBLIC_*` 的值在 `next build` 時直接寫進送到瀏覽器的 JavaScript，任何訪客都讀得到；改掉變數後要重新建置才會生效，已經發布過的值應視為公開並輪換。[Next.js 環境變數文件](https://nextjs.org/docs/app/guides/environment-variables)（2026-11-17 查）。HanSun 完整手冊（Word 版）也列了這一條。
 - [ ] **Client Component 代碼審查**：搜尋所有包含 `"use client"` 的檔案，確認未直接或間接引用後端專用 Keys。
 
 ---
@@ -54,6 +55,11 @@
   - 啟用 `X-Frame-Options: DENY`（防點擊劫持 Clickjacking）。
   - 啟用 `X-Content-Type-Options: nosniff`。
   - 設定嚴格的 `Content-Security-Policy (CSP)`。
+- [ ] **匯出 CSV 防公式注入**：後台匯出報名、訂單等 CSV 時，使用者填的欄位（姓名、備註、公司名稱等）若以 `=`、`+`、`-`、`@` 開頭，試算表軟體會把它當公式執行。
+  - 匯出前逐格檢查開頭字元；命中就在最前面加一個單引號 `'` 讓它被當成文字，並照 CSV 規則處理引號與逗號（整格用雙引號包住、內部雙引號寫兩次）。
+  - [OWASP：CSV Injection](https://owasp.org/www-community/attacks/CSV_Injection)（2026-11-17 查）另把 Tab（`0x09`）與歸位字元（`0x0D`）列為危險開頭，一併處理。
+  - 驗收：建一筆姓名為 `=1+1` 的測試報名，匯出後用試算表開啟，儲存格顯示的是原字串而不是 `2`。
+  - 出處：HanSun 完整手冊（Word 版）列了 `=`、`+`、`-`、`@` 四種開頭，見[來源筆記](../notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md)第 0 節；官網精簡版文章沒有這一項。
 
 ---
 
@@ -71,6 +77,11 @@
   4. 確認 Email 或 LINE 成功收到開課/購買確認通知。
   5. 測試後台管理者（Admin）頁面，確認非管理員帳號無法存取。
 - [ ] **零停機發布與即時回滾準備**：確認 Production 環境環境變數已同步配置完畢，並已知曉 Vercel 一鍵 Instant Rollback 的操作入口。
+- [ ] **Vercel 排程（Cron Jobs）時區換算**：`vercel.json` 裡 cron 運算式的時區固定是 UTC，不能改（[Vercel Cron Jobs 文件](https://vercel.com/docs/cron-jobs)，2026-11-17 查）。
+  - 每一條排程都在設定旁寫明對應的營運時區時間。例：台灣時間（UTC+8）每天 09:00 寄提醒，要寫 `0 1 * * *`。
+  - 換算後跨日的排程（台灣時間 00:00～07:59 對應 UTC 前一天）要重新確認「星期幾」「每月幾號」欄位。
+  - 驗收：上線後第一次觸發，到 Vercel 的執行紀錄核對實際觸發時間與預期的當地時間一致。
+  - 出處同上，HanSun 完整手冊（Word 版）。
 
 ---
 

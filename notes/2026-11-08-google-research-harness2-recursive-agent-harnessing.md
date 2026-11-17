@@ -10,11 +10,10 @@ status: done
 cluster: "1"
 cluster_role: "工程紀律與設計審查"
 short_title: "Google Harness²雙層遞迴優化"
-source_review: partial
+source_review: full
 source_reviewed_at: 2026-11-17
-source_review_note: "Threads 留言讀到 19 則／共 37 則，其餘要登入；README 的安裝示範 GIF 未看。"
-source_images: 4
-source_replies: 28
+source_images: 7
+source_replies: 41
 tags:
   - google-research
   - harness2
@@ -38,9 +37,9 @@ tags:
 
 ## 0. 原始資料盤點
 
-> 2026-11-16 以未登入的內建瀏覽器重看 Threads 貼文：貼文文字（無圖、無影片）、留言 19 則（含作者 8 則；貼文標示 37 則回覆，其餘要登入才看得到；留言是捲到才載入，逐段捲動收集）、作者留言裡的 GitHub 連結預覽卡。另看 GitHub README 的 3 張架構圖，並以 GitHub API 讀最近 8 則 issue／PR 的標題與摘要、其中 #201 讀全文與 1 則回覆。README 的安裝示範 GIF 未看。
+> 2026-11-16 以未登入的內建瀏覽器重看 Threads 貼文：貼文文字（當時記為無圖，實際有 2 張輪播圖，見下方 2026-11-17 補讀）、留言 19 則（含作者 8 則；貼文標示 37 則回覆，其餘要登入才看得到；留言是捲到才載入，逐段捲動收集）、作者留言裡的 GitHub 連結預覽卡。另看 GitHub README 的 3 張架構圖，並以 GitHub API 讀最近 8 則 issue／PR 的標題與摘要、其中 #201 讀全文與 1 則回覆。README 的安裝示範 GIF 未看。
 
-- **作者圖片**：貼文本身沒有圖。看過的 4 張：
+- **作者圖片**：首輪看過的 4 張（貼文的 2 張輪播圖當時漏看，見下方 2026-11-17 補讀）：
   - 圖 1（留言區的 GitHub 連結預覽卡）：repo 名稱與統計數字（約 24k Stars、2k Forks、10 位貢獻者）。
   - 圖 2（README 流程圖）：左邊大框是 Task-Level Recursion，依序為 Agent Executor（拿初始 harness 跑出軌跡與產出）→ Harness Editor（提出 Invariant 與 Domain 兩類修改）→ Candidate Probes（兩類候選各自試跑）→ Harness Composer（合併定稿）；右邊是 Harnessing-Level Recursion，Experience Reflector 反思後更新 Improvement Harness，再帶到下一個任務。
   - 圖 3（README 元件圖）：8 個元件依執行期角色分組並標了檔名與注入時機：Context construction 有 system prompt、guardrails、memory（這三個每次呼叫都注入）與 skills（呼叫時才載入）；Tool interface 有 tool guidance（每次呼叫）與 scripts（經 bash 執行）；Orchestration 有 subagents（經 task 工具）；Middleware 有 plugin（攔截每次工具呼叫，不經模型裁量）。中間是凍結的模型。
@@ -57,12 +56,18 @@ tags:
   - `hanbingjheng` 說這讓調 agent 像做實驗；作者補一句：**看得出行為變了，跟確認真的變好，是兩件事**（與下面 issue #201 的實測結果正好呼應）。
   - **GitHub issue #201（第三方實測，2026-11-12）**：回報者把 Propose–Probe–Compose 與持久化的 improvement harness 移植到自己的 agent CLI，在 WorkBuddy-Bench v1.0 的 code 與 office 子集跑兩輪自測。第一輪 80 組配對任務（k=1、parallel）整體分數由 0.890 變 0.877；第二輪 28 組（k=3、刻意挑掉接近滿分的題目）由 0.827 變 0.824，**兩輪都量不到分數提升**。機制本身有在運作（七成以上任務採用了與原本不同的 harness），token 降到約 0.91 倍、回合數與工具錯誤略降。回報者自己列的可能原因：基準分數已高、k 小時候選常常一模一樣、被採用的修改多半只改過程不改產出、效果與重跑雜訊同量級、執行器與論文不同。截至讀取時官方尚未回覆。
   - 其餘近期 issue／PR 多是正確性修補（不同任務 ID 正規化後撞到同一個目錄、評分綁到舊的執行結果等），顯示評測管線本身還在修。
+- **2026-11-17 登入補讀**：
+  - **更正：貼文其實有 2 張圖**（輪播），首輪寫「無圖」是漏看。圖 5 是 README 開頭的截圖：Harness² 字標、副標「Recursive Agent Harnessing for an Open World」、四個徽章（論文、網站、基準測試文件、Apache 2.0 授權）與一行指令 `harness2 --bench jb --k 1 --mode parallel`。圖 6 是 README 流程圖的裁切，內容與上面的圖 2 相同。兩張都直接取自 repo，沒有作者自己的實測畫面。
+  - **圖 7（README 的安裝示範 GIF）**：只是終端機打字動畫，依序打出三行指令：`uv pip install -e '.[render]'`、`harness2-setup jb`、`harness2 --bench jb --k 1 --mode parallel`，沒有顯示執行輸出或結果。
+  - **Threads 留言**：登入後以「熱門」「最新」兩種排序各捲到底、子回覆全部點開，共讀到 32 則（含作者 9 則）；貼文標示 37 則，其餘 5 則平台不顯示。加上先前讀的 GitHub issue／PR 9 則，共 41 則。新讀到的是 `more.yu_` 那串的後半：他追問「連這次為什麼有效都說不清，換任務只能重抽一次，有效的那次到底留下什麼可複用的東西」，作者回說連有效的定義都講不清楚是人的問題；`laglms` 接著分享自己的做法——每次有效的設定寫成三行（任務是什麼、改了什麼、為什麼有效），寫不下來的就當成運氣；`more.yu_` 補充第三行才是判斷，多數人只寫前兩行。`fix_norma` 問原理（作者的一句話解釋已列在上面）。其餘是「存」「留」。
+  - **GitHub issue #201**：2026-11-17 以 API 重查，仍只有回報者自己補證據的 1 則留言，官方尚未回覆，狀態仍是開啟。
 - **對分析的影響**：
   1. **第 3 節的基準數據要加一個反例**：原筆記只列論文的提升幅度。現在補上 issue #201 的第三方實測（不同執行器與模型，量不到提升），並把結論寫成「論文配置內有提升；換執行器後能否重現未獲證實」。
   2. **補成本面**：作者自己在留言承認試跑會吃 token。第 3 節補一句：Propose–Probe–Compose 每個任務至少多跑數次候選，前期成本要靠重複使用攤回。
   3. **第 2 節補上元件圖的細節**（各元件的注入時機），原筆記的方塊圖只有分組、沒有這一層。
   4. Stars 數字更新註記：分析主題寫的 23,026 Stars 是 2026-11-08 的快照，2026-11-16 以 API 查為 24,072 Stars、2,422 Forks。
   5. 已完成的 `T-20261108-03` 不改狀態；其產出文件需不需要補上述反例，列在本次重審的回報裡交整合者決定。無新增任務。
+  6. **2026-11-17 補讀**：貼文兩張圖與 GIF 都是 repo 現成素材，沒有新的事實；留言新增的「三行紀錄」做法與第 3 節「改了行為不等於變好」的結論同方向，是使用者經驗、不是對 Harness² 的實測。分析結論不變，無新增任務。
 
 ---
 

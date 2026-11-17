@@ -10,10 +10,9 @@ status: archived
 cluster: "3"
 cluster_role: "螢幕感知與瀏覽器代理"
 short_title: "clearcam開源智慧NVR與VLM摘要"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "README 15 張截圖只放大看了 2 張，其餘 13 張只看縮圖總覽；Threads 貼文圖 1／1 張看過，留言 0／0 則"
-source_images: 3
+source_review: full
+source_reviewed_at: 2026-11-17
+source_images: 16
 source_replies: 0
 tags:
   - clearcam
@@ -44,12 +43,25 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：Threads 貼文、貼文連到的 MeekShark 評測全文、GitHub README（文字與圖）都看過。
+>
+> 2026-11-17 補看：README 其餘 13 張截圖逐張打開原圖看完，15／15 張都看過（另加 Threads 貼文 1 張，共 16 張）。
 
 - **作者圖片**：
   - Threads 貼文只有 1 張圖：GitHub 的 repo 預覽卡（`roryclear/clearcam`，1 位貢獻者、0 個 issue、約 2k 星、212 個 fork），沒有額外資訊。
   - README 共 15 張截圖，放大看了 2 張關鍵圖，其餘只看過縮圖總覽（網頁主控台的攝影機畫面與車輛事件縮圖牆、iOS App 的即時畫面與事件列表、幾組通知與對應片段）：
     - `notif.jpg`：手機鎖定畫面上兩則通知，一則是「AI Summary (Front)」加一句英文畫面描述，另一則是「Event Detected (Front)／Open to View」。可見 AI 摘要是在一般事件通知之外另發的一則。
     - `zone.PNG`：網頁的「Edit Zone」對話框，在畫面上點出多邊形偵測區，另有「只偵測區域外」勾選框與偵測門檻（圖中為 50%）。
+    - 2026-11-17 補看的 13 張：
+      - `server.PNG`：網頁主控台（`localhost:8080`），兩支攝影機並排，各有「顯示偵測框」勾選、設定、通知與刪除鈕；下方可切多畫面、選日期、輸入名稱與 RTSP 連結新增攝影機、設定儲存上限（圖中 70 GB）、關閉伺服器。
+      - `det.jpg`：街景畫面上五輛車各有偵測框與標籤。
+      - `sonata.PNG`：**事件頁的文字搜尋**。搜尋框輸入一個車款名稱，回傳 15 張跨兩支攝影機的同款車事件縮圖；另有攝影機篩選與「只看警報」勾選，每張縮圖下有找相似、播放、看片段三個鈕。
+      - `hood.jpg`：車道上一名戴帽兜的人站在車旁，被框出並標示。
+      - `ios_live.PNG`：iOS App 即時頁，四支攝影機各有縮圖、連線狀態與警報開關。
+      - `ios_events.PNG`：iOS App 事件頁，依日期列出夜視畫面的事件縮圖與時間。
+      - `fiesta_notif.PNG` 與 `fiesta_clip.PNG`：通知標題寫「Event Detected（車庫：某年份某車款）」，對應的事件片段是那款車。
+      - `fire_notif.jpg` 與 `fire_clip.jpg`：通知標題寫「Event Detected（cam1: car on fire）」，對應片段是車輛起火。這兩組說明**警報可以用一句文字描述當條件**，通知會帶上攝影機名稱與命中的描述。
+      - `recording.PNG`：手機 App 的錄影模式，直接用手機鏡頭當攝影機，畫面上即時框出人與車並顯示 6 FPS。
+      - `browser_events.PNG` 與 `browser_playback.PNG`：用手機瀏覽器連區網位址看事件清單（可下載、刪除）與回放（帶偵測框與時間軸），日期是 2025 年 5 月，是較早的介面。
 - **作者留言補充**：無。貼文本身只有一段簡介加 MeekShark 連結。
 - **網友留言重點**：無。貼文底下沒有任何回覆（互動數只有讚 47、轉發 10、分享 65，主文之後直接就是「相關串文」）。MeekShark 文章的留言數為 0。GitHub open issue 為 0。
 - **對分析的影響**：對照 README 與 MeekShark 全文後，修正與補充如下：
@@ -59,6 +71,7 @@ tags:
   4. **以下內容在 README、MeekShark 都找不到出處，是原分析的推演**，已在各段標明：事件前回溯 5 秒、SQLite 中繼資料庫、「儲存空間利用率提升 90%」「程式碼精簡 90%」、第 2.4 節的 Webhook JSON 欄位（README 只說通知網址可改，並附一支 Pushover 範例伺服器 `utils/sample_server.py`，沒有公布酬載格式）。
   5. 星數：貼文與 MeekShark 寫 2,120，2026-11-16 查 GitHub API 為 2,660；授權 GPL-3.0。
   - 三項任務維持「不做」：原因（沒有攝影機與部署需求）沒變，再加上 Windows 尚未支援。
+  6. 2026-11-17 補看 13 張圖後：(1) 事件可以用文字搜尋、警報條件可以用一句話描述（車款、起火），這是 README 標題裡「search」的實際樣子；架構圖寫的「自然語言檢索與過濾」有圖為證，但正文沒有講到「用文字描述當警報條件」，在此補記。(2) 手機 App 本身可以當攝影機並在手機上做偵測，原筆記只把 App 當成觀看端。(3) 這些都不改變「不做」的判斷，不新增任務。星數 2026-11-17 查為 2,683。
 
 ---
 

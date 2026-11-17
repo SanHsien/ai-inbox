@@ -11,10 +11,10 @@ cluster: 3
 cluster_role: "Codex插件協作"
 short_title: "CodexPluginCC雙AI協作"
 source_review: partial
-source_reviewed_at: 2026-11-16
-source_images: 16
-source_replies: 18
-source_review_note: "部落格全文與 6 張圖已看、文末無留言區；Threads 輪播 11 張看了 10 張圖，第 7 張是影片只看到封面；Threads 留言讀到 18 則／共 85 則（其餘要登入）；README 示範影片與 Instagram Reel 未看；外掛 issue 只看留言最多的 8 則標題"
+source_reviewed_at: 2026-11-17
+source_images: 17
+source_replies: 79
+source_review_note: "只差 Instagram Reel 的留言 0／430 則（已登入，但內建瀏覽器的窄版面點不開留言面板）。其餘補完：Threads 留言 79／85 則（熱門、最新都捲到底，其餘 6 則平台不顯示）；輪播第 7 張影片抽 5 格、Reel 抽 17 格看過；README 的示範影片檔在 repo 裡不存在（404）；外掛 issue 讀了留言最多的 5 則全部留言，未關閉共 542 個沒有全讀"
 tags:
   - claude-code
   - codex
@@ -42,19 +42,33 @@ tags:
 
 - **作者圖片**：
   - 部落格 6 張（2026-11-16 看）：封面、書桌、雙視窗、模型層架 4 張是情境插畫，沒有額外資訊；「示範過程」圖左邊是 Codex 畫的 5 張拼貼素材（人物、兩個視窗、圓餅、紅筆箭頭、牛皮紙），右邊是 Claude 拼成的片段；「海報」圖是 Codex 內建生圖畫的秋季咖啡活動海報，中文標題字沒有亂碼。
-  - [Threads 同篇貼文](https://www.threads.com/@be.ai.curator/post/Dd84mwfkZ2Z)輪播 11 張：1 選邊還是串起來；2 兩邊都用最累的是人；3 人只待在 Claude（畫面出現 `/codex:rescue`）；4 為什麼待在 Claude（旗艦燒得快）；5 桌面版三步驟（設定→外掛、加入 OpenAI 的 Codex、跟 Claude 說幫我設定 Codex）；6 Vox 短片五步分工；7 示範短片（影片，只看到封面，註明素材 Codex 畫、動態與剪接 Claude）；8 做完請 Codex 挑毛病（`/codex:adversarial-review`）；9 用到 OpenAI 功能交給 Codex；10 兩個 AI 讀同一份 `CLAUDE.md`；11 導流到長文。
+  - [Threads 同篇貼文](https://www.threads.com/@be.ai.curator/post/Dd84mwfkZ2Z)輪播 11 張：1 選邊還是串起來；2 兩邊都用最累的是人；3 人只待在 Claude（畫面出現 `/codex:rescue`）；4 為什麼待在 Claude（旗艦燒得快）；5 桌面版三步驟（設定→外掛、加入 OpenAI 的 Codex、跟 Claude 說幫我設定 Codex）；6 Vox 短片五步分工；7 示範短片（11.5 秒影片，2026-11-17 抽 5 格看：牛皮紙底的拼貼動畫，坐在桌前的人面對兩個視窗，字卡先後是「每切換一次視窗」「注意力就被切掉一塊」，圓餅被切出一塊藍色並用紅筆圈起；右下角註明素材 Codex 畫、動態與剪接 Claude。只是把貼文第一段話做成動畫，沒有操作畫面）；8 做完請 Codex 挑毛病（`/codex:adversarial-review`）；9 用到 OpenAI 功能交給 Codex；10 兩個 AI 讀同一份 `CLAUDE.md`；11 導流到長文。
 - **作者留言補充**（Threads 串文 5 則＋回覆）：
   - 桌面版不用打指令的三步驟；免費 ChatGPT 方案也能用外掛，但要 Codex 畫素材得是付費方案。
   - 回覆網友：網頁版也能用外掛，但拿不到本機的共同規則，做法是把規則放進一個 repo。
   - 回覆網友：可以叫 Claude 與 Codex 互相討論到雙方同意（只有一句話，沒有示範）。
-- **網友留言重點**（讀到 13 則）：多數是道謝與留言「協作」索取連結。有用的一則是 `@tnstiger`：交給另一個模型畫素材時，除了畫面描述還要寫明這張圖在影片裡要說明什麼，審片時才判斷得出該換圖還是改分鏡。`@ckk225403` 問網頁版能否使用（作者回覆見上）。沒有人回報安裝失敗或用量數字。
-- **外掛 repo**：README 只有一支示範影片（未看）。未關閉的 issue／PR 共 544 個，留言最多的幾則都在修 broker 與背景工作殘留（如 #541、#652、#836、#623），只看了標題；與 `docs/codex-plugin-cc-readonly-assessment.md` 記錄的「三條呼叫鏈都沒有逾時」方向一致。指令目錄現有 8 個指令，含 `transfer`。
+- **網友留言重點**（2026-11-17 登入後補讀：貼文顯示 85 則，熱門、最新兩種排序都捲到底，讀到 79 則，其餘 6 則平台不顯示。79 則裡作者接的串文 5 則、作者制式回覆連結 27 則、網友只留「協作」或「留、存」約 35 則）：
+  - `@tnstiger`：交給另一個模型畫素材時，除了畫面描述還要寫明這張圖在影片裡要說明什麼，審片時才判斷得出該換圖還是改分鏡。
+  - `@dragon.5254889`（新讀到）提了三點，都是網友自述、沒有附資料：同一個模型自己審自己容易有相同盲點，換一個沒參與製作的模型較能挑出問題；旗艦模型只做規劃與拍板、日常模型做執行，費用可差一個數量級；**外掛走的是 ChatGPT 帳號而不是 API key，用量與 API 用量是兩本帳，對帳時不要混在一起**。
+  - `@ckk225403` 問網頁版能否使用（作者回覆見上）。`@billywindy416158` 說原本就同時用兩家、會試 Opus 5.5。
+  - 沒有人回報安裝失敗、Windows 問題或實際用量數字。
+- **Instagram Reel**（[同篇內容的短影片版](https://www.instagram.com/reel/Dd84zr7DZ2L/)，65 秒，2026-11-17 抽 17 格看）：分 7 段把 Threads 輪播重講一次（各有長處、切換成本、桌面版加外掛的畫面、為什麼從 Claude 下指令、Vox 短片分工、請 Codex 提反方意見、即時語音交給 Codex），結尾請觀眾留言「協作」。桌面版那段的畫面是設定 → Plugins → Add marketplace 輸入 `openai/codex-plugin-cc`，與文章步驟一致。沒有新資訊。Reel 顯示 430 則留言，內建瀏覽器點不開留言面板，一則都沒讀到。
+- **外掛 repo**（2026-11-17 用 `gh api` 補讀）：
+  - README 的示範影片標籤指向 `./docs/plugin-demo.webm`，但 repo 目前沒有 `docs/` 目錄，整個檔案樹也沒有任何影片檔，直接取檔回 404。所以這支影片看不到，不是沒去看。
+  - 未關閉的 issue／PR 現為 542 個，沒有全讀。讀了留言最多的 5 則（都是外部貢獻者開的修正 PR，都還沒合併）的本文與全部留言：[#541](https://github.com/openai/codex-plugin-cc/pull/541)（40 則，多數是反覆呼叫自動審查的指令）、[#652](https://github.com/openai/codex-plugin-cc/pull/652)（12 則）、[#707](https://github.com/openai/codex-plugin-cc/pull/707)（11 則）、[#836](https://github.com/openai/codex-plugin-cc/pull/836)（10 則）、[#623](https://github.com/openai/codex-plugin-cc/pull/623)（9 則）。
+  - **實測回報（都在 1.0.6、macOS）**：#707 有人回報一個 broker 跑了 2 天 17 小時後累積 1,218 個行程、約 60 GB 記憶體，原因是每個對話串各開一組 MCP 伺服器卻從不退訂；另一人回報 8.5 小時累積 12 組。#836 有人回報正常用一週後留下 44 個 broker、130 個 `codex app-server` 行程。#541 的作者回報跑一次測試就留下約 30 個 broker。
+  - **跨對話互相影響**：#623 要修的是「同一個工作區裡，一個 Claude 對話結束或 `/clear`，會把另一個對話正在跑的前景 rescue 工作一起砍掉」，有使用者留言說日常就遇得到。
+  - 截至 2026-11-17 最新發行版仍是 1.0.6，上面這些修正都沒有進發行版；#623 的作者 2026-09-04 留言說 8 月 10 日就請求審查、一直沒人回。
+  - 指令目錄現有 8 個指令，含 `transfer`。
 - **對分析的影響**：
   1. 原筆記寫「be-ai-curator 原文與此成本優勢均未查證」。這次原文讀得到，已改寫第 1 節：成本說法是作者自述的使用經驗（文末「資料查核」段自己標明），不是量測。
   2. 第 1 節的指令清單補上文章主推的 `/codex:transfer`，並更正 `/codex:rescue` 的定位：文章把它當「整包交辦」用（例如畫素材），不只是卡關救援。
   3. 「Claude Desktop 安裝流程未查證」改為：文章有寫出步驟，本機仍未實測。
   4. 「規則一致性」補上文章的具體做法（Codex 設定 `project_doc_fallback_filenames`）與「同層有 `CLAUDE.md` 時 Claude Code 會略過 `AGENTS.md`、可在 `CLAUDE.md` 寫 `@AGENTS.md` 匯入」的說法；後者與維護者現行做法相同，但屬作者引用官方文件的轉述，本篇未另查。
   5. 已完成的 `T-20261115-15` 報告已涵蓋 `transfer`（會送出整份對話紀錄），不需重開。
+  6. **2026-11-17 補讀後新增一條避坑**：`docs/codex-plugin-cc-readonly-assessment.md` 靠讀程式碼推出「三條呼叫鏈都沒有逾時」與「不安裝」；issue 裡的實測數字（行程一路累積到上千個、對話結束連帶砍掉別的對話的工作）是同一個問題的使用者端證據，而且修正都還沒進發行版。已補進第 2 節。回報都是 macOS，Windows 上會不會一樣沒有人測過。
+  7. 「外掛用量算在 ChatGPT 帳號、與 API 用量分開」與第 1 節「插件沒有額外的獨立額度，用量計入 Codex 用量上限」不衝突；它是網友說法，補在第 1 節當提醒，未另查官方文件。
+  8. 輪播第 7 張影片與 Reel 都只是把貼文重講一次，文章的成本與分工說法仍是作者自述，結論不變。
 
 ---
 
@@ -65,7 +79,7 @@ tags:
   - 單一模型自寫自審容易產生盲點，而雙視窗人工貼背景則會打斷專注力、浪費上下文重建時間。
   - 文章作者宣稱：高階旗艦模型（如 Fable、GPT-6 Astra）在簡單任務過度發散時極易燒爆週用量；日常改以 **Claude Opus 5.5** 為主力規劃與實作，僅在需要第二意見或 OpenAI 專屬能力時呼叫 Codex。原文 2026-11-16 已讀到：作者自述兩邊都訂 200 美元方案，舉例「30 秒短片 Claude 花 12 分鐘、用掉 Max 20x 週用量 1%」，並在文末標明這些用量與「Opus 5.5 完勝 GPT-6.1 Sol」都是個人使用經驗，不是量測；本篇同樣只當作者宣稱。
 - **How（核心運作機制與指令）**：
-  1. **安裝方式**：依[官方 README](https://github.com/openai/codex-plugin-cc/blob/main/README.md)，前置為 Node.js 18.18 以上，以及可用的 Codex 安裝與驗證（ChatGPT 訂閱含 Free，或 OpenAI API key）；步驟為加入市集（marketplace add）、安裝插件、重新載入、執行 `/codex:setup`。只有 ChatGPT 帳號不等於前置全部滿足。插件沒有額外的獨立額度，用量計入 Codex 用量上限（見[官方定價入口](https://developers.openai.com/codex/pricing)）；README 沒有依方案區分生圖功能的說法。Claude Desktop 的安裝流程，文章寫的是「設定 → Plugins → Add marketplace 輸入 `openai/codex-plugin-cc` → 找到 Codex 按 Add → 回 Code 分頁請 Claude 設定 Codex」，並說外掛只在 Code 分頁有效；本機未實測。文章另稱免費 ChatGPT 方案不能用 Codex 內建生圖（作者引用 OpenAI 文件，本篇未另查）。
+  1. **安裝方式**：依[官方 README](https://github.com/openai/codex-plugin-cc/blob/main/README.md)，前置為 Node.js 18.18 以上，以及可用的 Codex 安裝與驗證（ChatGPT 訂閱含 Free，或 OpenAI API key）；步驟為加入市集（marketplace add）、安裝插件、重新載入、執行 `/codex:setup`。只有 ChatGPT 帳號不等於前置全部滿足。插件沒有額外的獨立額度，用量計入 Codex 用量上限（Threads 有網友提醒：用 ChatGPT 帳號登入時，這筆用量與 API key 的用量分開記帳，對帳時要分開看；未另查官方文件）（見[官方定價入口](https://developers.openai.com/codex/pricing)）；README 沒有依方案區分生圖功能的說法。Claude Desktop 的安裝流程，文章寫的是「設定 → Plugins → Add marketplace 輸入 `openai/codex-plugin-cc` → 找到 Codex 按 Add → 回 Code 分頁請 Claude 設定 Codex」，並說外掛只在 Code 分頁有效；本機未實測。文章另稱免費 ChatGPT 方案不能用 Codex 內建生圖（作者引用 OpenAI 文件，本篇未另查）。
   2. **核心斜線指令**：
      - `/codex:review`：標準 Code Review（支援 `--background` 背景執行）。
      - `/codex:adversarial-review`：對抗式審查，請沒有參與撰寫過程的 Codex 從反方挑出隱含假設與邊界漏網。
@@ -89,6 +103,7 @@ tags:
 - **實查邊界與避坑提醒**：
   - **「Codex 畫素材」的前提**：`codex-plugin-cc` 本身是 Code Review 與任務委派外掛，並非獨立繪圖模型；能否生圖取決於 Codex 端自身的工具與帳號權限，無法從插件功能推導，本篇未查證。
   - **避免職責重疊與環境衝突**：若同時啟用 `codex-plugin-cc` 與本機 `agent-relay`／自訂 hooks，應先確認兩者的 hook 生命週期與 Codex CLI 認證路徑不互相干擾。插件的 [`hooks.json`](https://github.com/openai/codex-plugin-cc/blob/main/plugins/codex/hooks/hooks.json) 註冊 SessionStart、SessionEnd、Stop 三個 hook。
+  - **背景行程殘留是已有實測的問題，不只是讀碼推論**：上游 issue 有多位 macOS 使用者回報 1.0.6 的 broker 與 `codex app-server` 行程不會自己結束，用一週可留下上百個行程；同一個工作區開兩個對話時，一個結束會砍掉另一個正在跑的工作（見第 0 段「外掛 repo」）。修正的 PR 截至 2026-11-17 都沒有合併進發行版。若日後要試用，測完要實查殘留行程，而且一個工作區一次只開一個對話。
   - **成本風險（review gate）**：README 明示選用的 [review gate](https://github.com/openai/codex-plugin-cc/blob/main/README.md#enabling-review-gate) 可能形成長迴圈並快速耗盡用量；評估時維持關閉。安裝後看得到斜線指令，不算完整的相容性證據。
 
 ---

@@ -41,6 +41,27 @@ P3 明示工作目錄不阻止存取其他可存取路徑；project trust 也不
 
 Windows 原生是官方列出的使用方式：npm 路徑要求上述 Node 版本；Bash 預設尋找 Git for Windows，模型可透過 defaultTools 選用 PowerShell。PowerShell 工具優先 pwsh，再退回 Windows PowerShell，啟動參數含 NoProfile、NonInteractive、ExecutionPolicy Bypass；這不是取得管理員權限，也不是沙盒。`!`／`!!` 仍走 Bash。Windows Terminal 是文件建議環境；以上只確認文件與程式契約，未測本機安裝或終端行為（P2、P3）。
 
+上游 issue 的 Windows 實測回報（2026-11-17 補；以 GitHub API 查證狀態，內容是回報者自述，本庫沒有重現，細節見[來源筆記](../notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md)第 0 節）：
+
+| 上游 issue | 回報的情形 | 狀態（2026-11-17） | 對本評估的意義 |
+|---|---|---|---|
+| [#9361](https://github.com/earendil-works/pi/issues/9361) | 根因已確定，不是偶發：擴充只要自己重建 bash 工具而沒把設定傳進去，設定檔的 `shellPath` 與 `shellCommandPrefix` 就一定被丟掉；官方附的擴充範例也這樣寫，macOS 上同樣重現。Windows 另有一半：沒有 `shellPath` 可用時會退回 PATH 上第一個 `bash.exe`，開了 WSL 的機器拿到的是 `C:\Windows\System32\bash.exe`（WSL 啟動器），指令就跑進 Linux 環境 | issue 開啟（14 則留言）。修正 PR [#10538](https://github.com/earendil-works/pi/pull/10538) 於 2026-10-06 關閉、**未合併**；最新發行版 v1.5.2 | 混合 harness 要自己寫擴充，這是寫擴充時必須自己處理的事：重建 bash 工具時把工作階段的 shell 設定明確傳進去，不要直接呼叫 `bash`。不是等上游修好就沒事 |
+| [#7547](https://github.com/earendil-works/pi/issues/7547) | 協作者彙整 Windows 四種跑法（Git Bash、WSL bash、純 PowerShell、整個放 WSL2），每一種都有毛病。可選的 PowerShell 工具加入後，多位使用者回報把 bash 整個關掉、只留 PowerShell 錯誤明顯變少；也有人測到兩個工具都開時部分模型仍一律選 bash。PowerShell 工具自己的已知問題：指令太長會在啟動前被 Windows 拒絕、系統語言不是英文時輸出可能亂碼 | issue 開啟（96 則留言） | 與上段「可透過 defaultTools 選用 PowerShell」一致。Windows 原生若要試，關掉 bash、只留 PowerShell 是目前回報最穩的組合；但很多擴充不支援 PowerShell，`!`／`!!` 也仍走 Bash |
+
+```text
+擴充重建 bash 工具、沒傳設定 ──▶ shellPath／shellCommandPrefix 被丟掉（各平台都會）
+                                      │
+                                      ▼ 只在 Windows
+                       退回 PATH 上第一個 bash.exe
+                                      │
+                         有開 WSL ──▶ System32\bash.exe（WSL 啟動器）
+                                      │
+                                      ▼
+                         指令跑進 Linux 環境，專案工具找不到
+```
+
+這兩則不改變本文結論：它們是終端相容性問題，不是隔離能力；Pi 仍然沒有新增強制隔離。
+
 ## 三家授權與費用證據
 
 以下官方網頁查閱日同為 2026-11-15；網頁會變動，不等同固定 Pi commit 的授權附件。

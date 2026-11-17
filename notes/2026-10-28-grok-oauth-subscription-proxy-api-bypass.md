@@ -10,11 +10,10 @@ status: done
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "Grok OAuth 訂閱轉 API 鑑權破綻解構"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "Facebook 貼文顯示 14 則留言，未登入只讀到 12／14 則；圖看了 1／1 張"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 1
-source_replies: 12
+source_replies: 13
 tags:
   - grok-oauth
   - api-billing-bypass
@@ -42,6 +41,8 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：未登入瀏覽器讀 Facebook 貼文（文字、1 張作者圖、可見留言 12 則／貼文顯示 14 則；Facebook 註明「最相關」排序可能濾掉部分留言）。
+>
+> 2026-11-17 補讀：登入後把排序改成「所有留言」並展開全部回覆，讀到 13 則。計數寫 14，差的 1 則登入後平台也不顯示。
 
 - **作者圖片**：
   - 圖 1 是 **magpie**（[`yetone/magpie`](https://github.com/yetone/magpie)）的 Routing 分頁截圖，不是 `grok-oauth`。畫面左邊是四個 Agent（Codex、Claude Code、Crush、OpenCode），中間是本機閘道 `127.0.0.1:3425`（Smart 模式），右邊是七個供應商（其中一個顯示限流、倒數恢復，兩個正在回答）。上方說明 Smart 的排序規則：額度最快重置的帳號先用、用到九成的先等、剛失敗的排最後。下方有三個路由群組（日常寫碼、便宜快速、長上下文）與「上一個請求怎麼被路由」的逐步說明，其中一步是因為上次快取讀取為 0 而換供應商。
@@ -51,11 +52,13 @@ tags:
   - Lîm Yǔn Zhōng：xAI 對這種用法的態度和 OpenAI 類似，都不太擋。
   - Paws C.：會繞過的使用者對廠商來說是一種篩選，可以標記起來觀察用法、拿去訓練。
   - 達也：Grok 的金流與授權一再出包；Eric Yuen 回說是宣傳策略。廖英凱：通路與 token 目前還是護城河，但 token 之後可能也不是。
+  - 2026-11-17 登入後多讀到的 1 則是 TK Lin 推銷自己的 token 轉接平台，屬廣告，沒有技術內容。其餘是玩笑話（蕭哲安說看來請了便宜的工程師；有人指出 Solarian Felaray 的留言有錯字，他回覆道謝）。
 - **對分析的影響**：
   - **工具更正**：貼文只說「有人寫了一個工具」，沒有點名；原筆記把它寫成 `kimws/grok-oauth`（查證只有 2 星）等專案。從作者附圖看，他指的是 magpie——README 寫明可以把已登入的 Claude、ChatGPT、Copilot、Gemini、Grok 訂閱當成供應商給其他 Agent 用。貼文最後一句「在任何 coding agent 裡把其他模型當原生 subagent」講的也是這種閘道。第 1 節已更正；magpie 本身的分析見 [`2026-10-18-multi-agent-factory-magpie-herdr-routing`](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md)。
   - **歸屬更正**：2.3 的「四大風險」是本筆記自己的分析，貼文沒有談風險；原句「大齡工程師的發文反映出四大風險」已改。
   - **封號風險有了實證**：2.3 第 2 點補上留言的實際被封回報與「廠商不太擋」的相反觀察，兩者並列。
   - `grok-oauth` 的機制解構（第 2 節）是針對該 repo 的分析，仍然成立，但它不是貼文主角。已完成任務不受影響。
+  - 2026-11-17 登入補讀沒有新的實測或反駁，分析不變。
 
 ---
 

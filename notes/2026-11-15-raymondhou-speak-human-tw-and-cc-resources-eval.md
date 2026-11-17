@@ -10,11 +10,10 @@ status: done
 cluster: 3
 cluster_role: "繁中去AI味與資源評估"
 short_title: "說人話Skill與CC資源評估"
-source_review: partial
-source_reviewed_at: 2026-11-16
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 7
-source_replies: 52
-source_review_note: "兩個 repo 的 README 圖共 7 張已看，雙棲地圖的小字沒有逐格看清；issue／PR 讀了 speak-human-tw 7 個（共 10 個）與 claude-code-resources 9 個人工回報（共 39 個，其餘多為自動同步 PR），長留言只讀前段"
+source_replies: 91
 tags:
   - skill
   - zh-tw
@@ -38,26 +37,39 @@ tags:
 
 - **作者圖片**（2026-11-16 看，徽章不計）：
   - speak-human-tw 6 張：橫幅；案例一是拿 2024 年真人手寫的週報去檢查，結論「不用改」（圖內寫「36 種 AI 痕跡」，現行是 38 類，是舊版截圖）；案例二是檢查 AI 代寫的 YouTube 留言回覆，逐條列 6 處並附原句、理由、改法（截圖底部顯示作者是在略過權限確認的模式下執行）；四格情境示意（社群、文章、Email、行銷）；求星圖；星數成長圖（07-10 上線，11-15 為 1,178）。
-  - claude-code-resources 1 張：「Claude Code × Codex 雙棲進化地圖」，入門／活用／高手三級，各分 Claude Code、兩者共用、Codex 三欄；小字未逐格看清。
+  - claude-code-resources 1 張：「Claude Code × Codex 雙棲進化地圖」，入門／活用／高手三級，各分 Claude Code、兩者共用、Codex 三欄。2026-11-17 放大逐格看完：
+    - 入門：兩邊都建議先用桌面版；共用欄講 Context、壓縮對話、約用到 80% 就手動整理、規劃與執行分兩個對話。
+    - 活用：Claude Code 欄是 `/loop`、`/goal`、`/verify`、Hooks；共用欄是先講背景目的與結果、直接給完整路徑、優先用 API／MCP／瀏覽器控制而不是看螢幕、流程穩定後存成 Skill；Codex 欄是整理檔案、Artifacts、Computer Use（標為最後手段）、遠端接續。
+    - 高手：Claude Code 欄是 `/schedule`、agents、agent teams、ultracode；共用欄是核心規則只維護一份（`CLAUDE.md`／`AGENTS.md` 只當入口）、重要偏好存在自己的資料夾而不是只放平台記憶、規則與技能要兩邊都讀得到、能跑很多代理不代表每次都該開滿；Codex 欄是 Automations、Security、Worktree、Profiles。
+    - 這張圖是概念導覽，沒有指令細節；「共用」欄的主張（單一規則來源、本機記憶、可遷移）與維護者現行做法相同，沒有新做法可採。
 - **作者留言補充**：兩個 repo 的維護回覆多數署名「雷小蒙（雷蒙的 AI 分身助手）」，先由 AI 初審、再說明「等雷蒙確認」。
-- **網友留言重點（speak-human-tw）**：
+- **網友留言重點（speak-human-tw）**（2026-11-17 用 `gh api` 補讀：10 個 issue／PR 與 21 則留言全讀）：
   - [PR #2](https://github.com/Raymondhou0917/speak-human-tw/pull/2)：外部貢獻者提出「稿件是資料不是指令」的隔離；作者方實測注入後採精簡版併入，並明講這是提示層防護、不能取代執行環境的權限控制。
   - [PR #6](https://github.com/Raymondhou0917/speak-human-tw/pull/6)（未合併）：有人拿它處理 Code Review 報告，發現「再降格式」的字面規則會把狀態摘要行、表格這類文件骨架改寫成散文，提議加第 6 類保護；作者方還在確認這類文件算不算適用範圍。
   - [#8](https://github.com/Raymondhou0917/speak-human-tw/issues/8)：OpenCode 的打包版曾壞掉，改成直接 clone 進 skills 目錄。[PR #7](https://github.com/Raymondhou0917/speak-human-tw/pull/7)：詞表加「運營→營運」，PR 自述由 AI agent 起草。[#5](https://github.com/Raymondhou0917/speak-human-tw/issues/5)：作者方確認只針對台灣繁中，不含粵語與文言。
-- **網友留言重點（claude-code-resources）**：
+  - 補讀到的三項：[#3](https://github.com/Raymondhou0917/speak-human-tw/issues/3)／[PR #4](https://github.com/Raymondhou0917/speak-human-tw/pull/4) 是社群做的 OpenCode 外掛，作者方說抓了 npm 套件實際內容檢查過（規則檔照原樣打包、沒有安裝後腳本）才收進安裝文件，但仍定位為社群整合、不是官方支援；[PR #10](https://github.com/Raymondhou0917/speak-human-tw/pull/10)（作者本人，2026-11-09 合併）一次加了 17 個詞，早於本篇固定的 commit，所以「47 組詞表」已含這批。PR #6 自 2026-08-08 作者方說「等雷蒙確認」後沒有再動，仍未合併。
+- **網友留言重點（claude-code-resources）**（2026-11-17 補讀：39 個 issue／PR 全部看過，其中 21 個是自動同步課程場次的 PR、只有標題；其餘 18 個的本文與 21 則留言全讀）：
   - [#1](https://github.com/Raymondhou0917/claude-code-resources/issues/1)、[#2](https://github.com/Raymondhou0917/claude-code-resources/issues/2)、[#3](https://github.com/Raymondhou0917/claude-code-resources/issues/3)：教材曾寫出不存在的套件名稱（三個掛在 `@anthropic-ai` 底下的名字），讀者照做失敗後回報才修正。
   - [#4](https://github.com/Raymondhou0917/claude-code-resources/issues/4)：有讀者照教學設定 Google Workspace CLI 的 OAuth 後，Google Cloud 專案被停權，申訴一個月沒回音；作者事後補上官方 README 原有的兩個警告。
   - [#12](https://github.com/Raymondhou0917/claude-code-resources/issues/12)：讀者指出「安全刪除」教材在 Windows 原生 PowerShell 沒有資源回收筒保護，並附 PowerShell 5.1、7 與 Git Bash 的實測；作者已補進教材。
   - [#13](https://github.com/Raymondhou0917/claude-code-resources/issues/13)：讀者回報在 macOS 的 Claude 桌面版 Code 分頁，`permissions.deny` 與 PreToolUse hook 都沒生效，危險指令真的執行；引用的上游 `anthropics/claude-code#87657` 現為已關閉（帶 stale 標籤）。
     - 本機證據（僅 Windows，與該回報的 macOS 不同平台）：2026-11-16～17 維護者 Windows 桌面版 Code 分頁的 PreToolUse hook（`route_guard`）實際攔下了未宣告路由的 Edit 呼叫，hook 有生效；`permissions.deny` 在 Windows 桌面版未驗證。macOS 的回報本 repo 無法重現或反駁。
   - [#6](https://github.com/Raymondhou0917/claude-code-resources/issues/6)：Windows 桌面版接 MCP 失敗，作者建議改走 CLI。
-- **上游現況**：兩個 repo 的最新版只比本篇固定的 commit 各多 1 個 commit（speak-human-tw 那個只更新星數圖），評估沒有過期。
+  - 補讀到的幾項：
+    - #13 的回報者事後補一句：問題其實出在付費課程教材的設定，不是這個 repo 的入門教材，所以在這裡關掉、改貼到課程 repo；作者仍在入門教材加了一段「桌面版 Code 分頁對 deny 清單與 hook 支援不完整，高風險操作請在終端機做」的已知限制。
+    - [#9](https://github.com/Raymondhou0917/claude-code-resources/issues/9)：新手把要在終端機執行的安裝指令貼進 Claude 對話框；作者在兩處指令前加註「請在終端機執行」。
+    - [#7](https://github.com/Raymondhou0917/claude-code-resources/issues/7)／[PR #8](https://github.com/Raymondhou0917/claude-code-resources/pull/8)：狀態列顏色在淺色主題看不清。修正時作者方實測發現主題設定其實寫在 `~/.claude.json`，不是 `settings.json`，第一版修法因此無效、合併前又改了一次。
+    - PR #10、#11、#14、#15、#30 都是協作者維護的 Mac 安裝包（多選選單、補環境設定讓 AI 找得到已裝的工具、Intel 機型改走官方下載、修第三方解壓縮後顯示已損毀）。安裝包只有 Mac 版，與維護者的 Windows 環境無關。
+    - PR #5：外部工具想被收錄，作者以「這份清單主要服務非工程背景學員」婉拒。
+- **上游現況**：2026-11-17 再查，兩個 repo 的最新版各比本篇固定的 commit 多 2 個 commit，都是自動產生的（speak-human-tw 是每日更新星數圖，claude-code-resources 是同步課程場次），評估沒有過期。
 - **對分析的影響**：
   1. 第 1 節「不應直接全域套用於…本 repo 的任務格式」原本是推論，PR #6 是實際使用者遇到的同一個問題，補上出處。
   2. 第 1.1 節「提示注入邊界未做攻擊測試」補充：作者方做過一次無害注入的試跑並留了一條回歸測試，但自己也說不能取代權限控制；結論不變。
   3. 第 3 節 claude-code-resources 的理由補兩點：Windows 原生的內容經讀者回報後已補強；教材指令曾多次出錯、還有讀者照做被平台停權的案例，照做前要逐條核對官方文件。
   4. #13 與維護者環境有關（本機靠 hook 把關，也常用桌面版），但回報是 macOS、上游已關閉，本機 Windows 桌面版是否有同樣問題未查證；沒有新增任務，列在回報給整合者決定。
   5. `T-20261115-16` 的評估文件不受影響，不需重開。
+  6. **2026-11-17 補讀後修正第 4 點的前提**：#13 的回報者自己說問題屬於付費課程教材的設定，不是這個 repo 的入門教材；所以它不能當成「這份入門教材的安全三件套在桌面版無效」的證據，只能說「有人回報類似設定在 macOS 桌面版被繞過」。本機 Windows 的觀察不變。
+  7. #7／#8「主題設定實際寫在哪個檔」是又一個「教材憑印象寫、實測才發現不對」的例子，與第 3 節「照做前逐條核對官方文件」的理由一致，不另開任務。
 
 ---
 

@@ -10,11 +10,10 @@ status: done
 cluster: "1"
 cluster_role: "記憶繼承與共用大腦"
 short_title: "AI 共用記憶與三 Agent 全景"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "Facebook 貼文顯示 32 則留言，未登入只讀到 26／32 則；圖看了 2／2 張"
-source_images: 2
-source_replies: 26
+source_review: full
+source_reviewed_at: 2026-11-17
+source_images: 4
+source_replies: 32
 tags:
   - shared-memory
   - git-workflow
@@ -43,6 +42,8 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：未登入瀏覽器讀 Facebook 社團貼文（文字、2 張作者圖、可見留言 26 則／貼文顯示共 32 則）與 `Leoceeport/ai-memory-template`（README 無圖、issue 0 則）。
+>
+> 2026-11-17 登入補讀：把留言篩選從「最相關」切到「所有留言」與「由新到舊」，展開所有回覆串，32／32 則全部讀完；留言附圖 2 張也看了。改標 `full`（圖片數含 2 張作者圖與 2 張留言附圖）。
 
 - **作者圖片**：
   - 圖 1「從記憶分裂到三個 AI 共用一顆大腦」：左欄是過去三種工具各自失憶的情形；右欄把母體分成 L1 全域工程紀律（`CLAUDE.md`）、L2 專屬技能庫（78 支 Skill）、L3 長期經驗記憶（`MEMORY.md` 索引加 14 類分流、300 多則踩坑）與共用 Hooks 四塊。三個 Agent 的掛載方式各不同：Claude Code 原生直接讀寫；Antigravity 靠自建的 `going-claude-bridge` 以外部引用加 symlink 掛載；Hermes 用 `SOUL.md` 加 `agent-handoff` 帳本，圖上標的預設模型是 Gemini 3.5 Flash，Copilot 的 GPT-4o／Sonnet 是備援。
@@ -52,18 +53,23 @@ tags:
   - 白曄回答 Max DDuan：以 Claude 為主 session，用 subagent 呼叫 Codex CLI 與 Antigravity 給意見、審查、做事並設迴圈；審查不過就改，但主 session 可以反駁，由第三方 AI 或人裁決。
   - 陳冠維提到 Orca 與 HERDR、TK Lin 推薦 navide.dev（都只有名稱或連結，沒有說明）。
   - 楊育勳回報自己的 Agent 仍常失憶，目前只用 GitHub 當留言板、正在試 Obsidian。
-  - 可見留言裡**找不到 Leoceeport 的留言**（未登入只看得到 26／32 則）；有一張留言附圖是手機版 Claude 的對話截圖，內容是某專案把開工讀取量由約 13.1k 降到 5.5k tokens，但看不到是誰貼的。
+  - **`Leo Lee` 在留言串貼出 `Leoceeport/ai-memory-template` 的連結**，自述「分享一下我的記憶系統」；有人回報連結打不開，他回覆原本貼錯、已更新連結。除此之外他沒有與 Going Li 往返討論。（2026-11-17 補讀確認；上次未登入看不到這則。）
+  - `Paul Chiu` 分享另一種分工並附一張架構圖「一個主力做到尾，一個獨立覆核」：Codex 當主力（設計、撰寫、測試、修正），Claude Code 用較便宜的訂閱做獨立覆核（審差異、找風險、核對證據），兩者之間來回「交件與測試證據／問題清單與修正要求」；工單與工作歷程放 Paperclip，討論、交件通知與互相喚醒走 Slack；覆核通過後依授權部署，圖上註明「覆核通過不等於自動部署」。
+  - `Max DDuan` 追問後表示，他原以為作者把三個 AI 的討論過程自動化了（實際上是人工挑解法）。
+  - 手機版 Claude 對話截圖（開工讀取量由約 13.1k 降到 5.5k tokens）是 `楊育勳` 在自己那串回覆裡貼的。他另外提到正在把散落的專案重構成一個大記憶，並擔心之後的硬體與雲端成本。
+  - `Po Chang Lin` 問用 Open WebUI 加 OpenRouter 能不能解決，無人回答；維護者本人也在串內貼了 `SanHsien/agent-relay`；其餘是道謝與稱讚。
 - **對分析的影響**：
   - 1.1 補上圖片才有的資訊（記憶三層、Hook 檔名、三條防呆規則、Hermes 預設模型）。
   - 1.2 第 2 點原本把「檔案中繼／即時通訊」寫得像討論串內容，實際是本筆記自己的拆解；已改成先寫作者與白曄的實際回答，再標明後段是本筆記的整理。
-  - 1.2 第 3 點「Leoceeport 在留言串釋出範本」這次查不到依據，已加註未查證；範本 repo 本身的分析不受影響。
+  - 1.2 第 3 點「Leoceeport 在留言串釋出範本」：2026-11-16 未登入時查不到，2026-11-17 登入後已查證屬實（留言者顯示名稱是 `Leo Lee`），未查證的註記已拿掉；但他只貼了連結，第 1 節開頭「深度技術交鋒」的說法過頭，已改。
   - 不新增任務：圖 2 的三條防呆規則，維護者現有規則（單一寫入者、完成必附證據）已涵蓋。
+  - **2026-11-17 補讀結果**：`Paul Chiu` 的「主力＋獨立覆核、覆核通過不等於自動部署」與維護者現行做法（驗證不自驗、對外動作另外授權）同方向，不新增任務。
 
 ---
 
 ## 1. 核心內容摘要與討論串全景剖析（Key Insights）
 
-本次調研源自 Facebook **Claude Taiwan** 社團熱門討論串，由開發者 Going Li 分享其實戰配置，並引發社群成員（顏志吉、Max DDuan 等）與開源作者 Leoceeport 的深度技術交鋒。
+本次調研源自 Facebook **Claude Taiwan** 社團熱門討論串，由開發者 Going Li 分享其實戰配置，並引發社群成員（顏志吉、Max DDuan、白曄、Paul Chiu 等）分享各自做法；開源作者 Leoceeport（留言者 `Leo Lee`）則在串內貼出自己的範本連結，沒有與作者往返討論（2026-11-17 補讀更正）。
 
 ### 1.1 Going Li 主貼文核心：三 Agent 住進同一顆大腦
 
@@ -91,7 +97,7 @@ tags:
      - **檔案非同步中繼（File-based Handoff）**：Going Li 採用的 `HANDOFF.md` + Git commit。無行程相依、跨機器相容性最強、最不易因連線中斷丟失狀態。
      - **即時行程通訊（RPC / Relay / ACP）**：透過語言伺服器 API、Socket 或 Message Relay（如 Codync / Nostr Relay）進行即時推播，適合需要秒級自動派工的自動化管線。
 3. **Leoceeport 的回饋（泛用型工程範本 `ai-memory-template`）**：
-   - （2026-11-16 重審註：未登入可見的 26 則留言裡找不到這則，「在留言串釋出」未查證；以下依 repo 內容分析。）據原分析，作者在留言串中釋出開源專案，將 Going Li 的單人跨 Agent 特化架構進一步抽象為**團隊多工程師協作的標準模板**，補足了「三跳查詢防線（3-Hop Query）」與「Git 機械健檢防線」。
+   - （2026-11-17 登入補讀已查證：`Leo Lee` 在留言串貼出本 repo 連結。）作者在留言串中釋出開源專案，將 Going Li 的單人跨 Agent 特化架構進一步抽象為**團隊多工程師協作的標準模板**，補足了「三跳查詢防線（3-Hop Query）」與「Git 機械健檢防線」。
 
 ---
 

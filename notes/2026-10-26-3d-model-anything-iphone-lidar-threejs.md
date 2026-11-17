@@ -10,9 +10,8 @@ status: done
 cluster: "2"
 cluster_role: "WebGL與3D重建"
 short_title: "3D Model Anything"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "YouTube 影片畫面沒有逐格看；Threads 留言只讀到未登入可見的 10 則（總數未知）；YouTube 留言 155／155 則與 issue 留言 1 則讀過；圖看了 1／1 張"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 1
 source_replies: 166
 tags:
@@ -41,10 +40,19 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：看了 Threads 引介貼文（文字與未登入可見的 10 則留言）、GitHub README 與 4 則 issue（共 1 則留言）、YouTube 介紹影片的說明欄與全部 155 則留言（以 `yt-dlp` 取得，含作者回覆 14 則）。影片本身的畫面這次沒有逐格看。
+>
+> 2026-11-17 登入補讀：Threads 貼文計數 10 則，登入後確認就是上次讀到的那 10 則，沒有更多；YouTube 影片抽格（每 15 秒一格）逐張看過。改標 `full`。
 
 - **作者圖片**：共 1 張。
   - 圖 1（README 首圖，也是影片縮圖）：Wes Bos 俯身看著桌上一個辦公室的微縮模型，手上拎著一張辦公椅放進去；模型裡有書櫃、升降桌、地毯、躺椅、掃地機器人，呈現「把整間房間做成可拿取零件的 3D 模型」。
   - Threads 貼文本身沒有作者上傳的圖，只有 GitHub 連結卡片。
+  - 影片畫面（2026-11-17 抽格看過）：
+    - 成品檢視器名為 SPACES，有娃娃屋／走動兩種視角，來源可在「重建／掃描／疊圖／線框」之間切換，用來把重建結果疊在原始掃描上比對。
+    - 原始掃描的網格很破碎（牆面破洞、物體糊成一團）；RoomPlan 的輸出只是貼了標籤的半透明方盒（storage、chair、table、television、sofa）。兩者與成品的落差，就是 LLM 反覆建模補上的部分。
+    - 擷取資料夾的結構：`depth/`、`mesh/`（`.ply`）、`photos/`、`rooms/`（`room-0.json`、`.usdz`）與 `manifest.json`。每一格有三個檔——照片 `.jpg`、深度 `.f16z`、信心值 `.conf`；`frames.json` 記錄相機內參與位姿，可以算出拍每張照片時手機的位置與方向。
+    - 技能檔在 `.agents/skills/scan-to-threejs/SKILL.md`，附 `references/` 與 `scripts/`；畫面停在「比對與迭代」一節：`cmp.sh` 用同一個相機位姿產出「掃描／模型」成對圖，文件明寫腳本**不計算相似度分數**，要 agent 自己看圖、列出具體差異、先修最大的再重複。
+    - 「實景／3D 算圖」並排鏡頭：桌面、3D 列印機、冰箱等物件的位置與比例對得上，材質與小物是近似。
+    - 影片提到的起點是 Aaron Francis 的一則 X 貼文（把掃描檔交給 Codex 算圖）。
 - **作者留言補充**：
   - Threads 引介者 `@leeunhn` 沒有在留言區補充；貼文寫當時 1,199 顆星（2026-11-16 查為 3,031）。
   - YouTube 說明欄：影片是 OpenAI 合作內容（標 `#ChatGPT_Partner`），重建用的是 Codex 裡的 GPT-6 Astra。
@@ -58,8 +66,9 @@ tags:
   - 實作回報：`@SamCastillo` 表示自己做了幾天、每輪迭代都有進步，並送了改善門偵測的 PR（房間一開始接不起來）。
 - **對分析的影響**：
   - 影片是廠商合作內容、成品來自 LLM 反覆修正而非一鍵轉換，且沒有公開的精度數字；已在第 3 節「不採納／邊界考量」補上，避免把它當成量測級工具引用。
-  - 留言中「掃描尺寸與模型推測要分開標示」這一點，與本筆記空間契約的方向一致，但 `docs/scan-to-threejs-spatial-agent-spec.md` 是否有寫到，這次沒有查；列在重審回報供整合者判斷，已完成的任務狀態不動。
+  - 留言中「掃描尺寸與模型推測要分開標示」這一點，與本筆記空間契約的方向一致。2026-11-17 查 `docs/scan-to-threejs-spatial-agent-spec.md`：有量測容許誤差與信心值欄位，但沒有要求每個元素標明「量測得到」或「模型推測」；該檔屬已完成任務的產出，這次不改，列在回報裡。
   - 授權：GitHub API 的授權欄顯示無法判定，但 LICENSE 檔內容是 MIT，本筆記寫 MIT 無誤。任務未增減。
+  - **2026-11-17 看畫面的結果**：畫面證實比對閉環是「同位姿成對圖＋agent 自己列差異」，不是自動打分，與第 1 節的描述一致；原始掃描品質差、成品細節多由模型補上，支持第 3 節「不當量測級工具」的邊界。正文無修正，任務未增減。
 
 ---
 

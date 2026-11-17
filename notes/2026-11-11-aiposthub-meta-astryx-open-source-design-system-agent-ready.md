@@ -10,9 +10,8 @@ status: archived
 cluster: 2
 cluster_role: "AI工具整合"
 short_title: "Meta Astryx設計系統"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "未登入讀到 6 則／共 16 則回覆，其餘 10 則要登入；貼文無作者圖，連結預覽卡與作者完整文章已看"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 0
 source_replies: 6
 tags:
@@ -53,6 +52,7 @@ tags:
 - **網友留言重點**：
   - **0xforg**：Agent 真正要用的是 `init --features agents`，把元件規則寫進 `CLAUDE.md`／`AGENTS.md`，否則 Agent 還是會亂發明 props。
   - 其餘 3 則（hackertale、vincent.yeh0412、fritz_kelu）是拍手、「存」、「Ok」，無資訊。
+- **2026-11-17 登入補讀**：登入後以「熱門」「最新」兩種排序各捲到底，貼文的回覆數現在顯示為 7 則（首輪記的是 16 則，數字變少，原因不明，可能是留言被刪或被平台收起），畫面上看得到 5 則（作者串文 2 則＋hackertale、vincent.yeh0412、fritz_kelu），頁面底部註明「部分新增回覆無法顯示」；首輪讀到的 0xforg 那則這次沒有顯示。兩輪合計讀過 6 則，沒有新的留言內容，分析不變。
 - **對分析的影響**：
   - **「6 月開源、來源不明」已解決**：原稿註記「repo 建立日為 2026-01-09，6 月說法來源不明」。作者文章指出是 Meta 官方部落格 2026-06-18 公告；本次用 GitHub API 查到最早的 release `v0.1.1` 發布於 2026-06-26，與 6 月公開的說法相符（repo 1 月建立、6 月公開）。官方部落格原文本次未直接開啟，日期依作者文章。摘要原文已改。
   - **CLI 指令寫錯，已更正**：原稿寫用 `astryx docs <Component>` 查元件文件。依 `packages/cli/README.md` 指令表（2026-11-16 查），查元件文件是 `astryx component <Name>`，`astryx docs` 是印參考文件（如 `docs tokens`、`docs migration`）。「Agent-Ready 關鍵機制」與 ASCII 架構圖兩處已改。

@@ -11,10 +11,10 @@ cluster: 1
 cluster_role: "混合型Harness"
 short_title: "Pi混合型Harness"
 source_review: partial
-source_reviewed_at: 2026-11-16
+source_reviewed_at: 2026-11-17
 source_images: 0
-source_replies: 15
-source_review_note: "K-harness 仍是 404，內容完全看不到；pi README 只有標誌與吉祥物兩張小圖，未放大看；pi 未關閉的 issue／PR 約 259 個，只讀 3 則（#9361、#7547、#581）的本文與各前 4 則留言，#7547 共 96 則"
+source_replies: 114
+source_review_note: "K-harness 2026-11-17 再查仍是 404，內容完全看不到，登入也補不了；pi README 只有標誌與吉祥物兩張小圖，未放大看；pi 未關閉的 issue／PR 現為 255 個，讀了 3 則：#9361 留言 14／14 則、#7547 留言 96／96 則（長留言只讀前段）、#581 本文與前 4 則留言"
 tags:
   - agent-harness
   - pi-coding-agent
@@ -40,16 +40,26 @@ tags:
 
 > 貼文文字、作者上傳的每張圖片（含輪播）、作者留言補充、網友留言（展開到底）都要看過，見 AGENTS.md 第 3 節。
 
-- **作者圖片**：`paul800901/K-harness` 2026-11-16 再查仍回 404，該帳號 15 個公開 repo 裡也沒有它，README 與圖都看不到。上游 `earendil-works/pi` 的 README 只有標誌與吉祥物兩張小圖和徽章，沒有架構圖或截圖。
+- **作者圖片**：`paul800901/K-harness` 2026-11-16、2026-11-17 兩次再查都回 404，該帳號 15 個公開 repo 裡也沒有它，README 與圖都看不到。上游 `earendil-works/pi` 的 README 只有標誌與吉祥物兩張小圖和徽章，沒有架構圖或截圖。
 - **作者留言補充**：無（K-harness 看不到）。
-- **網友留言重點**（pi 的 issue，讀 3 則本文＋各前 4 則留言）：
+- **網友留言重點**（pi 的 issue；2026-11-17 用 `gh api` 把 #9361、#7547 的留言全部讀完，補充寫在各則底下）：
   - [#9361](https://github.com/earendil-works/pi/issues/9361)（未關閉）：Windows 上只要載入擴充，設定檔的 `shellPath` 會不定時被忽略，退回去用 PATH 上第一個 `bash.exe`；有開 WSL 的機器那會是 `C:\Windows\System32\bash.exe`（WSL 啟動器），指令就跑進 Linux 環境。協作者的判斷是某些擴充換掉了內建 bash 工具卻沒讀設定，並承認設定管理沒有好好開放給擴充。
+    - **補讀後（14／14 則）根因已經確定，而且不是「不定時」**：只要擴充自己重建 bash 工具而沒把設定傳進去，`shellPath` 與 `shellCommandPrefix` 就一定被丟掉；連官方附的幾個擴充範例都這樣寫。有人在 macOS 重現同一件事，所以設定遺失這一半與作業系統無關。
+    - Windows 特有的另一半：有網友用第三方套件穩定重現，該套件直接呼叫 `bash`，而 Windows 找執行檔時會先找 System32，所以一定拿到 WSL 啟動器，根本不會去看 `shellPath`。
+    - 外部貢獻者提的修正（[#10538](https://github.com/earendil-works/pi/pull/10538)）被新貢獻者自動關閉的機制關掉、沒有合併；issue 截至 2026-11-17 仍未關閉，最新發行版是 v1.5.2。
   - [#7547](https://github.com/earendil-works/pi/issues/7547)（未關閉，96 則）：協作者彙整 Windows 四種跑法（Git Bash、WSL bash、純 PowerShell、整個放 WSL2），說每一種都有小毛病；有留言說 Git Bash 很糟、WSL bash 常弄壞路徑、PowerShell 相對堪用但很多擴充不支援。
+    - **補讀後（96／96 則，長留言只讀前段）**：2026-08-24 維護者宣布下一版加入可選的 PowerShell 工具（[#8512](https://github.com/earendil-works/pi/pull/8512)，預設不開）。之後多位 Windows 使用者回報把 bash 整個關掉、只留 PowerShell 後錯誤明顯變少；也有人測到部分模型在兩個工具都開時仍一律選 bash。
+    - PowerShell 工具自己的已知問題：指令太長會在啟動前就被 Windows 拒絕（整段指令塞在命令列參數裡）；系統語言不是英文時輸出可能亂碼。
+    - Git Bash 的常見抱怨：模型會寫 `> /dev/null`，在目錄裡留下刪不掉的 `nul` 檔；找不到 `grep` 之類的工具時模型會亂試。維護者的立場是模型的 bash 訓練資料遠多於 PowerShell，不打算把 PowerShell 設成預設。
+    - **權限與沙盒**：協作者明講 pi 的立場是預設不做權限控管也不做沙盒，要的人自己找擴充；多位留言者指出 Windows 上沒有開箱即用的沙盒方案，協作者只回了官方沙盒專案的一個 PR 連結（合併狀態本篇未查）。有企業使用者說只好把權限提示當成不完美的替代品。
+    - 安裝面的坑：獨立執行檔舊版在 Windows 找不到 Git Bash（v1.5.0 修掉）；安裝腳本遇到某些 Node 版本管理工具會想另裝一份 Node；更新後 PowerShell 執行原則擋住啟動腳本。
   - [#581](https://github.com/earendil-works/pi/issues/581)（已關閉，2026-01）：Claude 的 OAuth token 在第三方工具回 400，訊息是該憑證只授權給 Claude Code 使用；留言指出其他同類工具也應 Anthropic 要求拿掉這種支援。
 - **對分析的影響**：
   1. 第 2 節「Windows 終端與安全邊界」補上 #9361：維護者是 Windows 原生、不用 WSL，而本篇設計正好要寫擴充，這是直接踩得到的問題。
   2. #581 是「不要把訂閱憑證接進 Pi」的實例，補進第 1 節的不建議做法；與 `docs/pi-hybrid-harness-readonly-assessment.md` 的 Anthropic 那一列結論一致，`T-20261115-01` 不需重開。
   3. 結論不變：暫不採納，`T-20261115-02` 維持不做。
+  4. **2026-11-17 補讀後修正第 2 節一句話**：#9361 不是「不定時」發生，而是「裝了會重建 bash 工具的擴充就一定發生」，修正還沒合併。本篇設計正好要自己寫擴充，所以這是寫擴充時必須自己處理的事（把工作階段的 shell 設定明確傳進去），不是等上游修好就沒事。已改第 2 節。
+  5. #7547 的 PowerShell 工具回報與 `docs/pi-hybrid-harness-readonly-assessment.md` 第 42 行「可透過 defaultTools 選用 PowerShell」一致，並多了使用者實測：Windows 原生若要試，關掉 bash、只留 PowerShell 是目前回報最穩的組合。協作者「預設不做權限與沙盒」的說法也與該文件「沒有新增強制隔離能力」的結論一致。`T-20261115-01` 不需重開。
 
 ---
 
@@ -111,7 +121,7 @@ tags:
   - **不適用 / 需調整的部分**：
     1. **不要用 Pi 重寫一個全新的 `agent-relay` 或 `agent-cortex`**：維護者已經有經過實測的 `agent-relay`（含 `ask`/`answer`、worktree 隔離、SSH 簽章驗證；測試結果以該 repo 當前驗收為準，本筆記未重跑），重複造輪子只會分散維護精力；Pi 應定位為**人類面向的前端指揮台（Commander TUI）＋ 即時編寫工具**，長任務與跨機派工仍交給 `agent-relay`。
     2. **Antigravity 不可透過非官方 API/OAuth 塞進 `pi-ai`**：現有做法是 `agent-relay send --to antigravity --ref antigravity-session:new`，依據是 relay 自己的相容性契約（[`SPEC.md`](https://github.com/SanHsien/agent-relay/blob/main/SPEC.md)），不是 Google 官方保證；`language_server.exe agentapi` 是否為官方穩定 API **未查證**。
-    3. **Windows 終端與安全邊界**：Pi 本身沒有內建 OS 沙盒（官方 [`security.md`](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/security.md) 明言工具以當前使用者權限執行、工作目錄不限制可存取路徑，project trust 也不是安全邊界）。資料夾與 git worktree 只是分開檔案，**不是 OS 隔離**；在 Windows 上委派破壞性或大規模實作任務時，不要放任 Pi 直接在主分支裸跑。另有未關閉的 [#9361](https://github.com/earendil-works/pi/issues/9361)：載入擴充後 `shellPath` 設定會不定時被忽略，退回 PATH 上的 `bash.exe`，有開 WSL 的機器會把指令送進 WSL；本篇設計要靠擴充，在 Windows 原生環境要先確認這個問題的現況。
+    3. **Windows 終端與安全邊界**：Pi 本身沒有內建 OS 沙盒（官方 [`security.md`](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/security.md) 明言工具以當前使用者權限執行、工作目錄不限制可存取路徑，project trust 也不是安全邊界）。資料夾與 git worktree 只是分開檔案，**不是 OS 隔離**；在 Windows 上委派破壞性或大規模實作任務時，不要放任 Pi 直接在主分支裸跑。另有未關閉的 [#9361](https://github.com/earendil-works/pi/issues/9361)：擴充只要自己重建 bash 工具而沒把設定傳進去，`shellPath` 就會被丟掉，退回 PATH 上的 `bash.exe`，有開 WSL 的機器會把指令送進 WSL（2026-11-17 讀完全部留言：根因已確定、修正尚未合併，連官方範例擴充都有這個寫法）。本篇設計要靠擴充，在 Windows 原生環境自己寫擴充時要明確把 shell 設定傳進去，或依 #7547 多位使用者的做法關掉 bash、只留 PowerShell 工具。
 
 ---
 

@@ -10,11 +10,10 @@ status: archived
 cluster: "1"
 cluster_role: "模型路由與配額分流"
 short_title: "colibri三層MoE推理與System One決策"
-source_review: partial
+source_review: full
 source_reviewed_at: 2026-11-17
-source_review_note: "Threads 留言讀到 18 則／共 43 則，其餘要登入；作者留言裡的 GitHub Releases 預覽卡只讀標題。"
 source_images: 1
-source_replies: 26
+source_replies: 42
 tags:
   - colibri
   - moe-inference
@@ -56,12 +55,18 @@ tags:
   - `meta.ai`（Meta 的 AI 帳號，被點名回答，非一手資料）：用一堆樹莓派或 PS5 不會變快，瓶頸是硬碟到記憶體的頻寬；要提速是加 RAM、換高速 NVMe、開 Vulkan。
   - **GitHub issue #1405（Windows CUDA DLL）**：有使用者照文件在 Windows 建 CUDA DLL 失敗（找不到 `cuda-dll` 的 make 目標）。作者 2026-09-14 回覆確認當時的 Windows 發行壓縮檔只有引擎執行檔、沒有 CUDA DLL，CI 已能建出可攜的 DLL，剩下是把它放進發行檔。這則 issue 到 2026-11-16 仍是開啟狀態；v2.1.0 的發行檔有沒有附 DLL，本筆記未查。同一串裡另有一個實測：模型放在 SATA SSD 上時，GLM-5.2 約 12 秒才出一個字，作者回覆這就是該硬碟的上限。
   - 其他熱門 issue 集中在安裝包（Ubuntu 上裝不起來、希望提供 deb）、預取的 I/O 佇列深度、AMD 顯卡上的效能退化，顯示安裝與跨硬體效能仍在收斂。
+- **2026-11-17 登入補讀**：
+  - **Threads 留言**：登入後以「熱門」「最新」兩種排序各捲到底、子回覆全部點開，再逐一打開還有下層回覆的 6 則留言頁面，共讀到 33 則（含作者串文 3 則）；首輪讀到的 `scsnakechen` 那則這次已不顯示，合計 34 則。貼文標示 43 則，頁面底部註明「部分新增回覆無法顯示」，其餘 9 則平台不顯示。加上先前讀的 GitHub issue 8 則，共 42 則。
+  - 新讀到的多半是網友點名 `meta.ai` 的問答（AI 生成，不當一手資料）：問是不是假新聞、一小時能輸出多少 token（照作者的冷啟動數字換算約 180～360 個）、加顯示卡能不能加倍、16GB 記憶體的 i5 筆電怎麼裝、PS5 的硬碟很快為什麼不行。這些回答裡的數字大多是把 README 的數字重講一次，少數對不上（例如模型大小一處說 370GB、貼文與 README 是 429GB），不採用。
+  - 網友自己的意見：`mushu_ai` 說這是把「跑得動」和「跑得快」拆開算；`guiq_79043` 嘲諷速度單位應該是幾分鐘一個 token、而且很傷硬碟；`lets.jumptogether`、`freddy.kuo` 也是嫌慢。**沒有任何人回報自己裝起來的實測數字**。
+  - **GitHub 發行檔查證**（補首輪「v2.1.0 有沒有附 CUDA DLL 未查」）：2026-11-17 以 GitHub API 列發行檔，v2.0.0（2026-10-06）與 v2.1.0（2026-10-31）都多了一個 `colibri-v2.1.0-windows-x86_64-cuda.zip` 這類 Windows CUDA 專用壓縮檔，v1.12.1 還沒有。所以 issue #1405 當時「發行檔沒有 CUDA 版」的缺口，從 v2.0.0 起已有對應的發行檔；壓縮檔內容本筆記沒有下載驗證，issue #1405 本身也仍是開啟狀態（最後更新 2026-09-14，沒有人回來確認）。
 - **對分析的影響**：
   1. 原筆記第 3 節「能跑通不等於能日常互動」的判斷，與作者自己的補充串文及多數留言一致；留言沒有人回報比 README 更好的實測數字。結論不變。
   2. **第 4 節的本機適配表要加一個前提**：原筆記寫 RTX 3060「完全符合 Windows CUDA DLL 的要求」，那只是運算能力版本符合。依 issue #1405，Windows 發行檔曾經不含 CUDA DLL、自行建置也有人失敗，所以 Tier S 與 Tier A 的 CUDA 數字在本機能否直接取得，要先確認發行檔有附 DLL。已在第 4 節 GPU 那一行與表格下方加註。
   3. **磁碟種類也是前提**：SATA SSD 的實測（12 秒一個字）說明 Tier B、Tier C 這類要從硬碟串流的檔位，必須是 NVMe 才有討論空間。已在表格下方加註。
   4. 專案數據更新註記：2026-11-16 以 API 查為 51,506 Stars、6,223 Forks，最新版仍是 v2.1.0。
   5. 維持歸檔、不開任務。
+  6. **2026-11-17 補讀**：留言沒有新的實測，結論不變。第 4 節「Windows 發行檔是否附 CUDA DLL 要先確認」的前提更新為：v2.0.0 起已有 Windows CUDA 專用發行檔（檔名查證、內容未下載驗證），已改寫第 4 節 GPU 那一行與表格下方的註記。
 
 ---
 
@@ -133,7 +138,7 @@ tags:
 
 實測本機（Windows 11 原生）硬體規格如下：
 - **CPU / RAM**：`31.9 GB Total RAM`（日常開發常駐後可用約 `6.6–12 GB`）
-- **GPU**：`NVIDIA GeForce RTX 3060 (12,288 MiB VRAM, Compute Capability 8.6)`（運算能力版本符合 `colibri` Windows CUDA DLL `compute_cap >= 8.0` 的要求；但 Windows 發行檔是否附 CUDA DLL 要先確認，見第 0 節 issue #1405）
+- **GPU**：`NVIDIA GeForce RTX 3060 (12,288 MiB VRAM, Compute Capability 8.6)`（運算能力版本符合 `colibri` Windows CUDA DLL `compute_cap >= 8.0` 的要求；Windows 的 CUDA 版要另外下載 `windows-x86_64-cuda` 發行檔，v2.0.0 起才有，見第 0 節）
 - **磁碟可用空間**：`C:\` 剩餘 `233.5 GB`
 
 對照 `JustVugg/colibri` 的硬體規劃器（`c/resource_plan.py`），本機各檔位適配結論如下表：
@@ -146,6 +151,8 @@ tags:
 | **Tier C：超巨型 MoE** | `glm-5.2` (744B) / `kimi-k3` (2.8T) | `429 GB` / `1.56 TB` | `16–64 GB` | **不適用**：`C:\` 可用空間（233.5 GB）放不下 429 GB 權重檔。 |
 
 > 兩個前提（2026-11-16 依 GitHub issue #1405 補）：(1) 表中所有 CUDA 數字都假設 Windows 上拿得到 `coli_cuda.dll`；該 issue 顯示發行檔曾經不含這個 DLL、自行建置也有人失敗，啟用前先確認。(2) Tier B、Tier C 靠硬碟串流，同一則 issue 有人把模型放在 SATA SSD 上實測約 12 秒一個字，非 NVMe 不必考慮。
+>
+> 更新（2026-11-17）：以 GitHub API 查發行檔，v2.0.0 與 v2.1.0 都有獨立的 Windows CUDA 壓縮檔（`colibri-v2.1.0-windows-x86_64-cuda.zip`），前提 (1) 的缺口在發行面已補上；壓縮檔內是否就是 `coli_cuda.dll`、在本機能否載入，仍未實測。
 
 ### 評估結論（歸檔備查，不自動下載大檔或衍生新任務）
 

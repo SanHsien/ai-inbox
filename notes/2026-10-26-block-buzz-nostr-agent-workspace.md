@@ -10,11 +10,10 @@ status: done
 cluster: "1"
 cluster_role: "A2A 通訊與協同工作區"
 short_title: "Block Buzz 協同工作區"
-source_review: partial
-source_review_note: "issue #2698 共 38 則留言、#2388 共 8 則留言（2026-11-17 以 GitHub API 查得），兩則合計只讀本文與前幾則留言共 16 則／46 則，各讀幾則當時未分開記錄；README 截圖看了 4／4 張"
-source_reviewed_at: 2026-11-16
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 4
-source_replies: 16
+source_replies: 46
 tags:
   - nostr-protocol
   - multi-agent-collaboration
@@ -41,7 +40,9 @@ tags:
 
 ## 0. 原始資料盤點
 
-> 2026-11-16 重審：來源只有 GitHub repo，沒有社群貼文。看了 README 的 4 張截圖，讀了兩則 issue（#2698 與 #2388）的本文與前幾則留言共 16 則；#2698 共 38 則、#2388 共 8 則，後面的留言沒讀完，所以 `source_review` 記為 `partial`。
+> 2026-11-16 重審：來源只有 GitHub repo，沒有社群貼文。看了 README 的 4 張截圖，讀了兩則 issue（#2698 與 #2388）的本文與前幾則留言共 16 則。
+>
+> 2026-11-17 補讀：用 `gh api` 把兩則 issue 的留言全部讀完（#2698 共 38 則、#2388 共 8 則，合計 46／46 則），`source_review` 改為 `full`。
 
 - **作者圖片**（README 截圖，都是 macOS 桌面版畫面）：
   - 圖 1 `channel-thread`：專案頻道裡，成員 @ 一個 Agent 請它整理拍攝計畫，Agent 以條列回覆並 @ 回指定的人；左欄有收件匣、Agents、頻道分組與私訊。
@@ -52,10 +53,19 @@ tags:
 - **網友留言重點**：
   - #2698（38 則留言，仍開啟）：`buzz-acp` 的回覆交付是隱含約定——Agent 要自己執行 `buzz messages send` 訊息才會進頻道；模型只把答案寫在 session 文字時，回覆會被靜默丟棄，Activity 面板看得到答案、token 照扣、聊天室空白、沒有任何 log。回報者以同一份提示詞對照，強模型會送出、Sonnet 級模型不會。後續留言指出桌面版 0.5.0 起模型切換生效，這個問題變成預設路徑；有人在自架 relay 的 0.5.1 仍重現；也有人用 Hermes ACP 重現。相關的還有 #2459（CLI 寫入失敗時回覆遺失）、#2265（預設模型沒額度時靜默失敗）。
   - #2388 留言：社群成員回報 Windows 版的通知、縮到系統匣、安裝 Claude Code ACP 失敗等問題，並各自送 PR；另有 issue 指出 `buzz-acp` 在 Windows 有 38 個測試失敗、更新後畫面空白。
+  - **2026-11-17 補讀 #2698 後段留言（第 17～38 則）的新資訊**：
+    - **不只是模型強弱**。多人在不同 harness 重現（Hermes、Goose、OpenClaw、Codex、內建 Claude Code、本機 Qwen／Gemma／DeepSeek），原因至少還有四種：(1) harness 的沙盒把送訊息用的簽章金鑰從工具子行程拿掉，Agent 有執行 `buzz messages send` 但得到 `auth_error`（SHL0MS、BaneHive、vatevstoil、mastergainer-com）；(2) 權限模式設成不詢問時 Agent 根本不能跑 Bash（nutkracker）；(3) 內建的 `claude`、`goose` runtime 啟動時沒有掛 `buzz-dev-mcp`，設定檔卻顯示有掛（monkeysphere，換成 `buzz-agent` runtime 就送得出去）；(4) Codex 沙盒關掉網路，CLI 解析不到 relay 網域（panosdigital）。
+    - **只改提示詞不可靠**。上游基礎提示詞早就寫了「有產出一定要發布」，Sonnet 級模型照樣不送（bosoud）；小模型單獨測 5／5、放進真實頻道掉到 1／5（artemtrofymenko 自己更正前一則數據）；把一次示範塞進提示詞反而讓小模型抄錯頻道 UUID。也有人回報加強制語句後穩定（satta-ravi、blissfire、potseeslc），結果不一致。
+    - **「log 沒有錯誤」不能當證據**。桌面版啟動 harness 時的 log 篩選只收 `buzz_acp` 這個目標，`acp::*`、`pool::*` 等 87 條 log（其中 26 條是警告或錯誤等級）全被濾掉；要看得到須自己在 Agent 環境變數加 `RUST_LOG`（artemtrofymenko、BaneHive）。介面上「已讀」與「輸入中」的表情會先出現再被收掉，看起來像 Agent 選擇不回（blissfire）。
+    - **修法的爭點**。留言區傾向由 harness 保底（回合結束沒送訊息就代發或發警告），而不是靠模型；但有人指出代發會重複貼文（現有的回覆檢查已出現過同一回合貼兩次）、帶討論串參照的回覆不會出現在頻道主畫面、空內容的訊息不該算已交付（potseeslc 看到一則內容為空的已簽章訊息）。nbisaacs 提出最小修法：回合結束時若有文字但沒送出，就在討論串發一則警告。
+    - **看起來像但不是這個問題**：potseeslc 回報 Agent 互相 @ 沒回應，後來自己更正是對方設成只回應擁有者；artemtrofymenko 另舉反例說同一擁有者的 Agent 互 @ 本來應該會回，可能是驗證失敗被快取（#5450）。
+    - **上游狀態（2026-11-17 以 GitHub API 查）**：#2698、#2388 都仍開啟；宣稱修正的 PR #2703 已於 2026-08-15 關閉、沒有合併。最後一則留言是 2026-09-30 的重現回報。
+  - **2026-11-17 補讀 #2388 後段留言**：Virgile-pct 在 0.5.25 安裝版實測三個 Windows 通知的 PR，兩個在重開程式後就不再發通知，第三個在官方安裝檔上啟動就當掉；jhedlund 說自己從 8 月起用另一個 PR 沒問題。到 2026-09-28 為止沒有任何一個合併的消息。
 - **對分析的影響**：
   - 3.1 把「已讀不回」歸因於額度耗盡，這只是其中一種原因。上游 #2698 顯示更常見的原因是回覆交付約定沒寫明：換成較弱的模型就整批不回，額度正常也會發生。3.1 已補上這個原因。
   - 已完成的 `T-20261026-27` 設計的是額度心跳，偵測不到「回合正常結束但沒送出訊息」這種情形；新增 `T-20261026-35` 補這一塊（不改動原任務狀態）。
   - Windows 支援度比原筆記寫的保守：上游自己列為待補的區塊，已在第 3 節「不採納／暫緩評估」補一句。
+  - 2026-11-17 補讀後：3.1 原補的那句「換成較弱的模型就會整批不回」只講到一種原因，已再補上金鑰被沙盒拿掉、權限模式擋住、runtime 沒掛工具這幾種，並提醒 log 沒錯誤不代表沒問題。`T-20261026-35` 已完成，產出檔 4.8 節的三種原因對照大致涵蓋（B 列含憑證失敗），本次不改任務狀態，細節差異列在補讀回報裡。不新增任務。
 
 ---
 
@@ -174,7 +184,7 @@ Buzz 在代理人層面實現了極為乾淨的解耦設計：
   利用不同聊天室頻道對應不同專案或任務目標，並分配指定 Agent 參加特定群組。這樣能以自然頻道邊界物理隔離專案上下文，避免跨專案 Prompt 污染與注意力稀釋。
 - **「已讀不回」額度枯竭警報（Quota Exhaustion Silent Drop）與心跳機制**：
   在實務多 Agent 聊天協同中，最棘手的問題是「Agent 額度耗盡時不會丟出明確例外，而是直接已讀不回」。這揭示了在私有化聊天室協同架構下，必須補齊**「心跳偵測（Heartbeat Probe）與額度枯竭主動廣播退場」**機制，避免指揮官與使用者在頻道中陷入無效等待。
-  （2026-11-16 補：額度耗盡不是唯一原因。上游 [block/buzz#2698](https://github.com/block/buzz/issues/2698) 指出 `buzz-acp` 要 Agent 自己執行 `buzz messages send` 才會把回覆送進頻道，模型只寫在 session 文字時回覆會被靜默丟棄，換成較弱的模型就會整批不回；排查時先分清是哪一種，見 `T-20261026-35`。）
+  （2026-11-16 補：額度耗盡不是唯一原因。上游 [block/buzz#2698](https://github.com/block/buzz/issues/2698) 指出 `buzz-acp` 要 Agent 自己執行 `buzz messages send` 才會把回覆送進頻道，模型只寫在 session 文字時回覆會被靜默丟棄，換成較弱的模型就會整批不回；排查時先分清是哪一種，見 `T-20261026-35`。2026-11-17 讀完該 issue 全部留言後再補：模型強弱只是其中一種，同樣的症狀還會來自 harness 沙盒把簽章金鑰從工具子行程拿掉（Agent 有送但驗證失敗）、權限模式不准跑 Bash、內建 runtime 沒掛送訊息用的工具；而且桌面版預設的 log 篩選會濾掉大部分相關紀錄，「log 沒有錯誤」不能當成沒問題的證據。到 2026-11-17 上游仍沒有合併的修正。）
 
 ---
 

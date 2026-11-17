@@ -10,10 +10,9 @@ status: archived
 cluster: "1"
 cluster_role: "Agent安全與沙盒隔離"
 short_title: "OpenMausBot沙盒與架構深挖"
-source_review: partial
+source_review: full
 source_reviewed_at: 2026-11-17
-source_review_note: "Threads 留言讀到 12 則／共 15 則，其餘要登入；README 7 張截圖只看 3 張。"
-source_images: 4
+source_images: 8
 source_replies: 20
 tags:
   - openmausbot
@@ -55,12 +54,20 @@ tags:
   - **唯一的實際使用回報是負面的**：`141319mns` 說用過了，能力跟 Grok Bot 還是差很多。另有兩則只說「好棒」「超好用」，沒有細節。
   - 有人點名 `meta.ai`（Meta 的 AI 帳號，非一手資料）問它與 Hermes、與 Grok Bot 的差別。回覆的重點是：差別在架構而不是模型強度，它吃使用者本機已登入的 CLI，每個 bot 的電腦是雲端桌面、Local VM、本機三選一。這與 README 的說法一致，也再次說明「Local VM」只是選項之一。
   - GitHub 上留言最多的 8 則全是功能 PR（連接器 OAuth、群組討論流程、同主機 Docker socket、即時語音、決策模型挑選等），沒有針對沙盒隔離失效的回報；未關閉的 issue／PR 共 1,115 則，專案變動很快。
+- **2026-11-17 登入補讀**：
+  - **Threads 留言**：登入後以「熱門」「最新」兩種排序各捲到底、子回覆全部點開，看到的仍是同樣 12 則；貼文標示 15 則，頁面底部註明「部分新增回覆無法顯示」，其餘 3 則平台不顯示。沒有新的留言內容。
+  - **README 另外 4 張截圖**（開原圖看過）：
+    - 圖 5（模型選單）：右上角下拉選單左側是一排供應商圖示，展開的那一組標題是 Antigravity（附版本號），底下列出 Gemini 3.1 Pro、Gemini 3.6 Flash 各種推理強度，以及 Claude Sonnet 4.6、Claude Opus 4.6、GPT-OSS 120B。可見它除了 README 徽章寫的 Claude、Codex 之外，也能把本機的 Antigravity 當成模型來源，一個來源底下再選模型。
+    - 圖 6（已連接的應用程式）：標題寫「Apps your bots can use through Composio」，上方黃色提示要**先在設定裡填自己的 Composio 專案金鑰**才能連；清單有 Slack、GitHub、Gmail、Google 日曆／試算表／文件／雲端硬碟、Notion、Linear、Sentry，每列一個 Connect 按鈕。
+    - 圖 7（右鍵選單）：對左欄的 bot 按右鍵，有釘選、設為 Chief of Staff、標為未讀、編輯個人檔案、複製、複製對話 ID、從側欄隱藏、刪除。
+    - 圖 8（設定頁的 Connections）：金鑰區說明「所有 bot 共用，存在本機、不會再顯示」，有三把選填金鑰：Composio 專案金鑰、Box API 金鑰（截圖中顯示已連線）、OpenCode Go API 金鑰。左側分頁另有 General、Local VM、Voice。
 - **對分析的影響**：
   1. **「資料不用擔心傳到外面」說得太滿**：README 寫的是 harness 伺服器跑在 `127.0.0.1`、對話紀錄與金鑰存在本機。但圖 3 顯示 bot 的電腦可以是雲端 Linux 桌面（Cloud box），README 也寫可經 Composio 連 500 多個外部服務，而模型本身是呼叫 Claude、Grok 等雲端供應商。所以「本地優先」指的是控制面與資料存放，不是整條資料路徑都不出機器。已在第 1 節引文下方加註。
   2. **「Local VM」只是三種執行位置之一**：README 原文是每個 bot 可用雲端 Linux 桌面、隔離的 Local VM，或在平台安全邊界已認證時用使用者自己的電腦；直接操作宿主機目前只開放 macOS 與 Ubuntu Xorg，且要明確開啟。Windows 不在宿主機控制的支援清單內。已補進 2.2 節開頭與第 4 節處置。
   3. **補一則使用者負評**：留言有人用過後認為能力與 Grok Bot 差很多。原筆記第 4 節稱它「生產級」，那是依 README 與原始碼結構下的判斷，沒有使用實證；已在第 4 節加註。
   4. 貼文沒有任何實測內容（圖 1 是自動產生的 Trending 卡片），本筆記的技術細節全部來自 README 與原筆記的原始碼調研，與貼文無關。
   5. 維持歸檔、不開任務。
+  6. **2026-11-17 補讀**：新看的 4 張截圖替第 1 點補了具體證據——外部服務是經 Composio 連出去（要另填金鑰），雲端桌面要 Box 的 API 金鑰，這兩條都是離開本機的資料路徑；Local VM 在設定頁是獨立分頁，是選用項目。留言沒有新內容。結論不變。
 
 ---
 

@@ -10,11 +10,10 @@ status: done
 cluster: "3"
 cluster_role: "外掛生態與設定治理"
 short_title: "Claude Code Mods"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "兩則 X 貼文的回覆（10 則與 699 則）未登入看不到，留言讀到 0／709 則；教學文 7 段示範影片只讀圖說沒播放，@ClaudeDevs 的 4 支影片只看封面；靜態圖與封面共看了 8 張"
-source_images: 8
-source_replies: 0
+source_review: full
+source_reviewed_at: 2026-11-17
+source_images: 15
+source_replies: 372
 tags:
   - claude-code
   - claude-mods
@@ -46,6 +45,7 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：看了 claude.dev 教學全文與 3 張靜態圖、@NFT_Chen 的 X 貼文與附圖、@ClaudeDevs 官方公告推文（先前讀不到，這次讀到了）與 4 支影片的封面。教學文沒有留言區；兩則 X 貼文的回覆（各 10 則、699 則）未登入看不到，所以留言數是 0。教學文內 7 段示範影片（FIG A–G）只讀了圖說，沒有播放。
+> 2026-11-17 登入補讀：(1) @ClaudeDevs 公告串捲到底，讀到官方自己接續的 6 則與網友回覆 357 則（貼文計數 699，其餘頁面捲到底後不再載入）；@NFT_Chen 貼文讀到 9 則回覆（計數 10，1 則不顯示）。(2) 教學文的示範影片抽格看了 7 個畫面：FIG A 終端機版 4 格（Token Weather 狀態列、輸入刪除 build 資料夾的指令、輸入改名指令、Replay Theater 第 5 步）、FIG A 桌面版 1 格、FIG D 1 格、FIG F 1 格；FIG B 是狀態列動畫，看到 Clear／Showers／Storm 三種狀態。畫面都與圖說、靜態圖一致。FIG C 與其餘桌面版沒有另外抽格（內容是同三個範例）；@ClaudeDevs 的 4 支影片依其接續推文的說明就是這三個範例，沒有另外抽格。
 
 - **作者圖片**：
   - 教學圖 1：Token Weather 的一行狀態列，顯示「Storm、81% of context、161.1k / 200k、最近幾輪的迷你長條圖、上一輪增加 26.7k」。
@@ -56,7 +56,14 @@ tags:
 - **作者留言補充**：
   - @ClaudeDevs 公告本文只有三點（改行為、改介面、換掉內建功能）與「mod 隨外掛發布，用 `/plugin` 安裝，CLI 與桌面 app 都能用」。
   - @NFT_Chen 的貼文引用了 Claude Code 團隊成員 Thariq 的推文（談軟體可塑性），並列出安裝「下一步建議」外掛的兩行指令。
-- **網友留言重點**：無（X 回覆未登入看不到）。
+- **官方接續推文**（2026-11-17 補讀，6 則）：逐一介紹 Token Weather（context 用量加最近 12 輪的迷你長條圖）、Blast Radius（在 `rm -rf`、`git reset --hard`、強制推送執行前攔下，側邊面板顯示會影響什麼）、Replay Theater（記錄一輪內的每次檔案修改，`/replay` 逐步看差異）；mod 可以自己留著用，也可以提交到 Claude 的外掛目錄；**再次寫明 mod 與 Claude Code 有相同的電腦存取權限，只從信任的來源安裝**；範例會放進 Claude Code Playground repo；`/diff` 與 `AGENTS.md` 支援就是用 mod 做的。
+- **示範影片畫面補充**（2026-11-17 抽格）：桌面版的 Blast Radius 是一個對話框，列出 `rm -rf build` 會刪的 9 個檔案與總大小，下方是 Proceed／Cancel；終端機版是提示框上方的面板。Replay Theater 的步驟條、檔名、增刪行數與 Prev／Next／Close 與靜態圖相同。
+- **網友留言重點**（X 回覆，2026-11-17 補讀；@NFT_Chen 那則的 9 則回覆沒有實質內容，以下都出自 @ClaudeDevs 公告串）：
+  - **最集中的顧慮是安全**：`@samseclabs`、`@hexablob`、`@JuliusRWash`、`@kabelsalat_info`、`@akashc777`、`@martinpaulweiss` 等都指出 mod 等於讓別人的程式住進已經拿得到你檔案與終端機的工具裡，安裝前要先讀原始碼；多人問 mod 能不能宣告較窄的權限、目錄會不會標示審查或權限資訊、能不能只限單一專案——**官方在串裡都沒有回答**。`@VrajTalati1` 點出 Blast Radius 自己也是擁有同等權限的 mod；`@Mireth_AI` 說真正危險的是帶變數的刪除指令或間接刪檔的腳本，這類它攔不攔得到才是重點（與教學文自己承認的限制一致）。
+  - **不是全新功能**：`@AnExiledDev` 說這套機制已經在用戶端存在好幾十個版本，這次只是正式寫成文件（個人說法，未查證）。
+  - **冒名詐騙**：`@ahmetmertugrul` 警告有帳號冒充 @ClaudeDevs，把人導到聲稱可領點數的假網站。
+  - **社群已經做出來的 mod**：用量與 context 顯示（`@JetsonChan`）、提醒「Claude 在等你回答」（`@robfreshwater`、`@solaris765`、`@xNotDanx`）、語音對話（`@FirstfallStudio`）、在對話裡直接畫出流程圖（`@kavinsingh00`）、iOS 模擬器控制面板（`@cocoataster`）、一包 11 個的合集（`@_theonly1me`），以及多個桌面寵物類。都是作者自述，本次沒有安裝或檢查任何一個。
+  - **其他**：多人要求開放訂閱額度給第三方工具；`@weezilla` 回報請 Claude 做 mod 時被告知側邊欄還改不了；`@mukh_higgsfield`、`@TheUpright_Man` 問 mod 能不能在工具呼叫前攔截或改寫工具結果（教學文的 `tool.call` hook 可以攔截）。
 - **對分析的影響**（以官方教學原文為準）：
   - **修正第 2 節「在 Windows 11 下透過 Node.js 執行」**：官方教學寫的是模組跑在自己的沙盒裡，沒有 DOM 也沒有 Node，對外一切都要經過 `$`（`$.fs`、`$.process`、`$.http` 等）。已改寫。
   - **修正第 2 節「機械級硬閘門」**：官方教學在 Blast Radius 一節明說它是安全網、不是權限系統，只讀指令文字，`$(…)`、別名、間接呼叫刪除指令的腳本都攔不到，要硬擋請用 permission rules。已改寫，這也支持 `T-20261018-10` 不做的結論。
@@ -64,6 +71,7 @@ tags:
   - **1.4「無沙盒隔離」的說法補上細節**：官方兩處說法並存：執行環境本身是受限的（無 Node），但透過 `$` 能做到的事與 Claude Code 相同，所以對使用者而言仍應視為有完整本機權限。已加註。
   - 教學補充的事實（正文原本沒有）：每個 hook 每次派發有 10 秒時間上限，等在 `$` 呼叫裡的時間不算；`AGENTS.md` 支援與 `/diff` 面板本身就是用 mod 做的，原始碼在 `anthropics/claude-code` 的 `mods/`；三個範例的完整程式碼在 `anthropics/claude-code-playground`；用對話請 Claude 做出來的 mod 只在當次 session 載入。
   - 來源連結列的「官方公告推文（原文未能讀取，未查證）」已更新為已讀。
+  - **2026-11-17 補讀後**：官方接續推文與教學文一致，沒有需要更正的事實。回覆串的安全顧慮與 1.4 節「應視為有完整本機權限」的判斷相同，並多了兩個佐證：官方沒有回答權限宣告與審查機制的提問、已出現冒名帳號。這讓「只裝官方範例或自己寫、不裝來路不明的 mod」的結論更站得住，也支持 `T-20261018-10` 不做的結論。任務不增不減。
 
 ---
 

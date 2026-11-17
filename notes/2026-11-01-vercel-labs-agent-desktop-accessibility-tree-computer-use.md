@@ -10,9 +10,8 @@ status: done
 cluster: "1"
 cluster_role: "桌面操控與代理身分"
 short_title: "Vercel Labs agent-desktop無障礙樹操作"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "貼文 2（@largitdata）的影片只看了首幀、沒播放；留言讀到 20／20 則（貼文 1 有 15 則、貼文 2 有 5 則）；貼文 1 的圖看了 6／6 張"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 8
 source_replies: 20
 tags:
@@ -57,7 +56,11 @@ tags:
   - 圖 4（背景執行與多游標）：游標可以同時動，但鍵鼠輸入權只有一把鎖（Interaction Lease），動作輪流執行。預設走無障礙介面、不搶焦點；要真實鍵鼠得加 `--headed`。引用一位網友的實測（背景完成「規劃並下單買菜」）。
   - 圖 5（作者實測，無顯示器的 Linux、1.0.2）：snapshot 一次約 **630 毫秒、回傳 83 個 ref**；三次點擊各 **133～170 毫秒**；背景點擊回 `delivered_unverified`（動作送出但不假裝成功，要再 snapshot 確認）；**往文字框寫字在背景模式失敗**，回 `ACTION_NOT_SUPPORTED` 並附下一步建議，改用真實鍵盤輸入 323 毫秒寫入成功（`delivered_verified`）。一開始無障礙權限是 denied，補裝系統元件後才通過。
   - 圖 6（範圍與注意）：60 個指令、56 個可操作；附 C 介面函式庫，Python、Swift、Go、Ruby、Node 可直接呼叫。平台支援表顯示 Shell surfaces 在 Windows 是「Planned」，Linux 的滑鼠輸入與視窗控制限 X11。三個提醒：多個 agent 共用同一批已登入的應用程式，README 沒有按應用程式分權限，snapshot 可能帶到隱私內容；Anthropic 建議 computer use 放在專用虛擬機或容器裡跑；驗收文件寫明「8/10」是暫定值，不是實測通過率。
-- **作者圖片**（貼文 2）：1 支影片（首幀是官方示範的 macOS 桌面：備忘錄、提醒事項、計算機三個視窗）；1 張 repo 連結預覽卡（專案標語與三個平台名稱）。
+- **作者圖片**（貼文 2）：1 支影片（約 20 秒、無字幕，是官方發布示範片）；1 張 repo 連結預覽卡（專案標語與三個平台名稱）。2026-11-17 登入後播放並抽看第 1、7、12、19 秒四個畫面：
+  - 第 1 秒與第 19 秒：macOS 桌面上備忘錄、提醒事項、計算機三個視窗，帶「Claude Code」名牌的游標在備忘錄裡建立一份旅行行李清單並打字，另一個游標同時在提醒事項視窗。
+  - 第 7 秒：畫面換成 **Windows 的事件檢視器**，同樣是帶「Claude Code」名牌的游標在點左側樹狀清單。
+  - 第 12 秒：macOS 終端機裡一個 agent 的操作紀錄：先建置並開啟一個應用程式，接著跑 `agent-desktop snapshot --app <名稱> -i`，回報找到 10 個控制項，再用 `agent-desktop click` 加 ref 點其中一個、然後檢查結果。
+  - 影片沒有任何 token 或延遲數字。
 - **作者留言補充**：
   - 貼文 1 的第 2 則串文是正文的後半（多游標、Linux 實測數字、「它只是手和眼，計畫與判斷還在你的 agent 裡」），內容與圖 4、圖 5 一致。
   - 貼文 2 作者只補了 repo 連結。
@@ -72,6 +75,7 @@ tags:
   - **背景模式不是萬能**：原筆記把「不搶焦點」寫成全面成立。圖 5 顯示背景模式下文字輸入會失敗、要退回真實鍵盤；背景點擊的回報是「已送出、未驗證」。已補進 2.3 節。
   - **隱私與隔離**：圖 6 的三個提醒（共用登入狀態、沒有按應用程式分權限、建議放虛擬機）原筆記沒有，已補進 2.3 節。
   - 已完成任務的產出檔 [`docs/agent-desktop-computer-use-spec.md`](../docs/agent-desktop-computer-use-spec.md) 的對比表沿用了同一組沒有出處的 token 與延遲數字，已回報整合者；任務狀態不動。
+  - **2026-11-17 補看影片**：影片示範的流程（snapshot → 取得 ref → `click` → 再檢查）與圖 3、圖 5 的描述一致，沒有新的數字，上面各點不變。影片有一段是在 Windows 上操作系統工具，補強「Windows 已可用」這一點；圖 6 標示 Windows 仍是規劃中的只有 Shell surfaces 一項。兩則貼文的留言（15＋5 則）這次登入後重新核對，數量與內容沒有變。
 
 ---
 

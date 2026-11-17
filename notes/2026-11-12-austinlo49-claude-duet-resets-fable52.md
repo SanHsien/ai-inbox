@@ -10,11 +10,10 @@ status: archived
 cluster: 1
 cluster_role: "Claude配額管理"
 short_title: "Duet申請送Resets"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "未登入讀到 10 則／共 12 則回覆，其餘 2 則要登入；作者圖 1 張與留言附圖已看"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 1
-source_replies: 10
+source_replies: 11
 tags:
   - claude
   - claude-duet
@@ -46,7 +45,10 @@ tags:
   - **hanbingjheng**：轉述信件內容，補上期限 12/15。
   - **boowenchen（附信件截圖）**：他的信標題是「Usage and your limit reset」，內文寫只加了 **1 次** limit reset，同樣 12 月 15 日到期。
   - **brt_1122**：貼出官方說明中心文章 [開始使用 Claude Duet](https://support.claude.com/zh-TW/articles/17631495)（連結預覽卡只有 Claude Support 標誌）。
-  - **lifeather**：申請很久都沒下來。**clubababyotter**：有了 Duet 但換一台主機就不見（無人解答）。**arguskao**：問怎麼申請、道謝。
+  - **lifeather**：申請很久都沒下來。**clubababyotter**：有了 Duet 但換一台主機就不見（作者只回一句「有 reset 就行」，沒有解答）。**arguskao**：問怎麼申請、道謝。
+- **2026-11-17 登入補讀**：登入後以「熱門」「最新」兩種排序各捲到底、子回覆全部點開，讀到 11 則（含作者 3 則）；貼文標示 12 則，頁面底部註明「部分新增回覆無法顯示」，剩 1 則平台不顯示。新讀到 1 則：
+  - **weidadeafei**：說自己等了四、五天就獲准，拿到 **4 次**重置。這個數字對不上官方說明中心寫的 Duet 配額（Pro 3 次、Max 與 Ultra 1 次）。留言沒有附圖、沒說方案，無法查證；一個說得通的解釋是把 Duet 的 resets 與 Fable 5.2 上市那筆依訂閱時間給 1～3 次的 resets 加在一起算，但這是推測。它同時說明等候時間因人而異（作者約半個月、這位四五天、另一位申請很久沒下來）。
+  - 另確認 clubababyotter「換一台主機 Duet 就不見」那則底下只有作者一句「有 reset 就行」，沒有回答問題。
 - **對分析的影響**：
   - **原稿的更正方向錯了，已改回。** 2026-11-14 的修訂把「送 3 次 resets」判為「貼文誤植，那是 Fable 5.2 上市促銷，與 Duet 無關」，理由是官方 Duet 產品頁沒提 resets。但作者上傳的信件截圖標題就寫著 research preview 的 3 次 limit resets，那次修訂沒看圖。
   - **以官方說明中心為準**（2026-11-16 實際開啟留言貼的文章）：研究預覽期間 Anthropic 會在帳號加上完整的 limit reset，每次使用會重新填滿 5 小時工作階段與每週限制；數量依方案——**Pro 3 次、Max 與 Ultra 1 次**；未使用的在 **2026-12-15** 過期。這同時解釋了留言者為什麼只拿到 1 次（方案不同，不是運氣）。
@@ -54,6 +56,7 @@ tags:
   - 「Reset 有效期未公開」「3 次 reset 的換算量未公開」兩處原稿說法已不成立，已改。標題、5W1H、福利機制表、CQR、評估表一併更正。
   - Fable 5.2 公告裡另有一筆「依訂閱時間長短給 1～3 次 Fable resets」的促銷（原稿 2026-11-14 查證），與本篇的 Duet resets 是兩件事，兩者都存在。
   - 官方說明中心仍寫明僅限美國地區的 Pro／Max／Ultra 帳戶，Team／Enterprise 尚未開放；原稿這部分正確。
+  - **2026-11-17 補讀**：新增的「4 次」留言是未查證的單一說法，不改動以官方說明中心為準的配額（Pro 3、Max／Ultra 1）；等候時間補記為「數天到半個月以上不等」。結論與處置不變，無新增任務。
 
 ---
 

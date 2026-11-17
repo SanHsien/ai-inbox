@@ -10,11 +10,10 @@ status: done
 cluster: "1"
 cluster_role: "跨 CLI 與階層派工"
 short_title: "Going Li 四 Agent 派工與五路工具流"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "Facebook 貼文顯示 18 則留言，未登入只讀到 17／18 則；圖看了 2／2 張"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 2
-source_replies: 17
+source_replies: 18
 tags:
   - multi-agent
   - team-dispatch
@@ -43,6 +42,8 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：未登入瀏覽器讀 Facebook 社團貼文（文字、2 張作者圖、可見留言 17 則／貼文顯示 18 則）。
+>
+> 2026-11-17 補讀：登入後把排序改成「所有留言」並展開全部回覆，18／18 則都讀到。
 
 - **作者圖片**：
   - 圖 1「一句話怎麼派出去：從接力改成派工」：左半是主視覺（負責人交棒給 Claude Code，拆成三棒分給 Hermes、Antigravity、GOBOT，最後回到記憶庫）；右半是派工單樣貌——每一塊列出這一塊做什麼、派給誰、怎麼派與怎麼回，派工技能放在 `~/.claude/skills/team-dispatch`，對 GOBOT 是寫進 GitHub 派工檔、對 Hermes 是下排程指令並把結果推到 Discord、對 Antigravity 是寫進交接板。下排四步：先列表不先動手、各走各的通道、四態加證據回報、做完回記憶庫。圖上另註明 GOBOT 看不到作者的 Mac，GitHub 連線唯讀，所以只給一把限單一 repo 的 token。
@@ -55,10 +56,12 @@ tags:
   - Chen John Lin 問 Grok Bot 能不能取代自架的 n8n，並說仍用 n8n 的原因是不消耗 token。
   - **Paul Chiu 的補充**：只能取代一部分。條件與動作都固定的工作用 n8n 預先定好流程比較可預期，也方便設重試、去重、失敗通知與查執行紀錄；AI Agent 適合需要理解內容、判斷例外的部分。他的做法是 n8n 管排程與流程控制，需要判斷時才交給 AI，結果檢查過才執行後續動作；「能在背景持續工作」與「能可靠維持一套自動化流程」是兩種要分開驗證的能力。
   - 其餘是稱讚與詢問教學（未獲回覆）。
+  - 2026-11-17 登入補讀：n8n 那串的完整對話是作者說沒試過用 Grok Bot 取代、反問對方的 n8n 是不是跑在本機，Chen John Lin 回答是。這補足了「不消耗 token」的前提是自架在本機。
 - **對分析的影響**：
   - 正文的架構與數據不需更正。
   - 2.2 把雲端 Agent 每小時巡檢寫成解法，但沒有提代價；依 Paul Chiu 與 Chen John Lin 的留言，在第 3 節補一條邊界：固定條件的排程交給不耗 token 的確定性排程器，Agent 只接需要判斷的部分。這與維護者「純機械檢查用 shell、不派 Agent」的既有規則一致，所以不新增任務。
   - 補記成熟度：作者沒有公開實作，Codex／GPT 尚未接進這套流程。
+  - 2026-11-17 登入補讀沒有改變結論；第 3 節那條邊界的前提（確定性排程器不耗 token）在留言裡得到確認。
 
 ---
 

@@ -10,11 +10,10 @@ status: archived
 cluster: "1"
 cluster_role: "會話模式與節奏控制"
 short_title: "Claude-Work-Mode三態架構深挖"
-source_review: partial
+source_review: full
 source_reviewed_at: 2026-11-17
-source_review_note: "Threads 留言讀到 21 則／共 50 則，其餘要登入；貼文的 GitHub 連結預覽卡只讀標題文字。"
 source_images: 8
-source_replies: 21
+source_replies: 41
 tags:
   - claude-code
   - claude-work-mode
@@ -60,6 +59,7 @@ tags:
   - `ai_future88888` 建議額度節省要自己記錄前後用量才看得出來；`andy_chen0214` 提到另一個工具 ponytail 很省 token（未說明是什麼）。
   - `tysys1955` 說自己是硬寫了一套動作準則（沒到某個等級的問題不要問），因為每次等它確認很煩——同一個痛點的另一種解法。
   - 其餘十多則是「晚點丟給我的 agent 看」「先存」這類回應與兩則引用轉發，沒有實測回報或反駁。
+- **2026-11-17 登入補讀**：登入後以「熱門」「最新」兩種排序各捲到底、子回覆全部點開，共看到 40 則回覆（含作者釘選留言 1 則）；首輪讀到的那則作者回覆（連結打不開是 GitHub 的問題）這次已不顯示，合計讀過 41 則。貼文標示 50 則，其餘 9 則平台不顯示。新讀到的 20 則中，`theodore039` 回報連結 504、`kuzz.vip` 問網頁是不是掛了（都是發文當下 GitHub 連線問題，兩則底下現在沒有回覆），`sherria_uvu` 開玩笑說省到額度用不完，釘選留言底下 1 則是玩笑；其餘都是「留」「存」「卡」這類標記。`jwenlovecats` 問 Codex 能不能用，登入後確認仍無人回答。**沒有實測回報、反駁或更正，分析不變**。
 - **對分析的影響**：
   1. **「三態切換」的說法補正**：影片最後一格顯示三個模式可以同時啟用（`/work-mode auto out wrap`），不是三選一。第 2 節開頭已補一句。
   2. **成效數字的性質**：貼文的「人工干預少 70%、額度省 30%」與影片的「省下 20% 以上週額度」都是作者自述，兩處數字不一致，貼文、影片與留言都沒有附量測方法。第 1 節引用處已加註。

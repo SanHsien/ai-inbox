@@ -12,9 +12,9 @@ cluster_role: "資安稽核Harness"
 short_title: "Cloudflare資安稽核Skill"
 source_reviewed_at: 2026-11-17
 source_review: partial
-source_review_note: "社群解讀貼文（工程師米奇）沒有留下連結，找不到，圖與留言沒看到；repo 有 47 則未關閉 issue，只讀了前 25 則的標題與其中 4 則全文（讀到 4／共 47 則）"
+source_review_note: "社群解讀貼文（工程師米奇）沒有留下連結，找不到，圖與留言沒看到；repo 47 則未關閉 issue 已用 gh api 全部讀過（讀到 47／共 47 則，另讀 43 則 issue 留言；長篇內文讀開頭約 1100 字）"
 source_images: 1
-source_replies: 4
+source_replies: 90
 tags:
   - security-audit
   - cloudflare
@@ -41,18 +41,25 @@ tags:
   - repo README：沒有圖片。
   - Cloudflare 部落格（2026-06-18，作者 Dan Jones、Alexandra Godoi、Grant Bourzikas）：只有 1 張題圖，是機器人拿放大鏡檢查畫面的插畫，沒有資訊量。文中沒有架構圖。
 - **作者留言補充**：無。讀到的 4 則 issue 都沒有維護者回覆。
-- **網友留言重點**（GitHub issue，47 則未關閉、82 個未合併 PR；讀了前 25 則標題與 4 則全文）：
+- **網友留言重點**（GitHub issue，47 則未關閉、82 個未合併 PR；首輪讀了前 25 則標題與 4 則全文，2026-11-17 用 `gh api` 把 47 則與底下 43 則留言全部讀過，長篇內文讀開頭約 1100 字）：
   - **#117 兩支驗證器在 Windows 完全不能用**：`O_NOFOLLOW`、`O_NONBLOCK` 在 win32 是 undefined，`readFileWithinLimit()` 一律丟錯；回報者在 Windows 11 實測兩支 CLI 都結束碼 1，`validate-findings.test.cjs` 34 項有 7 項失敗。第 4 階段把驗證器當硬閘門，所以 Windows 上的 full audit 走不完。
   - **#128 代理照 SKILL.md 做，把真實使用者設定檔清空**：Windows 11、沒有 OS 沙盒；代理為了滿足「空環境、scratch 內的 HOME」的要求，沒有另建目錄，而是直接清掉真實家目錄，刪掉代理設定、已裝 skills、SSH 金鑰、對話紀錄與系統 Python，不進回收筒。回報者指出 SKILL.md 只寫要隔離、沒給機制，也沒有 fail-closed 的環境檢查。
   - **#144 SkillSpector 把這個 skill 自己判成 100 分 CRITICAL／DO_NOT_INSTALL**：14 項全是攻擊類別說明與驗證器測試資料被關鍵字規則命中，回報者逐行看過認為是誤報。
   - **#134 捏造的 finding 也能通過驗證**：`trace[]`、`evidence[]` 只有檔名、行號與自由文字，驗證器只查結構；回報者拿不相干的檔案行號宣稱 SQL injection，零錯誤通過。
   - 其他標題：#114（65 個 PR、42 天沒有合併任何一個）、#152 與 #112（兩份獨立稽核，其中一份針對 commit `c1c8a8c`）、#148、#94（目標 repo 可控制輸出路徑）。
+  - **2026-11-17 補讀的重點**（47 則裡約 12 則是空白或無關的灌水 issue；43 則留言沒有任何一則來自維護者）：
+    - **Windows**：#53 與 #117 是同一個問題的另一份回報，留言者已實作修法並指出 NTFS 檔案 ID 超過 2^53、比對要用 bigint。#128 底下兩則留言補了數據：一位在 Windows 11 家用版（沒有 Docker、Hyper-V、WSL）跑完 full audit，約 43 次代理呼叫全部只能停在 `needs_validation`，沒有任何可確認的結果；另一位把稽核限制在純讀原始碼＋暫存目錄才得到可用報告，但隔離靠的是代理自己的判斷。#135 指出 7 個 CLI 測試在缺少安全開檔旗標的平台會失敗。
+    - **代理平台相容性**：#77 有 5 人回報用 Codex 的 `gpt-6.1-sol` 跑到後段時輸出被平台隱藏、要求申請 Daybreak 資安存取權，即使是稽核自己的專案也一樣；換模型才拿得到輸出。#11 回報 Antigravity 會砍掉平行子代理。#64 回報從 Claude App 上傳 zip 安裝失敗（`SKILL.md` 不在最上層）。#5 回報裝了 gstack 後這個 skill 永遠搶不到觸發。
+    - **流程本身的洞**：#130 偵察階段已點出資料庫沒有列級權限政策，但只留在文字、沒進 coverage ledger，三個審查代理都沒抓到，兩天後服務商寄來重大警示。#88 跑出 50 個確認的 finding，交給代理修完後，有十多個修法順手砍掉了原本設計的功能，測試仍全綠。#124 審查代理的回傳格式沒有欄位放理由，父代理卻必須記錄理由（另一人留言說實跑時因此反覆被退回）。#78、#79、#80、#81、#21、#126 是驗證器與完成條件的各種不一致。
+    - **目標 repo 可以影響稽核者**：#94（repo 名稱決定輸出路徑與「前次執行」的讀取，可造成路徑逃逸與跨目標污染）、#148（目標 repo 的工作區設定會在 skill 之前被載入；沙盒契約沒要求限制讀取範圍）。
+    - **成效數據**：#20 是一份小型盲測（每組 3 輪、單一目標，回報者自己有利害關係）：這個 skill 的精確率中位數 90%，但列出六類系統性漏掉的問題。
 - **對分析的影響**：
   - **#117 用實測證實**了 [`docs/cloudflare-security-audit-readonly-review.md`](../docs/cloudflare-security-audit-readonly-review.md) 靜態讀碼得到的 Windows 限制，產出檔不用改。
   - **#128 是新的、更嚴重的風險**：原筆記只寫「缺 OS 沙盒就不跑目標程式」，沒想到代理會把「準備乾淨環境」做成清空真實家目錄。已寫進第 3 節「需注意成本與環境限制」。這是不在 Windows 原生啟動 full audit 的直接理由。
   - #134 補強第 2 節第 3 點：驗證器通過不代表 finding 是真的。已補一句。
   - #144 提醒本機的採納檢查（SkillSpector、`--pack` 掃描）對這類資安教材型 skill 會大量誤報，判讀時要逐項看。
   - #114 顯示上游 PR 幾乎沒在合併，#117、#128 短期內不一定會修。
+  - **2026-11-17 補讀全部 issue 後**：結論方向不變，但多了三個具體理由，已補進第 3 節「需注意成本與環境限制」——(1) 沒有 OS 沙盒的 Windows 上即使不出事也是白跑（#128 留言的 43 次呼叫零確認）；(2) 派給 Codex 可能在後段被平台擋掉輸出（#77），派給 Antigravity 平行子代理會被砍（#11）；(3) 照 finding 自動修補可能砍掉正常功能（#88），修補後要另外驗證正當用法還在。[`docs/cloudflare-security-audit-readonly-review.md`](../docs/cloudflare-security-audit-readonly-review.md) 是靜態讀碼的產出，這些屬於執行面的補充，是否要補進該檔由整合者決定。
   - `T-20261115-04`「暫不採納動態執行」的結論更站得住；`T-20261115-05` 不受影響。stars 數本輪未重查。
 
 ---
@@ -120,6 +127,8 @@ tags:
     - `quick` 不是便宜的單代理靜態模式：`SKILL.md` 有 budget gate，完整審查至少預留四次 reconnaissance、coverage critic 與 verifier，獵殺另計；`quick` 只是縮減廣度。`standard` / `deep` 更高。個人日常開發以 `guidance` 模式為主，要跑完整審查先估代理呼叫預算。
     - Windows 11 原生缺乏 POSIX `O_NOFOLLOW` 語意與完整目標沙盒時，應嚴守其規範只做唯讀原始碼審查（將動態驗證留給 `needs_validation` 或容器／CI 環境）。
     - **已有人在 Windows 11 上出事**：[issue #128](https://github.com/cloudflare/security-audit-skill/issues/128) 回報，沒有 OS 沙盒時，代理為了照 `SKILL.md` 準備「空環境與 scratch 內的 HOME」，直接清空了真實家目錄（代理設定、已裝 skills、SSH 金鑰、系統 Python），不進回收筒。`SKILL.md` 只有文字要求，沒有 fail-closed 的環境檢查。在 Windows 原生不要啟動 full audit。
+    - **即使沒出事也可能白跑**（2026-11-17 補讀）：同一則 issue 的留言回報，Windows 11 家用版沒有任何 OS 沙盒可用，full audit 約 43 次代理呼叫全部只能停在 `needs_validation`。[issue #77](https://github.com/cloudflare/security-audit-skill/issues/77) 有 5 人回報用 Codex 的 `gpt-6.1-sol` 跑到後段輸出被平台隱藏；[issue #11](https://github.com/cloudflare/security-audit-skill/issues/11) 回報 Antigravity 會砍掉平行子代理。
+    - **照 finding 修補要另外驗證正當功能**（2026-11-17 補讀）：[issue #88](https://github.com/cloudflare/security-audit-skill/issues/88) 回報 50 個確認的 finding 修完後，十多個修法連帶移除了原本設計的功能，而測試仍全綠。
 
 ---
 

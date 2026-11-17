@@ -10,9 +10,8 @@ status: done
 cluster: "1"
 cluster_role: "桌面操控與代理身分"
 short_title: "GitHub Apps S2S代理人身分認證"
-source_review: partial
-source_reviewed_at: 2026-11-16
-source_review_note: "貼文顯示 4 則回覆，未登入只讀到 3／4 則（原筆記引用的 @alicken 留言沒顯示）；圖看了 3／3 張"
+source_review: full
+source_reviewed_at: 2026-11-17
 source_images: 3
 source_replies: 3
 tags:
@@ -44,22 +43,24 @@ tags:
 ## 0. 原始資料盤點
 
 > 2026-11-16 重審：Threads 主文、3 張輪播圖、留言區，以及 GitHub Changelog 2026-10-27 公告全文都看過。
+> 2026-11-17 登入補讀：登入後捲到底，並逐一打開 3 則回覆各自的頁面，留言區仍只有 3 則，沒有「查看更多回覆」或隱藏回覆可展開。
 
 - **作者圖片**：3 張輪播資訊圖，內容是主文的圖像版，沒有主文以外的技術細節：
   - 圖 1：封面，標語是「自主 Agent 真正無人值守／GitHub 突發服務端認證」，配 Copilot SDK 與 Server-to-Server Auth 字樣。
   - 圖 2：「三大優勢」——擺脫個人 Token 綁定與失效、24 小時無人值守（圖上寫可監聽 Jira／GitHub Issue 後自行在分支修復並提 PR）、細粒度最小權限。
   - 圖 3：「過去的 Copilot（副駕駛，等人按 Tab）對比現在的 Agent（有系統身分，半夜抓蟲、寫測試、發 PR 等主管審）」，加一句問讀者敢不敢讓 Agent 夜間自主提 PR。
 - **作者留言補充**：作者回覆 @ginsengtrycatch 的質疑時說「好像之前 GitHub Apps 產生的 access token 不能用在 Copilot」，語氣是不確定的。
-- **網友留言重點**：主文顯示 4 則回覆，未登入頁面看得到 3 則（含上面作者那則）：
+- **網友留言重點**：主文計數器顯示 4 則回覆，登入後實際存在的是 3 則（含上面作者那則），多出的 1 則應是已刪除或被平台隱藏：
   - @ginsengtrycatch 反駁：GitHub Apps 本來就能有 App 身分，這不算新東西。
   - @hackertale：只有一句稱讚，沒有資訊。
-  - 原筆記引用的 @alicken 留言這次沒有顯示，無法核對原話，第 1 節已改成轉述。
+  - 原筆記引用的 @alicken 留言，登入後也不存在（2026-11-17 確認），無法核對原話，第 1 節維持轉述並標明已查不到。
 - **對分析的影響**：
   1. **@ginsengtrycatch 的反駁有一半成立**：App 身分確實早就有，新的是「Copilot 接受組織安裝 App 的權杖」。Changelog 原文是 Copilot SDK 做的服務與 Agent 現在可代表組織發請求、不必依賴登入使用者的憑證（公開預覽）。作者的回覆只是「好像」，原筆記寫成斷言；第 1 節已改成以 Changelog 為依據。
   2. **筆記正文有多處與官方文件不符**，[`docs/github-apps-s2s-copilot-workload-identity-guide.md`](../docs/github-apps-s2s-copilot-workload-identity-guide.md) 第 0 節在 2026-11-02 已逐項列出，但筆記當時沒有同步。本次改了正文四處：權杖要用 SDK 的明確選項傳入（不是設環境變數）；`app_client_id` 只出現在 AI usage 的 CSV 報表（不是 Audit Log）；`copilot-requests: write` 搭配內建 `GITHUB_TOKEN` 是另一條不需要 App 的路；PAT「30～90 天」查無出處。架構圖裡的「組織級集中配額控管」也要照指南讀：不能替單一 App 設預算。
   3. 圖 2 的「監聽 Jira」是貼文作者的想像情境，Changelog 沒有提 Jira。
   4. Changelog 另有三點筆記沒寫清楚：目前是公開預覽；用量算在安裝該 App 的組織並計費；組織的模型政策、預算與花費控管都適用。
   - 已完成的兩項任務產出以官方文件為準寫成，本次重審沒有發現需要更正之處。
+  5. 2026-11-17 登入補讀沒有讀到新留言，分析結論不變；只把 @alicken 那段的註記改成「登入後也查不到」。
 
 ---
 
@@ -100,7 +101,7 @@ tags:
 
 ### 社群熱議焦點（Threads 架構討論精粹）：
 1. **解除心理負擔與脆弱依賴**（[@alicken](https://www.threads.com/@alicken)）：
-   大意是：這次更新解掉的是整個代理部署的心理負擔——以前不敢放手是因為權杖綁在個人身上，換人、過期、外洩都會出事；有了正式的系統身分，代理才像一項服務。（2026-11-16 重審時這則留言已不顯示，無法核對原話，改為轉述。）
+   大意是：這次更新解掉的是整個代理部署的心理負擔——以前不敢放手是因為權杖綁在個人身上，換人、過期、外洩都會出事；有了正式的系統身分，代理才像一項服務。（2026-11-16 重審時這則留言已不顯示，2026-11-17 登入後確認留言區已沒有這則，無法核對原話，改為轉述；不可當成可查證的引用。）
 2. **釐清過往 GitHub Apps 的認知盲區**（[@ginsengtrycatch](https://www.threads.com/@ginsengtrycatch) vs [@it.oppa.twhk](https://www.threads.com/@it.oppa.twhk)）：
    @ginsengtrycatch 質疑「GitHub Apps 本來就有 App 身分」，作者回覆「好像之前 App 的權杖不能用在 Copilot」（語氣不確定）。以官方 Changelog 為準：過去 Copilot SDK 做的服務要依賴登入使用者的憑證，現在可改用組織安裝的 App 代表組織發請求。本次更新正式新增了組織層級的 **`Copilot Requests: Read-only`** 權限，首次打通了 Copilot SDK 的純服務端（Server-to-Server）管線。
 3. **無人值守 SDLC 的真正考驗**：
