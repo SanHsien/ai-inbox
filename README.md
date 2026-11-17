@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 242 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 163／⚪ 不做 78
+> 共 243 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 163／⚪ 不做 78
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -47,6 +47,7 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
+| `T-20261117-01` | 🔴 未做 | 低 | 在 Windows 11 獨立沙盒實測 `D4Vinci/Scrapling` 的 `scrapling mcp` 與 Markdown 清洗品質 | `C:\GitHub\_sandbox\scrapling-eval`（獨立 venv，不污染系統環境）與 `C:\GitHub\ai-inbox\docs\scrapling-windows-eval.md` | [2026-11-17-scrapling-python-mcp-crawler-eval](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) | 2026-11-17 |
 
 ### 🟢 已做（Done）
 
@@ -450,6 +451,7 @@
 | 2026-11-16 | ⚪ | [Facebook 貼文與留言評估：陳盟升（Darkschen）兩顆 5TB Google Drive 邊載邊傳備份開源大模型](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md) | `open-weights`, `google-drive`, `backup` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文與留言串評估：不依賴單一 AI 的本地 Skill/Handoff/Memory 工作流](./notes/2026-11-16-isaac-wong-ai-agnostic-local-workflow-comments.md) | `claude-code`, `handoff`, `markdown-memory` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文評估：Jack Liu《重開機一鍵復原》工具開發與 Claude 協作四原則](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md) | `vibe-coding`, `windows`, `reboot-restore` | 0 / 0 |
+| 2026-11-17 | 🔴 | [Threads 情報與留言評估：Scrapling（D4Vinci/Scrapling）Python 爬蟲框架與原生 MCP Server](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) | `scrapling`, `web-scraping`, `mcp` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -525,6 +527,7 @@
 - 一人公司AI變現：[一人公司AI產能月報](./notes/2026-11-16-chia-hsun301-ai-solo-operator-roi.md)
 - 開源模型雲端冷備：[開源大模型Drive備份](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md)
 - 重開機一鍵復原心得：[重開機一鍵復原心得](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md)
+- AI爬蟲MCP工具：[Scrapling爬蟲與MCP](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
