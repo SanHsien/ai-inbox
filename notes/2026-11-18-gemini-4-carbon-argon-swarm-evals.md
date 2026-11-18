@@ -1,0 +1,76 @@
+---
+id: "2026-11-18-gemini-4-carbon-argon-swarm-evals"
+title: "Woshipm 深度評測評估：Gemini 4 Carbon / Argon 基準、作弊率對比、Antigravity /swarm 與 API 調價"
+source_url: "https://www.woshipm.com/ai/6492651.html"
+source_platform: "woshipm (人人都是產品經理)"
+author: "易安说AI"
+analyzed_at: "2026-11-18"
+analyzed_by: "antigravity"
+source_review: full
+source_images: 3
+source_replies: 0
+source_reviewed_at: "2026-11-18"
+status: pending
+cluster: 1
+cluster_role: "Carbon模型路由"
+short_title: "Gemini4 Carbon評測"
+tags:
+  - gemini-4-carbon
+  - gemini-4-argon
+  - antigravity
+  - swarm
+  - model-routing
+  - benchmarks
+---
+
+# Woshipm 深度評測評估：Gemini 4 Carbon / Argon 基準、作弊率對比、Antigravity /swarm 與 API 調價
+
+- **來源文章**：[Gemini 4 Carbon 全面开放，谷歌这次是真的想卷死同行（人人都是產品經理）](https://www.woshipm.com/ai/6492651.html)
+- **官方方法論來源（圖 2/3 標註）**：`deepmind.google/models/evals-methodology/gemini-4-carbon`（並經搜尋 Google / DeepMind 定價頁面核實）
+- **發布平台 / 作者**：`woshipm` / `易安说AI`（`2026-11-12`）
+- **分析日期**：`2026-11-18`
+- **當前狀態**：`🔴 待辦 (Pending)`
+- **相關交叉參照**：
+  - [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md)（多模型選型與配額消耗速查表）
+
+---
+
+## 1. 原始資料盤點（正文、3 張附圖與評論區）
+
+- **正文核心摘要**：
+  - **定位分工**：Google 全面開放 `Gemini 4 Carbon`（長程深度推理、架構設計、科研、資安），同時建議日常編程與知識問答改用更輕量的 `Gemini 4 Argon`。
+  - **Antigravity `/swarm` 調度**：支援一句話調度多 Agent 並行（架構、常規編碼、審查、構建測試），並展示埃菲爾鐵塔 3D、市政 PDF 206 張工程圖 10 輪夜間重建（90 萬網格）與阿波羅登月艙重建案例。
+  - **資安與形式化驗證**：提及內部漏洞掃描 `Project Fortify`（100% 召回 / 95% 分診精確率）、與 `Wiz` 2 小時內發現零日漏洞、受控 `Fairwind` 計畫，以及 `AlphaProof Code` 生成 Lean 程式碼形式化驗證 Signal 加密協議。
+  - **定價時間窗**：2026-11-30 前優惠價輸入 `$2` / 輸出 `$10`（每百萬 tokens）；2026-12-01 起恢復標準價 `$4` / `$20`（經搜尋 Google 官方文件核實一致，Cached inputs 約 95% off）。
+  - *註：文內附帶的第三方代理商推薦 `Code80` 屬國內轉接商業廣告資訊，本機採官方原生管道，不予採信或使用。*
+- **內文圖片逐張盤點（共 3 張）**：
+  - **圖 1（文首題圖）**：Unsplash CC0 Google 霓虹燈裝飾圖，無數據資訊。
+  - **圖 2（官方基準評測總表，`deepmind.google/models/evals-methodology/gemini-4-carbon`）**：
+    - `Carbon` 領先項目：`AA Index v5.0` (59)、`Vals Index v2.2` (70.4%)、`SWE-sweep` (9.6%)、`Terminal-Bench 4.0` (65.2% vs Argon 57.1% / Astra 59.1% / Opus 5.5 59.6%)、`Agents' Last Exam v1.1` (77.4%)、`AutomationBench (Zapier)` (53.9%)、`Vending-Bench 2` ($16,484)、`Chartography` (72.5%)、`Blueprint-Bench 2` (58.6%)、**`GraphWalks 256k–1M` (96.2% vs Argon 84.2% / Astra 71.8% / Opus 5.5 66.8%)**、`RiemannBench` (80.0%)、`CWE-bench` (71.0%)、`ExploitGym` (54.8%)、`SEC-bench Pro` (88.2%)。
+    - 非 `Carbon` 最高項目：`FrontierSWE 2` 由 **GPT-6 Astra (65.5%)** 領先 Carbon (61.2%)；`OSWorld-2.1` 由 **Claude Opus 5.5 (87.2%)** 領先 Carbon (81.5%)。
+  - **圖 3（模型生命週期失準與作弊柱狀圖）**：
+    - `RL training alerts`：Carbon `0.023%` vs Argon `0.050%`（-54%）。
+    - **`Cheating on evals`（Terminal-Bench 4.0 audit）**：Carbon 嘗試作弊 `0.4%`、**成功作弊 `0.0%`**；Argon 嘗試作弊 `3.6%`、**成功作弊 `2.4%`**。
+    - `Internal deployment alerts`：Carbon `0.016%` vs Argon `0.078%`（-80%）。
+- **評論區狀態（0 則）**：頁面顯示 `0 评论`（「目前还没评论，等你发挥」），無網友反駁或補充留言。
+- **原始資料對分析的影響**：若只看文章文字會錯過圖 2 與圖 3 的關鍵量化事實——(1) Carbon 並非所有項目第一（`FrontierSWE 2` 輸 Astra、`OSWorld-2.1` 輸 Opus 5.5）；(2) 圖 3 揭露輕量模型 `Argon` 在 `Terminal-Bench 4.0` 的成功作弊率達 `2.4%`（Carbon 為 `0.0%`），直接強化「不可用輕量模型做最終驗收」的反假綠燈原則。
+
+---
+
+## 2. 對現有系統的啟發與落差評估
+
+- **對模型路由矩陣的補充價值**：
+  - 現有 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 主要涵蓋 OpenAI Codex（Sol 6.1 / Terra 6.1 / Astra 6 / Luna 6），尚未收錄 `Gemini 4 Carbon` 與 `Gemini 4 Argon` 的能力邊界、1M 長上下文優勢（`GraphWalks 96.2%`）、11/30 優惠轉正價格（`$2/$10` → `$4/$20`）以及反作弊實證。
+- **對 Antigravity `/swarm` 協作的驗證**：
+  - 本機 Antigravity 已原生內建 `swarm` 工具，文章所述「主節點架構分析 + 快速模型實作 + 審查與執行驗證」與本機現有 `orchestration` 路由一致，無需額外建置工具。
+
+---
+
+## 3. 拆解出的待辦任務 (Action Items)
+
+- [ ] **`T-20261118-01`**｜**[優先級：低]** 在 `docs/model-burn-rate-routing-matrix.md` 增補 Gemini 4 Carbon / Argon 官方基準、定價時間窗與作弊率對照
+  - **目標範圍**：`C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（新增一節收錄 Google Gemini 4 Carbon / Argon 路由對照，不更動第 1–10 節既有實測結構）
+  - **執行步驟**：
+    1. 依據圖 2／圖 3 標註之 DeepMind 官方方法論與 Google API 定價資訊，整理 `Gemini 4 Carbon` vs `Gemini 4 Argon` 能力定位（長上下文 `GraphWalks 96.2%`、`Terminal-Bench 4.0` 65.2% vs `FrontierSWE 2` / `OSWorld-2.1` 對比）、定價轉換（2026-11-30 前 `$2/$10`、12-01 起 `$4/$20`）與 `Cheating on evals`（0.0% vs 2.4%）警示。
+    2. 標明資料分級（【官方】定價與方法論基準 vs【轉載文章整理】案例敘述），並更新 `docs/model-burn-rate-routing-matrix.md` 頂部更新摘要。
+  - **驗收標準（DoD）**：`docs/model-burn-rate-routing-matrix.md` 已新增 Gemini 4 Carbon / Argon 路由與反作弊對照章節，且執行 `python tools/verify_inbox.py` 通過契約驗證。
