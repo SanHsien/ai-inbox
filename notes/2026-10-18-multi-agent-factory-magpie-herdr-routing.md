@@ -12,7 +12,7 @@ cluster_role: "跨 CLI 與階層派工"
 short_title: "Herdr 終端復用 + Magpie 統一網關"
 source_review: partial
 source_reviewed_at: 2026-11-18
-source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「magpie herdr」「magpie」「herdr」、Facebook 貼文搜尋「Magpie Herdr Obsidian 交接」「Magpie Herdr」；Threads 只有 10-25 之後的 Magpie 介紹與零散的 herdr 心得，沒有同時談 Magpie、Herdr、Obsidian 交接與額度路由的對話）；替代來源 magpie README（現行 10 張介面與架構圖）、herdr README 與示範影片、magpie issue #606 已讀完"
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「magpie herdr」「magpie」「herdr」、Facebook 貼文搜尋「Magpie Herdr Obsidian 交接」「Magpie Herdr」；Threads 只有 10-25 之後的 Magpie 介紹與零散的 herdr 心得，沒有同時談 Magpie、Herdr、Obsidian 交接與額度路由的對話）；2026-11-18 第二輪查轉引與存檔仍沒有（新試：網頁搜尋、Bing、Threads 站內搜尋 11 組、X 站內搜尋、GitHub 全站 issue 搜尋、Hacker News、Wayback、archive.ph；Reddit 被擋查不了；三則相關貼文都已開啟讀完，見第 0 段，內容都只對上一部分）；替代來源 magpie README（現行 10 張介面與架構圖）、herdr README 與示範影片、magpie issue #606 已讀完"
 source_images: 10
 source_replies: 2
 tags:
@@ -34,6 +34,18 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 第二輪（查轉引、存檔）：仍找不到那段對話，維持 `partial`。
+>
+> - **各管道結果**：
+>   - 有結果（都只對上一部分）：網頁搜尋兩組、Threads 站內搜尋 11 組（herdr 配 obsidian／打卡／grok／額度／交接／magpie orca／orca librechat，以及「magpie obsidian」「額度 重置 派工 hook」「交接單 obsidian agent 額度」「herdr-grok-bot」）、X 站內搜尋「herdr magpie」限 2026-10-01 到 10-21、Wayback（只存了 `@lihuaizhi` 那則，發文當下的版本）。
+>   - 沒結果：Bing 搜尋、GitHub 全站 issue 搜尋（magpie 與 herdr 的 repo 網址同時出現，10 月 0 則）、Hacker News（只有 repo 與產品發布的英文討論）、archive.ph、Wayback 對其餘候選。
+>   - 查不了：Reddit（三種方式都被擋）。
+> - **相關貼文，三則都已開啟讀完，都不是來源**：
+>   - Threads `@cab_late` 2026-10-20 的 model-relay 串文，<https://www.threads.com/@cab_late/post/Det1Or2FKv9>：兩則正文加最新排序捲到底的 7 則留言，另讀了第 2 則底下 `@ailazytech` 的回覆。正文講替 Claude Code 做模型中轉站，第 2 則提到 API 格式不合時可搭配 Magpie 轉換協定；`@ailazytech` 說想把用不完的 Codex 額度分給家人、看上 magpie 的供應來源與中介層控制，自己平常用 herdr。留言多是留存與同感，有一則問這和自動路由是不是同一類原理。頁尾註明部分回覆無法顯示。對不上的點：晚於分析日兩天，全串沒有 Obsidian、打卡、集中資料中心、分派前查額度、ORCA、LibreChat。
+>   - X `@lihuaizhi` 2026-10-16，<https://x.com/lihuaizhi/status/2111100686746485160>：全文是五層分法，Magpie 在模型與供應商管理層，Herdr 與 Orca 在多 Agent 控制與編排層。無圖；計數 3 則回覆、顯示 2 則，都是玩笑話。日期吻合、工具組合部分重疊；對不上的點：沒有集中資料中心、Obsidian 交接單、額度分派、LibreChat，是單則貼文不是對話，平台是 X。
+>   - Threads `@prompt_case` 2026-11-11，<https://www.threads.com/@prompt_case/post/DfmRvnWjSxW>：兩則正文加 1 則留言。講 Grok Bot 派出去的 CLI Agent 像黑箱，所以做了 `Toolsai/herdr-grok-bot` 這個 Skill，讓 Grok Bot 啟動 CLI 時改走 Herdr。主題與 2.3 節相同；對不上的點：比 2.3 節對應任務的建立日（10-26）晚半個月，也沒有「統一工作目錄、由 `AGENTS.md` 驅動起步」的說法。
+> - **對分析的影響**：無新事實可改。`@ailazytech` 的回覆是「magpie 與 herdr 併用」的一個實例，`@lihuaizhi` 的分層與本筆記把 Magpie 當網關、Herdr 當終端編排的分工一致。原稿的「集中資料中心與打卡」「Obsidian 交接單」「分派前先查額度與重置倒數」三項仍然沒有任何外部出處可對。
 
 > 2026-11-18 補讀：原貼文再找一次仍搜尋不到（搜尋方式見 frontmatter 的 `source_review_note`），維持 `partial`。**替代來源這次補讀完**：magpie 現行 README 的介面圖已增為 10 張（2026-11-16 看了 3 張），其餘 7 張逐張打開看過；herdr 的示範影片（22 秒）抽看 5 格（約第 1、6、11、16、21 秒）。
 >

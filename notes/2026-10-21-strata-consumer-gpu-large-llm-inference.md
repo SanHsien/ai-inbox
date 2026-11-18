@@ -13,9 +13,9 @@ cluster_role: "端點資安與雲端基建"
 short_title: "Strata 12GB 顯卡運行 125B 大模型"
 source_review: partial
 source_reviewed_at: 2026-11-18
-source_review_note: "原貼文無法認定（4 則同主題候選貼文的文字、作者圖片與留言都讀過：Threads 09-29、10-05、10-18 各一則與 Facebook 09-29 一則；其中三則寫 12GB 顯示卡要配 64GB 記憶體、一則寫 8GB 顯示卡即可，本筆記原稿寫的卻是 12GB 配 32GB，四則也都沒有原稿的圖書館比喻與 RTX 3080 Ti 範例，無法確定哪一則是來源）；替代來源 repo README 2 張圖與 4 則 issue 的 10 則留言已讀完"
-source_images: 4
-source_replies: 69
+source_review_note: "原貼文無法認定（4 則同主題候選貼文的文字、作者圖片與留言都讀過：Threads 09-29、10-05、10-18 各一則與 Facebook 09-29 一則；其中三則寫 12GB 顯示卡要配 64GB 記憶體、一則寫 8GB 顯示卡即可，本筆記原稿寫的卻是 12GB 配 32GB，四則也都沒有原稿的圖書館比喻與 RTX 3080 Ti 範例，無法確定哪一則是來源）；替代來源 repo README 2 張圖與 4 則 issue 的 10 則留言已讀完。2026-11-18 第二輪：原稿內容的出處已查到，是 repo README 在 2026-10-21 當天的版本（commit 1c9bfd2），圖書館比喻、24,576 位專家、8080 埠、1.6～1.8 倍等都在裡面，該版 README 另外 3 張圖已補看；RTX 3080 Ti 不在 README 裡。觸發這篇分析的社群貼文仍無法認定：網頁搜尋與 Threads 再找到 2 則候選（Threads 10-06 一則 0 則留言、10-11 一則計數 9 則、熱門與最新兩種排序都捲到底讀到 8 則，差 1 則平台不顯示），內容都只是 README 的摘要，對不出是哪一則。各候選貼文與文章網址另查了 Wayback（availability API）與 archive.ph，都沒有存檔；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）"
+source_images: 8
+source_replies: 77
 tags:
   - strata
   - local-llm
@@ -36,6 +36,28 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 第二輪（找轉引與存檔）：**原稿內容的出處查到了，是 repo README 在分析當天的版本；觸發分析的社群貼文仍無法認定，維持 `partial`。**
+>
+> - **原稿對得上的來源**：[README 2026-10-21 版（commit 1c9bfd2）](https://github.com/Niko1221/Strata/blob/1c9bfd2a6e7e560b7de9aab2c939fd019c96478b/README.md)。原稿的特徵幾乎都在這一版裡：
+>   - 「How does it work?」一節直接寫「想像一座圖書館」：顯示卡是書桌、記憶體是閱覽室書架、SSD 是檔案庫；24,576 位專家、桌上約 4,000 本、29 GB 查詢表、小幫手先猜再驗快 1.6～1.8 倍、一次讀 8,192 個 token、每秒超過 1,000 個 token。
+>   - 硬體表寫 NVIDIA RTX 20、30、40、50 系列（12 GB 以上）；API 位址寫 `127.0.0.1:8080`；支援 Windows、Linux、macOS；寫明沒有遙測。
+>   - **RTX 3080 Ti 不在 README 裡**，是分析時自己舉的例子。
+> - **這一版 README 另外 3 張圖已補看**（先前只看了現行版的 2 張截圖）：
+>   - 預覽動畫：模型一次生成的立體方塊寶塔庭園在瀏覽器裡轉動，圖說寫 RTX 5070、IQ3_S、128K 上下文。
+>   - 原理圖（how-it-works）：三欄卡片。顯示卡「小但很快，12～24 GB」，放約 4,000 位最常用的專家；記憶體加處理器「32～64 GB」，放全部 24,576 位，顯示卡沒有的就由處理器當場算；SSD 放 29 GB 查詢表，每個字只讀幾列。
+>   - 先猜再驗圖（guess-and-check）：小幫手一次猜幾個字，大模型一次驗完，示範一步得到 4 個字（留下 3 個猜對的，加上自己的 1 個）。
+> - **32 GB 的真正意思**：這一版 README 寫的是「記憶體加顯示卡記憶體**合計** 32 GB 就能開始」，而且合計 32 GB 只能跑 Gyro-S（品質低於 IQ2_XS）或只留一半專家的 Coder；「32 GB 的電腦配 12～16 GB 顯示卡跑 Coder」「64 GB 記憶體跑得動每個尺寸」。原稿寫成「12GB 顯示卡加 32GB 記憶體即可流暢執行 125B」，是把入門門檻讀成一般情況。1.1 節已改。
+> - **新找到的 2 則候選貼文**（都讀了文字、圖與留言；都對不出是不是來源）：
+>   - 候選 5（Threads，`@daf70192`，2026-10-06）：<https://www.threads.com/@daf70192/post/DeIwqOskobv>。組裝電腦賣家的串文第 2 則，寫 24,576 位專家、每個 token 只用 10 位、「最低只需要 12GB 顯示卡加 32GB 記憶體」、官方 RTX 5070 量到每秒 94 與 53 個 token、快 1.6～1.8 倍。第 1 則是 5 萬元主機的賣文，附 1 張零件報價單截圖（無技術資訊）。0 則留言。
+>   - 候選 6（Threads，`@aiposthub`，2026-10-11）：<https://www.threads.com/@aiposthub/post/DeUgBcXkiq1>。三則串文，寫官方建議 12GB 顯示卡起、記憶體 32GB 起建議 64GB、約 80GB SSD，並提醒 12GB 不代表每個版本都順。圖只有自家教學文的連結預覽卡。留言計數 9 則，熱門與最新兩種排序都捲到底，合計讀到 8 則（作者續串 2 則、網友 6 則），差 1 則平台不顯示；沒有子回覆（留言旁的數字是按讚數，逐則開過確認）。網友留言：有人說大概只夠一兩個人用，有人問這應該不是原始精度吧，其餘是閒聊。
+>   - 候選 5 是六則裡唯一寫「12GB 加 32GB」的，日期也在筆記之前；但它沒有圖書館比喻、8080 埠與平台清單，而這些 README 都有，所以即使它是觸發點，原稿內容也是從 README 讀來的。
+> - **這輪試過、沒有新結果的管道**：網頁搜尋用「圖書館」「RTX 3080 Ti」「12GB 32GB」加 Threads、Facebook、方格子等組合。搜到的中文文章（方格子兩篇、個人部落格與教學站數篇）都是 README 的轉述，沒有一篇有圖書館比喻加 RTX 3080 Ti 的組合，沒有逐篇讀。
+> - **存檔與 Reddit**：六則候選貼文與 repo 網址都查了 Wayback（availability API；CDX 介面當天回空白、連一定有存檔的網址也查不到，不採計）與 archive.ph，社群貼文一筆存檔都沒有（`@jay.janitor_` 那則的 Wayback 查詢兩次逾時，未確認），所以沒有「已刪留言或舊版內容」可看；repo 的舊版 README 直接用 git 歷史讀到了。Reddit 查不了：內建瀏覽器擋 reddit.com，網頁搜尋工具不能限定該網域，直接請求也被擋。
+> - **對分析的影響**：
+>   - 「原稿的圖書館比喻不知從哪來」這個疑問解決了：來自 README 當天的版本，不是社群貼文。
+>   - 1.1 節「8080 埠」在當時是對的（README 當天寫 8080，後來的截圖才是 18500）；1.1 節的平台敘述太寬，已補上當時 README 的限制。
+>   - 結論（封存）與兩項任務「不做」都不變。
 
 > 2026-11-18 補讀：原貼文無法認定，維持 `partial`。找到 4 則同主題的候選貼文，**文字、作者自己的圖、留言都讀過**，當成相關來源記在下面；沒有任何一則能確定是本筆記的來源。
 >
@@ -75,8 +97,8 @@ tags:
 過去要運行 100B+ 參數等級的頂級大語言模型（如 125B 的 Qwen3.8-Flash-Next），傳統做法通常需要高昂的資料中心級伺服器（數百 GB VRAM）或要價不菲的高配統一記憶體硬體（如 128GB/256GB Mac Studio）。
 
 **Strata**（MIT 開源協議）透過極具創意的**三層動態卸載架構（Tiered Offloading）與投機解碼技術**，徹底打破了此一硬體天花板：
-- **極低硬體門檻**：只需 **12GB 顯存的消費級顯卡（RTX 20/30/40/50 系列，如 RTX 3080 Ti 12GB）+ 32GB 系統 RAM**，即可在本地運行 125B 參數的 Qwen3.8-Flash-Next（2026-11-18 補：社群貼文與多位留言者的實測都指向要 64GB，32GB 的實測是一直重複輸出；這句以 64GB 為準）（2026-11-16 補：依官方 `docs/MODELS.md`，32 GB RAM 配 12～16 GB 顯卡只跑得動 coding 專用的 Coder 量化版；一般尺寸要 48～64 GB RAM）；
-- **全平台覆蓋**：支援 Windows 10/11、Linux、macOS，涵蓋 NVIDIA (CUDA)、AMD (ROCm/HIP)、Intel Arc 與 Apple Silicon；
+- **極低硬體門檻**：只需 **12GB 顯存的消費級顯卡（RTX 20/30/40/50 系列，如 RTX 3080 Ti 12GB）+ 32GB 系統 RAM**，即可在本地運行 125B 參數的 Qwen3.8-Flash-Next（2026-11-18 補：社群貼文與多位留言者的實測都指向要 64GB，32GB 的實測是一直重複輸出；這句以 64GB 為準）（2026-11-18 第二輪更正：分析當天的 README 寫的是「記憶體加顯示卡記憶體**合計** 32 GB 就能開始」，合計 32 GB 只能跑品質較低的 Gyro-S 或只留一半專家的 Coder，64 GB 記憶體才跑得動每個尺寸；所以「12GB 加 32GB 即可」是把入門門檻讀成一般情況。RTX 3080 Ti 是分析時自己舉的例子，README 沒有列這張卡的實測）（2026-11-16 補：依官方 `docs/MODELS.md`，32 GB RAM 配 12～16 GB 顯卡只跑得動 coding 專用的 Coder 量化版；一般尺寸要 48～64 GB RAM）；
+- **全平台覆蓋**：支援 Windows 10/11、Linux、macOS，涵蓋 NVIDIA (CUDA)、AMD (ROCm/HIP)、Intel Arc 與 Apple Silicon（2026-11-18 補：依分析當天的 README，這幾項成熟度差很多。README 在 Gyro 量化版那段寫：AMD 是實驗性；Intel Arc 是在 Linux 上（測試用 Arc A750）；Apple Silicon 從 0.2.2 版才有，32 GB 的 Mac mini 跑 Gyro-S 是每秒 9 個 token）；
 - **原生 Agent 與 API 相容**：直接提供標準 **OpenAI 與 Anthropic API 兼容端點**（原分析記為預設 8080 埠；README 現行截圖顯示的是 `127.0.0.1:18500`，以實際啟動畫面為準），Claude Code、Codex CLI、Antigravity、OpenCode 等 Coding Agent 可零改動直接串接。
 
 ### 1.2 技術架構與「圖書館分層」黑科技原理
@@ -134,7 +156,7 @@ Strata 將 125B MoE 模型的 24,576 個稀疏專家（Experts）比喻為圖書
 
 - [ ] **`T-20261021-01`**｜**[優先級：低]** 在 Windows 11 本地測試 `Niko1221/Strata` 的安裝與相容性（驗證 CUDA 驅動檢測、CLI/App 啟動與 OpenAI/Anthropic API 本地端點響應）
   - **目標範圍**：`Niko1221/Strata`（本地測試）、本地 Coding Agent API 配置
-  - **狀態**：⚪ 不做（宣稱 12GB 顯卡跑 125B 未經查證，要下載數十 GB 且佔用顯卡；維護者已有 Claude／Codex／Gemini 訂閱，不需要本地離線後端）
+  - **狀態**：⚪ 不做（12GB 顯卡跑 125B 需約 64GB 記憶體，README 當時寫的「合計 32GB 即可開始」只夠跑小尺寸，見 1.1 節更正；要下載數十 GB 且佔用顯卡；維護者已有 Claude／Codex／Gemini 訂閱，不需要本地離線後端）
   - **具體做法**：下載或安裝 Strata Windows 版本，依硬體規格（GPU VRAM + 系統 RAM）配置最小模型分片，啟動本機 API 服務，使用 `curl` 測試 `http://localhost:8080/v1/chat/completions` 是否能正常推論並返回流式回應
   - **驗收標準（DoD）**：Strata 本地端點成功啟動、以 curl 發送請求能在 30 秒內流式輸出回應、記憶體與顯存佔用符合三層分流預期
 - [ ] **`T-20261021-02`**｜**[優先級：低]** 評估將 Strata 本地端點整合至 `agent-advisor` 路由矩陣與 Coding Agent 離線降級工作流（Local 125B Offline Fallback）

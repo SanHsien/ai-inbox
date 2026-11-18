@@ -12,7 +12,7 @@ cluster_role: "前端WebGPU修圖"
 short_title: "WebGPU修圖Prompt評估"
 source_reviewed_at: 2026-11-18
 source_review: partial
-source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「skill-matting」、Facebook 貼文搜尋「skill-matting WatermarkRemover WebGPU」「WebGPU 美圖秀秀 去水印 去背 Opus 5.5 Prompt」「純瀏覽器 WebGPU 修圖 去水印 Prompt」；都沒有結果）；替代來源兩個參考 repo 的 README、2 張示範圖與 5 則 issue 已讀完"
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「skill-matting」、Facebook 貼文搜尋「skill-matting WatermarkRemover WebGPU」「WebGPU 美圖秀秀 去水印 去背 Opus 5.5 Prompt」「純瀏覽器 WebGPU 修圖 去水印 Prompt」；都沒有結果）；替代來源兩個參考 repo 的 README、2 張示範圖與 5 則 issue 已讀完。2026-11-18 第二輪：原貼文仍找不到，但用 GitHub 程式碼搜尋找到一個照同一份規格做出來的公開 repo（huncanlin/myphoto，2026-10-04 建立），README 與線上頁面文字已讀完（無圖、0 則 issue）；它證明這份 Prompt 最晚在 2026-10-04 就已流傳，但 repo 沒有寫 Prompt 從哪裡來。另試過沒有結果的管道：網頁搜尋（繁中、簡中各兩組）、Threads 站內搜尋四組關鍵字、Facebook 貼文搜尋一組、X 站內搜尋四組、GitHub issue 搜尋、Hacker News。各候選貼文與文章網址另查了 Wayback（availability API）與 archive.ph，都沒有存檔；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）"
 source_images: 2
 source_replies: 5
 tags:
@@ -36,6 +36,20 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 第二輪（找轉引與存檔）：**原貼文仍找不到，但找到一個照同一份規格做出來的公開成品；維持 `partial`。**
+>
+> - **找到什麼**：[`huncanlin/myphoto`](https://github.com/huncanlin/myphoto)（2026-10-04 建立，同一天 4 個 commit，0 星、沒有授權檔、0 則 issue），線上頁面是 <https://huncanlin.github.io/myphoto/>，名稱「光室」。用 GitHub 程式碼搜尋同時含兩個參考 repo 的檔案，全站只有它和本筆記。
+> - **為什麼認定是同一份規格**：README 的「參考設計」列的就是 `xiaowu89/skill-matting` 與 `lxulxu/WatermarkRemover`；線上頁面左側工具正好是新增、調整、文字、消除圖、摳圖、變清晰、調色、影片摳圖八項，另有「影片工具」分頁；README 點名的模型（MI-GAN、U²-Net、Real-ESRGAN／Upscayl）、透明 WebM、4K 上限、空白鍵平移、前後對比線，都與本筆記第 1 節的規格相同。
+> - **它沒有回答的事**：repo 沒有寫 Prompt 的出處、作者或用哪個模型做的，所以原貼文的作者、圖片與留言仍然看不到。能確定的只有時間：**這份 Prompt 最晚在 2026-10-04 就已流傳**，比本筆記早六週。
+> - **讀了什麼**：README 全文、檔案清單（`index.html`、`app.js`、`style.css` 共三個原始檔）、commit 紀錄、線上頁面的文字。README 沒有圖；頁面截圖沒有成功，只讀到文字。原始碼沒有逐行讀，也沒有實際上傳圖片測試。
+> - **這輪試過、沒有結果的管道**：網頁搜尋（繁中、簡中各兩組，含兩個 repo 名加「提示詞」）；Threads 站內搜尋「美圖秀秀 WebGPU」「MI-GAN Real-ESRGAN Upscayl」「MI-GAN 摳圖 WebGPU」「純瀏覽器 修圖 去水印 摳圖 變清晰 Prompt」；Facebook 貼文搜尋「MI-GAN U²-Net Real-ESRGAN WebGPU」；X 站內搜尋「skill-matting」、美圖秀秀加 WebGPU、WatermarkRemover 加摳圖或提示詞、MI-GAN 加 Real-ESRGAN；GitHub issue 搜尋；Hacker News。
+> - **存檔與 Reddit**：`huncanlin/myphoto` 的 repo 與線上頁面都查了 Wayback（availability API；CDX 介面當天回空白、連一定有存檔的網址也查不到，不採計）與 archive.ph，沒有存檔。Reddit 查不了：內建瀏覽器擋 reddit.com，網頁搜尋工具不能限定該網域，直接請求也被擋。
+> - **對分析的影響**：
+>   - 第 2 節「一次做完八項工具加影片三合一，容易做不完」多了一個實例，而且結果與預測一致：這個成品的 README 自己列出，做完的是裁剪、文字、調色、匯出等一般編輯功能；AI 部分只有去背在「試用」，而且用的是 RMBG-1.4，不是規格指定的 U²-Net；**MI-GAN、U²-Net、Real-ESRGAN／Upscayl 三個模型、影片逐格填補與去背、透明 WebM、MP4 匯出全部寫「尚未完成」**；2 倍與 4 倍放大是一般重採樣，不是 AI。
+>   - 要補一句公道話：第 2 節擔心的是「用模糊濾鏡假裝成 AI」，這個成品沒有這樣做，README 寫明未完成的功能在介面上停用、不拿一般縮放冒充 AI。所以實例支持的是「一次做不完」，不是「一定會造假」。
+>   - README 也印證第 2 節第 3 點：桌面版的 Python／CUDA 模型不能直接搬進瀏覽器，要先轉 ONNX、確認 WebGPU 支援，再驗證畫質；影片錄製要照正常播放速度跑，而且頁面要留在前景。
+>   - 封存結論與 `T-20261115-07` 不做的判斷不變。
 
 > 2026-11-18 再找原貼文：原貼文搜尋不到（試過：Threads 站內搜尋「skill-matting」、Facebook 貼文搜尋「skill-matting WatermarkRemover WebGPU」「WebGPU 美圖秀秀 去水印 去背 Opus 5.5 Prompt」「純瀏覽器 WebGPU 修圖 去水印 Prompt」；都沒有結果）；替代來源兩個參考 repo 的 README、2 張示範圖與 5 則 issue 已讀完。維持 `partial`。
 

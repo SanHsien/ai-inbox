@@ -11,10 +11,10 @@ cluster: "1"
 cluster_role: "Terra額度路由"
 short_title: "Terra額度與Fast倍率核實"
 source_review: partial
-source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「Terra Fast 2.5」、Facebook 貼文搜尋「GPT-6.1 Terra Fast 2.5x Plus 額度」「Terra 額度 Sol 2 倍 Fast 2.5 Codex」；沒有內容吻合的貼文）；替代來源官方文件頁全文已讀完（無圖、無留言區）"
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「Terra Fast 2.5」、Facebook 貼文搜尋「GPT-6.1 Terra Fast 2.5x Plus 額度」「Terra 額度 Sol 2 倍 Fast 2.5 Codex」；沒有內容吻合的貼文）；替代來源官方文件頁全文已讀完（無圖、無留言區）。2026-11-18 第二輪：找到一篇四個說法都對得上的中文文章（MapleFeather〈GPT-6.1 Terra vs Sol 額度差多少〉，更新於 2026-11-04），全文讀完，沒有內文圖、沒有留言區；但線索寫「額度增加」，文章明寫整體額度沒有變多，用詞也不同，不能認定線索就是出自這篇，原貼文仍不明。另試過沒有吻合結果的管道：網頁搜尋（中英文）、Threads 站內搜尋四組關鍵字、X 站內搜尋、文章作者的 Threads 個人頁近期貼文、Hacker News。兩則相近的 Threads 貼文（10-27、11-01）已進貼文讀完文字與留言（1／1 則、16／19 則，兩種排序都捲到底），都對不上，其中一則的 3 分鐘影片沒看到。各候選貼文與文章網址另查了 Wayback（availability API）與 archive.ph，都沒有存檔；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）"
 source_reviewed_at: 2026-11-18
 source_images: 0
-source_replies: 0
+source_replies: 17
 tags:
   - gpt-6-1-terra
   - codex
@@ -28,6 +28,24 @@ tags:
 # GPT-6.1 Terra 額度與 Fast 倍率核實
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 第二輪（找轉引與存檔）：**找到一篇四個說法都對得上的文章，但不能認定線索出自它；原貼文仍不明，維持 `partial`。**
+>
+> - **最接近的來源**：MapleFeather（作者夜羽凌）〈[GPT-6.1 Terra vs Sol 額度差多少？約 2 倍、點數砍半](https://maplefeather.com/article/gpt-6-1-terra-usage-limits-2026)〉，頁面只標更新日期 2026-11-04。全文讀完；內文沒有圖（只有延伸閱讀的縮圖），沒有留言區。
+> - **對得上的地方**：文章開頭的四點摘要與線索逐條對應：Plus 在 Work、Codex 約為 6.1 Sol 的 2 倍；別開 Fast，額度扣 2.5 倍；看圖、填表、寫提案換 Terra；難的程式留給 Sol。
+> - **對不上的地方**：線索開頭寫「程式額度增加」，文章卻明寫 Work 與 Codex 的整體額度沒有跟著變多；線索說「日常任務切至 Terra」，文章分得更細（看圖與文書給 Terra、大量整理給 Luna、長時間寫程式留在 Sol、最難的留在 Astra）。線索比較像有人把這類文章再濃縮一次的結果，中間經過誰的手查不到。
+> - **兩則相近的 Threads 貼文，進貼文讀完後都對不上**：
+>   - `@cooljerrett`（2026-10-27）：<https://www.threads.com/@cooljerrett/post/De-qP71j8is>。對得上兩點：Terra 用量額度是 Sol 的兩倍、最難的程式官方仍建議交給 Sol。對不上：完全沒提 Fast 與 2.5 倍，也沒說只在 Codex 與 Work 提供；主題是速度（填表 53 秒對 3 分 21 秒）與操作 Blender。附 1 支約 3 分鐘的影片，截圖逾時沒看到內容。留言計數 1 則，就是作者續串貼的官方連結，兩種排序都確認沒有其他留言。
+>   - `@idontwantthreehigh`（2026-11-01）：<https://www.threads.com/@idontwantthreehigh/post/DfMnlkmFBCG>。主題不同：講的是 12 月起 Codex 與 ChatGPT 聊天改吃同一桶額度，列五件該先做的事。對得上的只有「輕的給 Terra 或 Luna、Sol 留給卡關的」「不急就關 Fast」；對不上：Fast 寫的是「多燒一倍以上」不是 2.5 倍，沒有「Sol 的 2 倍」，也沒有「僅限 Codex 與 Work」。沒有圖。留言計數 19 則，熱門與最新兩種排序都捲到底，合計讀到 16 則（作者續串 1 則、作者回覆 5 則、網友 10 則），差 3 則平台不顯示。留言幾乎都在說要退訂改用別家，沒有人補充或更正額度數字。
+>   - 這兩則「共用同一桶」「Pro 200 砍半已撤回」的說法與 MapleFeather 文章一致，但都是第三方說法，本篇未向官方查證。
+> - **存檔與 Reddit**：MapleFeather 文章與上面兩則貼文都查了 Wayback（availability API；CDX 介面當天回空白、連一定有存檔的網址也查不到，不採計）與 archive.ph，都沒有存檔。Reddit 查不了：內建瀏覽器擋 reddit.com，網頁搜尋工具不能限定該網域，直接請求也被擋。
+> - **這輪試過、沒有吻合結果的管道**：網頁搜尋（繁中兩組、英文一組）；Threads 站內搜尋「Terra Sol 2倍 Fast」「Terra 額度 Fast 2.5」「Terra 別開 Fast」「Terra Plus 額度 Sol 兩倍 Codex Work」；X 站內搜尋「Terra Sol 額度 Fast 2.5」；文章作者的 Threads 個人頁（往回捲到 11-09，沒有 Terra 貼文，更早的沒有再捲）；Hacker News。
+> - **對分析的影響**：
+>   - 本篇的判定都不用改。文章的數字（35–285、15–160、25／1.25／125、Fast 2.5 倍與點數 2 倍）與本篇從官方頁核對到的一致；文章也寫「整體額度沒有變多」，與本篇「措辭不精確」的判定相同。
+>   - 文章補了一個本篇沒寫的算法，可用官方數字自己驗算：**只有 Terra 開 Fast 時，35–285 除以 2.5 是約 14–114 則，比不開 Fast 的 Sol（15–160 則）還少**。也就是線索「切勿開啟 Fast」的理由成立：開了 Fast，Terra 省額度的好處就整個還回去。
+>   - 文章另提兩點，是第三方說法，本篇未向官方頁查證：`config.toml` 若已設成預設開 Fast，切到 Terra 也會照開；可能另有週上限，官方沒有公布數字。
+>   - 「日常 Terra、高難度 Sol」仍是**未驗證**：文章轉述官方模型建議是 Terra 管日常寫作與看圖、6.1 Sol 管重複的長時間工作，但這是二手轉述，官方 Models 頁本篇仍未讀。
+>   - 搜尋時看到多則 2026-11-17 的 Threads 貼文說 OpenAI 已推出 GPT-6.2 Astra 與 Sol（只讀了搜尋結果的首則文字，未向官方查證）。若屬實，本篇與 `docs/model-burn-rate-routing-matrix.md` 第 9 節的 Sol 6.1 對照數字可能已不是現行版本，使用前要重查官方頁。
 
 > 2026-11-18 再找原貼文：原貼文搜尋不到（試過：Threads 站內搜尋「Terra Fast 2.5」、Facebook 貼文搜尋「GPT-6.1 Terra Fast 2.5x Plus 額度」「Terra 額度 Sol 2 倍 Fast 2.5 Codex」；沒有內容吻合的貼文）；替代來源官方文件頁全文已讀完（無圖、無留言區）。維持 `partial`。
 

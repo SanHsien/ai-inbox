@@ -14,7 +14,7 @@ source_review: partial
 source_reviewed_at: 2026-11-18
 source_images: 2
 source_replies: 131
-source_review_note: "原始來源 paul800901/K-harness 仍是 404，改看上游 pi，所以維持 partial。2026-11-18 試過：GitHub API 與網頁直連、作者 15 個公開 repo 與公開事件紀錄、同名 repo 搜尋、程式碼與 issue 全站搜尋、網頁搜尋、Wayback 存檔，都找不到改名或搬家的去處。替代來源已讀全：pi README 圖 2／2 張；#9361 留言 14／14、#7547 留言 96／96（含長留言全文）、#581 留言 21／21；pi 其餘未關閉的 issue／PR（共 255 個）與本篇無關的沒有讀"
+source_review_note: "原始來源 paul800901/K-harness 仍是 404，改看上游 pi，所以維持 partial。2026-11-18 試過：GitHub API 與網頁直連、作者 15 個公開 repo 與公開事件紀錄、同名 repo 搜尋、程式碼與 issue 全站搜尋、網頁搜尋、Wayback 存檔，都找不到改名或搬家的去處。替代來源已讀全：pi README 圖 2／2 張；#9361 留言 14／14、#7547 留言 96／96（含長留言全文）、#581 留言 21／21；pi 其餘未關閉的 issue／PR（共 255 個）與本篇無關的沒有讀。2026-11-18 第二輪找存檔與轉引：repo 內容（README、原始碼）仍然讀不到，但在 ecosyste.ms 的公開索引找到它下架前的中繼資料（描述、建立與最後推送日期、8 個標籤、npm 相依清單、3 筆推送事件），網頁搜尋工具的索引裡另有兩段 README 摘要（二手、無法對原文核對）。沒有結果的管道：Wayback（availability API 查 repo 網址與作者頁都沒有存檔；CDX 介面當天回空白、不採計，所以子頁面有沒有存檔未確認）、archive.ph、Software Heritage（查無此 origin）、codeload 原始檔下載（404）、GitHub 同名 repo 與 fork（forks_count 為 0）、全站程式碼與 issue 搜尋、Bing 與 Google 加引號搜尋、Threads／Facebook／X 站內搜尋「K-harness」「K 執行中樞」、Hacker News；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）"
 tags:
   - agent-harness
   - pi-coding-agent
@@ -32,7 +32,7 @@ tags:
 - **分析日期**：`2026-11-15`
 - **當前狀態**：`🟢 已完成 (Done)`
 
-> **查證註記**：使用者提供的參考專案 `paul800901/K-harness` 經 GitHub API 與 HTTP 實查皆回傳 `404 Not Found`，且 `paul800901` 公開倉庫清單中亦無該專案（可能已轉私有或移除；[API 回 404](https://api.github.com/repos/paul800901/K-harness) 只能確認目前公開請求不可存取，不能確定已刪除）。本分析以 `pi` 官方上游倉庫 `earendil-works/pi` 原始碼與文件（`providers.md`、`cli-integration.md`、`windows.md`、`security.md`、`custom-provider.md`）為事實基準。
+> **查證註記**：使用者提供的參考專案 `paul800901/K-harness` 經 GitHub API 與 HTTP 實查皆回傳 `404 Not Found`，且 `paul800901` 公開倉庫清單中亦無該專案（可能已轉私有或移除；[API 回 404](https://api.github.com/repos/paul800901/K-harness) 只能確認目前公開請求不可存取，不能確定已刪除）。2026-11-18 在公開索引找到它下架前的中繼資料：建立於 2026-09-18、最後公開推送 2026-10-22，是 Electron 桌面程式，相依清單裡沒有 pi（見第 0 段）。本分析以 `pi` 官方上游倉庫 `earendil-works/pi` 原始碼與文件（`providers.md`、`cli-integration.md`、`windows.md`、`security.md`、`custom-provider.md`）為事實基準。
 
 ---
 
@@ -42,6 +42,14 @@ tags:
 
 - **作者圖片**：`paul800901/K-harness` 2026-11-16、2026-11-17 兩次再查都回 404，該帳號 15 個公開 repo 裡也沒有它，README 與圖都看不到。上游 `earendil-works/pi` 的 README 只有標誌與吉祥物兩張小圖和徽章，沒有架構圖或截圖。
   - 2026-11-18 再找一次去處：API 與網頁直連仍是 404；該帳號公開事件紀錄裡沒有任何 K-harness 的推送、建立或改名事件；GitHub 上找不到同名 repo，全站程式碼與 issue 搜尋「paul800901/K-harness」只命中本筆記自己；網頁搜尋與 Wayback 存檔都沒有結果。GitHub 改名會自動轉址，回 404 表示是刪除或轉私有，不是改名。該帳號名稱相近的 `kai-work-host`（網頁版 GPT 連本機執行的工作主機）README 沒有提到 harness、pi 或 Antigravity，無法認定是同一個專案。
+  - **2026-11-18 第二輪（找存檔與轉引）：README 與原始碼仍然讀不到，但找到下架前的公開中繼資料。**
+    - 來源是 [ecosyste.ms 的 repo 索引](https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/paul800901%2FK-harness)（公開的開源套件索引服務，最後同步 2026-10-22）與它的[事件時間軸](https://timeline.ecosyste.ms/api/v1/events/paul800901/K-harness)。
+    - repo 描述是「個人自用的 Codex／Claude Code／Antigravity 三核心 AI 工作台；公開原始碼供參考，不承諾維護或支援」。建立於 2026-09-18，最後一次公開推送 2026-10-22，主要語言 JavaScript，約 7.8 MB，0 星、0 fork、沒有授權檔，根目錄有 `README.md` 與 `AGENTS.md`。
+    - 有 8 個標籤，集中在 2026-10-01 到 10-04，名稱看得出當時在做的功能：Git 整合、工作區搬移、Antigravity 設定、Gemini 媒體、對話框焦點、依帳號計算 worker 數量。
+    - 2026-10-06 的相依清單快照（`package.json` 17 項、`package-lock.json` 307 項）：Electron 44、React 19、Vite 8，加上 `@assistant-ui/react`（聊天介面元件）、`@modelcontextprotocol/server`、`@playwright/mcp`、`ws`、`zod`、`pdfjs-dist`、`mammoth`。**清單裡沒有 pi 的任何套件**，也沒有 OpenAI、Anthropic、Google 的 SDK。
+    - 網頁搜尋工具的索引裡還留著 README 的兩段摘要（工具轉述的二手內容，原文讀不到，無法核對）：頁面標題是「K 執行中樞｜通用工作台」；在同一個介面交辦工作，由 Codex、Claude Code、Antigravity 三家原生核心執行，沿用各家官方訂閱與權限，不改走 API 計費；範圍是一般文件、資料與程式工作；三家核心在設定裡各有手動更新按鈕，平常不自動更新，更新時保留舊核心、不動登入狀態。
+    - 沒有結果的管道：Wayback 的 availability API 查 repo 網址與作者頁都沒有存檔（CDX 介面當天回空白，連一定有存檔的網址也查不到，不採計；所以 `/blob/...` 這類子頁面有沒有存檔未確認）；archive.ph 沒有；Software Heritage 查無此 origin；codeload 原始檔下載回 404；GitHub 沒有同名 repo 或 fork；Bing、Google 加引號搜尋無結果；Threads、Facebook、X 站內搜尋「K-harness」「K 執行中樞」都沒有相關貼文；Hacker News 0 筆；Reddit 查不了（內建瀏覽器擋 reddit.com，網頁搜尋工具不能限定該網域，直接請求也被擋）。
+    - 還缺什麼：README 全文、原始碼、任何截圖。上面只能確認它是什麼類型的東西，不能確認它怎麼接三家核心。
   - 上游 pi 的兩張圖已放大看：圖 1 是三色方塊拼成的 π 字形標誌；圖 2 是版畫風格的河豚吉祥物（Exy）。都沒有技術資訊。
 - **作者留言補充**：無（K-harness 看不到）。
 - **網友留言重點**（pi 的 issue；2026-11-17 用 `gh api` 把 #9361、#7547 的留言全部讀完，補充寫在各則底下）：
@@ -65,6 +73,8 @@ tags:
   4. 2026-11-18 補讀後結論仍不變，而且多三個不採納的理由：PowerShell 工具回報的結束碼不可靠、Windows 上沒有整套可用的權限加沙盒組合、訂閱憑證登入是靠繞過偵測維持的。
   4. **2026-11-17 補讀後修正第 2 節一句話**：#9361 不是「不定時」發生，而是「裝了會重建 bash 工具的擴充就一定發生」，修正還沒合併。本篇設計正好要自己寫擴充，所以這是寫擴充時必須自己處理的事（把工作階段的 shell 設定明確傳進去），不是等上游修好就沒事。已改第 2 節。
   5. #7547 的 PowerShell 工具回報與 `docs/pi-hybrid-harness-readonly-assessment.md` 第 42 行「可透過 defaultTools 選用 PowerShell」一致，並多了使用者實測：Windows 原生若要試，關掉 bash、只留 PowerShell 是目前回報最穩的組合。協作者「預設不做權限與沙盒」的說法也與該文件「沒有新增強制隔離能力」的結論一致。`T-20261115-01` 不需重開。
+  6. **2026-11-18 第二輪：K-harness 不是用 pi 做的。** 依下架前的相依清單，它是一個 Electron 桌面程式（React 介面加 MCP），沒有 pi 的套件。本篇把它當參考目標、卻以 pi 為底座設計，兩者只有「一個介面交辦三家核心」這個目標相同，做法不同。本篇對 pi 的事實查證不受影響，但讀者不應把第 1 節的 pi 雙層設計當成 K-harness 的做法。
+  7. 二手摘要說它「沿用各家官方訂閱與權限、不走 API 計費」，方向與第 1 節「只呼叫各家官方 CLI、不碰憑證」一致；實際怎麼接（呼叫 CLI、還是讀憑證）沒有原始碼可查，**未查證**。結論不變：暫不採納，`T-20261115-02` 維持不做。
 
 ---
 

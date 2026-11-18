@@ -13,7 +13,7 @@ cluster_role: "外掛生態與設定治理"
 short_title: "Google Android 官方 Agent Skills"
 source_review: partial
 source_reviewed_at: 2026-11-18
-source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「android/skills」「Android 官方 Skills 30」、Facebook 貼文搜尋「android/skills Google Android 官方 Agent Skills」「github.com/android/skills」「Android 官方 30 個 Skills android skills add」；唯一主題相同的是 Facebook 工程師米奇 2026-04-21 的貼文，已點開讀完，內容與本筆記對不上，不是來源）；替代來源官方 repo 的 2 則 issue 內文與 8 則回覆已讀完，README 無圖"
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「android/skills」「Android 官方 Skills 30」、Facebook 貼文搜尋「android/skills Google Android 官方 Agent Skills」「github.com/android/skills」「Android 官方 30 個 Skills android skills add」；唯一主題相同的是 Facebook 工程師米奇 2026-04-21 的貼文，已點開讀完，內容與本筆記對不上，不是來源）；2026-11-18 第二輪查轉引與存檔仍沒有（新試：網頁搜尋、Bing、Threads 站內搜尋 4 組、X 站內搜尋、GitHub 全站 issue 搜尋、Hacker News、Wayback；Reddit 被擋查不了；X 上找到 10-16 到 10-19 四則中文介紹文，都已開啟讀完，各對上一部分但無法認定，見第 0 段；另用 GitHub API 查到 v1.0.15 於 2026-10-14 發布時正好 30 個技能、repo 於 10-16 上 GitHub Trending 且當時 8k 星，可推定原貼文發在 10-16 到 10-19 之間）；替代來源官方 repo 的 2 則 issue 內文與 8 則回覆已讀完，README 無圖"
 source_images: 0
 source_replies: 10
 tags:
@@ -35,6 +35,26 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 第二輪（查轉引、存檔）：仍找不到原貼文，維持 `partial`；但查到一項可以佐證貼文說法的資料。
+>
+> - **各管道結果**：
+>   - 有結果：X 站內搜尋（「Android Skills」加 30 或 Compose、限中文、2026-10-13 到 10-20，找到 4 則；只搜 `android/skills` 加日期的那一組回來的全是無關貼文）、GitHub 全站 issue 搜尋 repo 網址（10 月有 63 則，其中 GitHub Trending 每日摘要在 10-17、10-18 兩天收錄本 repo）、GitHub API 查各版本技能數、Wayback（只存了 `@Zen_with_AI` 那則）。
+>   - 沒結果：網頁搜尋兩組、Bing 搜尋、Threads 站內搜尋 4 組（「Android Skills 30 Compose Play Billing」「Android 官方 Skills Wear XR」「Android 官方 skills Google agent 過時」「安卓 skills Google 官方 Compose」）、Hacker News、Wayback 對其餘候選。
+>   - 查不了：Reddit（三種方式都被擋）。
+> - **這個 repo 在 2026-10-16 衝上 GitHub Trending**，10-16 到 10-19 之間 X 上有一波中文介紹文。四則都已開啟讀完全文、圖與回覆，**各對上一部分，沒有一則能認定是來源**：
+>   - `@ai_fengshou` 10-16，<https://x.com/ai_fengshou/status/2111106137336807599>：說 Google 承認有些 Android 工作 LLM 寫不好、所以自己寫了標準答案，當天上 Trending，專攻評測裡模型出錯的地方，Claude Code 一條指令裝上。1 張圖是 repo 分享卡，顯示 **8k 星**、8 位貢獻者、35 則 issue；3 則回覆，其中一則也說「8k 星的標準答案」。對得上「8K+ Stars」與「針對實測出的盲區」；對不上的點：寫的是「20 多個技能包」不是 30，沒有 Play Billing、Wear／TV／XR，也沒有 `android skills add --all`。
+>   - `@Zen_with_AI` 10-19，<https://x.com/Zen_with_AI/status/2111921006613069944>：說 Android 官方下場給 AI agent 發外掛，涵蓋 Compose、CameraX、Navigation、R8、AGP 9 升級、Wear、TV、XR 眼鏡，附 Claude Code 外掛安裝指令。無圖，計數 4 則回覆、顯示 2 則（一則希望別再亂改 Gradle）。對得上「官方下場」的語氣與 Wear／TV／XR；對不上的點：沒有 30 個、星數、Play Billing，安裝指令也不同。
+>   - `@Evan_Lin` 10-18，<https://x.com/Evan_Lin/status/2111791064181031035>：繁體的每週熱門專案摘要，說這個 repo 能杜絕 AI 產生過時或反模式的 Android 程式碼。無圖無回覆。對得上「終結過時 API」的說法；對不上的點：它把內容說成 UI／Domain／Data 分層、Hilt、StateFlow 的架構指南（官方目錄沒有這些技能），沒有 30 個、Play Billing、跨裝置。
+>   - `@ygqz666` 10-17，<https://x.com/ygqz666/status/2111431033740566555>：只講 edge-to-edge 單一技能怎麼裝怎麼用，1 張圖沒有放大看，0 則回覆。與本筆記的全景式寫法對不上。
+> - **推測**：本筆記的原貼文應該是同一波裡把上面幾種說法併在一起的另一則貼文（Threads 或 Facebook），這次沒找到。
+> - **「30 個」有依據了**：用 GitHub API 列 `android/skills` 各版本標籤的檔案樹，**v1.0.15（2026-10-14 發布）正好是 30 個 `SKILL.md`**；前一版 v1.0.14（10-12）是 25 個，下一版 v1.0.16（10-21）起是 33 個（與 `T-20261019-05` 在 10-23 實查的 33 個吻合）。第三方轉包 repo `ya123-4/android-skills-dsh`（2026-10-18 建立）的說明也寫「android/skills 1.0.15 共 30 個技能」。
+> - **對分析的影響**：
+>   - 貼文的「30 個」在當時是正確數字，不是誇大或筆誤；1.1 節「貼文當時稱 30 個」的寫法不用改。
+>   - 「8K+ Stars」也有旁證：10-16 的 repo 分享卡就是 8k 星。
+>   - 可以推定原貼文發在 **2026-10-16 到 10-19 之間**（上 Trending 之後、本筆記分析日之前），日後再找可用這個區間。
+>   - `@Evan_Lin` 那則把 repo 說成分層架構與 Hilt 指南，與官方目錄不符；本筆記原稿的「State Hoisting」「Scoped Storage」等不存在的技能，可能也是這一波轉述裡走樣的，2026-11-16 已改正，不用再動。
+>   - 其餘內容沒有新資料，正文不改，任務未增減。
 
 > 2026-11-18 補讀：原貼文仍搜尋不到，維持 `partial`（搜尋方式見 frontmatter 的 `source_review_note`）。唯一主題相同的候選已點開核對，**不是來源**：
 >

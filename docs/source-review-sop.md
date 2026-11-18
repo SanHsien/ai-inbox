@@ -76,6 +76,17 @@
 - **GitHub README 的影片可以跳秒截圖**：開 `https://github.com/user-attachments/assets/<id>#t=<秒>`（`<id>` 從 README 原始檔取得），每個要看的秒數各開一次、各截一張，不必下載影片。
 - **面板停止繪製時，每次截圖前先 `tabs_select`，一次只截一張**。截到全黑或舊畫面多半是分頁被切到背景；把 `tabs_select` 與截圖放在同一批呼叫裡，不要連續截好幾張。
 
+原貼文搜尋不到時，找轉引與存檔（2026-11-18 補，都是實際查過的）：
+
+- **清單型貼文用最冷門的項目名兩兩組合搜 Threads**。搜熱門專案名只會撈到大量單獨介紹；這次是「typesafe skills」「Hermes Jev」命中原貼文。
+- **X 站內搜尋不要用帶斜線的 repo 名**（`android/skills` 會被拆字），改用加引號的產品名，配 `since:`／`until:` 日期區間與 `lang:zh`。
+- **Wayback 先拿一個一定有存檔的網址當對照**。CDX 介面有時對任何網址都回空白，不等於沒存檔；availability API（`https://archive.org/wayback/available?url=`）與 archive.ph 的 `/newest/<網址>` 比較可靠。X 貼文要查 `twitter.com/...` 網址，`x.com/...` 常查不到。
+- **GitHub repo 404 時先查 ecosyste.ms**：`https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/<owner>%2F<repo>`（描述、建立日、標籤、相依清單）與 `https://timeline.ecosyste.ms/api/v1/events/<owner>/<repo>`；再查 Software Heritage 與同名 fork。
+- **原稿對不上現行 README 時，取分析當天的版本比對**：`gh api "repos/<owner>/<repo>/commits?path=README.md&until=<分析日>T23:59:59Z"` 取 commit，再讀那一版的 README。Strata 的原稿內容就是出自當天的 README。
+- **GitHub 程式碼搜尋同時含兩個參考 repo 名**，能找到照同一份 Prompt 做出的成品，用來判斷 Prompt 流傳時間。
+- **Reddit 在這個環境不通**：內建瀏覽器禁止開啟、網頁搜尋工具不能限定網域、搜尋 API 回擋爬蟲頁。要查 Reddit 只能請維護者手動搜，`source_review_note` 寫「查不了」，不要寫「沒結果」。
+- 只找到轉引、衍生成品或存檔時，讀完補進第 0 段，仍維持 `partial`；不能只憑主題相同就認定是原貼文，要有數字、比喻、範例或清單組合對得上。
+
 ### 什麼時候可以標 `full`
 
 ```text
@@ -104,6 +115,7 @@
 - 135 篇全部完成：`full` 25、`partial` 94、`unavailable` 16。
 - 2026-11-17 維護者登入 Threads／X／Facebook 後補讀 95 篇：`full` 95、`partial` 24（其中 17 篇原始貼文沒留連結，無法補）、`unavailable` 16。補讀又改正多處事實（作者回覆其實存在、留言證實招生導流、收入結構、聲音名稱等），並補強 11 份產出文件。
 - 2026-11-18 收尾：用 Facebook 貼文搜尋找回 10 篇原貼文（多在 FB 社團與粉專），可補讀的 7 篇讀完或依抽樣判準完成；剩 8 篇 `partial` 都是原貼文搜尋不到或連結已失效，替代來源已讀完。
+- 2026-11-18 再查轉引與存檔：找回 GitHub 開源神器矩陣的原貼文（Threads，原文有 7 個專案，筆記漏了 OpenBot，已補），改 `full`；剩 7 篇 `partial`。其餘幾篇找到的轉引與存檔改正了事實：Strata 原稿出自分析當天的 README（「合計 32GB 即可開始」只夠跑小尺寸）；K-harness 下架前的相依清單顯示它是 Electron 桌面程式，沒有用 pi；Android 官方技能「30 個」在 v1.0.15 時正確；WebGPU 修圖 Prompt 最晚 10-04 已流傳，照做的成品自己標出多項功能未完成。
 - 新增任務：`T-20261017-35`、`T-20261018-19`、`T-20261026-35`、`T-20261026-36`、`T-20261107-06`、`T-20261108-07`、`T-20261113-01`。
 - 修正的已完成任務產出：學術閱讀範本與提示詞（CQR／KSU 原版定義）、雙語論文閱讀指南（改以 PaperRead 為主角）、pstack 規格與驗證器、技能評選矩陣、agent-desktop 規格、Android 技能清單（37 個）與驗證器、TOML 規格、freelance 規格等。
 

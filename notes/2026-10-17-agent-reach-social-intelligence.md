@@ -13,7 +13,7 @@ cluster_role: "跨網情報與知識檢索"
 short_title: "Agent-Reach"
 source_review: partial
 source_reviewed_at: 2026-11-18
-source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「Agent-Reach」「Agent Reach 熱點 Skill」、Facebook 貼文搜尋「Agent-Reach Panniantong」、一般網頁搜尋；只找到日期或內容對不上的貼文，例如 Threads 08-30 的六專案清單、10-26 晚於本筆記的實測文、Facebook 09-24 的簡體介紹）；替代來源官方 repo README 與 8 則 issue／PR（留言 23 則）已讀完"
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「Agent-Reach」「Agent Reach 熱點 Skill」、Facebook 貼文搜尋「Agent-Reach Panniantong」、一般網頁搜尋；只找到日期或內容對不上的貼文，例如 Threads 08-30 的六專案清單、10-26 晚於本筆記的實測文、Facebook 09-24 的簡體介紹）；2026-11-18 第二輪查轉引與存檔也無法認定（新試：網頁搜尋、Bing、Threads 與 X 站內搜尋、GitHub 全站 issue 搜尋、Hacker News、Wayback、archive.ph；Reddit 被擋查不了；五則候選貼文都已開啟讀完，見第 0 段，原稿沒留下貼文特有的數字或例子，無法認定哪一則）；替代來源官方 repo README 與 8 則 issue／PR（留言 23 則）已讀完"
 source_images: 0
 source_replies: 23
 tags:
@@ -35,6 +35,23 @@ tags:
 ---
 
 ## 0. 原始資料盤點
+
+> 2026-11-18 第二輪（查轉引、存檔）：仍無法認定來源，維持 `partial`。
+>
+> - **各管道結果**：
+>   - 有結果：網頁搜尋、Threads 站內搜尋「Agent-Reach 热点」「Agent Reach 熱點 skill」、X 站內搜尋（Agent-Reach 加「熱點／热点」，限 2026-10-05 到 10-19）、GitHub 全站 issue 搜尋 repo 網址（10 月有 40 則，多是別的 repo 加裝這個 skill 的 PR 與 GitHub Trending 每日摘要，10-03 到 10-05 連三天上榜，當時約 8.9 萬星）、Wayback（只存了 `@GodFoxxx` 那則，發文當下的版本）。
+>   - 沒結果：Bing 搜尋、Hacker News（只有 2026-08-07 一則 repo 連結）、archive.ph（候選貼文都沒有存檔）、Wayback 對其餘候選。
+>   - 查不了：Reddit（指令、內建瀏覽器、網頁搜尋工具三種方式都被擋）。
+> - **候選貼文，五則都已開啟讀完全文、圖與留言**：
+>   - Threads `@iluciddreaming` 2026-07-14，<https://www.threads.com/@iluciddreaming/post/DaxqJlamzXO>：十個自媒體 Skill 清單，第 1 個是 Agent-Reach「搜國內外熱點素材」。無圖無留言。對不上的點：其餘九個 Skill 本筆記完全沒提。
+>   - X `@GodFoxxx` 2026-10-08，<https://x.com/GodFoxxx/status/2108015568385417259>：講寫推文選題時用 Agent-Reach 一個入口看全網熱點、不必申請一堆 API。3 張圖都是官方 README 截圖（標題區與支援平台表），0 則回覆。日期最接近、也是「熱點」角度；對不上的點：平台是 X 不是 Threads，內文沒有任何 README 以外的說法。
+>   - X `@0xluffy_eth` 2026-06-17，<https://x.com/0xluffy_eth/status/2067144216514552006>：稱這個 Skill 對內容創作者有用，列七個平台，說熱點、爆文、競品、選題、素材一次搞定。計數 2 則回覆、顯示 1 則（希望抓熱點夠準）。對不上的點：早四個月、平台是 X。
+>   - Threads `@darks0603` 2026-03-17，<https://www.threads.com/@darks0603/post/DV92HQ3EvQt>：四則串文加 2 則留言。介紹後用大半篇幅談資安（先看原始碼、不亂授權、用沙盒），安裝寫的是 `pip install agent-reach`。對不上的點：早七個月，沒有「熱點」角度，本筆記原稿也沒有資安三步驟。
+>   - Threads `@suritech` 2026-03-14：一句英文推薦加 repo 連結，無圖無留言，沒有可比對的內容。
+> - **為何不認定**：原稿除了「Threads 社群讀者分享」之外，沒有留下任何貼文特有的數字、比喻或範例；正文內容都能從官方 README 得到。上面每一則都對得上主題，也都無法排除其他則。
+> - **對分析的影響**：
+>   - 結論不變。
+>   - 順帶一提：`@darks0603` 教的 `pip install agent-reach` 正是 2026-11-16 補的風險（PyPI 同名套件不是本專案）。社群貼文會這樣教，第 2 節那條提醒更有必要。
 
 > 2026-11-18 再找原貼文：原貼文搜尋不到（試過：Threads 站內搜尋「Agent-Reach」「Agent Reach 熱點 Skill」、Facebook 貼文搜尋「Agent-Reach Panniantong」、一般網頁搜尋；只找到日期或內容對不上的貼文，例如 Threads 08-30 的六專案清單、10-26 晚於本筆記的實測文、Facebook 09-24 的簡體介紹）；替代來源官方 repo README 與 8 則 issue／PR（留言 23 則）已讀完。維持 `partial`。
 

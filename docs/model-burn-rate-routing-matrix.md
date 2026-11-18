@@ -180,6 +180,7 @@ Credits 每 100 萬 tokens（Standard 速度）：
 | GPT-6.1 Sol Ultrafast | 8x | 6x |
 
 - 倍率是「相對同一模型的 Standard 模式」；官方表把 Fast 列為通則，**未見 Terra 例外**，因此在 Terra 開 Fast 也應視為 2.5x（【推算】，未實測）。
+- 照這個倍率推算，Plus 每 5 小時 Terra 開 Fast 約 14–114 則（35–285 ÷ 2.5），**比不開 Fast 的 Sol 6.1（15–160）還少**：Terra 省下的額度，開 Fast 就全部吃回去（【推算】，2026-11-18 補）。
 - GPT-6.1 Sol 走訂閱額度時，Codex 與 ChatGPT Work 沒有長上下文加價。
 - 圖片生成走同一額度池，平均消耗約快 3–5 倍。
 
