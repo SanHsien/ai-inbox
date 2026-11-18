@@ -456,6 +456,7 @@
 | 2026-11-17 | ⚪ | [Threads 情報評估：Yogurt（FrigadeHQ/yogurt）跨平台本地隱私 AI 會議筆記開源替代品](./notes/2026-11-17-yogurt-local-ai-meeting-notes.md) | `yogurt`, `meeting-notes`, `whisper-cpp` | 0 / 0 |
 | 2026-11-18 | ⚪ | [Threads 事實查核與評估：所謂 Claude「AI Council」實為標題黨與單對話五角色 Prompt 範本](./notes/2026-11-18-claude-ai-council-prompt-fact-check.md) | `claude`, `prompt-engineering`, `fact-check` | 0 / 0 |
 | 2026-11-18 | 🔴 | [Woshipm 深度評測評估：Gemini 4 Carbon / Argon 基準、作弊率對比、Antigravity /swarm 與 API 調價](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md) | `gemini-4-carbon`, `gemini-4-argon`, `antigravity` | 0 / 1 |
+| 2026-11-19 | ⚪ | [Threads 案例與留言評估：Ann Cheng《AI 短片腳本與分鏡提示詞》Skill 與 Google Flow 圖生影片管線](./notes/2026-11-19-ann-cheng-muse-ai-short-video-skill.md) | `muse-ai`, `video-generation`, `google-flow` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -535,6 +536,7 @@
 - 重開機一鍵復原心得：[重開機一鍵復原心得](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md)
 - AI爬蟲MCP工具：[Scrapling爬蟲與MCP](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md)
 - 本地會議筆記工具：[Yogurt本地會議筆記](./notes/2026-11-17-yogurt-local-ai-meeting-notes.md)
+- 短影音提示詞Skill：[AI短片分鏡提示詞Skill](./notes/2026-11-19-ann-cheng-muse-ai-short-video-skill.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
