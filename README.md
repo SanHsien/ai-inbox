@@ -453,6 +453,7 @@
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文評估：Jack Liu《重開機一鍵復原》工具開發與 Claude 協作四原則](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md) | `vibe-coding`, `windows`, `reboot-restore` | 0 / 0 |
 | 2026-11-17 | 🔴 | [Threads 情報與留言評估：Scrapling（D4Vinci/Scrapling）Python 爬蟲框架與原生 MCP Server](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) | `scrapling`, `web-scraping`, `mcp` | 0 / 1 |
 | 2026-11-17 | ⚪ | [Threads 情報評估：Yogurt（FrigadeHQ/yogurt）跨平台本地隱私 AI 會議筆記開源替代品](./notes/2026-11-17-yogurt-local-ai-meeting-notes.md) | `yogurt`, `meeting-notes`, `whisper-cpp` | 0 / 0 |
+| 2026-11-18 | ⚪ | [Threads 事實查核與評估：所謂 Claude「AI Council」實為標題黨與單對話五角色 Prompt 範本](./notes/2026-11-18-claude-ai-council-prompt-fact-check.md) | `claude`, `prompt-engineering`, `fact-check` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -483,6 +484,7 @@
 - 多模型省額角色路由：[多AI分權省額路由](./notes/2026-11-15-multi-ai-20-dollar-role-routing-anti-fake-green.md)
 - 混合型Harness：[Pi混合型Harness](./notes/2026-11-15-pi-hybrid-harness-codex-claude-antigravity.md)
 - 記憶交接與去噪對照：[不綁定單一AI本地系統](./notes/2026-11-16-isaac-wong-ai-agnostic-local-workflow-comments.md)
+- 標題黨查核與Prompt：[Claude Council查核](./notes/2026-11-18-claude-ai-council-prompt-fact-check.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
