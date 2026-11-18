@@ -11,7 +11,7 @@ cluster: "1"
 cluster_role: "Terra額度路由"
 short_title: "Terra額度與Fast倍率核實"
 source_review: partial
-source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「Terra Fast 2.5」、Facebook 貼文搜尋「GPT-6.1 Terra Fast 2.5x Plus 額度」「Terra 額度 Sol 2 倍 Fast 2.5 Codex」；沒有內容吻合的貼文）；替代來源官方文件頁全文已讀完（無圖、無留言區）。2026-11-18 第二輪：找到一篇四個說法都對得上的中文文章（MapleFeather〈GPT-6.1 Terra vs Sol 額度差多少〉，更新於 2026-11-04），全文讀完，沒有內文圖、沒有留言區；但線索寫「額度增加」，文章明寫整體額度沒有變多，用詞也不同，不能認定線索就是出自這篇，原貼文仍不明。另試過沒有吻合結果的管道：網頁搜尋（中英文）、Threads 站內搜尋四組關鍵字、X 站內搜尋、文章作者的 Threads 個人頁近期貼文、Hacker News。兩則相近的 Threads 貼文（10-27、11-01）已進貼文讀完文字與留言（1／1 則、16／19 則，兩種排序都捲到底），都對不上，其中一則的 3 分鐘影片沒看到。各候選貼文與文章網址另查了 Wayback（availability API）與 archive.ph，都沒有存檔；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）"
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「Terra Fast 2.5」、Facebook 貼文搜尋「GPT-6.1 Terra Fast 2.5x Plus 額度」「Terra 額度 Sol 2 倍 Fast 2.5 Codex」；沒有內容吻合的貼文）；替代來源官方文件頁全文已讀完（無圖、無留言區）。2026-11-18 第二輪：找到一篇四個說法都對得上的中文文章（MapleFeather〈GPT-6.1 Terra vs Sol 額度差多少〉，更新於 2026-11-04），全文讀完，沒有內文圖、沒有留言區；但線索寫「額度增加」，文章明寫整體額度沒有變多，用詞也不同，不能認定線索就是出自這篇，原貼文仍不明。另試過沒有吻合結果的管道：網頁搜尋（中英文）、Threads 站內搜尋四組關鍵字、X 站內搜尋、文章作者的 Threads 個人頁近期貼文、Hacker News。兩則相近的 Threads 貼文（10-27、11-01）已進貼文讀完文字與留言（1／1 則、16／19 則，兩種排序都捲到底），都對不上，其中一則的 3 分鐘影片沒看到。各候選貼文與文章網址另查了 Wayback（availability API）與 archive.ph，都沒有存檔；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）；2026-11-18 改派 Codex 用網頁搜尋限定 Reddit 查 9 組關鍵字，找到 r/codex 6 則相關討論（見第 0 段），沒有一則四項說法都對得上，不是線索來源"
 source_reviewed_at: 2026-11-18
 source_images: 0
 source_replies: 17
@@ -60,6 +60,13 @@ tags:
   - 沒有需要修正的內容，任務狀態不變。
 
 ---
+> - **Reddit（2026-11-18，派 Codex 用網頁搜尋限定 reddit.com 查，Claude 的瀏覽器開不了 Reddit；留言以 Codex 取得的 JSON 快照為準，未逐則讀完）**：r/codex 有 6 則相關討論，沒有一則同時有四項說法，不是線索來源；但有幾則**實測反駁「約 2 倍」**：
+>   - 〈Allowance table update for GPT & competitors and Terra opinion〉（2026-10-28）：<https://www.reddit.com/r/codex/comments/1xhhrxs/>。作者用 Plus 帳號量測，反駁「Terra 用量是 Sol 兩倍」，並認為 Terra 跑程式任務不可靠；留言提醒 API 半價不等於訂閱額度翻倍。
+>   - 〈GPT-6.1 Terra (Medium) burns through usage limits much faster than Sol on the same tasks〉（2026-10-28）：<https://www.reddit.com/r/codex/comments/1xhhzme/>。同類任務 Terra 反而更耗額度；留言有人量到同一任務 Terra 約 60 萬 token、Sol 約 20 萬。
+>   - 〈Limits decreased when using 6.1 Terra?〉（2026-10-26，快照 26 則）：<https://www.reddit.com/r/codex/comments/1xgcwoq/>。作者估算 Terra 5 小時額度換成 API 金額比 Sol 少；少數留言認為 Terra low 適合範圍明確的簡單工作。
+>   - 〈Terra 6.1 is practically dead on arrival; Luna often beats it〉（2026-10-27，快照 79 則）：<https://www.reddit.com/r/codex/comments/1xgnfmm/>。作者認為 Luna 常更便宜也更快；留言有人支持 Terra 做電腦操作、視覺與 3D 工作。
+>   - 〈Fast & Ultrafast are highly questionable.〉（2026-11-07）：<https://www.reddit.com/r/codex/comments/1xq8lm0/>。留言區分「速度倍率」與「額度倍率」，提到 Fast 耗額是標準的 2.5 倍，與官方表一致。
+>   - **對分析的影響**：官方表的 Plus 估計區間仍是 Terra 35–285、Sol 15–160，但社群實測（10-26 到 10-28 上線初期）多數覺得 Terra **沒有比 Sol 省，甚至更耗**；本機 9.7 節實測因解析度不足也無法確認倍率。所以「Plus 額度約 Sol 2 倍」只能當官方估計，不能當實際體感；路由仍以「不開 Fast」最確定。
 
 ## 1. Executive Summary
 

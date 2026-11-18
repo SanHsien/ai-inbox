@@ -14,7 +14,7 @@ source_review: partial
 source_reviewed_at: 2026-11-18
 source_images: 2
 source_replies: 131
-source_review_note: "原始來源 paul800901/K-harness 仍是 404，改看上游 pi，所以維持 partial。2026-11-18 試過：GitHub API 與網頁直連、作者 15 個公開 repo 與公開事件紀錄、同名 repo 搜尋、程式碼與 issue 全站搜尋、網頁搜尋、Wayback 存檔，都找不到改名或搬家的去處。替代來源已讀全：pi README 圖 2／2 張；#9361 留言 14／14、#7547 留言 96／96（含長留言全文）、#581 留言 21／21；pi 其餘未關閉的 issue／PR（共 255 個）與本篇無關的沒有讀。2026-11-18 第二輪找存檔與轉引：repo 內容（README、原始碼）仍然讀不到，但在 ecosyste.ms 的公開索引找到它下架前的中繼資料（描述、建立與最後推送日期、8 個標籤、npm 相依清單、3 筆推送事件），網頁搜尋工具的索引裡另有兩段 README 摘要（二手、無法對原文核對）。沒有結果的管道：Wayback（availability API 查 repo 網址與作者頁都沒有存檔；CDX 介面當天回空白、不採計，所以子頁面有沒有存檔未確認）、archive.ph、Software Heritage（查無此 origin）、codeload 原始檔下載（404）、GitHub 同名 repo 與 fork（forks_count 為 0）、全站程式碼與 issue 搜尋、Bing 與 Google 加引號搜尋、Threads／Facebook／X 站內搜尋「K-harness」「K 執行中樞」、Hacker News；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）"
+source_review_note: "原始來源 paul800901/K-harness 仍是 404，改看上游 pi，所以維持 partial。2026-11-18 試過：GitHub API 與網頁直連、作者 15 個公開 repo 與公開事件紀錄、同名 repo 搜尋、程式碼與 issue 全站搜尋、網頁搜尋、Wayback 存檔，都找不到改名或搬家的去處。替代來源已讀全：pi README 圖 2／2 張；#9361 留言 14／14、#7547 留言 96／96（含長留言全文）、#581 留言 21／21；pi 其餘未關閉的 issue／PR（共 255 個）與本篇無關的沒有讀。2026-11-18 第二輪找存檔與轉引：repo 內容（README、原始碼）仍然讀不到，但在 ecosyste.ms 的公開索引找到它下架前的中繼資料（描述、建立與最後推送日期、8 個標籤、npm 相依清單、3 筆推送事件），網頁搜尋工具的索引裡另有兩段 README 摘要（二手、無法對原文核對）。沒有結果的管道：Wayback（availability API 查 repo 網址與作者頁都沒有存檔；CDX 介面當天回空白、不採計，所以子頁面有沒有存檔未確認）、archive.ph、Software Heritage（查無此 origin）、codeload 原始檔下載（404）、GitHub 同名 repo 與 fork（forks_count 為 0）、全站程式碼與 issue 搜尋、Bing 與 Google 加引號搜尋、Threads／Facebook／X 站內搜尋「K-harness」「K 執行中樞」、Hacker News；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）；2026-11-18 改派 Codex 用網頁搜尋限定 Reddit 查「K-harness」三組關鍵字，沒找到"
 tags:
   - agent-harness
   - pi-coding-agent

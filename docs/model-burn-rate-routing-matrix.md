@@ -187,6 +187,7 @@ Credits 每 100 萬 tokens（Standard 速度）：
 ### 9.5 路由建議的可信度
 
 - 「日常任務 Terra、高難度編程 Sol、不開 Fast」的方向與官方的額度與價格數字**不矛盾**：Terra 較省、Fast 較貴、Sol 單價較高。
+- 【社群實測，2026-11-18 補】Reddit r/codex 在 Terra 上線初期（10-26～10-28）有多則實測反駁「約 2 倍」：有人用 Plus 帳號量測後認為沒有兩倍，有人同一任務量到 Terra 約 60 萬 token、Sol 約 20 萬，覺得 Terra 反而更耗額度（出處見 `notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md` 第 0 段）。所以「約 2 倍」只能當官方估計區間的推算，不能當實際體感；三條建議裡最確定的是「不開 Fast」。
 - 但「Terra 日常夠用、高難度需要 Sol」涉及**輸出品質差異**，官方用量頁沒有數據，本文也沒有實測；這部分只能標【使用者建議，未驗證】。
 - 與第 4 節的 Luna 路線並存：Luna 6 Plus 每 5 小時 350–3,000 則，仍是 Plus 吞吐最高的選項；Terra 補的是 Sol 與 Luna 之間的位置。是否取代某條路線，需看實際任務品質。
 - 另見 `notes/2026-11-07-github-copilot-fusion-model-routing-cascade-critique.md`：該文留言提到 gpt-6.1-terra 在 Copilot 路由裡的角色（Copilot 計費與 Codex 額度是不同體系，不可互換）。

@@ -13,7 +13,7 @@ cluster_role: "端點資安與雲端基建"
 short_title: "Strata 12GB 顯卡運行 125B 大模型"
 source_review: partial
 source_reviewed_at: 2026-11-18
-source_review_note: "原貼文無法認定（4 則同主題候選貼文的文字、作者圖片與留言都讀過：Threads 09-29、10-05、10-18 各一則與 Facebook 09-29 一則；其中三則寫 12GB 顯示卡要配 64GB 記憶體、一則寫 8GB 顯示卡即可，本筆記原稿寫的卻是 12GB 配 32GB，四則也都沒有原稿的圖書館比喻與 RTX 3080 Ti 範例，無法確定哪一則是來源）；替代來源 repo README 2 張圖與 4 則 issue 的 10 則留言已讀完。2026-11-18 第二輪：原稿內容的出處已查到，是 repo README 在 2026-10-21 當天的版本（commit 1c9bfd2），圖書館比喻、24,576 位專家、8080 埠、1.6～1.8 倍等都在裡面，該版 README 另外 3 張圖已補看；RTX 3080 Ti 不在 README 裡。觸發這篇分析的社群貼文仍無法認定：網頁搜尋與 Threads 再找到 2 則候選（Threads 10-06 一則 0 則留言、10-11 一則計數 9 則、熱門與最新兩種排序都捲到底讀到 8 則，差 1 則平台不顯示），內容都只是 README 的摘要，對不出是哪一則。各候選貼文與文章網址另查了 Wayback（availability API）與 archive.ph，都沒有存檔；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）"
+source_review_note: "原貼文無法認定（4 則同主題候選貼文的文字、作者圖片與留言都讀過：Threads 09-29、10-05、10-18 各一則與 Facebook 09-29 一則；其中三則寫 12GB 顯示卡要配 64GB 記憶體、一則寫 8GB 顯示卡即可，本筆記原稿寫的卻是 12GB 配 32GB，四則也都沒有原稿的圖書館比喻與 RTX 3080 Ti 範例，無法確定哪一則是來源）；替代來源 repo README 2 張圖與 4 則 issue 的 10 則留言已讀完。2026-11-18 第二輪：原稿內容的出處已查到，是 repo README 在 2026-10-21 當天的版本（commit 1c9bfd2），圖書館比喻、24,576 位專家、8080 埠、1.6～1.8 倍等都在裡面，該版 README 另外 3 張圖已補看；RTX 3080 Ti 不在 README 裡。觸發這篇分析的社群貼文仍無法認定：網頁搜尋與 Threads 再找到 2 則候選（Threads 10-06 一則 0 則留言、10-11 一則計數 9 則、熱門與最新兩種排序都捲到底讀到 8 則，差 1 則平台不顯示），內容都只是 README 的摘要，對不出是哪一則。各候選貼文與文章網址另查了 Wayback（availability API）與 archive.ph，都沒有存檔；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）；2026-11-18 改派 Codex 用網頁搜尋限定 Reddit 查 11 組關鍵字，找到 5 則 r/LocalLLM、r/LocalLLaMA、r/Qwen_AI 討論（見第 0 段），都沒有圖書館比喻，不是原稿來源"
 source_images: 8
 source_replies: 77
 tags:
@@ -89,6 +89,13 @@ tags:
   - 安裝指令是遠端腳本直接管線執行，依全域規則不可照跑；加上 DeepSeek 支援被移除的治理爭議，兩點都支持本篇兩項任務維持「不做」、筆記維持封存。任務未增減。
 
 ---
+> - **Reddit（2026-11-18，派 Codex 用網頁搜尋限定 reddit.com 查，Claude 的瀏覽器開不了 Reddit；留言以 Codex 取得的 JSON 快照為準，未逐則讀完）**：找到 5 則討論，都不是原稿來源（沒有圖書館比喻，3080 Ti 那則是使用求助），但補了實測：
+>   - r/LocalLLM〈Strata takes the promise of "MoE models just need a total amount of VRAM+RAM" and makes it a reality〉（2026-10-04，快照 121 則留言）：<https://www.reddit.com/r/LocalLLM/comments/1wx3g89/>。留言有人用 RTX 4070 **12GB 加 32GB DDR4 跑 Coder 版本**，也有人提 3080 Ti 配 64GB。
+>   - r/LocalLLM〈Strata LLM on 12th Intel i9-12900H with 32GB RAM and 3080TI〉：<https://www.reddit.com/r/LocalLLM/comments/1xhktoc/>。有人回報 32GB 加 12GB 跑 Coder 版本；發問者記憶體不足的原因是背景另開了 SGLang／Docker 模型，關掉後就能跑 Coder。
+>   - r/LocalLLM〈Cheapest upgrade from 10GB VRAM + 32 GB DDR4 to run Strata?〉（2026-10-28）：<https://www.reddit.com/r/LocalLLM/comments/1xi18tn/>。RTX 3080 10GB 加 32GB 跑 Coder 很快記憶體不足。
+>   - r/LocalLLaMA〈Strata with multi gpu explanation〉（2026-10-19）：<https://www.reddit.com/r/LocalLLaMA/comments/1x9w53x/>。三張 GPU 時記憶體仍佔約 80GB，限制記憶體預算讓部分專家留在磁碟後降到約 47GB，速度約每秒 90～100 個 token。
+>   - r/Qwen_AI〈Strata on Mac?〉（2026-10-27）：<https://www.reddit.com/r/Qwen_AI/comments/1xghzii/>。SSD 卸載能省記憶體，但生成明顯變慢。
+>   - **對分析的影響**：與官方 `docs/MODELS.md` 一致：12GB 加 32GB 只跑得動 Coder 版本，而且要把記憶體讓給它；一般尺寸仍以 64GB 為準。1.1 節結論不變。
 
 ## 1. 核心內容摘要
 

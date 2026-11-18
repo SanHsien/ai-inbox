@@ -12,7 +12,7 @@ cluster_role: "前端WebGPU修圖"
 short_title: "WebGPU修圖Prompt評估"
 source_reviewed_at: 2026-11-18
 source_review: partial
-source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「skill-matting」、Facebook 貼文搜尋「skill-matting WatermarkRemover WebGPU」「WebGPU 美圖秀秀 去水印 去背 Opus 5.5 Prompt」「純瀏覽器 WebGPU 修圖 去水印 Prompt」；都沒有結果）；替代來源兩個參考 repo 的 README、2 張示範圖與 5 則 issue 已讀完。2026-11-18 第二輪：原貼文仍找不到，但用 GitHub 程式碼搜尋找到一個照同一份規格做出來的公開 repo（huncanlin/myphoto，2026-10-04 建立），README 與線上頁面文字已讀完（無圖、0 則 issue）；它證明這份 Prompt 最晚在 2026-10-04 就已流傳，但 repo 沒有寫 Prompt 從哪裡來。另試過沒有結果的管道：網頁搜尋（繁中、簡中各兩組）、Threads 站內搜尋四組關鍵字、Facebook 貼文搜尋一組、X 站內搜尋四組、GitHub issue 搜尋、Hacker News。各候選貼文與文章網址另查了 Wayback（availability API）與 archive.ph，都沒有存檔；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）"
+source_review_note: "原貼文搜尋不到（試過：Threads 站內搜尋「skill-matting」、Facebook 貼文搜尋「skill-matting WatermarkRemover WebGPU」「WebGPU 美圖秀秀 去水印 去背 Opus 5.5 Prompt」「純瀏覽器 WebGPU 修圖 去水印 Prompt」；都沒有結果）；替代來源兩個參考 repo 的 README、2 張示範圖與 5 則 issue 已讀完。2026-11-18 第二輪：原貼文仍找不到，但用 GitHub 程式碼搜尋找到一個照同一份規格做出來的公開 repo（huncanlin/myphoto，2026-10-04 建立），README 與線上頁面文字已讀完（無圖、0 則 issue）；它證明這份 Prompt 最晚在 2026-10-04 就已流傳，但 repo 沒有寫 Prompt 從哪裡來。另試過沒有結果的管道：網頁搜尋（繁中、簡中各兩組）、Threads 站內搜尋四組關鍵字、Facebook 貼文搜尋一組、X 站內搜尋四組、GitHub issue 搜尋、Hacker News。各候選貼文與文章網址另查了 Wayback（availability API）與 archive.ph，都沒有存檔；Reddit 查不了（內建瀏覽器擋 reddit.com、網頁搜尋工具不能限定該網域、直接請求被擋）；2026-11-18 改派 Codex 用網頁搜尋限定 Reddit 查「skill-matting」三組關鍵字，沒找到"
 source_images: 2
 source_replies: 5
 tags:
