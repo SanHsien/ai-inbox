@@ -84,7 +84,7 @@
 - **GitHub repo 404 時先查 ecosyste.ms**：`https://repos.ecosyste.ms/api/v1/hosts/GitHub/repositories/<owner>%2F<repo>`（描述、建立日、標籤、相依清單）與 `https://timeline.ecosyste.ms/api/v1/events/<owner>/<repo>`；再查 Software Heritage 與同名 fork。
 - **原稿對不上現行 README 時，取分析當天的版本比對**：`gh api "repos/<owner>/<repo>/commits?path=README.md&until=<分析日>T23:59:59Z"` 取 commit，再讀那一版的 README。Strata 的原稿內容就是出自當天的 README。
 - **GitHub 程式碼搜尋同時含兩個參考 repo 名**，能找到照同一份 Prompt 做出的成品，用來判斷 Prompt 流傳時間。
-- **Reddit 在這個環境不通**：內建瀏覽器禁止開啟、網頁搜尋工具不能限定網域、搜尋 API 回擋爬蟲頁。要查 Reddit 只能請維護者手動搜，`source_review_note` 寫「查不了」，不要寫「沒結果」。
+- **Reddit 派 Codex 查**：Claude 的內建瀏覽器與 Claude in Chrome 都禁止開 reddit.com，登入也沒用。改派 Codex：`codex --search exec --skip-git-repo-check -s read-only -C <工作目錄> -o report.md "<prompt>" < /dev/null`，它的網頁搜尋可以限定 reddit.com 並讀貼文 JSON。`-o` 只存最後一則訊息，完整結果要從執行紀錄（stdout）撈。Antigravity 的瀏覽器要先在 Hub 視窗開啟對話才能用。
 - 只找到轉引、衍生成品或存檔時，讀完補進第 0 段，仍維持 `partial`；不能只憑主題相同就認定是原貼文，要有數字、比喻、範例或清單組合對得上。
 
 ### 什麼時候可以標 `full`
