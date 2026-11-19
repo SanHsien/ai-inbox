@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 247 項任務：🔴 未做 6／🟡 進行中 0／🟢 已做 163／⚪ 不做 78
+> 共 248 項任務：🔴 未做 7／🟡 進行中 0／🟢 已做 163／⚪ 不做 78
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -52,6 +52,7 @@
 | `T-20261118-01` | 🔴 未做 | 低 | 在 `docs/model-burn-rate-routing-matrix.md` 增補 Gemini 4 Carbon / Argon 官方基準、定價時間窗與作弊率對照 | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（新增一節收錄 Google Gemini 4 Carbon / Argon 路由對照，不更動第 1–10 節既有實測結構） | [2026-11-18-gemini-4-carbon-argon-swarm-evals](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md) | 2026-11-18 |
 | `T-20261119-01` | 🔴 未做 | 低 | 對 `elementalsouls/Claude-BugHunter` 進行零信任安全審查與漏洞檢查清單評估 | `C:\GitHub\_sandbox\claude-bughunter-audit` 與 `C:\GitHub\ai-inbox\docs\claude-bughunter-security-audit.md` | [2026-11-19-elementalsouls-claude-bughunter-eval](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | 2026-11-19 |
 | `T-20261119-02` | 🔴 未做 | 低 | 唯讀檢閱 `bruce601080102/ccc-mcp` 與本機 `agent-relay`／`claim_evidence_guard` 進行架構對照 | `C:\GitHub\_sandbox\ccc-mcp-audit` 與 `C:\GitHub\ai-inbox\docs\ccc-mcp-architecture-review.md` | [2026-11-19-codex-claude-multi-agent-orchestration-landscape](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) | 2026-11-19 |
+| `T-20261119-04` | 🔴 未做 | 低 | 對照 Anthropic 五大原語檢視 `agent-relay` 的事件去重（Idempotency）與 Outbox 通知節流機制 | `C:\GitHub\agent-relay`（只讀盤點既有派工／訊息佇列設計）與 `C:\GitHub\ai-inbox\docs\always-on-relay-gap-check.md` | [2026-11-19-anthropic-building-always-on-agents-blueprint](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md) | 2026-11-19 |
 
 ### 🟢 已做（Done）
 
@@ -462,6 +463,7 @@
 | 2026-11-19 | ⚪ | [Threads 情報評估：@agentprompts.ai 的 Claude 分析 Instagram Insights 七組 Prompt 與 Gumroad 導流模式](./notes/2026-11-19-agentprompts-claude-instagram-insights-prompts.md) | `claude`, `instagram-insights`, `prompt-engineering` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 資源評估：ai-portrait-gallery.pages.dev 日系 AI 模型人臉與造型 CC0 參考庫](./notes/2026-11-19-ai-portrait-gallery-cc0-face-reference.md) | `ai-portrait`, `cc0`, `character-consistency` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例與留言評估：Ann Cheng《AI 短片腳本與分鏡提示詞》Skill 與 Google Flow 圖生影片管線](./notes/2026-11-19-ann-cheng-muse-ai-short-video-skill.md) | `muse-ai`, `video-generation`, `google-flow` | 0 / 0 |
+| 2026-11-19 | 🔴 | [Threads 情報與官方架構核實：Anthropic《Building Always-On Agents》五大原語與 Opus 5.5 成本結構](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md) | `always-on-agents`, `anthropic`, `opus-5-5` | 0 / 1 |
 | 2026-11-19 | ⚪ | [Threads 情報與留言評估：Antigravity /swarm 實戰邊界、pipeline 防翻車三原則與 antigravity2-TW 安全提醒](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md) | `antigravity`, `swarm`, `teamwork` | 0 / 0 |
 | 2026-11-19 | 🔴 | [Codex 中文社群討論與 25 則留言全景：Claude Code + Codex CLI 自動協作、額度接續與工具生態矩陣](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) | `claude-code`, `codex-cli`, `multi-agent` | 0 / 1 |
 | 2026-11-19 | 🔴 | [Threads 情報評估：Claude-BugHunter（elementalsouls/Claude-BugHunter）82 款資安技能包與 681 條漏洞模式庫](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | `claude-code`, `security`, `bug-bounty` | 0 / 1 |
@@ -501,6 +503,7 @@
 - 標題黨查核與Prompt：[Claude Council查核](./notes/2026-11-18-claude-ai-council-prompt-fact-check.md)
 - Carbon模型路由：[Gemini4 Carbon評測](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md)
 - IG數據分析Prompt：[Claude分析IG數據Prompt](./notes/2026-11-19-agentprompts-claude-instagram-insights-prompts.md)
+- 常駐Agent五原語：[Always-On架構指南](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md)
 - Swarm實戰與繁中包：[Antigravity蜂群與繁中](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md)
 - 雙CLI協作生態全景：[Claude+Codex協作全景](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md)
 - 組織化Agent與驗收：[LobeHub與Acceptance](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md)
