@@ -460,6 +460,7 @@
 | 2026-11-19 | ⚪ | [Threads 情報評估：@agentprompts.ai 的 Claude 分析 Instagram Insights 七組 Prompt 與 Gumroad 導流模式](./notes/2026-11-19-agentprompts-claude-instagram-insights-prompts.md) | `claude`, `instagram-insights`, `prompt-engineering` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 資源評估：ai-portrait-gallery.pages.dev 日系 AI 模型人臉與造型 CC0 參考庫](./notes/2026-11-19-ai-portrait-gallery-cc0-face-reference.md) | `ai-portrait`, `cc0`, `character-consistency` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例與留言評估：Ann Cheng《AI 短片腳本與分鏡提示詞》Skill 與 Google Flow 圖生影片管線](./notes/2026-11-19-ann-cheng-muse-ai-short-video-skill.md) | `muse-ai`, `video-generation`, `google-flow` | 0 / 0 |
+| 2026-11-19 | ⚪ | [Threads 情報與留言評估：Antigravity /swarm 實戰邊界、pipeline 防翻車三原則與 antigravity2-TW 安全提醒](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md) | `antigravity`, `swarm`, `teamwork` | 0 / 0 |
 | 2026-11-19 | 🔴 | [Threads 情報評估：Claude-BugHunter（elementalsouls/Claude-BugHunter）82 款資安技能包與 681 條漏洞模式庫](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | `claude-code`, `security`, `bug-bounty` | 0 / 1 |
 | 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
 <!-- END GENERATED: index -->
@@ -495,6 +496,7 @@
 - 標題黨查核與Prompt：[Claude Council查核](./notes/2026-11-18-claude-ai-council-prompt-fact-check.md)
 - Carbon模型路由：[Gemini4 Carbon評測](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md)
 - IG數據分析Prompt：[Claude分析IG數據Prompt](./notes/2026-11-19-agentprompts-claude-instagram-insights-prompts.md)
+- Swarm實戰與繁中包：[Antigravity蜂群與繁中](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
