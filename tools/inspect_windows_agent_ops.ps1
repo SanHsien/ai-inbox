@@ -42,14 +42,16 @@ function Invoke-OpsProcess {
 
 function Get-OpsReport {
     $queries = [ordered]@{
-        sleep_ac = "`$r = & powercfg.exe /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE; if (`$LASTEXITCODE -ne 0) { throw 'query-failed' }; `$v = [regex]::Matches((`$r -join ' '), '0x[0-9a-fA-F]{8}'); if (`$v.Count -ne 2) { throw 'format' }; [Convert]::ToUInt32(`$v[0].Value.Substring(2),16)"
-        sleep_dc = "`$r = & powercfg.exe /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE; if (`$LASTEXITCODE -ne 0) { throw 'query-failed' }; `$v = [regex]::Matches((`$r -join ' '), '0x[0-9a-fA-F]{8}'); if (`$v.Count -ne 2) { throw 'format' }; [Convert]::ToUInt32(`$v[1].Value.Substring(2),16)"
-        scheduler = "(Get-CimInstance -ClassName Win32_Service -Filter `"Name='Schedule'`" -Property State -OperationTimeoutSec 2 -ErrorAction Stop).State"
-        tailscale_service = "(Get-CimInstance -ClassName Win32_Service -Filter `"Name='Tailscale'`" -Property State -OperationTimeoutSec 2 -ErrorAction Stop).State"
+        sleep_ac = "`$r = & powercfg.exe /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE; if (`$LASTEXITCODE -ne 0) { throw 'query-failed' }; `$v = [regex]::Matches((`$r -join ' '), '0x[0-9a-fA-F]{8}'); if (`$v.Count -notin @(2, 5)) { throw 'format' }; [Convert]::ToUInt32(`$v[`$v.Count - 2].Value.Substring(2),16)"
+        sleep_dc = "`$r = & powercfg.exe /query SCHEME_CURRENT SUB_SLEEP STANDBYIDLE; if (`$LASTEXITCODE -ne 0) { throw 'query-failed' }; `$v = [regex]::Matches((`$r -join ' '), '0x[0-9a-fA-F]{8}'); if (`$v.Count -notin @(2, 5)) { throw 'format' }; [Convert]::ToUInt32(`$v[`$v.Count - 1].Value.Substring(2),16)"
+        scheduler = "`$s = Get-CimInstance -ClassName Win32_Service -Filter `"Name='Schedule'`" -Property State -OperationTimeoutSec 2 -ErrorAction Stop; if (`$null -eq `$s) { throw 'not-found' }; `$s.State"
+        tailscale_service = "`$s = Get-CimInstance -ClassName Win32_Service -Filter `"Name='Tailscale'`" -Property State -OperationTimeoutSec 2 -ErrorAction Stop; if (`$null -eq `$s) { throw 'not-found' }; `$s.State"
     }
     foreach ($name in @('claude', 'codex', 'tailscale', 'pwsh')) {
         # Read executable metadata; never run a vendor CLI or a package-manager shim.
-        $queries["version_$name"] = "`$c = Get-Command '$name' -CommandType Application -ErrorAction Stop | Select-Object -First 1; if (`$c.Path -notmatch '\.exe$') { throw 'metadata-unavailable' }; [Diagnostics.FileVersionInfo]::GetVersionInfo(`$c.Path).ProductVersion"
+        # A shim or a Store execution alias carries no version metadata: say so
+        # instead of following it. A trailing build hash is dropped, not echoed.
+        $queries["version_$name"] = "`$c = Get-Command '$name' -CommandType Application -ErrorAction Stop | Select-Object -First 1; if (`$c.Path -notmatch '\.exe$') { throw 'non-exe-shim' }; if (`$c.Path -match '\\Microsoft\\WindowsApps\\') { throw 'store-alias' }; `$p = [Diagnostics.FileVersionInfo]::GetVersionInfo(`$c.Path).ProductVersion; if (`$p -notmatch '^(\d+(\.\d+){1,3})( SHA: [0-9a-f+]{1,100})?$') { throw 'format' }; `$Matches[1]"
     }
     $slots = @{ relay_task = $RelayTaskName; assets_task = $AssetsTaskName }
     foreach ($slot in $slots.Keys) {
@@ -67,13 +69,18 @@ try {
 } catch [System.Management.Automation.CommandNotFoundException] {
     @{Status='not-installed';Reason='missing-command';Value=`$null} | ConvertTo-Json -Compress
 } catch {
-    @{Status='unknown';Reason='unavailable';Value=`$null} | ConvertTo-Json -Compress
+    `$m = [string]`$_.Exception.Message
+    `$reason = if (`$m -cin @('non-exe-shim', 'store-alias', 'not-found')) { `$m } else { 'unavailable' }
+    @{Status='unknown';Reason=`$reason;Value=`$null} | ConvertTo-Json -Compress
 }
 "@
         $raw = Invoke-OpsProcess -Code $body -Seconds $TimeoutSeconds
         $row = @{ status = 'unknown'; reason = 'unavailable'; value = $null }
+        # Closed reason list; refined reasons only for the field kind that can produce them.
+        $reasons = @('timeout', 'query-failed') + $(if ($key -like 'version_*') { @('non-exe-shim', 'store-alias') }
+            elseif ($key -in @('scheduler', 'tailscale_service')) { @('not-found') } else { @() })
         if ($raw.Status -eq 'not-installed') { $row.status = 'not-installed'; $row.reason = 'missing-command' }
-        elseif ($raw.Reason -in @('timeout', 'query-failed')) { $row.reason = $raw.Reason }
+        elseif ($raw.Reason -cin $reasons) { $row.reason = $raw.Reason }
         elseif ($raw.Status -eq 'ok') {
             $value = [string]$raw.Value
             $valid = if ($key -like 'sleep_*') { $value -match '^\d{1,10}$' -and [decimal]$value -le 4294967295 }

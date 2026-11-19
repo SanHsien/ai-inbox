@@ -38,3 +38,40 @@ unknown 是實際結果，不作健康推定；可能涉及權限、不可取得
 ## 未執行範圍
 
 未修改電源、NIC、睡眠、安全、登錄、服務、防火牆、排程或遠端設定；未讀憑證、全量列舉程序或排程。未執行外網、鎖屏、登出、重啟與 24 小時觀察；這些是規格中的維護者人工驗收，不屬本輪工具 DoD。`notes/` 沒有修改或結案；沒有 push。
+
+## 2026-11-19 基準階段：根因、修正與實跑
+
+基準 HEAD `a67b04c`，改動未提交。2026-11-15 那次幾乎全欄 unknown，這次先在查詢子程序裡加暫時診斷輸出量出原因，量完已移除。
+
+| 欄位 | 2026-11-15 回 unknown 的實際原因 | 處理 |
+| --- | --- | --- |
+| sleep_ac、sleep_dc | 工具的錯。`powercfg` 對這個設定輸出五個十六進位值（最小、最大、增量、AC、DC），工具要求剛好兩個，所以判成格式不符。 | 已修：接受兩個或五個，取最後兩個。 |
+| tailscale_service | 這台沒有這個名稱的服務，查詢回空值。 | 設計上的 unknown；reason 改成 not-found。 |
+| version_claude、version_codex | PATH 上第一個同名程式是 `.cmd` shim，沒有版本中繼資料。 | 設計上的 unknown；reason 改成 non-exe-shim。 |
+| version_pwsh | PATH 上的 pwsh 是 Microsoft Store 執行別名（零位元組檔），讀不到版本。 | 設計上的 unknown；reason 改成 store-alias。 |
+| scheduler | 本次量測時已是 ok；2026-11-15 回 unknown 的原因沒有重現，未查證。 | 沒改查詢內容，只加了服務不存在時回 not-found。 |
+
+量測另外確認兩件事：Store 版 PowerShell 的套件內執行檔可以直接啟動當查詢子程序，子程序機制本身沒壞；PowerShell 執行檔的版本字串尾端帶建置雜湊，原本的格式檢查會把它判成 unknown，這個也一併修了（只輸出前面的數字版本），在本機以真實子程序加上替換過的 `Get-Command` 驗證，沒有在非 Store 安裝的機器上實跑。
+
+兩次實跑都是 exit **0**，未提升權限。第一次無參數；第二次帶維護者提供的兩個排程名稱與 `-TaskPath '\'`，排程名稱不寫入本檔。
+
+| 固定欄位 | 無參數 | 帶排程參數 |
+| --- | --- | --- |
+| sleep_ac | ok／none／0 | ok／none／0 |
+| sleep_dc | ok／none／900 | ok／none／900 |
+| scheduler | ok／none／Running | ok／none／Running |
+| tailscale_service | unknown／not-found | unknown／not-found |
+| version_claude | unknown／non-exe-shim | unknown／non-exe-shim |
+| version_codex | unknown／non-exe-shim | unknown／non-exe-shim |
+| version_tailscale | not-installed／missing-command | not-installed／missing-command |
+| version_pwsh | unknown／store-alias | unknown／store-alias |
+| relay_task | unknown／not-configured | ok／none／Ready |
+| assets_task | unknown／not-configured | ok／none／Ready |
+
+讀法：AC 的 0 只表示接電源時這個閒置設定不會自動睡眠，不能推論主機永不休眠；DC 是 900 秒。Ready 只表示排程存在且可執行，不代表執行過或成功。四個 unknown 與一個 not-installed 都不算健康，也不算故障。
+
+| 命令 | 結束碼／結果 |
+| --- | --- |
+| `pwsh -NoProfile -File tests/test_inspect_windows_agent_ops.ps1` | 修正前先加回歸測試，結果非零（紅）；修正後 0，2330 assertions。mock 模式由五種增為八種（新增：細分 reason、reason 用在錯的欄位種類、清單外的 reason 字串），另有三個走真實子程序、系統命令全換成函式的端到端情境（Store 套件環境、一般安裝、非預期的十六進位值數量）。記憶體內停用限制的 mutation 檢查維持 16 個反例全部轉紅。 |
+
+本節未執行：owner 核對、保存工作、本機回復方式確認，以及外網、鎖屏、登出、重啟、24 小時觀察。沒有修改任何 Windows 設定，沒有啟動 claude、codex 等 CLI，沒有讀憑證。`build_index.py` 沒有跑，沒有提交或推送。

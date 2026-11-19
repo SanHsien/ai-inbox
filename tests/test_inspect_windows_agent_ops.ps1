@@ -45,9 +45,9 @@ function Assert-QueryAst([string]$Code, [string]$DisabledRule = '') {
         '$process.Dispose()', '[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($Code))',
         '[Text.Encoding]::Unicode.GetBytes($Code)',
         "[regex]::Matches((`$r -join ' '), '0x[0-9a-fA-F]{8}')",
-        '[Convert]::ToUInt32($v[0].Value.Substring(2),16)',
-        '[Convert]::ToUInt32($v[1].Value.Substring(2),16)',
-        '$v[0].Value.Substring(2)', '$v[1].Value.Substring(2)',
+        '[Convert]::ToUInt32($v[$v.Count - 2].Value.Substring(2),16)',
+        '[Convert]::ToUInt32($v[$v.Count - 1].Value.Substring(2),16)',
+        '$v[$v.Count - 2].Value.Substring(2)', '$v[$v.Count - 1].Value.Substring(2)',
         '[Diagnostics.FileVersionInfo]::GetVersionInfo($c.Path)',
         "(Get-ScheduledTask -TaskName 'FakeRelay' -TaskPath '\' -ErrorAction Stop).State.ToString()",
         "(Get-ScheduledTask -TaskName 'FakeAssets' -TaskPath '\' -ErrorAction Stop).State.ToString()",
@@ -261,9 +261,16 @@ function Invoke-OpsProcess {
         denied { return @{Status='unknown';Reason='unavailable';Value='host-Fake user-Fake 192.0.2.1 token-Fake'} }
         timeout { return @{Status='unknown';Reason='timeout';Value=$null} }
         hostile { return @{Status='ok';Reason='none';Value='host-Fake user-Fake 192.0.2.1 token-Fake'} }
+        # Refined reasons are a closed list, accepted only for the matching field kind.
+        refined {
+            $reason = if ($Code -match 'Get-Command') {'non-exe-shim'} elseif ($Code -match 'Get-CimInstance') {'not-found'} else {'unavailable'}
+            return @{Status='unknown';Reason=$reason;Value=$null}
+        }
+        crossed { return @{Status='unknown';Reason='store-alias';Value=$null} }
+        hostile-reason { return @{Status='unknown';Reason='host-Fake user-Fake 192.0.2.1 token-Fake';Value=$null} }
     }
 }
-foreach ($mode in @('ok','missing','denied','timeout','hostile')) {
+foreach ($mode in @('ok','missing','denied','timeout','hostile','refined','crossed','hostile-reason')) {
     $script:mode = $mode
     $r = Get-OpsReport
     Assert-True ($r.Count -eq 10) "$mode fields"
@@ -271,11 +278,23 @@ foreach ($mode in @('ok','missing','denied','timeout','hostile')) {
         $expected = if ($mode -eq 'ok') {'ok'} elseif ($mode -eq 'missing') {'not-installed'} else {'unknown'}
         Assert-True ($row.status -eq $expected) "$mode status"
         if ($mode -eq 'timeout') { Assert-True ($row.reason -eq 'timeout') 'timeout reason' }
+        if ($mode -eq 'hostile-reason') { Assert-True ($row.reason -eq 'unavailable') 'unlisted child reason is not echoed' }
+    }
+    foreach ($key in $r.Keys) {
+        $kind = if ($key -like 'version_*') {'version'} elseif ($key -in @('scheduler','tailscale_service')) {'service'} else {'other'}
+        if ($mode -eq 'refined') {
+            $want = @{ version = 'non-exe-shim'; service = 'not-found'; other = 'unavailable' }[$kind]
+            Assert-True ($r[$key].reason -eq $want) "refined reason: $key"
+        }
+        if ($mode -eq 'crossed') {
+            $want = if ($kind -eq 'version') {'store-alias'} else {'unavailable'}
+            Assert-True ($r[$key].reason -eq $want) "reason limited to its field kind: $key"
+        }
     }
     $json = $r | ConvertTo-Json -Depth 4
     Assert-True ($json -notmatch 'host-Fake|user-Fake|192\.0\.2\.1|token-Fake|FakeRelay|FakeAssets') "$mode privacy"
 }
-Assert-True ($script:seen -eq 50) 'all ten queries tested in five modes'
+Assert-True ($script:seen -eq 80) 'all ten queries tested in eight modes'
 Remove-Variable RelayTaskName, AssetsTaskName
 $r = Get-OpsReport
 Assert-True ($r.relay_task.reason -eq 'not-configured' -and $r.assets_task.reason -eq 'not-configured') 'no task enumeration by default'
@@ -290,4 +309,49 @@ $r = Invoke-OpsProcess -Code ('function Get-CimInstance { throw [UnauthorizedAcc
 Assert-True ($r.Status -eq 'unknown' -and $r.Reason -eq 'unavailable' -and $null -eq $r.Value) 'query wrapper catches mocked access denied'
 $r = Invoke-OpsProcess -Code ('function Get-CimInstance { throw [Management.Automation.CommandNotFoundException]::new("private-host") }; ' + $script:serviceBody) -Seconds 5
 Assert-True ($r.Status -eq 'not-installed' -and $null -eq $r.Value) 'query wrapper catches mocked missing command'
-Write-Output "PASS: $script:checks assertions; five mock modes; real child timeout/error"
+
+# Regression (2026-11-19): end-to-end through real children, with every system
+# command replaced by a function inside the child. No real system query runs.
+$realInvoke = ${function:Invoke-OpsProcess}
+$script:prelude = ''
+function Invoke-OpsProcess {
+    param([string]$Code, [int]$Seconds)
+    Assert-QueryAst $Code
+    & $realInvoke -Code ($script:prelude + $Code) -Seconds $Seconds
+}
+function New-Prelude([string[]]$Hex, [string]$Cim, [string]$Command) {
+    $lines = ($Hex | ForEach-Object { "'Fake label: $_'" }) -join ','
+    "function powercfg.exe { `$global:LASTEXITCODE = 0; $lines }; " +
+    "function Get-CimInstance { param(`$ClassName, `$Filter, `$Property, `$OperationTimeoutSec, `$ErrorAction) $Cim }; " +
+    "function Get-Command { param(`$Name, `$CommandType, `$ErrorAction) $Command }; "
+}
+# Store-packaged PowerShell: powercfg prints min/max/increment before AC/DC,
+# the VPN service is absent, CLIs resolve to shims, pwsh to an execution alias.
+$script:prelude = New-Prelude @('0x00000000','0xffffffff','0x00000001','0x00000000','0x00000384') `
+    "if (`$Filter -match 'Schedule') { [pscustomobject]@{State='Running'} }" `
+    ("switch (`$Name) { 'tailscale' { throw [Management.Automation.CommandNotFoundException]::new('host-Fake') } " +
+     "'pwsh' { [pscustomobject]@{Path='Z:\Fake\AppData\Local\Microsoft\WindowsApps\pwsh.exe'} } " +
+     "default { [pscustomobject]@{Path='Z:\Fake\bin\shim.cmd'} } }")
+$r = Get-OpsReport
+$got = ($r.Keys | Sort-Object | ForEach-Object { "$_=$($r[$_].status)/$($r[$_].reason)/$($r[$_].value)" }) -join ';'
+Assert-True ($got -eq ('assets_task=unknown/not-configured/;relay_task=unknown/not-configured/;scheduler=ok/none/Running;' +
+    'sleep_ac=ok/none/0;sleep_dc=ok/none/900;tailscale_service=unknown/not-found/;' +
+    'version_claude=unknown/non-exe-shim/;version_codex=unknown/non-exe-shim/;' +
+    'version_pwsh=unknown/store-alias/;version_tailscale=not-installed/missing-command/')) "store-packaged scenario: $got"
+Assert-True (($r | ConvertTo-Json -Depth 4) -notmatch 'Fake|Z:') 'store-packaged scenario privacy'
+# Plain install: two hex values only; a real EXE whose ProductVersion may carry
+# a build-hash suffix (PowerShell itself does) still yields the numeric version.
+$script:prelude = New-Prelude @('0x0000012c','0x00000000') "[pscustomobject]@{State='Running'}" `
+    "[pscustomobject]@{Path=[Environment]::ProcessPath}"
+$r = Get-OpsReport
+Assert-True ($r.sleep_ac.value -eq '300' -and $r.sleep_dc.value -eq '0') 'two-value powercfg output'
+Assert-True ($r.tailscale_service.status -eq 'ok') 'present service'
+if (-not $PSVersionTable.PSVersion.PreReleaseLabel) {
+    Assert-True ($r.version_pwsh.status -eq 'ok' -and $r.version_pwsh.value -match '^\d+(\.\d+){1,3}$') 'numeric version from real executable metadata'
+}
+# Unexpected hex count stays unknown instead of guessing which values are AC/DC.
+$script:prelude = New-Prelude @('0x00000000','0x00000001','0x00000002') '' "throw 'private'"
+$r = Get-OpsReport
+Assert-True ($r.sleep_ac.status -eq 'unknown' -and $r.sleep_ac.reason -eq 'unavailable' -and
+    $r.sleep_dc.status -eq 'unknown' -and $r.version_pwsh.reason -eq 'unavailable') 'unexpected output stays unknown'
+Write-Output "PASS: $script:checks assertions; eight mock modes; real child timeout/error; three end-to-end child scenarios"
