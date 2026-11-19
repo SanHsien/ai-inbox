@@ -458,6 +458,7 @@
 | 2026-11-18 | ⚪ | [Threads 事實查核與評估：所謂 Claude「AI Council」實為標題黨與單對話五角色 Prompt 範本](./notes/2026-11-18-claude-ai-council-prompt-fact-check.md) | `claude`, `prompt-engineering`, `fact-check` | 0 / 0 |
 | 2026-11-18 | 🔴 | [Woshipm 深度評測評估：Gemini 4 Carbon / Argon 基準、作弊率對比、Antigravity /swarm 與 API 調價](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md) | `gemini-4-carbon`, `gemini-4-argon`, `antigravity` | 0 / 1 |
 | 2026-11-19 | ⚪ | [Threads 情報評估：@agentprompts.ai 的 Claude 分析 Instagram Insights 七組 Prompt 與 Gumroad 導流模式](./notes/2026-11-19-agentprompts-claude-instagram-insights-prompts.md) | `claude`, `instagram-insights`, `prompt-engineering` | 0 / 0 |
+| 2026-11-19 | ⚪ | [Threads 資源評估：ai-portrait-gallery.pages.dev 日系 AI 模型人臉與造型 CC0 參考庫](./notes/2026-11-19-ai-portrait-gallery-cc0-face-reference.md) | `ai-portrait`, `cc0`, `character-consistency` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例與留言評估：Ann Cheng《AI 短片腳本與分鏡提示詞》Skill 與 Google Flow 圖生影片管線](./notes/2026-11-19-ann-cheng-muse-ai-short-video-skill.md) | `muse-ai`, `video-generation`, `google-flow` | 0 / 0 |
 | 2026-11-19 | 🔴 | [Threads 情報評估：Claude-BugHunter（elementalsouls/Claude-BugHunter）82 款資安技能包與 681 條漏洞模式庫](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | `claude-code`, `security`, `bug-bounty` | 0 / 1 |
 | 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
@@ -515,6 +516,7 @@
 - 前端Glitch視覺特效：[POUND0423故障特效評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md)
 - 向量幾何Logo與MCP：[Rikyū幾何Logo與MCP](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md)
 - MCP圖資與程式化動畫：[RunwayMCP拼貼動畫Prompt](./notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md)
+- CC0人臉參考庫：[CC0日系AI人臉庫](./notes/2026-11-19-ai-portrait-gallery-cc0-face-reference.md)
 - 海報視覺解構Prompt：[關聖帝君瑞士Riso海報](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
