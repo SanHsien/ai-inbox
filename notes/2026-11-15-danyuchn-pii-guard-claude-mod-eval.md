@@ -86,6 +86,6 @@ prompt / 工具結果 --> Mod --> 本機 hookd --> 佔位符 --> 模型
 - [x] **`T-20261115-17`**｜**[優先級：中]** 唯讀查核 `danyuchn/pii-guard` 並評估 Windows 與現有隱私防線的採納條件
   - **目標範圍**：本筆記與 `docs/pii-guard-readonly-assessment.md`；第三方 repo 只下載與讀檔，不安裝、不執行測試或 hook。
   - **具體做法**：固定 commit／關鍵 blob SHA／授權；追蹤資料流、掛載、權限、落盤、網路、子程序；比較 screen_privacy；逐項判讀 --pack 結果，列已查／未查與採納裁決。
-  - **驗收標準（DoD）**：產出 `docs/pii-guard-readonly-assessment.md`，含固定來源、ASCII 資料流、原樣掃描退出碼與每項 REVIEW 判讀、Windows 前提、採納條件與動態驗證停止條件；改正本筆記事實；`python tools/build_index.py`、`python tools/verify_zhtw_vocab.py --check notes docs`、`python tools/verify_inbox.py` 均退出碼 0。動態實測與 SkillSpector 成功審計屬採納條件，不是本輪 DoD。
+  - **驗收標準（DoD）**：產出 `docs/pii-guard-readonly-assessment.md`，含固定來源、ASCII 資料流、原樣掃描退出碼與每項 REVIEW 判讀、Windows 前提、採納條件與動態驗證停止條件；改正本筆記事實；`python tools/build_index.py`、`python C:\GitHub\zhtw-vocab-guard\tools\verify_zhtw_vocab.py --check notes docs`（檢查器 2026-11-19 已移至 zhtw-vocab-guard）、`python tools/verify_inbox.py` 均退出碼 0。動態實測與 SkillSpector 成功審計屬採納條件，不是本輪 DoD。
   - **完成日期**：2026-11-15
   - **實作紀錄 / 證據**：完成（2026-11-15）：docs/pii-guard-readonly-assessment.md，固定 danyuchn/pii-guard 3d55636（MIT，0.2.0），20 個 blob SHA。資料流、hook 權限、寫檔、子程序都盤點過：外連只到 127.0.0.1；Ollama 只驗 loopback，win32 回 LOCAL_MODEL_UNVERIFIED；mapping 以明文寫入。agent-safety-checks --pack 結束碼 1，1 FAIL 經複審重跑確認是正則誤報，6 REVIEW 已逐項判讀。與 screen_privacy 做了比較。裁決暫不採納；動態實測依全域規則第 15 條改列 ROADMAP 採納條件。Codex 撰寫，Fable 獨立複審通過；未執行上游程式。

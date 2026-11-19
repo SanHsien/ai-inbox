@@ -92,5 +92,5 @@ Windows 原生是官方列出的使用方式：npm 路徑要求上述 Node 版�
 固定來源、安全／安裝風險、Windows 前提、三家授權狀態、重疊表與採納結論均已列於上文。文件檢查結果在本節記錄；檢查只能驗證 repo 文件契約，不能證明 Pi 動態安全、授權或相容性。
 
 - relay 唯讀版本：`0cabfe33c46bc0ca80234fad579c2ea8ba82896c`；[固定 SPEC](https://github.com/SanHsien/agent-relay/blob/0cabfe33c46bc0ca80234fad579c2ea8ba82896c/SPEC.md)。第 16 節另有維護者禁用 agy 工人政策，應維持 Desktop sidecar 路徑。
-- 2026-11-15 整合時先執行 `python tools/build_index.py` 把本輪三份報告列入 README，再執行 `python tools/verify_zhtw_vocab.py --check docs && python tools/verify_inbox.py`：兩者結束碼 0（117 篇筆記、229 項任務）。撰寫時 README 尚未重產，inbox 檢查曾回 1，原因只有 README 過期與漏列本報告。
+- 2026-11-15 整合時先執行 `python tools/build_index.py` 把本輪三份報告列入 README，再執行 `python tools/verify_zhtw_vocab.py --check docs && python tools/verify_inbox.py`：兩者結束碼 0（117 篇筆記、229 項任務）。撰寫時 README 尚未重產，inbox 檢查曾回 1，原因只有 README 過期與漏列本報告。（詞彙檢查器已於 2026-11-19 移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)，上列指令是當時的紀錄；現在改用 `python C:\GitHub\zhtw-vocab-guard\tools\verify_zhtw_vocab.py --check docs`。）
 - 文件檢查只驗 repo 文件契約，不代表 Pi 通過動態測試；第三方程式全程未執行。

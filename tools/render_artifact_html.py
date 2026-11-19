@@ -6,6 +6,9 @@ tools/render_artifact_html.py
 用法：
     python tools/render_artifact_html.py draft.md -o out.html
     python tools/render_artifact_html.py - < draft.md > out.html
+    python tools/render_artifact_html.py draft.md -o out.html --zhtw
+        （--zhtw 需要 https://github.com/SanHsien/zhtw-vocab-guard ，放在與本 repo 同層，
+          或以環境變數 ZHTW_VOCAB_GUARD_HOME 指向它的根目錄；找不到時結束碼 2）
 
 保證：
 - 同一份輸入永遠得到位元組完全相同的輸出（沒有時間戳、亂數、雜湊表順序）。
@@ -19,6 +22,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import html
+import importlib.util
+import os
 import re
 import sys
 from pathlib import Path
@@ -254,12 +259,54 @@ btn.addEventListener('click',function(){
 CSP = "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:"
 
 
+ZHTW_GUARD_ENV = "ZHTW_VOCAB_GUARD_HOME"
+ZHTW_GUARD_URL = "https://github.com/SanHsien/zhtw-vocab-guard"
+_ZHTW_GUARD_FILE = "verify_zhtw_vocab.py"
+
+
+class ZhtwVocabGuardNotFound(RuntimeError):
+    """--zhtw 需要的詞彙檢查器不在預期位置。"""
+
+
+def find_zhtw_vocab_guard() -> Path:
+    """回傳 verify_zhtw_vocab.py 的路徑；找不到就丟 ZhtwVocabGuardNotFound。
+
+    詞彙檢查器 2026-11-19 已獨立成 SanHsien/zhtw-vocab-guard。尋找順序：
+    1. 環境變數 ZHTW_VOCAB_GUARD_HOME（那個 repo 的根目錄）；有設就只看這裡，不再退回預設位置。
+    2. 與本 repo 同層的 ../zhtw-vocab-guard。
+    """
+    env = os.environ.get(ZHTW_GUARD_ENV, "").strip()
+    if env:
+        home, origin = Path(env).expanduser(), f"環境變數 {ZHTW_GUARD_ENV}"
+    else:
+        home = Path(__file__).resolve().parent.parent.parent / "zhtw-vocab-guard"
+        origin = "預設位置（與本 repo 同層的 zhtw-vocab-guard）"
+    candidate = home / "tools" / _ZHTW_GUARD_FILE
+    if candidate.is_file():
+        return candidate
+    raise ZhtwVocabGuardNotFound(
+        f"--zhtw 需要台灣繁體中文詞彙檢查器，但在{origin}找不到 {candidate}。\n"
+        f"這支工具已獨立成 {ZHTW_GUARD_URL} ；請執行\n"
+        f"    git clone {ZHTW_GUARD_URL}.git\n"
+        f"放在與本 repo 同層的 zhtw-vocab-guard 目錄，或把環境變數 {ZHTW_GUARD_ENV} 設成它的根目錄。"
+    )
+
+
+def load_zhtw_vocab_guard():
+    """載入並回傳 verify_zhtw_vocab 模組（不改 sys.path）。"""
+    path = find_zhtw_vocab_guard()
+    spec = importlib.util.spec_from_file_location("verify_zhtw_vocab", path)
+    if spec is None or spec.loader is None:
+        raise ZhtwVocabGuardNotFound(f"無法載入 {path}；請確認它是完整的 {ZHTW_GUARD_URL} 內容。")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def render(source: str, normalize_zhtw: bool = False) -> str:
     source = source.replace("\r\n", "\n").replace("\r", "\n")
     if normalize_zhtw:
-        from verify_zhtw_vocab import apply_zhtw_vocab
-
-        source = apply_zhtw_vocab(source, skip_code=True)
+        source = load_zhtw_vocab_guard().apply_zhtw_vocab(source, skip_code=True)
     lines = source.split("\n")
     meta, start = parse_frontmatter(lines)
     body, has_ask = render_body(lines[start:])
@@ -302,14 +349,19 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument(
         "--zhtw",
         action="store_true",
-        help="編譯前自動套用台灣繁體中文詞庫與 OpenCC 二次退化修補（略過程式碼區塊）",
+        help="編譯前自動套用台灣繁體中文詞庫與 OpenCC 二次退化修補（略過程式碼區塊）；"
+        "需要另外取得 SanHsien/zhtw-vocab-guard（同層目錄或環境變數 ZHTW_VOCAB_GUARD_HOME）",
     )
     args = ap.parse_args(argv)
     if args.input == "-":
         source = sys.stdin.buffer.read().decode("utf-8", errors="replace")
     else:
         source = Path(args.input).read_text(encoding="utf-8")
-    result = render(source, normalize_zhtw=args.zhtw)
+    try:
+        result = render(source, normalize_zhtw=args.zhtw)
+    except ZhtwVocabGuardNotFound as exc:
+        print(f"[ERROR] {exc}", file=sys.stderr)
+        return 2
     if args.output:
         with open(args.output, "w", encoding="utf-8", newline="\n") as f:
             f.write(result)

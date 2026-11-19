@@ -112,22 +112,22 @@ OpenCC 的 `cn -> tw2` 在技術文件與二次轉換（second-pass）時有幾�
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [x] **`T-20261107-02`**｜**[優先級：高]** 借鑑保哥 `scripts/zh-tw/vocab.mjs` 實作「台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具」於 `tools/verify_zhtw_vocab.py` 與單元測試
-  - **目標範圍**：`tools/verify_zhtw_vocab.py`、`tests/test_verify_zhtw_vocab.py`
+- [x] **`T-20261107-02`**｜**[優先級：高]** 借鑑保哥 `scripts/zh-tw/vocab.mjs` 實作「台灣繁體中文技術詞彙與 OpenCC 二次退化檢查／冪等修補工具」於 tools/verify_zhtw_vocab.py 與單元測試
+  - **目標範圍**：tools/verify_zhtw_vocab.py、tests/test_verify_zhtw_vocab.py（已移至 zhtw-vocab-guard）
   - **具體做法**：
     1. 實作 `apply_zhtw_vocab()`、`scan_degraded_vocab()` 與 `verify_idempotence()`，內建 OpenCC (`cn -> tw2`) 二次轉換退化修補（`連線埠→連接埠`、`隻影響→只影響`、`選一個類別型→選一個類型`、`型別別→型別`、`字面量（Literal）（Literal）→字面量（Literal）`、`瞭什麼→了什麼`）、語境多義詞還原（音訊 `寫程式→編碼`、終端機 `打印→輸出`、`參考檔案→參考文件`）及大陸動詞修補（`摁下→按下`）。
     2. 支援略過 Markdown 圍欄程式碼區塊與行內反引號反例（`skip_code=True`），並提供 `--check`、`--fix`、`--verify-idempotent` CLI。
-  - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_zhtw_vocab.py` 綠燈通過，且 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 全數通過。
+  - **驗收標準（DoD）**：執行 python -m unittest tests/test_verify_zhtw_vocab.py 綠燈通過，且 python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md 全數通過。
   - **完成日期**：2026-11-14
-  - **實作紀錄 / 證據**：修正（2026-11-14）：行內程式碼依反引號 run 長度配對；--check 遇不存在路徑、零輸入、空檔、非 UTF-8 回 2；修補反覆執行到固定點（`型別別別` → `型別`）。DoD 指令 `python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 現為 exit 0。4 項回歸測試，mutation 皆被抓到。
+  - **實作紀錄 / 證據**：修正（2026-11-14）：行內程式碼依反引號 run 長度配對；--check 遇不存在路徑、零輸入、空檔、非 UTF-8 回 2；修補反覆執行到固定點（`型別別別` → `型別`）。DoD 指令 python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md 現為 exit 0。4 項回歸測試，mutation 皆被抓到。 **搬移註記（2026-11-19）**：工具、測試與規範已移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)（保留 git 歷史）。現行指令：`python C:\GitHub\zhtw-vocab-guard\tools\verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md`。
 
-- [x] **`T-20261107-03`**｜**[優先級：中]** 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 `docs/zhtw-fork-idempotent-sync-spec.md`
-  - **目標範圍**：`docs/zhtw-fork-idempotent-sync-spec.md`
+- [x] **`T-20261107-03`**｜**[優先級：中]** 撰寫「上游簡體開源專案之零漂移繁體中文 Fork 自動同步規範（`reset from upstream + OpenCC + 冪等詞庫修補`）」收錄於 docs/zhtw-fork-idempotent-sync-spec.md
+  - **目標範圍**：docs/zhtw-fork-idempotent-sync-spec.md（已移至 zhtw-vocab-guard）
   - **具體做法**：
     1. 完整記錄保哥 `doggy8088/answer-me-with-html@zh-tw` 如何以 `.base-sha` 錨點、`git checkout -B zh-tw upstream/main` 強制重建、OpenCC + 兩層詞庫修補與雙重冪等檢驗閘門，徹底消除上游簡體專案 Fork 的合併衝突與二次轉換退化。
-  - **驗收標準（DoD）**：產出 `docs/zhtw-fork-idempotent-sync-spec.md`；以 `Test-Path docs/zhtw-fork-idempotent-sync-spec.md` 驗證存在。
+  - **驗收標準（DoD）**：產出 docs/zhtw-fork-idempotent-sync-spec.md；以 Test-Path docs/zhtw-fork-idempotent-sync-spec.md 驗證存在。
   - **完成日期**：2026-11-14
-  - **實作紀錄 / 證據**：修正（2026-11-14）：恢復被批次轉換破壞的錯誤範例；備份流程逐行對照上游 sync.sh（固定 SHA c9b003c76571b4df97407b743a057289f9b7e34c）改寫，更正原文三處與實際不符的描述（沒有備份到 $TMP、先寫 .base-sha、測試只比對白名單）。
+  - **實作紀錄 / 證據**：修正（2026-11-14）：恢復被批次轉換破壞的錯誤範例；備份流程逐行對照上游 sync.sh（固定 SHA c9b003c76571b4df97407b743a057289f9b7e34c）改寫，更正原文三處與實際不符的描述（沒有備份到 $TMP、先寫 .base-sha、測試只比對白名單）。 **搬移註記（2026-11-19）**：規範已隨檢查器移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)（保留 git 歷史），現在位置：[zhtw-fork-idempotent-sync-spec.md](https://github.com/SanHsien/zhtw-vocab-guard/blob/main/docs/zhtw-fork-idempotent-sync-spec.md)。
 
 - [x] **`T-20261107-04`**｜**[優先級：中]** 升級 `tools/render_artifact_html.py` 支援 `--zhtw` 編譯前台灣繁體中文詞庫修補並保持預設輸出位元組確定性
   - **目標範圍**：`tools/render_artifact_html.py`、`tests/test_render_artifact_html.py`
@@ -136,15 +136,15 @@ OpenCC 的 `cn -> tw2` 在技術文件與二次轉換（second-pass）時有幾�
     2. 預設未加 `--zhtw` 時維持 100% 原始位元組輸出，確保既有 `T-20261026-06` 確定性雜湊不變。
   - **驗收標準（DoD）**：執行 `python -m unittest tests/test_render_artifact_html.py` 綠燈通過。
   - **完成日期**：2026-11-07
-  - **實作紀錄 / 證據**：已於 `tools/render_artifact_html.py` 新增 `normalize_zhtw` 與 `--zhtw` 參數，並於 `tests/test_render_artifact_html.py` 新增 `test_zhtw_normalization_repairs_degraded_vocab_outside_code`，19 項測試全數通過。
+  - **實作紀錄 / 證據**：已於 `tools/render_artifact_html.py` 新增 `normalize_zhtw` 與 `--zhtw` 參數，並於 `tests/test_render_artifact_html.py` 新增 `test_zhtw_normalization_repairs_degraded_vocab_outside_code`，19 項測試全數通過。 **搬移註記（2026-11-19）**：詞彙檢查器已移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)；`--zhtw` 改從環境變數 `ZHTW_VOCAB_GUARD_HOME` 或同層的 zhtw-vocab-guard 目錄載入，找不到時印出取得方式並回 2，該項測試在找不到時改為 skip。
 
-- [x] **`T-20261107-06`**｜**[優先級：低]** 為 `tools/verify_zhtw_vocab.py` 補 `粘貼→貼上` 與數字被誤轉成「數位」的語境規則與測試
-  - **目標範圍**：`tools/verify_zhtw_vocab.py`、`tests/test_verify_zhtw_vocab.py`
+- [x] **`T-20261107-06`**｜**[優先級：低]** 為 tools/verify_zhtw_vocab.py 補 `粘貼→貼上` 與數字被誤轉成「數位」的語境規則與測試
+  - **目標範圍**：tools/verify_zhtw_vocab.py、tests/test_verify_zhtw_vocab.py（已移至 zhtw-vocab-guard）
   - **具體做法**：
     1. 來源：2026-11-16 重審時在 `doggy8088/answer-me-with-html` 的 `README.zh-TW.md` 讀到 `粘貼給你的 Agent`、`每次都得到同樣的數位`、`關鍵數位`，是該 repo 轉換管線與本機詞庫都沒涵蓋的殘留。
     2. 新增 `粘貼→貼上`（無歧義，直接替換）。
     3. 「數位」在台灣是 digital 的正確用詞，不能整詞替換；只加語境片語規則（`同樣的數位→同樣的數字`、`關鍵數位→關鍵數字`），並補一個反例測試確認「數位轉型」「數位簽章」不被改動。
     4. 兩條規則都要通過既有的冪等檢查，且不動程式碼區塊與行內反引號。
-  - **驗收標準（DoD）**：執行 `python -m unittest tests/test_verify_zhtw_vocab.py` 綠燈通過（含新增的正例與「數位轉型」反例）；`python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md` 維持 exit 0。
+  - **驗收標準（DoD）**：執行 python -m unittest tests/test_verify_zhtw_vocab.py 綠燈通過（含新增的正例與「數位轉型」反例）；python tools/verify_zhtw_vocab.py --verify-idempotent --check notes docs templates README.md 維持 exit 0。
   - **完成日期**：2026-11-17
-  - **實作紀錄 / 證據**：tools/verify_zhtw_vocab.py 新增 `粘貼→貼上` 與「數位」語境規則（含 digital 複合詞排除）、--fix 保留換行；tests/test_verify_zhtw_vocab.py 39 tests OK（含數位轉型反例）；--verify-idempotent --check notes docs templates README.md exit 0。
+  - **實作紀錄 / 證據**：tools/verify_zhtw_vocab.py 新增 `粘貼→貼上` 與「數位」語境規則（含 digital 複合詞排除）、--fix 保留換行；tests/test_verify_zhtw_vocab.py 39 tests OK（含數位轉型反例）；--verify-idempotent --check notes docs templates README.md exit 0。 **搬移註記（2026-11-19）**：工具、測試與規範已移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)（保留 git 歷史）。

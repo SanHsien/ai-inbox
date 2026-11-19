@@ -7,6 +7,7 @@ import sys
 import tempfile
 import unittest
 from html.parser import HTMLParser
+from unittest.mock import patch
 from pathlib import Path
 
 TOOL = Path(__file__).resolve().parent.parent / "tools" / "render_artifact_html.py"
@@ -124,11 +125,53 @@ class RenderTest(unittest.TestCase):
         self.assertEqual(r.render(SAMPLE), r.render(SAMPLE.replace("\n", "\r\n")))
 
     def test_zhtw_normalization_repairs_degraded_vocab_outside_code(self):
+        # 詞彙檢查器已獨立成 SanHsien/zhtw-vocab-guard；CI 上沒有那個 repo，本機有時要真的跑到。
+        try:
+            r.find_zhtw_vocab_guard()
+        except r.ZhtwVocabGuardNotFound:
+            self.skipTest("找不到 zhtw-vocab-guard（同層目錄或 ZHTW_VOCAB_GUARD_HOME）；--zhtw 的實際修補未驗證")
         draft = "## 標題\n請檢查連線埠並摁下確認，但保留 `連線埠`。\n```python\n# 連線埠\n```\n"
         doc = r.render(draft, normalize_zhtw=True)
         self.assertIn("請檢查連接埠並按下確認", doc)
         self.assertIn("<code>連線埠</code>", doc)
         self.assertIn("# 連線埠", doc)
+
+    def test_zhtw_missing_guard_gives_clear_error(self):
+        with tempfile.TemporaryDirectory() as empty, patch.dict(os.environ, {r.ZHTW_GUARD_ENV: empty}):
+            with self.assertRaises(r.ZhtwVocabGuardNotFound) as ctx:
+                r.render("## 標題\n內文\n", normalize_zhtw=True)
+            message = str(ctx.exception)
+            self.assertIn(r.ZHTW_GUARD_URL, message)
+            self.assertIn(r.ZHTW_GUARD_ENV, message)
+            # 沒開 --zhtw 時不需要那個 repo，輸出不受影響
+            self.assertEqual(r.render(SAMPLE), r.render(SAMPLE, normalize_zhtw=False))
+
+    def test_zhtw_missing_guard_cli_exits_2_without_traceback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            draft = Path(tmp) / "draft.md"
+            draft.write_text("## 標題\n內文\n", encoding="utf-8")
+            out = Path(tmp) / "out.html"
+            env = dict(os.environ, **{r.ZHTW_GUARD_ENV: tmp})
+            proc = subprocess.run(
+                [sys.executable, str(TOOL), str(draft), "-o", str(out), "--zhtw"],
+                capture_output=True, env=env,
+            )
+            stderr = proc.stderr.decode("utf-8", errors="replace")
+            self.assertEqual(proc.returncode, 2, stderr)
+            self.assertIn(r.ZHTW_GUARD_URL, stderr)
+            self.assertNotIn("Traceback", stderr)
+            self.assertFalse(out.exists())
+
+    def test_zhtw_env_home_is_used_when_set(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tools = Path(tmp) / "tools"
+            tools.mkdir()
+            (tools / "verify_zhtw_vocab.py").write_text(
+                "def apply_zhtw_vocab(text, skip_code=False):\n    return text.replace('AAA', 'BBB')\n",
+                encoding="utf-8",
+            )
+            with patch.dict(os.environ, {r.ZHTW_GUARD_ENV: tmp}):
+                self.assertIn("BBB", r.render("## 標題\nAAA\n", normalize_zhtw=True))
 
 
 class SafetyTest(unittest.TestCase):

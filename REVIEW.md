@@ -232,3 +232,25 @@
 - `README.md`：第 0 節表格新增一列，自動產生區塊重產。`ROADMAP.md`：刪除「抽成獨立 repo」那一列（本次已完成）。
 - `docs/`、`templates/`：連到被搬走檔案的連結改成新 repo 絕對網址；指令範例改指 `C:\GitHub\agent-safety-checks`。
 - 本文件第 1～13 節是歷史紀錄，不改。全域規則（`~/.claude/AGENTS.md`、agent-assets）的路徑由整合者另行處理。
+
+## 15. 繁中詞彙檢查器搬出收件匣（2026-11-19）
+
+**為什麼搬**：它能脫離收件匣單獨使用，有自己的工具與測試（工具 493 行、測試 463 行、39 項），主題集中；維護者其他 repo 也都寫繁中文件，放在收件匣裡別的 repo 用不到。符合第 6、12 節「能單獨用、有工具有測試、主題集中」的標準。
+
+**搬了什麼**：3 個檔案，新建 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)，保留原檔 git 歷史（9 個 commit）。
+- `verify_zhtw_vocab`（工具與對應測試）
+- `docs/zhtw-fork-idempotent-sync-spec.md`：主題是「OpenCC 轉換後用詞庫修補並驗冪等」的做法，第 3 節就是這支工具的契約，跟著工具走。
+
+**留下什麼**：
+- 筆記全部留下，任務勾選狀態不變。`2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork` 的主體是分析第三方 Fork，且含留在本 repo 的 `T-20261107-04`（`render_artifact_html.py --zhtw`）。
+- `docs/speak-human-tw-assessment.md` 留下：主體是評估第三方 Skill 的授權與詞表，檢查器只是對照對象；連結改指新 repo。
+- `tools/render_artifact_html.py` 留下：`--zhtw` 原本延遲匯入同目錄的檢查器，改成從環境變數 `ZHTW_VOCAB_GUARD_HOME` 或與本 repo 同層的 `zhtw-vocab-guard` 目錄載入；找不到時印出取得方式並回結束碼 2。沒加 `--zhtw` 的輸出不受影響。對應測試在找不到時 skip（CI 沒有那個 repo），另加三項不依賴該 repo 的測試（錯誤訊息、CLI 結束碼、環境變數生效）。
+
+**引用怎麼改**（照第 12、14 節前例）：
+- 筆記：連結改指新 repo 的 blob 網址；已做任務「目標範圍」與 DoD 欄帶反引號的搬走路徑改成純文字，並在「實作紀錄 / 證據」欄末尾加搬移註記。未結案的 `T-20261115-17` 的 DoD 指令改成現行路徑。
+- `docs/`：五份文件裡 2026-11-15 的驗收紀錄寫的是當時實際執行的指令，照舊保留並加註檢查器已搬走與現行指令；`speak-human-tw-assessment.md` 第 7 節同樣處理。
+- `AGENTS.md`：第 1 節補上本批搬移說明與現行檢查指令。`README.md`：第 0 節表格新增一列，自動產生區塊重產。`ROADMAP.md`：「詞彙檢查器：專名保護、支持→支援」那一列移到新 repo 的 ROADMAP。
+- 本文件第 1～14 節是歷史紀錄，不改。
+
+**已知影響**：本 repo 的 CI 從來沒有跑過詞彙檢查（只跑單元測試與 `verify_inbox`），這次沒有變；`--zhtw` 的實際修補在 CI 上會 skip，只在本機有 `zhtw-vocab-guard` 時驗到。
+

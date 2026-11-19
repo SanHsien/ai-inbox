@@ -29,7 +29,7 @@ unknown 是實際結果，不作健康推定；可能涉及權限、不可取得
 | --- | --- |
 | `pwsh -NoProfile -File tests/test_inspect_windows_agent_ops.ps1` | 0；R2 修正後 1440 assertions，五種 mock 模式、真實子程序逾時／錯誤；只解析的反例涵蓋屬性賦值／遞增／索引、Put／SetValue、New-Object／危險型別建構、任意程序啟動、FileName／引數及非自建程序終止。記憶體內逐組停用六道新限制，13 個對應反例的拒絕斷言全部轉紅（13/13 killed）；測試本身維持綠燈。 |
 | `python tools/build_index.py` | 0；README 已重產。 |
-| `python tools/verify_zhtw_vocab.py --check docs` | 0；繁中詞彙檢查通過。 |
+| `python tools/verify_zhtw_vocab.py --check docs` | 0；繁中詞彙檢查通過。（當時的紀錄；檢查器 2026-11-19 已移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)，現在改用 `python C:\GitHub\zhtw-vocab-guard\tools\verify_zhtw_vocab.py --check docs`。） |
 | `python tools/verify_inbox.py` | 0；125 篇筆記、235 項任務契約通過。 |
 | `python -m unittest discover -s tests` | 0；749 tests，169.387 秒，OK（skipped=2）。輸出中的故意缺檔／錯誤輸入訊息為反例測試，整體結束碼為 0。 |
 

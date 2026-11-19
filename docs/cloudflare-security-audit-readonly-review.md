@@ -144,6 +144,6 @@ C6 限制輸入 5 MiB、64 層巢狀、陣列 1,000 筆、錯誤最多 100；C7 
 
 固定來源、檔案清冊、已查／未查、代理預算、沙盒限制、needs_validation 用法、採納裁決及未來測試前提均見上文。文件檢查結果如下；不宣稱已跑第三方測試或完成六階段稽核。
 
-2026-11-15 整合時先執行 `python tools/build_index.py` 把本輪三份報告列入 README，再執行 `python tools/verify_zhtw_vocab.py --check docs && python tools/verify_inbox.py`：兩者結束碼 0（117 篇筆記、229 項任務），「通過 repo 文件檢查」已達成。撰寫時 README 尚未重產，inbox 檢查曾回 1，原因只有 README 過期與漏列報告。
+2026-11-15 整合時先執行 `python tools/build_index.py` 把本輪三份報告列入 README，再執行 `python tools/verify_zhtw_vocab.py --check docs && python tools/verify_inbox.py`：兩者結束碼 0（117 篇筆記、229 項任務），「通過 repo 文件檢查」已達成。撰寫時 README 尚未重產，inbox 檢查曾回 1，原因只有 README 過期與漏列報告。（詞彙檢查器已於 2026-11-19 移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)，上列指令是當時的紀錄；現在改用 `python C:\GitHub\zhtw-vocab-guard\tools\verify_zhtw_vocab.py --check docs`。）
 
 撰寫時抓來閱讀的第三方淺層來源副本放在撰寫用工作目錄的 `.work-tmp/`，沒有執行其中程式，也沒有進入本 repo 的提交。

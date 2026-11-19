@@ -89,6 +89,8 @@ Microsoft 說明任務在特定安全內容與 logon type 下執行（[官方 Se
 python tools/build_index.py && python tools/verify_zhtw_vocab.py --check docs && python tools/verify_inbox.py
 ```
 
+（詞彙檢查器已於 2026-11-19 移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)，上列指令是當時的紀錄；現在改用 `python C:\GitHub\zhtw-vocab-guard\tools\verify_zhtw_vocab.py --check docs`。）
+
 2026-11-15 執行結果：上述串接命令 exit 0，三項皆成功；README 已更新，詞彙檢查 PASS，契約驗證 PASS（125 篇筆記、235 項任務）。本輪沒有新增 runtime 需求或變更任務狀態；後續工作仍以 ROADMAP 與整合者採納結果為準。
 
 T-21 DoD 對照：本文件包含四階段資料流、能力重疊與 owner、Windows 三問、隱私邊界、人工更新／回復、停止規則與三種以上合成情境。採納既有機制、暫緩自動更新、不採納定時拉取的結論，均屬唯讀評估交付。

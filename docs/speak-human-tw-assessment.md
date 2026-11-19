@@ -9,7 +9,7 @@
 | 對象 | 固定版本／檔案 | 已查內容 |
 | --- | --- | --- |
 | Raymondhou0917/speak-human-tw | commit `14885da5c91ed7ca2972f084599edcdd2a32ad04`；SKILL frontmatter 為 v1.4.0 | LICENSE、SKILL.md、在地化詞表、patterns、protected-list、scenes、Codex 安裝說明、benchmark 與 v1.4.0 結果；另靜態抽查星數腳本與 workflow |
-| 本 repo | 基準 HEAD `f1dcebb`（`tools/`、`tests/` 與 `92a90ca` 相同） | [詞彙檢查器](../tools/verify_zhtw_vocab.py)、[現有測試](../tests/test_verify_zhtw_vocab.py)、[前端 slop 檢查器](../tools/verify_no_slop.py) |
+| 本 repo | 基準 HEAD `f1dcebb`（`tools/`、`tests/` 與 `92a90ca` 相同） | [詞彙檢查器](https://github.com/SanHsien/zhtw-vocab-guard/blob/main/tools/verify_zhtw_vocab.py)、[現有測試](https://github.com/SanHsien/zhtw-vocab-guard/blob/main/tests/test_verify_zhtw_vocab.py)（兩者 2026-11-19 已移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)，連結指向新位置的最新版，不是基準 HEAD 當時的內容）、[前端 slop 檢查器](../tools/verify_no_slop.py) |
 | Raymondhou0917/claude-code-resources | commit `1320df1e396e7630b09d2dc80fae4b2c96861d54` | 僅 [README][cc-readme] 與 [LICENSE][cc-license]，用於修正原筆記，不是安裝包安全審計 |
 
 取得方式為淺層 clone 與固定 SHA 的 raw 檔案；只把外部內容當資料閱讀，沒有載入為執行指引、執行外部腳本、測試、安裝器或 workflow。Stars、Forks 和「最後更新」的即時數字不列為穩定證據。
@@ -27,7 +27,7 @@
 
 ## 3. 本 repo 現況與能力差距
 
-檢查器共有 25 組規則（14 組 GLOBAL、11 組 DEGRADED_AND_CONTEXT），其中 `佔位符 → 佔位符` 不產生變更，實際有 24 組轉換。它以字串子串比對／替換為主，反覆轉換直到固定點；沒有詞性、實體、引文或作者語氣判斷。CLI 的 check／fix 會略過成對反引號與 Markdown 圍欄；API 的 `apply_zhtw_vocab` 預設 `skip_code=False`，呼叫端須明確選擇保護。[原始碼](../tools/verify_zhtw_vocab.py)
+檢查器共有 25 組規則（14 組 GLOBAL、11 組 DEGRADED_AND_CONTEXT），其中 `佔位符 → 佔位符` 不產生變更，實際有 24 組轉換。它以字串子串比對／替換為主，反覆轉換直到固定點；沒有詞性、實體、引文或作者語氣判斷。CLI 的 check／fix 會略過成對反引號與 Markdown 圍欄；API 的 `apply_zhtw_vocab` 預設 `skip_code=False`，呼叫端須明確選擇保護。[原始碼](https://github.com/SanHsien/zhtw-vocab-guard/blob/main/tools/verify_zhtw_vocab.py)
 
 ```text
 既有流程：Markdown -> 略過程式碼 -> 固定詞組比對 -> 告警／固定點修補
@@ -36,7 +36,7 @@
                            +-> 不能只換成一張全域替換表
 ```
 
-現有測試涵蓋二次退化、語境詞組、反引號／圍欄保護、固定點與冪等性、CLI 檢查／修補及錯誤輸入；沒有引號原話、專名、URL 或承諾條款的通用保護。聚焦測試實跑 9 項通過（第 7 節）；這不等於 38 類風格規則已受測。[測試](../tests/test_verify_zhtw_vocab.py)
+現有測試涵蓋二次退化、語境詞組、反引號／圍欄保護、固定點與冪等性、CLI 檢查／修補及錯誤輸入；沒有引號原話、專名、URL 或承諾條款的通用保護。聚焦測試實跑 9 項通過（第 7 節）；這不等於 38 類風格規則已受測。[測試](https://github.com/SanHsien/zhtw-vocab-guard/blob/main/tests/test_verify_zhtw_vocab.py)
 
 ## 4. 在地化詞表逐列對照（47 組）
 
@@ -174,6 +174,7 @@
 - 已執行 `python -m unittest discover -s tests -p test_verify_zhtw_vocab.py`：9 項通過，exit 0。只驗既有檢查器，不是執行上游 benchmark。
 - 已以本 repo 的 `apply_zhtw_vocab`／`scan_degraded_vocab` 執行第 6 節反例探測，exit 0；輸入是本次自寫案例，沒有執行第三方程式。
 - 交付文件須依序執行 `python tools/build_index.py && python tools/verify_zhtw_vocab.py --check notes docs && python tools/verify_inbox.py`；最後狀態與結束碼由交付回報記錄，不預填通過。
+- 2026-11-19 註：詞彙檢查器與測試已移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)（保留 git 歷史）。本節兩條指令是當時在本 repo 內執行的紀錄，照舊保留；現在要重跑，測試改在該 repo 執行，文件檢查改用 `python C:\GitHub\zhtw-vocab-guard\tools\verify_zhtw_vocab.py --check notes docs`。本文「本 repo 的檢查器」均指搬移前的位置。
 - 未實跑上游 42 條 benchmark、互動確認、模型改寫、跨平台安裝與 Prompt Injection 測試；未安裝、未複製 Skill 到私有 repo，未修改檢查器或測試。安全邊界是文字規範，不是工具權限或 OS 隔離。
 - [Codex 安裝說明][install] 開頭稱沒有全域自動發現，後文又列依版本而定的 skills 目錄，內部說法不一致；本次不採納其安裝指令，現行 Codex 發現機制與安裝可行性未另驗。
 

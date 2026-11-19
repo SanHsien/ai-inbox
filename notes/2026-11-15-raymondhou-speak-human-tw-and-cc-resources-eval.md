@@ -98,7 +98,7 @@ tags:
 
 | 倉庫 | 判斷 | 理由與邊界 |
 | --- | --- | --- |
-| speak-human-tw | 暫不 Fork／安裝；借鏡保護清單與少量候選詞 | 本 repo 的[詞彙器](../tools/verify_zhtw_vocab.py)是固定字串轉換，不能承擔多數語義編輯規則；47 組詞表與 38 類逐列裁決、具體候選與反例見[評估](../docs/speak-human-tw-assessment.md)。任何實際收錄另走安全關卡與授權保留。 |
+| speak-human-tw | 暫不 Fork／安裝；借鏡保護清單與少量候選詞 | [詞彙器](https://github.com/SanHsien/zhtw-vocab-guard/blob/main/tools/verify_zhtw_vocab.py)（2026-11-19 起獨立成 zhtw-vocab-guard）是固定字串轉換，不能承擔多數語義編輯規則；47 組詞表與 38 類逐列裁決、具體候選與反例見[評估](../docs/speak-human-tw-assessment.md)。任何實際收錄另走安全關卡與授權保留。 |
 | claude-code-resources | 本輪不 Fork／搬運 | 是入門學習資源，Starter Kit 有非商用／相同方式分享條件；未證明本環境需要導入，不因 Mac 安裝包就否定 Windows 教材價值（Windows 原生 PowerShell 的安全刪除做法已在 [#12](https://github.com/Raymondhou0917/claude-code-resources/issues/12) 後補進教材）。教材指令曾多次寫錯套件名稱、也有讀者照做後 Google Cloud 專案被停權（[#4](https://github.com/Raymondhou0917/claude-code-resources/issues/4)），照做前要逐條核對官方文件。[README](https://github.com/Raymondhou0917/claude-code-resources/blob/1320df1e396e7630b09d2dc80fae4b2c96861d54/README.md) |
 
 原筆記所稱本機已安裝 `human-writing`、配置比上游完整與整合互補，本輪未查證，撤回確定敘述。`verify_no_slop.py` 是前端 HTML／CSS 設計與少量英文黑話檢查，不能當繁中 38 類規則的等價實作。[本機原始碼](../tools/verify_no_slop.py)
@@ -106,8 +106,8 @@ tags:
 ## 4. 拆解待辦事項（Action Items）
 
 - [x] **`T-20261115-16`**｜**[優先級：低]** 唯讀評估 speak-human-tw 的授權、47 組詞表與 38 類痕跡，不修改檢查器或安裝 Skill
-  - **目標範圍**：本筆記與 `docs/speak-human-tw-assessment.md`；對照 `tools/verify_zhtw_vocab.py` 及其既有測試，均只讀。
+  - **目標範圍**：本筆記與 `docs/speak-human-tw-assessment.md`；對照 tools/verify_zhtw_vocab.py 及其既有測試（已移至 zhtw-vocab-guard），均只讀。
   - **具體做法**：固定來源 commit，核對 LICENSE、詞表、patterns、保護清單與 benchmark；修正過度宣稱。逐列比較詞表與 38 類規則，記錄覆蓋、缺口、衝突、候選正例／反例與採納裁決；明示公開 repo 與 `SanHsien/agent-assets`（私有）的複製條件。不執行上游程式，不改檢查器、全域設定或私有 repo。
-  - **驗收標準（DoD）**：產出 `docs/speak-human-tw-assessment.md`，含固定 SHA／來源連結、授權與未查證權利範圍、47 組詞表及 38 類逐列對照、既有原始碼／測試證據、具體候選規則與反例、明確裁決及未實測項目。執行 `python tools/build_index.py`、`python tools/verify_zhtw_vocab.py --check notes docs`、`python tools/verify_inbox.py` 並回報各結束碼；任何失敗不得宣稱通過。
+  - **驗收標準（DoD）**：產出 `docs/speak-human-tw-assessment.md`，含固定 SHA／來源連結、授權與未查證權利範圍、47 組詞表及 38 類逐列對照、既有原始碼／測試證據、具體候選規則與反例、明確裁決及未實測項目。執行 `python tools/build_index.py`、python tools/verify_zhtw_vocab.py --check notes docs、`python tools/verify_inbox.py` 並回報各結束碼；任何失敗不得宣稱通過。
   - **完成日期**：2026-11-15
-  - **實作紀錄 / 證據**：完成（2026-11-15）：docs/speak-human-tw-assessment.md，固定 Raymondhou0917/speak-human-tw 14885da（MIT），47 組詞表與 38 類規則逐列對照 tools/verify_zhtw_vocab.py。實測引號、URL、專名會被改寫，`服務器`、`支持` 目前沒有規則。裁決：先補保護範圍再試候選規則，不整包加入全域替換；後續工作已列入 ROADMAP。筆記撤回「安全性極高」、更正 claude-code-resources 授權為 CC BY-NC-SA 4.0。Codex 撰寫，Fable 獨立複審通過；未執行上游程式，檢查器本身未改。
+  - **實作紀錄 / 證據**：完成（2026-11-15）：docs/speak-human-tw-assessment.md，固定 Raymondhou0917/speak-human-tw 14885da（MIT），47 組詞表與 38 類規則逐列對照 tools/verify_zhtw_vocab.py。實測引號、URL、專名會被改寫，`服務器`、`支持` 目前沒有規則。裁決：先補保護範圍再試候選規則，不整包加入全域替換；後續工作已列入 ROADMAP（2026-11-19 隨檢查器移至 [zhtw-vocab-guard 的 ROADMAP](https://github.com/SanHsien/zhtw-vocab-guard/blob/main/ROADMAP.md)）。筆記撤回「安全性極高」、更正 claude-code-resources 授權為 CC BY-NC-SA 4.0。Codex 撰寫，Fable 獨立複審通過；未執行上游程式，檢查器本身未改。 **搬移註記（2026-11-19）**：對照的檢查器與測試已移至 [`SanHsien/zhtw-vocab-guard`](https://github.com/SanHsien/zhtw-vocab-guard)（保留 git 歷史）；評估文件留在本 repo。
