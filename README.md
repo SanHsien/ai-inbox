@@ -466,6 +466,7 @@
 | 2026-11-19 | 🔴 | [Threads 情報與官方架構核實：Anthropic《Building Always-On Agents》五大原語與 Opus 5.5 成本結構](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md) | `always-on-agents`, `anthropic`, `opus-5-5` | 0 / 1 |
 | 2026-11-19 | ⚪ | [Threads 情報與留言評估：Antigravity /swarm 實戰邊界、pipeline 防翻車三原則與 antigravity2-TW 安全提醒](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md) | `antigravity`, `swarm`, `teamwork` | 0 / 0 |
 | 2026-11-19 | 🔴 | [Codex 中文社群討論與 25 則留言全景：Claude Code + Codex CLI 自動協作、額度接續與工具生態矩陣](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) | `claude-code`, `codex-cli`, `multi-agent` | 0 / 1 |
+| 2026-11-19 | ⚪ | [Threads 案例與留言評估：用 Codex 驅動開源 ACE-Step 1.5 + ffmpeg 本地免費生成 AI 音樂](./notes/2026-11-19-eason13419-codex-ace-step-1-5-local-music.md) | `ace-step`, `music-generation`, `codex` | 0 / 0 |
 | 2026-11-19 | 🔴 | [Threads 情報評估：Claude-BugHunter（elementalsouls/Claude-BugHunter）82 款資安技能包與 681 條漏洞模式庫](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | `claude-code`, `security`, `bug-bounty` | 0 / 1 |
 | 2026-11-19 | 🔴 | [Woshipm 長文評估：LobeHub（Super-agent 組織化協作）與 lobehub/acceptance 實事求是驗收架構](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) | `lobehub`, `super-agent`, `acceptance` | 0 / 1 |
 | 2026-11-19 | ⚪ | [Threads 討論評估：@0mar_samad《網站與 AI 應用六大 Skills》及留言區 Verification Gate 三態防線](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md) | `skills`, `ui-ux-pro-max`, `impeccable` | 0 / 0 |
@@ -558,6 +559,7 @@
 - AI爬蟲MCP工具：[Scrapling爬蟲與MCP](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md)
 - 本地會議筆記工具：[Yogurt本地會議筆記](./notes/2026-11-17-yogurt-local-ai-meeting-notes.md)
 - 短影音提示詞Skill：[AI短片分鏡提示詞Skill](./notes/2026-11-19-ann-cheng-muse-ai-short-video-skill.md)
+- 本地AI音樂工具：[ACE-Step1.5本地音樂](./notes/2026-11-19-eason13419-codex-ace-step-1-5-local-music.md)
 - 開源資安Skill包：[Claude-BugHunter評估](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
@@ -683,8 +685,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_tool_fallback_matrix.py`](./tools/verify_tool_fallback_matrix.py) | 檢查「產出導向工具流矩陣」設定檔（JSON）：五條產出路徑都要有主力與合格備援， | [`tests/test_verify_tool_fallback_matrix.py`](./tests/test_verify_tool_fallback_matrix.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 75 份）
-<details><summary>展開查看全部 75 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 76 份）
+<details><summary>展開查看全部 76 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -701,6 +703,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/ai-influencer-claims-check.md`](./docs/ai-influencer-claims-check.md) | AI 網紅與數位人口播流程宣稱查證報告（Claims Verification） |
 | [`docs/ai-persona-compliance-checklist.md`](./docs/ai-persona-compliance-checklist.md) | AI 生成人物與聲音使用合規檢查清單（AI Persona Compliance Checklist） |
 | [`docs/ai-shared-memory-engineering-spec.md`](./docs/ai-shared-memory-engineering-spec.md) | 多 Agent 團隊共用記憶系統工程規範 |
+| [`docs/always-on-relay-gap-check.md`](./docs/always-on-relay-gap-check.md) | agent-relay 對照常駐 Agent 五原語的缺口盤點 |
 | [`docs/android-cli-plugin-windows-validation.md`](./docs/android-cli-plugin-windows-validation.md) | Android CLI Plugin 在 Windows 11 之安裝安全評估與整合驗證報告 |
 | [`docs/android-official-skills-anti-hallucination.md`](./docs/android-official-skills-anti-hallucination.md) | Google Android 官方 Skills 深度盤點與現代 Android 開發防幻覺手冊 |
 | [`docs/anti-ai-slop-frontend.md`](./docs/anti-ai-slop-frontend.md) | 反 AI 罐頭設計前端工程規範 (Anti-AI-Slop Frontend Guidelines) |
