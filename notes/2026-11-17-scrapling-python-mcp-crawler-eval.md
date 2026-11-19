@@ -11,7 +11,7 @@ source_review: full
 source_images: 0
 source_replies: 139
 source_reviewed_at: "2026-11-18"
-status: pending
+status: archived
 cluster: 3
 cluster_role: "AI爬蟲MCP工具"
 short_title: "Scrapling爬蟲與MCP"
@@ -30,7 +30,7 @@ tags:
 - **官方 GitHub**：[`D4Vinci/Scrapling`](https://github.com/D4Vinci/Scrapling)（作者 Karim Shoair，BSD-3-Clause）
 - **發布平台 / 作者**：`Threads` / `@keny0109`（`2026-11-14`）
 - **分析日期**：`2026-11-17`
-- **當前狀態**：`🔴 待辦 (Pending)`
+- **當前狀態**：`⚪ 已封存 (Archived)`
 
 ---
 
@@ -61,12 +61,14 @@ tags:
   - 提供三層抓取器：`Fetcher`（HTTP + TLS 指紋偽裝）、`DynamicFetcher`（動態瀏覽器渲染）、`StealthyFetcher`（隱身過盾），以及類 Scrapy 併發蜘蛛與原生 `scrapling mcp` 指令（支援 `uvx` 啟動，將原始 HTML 在本地洗成結構化資料／Markdown 再交給 LLM，節省大量上下文 token）。
 - **與本機工具鏈比較**：
   - 本機已有 `Agent-Reach`（社群/平台路由）與 `browser` subagent / Playwright MCP（視覺互動）；但針對「一般技術文件／靜態或輕量動態網頁批次轉成乾淨 RAG Markdown 並以 MCP 供給 Agent（節省 context token）」，尚未實測 `Scrapling` 與 `Crawl4AI` 在 Windows 11 原生環境的相容性與品質表現。
+- **查證註記（2026-11-19，`T-20261117-01` 實測）**：詳見 [`docs/scrapling-windows-eval.md`](../docs/scrapling-windows-eval.md)。留言裡三項未附出處的說法核對結果：Python 3.10 以上**正確**；「MCP Server 是 v0.5 之後加的」**不正確**，v0.3（2025-09-01）就有；「`StealthyFetcher` 是改過的 Firefox」對現行版本**不正確**，v0.3.13 起改用 Chromium（`patchright`）。Adaptive Parser 的靜默誤配在本機離線測試重現（目標元素不存在時回傳別的元素，沒有訊號）；「約 47%」這個比例仍找不到出處。實測沒有涵蓋瀏覽器與隱身功能，「過盾」維持未驗證。
 
 ---
 
 ## 3. 拆解出的待辦任務 (Action Items)
 
 - [ ] **`T-20261117-01`**｜**[優先級：低]** 在 Windows 11 獨立沙盒實測 `D4Vinci/Scrapling` 的 `scrapling mcp` 與 Markdown 清洗品質
+  - **狀態**：⚪ 不做（靜態檢視與沙盒實測已完成並寫入 docs/scrapling-windows-eval.md（Scrapling@2998c9e、scrapling==0.5.1：基本 Fetcher 轉 Markdown 三頁、隱藏內容清洗 17 例擋 10 例、Adaptive 靜默誤配重現、scrapling mcp 啟動列出 17 個工具）；DoD 的「經 MCP 轉 Markdown」刻意不做：MCP 抓取工具預設偽裝瀏覽器指紋，且結論是不把 scrapling mcp 接給 agent；安全檢查工具 exit 1 經人工複核判為誤判）
   - **目標範圍**：`C:\GitHub\_sandbox\scrapling-eval`（獨立 venv，不污染系統環境）與 `C:\GitHub\ai-inbox\docs\scrapling-windows-eval.md`
   - **執行步驟**：
     1. 靜態檢視 `D4Vinci/Scrapling` 的 `pyproject.toml` 與 `mcp` 模組原始碼（確認無可疑背景連線或自動執行 hook）；順便對照官方文件核對留言裡三項未附出處的說法：Python 最低版本、MCP Server 從哪一版開始提供、`StealthyFetcher` 底層用哪個瀏覽器。

@@ -11,7 +11,7 @@ source_review: full
 source_images: 1
 source_replies: 25
 source_reviewed_at: "2026-11-19"
-status: pending
+status: done
 cluster: 1
 cluster_role: "雙CLI協作生態全景"
 short_title: "Claude+Codex協作全景"
@@ -30,7 +30,7 @@ tags:
 - **來源貼文**：[Facebook Codex 中文社群貼文（Nicky Lui）](https://www.facebook.com/groups/1713764039757273/permalink/1889438188856523/)（原分享連結 `https://www.facebook.com/share/p/1UQiQzpdzv/`）
 - **發布平台 / 作者**：`Facebook (Codex 中文社群)` / `Nicky Lui`（並彙整 25 則留言與實拍圖）
 - **分析日期**：`2026-11-19`
-- **當前狀態**：`🔴 待辦 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-18-multi-agent-factory-magpie-herdr-routing.md`](./2026-10-18-multi-agent-factory-magpie-herdr-routing.md)（Herdr 多代理終端復用）
   - [`notes/2026-11-15-openai-codex-plugin-cc-collaboration.md`](./2026-11-15-openai-codex-plugin-cc-collaboration.md)（OpenAI 官方 `codex-plugin-cc`）
@@ -62,15 +62,20 @@ tags:
   - 本機 `agent-relay` + `claude -p` / `codex exec` + `claim_evidence_guard` + `quality_gate.py` + 全局「派工要掌控到完成」規則，正正符合留言 #22/#25 與 #21 的實務共識（重規格與證據閘門、不迷信重框架）。
 - **值得進一步唯讀對照的新專案**：
   - **`bruce601080102/ccc-mcp`** 主打的「**版本化共用上下文防覆蓋**」、「**Host-run tests + Git Diff 計算證據覆蓋率評分**」與「**任務狀態保存後跨 Agent（Claude → Codex）無縫接續**」，非常值得與本機 `agent-relay` / `agent-advisor` 做一次只讀架構比對，看看有哪些設計可直接借鏡吸收（**不直接 pip 安裝到主環境**）。
+- **查證註記（2026-11-19，T-20261119-02 唯讀檢閱）**：
+  - `ccc-mcp`（commit `782c75ad`）的三項主打功能在原始碼都找得到對應實作；其中「證據覆蓋率」的需求覆蓋那一項是關鍵字重疊，容易灌水。
+  - 額度不足改派與限流誤判防護，本機 `agent-relay` 已較完整；可借鏡的是「零測試不算綠燈」與「驗證紀錄分等級」，詳見 [`docs/ccc-mcp-architecture-review.md`](../docs/ccc-mcp-architecture-review.md)。
 
 ---
 
 ## 3. 拆解出的待辦任務 (Action Items)
 
-- [ ] **`T-20261119-02`**｜**[優先級：低]** 唯讀檢閱 `bruce601080102/ccc-mcp` 與本機 `agent-relay`／`claim_evidence_guard` 進行架構對照
+- [x] **`T-20261119-02`**｜**[優先級：低]** 唯讀檢閱 `bruce601080102/ccc-mcp` 與本機 `agent-relay`／`claim_evidence_guard` 進行架構對照
   - **目標範圍**：`C:\GitHub\_sandbox\ccc-mcp-audit` 與 `C:\GitHub\ai-inbox\docs\ccc-mcp-architecture-review.md`
   - **執行步驟**：
     1. 僅唯讀 clone `bruce601080102/ccc-mcp` 至沙盒目錄（不執行 `pip install` 或啟動 MCP server）。
     2. 檢視其實作「版本化共用上下文防覆蓋」、「本機測試 + Git Diff 證據覆蓋率評分」與「跨 Agent 額度 fallback 任務狀態恢復」的核心程式碼與資料結構。
     3. 對照本機 `agent-relay` 與 `claim_evidence_guard`，整理可借鏡或本機已更完善的項目至 `docs/ccc-mcp-architecture-review.md`。
   - **驗收標準（DoD）**：產出 `docs/ccc-mcp-architecture-review.md` 記錄核心模組原始碼對照與可借鏡點（或明確不採納理由），且 `python tools/verify_inbox.py` 驗證通過。
+  - **完成日期**：2026-11-19
+  - **實作紀錄 / 證據**：docs/ccc-mcp-architecture-review.md；唯讀檢閱 commit 782c75ad，三主題附原始碼行號並與 agent-relay 0cabfe33、harness-guard ec38c1d 逐項對照；結論不整套採用，列 2 項可借鏡與 4 項不採納理由

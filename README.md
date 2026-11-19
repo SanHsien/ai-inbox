@@ -39,24 +39,18 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 248 項任務：🔴 未做 7／🟡 進行中 0／🟢 已做 163／⚪ 不做 78
+> 共 248 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 168／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261119-03` | 🔴 未做 | 中 | 在沙盒唯讀檢閱 `lobehub/acceptance` 架構與 `.acceptances/` 多模態驗收規格 | `C:\GitHub\_sandbox\lobehub-acceptance-audit` 與 `C:\GitHub\ai-inbox\docs\lobehub-acceptance-eval.md` | [2026-11-19-lobehub-super-agent-and-acceptance-eval](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) | 2026-11-19 |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
-| `T-20261117-01` | 🔴 未做 | 低 | 在 Windows 11 獨立沙盒實測 `D4Vinci/Scrapling` 的 `scrapling mcp` 與 Markdown 清洗品質 | `C:\GitHub\_sandbox\scrapling-eval`（獨立 venv，不污染系統環境）與 `C:\GitHub\ai-inbox\docs\scrapling-windows-eval.md` | [2026-11-17-scrapling-python-mcp-crawler-eval](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) | 2026-11-17 |
-| `T-20261118-01` | 🔴 未做 | 低 | 在 `docs/model-burn-rate-routing-matrix.md` 增補 Gemini 4 Carbon / Argon 官方基準、定價時間窗與作弊率對照 | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（新增一節收錄 Google Gemini 4 Carbon / Argon 路由對照，不更動第 1–10 節既有實測結構） | [2026-11-18-gemini-4-carbon-argon-swarm-evals](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md) | 2026-11-18 |
-| `T-20261119-01` | 🔴 未做 | 低 | 對 `elementalsouls/Claude-BugHunter` 進行零信任安全審查與漏洞檢查清單評估 | `C:\GitHub\_sandbox\claude-bughunter-audit` 與 `C:\GitHub\ai-inbox\docs\claude-bughunter-security-audit.md` | [2026-11-19-elementalsouls-claude-bughunter-eval](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | 2026-11-19 |
-| `T-20261119-02` | 🔴 未做 | 低 | 唯讀檢閱 `bruce601080102/ccc-mcp` 與本機 `agent-relay`／`claim_evidence_guard` 進行架構對照 | `C:\GitHub\_sandbox\ccc-mcp-audit` 與 `C:\GitHub\ai-inbox\docs\ccc-mcp-architecture-review.md` | [2026-11-19-codex-claude-multi-agent-orchestration-landscape](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) | 2026-11-19 |
-| `T-20261119-04` | 🔴 未做 | 低 | 對照 Anthropic 五大原語檢視 `agent-relay` 的事件去重（Idempotency）與 Outbox 通知節流機制 | `C:\GitHub\agent-relay`（只讀盤點既有派工／訊息佇列設計）與 `C:\GitHub\ai-inbox\docs\always-on-relay-gap-check.md` | [2026-11-19-anthropic-building-always-on-agents-blueprint](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md) | 2026-11-19 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 163 項）</summary>
+<details><summary>展開查看已完成任務（共 168 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -223,12 +217,17 @@
 | `T-20261115-19` | 2026-11-15 | 補齊既有敘事影片分鏡規範的連戲、讀音與人工審片條件 | 完成（2026-11-15，SanHsien/code-as-video-studio main e3d1252）：templates/cinematic-storyboard-template.md 補上連戲、讀音、人工決策欄位；新增 docs/narrative-video-review-sop.md，七項建議逐條評估、不一律設硬閘門；新增 docs/evidence/narrative-review-examples.md 合成範例。52 tests、specs 檢查通過。獨立複審通過。未生成影片、未呼叫付費或中國服務。 | [2026-11-15-higgsfield-mcp-opus55-video-review-report](./notes/2026-11-15-higgsfield-mcp-opus55-video-review-report.md) |
 | `T-20261115-20` | 2026-11-15 | 產出 Windows 11 常駐 Agent 維運規格與唯讀現況檢查，不代改系統設定 | 完成（2026-11-15）：docs/windows-24x7-agent-ops-spec.md、tools/inspect_windows_agent_ops.ps1、tests/test_inspect_windows_agent_ops.ps1、docs/evidence/windows-agent-ops-readonly-check.md。檢查腳本只讀現況；測試擋下成員賦值、危險型別建構（New-Object、::new、型別轉換共用一份清單）、任意程序啟動與外部 Kill，共 1486 項斷言、16/16 mutation killed；複驗員的 13 個繞法全部被拒。實際設定與人工恢復驗收由維護者執行，已列入 ROADMAP。複審兩輪後通過。 | [2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) |
 | `T-20261115-21` | 2026-11-15 | 唯讀評估共享技能跨機更新與既有發布流程的缺口，不建立自動拉取排程 | 完成（2026-11-15）：docs/agent-assets-cross-machine-sync-assessment.md 只寫抽象結論。建議沿用既有發布與漂移檢查，暫緩新增自動拉取排程（git pull 不是唯讀，更新 repo 也不等於部署技能）。獨立複審通過。 | [2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture](./notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md) |
+| `T-20261118-01` | 2026-11-19 | 在 `docs/model-burn-rate-routing-matrix.md` 增補 Gemini 4 Carbon / Argon 官方基準、定價時間窗與作弊率對照 | docs/model-burn-rate-routing-matrix.md 新增第 11 節：Gemini 4 Carbon／Argon 官方基準、API 價格時間窗（12-01 兩者同步翻倍）與作弊率對照，數字附 Google 官方網址與查閱日 2026-11-19；第 1–10 節未動 | [2026-11-18-gemini-4-carbon-argon-swarm-evals](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md) |
+| `T-20261119-01` | 2026-11-19 | 對 `elementalsouls/Claude-BugHunter` 進行零信任安全審查與漏洞檢查清單評估 | docs/claude-bughunter-security-audit.md；唯讀審查 commit 0e70a021，安全掃描 exit 1（54 FAIL／51 REVIEW 已逐類人工判讀），無惡意 hook，但引擎以略過權限模式啟動、安裝腳本改 profile 並執行未固定版本的第四方安裝程式；結論不安裝，只借鏡兩段純文字清單 | [2026-11-19-elementalsouls-claude-bughunter-eval](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) |
+| `T-20261119-02` | 2026-11-19 | 唯讀檢閱 `bruce601080102/ccc-mcp` 與本機 `agent-relay`／`claim_evidence_guard` 進行架構對照 | docs/ccc-mcp-architecture-review.md；唯讀檢閱 commit 782c75ad，三主題附原始碼行號並與 agent-relay 0cabfe33、harness-guard ec38c1d 逐項對照；結論不整套採用，列 2 項可借鏡與 4 項不採納理由 | [2026-11-19-codex-claude-multi-agent-orchestration-landscape](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) |
+| `T-20261119-03` | 2026-11-19 | 在沙盒唯讀檢閱 `lobehub/acceptance` 架構與 `.acceptances/` 多模態驗收規格 | docs/lobehub-acceptance-eval.md；唯讀檢閱 commit 5e9115da，記錄八步工作流、.acceptances/ 目錄與 result.json 欄位、對 verification-protocol 的 10 項對照（5 項建議採用）；lh CLI 不在 repo 內標未查證，結論不安裝只借鏡規則 | [2026-11-19-lobehub-super-agent-and-acceptance-eval](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) |
+| `T-20261119-04` | 2026-11-19 | 對照 Anthropic 五大原語檢視 `agent-relay` 的事件去重（Idempotency）與 Outbox 通知節流機制 | docs/always-on-relay-gap-check.md：對照 agent-relay@0cabfe3 五原語逐項列出已覆蓋與缺口（附路徑:行號）與 R1–R9 建議；agent-relay 未改動 | [2026-11-19-anthropic-building-always-on-agents-blueprint](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md) |
 
 </details>
 
 ### ⚪ 不做 / 已關閉（Archived）
 
-<details><summary>展開查看已關閉或評估不做的任務（共 78 項）</summary>
+<details><summary>展開查看已關閉或評估不做的任務（共 79 項）</summary>
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 關閉理由 | 來源分析文章 |
 | :--- | :---: | :---: | :--- | :--- | :--- |
@@ -310,6 +309,7 @@
 | `T-20261115-08` | ⚪ 不做 | 高 | 建立《AI-Native 一人接案營運總綱》（`docs/ai-agency-delivery-playbook.md`），串聯現有診斷、建站、審查與維運範本成端到端流水線 | 2026-11-15 獨立審查：沒有維護者經營接案業務、客戶、預算或月費交付責任的需求證據，候選獲客服務多須額外付費。日後明確要做，先定案型、客戶與交付範圍再寫商業文件 | [2026-11-15-ai-native-agency-retainer-and-org-playbook](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) |
 | `T-20261115-09` | ⚪ 不做 | 中 | 建立「建置導入＋月費維運（Retainer）提案與邊界範本」（`templates/agency-retainer-proposal-template.md`） | 2026-11-15 獨立審查：同 T-20261115-08，沒有接案需求證據；SLA 與商業條款須有真實服務邊界，不能由 AI 假設客戶與報價 | [2026-11-15-ai-native-agency-retainer-and-org-playbook](./notes/2026-11-15-ai-native-agency-retainer-and-org-playbook.md) |
 | `T-20261115-13` | ⚪ 不做 | 低 | 評估於 `SanHsien/agent-relay` 的 `result` 回報與 `accept` 驗收清單支援顯示 Demo 影片附件路徑（`refs` / `result` 證據整合，不另開 Repo） | 2026-11-15 獨立審查：envelope@1 已接受 refs 字串、CLI 已有可重複的 --ref，沒有無法保存或讀取影片引用的反例，也沒有高亮顯示的使用需求與驗收案例；先由 T-20261115-12 說明證據交付方式，不改 protocol 或 accept | [2026-11-15-cross-agent-pr-demo-video-delivery-workflow](./notes/2026-11-15-cross-agent-pr-demo-video-delivery-workflow.md) |
+| `T-20261117-01` | ⚪ 不做 | 低 | 在 Windows 11 獨立沙盒實測 `D4Vinci/Scrapling` 的 `scrapling mcp` 與 Markdown 清洗品質 | 靜態檢視與沙盒實測已完成並寫入 docs/scrapling-windows-eval.md（Scrapling@2998c9e、scrapling==0.5.1：基本 Fetcher 轉 Markdown 三頁、隱藏內容清洗 17 例擋 10 例、Adaptive 靜默誤配重現、scrapling mcp 啟動列出 17 個工具）；DoD 的「經 MCP 轉 Markdown」刻意不做：MCP 抓取工具預設偽裝瀏覽器指紋，且結論是不把 scrapling mcp 接給 agent；安全檢查工具 exit 1 經人工複核判為誤判 | [2026-11-17-scrapling-python-mcp-crawler-eval](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) |
 
 </details>
 <!-- END GENERATED: tasks -->
@@ -456,19 +456,19 @@
 | 2026-11-16 | ⚪ | [Facebook 貼文與留言評估：陳盟升（Darkschen）兩顆 5TB Google Drive 邊載邊傳備份開源大模型](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md) | `open-weights`, `google-drive`, `backup` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文與留言串評估：不依賴單一 AI 的本地 Skill/Handoff/Memory 工作流](./notes/2026-11-16-isaac-wong-ai-agnostic-local-workflow-comments.md) | `claude-code`, `handoff`, `markdown-memory` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文評估：Jack Liu《重開機一鍵復原》工具開發與 Claude 協作四原則](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md) | `vibe-coding`, `windows`, `reboot-restore` | 0 / 0 |
-| 2026-11-17 | 🔴 | [Threads 情報與留言評估：Scrapling（D4Vinci/Scrapling）Python 爬蟲框架與原生 MCP Server](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) | `scrapling`, `web-scraping`, `mcp` | 0 / 1 |
+| 2026-11-17 | ⚪ | [Threads 情報與留言評估：Scrapling（D4Vinci/Scrapling）Python 爬蟲框架與原生 MCP Server](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) | `scrapling`, `web-scraping`, `mcp` | 0 / 0（+1 不做） |
 | 2026-11-17 | ⚪ | [Threads 情報評估：Yogurt（FrigadeHQ/yogurt）跨平台本地隱私 AI 會議筆記開源替代品](./notes/2026-11-17-yogurt-local-ai-meeting-notes.md) | `yogurt`, `meeting-notes`, `whisper-cpp` | 0 / 0 |
 | 2026-11-18 | ⚪ | [Threads 事實查核與評估：所謂 Claude「AI Council」實為標題黨與單對話五角色 Prompt 範本](./notes/2026-11-18-claude-ai-council-prompt-fact-check.md) | `claude`, `prompt-engineering`, `fact-check` | 0 / 0 |
-| 2026-11-18 | 🔴 | [Woshipm 深度評測評估：Gemini 4 Carbon / Argon 基準、作弊率對比、Antigravity /swarm 與 API 調價](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md) | `gemini-4-carbon`, `gemini-4-argon`, `antigravity` | 0 / 1 |
+| 2026-11-18 | 🟢 | [Woshipm 深度評測評估：Gemini 4 Carbon / Argon 基準、作弊率對比、Antigravity /swarm 與 API 調價](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md) | `gemini-4-carbon`, `gemini-4-argon`, `antigravity` | 1 / 1 |
 | 2026-11-19 | ⚪ | [Threads 情報評估：@agentprompts.ai 的 Claude 分析 Instagram Insights 七組 Prompt 與 Gumroad 導流模式](./notes/2026-11-19-agentprompts-claude-instagram-insights-prompts.md) | `claude`, `instagram-insights`, `prompt-engineering` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 資源評估：ai-portrait-gallery.pages.dev 日系 AI 模型人臉與造型 CC0 參考庫](./notes/2026-11-19-ai-portrait-gallery-cc0-face-reference.md) | `ai-portrait`, `cc0`, `character-consistency` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例與留言評估：Ann Cheng《AI 短片腳本與分鏡提示詞》Skill 與 Google Flow 圖生影片管線](./notes/2026-11-19-ann-cheng-muse-ai-short-video-skill.md) | `muse-ai`, `video-generation`, `google-flow` | 0 / 0 |
-| 2026-11-19 | 🔴 | [Threads 情報與官方架構核實：Anthropic《Building Always-On Agents》五大原語與 Opus 5.5 成本結構](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md) | `always-on-agents`, `anthropic`, `opus-5-5` | 0 / 1 |
+| 2026-11-19 | 🟢 | [Threads 情報與官方架構核實：Anthropic《Building Always-On Agents》五大原語與 Opus 5.5 成本結構](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md) | `always-on-agents`, `anthropic`, `opus-5-5` | 1 / 1 |
 | 2026-11-19 | ⚪ | [Threads 情報與留言評估：Antigravity /swarm 實戰邊界、pipeline 防翻車三原則與 antigravity2-TW 安全提醒](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md) | `antigravity`, `swarm`, `teamwork` | 0 / 0 |
-| 2026-11-19 | 🔴 | [Codex 中文社群討論與 25 則留言全景：Claude Code + Codex CLI 自動協作、額度接續與工具生態矩陣](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) | `claude-code`, `codex-cli`, `multi-agent` | 0 / 1 |
+| 2026-11-19 | 🟢 | [Codex 中文社群討論與 25 則留言全景：Claude Code + Codex CLI 自動協作、額度接續與工具生態矩陣](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) | `claude-code`, `codex-cli`, `multi-agent` | 1 / 1 |
 | 2026-11-19 | ⚪ | [Threads 案例與留言評估：用 Codex 驅動開源 ACE-Step 1.5 + ffmpeg 本地免費生成 AI 音樂](./notes/2026-11-19-eason13419-codex-ace-step-1-5-local-music.md) | `ace-step`, `music-generation`, `codex` | 0 / 0 |
-| 2026-11-19 | 🔴 | [Threads 情報評估：Claude-BugHunter（elementalsouls/Claude-BugHunter）82 款資安技能包與 681 條漏洞模式庫](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | `claude-code`, `security`, `bug-bounty` | 0 / 1 |
-| 2026-11-19 | 🔴 | [Woshipm 長文評估：LobeHub（Super-agent 組織化協作）與 lobehub/acceptance 實事求是驗收架構](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) | `lobehub`, `super-agent`, `acceptance` | 0 / 1 |
+| 2026-11-19 | 🟢 | [Threads 情報評估：Claude-BugHunter（elementalsouls/Claude-BugHunter）82 款資安技能包與 681 條漏洞模式庫](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | `claude-code`, `security`, `bug-bounty` | 1 / 1 |
+| 2026-11-19 | 🟢 | [Woshipm 長文評估：LobeHub（Super-agent 組織化協作）與 lobehub/acceptance 實事求是驗收架構](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) | `lobehub`, `super-agent`, `acceptance` | 1 / 1 |
 | 2026-11-19 | ⚪ | [Threads 討論評估：@0mar_samad《網站與 AI 應用六大 Skills》及留言區 Verification Gate 三態防線](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md) | `skills`, `ui-ux-pro-max`, `impeccable` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
 <!-- END GENERATED: index -->
@@ -685,8 +685,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_tool_fallback_matrix.py`](./tools/verify_tool_fallback_matrix.py) | 檢查「產出導向工具流矩陣」設定檔（JSON）：五條產出路徑都要有主力與合格備援， | [`tests/test_verify_tool_fallback_matrix.py`](./tests/test_verify_tool_fallback_matrix.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 76 份）
-<details><summary>展開查看全部 76 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 80 份）
+<details><summary>展開查看全部 80 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -711,7 +711,9 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/blast-radius-code-review-guide.md`](./docs/blast-radius-code-review-guide.md) | 爆破半徑審查（Blast Radius Review）與核心 5 檔案門檻指南 |
 | [`docs/buzz-nas-deployment-and-heartbeat-spec.md`](./docs/buzz-nas-deployment-and-heartbeat-spec.md) | Buzz 私有化 NAS 常駐部署、預算路由與額度心跳協議規格 |
 | [`docs/buzz-nostr-agent-architecture.md`](./docs/buzz-nostr-agent-architecture.md) | Block Buzz 架構解析與 Nostr + ACP/MCP 代理人協同設計指引 |
+| [`docs/ccc-mcp-architecture-review.md`](./docs/ccc-mcp-architecture-review.md) | ccc-mcp 架構唯讀檢閱：與 agent-relay、claim-guard 的對照 |
 | [`docs/claude-advisor-cost-check.md`](./docs/claude-advisor-cost-check.md) | Claude Code 原生顧問（`/advisor`）計費與快取行為查證 |
+| [`docs/claude-bughunter-security-audit.md`](./docs/claude-bughunter-security-audit.md) | Claude-BugHunter 零信任安全審查：不安裝，只借鏡兩段純文字清單 |
 | [`docs/claude-code-domain-skill-packs-and-mcp-audit.md`](./docs/claude-code-domain-skill-packs-and-mcp-audit.md) | Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範 |
 | [`docs/claude-code-mods-windows-validation.md`](./docs/claude-code-mods-windows-validation.md) | Claude Code Mods 自體改造機制 Windows 11 本機二進位深度查驗與替代方案驗證報告 |
 | [`docs/claude-idle-compaction-setup.md`](./docs/claude-idle-compaction-setup.md) | Claude Code 閒置壓縮（Idle Compaction）Windows 11 本地配置與實測指南 |
@@ -740,6 +742,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/irrefutable-evidence-and-invalid-patterns-spec.md`](./docs/irrefutable-evidence-and-invalid-patterns-spec.md) | 無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範 |
 | [`docs/karpathy-rules-mechanical-hardening-spec.md`](./docs/karpathy-rules-mechanical-hardening-spec.md) | Karpathy 四原則工程加固指引：從 Prompt 到硬閘門 |
 | [`docs/llmjacking-cloud-defense-spec.md`](./docs/llmjacking-cloud-defense-spec.md) | 雲端算力竊盜防禦：LLMJacking、AMOS 與延遲式自動停用 |
+| [`docs/lobehub-acceptance-eval.md`](./docs/lobehub-acceptance-eval.md) | lobehub/acceptance 唯讀檢閱：驗收回合格式與本機 verification-protocol 的借鏡點 |
 | [`docs/local-svg-logo-options-review.md`](./docs/local-svg-logo-options-review.md) | 本機 SVG Logo 方案唯讀比較 |
 | [`docs/model-burn-rate-routing-matrix.md`](./docs/model-burn-rate-routing-matrix.md) | 長程並行開發：模型選型與配額消耗速查表（Sol 6.1／Terra 6.1／Astra 6／Luna 6） |
 | [`docs/multi-agent-parallel-dispatch-spec.md`](./docs/multi-agent-parallel-dispatch-spec.md) | 四 Agent 平行派工協議與人類審核門檻規範 |
@@ -755,6 +758,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/reverse-engineering-pipeline-spec.md`](./docs/reverse-engineering-pipeline-spec.md) | REA + CLI-Anything 逆向分析與功能重造流水線規格 (Reverse Engineering Pipeline Spec) |
 | [`docs/saas-subscription-and-api-defense-spec.md`](./docs/saas-subscription-and-api-defense-spec.md) | SaaS 訂閱與 API 鑑權防繞過架構設計規範 |
 | [`docs/scan-to-threejs-spatial-agent-spec.md`](./docs/scan-to-threejs-spatial-agent-spec.md) | 空間運算 Agent 規範：LiDAR 測量、Three.js 程式化建模與相機內參比對閉環 |
+| [`docs/scrapling-windows-eval.md`](./docs/scrapling-windows-eval.md) | Scrapling 在 Windows 11 的沙盒實測 |
 | [`docs/source-review-sop.md`](./docs/source-review-sop.md) | 筆記原始資料重審 SOP |
 | [`docs/speak-human-tw-assessment.md`](./docs/speak-human-tw-assessment.md) | speak-human-tw 唯讀評估 |
 | [`docs/target-story-generative-ui-spec.md`](./docs/target-story-generative-ui-spec.md) | 靶心人故事編輯器 Generative UI 互動規格 (Target Story Generative UI Spec) |

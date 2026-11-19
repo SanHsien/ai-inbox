@@ -11,7 +11,7 @@ source_images: 1
 source_replies: 6
 source_reviewed_at: "2026-11-19"
 source_review_note: "主貼文、1張Event Inbox預覽圖表、作者3則續樓及3則網友留言已讀完；貼文標示7則留言中另有1則未於未登入視圖呈現"
-status: pending
+status: done
 cluster: 1
 cluster_role: "常駐Agent五原語"
 short_title: "Always-On架構指南"
@@ -30,7 +30,7 @@ tags:
 - **轉載解析文**：[`aiposthub.com/claude-always-on-agents-inbox-memory-outbox`](https://www.aiposthub.com/claude-always-on-agents-inbox-memory-outbox/)
 - **發布平台 / 作者**：`Threads` / `@aiposthub`（`2026-11-14`）；原架構指南作者 `William Hu (Anthropic)`
 - **分析日期**：`2026-11-19`
-- **當前狀態**：`🔴 待辦 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md`](./2026-11-15-hujiaxi-24x7-local-agent-cluster-architecture.md)（24×7 本地多機 Agent 架構分析）
   - [`notes/2026-10-21-agent-relay-pipeline-phase4.md`](./2026-10-21-agent-relay-pipeline-phase4.md)（本機 `agent-relay` 通訊與任務管線）
@@ -62,15 +62,18 @@ tags:
 - **與本機架構比對**：
   - 本機已有 `Hermes`、`agent-relay`、`schedule` 計時器喚醒、以及全域協作規範「派工要掌控到完成」，涵蓋了 `Timers`、`Memory` 與 `Permissions` 基礎。
   - 唯對照 Anthropic 五大原語，可進一步檢查本機 `C:\GitHub\agent-relay` 目前在 **Event Inbox 冪等去重（同事件 ID 重複投遞自動 `dropped`）** 與 **Outbox 主動回報節流／靜默分級** 兩項機制是否已具備或需補齊設計規範，作為 24×7 無人值守穩定性的最後拼圖。
+- **查證註記（2026-11-19，`T-20261119-04`）**：對照結果見 [`docs/always-on-relay-gap-check.md`](../docs/always-on-relay-gap-check.md)。重讀官方原文後修正兩點：原文要求的是「一個**收件匣**同時只有一個工作中的 worker」，不是每個串流；原文的 Outbox 一節沒有給節流或彙整的具體數字，只說需要控制節奏時再加 outbox 資料表與分派器。盤點結論：`agent-relay` 的事件去重與單一工人大部分已有（同 id 拒收、一張工單一個工人），主要缺口在對人的通知沒有彙整與優先級過濾。
 
 ---
 
 ## 3. 拆解出的待辦任務 (Action Items)
 
-- [ ] **`T-20261119-04`**｜**[優先級：低]** 對照 Anthropic 五大原語檢視 `agent-relay` 的事件去重（Idempotency）與 Outbox 通知節流機制
+- [x] **`T-20261119-04`**｜**[優先級：低]** 對照 Anthropic 五大原語檢視 `agent-relay` 的事件去重（Idempotency）與 Outbox 通知節流機制
   - **目標範圍**：`C:\GitHub\agent-relay`（只讀盤點既有派工／訊息佇列設計）與 `C:\GitHub\ai-inbox\docs\always-on-relay-gap-check.md`
   - **執行步驟**：
     1. 檢視 `C:\GitHub\agent-relay` 現有訊息收件與分派邏輯，確認是否已處理「重複事件 ID 去重（dropped）」與「同一串流單一 worker 鎖定」。
     2. 檢視目前向使用者／主對話回報結果的機制，評估是否需要加入 Outbox 靜默原則（批次彙整、節流不洗版）與 Deferred Tool Calls 暫停續跑規範。
     3. 將現況對照結果與可選改進建議記錄於 `docs/always-on-relay-gap-check.md`（不直接修改 `agent-relay` 程式碼）。
   - **驗收標準（DoD）**：產出 `docs/always-on-relay-gap-check.md` 清楚列出 `agent-relay` 對照 `Inbox / Timers / Memory / Permissions / Outbox` 五原語的已覆蓋項目與缺口建議，且 `python tools/verify_inbox.py` 驗證通過。
+  - **完成日期**：2026-11-19
+  - **實作紀錄 / 證據**：docs/always-on-relay-gap-check.md：對照 agent-relay@0cabfe3 五原語逐項列出已覆蓋與缺口（附路徑:行號）與 R1–R9 建議；agent-relay 未改動

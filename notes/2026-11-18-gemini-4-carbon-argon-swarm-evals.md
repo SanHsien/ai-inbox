@@ -10,7 +10,7 @@ source_review: full
 source_images: 3
 source_replies: 0
 source_reviewed_at: "2026-11-18"
-status: pending
+status: done
 cluster: 1
 cluster_role: "Carbon模型路由"
 short_title: "Gemini4 Carbon評測"
@@ -29,7 +29,7 @@ tags:
 - **官方方法論來源（圖 2/3 標註）**：`deepmind.google/models/evals-methodology/gemini-4-carbon`（並經搜尋 Google / DeepMind 定價頁面核實）
 - **發布平台 / 作者**：`woshipm` / `易安说AI`（`2026-11-12`）
 - **分析日期**：`2026-11-18`
-- **當前狀態**：`🔴 待辦 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md)（多模型選型與配額消耗速查表）
 
@@ -63,14 +63,17 @@ tags:
   - 現有 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 主要涵蓋 OpenAI Codex（Sol 6.1 / Terra 6.1 / Astra 6 / Luna 6），尚未收錄 `Gemini 4 Carbon` 與 `Gemini 4 Argon` 的能力邊界、1M 長上下文優勢（`GraphWalks 96.2%`）、11/30 優惠轉正價格（`$2/$10` → `$4/$20`）以及反作弊實證。
 - **對 Antigravity `/swarm` 協作的驗證**：
   - 本機 Antigravity 已原生內建 `swarm` 工具，文章所述「主節點架構分析 + 快速模型實作 + 審查與執行驗證」與本機現有 `orchestration` 路由一致，無需額外建置工具。
+- **查證註記（2026-11-19，`T-20261118-01`）**：已回到 Google 官方頁面逐一核對，結果寫在 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 第 11 節。本筆記列出的基準、價格與作弊率數字都對得上官方來源；要補充的有三點：(1) 12-01 的漲價 Argon 與 Carbon **同日同幅度**，不是只有 Carbon；(2) Argon 的作弊率與兩組警示率只出現在官方部落格的圖片裡，官方文字只寫了 Carbon 的 0.0%／0.4%；(3) 圖下方引用的方法論文件全文沒有提到作弊稽核怎麼做，這組數字屬廠商自述。
 
 ---
 
 ## 3. 拆解出的待辦任務 (Action Items)
 
-- [ ] **`T-20261118-01`**｜**[優先級：低]** 在 `docs/model-burn-rate-routing-matrix.md` 增補 Gemini 4 Carbon / Argon 官方基準、定價時間窗與作弊率對照
+- [x] **`T-20261118-01`**｜**[優先級：低]** 在 `docs/model-burn-rate-routing-matrix.md` 增補 Gemini 4 Carbon / Argon 官方基準、定價時間窗與作弊率對照
   - **目標範圍**：`C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（新增一節收錄 Google Gemini 4 Carbon / Argon 路由對照，不更動第 1–10 節既有實測結構）
   - **執行步驟**：
     1. 依據圖 2／圖 3 標註之 DeepMind 官方方法論與 Google API 定價資訊，整理 `Gemini 4 Carbon` vs `Gemini 4 Argon` 能力定位（長上下文 `GraphWalks 96.2%`、`Terminal-Bench 4.0` 65.2% vs `FrontierSWE 2` / `OSWorld-2.1` 對比）、定價轉換（2026-11-30 前 `$2/$10`、12-01 起 `$4/$20`）與 `Cheating on evals`（0.0% vs 2.4%）警示。
     2. 標明資料分級（【官方】定價與方法論基準 vs【轉載文章整理】案例敘述），並更新 `docs/model-burn-rate-routing-matrix.md` 頂部更新摘要。
   - **驗收標準（DoD）**：`docs/model-burn-rate-routing-matrix.md` 已新增 Gemini 4 Carbon / Argon 路由與反作弊對照章節，且執行 `python tools/verify_inbox.py` 通過契約驗證。
+  - **完成日期**：2026-11-19
+  - **實作紀錄 / 證據**：docs/model-burn-rate-routing-matrix.md 新增第 11 節：Gemini 4 Carbon／Argon 官方基準、API 價格時間窗（12-01 兩者同步翻倍）與作弊率對照，數字附 Google 官方網址與查閱日 2026-11-19；第 1–10 節未動

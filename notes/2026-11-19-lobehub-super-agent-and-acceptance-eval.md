@@ -12,7 +12,7 @@ source_images: 24
 source_replies: 0
 source_reviewed_at: "2026-11-19"
 source_review_note: "正文6315字與評論區0則已全讀；33張圖中已實讀24張（圖1至23及圖32），圖0題圖與圖24至31共9張依停止指令未展開"
-status: pending
+status: done
 cluster: 1
 cluster_role: "組織化Agent與驗收"
 short_title: "LobeHub與Acceptance"
@@ -34,7 +34,7 @@ tags:
   - `LobeHub`（83.7K Stars / Docker 部署 700 萬+，含 Chief Agent Operator 與 Skills 市場）
 - **發布平台 / 作者**：`woshipm` / `袋鼠帝`（`2026-11-05`）
 - **分析日期**：`2026-11-19`
-- **當前狀態**：`🔴 待辦 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md`](./2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md)（DSH 主動代理探討）
   - [`notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md`](./2026-11-19-codex-claude-multi-agent-orchestration-landscape.md)（多代理協作與證據驗收生態）
@@ -63,15 +63,20 @@ tags:
   - 本機既有 `claim_evidence_guard`、`verification-protocol` 與「Worker 不直接對外發言、主協調統一彙報與對帳」原則，與文中 Router/Worker 隔離與「拒絕拿假圖糊弄」理念高度一致。
 - **具體值得借鏡的新拼圖：`lobehub/acceptance`**：
   - 目前本機的 `claim_evidence_guard` 主要把關文字/指令輸出證據；對於 **UI／Web 前端類任務的「可觀察檢查項 `C1..Cn` 拆解 + 截圖/錄屏/控制台日誌打包 + 多輪打回紀錄（`.acceptances/`）」**，開源的 `lobehub/acceptance`（`lh acceptance`）提供了一套標準化 CLI 與 `.acceptances/` 產物結構，極具參考價值。
+- **查證註記（2026-11-19，T-20261119-03 唯讀檢閱）**：
+  - `lobehub/acceptance`（commit `5e9115da`）只含技能文件與輔助腳本；做驗證、產生報告頁與上傳的 `lh` CLI 不在 repo 內，未查證。
+  - repo 裡沒有 `C1..Cn` 的命名規定，檢查項識別碼是 `plan[].id` 自由字串；文章截圖的 `C1..C5` 應是該次執行自取的識別碼（未查證）。借鏡項目見 [`docs/lobehub-acceptance-eval.md`](../docs/lobehub-acceptance-eval.md)。
 
 ---
 
 ## 3. 拆解出的待辦任務 (Action Items)
 
-- [ ] **`T-20261119-03`**｜**[優先級：中]** 在沙盒唯讀檢閱 `lobehub/acceptance` 架構與 `.acceptances/` 多模態驗收規格
+- [x] **`T-20261119-03`**｜**[優先級：中]** 在沙盒唯讀檢閱 `lobehub/acceptance` 架構與 `.acceptances/` 多模態驗收規格
   - **目標範圍**：`C:\GitHub\_sandbox\lobehub-acceptance-audit` 與 `C:\GitHub\ai-inbox\docs\lobehub-acceptance-eval.md`
   - **執行步驟**：
     1. 僅以唯讀方式 clone `lobehub/acceptance` 至沙盒目錄（不執行安裝腳本或 `lh login`）。
     2. 檢閱其 `SKILL.md`、檢查項 `C1..Cn` 結構定義、`.acceptances/` 目錄產物格式及無頭瀏覽器截圖/錄屏採證流程。
     3. 評估如何將其「可觀察檢查清單 + 多輪打回沉澱」機制借鏡至本機 UI／端到端驗證協議，將完整評析寫入 `docs/lobehub-acceptance-eval.md`。
   - **驗收標準（DoD）**：產出 `docs/lobehub-acceptance-eval.md`，記錄 `lobehub/acceptance` 核心工作流、`.acceptances/` 格式與本機 `verification-protocol` 可借鏡項目，且 `python tools/verify_inbox.py` 驗證通過。
+  - **完成日期**：2026-11-19
+  - **實作紀錄 / 證據**：docs/lobehub-acceptance-eval.md；唯讀檢閱 commit 5e9115da，記錄八步工作流、.acceptances/ 目錄與 result.json 欄位、對 verification-protocol 的 10 項對照（5 項建議採用）；lh CLI 不在 repo 內標未查證，結論不安裝只借鏡規則
