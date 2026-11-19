@@ -464,6 +464,7 @@
 | 2026-11-19 | ⚪ | [Threads 情報與留言評估：Antigravity /swarm 實戰邊界、pipeline 防翻車三原則與 antigravity2-TW 安全提醒](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md) | `antigravity`, `swarm`, `teamwork` | 0 / 0 |
 | 2026-11-19 | 🔴 | [Codex 中文社群討論與 25 則留言全景：Claude Code + Codex CLI 自動協作、額度接續與工具生態矩陣](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) | `claude-code`, `codex-cli`, `multi-agent` | 0 / 1 |
 | 2026-11-19 | 🔴 | [Threads 情報評估：Claude-BugHunter（elementalsouls/Claude-BugHunter）82 款資安技能包與 681 條漏洞模式庫](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | `claude-code`, `security`, `bug-bounty` | 0 / 1 |
+| 2026-11-19 | ⚪ | [Threads 討論評估：@0mar_samad《網站與 AI 應用六大 Skills》及留言區 Verification Gate 三態防線](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md) | `skills`, `ui-ux-pro-max`, `impeccable` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -522,6 +523,7 @@
 - 向量幾何Logo與MCP：[Rikyū幾何Logo與MCP](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md)
 - MCP圖資與程式化動畫：[RunwayMCP拼貼動畫Prompt](./notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md)
 - CC0人臉參考庫：[CC0日系AI人臉庫](./notes/2026-11-19-ai-portrait-gallery-cc0-face-reference.md)
+- 網站六技能與驗證閘：[建站六技能與驗證討論](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md)
 - 海報視覺解構Prompt：[關聖帝君瑞士Riso海報](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
