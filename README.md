@@ -460,6 +460,7 @@
 | 2026-11-19 | ⚪ | [Threads 情報評估：@agentprompts.ai 的 Claude 分析 Instagram Insights 七組 Prompt 與 Gumroad 導流模式](./notes/2026-11-19-agentprompts-claude-instagram-insights-prompts.md) | `claude`, `instagram-insights`, `prompt-engineering` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例與留言評估：Ann Cheng《AI 短片腳本與分鏡提示詞》Skill 與 Google Flow 圖生影片管線](./notes/2026-11-19-ann-cheng-muse-ai-short-video-skill.md) | `muse-ai`, `video-generation`, `google-flow` | 0 / 0 |
 | 2026-11-19 | 🔴 | [Threads 情報評估：Claude-BugHunter（elementalsouls/Claude-BugHunter）82 款資安技能包與 681 條漏洞模式庫](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | `claude-code`, `security`, `bug-bounty` | 0 / 1 |
+| 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -514,6 +515,7 @@
 - 前端Glitch視覺特效：[POUND0423故障特效評估](./notes/2026-11-15-pound0423-single-html-glitch-vfx-eval.md)
 - 向量幾何Logo與MCP：[Rikyū幾何Logo與MCP](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md)
 - MCP圖資與程式化動畫：[RunwayMCP拼貼動畫Prompt](./notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md)
+- 海報視覺解構Prompt：[關聖帝君瑞士Riso海報](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
