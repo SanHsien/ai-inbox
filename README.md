@@ -39,13 +39,14 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 246 項任務：🔴 未做 5／🟡 進行中 0／🟢 已做 163／⚪ 不做 78
+> 共 247 項任務：🔴 未做 6／🟡 進行中 0／🟢 已做 163／⚪ 不做 78
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
+| `T-20261119-03` | 🔴 未做 | 中 | 在沙盒唯讀檢閱 `lobehub/acceptance` 架構與 `.acceptances/` 多模態驗收規格 | `C:\GitHub\_sandbox\lobehub-acceptance-audit` 與 `C:\GitHub\ai-inbox\docs\lobehub-acceptance-eval.md` | [2026-11-19-lobehub-super-agent-and-acceptance-eval](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) | 2026-11-19 |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
 | `T-20261117-01` | 🔴 未做 | 低 | 在 Windows 11 獨立沙盒實測 `D4Vinci/Scrapling` 的 `scrapling mcp` 與 Markdown 清洗品質 | `C:\GitHub\_sandbox\scrapling-eval`（獨立 venv，不污染系統環境）與 `C:\GitHub\ai-inbox\docs\scrapling-windows-eval.md` | [2026-11-17-scrapling-python-mcp-crawler-eval](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) | 2026-11-17 |
 | `T-20261118-01` | 🔴 未做 | 低 | 在 `docs/model-burn-rate-routing-matrix.md` 增補 Gemini 4 Carbon / Argon 官方基準、定價時間窗與作弊率對照 | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（新增一節收錄 Google Gemini 4 Carbon / Argon 路由對照，不更動第 1–10 節既有實測結構） | [2026-11-18-gemini-4-carbon-argon-swarm-evals](./notes/2026-11-18-gemini-4-carbon-argon-swarm-evals.md) | 2026-11-18 |
@@ -464,6 +465,7 @@
 | 2026-11-19 | ⚪ | [Threads 情報與留言評估：Antigravity /swarm 實戰邊界、pipeline 防翻車三原則與 antigravity2-TW 安全提醒](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md) | `antigravity`, `swarm`, `teamwork` | 0 / 0 |
 | 2026-11-19 | 🔴 | [Codex 中文社群討論與 25 則留言全景：Claude Code + Codex CLI 自動協作、額度接續與工具生態矩陣](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) | `claude-code`, `codex-cli`, `multi-agent` | 0 / 1 |
 | 2026-11-19 | 🔴 | [Threads 情報評估：Claude-BugHunter（elementalsouls/Claude-BugHunter）82 款資安技能包與 681 條漏洞模式庫](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md) | `claude-code`, `security`, `bug-bounty` | 0 / 1 |
+| 2026-11-19 | 🔴 | [Woshipm 長文評估：LobeHub（Super-agent 組織化協作）與 lobehub/acceptance 實事求是驗收架構](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) | `lobehub`, `super-agent`, `acceptance` | 0 / 1 |
 | 2026-11-19 | ⚪ | [Threads 討論評估：@0mar_samad《網站與 AI 應用六大 Skills》及留言區 Verification Gate 三態防線](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md) | `skills`, `ui-ux-pro-max`, `impeccable` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
 <!-- END GENERATED: index -->
@@ -501,6 +503,7 @@
 - IG數據分析Prompt：[Claude分析IG數據Prompt](./notes/2026-11-19-agentprompts-claude-instagram-insights-prompts.md)
 - Swarm實戰與繁中包：[Antigravity蜂群與繁中](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md)
 - 雙CLI協作生態全景：[Claude+Codex協作全景](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md)
+- 組織化Agent與驗收：[LobeHub與Acceptance](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
