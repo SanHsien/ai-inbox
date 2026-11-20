@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 248 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 168／⚪ 不做 79
+> 共 249 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 168／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -47,6 +47,7 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
+| `T-20261120-01` | 🔴 未做 | 低 | 唯讀審查 `citrolabs/ego-lite` 安全性、授權與 Windows CLI `handOff` 流程評估 | `C:\GitHub\_sandbox\ego-lite-audit` 與 `C:\GitHub\ai-inbox\docs\ego-lite-security-eval.md` | [2026-11-20-citrolabs-ego-lite-browser-handoff-eval](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) | 2026-11-20 |
 
 ### 🟢 已做（Done）
 
@@ -471,6 +472,7 @@
 | 2026-11-19 | 🟢 | [Woshipm 長文評估：LobeHub（Super-agent 組織化協作）與 lobehub/acceptance 實事求是驗收架構](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) | `lobehub`, `super-agent`, `acceptance` | 1 / 1 |
 | 2026-11-19 | ⚪ | [Threads 討論評估：@0mar_samad《網站與 AI 應用六大 Skills》及留言區 Verification Gate 三態防線](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md) | `skills`, `ui-ux-pro-max`, `impeccable` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
+| 2026-11-20 | 🔴 | [Facebook 實測評估：Ego Lite（citrolabs/ego-lite）人機協作瀏覽器與 handOff 機制及安全邊界](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) | `ego-lite`, `browser-automation`, `human-in-the-loop` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -561,6 +563,7 @@
 - 短影音提示詞Skill：[AI短片分鏡提示詞Skill](./notes/2026-11-19-ann-cheng-muse-ai-short-video-skill.md)
 - 本地AI音樂工具：[ACE-Step1.5本地音樂](./notes/2026-11-19-eason13419-codex-ace-step-1-5-local-music.md)
 - 開源資安Skill包：[Claude-BugHunter評估](./notes/2026-11-19-elementalsouls-claude-bughunter-eval.md)
+- 人機協作瀏覽器：[Ego Lite協作瀏覽器](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
