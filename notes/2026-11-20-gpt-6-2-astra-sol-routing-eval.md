@@ -12,7 +12,7 @@ source_replies: 0
 source_reviewed_at: "2026-11-20"
 status: pending
 cluster: 1
-cluster_role: "GPT-6.2雙模型與路由"
+cluster_role: "GPT-6.2雙模型路由"
 short_title: "GPT-6.2雙模型與路由"
 tags:
   - openai

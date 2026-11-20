@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 252 項任務：🔴 未做 4／🟡 進行中 0／🟢 已做 169／⚪ 不做 79
+> 共 253 項任務：🔴 未做 5／🟡 進行中 0／🟢 已做 169／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,6 +50,7 @@
 | `T-20261120-02` | 🔴 未做 | 低 | 將 `Gemini Decision 1`（Decisions API）前置路由／安全守門定位補入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（與 `T-20261118-01` 協同增補 Google 模型選型章節） | [2026-11-20-gemini-decision-1-decisions-api-eval](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | 2026-11-20 |
 | `T-20261120-03` | 🔴 未做 | 低 | 將 `Gemini 4 Neon` / `Hydrogen` / `GPT-6.2 Sol` 基準與雙模型接力數據補入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（可與 `T-20261118-01`、`T-20261120-02` 合併更新 Google 生態章節） | [2026-11-20-antigravity-gemini4-neon-12-prompts-eval](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | 2026-11-20 |
 | `T-20261120-04` | 🔴 未做 | 低 | 沙盒唯讀安檢並評估 `DeusData/codebase-memory-mcp` 與 `oil-oil/agy-fast-io` | `C:\GitHub\_sandbox\agy-plugins-audit` 與 `C:\GitHub\ai-inbox\docs\agy-fast-io-and-codebase-memory-audit.md` | [2026-11-20-antigravity-gemini4-neon-12-prompts-eval](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | 2026-11-20 |
+| `T-20261120-05` | 🔴 未做 | 低 | 將 OpenAI GPT-6.2 Astra / Sol 定價、快取折扣與生產級六階段路由架構納入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（可與 `T-20261120-02`、`T-20261120-03` 合併更新） | [2026-11-20-gpt-6-2-astra-sol-routing-eval](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) | 2026-11-20 |
 
 ### 🟢 已做（Done）
 
@@ -478,6 +479,7 @@
 | 2026-11-20 | 🔴 | [Woshipm 長文評估：Gemini 4 Neon 實測基準、Antigravity 12 項配置與第三方插件零信任審查](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | `antigravity`, `gemini-4-neon`, `gemini-4-hydrogen` | 0 / 2 |
 | 2026-11-20 | 🟢 | [Facebook 實測評估：Ego Lite（citrolabs/ego-lite）人機協作瀏覽器與 handOff 機制及安全邊界](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) | `ego-lite`, `browser-automation`, `human-in-the-loop` | 1 / 1 |
 | 2026-11-20 | 🔴 | [InfoQ 深度評析：Gemini Decision 1 與 Decisions API（$0.10/M 輸入、零輸出費、0.0250 ECE 低誤差路由模型）](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | `gemini-decision-1`, `decisions-api`, `model-routing` | 0 / 1 |
+| 2026-11-20 | 🔴 | [Woshipm 評估：OpenAI GPT-6.2 Astra 與 Sol 雙模型發布、基準實測與六階段生產級路由架構](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) | `openai`, `gpt-6-2-astra`, `gpt-6-2-sol` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -516,6 +518,7 @@
 - 雙CLI協作生態全景：[Claude+Codex協作全景](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md)
 - 組織化Agent與驗收：[LobeHub與Acceptance](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md)
 - 決策路由專用模型：[Gemini Decision 1](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md)
+- GPT-6.2雙模型路由：[GPT-6.2雙模型與路由](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
