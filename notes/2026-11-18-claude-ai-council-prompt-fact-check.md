@@ -42,16 +42,16 @@ tags:
 - **網友回應與查證（貼文計數 28 則，登入後讀完 23 則，見下方「登入補讀完成」）**：
   - **`@oneeyebob.edelfeldt` 直接拆穿**：`False. Not a feature, just a prompt.`
   - **`@meta.ai` 回覆補充**：明確澄清並非 Claude 官方新功能或新按鈕，而是角色扮演 Prompt 玩法與 9 個模板。
-  - **`@cambaugh` / `@milan_jurkulak` / `@continuous_lex` / `@therealdlzen`**：指出該玩法已流傳多時（`soooo 6 months ago`），並質疑此類「多角色自辯」消耗 token 與訂閱額度。
+  - **`@cambaugh` / `@milan_jurkulak` / `@therealdlzen`**：指出該玩法已流傳多時（`@cambaugh`：council 是半年前的東西），並質疑此類「多角色自辯」消耗 token 與訂閱額度。初版分析另列了 `@continuous_lex`，2026-11-20 登入後兩種排序都找不到這則，可能已刪除，不再採計。
   - **外部搜尋查證**：經查詢確認 **Anthropic 官方並無任何名為 `AI Council` 或 `Council` 的內建功能**；業界類似概念多指 Karpathy 的跨模型 `llm-council` 或社群自製插件（如 `claude-council`）。
-- **2026-11-20 補讀（最新排序，未登入只顯示 8 則）**：
+- **2026-11-20 補讀（先以未登入的最新排序讀到 8 則，登入後讀完全部，見本段末）**：
   - `@circle_uni` 說自己先前花時間做了一個叫 council 的斜線指令，看到貼文後以為「居然有官方的可以用」——這是讀者真的被標題誤導的實例。
   - `@georgercadam` 表示早就這樣用 Claude；`@booker_0211` 說這就是思考帽那一類的多角度思考法；`@jodenathan`、`@dexterng.dev` 是嘲諷與玩笑，沒有新資訊。
   - `@meta.ai` 那則是網友標記後由 Meta AI 帳號自動產生的回覆，不是權威來源；它的結論（不是官方新按鈕）與本筆記的查證一致，但不能單獨拿來當證據。
   - 2026-11-20 再查一次：Anthropic 官方消息頁查不到名為 Council 的產品功能；官方用過 council 一詞的是顧問委員會這類治理組織（例如 [國家安全與公部門顧問委員會](https://anthropic.com/news/introducing-the-anthropic-national-security-and-public-sector-advisory-council)），與產品功能無關。
-  - **2026-11-20 登入補讀完成**：貼文計數 28 則，平台顯示 25 則已全部讀完，差 3 則登入後也不顯示。25 則＝作者 9 則續樓加 14 則留言與回覆（含 `meta.ai` 自動回覆 1 則）再加 2 則引用貼文（`@joelopez.design` 引用並加了一句與 AI 顧問團寫信有關的話、`@comingupforairuk` 純引用）。熱門、最新兩種排序都捲到底，列出同一批人，「顯示回覆」已展開。`source_replies` 填 23（續樓加留言，不含引用）。
+  - **2026-11-20 登入補讀完成**：貼文計數 28 則，平台顯示 23 則已全部讀完，差 5 則登入後也不顯示。23 則＝作者 9 則續樓加 14 則留言與回覆（含 `@raidleaer.lin_r3` 標記 `meta.ai` 問「這在說啥」與 `meta.ai` 的自動回覆）。熱門、最新兩種排序都捲到底，列出同一批人，`@therealdlzen` 底下的「顯示回覆」已展開。另有 2 則引用貼文（`@joelopez.design` 加了一句與 AI 顧問團寫信有關的玩笑、`@comingupforairuk` 純引用），引用是否算進計數無法確認，不拿來補差額。`source_replies` 填 23。
   - **新讀到的留言**：`@therealdlzen` 質疑多角色辯論只是更快燒額度，`@dazman88` 在其回覆串開玩笑；`@nycdad.txreboot` 酸說設一個顧問團就能做出更糟的網路影片，不如做真正的事業；`@therealest_chi_` 說自己試了結果普普。都是意見，沒有新事實、沒有人貼出官方公告，也沒有人推翻本筆記結論。
-  - **對分析的影響**：兩種排序讀完後，反駁「這只是提示詞」的聲音一致（`@oneeyebob.edelfeldt`、`@cambaugh`、`@booker_0211`），沒有任何留言證實官方有 Council 功能；結論不變，仍是標題黨加單回合角色扮演提示詞。
+  - **對分析的影響**：兩種排序讀完後，指出「這不是功能，只是提示詞」的聲音一致（`@oneeyebob.edelfeldt`、`@cambaugh`、`@booker_0211`），沒有任何留言證實官方有 Council 功能；結論不變，仍是標題黨加單回合角色扮演提示詞。
 - **原始資料對分析的影響**：若僅看主文與圖片極易誤信為 Anthropic 重大產品更新；結合續樓內容、網友反駁與官方查證後，確認為**誤導性標題黨（Clickbait）＋基礎單回合角色扮演 Prompt**。
 
 ---
