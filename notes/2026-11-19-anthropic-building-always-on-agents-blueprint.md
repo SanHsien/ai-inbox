@@ -6,11 +6,10 @@ source_platform: "Threads / aiposthub / Anthropic"
 author: "@aiposthub (AI郵報) / William Hu (Anthropic)"
 analyzed_at: "2026-11-19"
 analyzed_by: "antigravity"
-source_review: partial
+source_review: full
 source_images: 1
 source_replies: 6
 source_reviewed_at: "2026-11-20"
-source_review_note: "2026-11-20 補讀時內建瀏覽器仍是未登入狀態（頁面出現登入視窗），熱門與最新兩種排序都只顯示同樣 6 則（作者 3 則續樓加 3 則網友留言）；貼文計數 7 則，差的 1 則要登入才能確認。主貼文與 1 張預覽圖已讀"
 status: done
 cluster: 1
 cluster_role: "常駐Agent五原語"
@@ -43,7 +42,7 @@ tags:
 - **主貼文與 3 則續樓**：整理 Anthropic 公開的 `Always-On Agents` 架構五大核心原語（`Inbox`、`Timers`、`Memory`、`Permissions`、`Outbox`），強調常駐並非 24 小時連續運算，而是「平時休眠、事件喚醒、存進度再休眠」，並引述 `Claude Opus 5.5` 在長程程式基準上相較 `Opus 5` 單任務成本降低 78%。
 - **連結預覽圖表（1 張，`Event inbox Database table`）**：
   - 欄位為 `When | What happened | Session | Status`，明確展示 **`Delivered twice, same ID` → `dropped`** 的冪等去重機制，以及 `2. Wake the worker` → `3. Read what's...` → `6. Mark done` 的喚醒狀態機。
-- **網友留言與討論（7 則中讀到 6 則＝3 續樓 + 3 網友留言）**：
+- **網友留言與討論（貼文計數 7 則，登入後讀完 6 則串內＝3 續樓 + 3 網友留言，另有 2 則引用貼文）**：
   - `@bigfatjj_02` 認為架構概念並不算全新；
   - `@gyozalab` 直接點出「**聽起來像是 Hermes 在做的事**」（印證與 Hermes 24×7 常駐機制同向）；
   - `@saominhuang` 表示選擇 Claude 主因在於程式撰寫能力。
@@ -56,7 +55,7 @@ tags:
     5. **Outbox**：外發訊息管理與節流（`Start quiet` 原則），避免 Agent 背景洗版。
   - **成本數據核實（2026-11-20 重查）**：78% 與 40% 兩個數字出自這篇官方文章本身（同一句話：長程編碼基準上每個解決任務的成本少 78%，一般工作負載少 40%），不是另一份公告。原稿另寫「大幅調降 cache read 費用」，官方文章裡**沒有**這句——文章只建議用提示快取降低成本，沒有提快取讀取的價格；這句已刪除。
   - **轉載文查核**：AI郵報網站的解析文沒有任何成本數字；78% 只出現在 Threads 續樓，對得上官方原文。
-- **2026-11-20 補讀**：最新排序看到的仍是同樣 6 則，沒有新的補充、反駁或實測；第 7 則待登入後確認。
+- **2026-11-20 登入補讀完成**：貼文計數 7 則；登入後熱門、最新兩種排序都捲到底，列出同樣的 3 則網友留言（沒有任何「顯示回覆」可展開），加作者 3 則續樓共 6 則串內，另有 2 則引用貼文（`@enjoyaudio0715` 只寫「留友看」、`@lasxt1995` 寫「又一個，果然是大趨勢」），讀到的總數不少於計數，沒有登入後才看得到的缺漏。原先未確認的「第 7 則」無法逐一對應，推測是引用貼文之一（平台計數方式未公開）；可見內容都是收藏與附和，沒有新的補充、反駁或實測，對本筆記的事實與結論沒有影響。
 
 ---
 

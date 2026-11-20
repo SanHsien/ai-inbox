@@ -7,11 +7,10 @@ author: "@atonny_shen (沈建志)"
 github_repo: "https://github.com/atonnyshen/antigravity2-TW"
 analyzed_at: "2026-11-19"
 analyzed_by: "antigravity"
-source_review: partial
+source_review: full
 source_images: 1
-source_replies: 20
+source_replies: 35
 source_reviewed_at: "2026-11-20"
-source_review_note: "2026-11-20 補讀時內建瀏覽器仍是未登入狀態（頁面出現登入視窗、無法捲動），沒辦法讀完。主貼文、GitHub 預覽卡片與作者釘選補充已讀；留言計數已增至約 39 則，熱門排序讀到 20 則，最新排序看到 14 則（與前次重疊幾則無法確定），其餘要登入才看得到"
 status: archived
 cluster: 1
 cluster_role: "Swarm實戰與繁中包"
@@ -37,13 +36,13 @@ tags:
 
 ---
 
-## 1. 原始資料盤點（主文、釘選續樓、預覽卡片與 20 則可見留言）
+## 1. 原始資料盤點（主文、釘選續樓、預覽卡片與 35 則串內留言與回覆）
 
 - **主貼文與釘選續樓**：
   1. **Antigravity `/swarm` 模型分工推薦**：`Orchestrator (Carbon)` 負責規劃協調與審查，搭配 `Hydrogen` 高速並行執行，能即時觀察各 agent 對話與執行路線圖。
   2. **`antigravity2-TW` 繁中在地化套件**：補齊翻譯並支援 Mac/Win 自動化背景守護（宣稱更新不掉中文化）；釘選回覆教導使用者讓 AI 下載該 repo 並依 `AI_INSTALL_GUIDE.md` 引導安裝。
 - **圖片／預覽卡片（1 張）**：GitHub 連結預覽卡片顯示 `atonnyshen/antigravity2-TW`（113 Stars / 9 Forks，支援獨立 IDE 與 VS Code）。
-- **網友回應與技術討論（37 則中讀到 20 則）**：
+- **網友回應與技術討論（登入後讀完，見下方「登入補讀完成」）**：
   1. **防毒軟體攔截實例（`@cccwilkins` 回報）**：留言實測回報「防毒把它擋住了，連 `config.json` 都被關起來」；作者回覆已移除易引發誤判元件並請更新最新版。
   2. **`/swarm` 適用邊界與不翻車條件（`@zz950907` 與 `@atonny_shen`）**：
      - `/swarm` 真正省時的不是開越多 agent，而是**可視化看到每條線在做什麼、卡在哪裡**。
@@ -56,6 +55,12 @@ tags:
   2. `@gentlemen_10.06` 指出 `/swarm` 的額度吃的是 `Carbon`，不然會更實用——是成本面的實測意見。
   3. `@pohanschiu` 提另一種玩法：開兩個不同模型互相批評。`@00fji` 問 `/teamwork` 與 `/swarm` 的差別。
   4. 其餘是收藏、道謝；有一則稱讚留言附了購物網站連結，疑似導購帳號，不採計。
+- **2026-11-20 登入補讀完成**：貼文計數 39 則，平台顯示 37 則已全部讀完，差 2 則登入後也不顯示。37 則＝串內 35 則（作者釘選續樓 1 則加 34 則留言與回覆，其中作者回覆 10 則、`meta.ai` 自動回覆 4 則）加 2 則引用貼文（`@garlia.t` 道謝、`@shouchenho` 稱讚 Google 便宜大碗）。熱門、最新兩種排序都捲到底，列出同一批人；所有「顯示回覆」都已展開。新讀到的重點：
+  1. **作者說明為何不能走 VS Code 語言包（`@yie_qq` 問與 Open VSX 中文包的差別）**：作者回覆，Open VSX 的 Language Pack for Antigravity 是給 VS Code 分支版的 Antigravity IDE 用的；現在主推的 Antigravity 2.0 是 Windsurf 核心團隊加入 Google 後另外打造的 Electron App，不是 VS Code 分支，沒辦法用語言包機制，只能用字典直接把繁中注入 App 的資源檔，也就是這個專案在做的事。這與官方 repo 查到的「修補 `app.asar`」一致，也說明它不是官方管道，介面更新後要靠常駐守護重套。作者另建議優先用 2.0，IDE 與 VS Code 擴充套件版的功能更新較慢。
+  2. **官方尚無原生繁中（`@theodore039`）**：留言問 Google 原生的中文介面還要等多久，作者的回應是舊版不成熟、有很多漏譯，建議更新並開背景守護。沒有人提到官方時程。
+  3. **防毒事件有後續**：`@cccwilkins` 回報被擋後，作者回覆已移除易觸發誤判的元件，並貼出「請幫我下載 … 依 `AI_INSTALL_GUIDE.md` 檢查與安裝」的一句話安裝法；`@cccwilkins` 後來回「感恩分享與修復」，沒有說更新後是否還被擋。作者另在 `@emily_togola` 的串裡把懶人安裝法說成「貼連結、打請替我安裝、同意同意同意、重啟」，這種一路同意的流程正是零信任規範要擋的型態（見第 2 節），列入風險欄。
+  4. **`meta.ai` 自動回覆共 4 則（不是作者、不是權威）**：解釋 `/swarm` 作用、附和作者的體感，以及對 `@batmanspawn777` 問「能不能跟 Hermes 結合」說「可以，而且是現在最強的組合」，並舉了 Hermes 當 sub-agent 的例子。沒有任何來源佐證，不採計。
+  5. **其餘**：`@hanbingjheng` 補充 `/teamwork` 依文件是有順序分工、`/swarm` 是去中心化多併發，但中小任務體感差不多；`@ericshen19555` 指出作者把 Harness 打成 Harmness（作者承認筆誤）；`@emily_togola` 的留言附酷澎購物連結，疑似導購，不採計，未點開；其餘是稱讚、收藏與愛心。沒有人貼出 `/swarm` 的失敗案例或額度數字。
 - **2026-11-20 查核官方 repo（改正原稿的「防毒誤判」）**：
   1. **不是單純誤判**。`CHANGELOG.md` 的 v3.7.0（2026-11-19）寫明這版**移除了 `proxy_config` 的 DLL 注入（`version.dll`、`dbghelp.dll`、`config.json`）、盲目的 `taskkill /f` 與 `powershell -ExecutionPolicy Bypass`**，並把根因之一列為「防毒啟發式特徵」。`@cccwilkins` 說連 `config.json` 都被隔離，對得上這組檔案。也就是舊版真的帶 DLL 側載元件，防毒攔它有道理；作者在留言裡稱為「容易引發誤判的元件」。
   2. **運作方式**：直接修補 Antigravity 的 `resources/app.asar`（原版備份成 `app.asar.bak`），背景守護每 5 分鐘巡檢官方更新後重套，每 24 小時向 GitHub 取翻譯資料。

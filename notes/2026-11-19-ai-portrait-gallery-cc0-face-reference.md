@@ -6,11 +6,10 @@ source_platform: "Threads"
 author: "@herb.hou (侯俊耀) / あぎ (Agi)"
 analyzed_at: "2026-11-19"
 analyzed_by: "antigravity"
-source_review: partial
+source_review: full
 source_images: 1
-source_replies: 1
+source_replies: 2
 source_reviewed_at: "2026-11-20"
-source_review_note: "2026-11-20 補讀時內建瀏覽器仍是未登入狀態（頁面出現登入視窗），熱門與最新兩種排序都只顯示同 1 則留言（@cola_bb_official）；貼文計數 3 則，另 2 則要登入才能確認。主貼文與 1 張網站首頁截圖已讀"
 status: archived
 cluster: 2
 cluster_role: "CC0人臉參考庫"
@@ -43,7 +42,8 @@ tags:
 - **作者上傳截圖（共 1 張，網站首頁繁體翻譯畫面）**：
   - **實測數據**：截圖顯示 `臉 893`、`造型 606`、`執照 CC0`，右側展示「短的 / 中等的 / 中長髮」3 張日系女性人像。
   - **導流設計細節**：截圖左上與按鈕區明確標示「`● 加入LINE公開聊天`」，並註記「如何使用此圖像以及圖像生成提示的範例僅對 Agino 的 LINE Open Chat 用戶可見」——顯示該站以免費 CC0 圖庫為主體，並將進階 Prompt 教學導流至 LINE Open Chat 社群。
-- **網友回應（3 則中讀到 1 則）**：僅見 `@cola_bb_official` 戲稱「影到我 pls del」，無技術補充或反駁；其餘 2 則未登入未顯示。
+- **網友回應（貼文計數 3 則，登入後讀完）**：計數 3＝2 則留言加 1 則附文字的引用貼文。熱門、最新兩種排序都捲到底，只列出同樣 2 則留言：`@henghandsomeguy`（新帳號、標示中國）問「沒有侵權問題嗎」，`@cola_bb_official` 戲稱「影到我 pls del」（暗指被拍進圖庫）。引用貼文是 `@daidoujichen` 只寫「留個臉」（引用內容共 3 則，另 2 則是 `@hiroshihsu`、`@timrobbinslu` 的純引用，沒有文字）。差額為 0，沒有登入後才看得到的留言。
+  - **對分析的影響**：2 則留言都是侵權疑慮的玩笑或提問，沒有人實測或補充技術細節，也沒有作者回覆；站方條款已明載圖中人物是 AI 生成的虛構人物並禁止冒充真實人物（見下方 2026-11-20 查核），結論不變。`@henghandsomeguy` 的侵權疑問未被回答，使用前仍建議自行核對圖像是否與真人相似。
 - **2026-11-20 補讀與查核（直接開三個網站核對，改正原稿兩處）**：
   - **人臉庫本站**：頁面寫明營運者是 `あぎ`（X 帳號 `agi_aibusi`），授權是 CC0（可商用、可編輯、可當參考）。站方另外列了使用條件：圖中人物是 AI 生成的虛構人物；禁止冒充真實人物與違反公序良俗的用途；「不要轉散布圖檔」是站方的請求；圖檔已去除中繼資料、不附任何保證。張數是頁面動態載入的，這次直接讀取沒拿到數字，`893`／`606` 以作者截圖為準（Threads 相關串文裡另一篇介紹文寫的也是這兩個數字）。
   - **改正 1（營運者）**：原稿寫姿勢庫與服裝庫是「該作者（あぎ）另有的同系列」。實際開站核對，[`ai-pose-gallery.pages.dev`](https://ai-pose-gallery.pages.dev/)（灰色無臉人偶姿勢圖）與 [`ai-costume-gallery.pages.dev`](https://ai-costume-gallery.pages.dev/)（只有服裝、沒有人物）頁面標示的製作者是 `ギア`（X 帳號 `giaaibusi`），與 `あぎ` 不是同一個署名；三站版型相近，但彼此沒有互相連結，是否同一人未查證。
