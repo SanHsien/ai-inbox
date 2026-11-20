@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 249 項任務：🔴 未做 2／🟡 進行中 0／🟢 已做 168／⚪ 不做 79
+> 共 250 項任務：🔴 未做 3／🟡 進行中 0／🟢 已做 168／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -48,6 +48,7 @@
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
 | `T-20261120-01` | 🔴 未做 | 低 | 唯讀審查 `citrolabs/ego-lite` 安全性、授權與 Windows CLI `handOff` 流程評估 | `C:\GitHub\_sandbox\ego-lite-audit` 與 `C:\GitHub\ai-inbox\docs\ego-lite-security-eval.md` | [2026-11-20-citrolabs-ego-lite-browser-handoff-eval](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) | 2026-11-20 |
+| `T-20261120-02` | 🔴 未做 | 低 | 將 `Gemini Decision 1`（Decisions API）前置路由／安全守門定位補入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（與 `T-20261118-01` 協同增補 Google 模型選型章節） | [2026-11-20-gemini-decision-1-decisions-api-eval](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | 2026-11-20 |
 
 ### 🟢 已做（Done）
 
@@ -473,6 +474,7 @@
 | 2026-11-19 | ⚪ | [Threads 討論評估：@0mar_samad《網站與 AI 應用六大 Skills》及留言區 Verification Gate 三態防線](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md) | `skills`, `ui-ux-pro-max`, `impeccable` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
 | 2026-11-20 | 🔴 | [Facebook 實測評估：Ego Lite（citrolabs/ego-lite）人機協作瀏覽器與 handOff 機制及安全邊界](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) | `ego-lite`, `browser-automation`, `human-in-the-loop` | 0 / 1 |
+| 2026-11-20 | 🔴 | [InfoQ 深度評析：Gemini Decision 1 與 Decisions API（$0.10/M 輸入、零輸出費、0.0250 ECE 低誤差路由模型）](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | `gemini-decision-1`, `decisions-api`, `model-routing` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -510,6 +512,7 @@
 - Swarm實戰與繁中包：[Antigravity蜂群與繁中](./notes/2026-11-19-atonny-shen-antigravity-swarm-tw-pack.md)
 - 雙CLI協作生態全景：[Claude+Codex協作全景](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md)
 - 組織化Agent與驗收：[LobeHub與Acceptance](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md)
+- 決策路由專用模型：[Gemini Decision 1](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
