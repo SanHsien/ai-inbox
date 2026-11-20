@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 252 項任務：🔴 未做 5／🟡 進行中 0／🟢 已做 168／⚪ 不做 79
+> 共 252 項任務：🔴 未做 4／🟡 進行中 0／🟢 已做 169／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -47,14 +47,13 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
-| `T-20261120-01` | 🔴 未做 | 低 | 唯讀審查 `citrolabs/ego-lite` 安全性、授權與 Windows CLI `handOff` 流程評估 | `C:\GitHub\_sandbox\ego-lite-audit` 與 `C:\GitHub\ai-inbox\docs\ego-lite-security-eval.md` | [2026-11-20-citrolabs-ego-lite-browser-handoff-eval](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) | 2026-11-20 |
 | `T-20261120-02` | 🔴 未做 | 低 | 將 `Gemini Decision 1`（Decisions API）前置路由／安全守門定位補入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（與 `T-20261118-01` 協同增補 Google 模型選型章節） | [2026-11-20-gemini-decision-1-decisions-api-eval](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | 2026-11-20 |
 | `T-20261120-03` | 🔴 未做 | 低 | 將 `Gemini 4 Neon` / `Hydrogen` / `GPT-6.2 Sol` 基準與雙模型接力數據補入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（可與 `T-20261118-01`、`T-20261120-02` 合併更新 Google 生態章節） | [2026-11-20-antigravity-gemini4-neon-12-prompts-eval](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | 2026-11-20 |
 | `T-20261120-04` | 🔴 未做 | 低 | 沙盒唯讀安檢並評估 `DeusData/codebase-memory-mcp` 與 `oil-oil/agy-fast-io` | `C:\GitHub\_sandbox\agy-plugins-audit` 與 `C:\GitHub\ai-inbox\docs\agy-fast-io-and-codebase-memory-audit.md` | [2026-11-20-antigravity-gemini4-neon-12-prompts-eval](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | 2026-11-20 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 168 項）</summary>
+<details><summary>展開查看已完成任務（共 169 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -226,6 +225,7 @@
 | `T-20261119-02` | 2026-11-19 | 唯讀檢閱 `bruce601080102/ccc-mcp` 與本機 `agent-relay`／`claim_evidence_guard` 進行架構對照 | docs/ccc-mcp-architecture-review.md；唯讀檢閱 commit 782c75ad，三主題附原始碼行號並與 agent-relay 0cabfe33、harness-guard ec38c1d 逐項對照；結論不整套採用，列 2 項可借鏡與 4 項不採納理由 | [2026-11-19-codex-claude-multi-agent-orchestration-landscape](./notes/2026-11-19-codex-claude-multi-agent-orchestration-landscape.md) |
 | `T-20261119-03` | 2026-11-19 | 在沙盒唯讀檢閱 `lobehub/acceptance` 架構與 `.acceptances/` 多模態驗收規格 | docs/lobehub-acceptance-eval.md；唯讀檢閱 commit 5e9115da，記錄八步工作流、.acceptances/ 目錄與 result.json 欄位、對 verification-protocol 的 10 項對照（5 項建議採用）；lh CLI 不在 repo 內標未查證，結論不安裝只借鏡規則 | [2026-11-19-lobehub-super-agent-and-acceptance-eval](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) |
 | `T-20261119-04` | 2026-11-19 | 對照 Anthropic 五大原語檢視 `agent-relay` 的事件去重（Idempotency）與 Outbox 通知節流機制 | docs/always-on-relay-gap-check.md：對照 agent-relay@0cabfe3 五原語逐項列出已覆蓋與缺口（附路徑:行號）與 R1–R9 建議；agent-relay 未改動 | [2026-11-19-anthropic-building-always-on-agents-blueprint](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md) |
+| `T-20261120-01` | 2026-11-20 | 唯讀審查 `citrolabs/ego-lite` 安全性、授權與 Windows CLI `handOff` 流程評估 | 產出 docs/ego-lite-security-eval.md（審查 commit f499162，2026-11-20 唯讀靜態檢閱，未安裝未執行）；verify_agent_skill_pack_safety 整庫結束碼 1（FAIL 1 經人工判為誤判、REVIEW 2）；結論：SDK 為 MIT 但瀏覽器本體閉源，Space 與使用者共用設定檔 Cookie 且 page.cdp 不過濾方法，不符最小權限，不安裝、不匯入，僅借鏡 handOff 流程與清除範圍對照表 | [2026-11-20-citrolabs-ego-lite-browser-handoff-eval](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) |
 
 </details>
 
@@ -476,7 +476,7 @@
 | 2026-11-19 | ⚪ | [Threads 討論評估：@0mar_samad《網站與 AI 應用六大 Skills》及留言區 Verification Gate 三態防線](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md) | `skills`, `ui-ux-pro-max`, `impeccable` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
 | 2026-11-20 | 🔴 | [Woshipm 長文評估：Gemini 4 Neon 實測基準、Antigravity 12 項配置與第三方插件零信任審查](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | `antigravity`, `gemini-4-neon`, `gemini-4-hydrogen` | 0 / 2 |
-| 2026-11-20 | 🔴 | [Facebook 實測評估：Ego Lite（citrolabs/ego-lite）人機協作瀏覽器與 handOff 機制及安全邊界](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) | `ego-lite`, `browser-automation`, `human-in-the-loop` | 0 / 1 |
+| 2026-11-20 | 🟢 | [Facebook 實測評估：Ego Lite（citrolabs/ego-lite）人機協作瀏覽器與 handOff 機制及安全邊界](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) | `ego-lite`, `browser-automation`, `human-in-the-loop` | 1 / 1 |
 | 2026-11-20 | 🔴 | [InfoQ 深度評析：Gemini Decision 1 與 Decisions API（$0.10/M 輸入、零輸出費、0.0250 ECE 低誤差路由模型）](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | `gemini-decision-1`, `decisions-api`, `model-routing` | 0 / 1 |
 <!-- END GENERATED: index -->
 

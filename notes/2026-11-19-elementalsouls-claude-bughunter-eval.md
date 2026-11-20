@@ -7,11 +7,10 @@ author: "@easyanythinghk (dev) / elementalsouls"
 github_repo: "https://github.com/elementalsouls/Claude-BugHunter"
 analyzed_at: "2026-11-19"
 analyzed_by: "antigravity"
-source_review: partial
+source_review: full
 source_images: 1
 source_replies: 2
-source_reviewed_at: "2026-11-19"
-source_review_note: "主貼文與1張圖片完整讀取，4則留言中於未登入狀態讀到2則（作者續樓與1則網友回覆），其餘受Threads登入牆阻擋"
+source_reviewed_at: "2026-11-20"
 status: done
 cluster: 3
 cluster_role: "開源資安Skill包"
@@ -43,9 +42,13 @@ tags:
 - **主貼文核心**：分享登上 GitHub Trending Top 1 的開源專案 `Claude-BugHunter`（單日 +1005 星，近萬星），主打專為 Bug Bounty 與 Red Team 打造的 Claude Code 技能包，內含 82 個安全技能包（skills）與 681 條真實漏洞報告模式（涵蓋 24 大漏洞類別）。
 - **作者上傳圖片（共 1 張，Trending 資訊圖卡）**：
   - 清楚標註：`GITHUB TRENDING · TOP 1 · 2026.11.18`、`Claude-BugHunter`、`Python | ⭐ 9,989 (+1005 today) | MIT`、分類為 `Bug Bounty | Red Team | AI Security | Pentest`，並標明倉庫網址 `github.com/elementalsouls/Claude-BugHunter`。
-- **作者續樓與網友留言（4 則中讀到 2 則，其餘受登入牆阻擋）**：
-  - 作者續樓（`Df4B681AGo4`）：提供 GitHub 連結並詢問滲透測試最花時間的步驟。
+- **作者續樓與網友留言（2026-11-20 登入後補讀；貼文計數 4 則，平台顯示 2 則已全部讀完，差 2 則登入後也不顯示）**：
+  - 熱門、最新兩種排序都到底，內容相同，兩則都沒有子回覆。
+  - 作者續樓（`Df4B681AGo4`）：提供 GitHub 連結並詢問滲透測試最花時間的步驟，沒有人回答。
   - 網友 `@angus_man` 回覆點讚符號 `👍🏻`。
+  - 另有 1 則引用（`@shin_wu`），只轉貼、沒有加評論。
+  - 留言區沒有任何實測、反駁或更正；貼文的數字只能靠 repo 本身查證（見第 2 節查證註記）。
+- **圖片與現況對照（2026-11-20）**：圖卡寫 `82 skills`、`⭐ 9,989 (+1005 today)`；GitHub API 當天回傳約 1.33 萬星、MIT 授權。星數是貼文當時的快照，技能數以 repo 實際的 83 個為準。
 - **官方 GitHub 倉庫核實（`elementalsouls/Claude-BugHunter`）**：
   - 專案架構：專為 Claude Code 設計，提供 `scripts/install.sh` 與 Windows PowerShell `install.ps1`。
   - 核心模組：收錄源自 HackerOne 等真實公開報告的 681 條漏洞模式，包含 M365/Entra、Okta、SharePoint、VPN 等企業攻防矩陣與「7-Question Gate」驗證門檻，並支援 HackerOne、Bugcrowd 等回報格式產出。

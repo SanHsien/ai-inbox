@@ -9,8 +9,8 @@ analyzed_by: "antigravity"
 source_review: partial
 source_images: 1
 source_replies: 6
-source_reviewed_at: "2026-11-19"
-source_review_note: "主貼文、1張Event Inbox預覽圖表、作者3則續樓及3則網友留言已讀完；貼文標示7則留言中另有1則未於未登入視圖呈現"
+source_reviewed_at: "2026-11-20"
+source_review_note: "2026-11-20 補讀時內建瀏覽器仍是未登入狀態（頁面出現登入視窗），熱門與最新兩種排序都只顯示同樣 6 則（作者 3 則續樓加 3 則網友留言）；貼文計數 7 則，差的 1 則要登入才能確認。主貼文與 1 張預覽圖已讀"
 status: done
 cluster: 1
 cluster_role: "常駐Agent五原語"
@@ -27,6 +27,7 @@ tags:
 # Threads 情報與官方架構核實：Anthropic《Building Always-On Agents》五大原語與 Opus 5.5 成本結構
 
 - **來源貼文**：[Threads 原貼文（`@aiposthub` AI郵報）](https://www.threads.com/@aiposthub/post/DfuTuZPlM_m)（原分享連結 `https://www.threads.com/share/BAwstC62C5`）
+- **官方原文**：[`claude.com/blog/building-always-on-agents`](https://claude.com/blog/building-always-on-agents)（William Hu，2026-11-13）
 - **轉載解析文**：[`aiposthub.com/claude-always-on-agents-inbox-memory-outbox`](https://www.aiposthub.com/claude-always-on-agents-inbox-memory-outbox/)
 - **發布平台 / 作者**：`Threads` / `@aiposthub`（`2026-11-14`）；原架構指南作者 `William Hu (Anthropic)`
 - **分析日期**：`2026-11-19`
@@ -48,12 +49,14 @@ tags:
   - `@saominhuang` 表示選擇 Claude 主因在於程式撰寫能力。
 - **官方文件查證（Anthropic《Building Always-On Agents》）**：
   - 核實五大原語實作重點：
-    1. **Event Inbox**：持久化資料表承接 webhook/通知/使用者訊息，透過 source key 去重，確保同一串流同時只有單一 worker 處理。
+    1. **Event Inbox**：持久化資料表承接 webhook/通知/使用者訊息，用來源給的唯一識別碼去重；一個**收件匣**同時只有一個工作中的 worker（原稿寫「同一串流」，已改正）。
     2. **Timers**：週期排程與自我追蹤定時器，觸發時僅是往 Inbox 投遞一筆事件。
     3. **Memory**：跨 session 檔案目錄與**任務進度檔（task progress files）**，確保喚醒後精準續跑。
     4. **Permissions**：沙盒外憑證注入代理（credential-injecting proxy）＋風險分類器＋**Deferred Tool Calls**（高風險操作暫停存檔，待人工批准再以新 Inbox 事件續跑）。
     5. **Outbox**：外發訊息管理與節流（`Start quiet` 原則），避免 Agent 背景洗版。
-  - **成本數據核實**：官方公告確實指出 `Opus 5.5` 較 `Opus 5` 一般工作負載降約 40%，長程編碼基準每解決任務成本降達 78%，並大幅調降 cache read 費用（有利頻繁喚醒載入記憶）。
+  - **成本數據核實（2026-11-20 重查）**：78% 與 40% 兩個數字出自這篇官方文章本身（同一句話：長程編碼基準上每個解決任務的成本少 78%，一般工作負載少 40%），不是另一份公告。原稿另寫「大幅調降 cache read 費用」，官方文章裡**沒有**這句——文章只建議用提示快取降低成本，沒有提快取讀取的價格；這句已刪除。
+  - **轉載文查核**：AI郵報網站的解析文沒有任何成本數字；78% 只出現在 Threads 續樓，對得上官方原文。
+- **2026-11-20 補讀**：最新排序看到的仍是同樣 6 則，沒有新的補充、反駁或實測；第 7 則待登入後確認。
 
 ---
 

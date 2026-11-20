@@ -9,8 +9,8 @@ analyzed_by: "antigravity"
 source_review: partial
 source_images: 1
 source_replies: 11
-source_reviewed_at: "2026-11-18"
-source_review_note: "已完整讀取主貼文、1張附圖與作者1至9則續樓；主貼文共28則留言於未登入狀態讀到11則（含續樓3下1則），其餘受Threads登入牆阻擋"
+source_reviewed_at: "2026-11-20"
+source_review_note: "2026-11-20 補讀時內建瀏覽器仍是未登入狀態（頁面出現登入視窗、無法捲動），沒辦法讀完。主貼文、1 張附圖與作者 9 則續樓已讀；留言 28 則中，熱門排序讀到 11 則，最新排序另看到 8 則（與前次重疊幾則無法確定），其餘要登入才看得到"
 status: archived
 cluster: 1
 cluster_role: "標題黨查核與Prompt"
@@ -45,6 +45,12 @@ tags:
   - **`@meta.ai` 回覆補充**：明確澄清並非 Claude 官方新功能或新按鈕，而是角色扮演 Prompt 玩法與 9 個模板。
   - **`@cambaugh` / `@milan_jurkulak` / `@continuous_lex` / `@therealdlzen`**：指出該玩法已流傳多時（`soooo 6 months ago`），並質疑此類「多角色自辯」消耗 token 與訂閱額度。
   - **外部搜尋查證**：經查詢確認 **Anthropic 官方並無任何名為 `AI Council` 或 `Council` 的內建功能**；業界類似概念多指 Karpathy 的跨模型 `llm-council` 或社群自製插件（如 `claude-council`）。
+- **2026-11-20 補讀（最新排序，未登入只顯示 8 則）**：
+  - `@circle_uni` 說自己先前花時間做了一個叫 council 的斜線指令，看到貼文後以為「居然有官方的可以用」——這是讀者真的被標題誤導的實例。
+  - `@georgercadam` 表示早就這樣用 Claude；`@booker_0211` 說這就是思考帽那一類的多角度思考法；`@jodenathan`、`@dexterng.dev` 是嘲諷與玩笑，沒有新資訊。
+  - `@meta.ai` 那則是網友標記後由 Meta AI 帳號自動產生的回覆，不是權威來源；它的結論（不是官方新按鈕）與本筆記的查證一致，但不能單獨拿來當證據。
+  - 2026-11-20 再查一次：Anthropic 官方消息頁查不到名為 Council 的產品功能；官方用過 council 一詞的是顧問委員會這類治理組織（例如 [國家安全與公部門顧問委員會](https://anthropic.com/news/introducing-the-anthropic-national-security-and-public-sector-advisory-council)），與產品功能無關。
+  - 這輪沒有讀到推翻筆記結論的留言；其餘留言仍待登入後補讀。
 - **原始資料對分析的影響**：若僅看主文與圖片極易誤信為 Anthropic 重大產品更新；結合續樓內容、網友反駁與官方查證後，確認為**誤導性標題黨（Clickbait）＋基礎單回合角色扮演 Prompt**。
 
 ---

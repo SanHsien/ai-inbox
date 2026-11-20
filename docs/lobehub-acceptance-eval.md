@@ -5,7 +5,7 @@
 
 **結論：不安裝技能與 `lh` CLI；借鏡它的規則與目錄格式。** 這個 repo 只有一份技能文件與幾支輔助腳本，真正做驗證、產生報告頁、上傳的 `lh` CLI 不在裡面，無法檢閱。但技能文件把「什麼才算一次有效的驗收」寫得很具體，其中五條規則本機的 `verification-protocol` 沒有，可以直接改寫進去。
 
-與筆記的差異（先講）：筆記與來源文章寫檢查項是 `C1..Cn`。在這個 commit 的 repo 裡，檢查項的識別碼是 `plan[].id` 這個自由字串，範例用的是 `"1"`、`"2"`（`skills/acceptance/references/report-schema.md:19`、`:76`）；全庫沒有 `C1..Cn` 的命名規定。`references/probe-mock-patterns.md` 第 196 至 238 行有 `C1` 到 `C5`，那是該檔 C 節的條目編號，與檢查項無關。文章截圖裡的 `C1..C5` 應是某次實際執行時 agent 自己取的識別碼：未查證。
+與筆記的差異（先講）：筆記與來源文章寫檢查項是 `C1..Cn`。在這個 commit 的 repo 裡，檢查項的識別碼是 `plan[].id` 這個自由字串，範例用的是 `"1"`、`"2"`（`skills/acceptance/references/report-schema.md:19`、`:76`）；全庫沒有 `C1..Cn` 的命名規定。`references/probe-mock-patterns.md` 第 196 至 238 行有 `C1` 到 `C5`，那是該檔 C 節的條目編號，與檢查項無關。文章截圖裡的 `C1..C5` 同時出現在 LobeHub 任務頁（文章圖 29）與 `lh acceptance view` 的 `C#` 欄（圖 32），較可能是產品與 CLI 顯示時加的編號，不是某次執行自取的名字；CLI 不在 repo 內，未查證（2026-11-20 補看全部 33 張圖後更正原先的推測）。
 
 ## 1. 來源與審查範圍
 

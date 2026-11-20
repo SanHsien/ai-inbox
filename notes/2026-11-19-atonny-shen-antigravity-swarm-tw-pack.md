@@ -10,8 +10,8 @@ analyzed_by: "antigravity"
 source_review: partial
 source_images: 1
 source_replies: 20
-source_reviewed_at: "2026-11-19"
-source_review_note: "主貼文、GitHub預覽卡片與作者釘選補充完整讀取；37則留言於未登入狀態讀到20則（含sub-thread展開），其餘約17則受Threads登入牆阻擋"
+source_reviewed_at: "2026-11-20"
+source_review_note: "2026-11-20 補讀時內建瀏覽器仍是未登入狀態（頁面出現登入視窗、無法捲動），沒辦法讀完。主貼文、GitHub 預覽卡片與作者釘選補充已讀；留言計數已增至約 39 則，熱門排序讀到 20 則，最新排序看到 14 則（與前次重疊幾則無法確定），其餘要登入才看得到"
 status: archived
 cluster: 1
 cluster_role: "Swarm實戰與繁中包"
@@ -28,7 +28,7 @@ tags:
 # Threads 情報與留言評估：Antigravity /swarm 實戰邊界、pipeline 防翻車三原則與 antigravity2-TW 安全提醒
 
 - **來源貼文**：[Threads 原貼文（`@atonny_shen` 沈建志）](https://www.threads.com/@atonny_shen/post/Df4Jpu8FOoU)（原分享連結 `https://www.threads.com/share/BAaOLyUtB5`）
-- **提及 GitHub**：[`atonnyshen/antigravity2-TW`](https://github.com/atonnyshen/antigravity2-TW)（Google Antigravity 台灣繁體中文在地化套件，約 113 Stars）
+- **提及 GitHub**：[`atonnyshen/antigravity2-TW`](https://github.com/atonnyshen/antigravity2-TW)（Google Antigravity 台灣繁體中文在地化套件；2026-11-20 查為 121 Stars／9 Forks，是簡體中文版 [`qqxpee/antigravity2-cn`](https://github.com/qqxpee/antigravity2-cn) 的 fork）
 - **發布平台 / 作者**：`Threads` / `@atonny_shen`（`2026-11-18`）
 - **分析日期**：`2026-11-19`
 - **當前狀態**：`⚪ 封存 (Archived)`
@@ -51,7 +51,19 @@ tags:
      - **作者自製 `pipeline skill` 補強三痛點**：分包編號＋記錄任務版本（防重複派工）、中斷或額度用完後的續跑規範、回報完成前的交付檢查。
   3. **`/swarm` vs `/teamwork` 體感差異（`@pliantart` / `@atonny_shen` / `@hanbingjheng`）**：
      - `/teamwork` 偏以天為單位、有順序分工的大型專案（但作者體感未見類似蜂群面板）；`/swarm` 偏以小時為單位、去中心化多併發獨立任務。
-- **原始資料對分析的影響**：主貼文只講了優點與一鍵安裝；留言區補齊了兩項關鍵現實——(1) `antigravity2-TW` 的背景守護與改寫機制確實曾觸發 Windows 防毒誤判/攔截；(2) `/swarm` 若未先將任務切開與寫死驗收，開多 agent 只會浪費額度與增加合併成本。
+- **2026-11-20 補讀（最新排序，未登入只顯示 14 則）**：
+  1. `@kacho_life` 回報 Windows 點兩下 `.bat` 安裝會出現亂碼、裝不起來；作者請他改丟給 Antigravity 對話讓 AI 跑（成功），之後回覆亂碼已修正。
+  2. `@gentlemen_10.06` 指出 `/swarm` 的額度吃的是 `Carbon`，不然會更實用——是成本面的實測意見。
+  3. `@pohanschiu` 提另一種玩法：開兩個不同模型互相批評。`@00fji` 問 `/teamwork` 與 `/swarm` 的差別。
+  4. 其餘是收藏、道謝；有一則稱讚留言附了購物網站連結，疑似導購帳號，不採計。
+- **2026-11-20 查核官方 repo（改正原稿的「防毒誤判」）**：
+  1. **不是單純誤判**。`CHANGELOG.md` 的 v3.7.0（2026-11-19）寫明這版**移除了 `proxy_config` 的 DLL 注入（`version.dll`、`dbghelp.dll`、`config.json`）、盲目的 `taskkill /f` 與 `powershell -ExecutionPolicy Bypass`**，並把根因之一列為「防毒啟發式特徵」。`@cccwilkins` 說連 `config.json` 都被隔離，對得上這組檔案。也就是舊版真的帶 DLL 側載元件，防毒攔它有道理；作者在留言裡稱為「容易引發誤判的元件」。
+  2. **運作方式**：直接修補 Antigravity 的 `resources/app.asar`（原版備份成 `app.asar.bak`），背景守護每 5 分鐘巡檢官方更新後重套，每 24 小時向 GitHub 取翻譯資料。
+  3. **自動更新反覆**：v3.7.1（11-19）加入守護程式**自動下載並更新自己的程式碼**；隔天 v3.7.2（11-20）又整個移除，並在更新紀錄裡承認 v3.7.1 有「任意 ZIP 選取漏洞」。兩天內連發三版，安全設計還在快速變動。
+  4. **亂碼修正對得上**：v3.7.0 把 `.bat` 改成純 ASCII 加 CRLF，根因是換行與編碼。
+  5. **`AI_INSTALL_GUIDE.md`**：內容是寫給 AI 助手的指令——先唯讀檢查、再請使用者從 1～4 選項決定才動手。設計上有先問再做，但「叫 AI 下載 repo 並照裡面的文件執行」本身就是把外部文件當指令，仍屬本機零信任規範要擋的型態。
+  6. 星數原稿寫 113，2026-11-20 查為 121。
+- **原始資料對分析的影響**：主貼文只講了優點與一鍵安裝；留言區與官方更新紀錄補齊了兩項關鍵現實——(1) `antigravity2-TW` 舊版帶 DLL 側載元件而被 Windows 防毒攔截，v3.7.0 才移除；(2) `/swarm` 若未先將任務切開與寫死驗收，開多 agent 只會浪費額度與增加合併成本。
 
 ---
 
@@ -61,7 +73,8 @@ tags:
   - 貼文與 `@zz950907` 總結的三大原則（分包編號防重派、額度中斷續跑規範、結案前實查驗收），與本機全域協作規範「**派工要掌控到完成**」及 `swarm` / `orchestration` 規則完全一致。
   - **高階 `Carbon` 規劃審查＋`Hydrogen` 高速並行**的分工模式，可在後續遇到「數十至數百份獨立檔案審閱／無依賴批量修改」時直接採用。
 - **`antigravity2-TW` 零信任與實務評估**：
-  - 依全域規範硬閘門，**禁止未經靜態安全審查就讓 AI 直接依 `AI_INSTALL_GUIDE.md` 下載並啟用改寫 IDE 本體檔案與常駐背景守護的腳本**；考量繁體中文開發環境僅限於輸出語言，IDE 本身維持原廠英文介面更穩定、無防毒誤殺與更新破壞風險。
+  - 依全域規範硬閘門，**禁止未經靜態安全審查就讓 AI 直接依 `AI_INSTALL_GUIDE.md` 下載並啟用改寫 IDE 本體檔案與常駐背景守護的腳本**；考量繁體中文開發環境僅限於輸出語言，IDE 本身維持原廠英文介面更穩定、沒有防毒攔截與更新破壞風險。
+  - 補充理由（2026-11-20）：這個套件會修補 `app.asar`、常駐排程，舊版還帶過 DLL 側載與自動更新自身程式碼（都已移除），上游是簡體中文版專案；即使要評估，也必須指定版本並先過靜態安全檢查。
 
 ---
 

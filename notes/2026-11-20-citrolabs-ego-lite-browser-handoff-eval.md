@@ -11,7 +11,7 @@ source_review: full
 source_images: 2
 source_replies: 5
 source_reviewed_at: "2026-11-20"
-status: pending
+status: done
 cluster: 3
 cluster_role: "人機協作瀏覽器"
 short_title: "Ego Lite協作瀏覽器"
@@ -31,7 +31,7 @@ tags:
 - **作者教學與成果示範**：[Ego Lite × Gemini / Antigravity 指南](https://jrh2025.github.io/teaching_resources/ego-lite-gemini-antigravity-guide.html) ｜ [早安圖粉專月報成果](https://jrh2025.github.io/teaching_resources/good-morning-posts-2026-11.html)
 - **發布平台 / 作者**：`Facebook` / `簡瑞華`
 - **分析日期**：`2026-11-20`
-- **當前狀態**：`🔴 待辦 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -55,14 +55,22 @@ tags:
 - **嚴格資安邊界（不可直接匯入主瀏覽器 Cookie）**：
   - `ego-browser import` 支援直接匯入本機 Chrome / Edge / Brave 設定檔。依據全域協作規範硬閘門：**不可把含有密碼管理器、網銀、工作憑證的主瀏覽器 Cookie 暴露給外部工具或不可信網頁環境**。若未來導入測試，必須建立獨立低權限測試設定檔，不可直接匯入日常主 Profile；Skill 檔案亦須先通過安全檢查工具。
 
+- **原始碼查證註記（2026-11-20，Claude Code，審查 commit `f499162`，詳見 [`docs/ego-lite-security-eval.md`](../docs/ego-lite-security-eval.md)）**：
+  - 「開源」只涵蓋驅動 SDK 與技能（MIT）；瀏覽器本體、`ego-browser` 啟動器、Chrome 資料匯入與更新都在不開源的應用程式裡，版本數字（`0.6.3.17`、Chromium 156、Node v24.22.1）與 `ego-browser import` 子指令在 repo 內查不到，列為未查證。
+  - `TaskSpace` 隔離的是分頁與控制權，不是登入狀態：Space 與使用者共用同一個設定檔的 Cookie，agent 腳本可用 `page.cdp()` 讀到整個設定檔的 Cookie。
+  - `handOff` 不是瀏覽器自動偵測兩步驟驗證，而是指引要求 agent 自行判斷後呼叫 `task.handOff()`；接回控制權只靠提示文字約束。
+  - GitHub Releases 的附件只有 SDK 壓縮檔；Windows 安裝檔在 `cdn.ego.app` 與 WinGet。「Windows 版已推出」成立，但 repo 的 CI 沒有 Windows 執行環境。
+
 ---
 
 ## 3. 拆解出的待辦任務 (Action Items)
 
-- [ ] **`T-20261120-01`**｜**[優先級：低]** 唯讀審查 `citrolabs/ego-lite` 安全性、授權與 Windows CLI `handOff` 流程評估
+- [x] **`T-20261120-01`**｜**[優先級：低]** 唯讀審查 `citrolabs/ego-lite` 安全性、授權與 Windows CLI `handOff` 流程評估
   - **目標範圍**：`C:\GitHub\_sandbox\ego-lite-audit` 與 `C:\GitHub\ai-inbox\docs\ego-lite-security-eval.md`
   - **執行步驟**：
     1. 僅以唯讀方式檢視 `citrolabs/ego-lite` 倉庫授權、原始碼與 `ego-browser` Skill 包內容，並執行 `python C:\GitHub\agent-safety-checks\tools\verify_agent_skill_pack_safety.py --pack <Skill目錄>` 靜態安全檢驗。
     2. 確認其 `TaskSpace` 隔離與 `ego-browser import` 的本機資料讀寫行為是否符合最小權限要求（明確驗證不會未經允許存取主瀏覽器敏感憑證）。
     3. 整理與本機現有 Playwright / `browser` subagent 的適用分工建議於 `docs/ego-lite-security-eval.md`（本評估任務不將主瀏覽器 Cookie 匯入任何外部工具）。
   - **驗收標準（DoD）**：產出 `docs/ego-lite-security-eval.md`，完整記錄安全掃描結果、授權條款與與現有瀏覽器工具之分工結論，且 `python tools/verify_inbox.py` 驗證通過。
+  - **完成日期**：2026-11-20
+  - **實作紀錄 / 證據**：產出 docs/ego-lite-security-eval.md（審查 commit f499162，2026-11-20 唯讀靜態檢閱，未安裝未執行）；verify_agent_skill_pack_safety 整庫結束碼 1（FAIL 1 經人工判為誤判、REVIEW 2）；結論：SDK 為 MIT 但瀏覽器本體閉源，Space 與使用者共用設定檔 Cookie 且 page.cdp 不過濾方法，不符最小權限，不安裝、不匯入，僅借鏡 handOff 流程與清除範圍對照表
