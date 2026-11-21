@@ -39,14 +39,13 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 257 項任務：🔴 未做 4／🟡 進行中 1／🟢 已做 173／⚪ 不做 79
+> 共 257 項任務：🔴 未做 4／🟡 進行中 0／🟢 已做 174／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261108-05` | 🟡 進行中 | 中 | 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核 | `tools/audit_fullstack_security.py`、`tests/test_audit_fullstack_security.py`、`docs/production-smoke-security-checklist.md` | [2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) | 2026-11-08 |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
 | `T-20261120-07` | 🔴 未做 | 低 | 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md` | `C:\GitHub\ai-inbox\docs\code-as-video-creative-patterns.md`（收錄於集群 2） | [2026-11-20-nicekate-opus-5-5-code-as-video-10-cases](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | 2026-11-20 |
 | `T-20261121-01` | 🔴 未做 | 低 | 評估引入 `PrefectHQ/fastmcp` 作為本機自訂 Python MCP Server 標準腳手架與安全性規範 | `C:\GitHub\ai-inbox\docs\fastmcp-scaffolding-eval.md` | [2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | 2026-11-21 |
@@ -54,7 +53,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 173 項）</summary>
+<details><summary>展開查看已完成任務（共 174 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -198,6 +197,7 @@
 | `T-20261108-02` | 2026-11-14 | 撰寫 Agent Autoloop 事件溯源與四層安全防線規格，並實作 `tools/verify_autoloop_dispatch_guard.py` 派工安全檢驗器 | 修正兩輪（2026-11-14）：所有模板欄位共用注入檢查；schema 缺漏判失敗；hop 須為 parent+1；ACL 只允許本人與 SYSTEM；事件鍵名 NFKC＋casefold 後遞迴比對禁用欄位；來源與工具名不分大小寫；來源改白名單（github、gitlab、webhook、external、local、manual、cron，後三者為本 repo 自訂，上游未明文）；max_hops 上限 8。原審查與 Opus 新繞過全部由 exit 0 變 1，規格第 2 節已同步。 | [2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) |
 | `T-20261108-03` | 2026-11-14 | 撰寫《Harness² 雙層遞迴與 8 大模組演進及防弊規範》（`docs/harness2-recursive-agent-harnessing-spec.md`） | 修正（2026-11-14）：+11.8 改為「個百分點」並標明是作者報告的 LAB partial pass rate；答案洩漏改寫為官方 Web access 章節揭露的風險，註明本庫沒有已發生洩漏的證據。 | [2026-11-08-google-research-harness2-recursive-agent-harnessing](./notes/2026-11-08-google-research-harness2-recursive-agent-harnessing.md) |
 | `T-20261108-04` | 2026-11-14 | 撰寫《Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範》，並實作 `tools/verify_agent_skill_pack_safety.py` 靜態審計器 | 重寫（2026-11-14，Fable）：改為 --pack 實掃技能包目錄的靜態啟發式審計器，argv 等級解析（等號、空白、Tab、引號、大小寫、NFKC 全形、續行），類別 BYPASS／REMOTE-EXEC／OBFUSCATED／CRED-ACCESS／INSTALL-EXEC 判 FAIL，AUTO-HOOK／MCP-SERVER／DYNAMIC-EXEC 列 REVIEW；裸執行回 2，內建範例改由 --self-test。審查反例（=、雙空白、Tab）由 exit 0 變 1；Opus 以 25 個假技能包測試，抓不到的變數間接、$(…) 拼接已寫進文件第 4.7 節。專屬測試約 90 個，mutation 全被抓到。 **搬移註記（2026-11-14）**：工具與測試已移至 [`SanHsien/agent-safety-checks`](https://github.com/SanHsien/agent-safety-checks)（保留 git 歷史）。 | [2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) |
+| `T-20261108-05` | 2026-11-21 | 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核 | 稽核退回後第三輪修正 f02e7cc（2026-11-21）：.dev.vars 是否會被提交改為逐目錄呼叫 git check-ignore -v -n --no-index，以 git 實際判定為準；三個重現由 0 項變為有報（根目錄錨定規則不涵蓋 app/.dev.vars、中間層 a/.gitignore 的 !.dev.vars、[vars] 的 DB_PASS／AUTH），另補四個自擬反例（已被追蹤的 .dev.vars、只靠 .git/info/exclude 或全域忽略檔、大小寫變體 .DEV.VARS、子目錄 .dev.vars.local 配錨定規則）；不在 git 工作樹內或 git 不可用時回報無法確認（exit 1）。新增 11 項回歸測試，修正前 10 項紅燈、修正後 tests/test_audit_fullstack_security.py 41 項全過，全庫 733 項通過（skip 2）；verify_inbox [PASS]。限制：鍵名含 KEY、AUTH 單字的一般變數（如 AUTH_URL）會誤報；.dev.vars.example 內容不掃。 | [2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) |
 | `T-20261108-06` | 2026-11-14 | 新增 `tools/check_external_refs.py`：掃描 `notes/` 內的 GitHub repo 與 arXiv 連結，確認存在、是否改名或封存 | 完成（2026-11-14）：tools/check_external_refs.py＋tests（404、改名、封存、私有略過、arXiv、壞快取、gh 輸出 UTF-8 解碼等）。實跑 94 個連結：92 OK，2 個 404 是筆記刻意記錄的「尚未 Fork」，1 改名、1 封存；證據 docs/evidence/external-refs-check-2026-11.md。整合者實跑時抓到 gh 輸出以 cp950 解碼而崩潰的 bug，已修並加回歸測試。 | [2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) |
 | `T-20261108-07` | 2026-11-17 | 查證原生顧問功能的計費與快取行為，並在 `SanHsien/agent-advisor` 的成本規則補上「顧問呼叫成本隨對話長度成長」警語 | docs/claude-advisor-cost-check.md（官方文件 2026-11-17 查證：顧問每次收完整對話、Claude Code 不快取、以顧問模型費率計）；SanHsien/agent-advisor commit 5ab3b22 在 Claude 版 cost-policy.md 新增警語並記入 CHANGELOG，dev_check.ps1 通過。 | [2026-11-08-claude-code-builtin-advisor-command-evaluation](./notes/2026-11-08-claude-code-builtin-advisor-command-evaluation.md) |
 | `T-20261114-01` | 2026-11-14 | 將 GPT-6.1 Terra 額度、credits 單價與 Fast 倍率核實結果增補進模型速查表 | `docs/model-burn-rate-routing-matrix.md` 新增第 9 節（9.1–9.6，約 66 行）。數字取自 2026-11-14 讀取的官方頁：Terra 35–285 對 Sol 15–160、Terra credits 25/1.25/125 對 Sol 50/2.5/250、Fast 2.5x／2x。線索中「額度增加」依官方原文「Overall Work and Codex plan limits are unchanged」標為措辭不精確。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
@@ -411,7 +411,7 @@
 | 2026-11-07 | ⚪ | [Threads「Canva 中文字型分享」貼文評估：7 款字型清單整理、簡轉繁與日本漢字缺字風險，以及對工程流程之低關聯性](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md) | `canva`, `typography`, `chinese-fonts` | 0 / 0 |
 | 2026-11-07 | 🟢 | [Will 保哥推薦 answer-me-with-html 繁中分支（doggy8088/answer-me-with-html@zh-tw）評估：OpenCC 自動同步轉換管線、OpenCC 二次誤轉修補字典，與既有自建視覺化工件對照](./notes/2026-11-07-willh-doggy8088-answer-me-with-html-zhtw-fork.md) | `answer-me-with-html`, `opencc`, `zh-tw-localization` | 4 / 4 |
 | 2026-11-08 | 🟢 | [Agent Autoloop 架構深挖：約 2,000 行零依賴事件溯源內核、掛起零消耗、指令資料分離與 8 跳 TTL 熔斷防線](./notes/2026-11-08-agent-autoloop-event-sourcing-zero-cost-suspend.md) | `agent-autoloop`, `event-sourcing`, `zero-cost-suspend` | 1 / 1 |
-| 2026-11-08 | 🟡 | [陳鍾誠教授分享「AI 寫網站＋Cloudflare `npx wrangler deploy` 一鍵上線」評估：免虛擬主機全端免費全家桶（Workers/KV/D1/R2）與 Wrangler 機密防洩漏稽核](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) | `cloudflare-workers`, `wrangler-deploy`, `serverless-fullstack` | 0 / 1 |
+| 2026-11-08 | 🟢 | [陳鍾誠教授分享「AI 寫網站＋Cloudflare `npx wrangler deploy` 一鍵上線」評估：免虛擬主機全端免費全家桶（Workers/KV/D1/R2）與 Wrangler 機密防洩漏稽核](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) | `cloudflare-workers`, `wrangler-deploy`, `serverless-fullstack` | 1 / 1 |
 | 2026-11-08 | 🟢 | [Claude Code 原生 `/advisor` 指令與伺服端 `advisor_20260301` 工具評估：Sonnet 主模型＋Opus/Fable 顧問機制與本地 `SanHsien/agent-advisor` 架構對比](./notes/2026-11-08-claude-code-builtin-advisor-command-evaluation.md) | `claude-code`, `advisor-mode`, `model-routing` | 1 / 1 |
 | 2026-11-08 | 🟢 | [Claude Code 垂直領域 Skill 與 MCP 生態系全盤點：影音配音聽覺自審、YouTube/IG 確定性腳本、前端反 AI Slop 五件套與 Claudex 跨模型互審](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) | `claude-code`, `agent-skills`, `earshot` | 2 / 2 |
 | 2026-11-08 | ⚪ | [黑暗執行緒推薦「Motion Library 動態收藏」：300 多種網頁特效的 AI 提示詞庫、CSS/GSAP 實作與 Agent Skill 整合評估](./notes/2026-11-08-darkthread-kittenjam-motion-library-frontend-animation-prompts.md) | `motion-library`, `frontend-animation`, `darkthread` | 0 / 0 |

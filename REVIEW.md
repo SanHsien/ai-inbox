@@ -260,16 +260,17 @@
 
 **方式**：標準同第 5 節，DoD 逐條對照產出檔與證據 commit。工具類實跑測試，並自己構造至少 2 個壞輸入（繞過寫法、空檔、格式錯誤）；文件類抽查關鍵事實對一手來源（GitHub API 讀固定 commit、官方文件頁）。搬到其他 repo 的工具（agent-safety-checks、zhtw-vocab-guard）與交付在其他 repo 的任務（agent-relay、agent-advisor、video-autopilot-kit、code-as-video-studio、`SanHsien/agent-assets`（私有））在該 repo 實跑。
 
-**結果**：通過 31 項；輕缺陷 6 項（5 項本次修掉，1 項在別的 repo、記錄待修）；重缺陷 1 項，退回佔列。
+**結果**：通過 31 項；輕缺陷 6 項（5 項本次修掉，1 項在別的 repo、記錄待修）；重缺陷 1 項，退回佔列（已於 `f02e7cc` 修復並重新結案）。
 
-### 16.1 重缺陷（退回）
+### 16.1 重缺陷（退回，已修復）
 
-- ⏸ [高] T-20261108-05（`tools/audit_fullstack_security.py` 的 Wrangler 檢查）：「`.gitignore` 是否忽略 `.dev.vars`」的判斷與 git 實際行為不一致，會把會被提交的機密檔判為已忽略（假綠）。單元測試全綠，三個反例都用 `git check-ignore` 對照：
+- ✅ [高] T-20261108-05（`tools/audit_fullstack_security.py` 的 Wrangler 檢查）：「`.gitignore` 是否忽略 `.dev.vars`」的判斷與 git 實際行為不一致，會把會被提交的機密檔判為已忽略（假綠）。單元測試全綠，三個反例都用 `git check-ignore` 對照：
   - 重現 1：根目錄 `.gitignore` 寫 `/.dev.vars`、`/.dev.vars.*`，專案在子目錄 `app/`（`app/wrangler.toml`、`app/.dev.vars`）。git 不忽略 `app/.dev.vars`（check-ignore exit 1），工具回 0 項。原因：`load_rules` 用 `lstrip("/")` 去掉錨點，錨定規則被當成任何層都適用。
   - 重現 2：根目錄 `.gitignore` 寫 `.dev.vars`，中間層 `a/.gitignore` 寫 `!.dev.vars`，專案在 `a/b/`。git 不忽略 `a/b/.dev.vars`，工具回 0 項。原因：只讀根目錄與專案目錄兩份 `.gitignore`，中間層的否定規則沒讀。
   - 重現 3：`wrangler.toml` 的 `[vars]` 寫 `DB_PASS = "hunter2-prod"`、`AUTH = "Basic …"`，工具回 0 項。鍵名只認 TOKEN／KEY／SECRET／PASSWORD／CREDENTIAL。
   - 建議修法：專案在 git 工作樹內時直接呼叫 `git check-ignore -q --no-index <路徑>` 判斷（探針檔用實際存在的檔名加 `.dev.vars`、`.dev.vars.production`），不在 git 內或 git 不可用時回「無法確認」（判失敗）；自行解析時要逐層讀從根目錄到專案目錄的每一份 `.gitignore`，並保留錨定語意（含 `/` 的規則相對於該 `.gitignore` 所在目錄）。鍵名清單補 `PASS`、`PWD`、`AUTH`、`PRIVATE`、`CERT`、`DSN`。三個重現都要寫成回歸測試，修正前須為紅燈。
   - 處置：任務改回未完成、狀態標「🟡 進行中（2026-11-21 稽核退回）」，原證據保留為「原結案證據（稽核前）」。
+  - 修復：`f02e7cc`（2026-11-21）。忽略判定改為逐目錄呼叫 `git check-ignore -v -n --no-index`，不再自行解析 `.gitignore`；重現 1、2、3 都由 0 項變為有報，並寫成回歸測試（修正前紅燈）。修的過程另外補掉四個同類漏洞：檔案已被 git 追蹤（`git add -f` 或規則比檔案晚加）時 `.gitignore` 無效；只靠 `.git/info/exclude` 或個人全域忽略檔忽略，規則不跟著 repo 走；大小寫變體 `.DEV.VARS`（原本掃不到）；子目錄 `.dev.vars.local` 配根目錄錨定規則。不在 git 工作樹內或 git 無法執行時回報「無法確認，未完成稽核」（exit 1）。鍵名補 PASS／PASSWD／PWD／AUTH（依底線與駝峰切成單字後等於或以其結尾）、AUTHORIZATION、DSN、CERT、PRIVATE、PASSPHRASE，只報鍵名不輸出值。已知限制：`AUTH_URL` 這類含 AUTH 單字的一般變數會誤報；`.dev.vars.example` 的內容不掃。任務已重新結案。
 
 ### 16.2 輕缺陷
 
