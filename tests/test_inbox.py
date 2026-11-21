@@ -165,7 +165,7 @@ class ParseTest(unittest.TestCase):
         import subprocess
 
         root = self.tmp / "repo"
-        for name in ("tools", "tests", "notes", "docs", "templates", "assets"):
+        for name in ("tools", "tests", "notes", "docs", "templates", "assets", "reviews"):
             shutil.copytree(bi.REPO_ROOT / name, root / name, ignore=shutil.ignore_patterns("__pycache__"))
         for item in bi.REPO_ROOT.iterdir():
             if item.is_file():

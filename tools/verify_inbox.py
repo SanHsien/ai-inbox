@@ -11,6 +11,8 @@ tools/verify_inbox.py
 7. 會提交的檔案不得出現私人稱謂（公開 repo 用面向公眾的措辭）。
 8. 會提交的檔案不得出現帶真實帳號的本機家目錄路徑（C:\\Users\\<帳號>、/Users/<帳號>、/home/<帳號>），
    改寫成 %USERPROFILE% 或 ~。私有 repo 寫真名並標「（私有）」，不再用別名。
+9. 獨立審查紀錄（tools/review_ledger.py、docs/review-pipeline-plan.md）：新筆記與改過內容的舊筆記要有
+   written_by，審查者不是作者，紀錄對得上現行內容雜湊，該覆核的有強模型 audit；待審超過寬限天數就失敗。
 """
 
 from __future__ import annotations
@@ -277,6 +279,18 @@ def check_readme(notes: list[bi.Note]) -> list[str]:
     return []
 
 
+def check_reviews(notes: list[bi.Note]) -> tuple[list[str], list[str]]:
+    """獨立審查紀錄（tools/review_ledger.py）：回傳 (錯誤, 警告)。待審在寬限內只警告。"""
+    import review_ledger as rl
+
+    states, errors = rl.evaluate_all(notes)
+    warnings = []
+    for st in states.values():
+        errors.extend(st.errors)
+        warnings.extend(st.warnings)
+    return errors, warnings
+
+
 def main(argv: list[str] | None = None) -> int:
     bi.ensure_utf8_stdout()
     import argparse
@@ -306,7 +320,9 @@ def main(argv: list[str] | None = None) -> int:
     }
 
     scan = tracked_texts()
+    review_errors, review_warnings = check_reviews(notes)
     errors = [
+        *review_errors,
         *check_notes(notes),
         *check_dod_artifacts(notes),
         *check_task_ids(notes, {**readme_texts, **note_texts}),
@@ -324,6 +340,9 @@ def main(argv: list[str] | None = None) -> int:
     missing_dod = sorted(t.id for t in tasks if not t.done and not t.archived and not bi.filled(t.fields.get("驗收標準（DoD）", "")))
     if missing_dod:
         print(f"[WARN] {len(missing_dod)} 項未完成任務尚無可驗收的 DoD：{', '.join(missing_dod)}")
+
+    for w in review_warnings:
+        print(f"[WARN] {w}")
 
     errors = list(dict.fromkeys(errors))  # 同一檔案可能被 texts 與 scan 各掃一次，去重
     if errors:

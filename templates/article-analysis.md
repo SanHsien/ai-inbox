@@ -6,6 +6,7 @@ source_platform: "<X / Threads / Reddit / GitHub / Blog / Paper / WeChat>"
 author: "<作者名稱或帳號>"
 analyzed_at: YYYY-MM-DD
 analyzed_by: "<Agent 名稱，如 Antigravity / Claude Code / Codex>"
+written_by: "<runtime>/<model>@<session id>" # 寫過內容的 agent，例：codex/gpt-6.1-sol@019a…；之後改內容的人用「; 」加上自己並填 revised_at。審查者不能是這裡的人（見 docs/review-pipeline-plan.md）
 status: pending # pending | in-progress | done | archived
 cluster: 1 # 知識圖譜集群：1 多 Agent 協同｜2 影音視覺與 Generative UI｜3 Agent 工具鏈｜4 研究與全端工程
 cluster_role: "<這篇在集群裡的角色，例如 訊息傳輸、動效字典>"

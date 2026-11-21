@@ -208,7 +208,14 @@ def cmd_next(args: argparse.Namespace) -> int:
         for t in n.tasks
         if not t.done and not t.archived and (not args.priority or t.priority == args.priority)
     ]
+    import review_ledger as rl
+
+    pending = rl.pending_slugs(notes)
+    skipped = sum(t.note.slug in pending for t in active)
+    active = [t for t in active if t.note.slug not in pending]  # 筆記待審的任務不能認領，不列入佇列
     active.sort(key=lambda t: (0 if t.in_progress else 1, bi.PRIORITY_RANK.get(t.priority, 9), t.id))
+    if skipped and not args.json:
+        print(f"[*] 另有 {skipped} 項任務所在的筆記待獨立審查，暫不列入（python tools/review_pipeline.py queue）")
     selected = active[: args.limit] if args.limit else active
 
     if args.json:
@@ -248,9 +255,21 @@ def cmd_show(args: argparse.Namespace) -> int:
     return 0
 
 
+def _require_reviewed(notes: list[bi.Note], task: bi.Task) -> None:
+    """待獨立審查的筆記，任務不能認領或結案：任務可能建立在還沒查核的前提上（docs/review-pipeline-plan.md）。"""
+    import review_ledger as rl
+
+    if task.note.slug in rl.pending_slugs(notes):
+        raise ValueError(
+            f"{task.id} 所在的筆記 {task.note.path.name} 還沒通過獨立審查，不能認領或結案；"
+            "先跑 python tools/review_pipeline.py queue 派審（關閉任務不受限）"
+        )
+
+
 def cmd_claim(args: argparse.Namespace) -> int:
     notes = bi.load_notes()
     task = find_task(notes, args.task_id)
+    _require_reviewed(notes, task)
     new_status = apply_claim(task.note.path, args.task_id)
     bi.main([])
     print(f"[*] 已認領 {args.task_id}（{task.note.path.name} status -> {new_status}）")
@@ -263,6 +282,7 @@ def cmd_complete(args: argparse.Namespace) -> int:
     missing = bi.missing_dod_artifacts(task)
     if missing:
         raise ValueError(f"{args.task_id} 的 DoD 要求產出的檔案不存在，不可結案：{', '.join(missing)}")
+    _require_reviewed(notes, task)
     date_str = args.date or dt.date.today().isoformat()
     new_status = apply_complete(task.note.path, args.task_id, args.evidence, date_str)
     bi.main([])

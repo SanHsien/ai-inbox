@@ -688,7 +688,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 這些 repo 都保留了搬移檔案原本的 git 歷史；搬走的筆記與任務不再列入本 repo 的任務總表。
 
 <!-- BEGIN GENERATED: catalog -->
-### 1. CLI 工具與驗證器（`tools/`，共 29 支）
+### 1. CLI 工具與驗證器（`tools/`，共 30 支）
 | 腳本 | 用途 | 對應測試 |
 | :--- | :--- | :--- |
 | [`tools/task_cli.py`](./tools/task_cli.py) | AI 與維護者共用的任務佇列查詢、認領、結案與狀態同步 CLI | [`tests/test_inbox.py`](./tests/test_inbox.py) |
@@ -702,6 +702,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/generate_dod_verifier.py`](./tools/generate_dod_verifier.py) | 從任務的 DoD（驗收標準）文字或 JSON 規格，產生一支獨立、可執行的驗收腳本 verify_delivery.py | [`tests/test_generate_dod_verifier.py`](./tests/test_generate_dod_verifier.py) |
 | [`tools/public_apis_indexer.py`](./tools/public_apis_indexer.py) | Public APIs 本地離線索引與免金鑰 API 篩選工具 | [`tests/test_public_apis_indexer.py`](./tests/test_public_apis_indexer.py) |
 | [`tools/render_artifact_html.py`](./tools/render_artifact_html.py) | 把「語意草稿（Draft）」確定性地編譯成單檔自包含 HTML（規格：docs/visual-agent-artifacts-engineering-spec.md） | [`tests/test_render_artifact_html.py`](./tests/test_render_artifact_html.py) |
+| [`tools/review_ledger.py`](./tools/review_ledger.py) | 新筆記獨立審查紀錄（設計見 docs/review-pipeline-plan.md，審查標準見 docs/source-review-sop.md） | [`tests/test_review_ledger.py`](./tests/test_review_ledger.py) |
 | [`tools/toml_validator.py`](./tools/toml_validator.py) | TOML 設定檔輕量校驗工具（只用標準庫 tomllib，需要 Python 3.11+） | [`tests/test_toml_validator.py`](./tests/test_toml_validator.py) |
 | [`tools/verify_a11y_tree_snapshot.py`](./tools/verify_a11y_tree_snapshot.py) | Windows UI Automation (UIA) 與 OS 級無障礙樹快照與 Ref 點擊驗證工具 | [`tests/test_verify_a11y_tree_snapshot.py`](./tests/test_verify_a11y_tree_snapshot.py) |
 | [`tools/verify_academic_and_latex_guard.py`](./tools/verify_academic_and_latex_guard.py) | 學術論文雙語翻譯「LaTeX 公式與引用零竄改保護」及「5W1H-CQR-KSU 結構」之外部裁判驗證器（純 Python stdlib） | [`tests/test_verify_academic_and_latex_guard.py`](./tests/test_verify_academic_and_latex_guard.py) |
@@ -794,6 +795,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/pstack-governance-integration.md`](./docs/pstack-governance-integration.md) | pstack 工程防線與 agent-governance-toolkit 運行期政策檢查整合實踐 |
 | [`docs/rea-sandbox-evaluation-evidence.md`](./docs/rea-sandbox-evaluation-evidence.md) | REA（Reverse Engineer Anything）沙盒環境實測報告 |
 | [`docs/reverse-engineering-pipeline-spec.md`](./docs/reverse-engineering-pipeline-spec.md) | REA + CLI-Anything 逆向分析與功能重造流水線規格 (Reverse Engineering Pipeline Spec) |
+| [`docs/review-pipeline-plan.md`](./docs/review-pipeline-plan.md) | 新筆記獨立審查管線：規劃 |
 | [`docs/saas-subscription-and-api-defense-spec.md`](./docs/saas-subscription-and-api-defense-spec.md) | SaaS 訂閱與 API 鑑權防繞過架構設計規範 |
 | [`docs/scan-to-threejs-spatial-agent-spec.md`](./docs/scan-to-threejs-spatial-agent-spec.md) | 空間運算 Agent 規範：LiDAR 測量、Three.js 程式化建模與相機內參比對閉環 |
 | [`docs/scrapling-windows-eval.md`](./docs/scrapling-windows-eval.md) | Scrapling 在 Windows 11 的沙盒實測 |

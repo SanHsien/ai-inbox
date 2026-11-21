@@ -342,15 +342,19 @@ def render_index(notes: list[Note]) -> str:
         "| 日期 | 狀態 | 文章標題 / 主題 | 核心標籤 | 衍生任務（已做/有效） |",
         "| :---: | :---: | :--- | :--- | :---: |",
     ]
+    import review_ledger  # 延後匯入：review_ledger 也匯入本模組
+
+    pending = review_ledger.pending_slugs(notes)
     for n in notes:
         tags = ", ".join(f"`{t}`" for t in n.tags[:3])
+        mark = "⏳ 待獨立審查｜" if n.slug in pending else ""
         done = sum(t.done for t in n.tasks)
         archived = sum(t.archived for t in n.tasks)
         active_total = len(n.tasks) - archived
         progress = f"{done} / {active_total}" + (f"（+{archived} 不做）" if archived else "")
         out.append(
             f"| {n.meta.get('analyzed_at', '-')} | {STATUS_LABEL.get(n.meta.get('status', ''), '?')} "
-            f"| [{_cell(n.meta.get('title', n.slug))}]({n.link}) | {tags or '-'} | {progress} |"
+            f"| {mark}[{_cell(n.meta.get('title', n.slug))}]({n.link}) | {tags or '-'} | {progress} |"
         )
     return "\n".join(out) + "\n"
 
