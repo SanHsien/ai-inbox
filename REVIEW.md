@@ -278,7 +278,7 @@
 - ✅ [低] T-20261108-02（`verify_autoloop_dispatch_guard.py`）：Worker 工具名正規化只去頭尾空白，`agent-autoloop  answer`（兩個空白）、`agent-autoloop<Tab>answer` 能繞過自審工具檢查，但 shell 會把它們當成同一個指令。→ `norm()` 把連續空白（含 Tab、全形空白）併成一格；補 3 個子測試。
 - ✅ [低] T-20261018-19（`verify_pstack_and_fullstack_specs.py`）：未標註 SpaceX 的檢查只比對 `spacex` 子字串，寫成 `Space X`、`Space-X`、全形就放行。→ 先 NFKC 再用允許空白／連字號的樣式比對，英文字母邊界避免誤擋 `workspace X`；補測試。上游 playbook 清單 2026-11-21 以 GitHub API 重列，仍與工具內 22 個檔名一致。
 - ✅ [低] T-20261108-06（`check_external_refs.py`）：只收 `https://github.com/`，`http://github.com/`、`https://www.github.com/` 的連結被靜默略過，失效也不報。→ 兩種寫法都收並正規化；補測試。現有筆記沒有這類連結，離線總數不變（146）。
-- ⏸ [中] T-20261107-05（MCP 設定憑證檢查，工具已移至 `SanHsien/agent-safety-checks`）：DoD 範圍內的 Bearer 與 `ya29.` 都擋得住，但 args 裡的一般 API key 不報：`["mcp-remote", "https://…", "--header", "X-Api-Key:<32 位 hex>"]` 與 `["server.js", "--api-key=<32 位 hex>"]` 都回 exit 0。`mcp-remote --header` 是 Claude Desktop 傳標頭最常見的寫法。headers／env 的敏感鍵名檢查沒有套到 args。→ 不在本 repo 修（工具已搬走）；建議在該 repo 對 args 補「`--<敏感名>=值`、`--header <敏感名>:值`、旗標後一個參數為值」三種寫法，先補反例測試。不退回本任務。
+- ✅ [中] T-20261107-05（MCP 設定憑證檢查，工具已移至 `SanHsien/agent-safety-checks`）：2026-11-21 已在該 repo 修好：實際檢查在 `verify_cloud_persistence_audit.py`，`--api-key=` 等寫法修在 `022d23f`（C-3），`--header X-Api-Key:…`、`-H`、`--header=名稱:值` 修在 `79b2788`（C-8），各附反例測試；詳見該 repo 的 REVIEW.md。原紀錄：DoD 範圍內的 Bearer 與 `ya29.` 都擋得住，但 args 裡的一般 API key 不報：`["mcp-remote", "https://…", "--header", "X-Api-Key:<32 位 hex>"]` 與 `["server.js", "--api-key=<32 位 hex>"]` 都回 exit 0。`mcp-remote --header` 是 Claude Desktop 傳標頭最常見的寫法。headers／env 的敏感鍵名檢查沒有套到 args。→ 不在本 repo 修（工具已搬走）；建議在該 repo 對 args 補「`--<敏感名>=值`、`--header <敏感名>:值`、旗標後一個參數為值」三種寫法，先補反例測試。不退回本任務。
 
 ### 16.3 通過（抽查重點）
 
