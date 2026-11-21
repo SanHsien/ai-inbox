@@ -50,10 +50,12 @@ review_pipeline.py queue ── 依來源平台分派 ──┬─ codex 道：�
 
 - 合併當下 `main` 上的每篇筆記，把「分析內容雜湊」寫進 `reviews/legacy-baseline.json`，檔案雜湊釘在 `tools/review_ledger.py`。內容沒變的舊筆記免審；**一改內容就變成受管筆記**，要填 `written_by`、`revised_at` 並在寬限內送審。
 - 不用日期切分：檔名日期是作者自己填的，用日期切分等於可以把新筆記寫成舊日期繞過。
-- 舊筆記之後用 Codex 額度逐步補審（`queue --legacy`），補審通過的就有紀錄，不再依賴基準。
+- 舊筆記之後用 Codex 額度逐步補審（`queue --legacy N`、`run --legacy N`），補審通過的就有紀錄，不再依賴基準。
+- 舊筆記不知道作者 session：補審與修改時作者寫佔位身分 `legacy/unknown@pre-review`，驗證器只准基準裡的筆記使用它（新筆記寫它會失敗，防止冒充「作者不明」來自審）。
 
 ### 2.4 派審
 
+- 狀態與執行紀錄放 `~/codex-work/ai-inbox-review/`（不放 `AppData\Local`：Codex 的 `-o` 拒絕寫入含 reparse point 的路徑，2026-11-21 實測）。
 - `tools/review_pipeline.py`：`queue`（列待審與該走哪一道）、`prompt`（從 SOP 標記區段產生審查指示）、`run`（codex 道：`codex --search exec -s read-only`，stdin 關閉、逾時、先查 bridge）、`ingest`（驗證報告格式與雜湊未變，寫紀錄）。
 - Codex 道由 Windows 工作排程器每天跑一次 `run --lane codex`，只提交 `reviews/` 下的新檔。Windows 三問：排程器與被審的 repo／agent 不同生共死；既有的 agent-relay codex 工人關閉網路、做不了網頁查證，所以不重用它；Windows 原生可跑。
 - Chrome 道：只有登入的 Claude in Chrome 讀得到留言。用 Claude Desktop 的排程工作（既有機制）每天跑一次，照 `queue --lane chrome` 審，`ingest` 寫紀錄。Pro 額度小，只做 Chrome 才能做的「原始資料讀完度」範圍，事實查核留給 Codex。
@@ -65,7 +67,7 @@ review_pipeline.py queue ── 依來源平台分派 ──┬─ codex 道：�
 
 1. 審查者把作者的 `full` 下修成 `partial`／`unavailable`。
 2. 一次審查提出 ≥2 處更正。
-3. 審查者模型不在 `reviews/policy.json` 的強模型清單（例如 Sonnet、Haiku、Gemini Flash）。
+3. 審查者模型不是強模型（`tools/review_ledger.py` 的 `STRONG_MODEL`：Opus、GPT-6.x Sol／Astra、維護者本人；Sonnet、Haiku、Fable、Gemini 等都要覆核）。
 4. 抽查：現行雜湊前 8 碼轉整數 mod 5 = 0（約 1/5）。
 
 audit 的 session 不能是作者，也不能是同輪審查者。上一次 audit 通過之後的審查才計入觸發。
@@ -76,7 +78,7 @@ audit 的 session 不能是作者，也不能是同輪審查者。上一次 audi
 | --- | --- | --- | --- |
 | 1 紀錄與驗證器 | `tools/review_ledger.py`、`verify_inbox` 新檢查、legacy 基準、`task_cli` 鎖、README ⏳、範本 `written_by` | 單元測試涵蓋每條失敗條件的反例；全庫 `verify_inbox` PASS；舊檢查全部保留 | 還原這幾個 commit；基準檔是新增檔，刪除即回到舊行為 |
 | 2 派審 | `tools/review_pipeline.py`、SOP 審查清單標記區段、排程註冊腳本 | 對 2 篇真實新筆記跑完整流程（codex 道實跑、報告入帳、驗證器認得）；`prompt` 內容來自 SOP | 停用排程工作；`reviews/` 紀錄留著不影響舊流程 |
-| 3 覆核 | `policy.json`、覆核觸發規則與驗證器 | 測試：下修 full、更正 2 處、弱模型、抽中，四種都要求 audit；audit 同 session 被擋 | 同階段 1 |
+| 3 覆核 | 強模型清單、覆核觸發規則與驗證器 | 測試：下修 full、更正 2 處、弱模型、抽中，四種都要求 audit；audit 同 session 被擋 | 同階段 1 |
 | 4 文件與覆核 | AGENTS.md、SOP、ROADMAP、REVIEW.md 設計決策 | 未參與的強模型以攻擊者角度試著讓未審筆記通過，找到的洞修完再審 | — |
 
 每階段 `python tools/verify_inbox.py && python -m unittest discover -s tests` 通過才提交；合併前 rebase 到最新 `main`、重產 legacy 基準再跑一次。

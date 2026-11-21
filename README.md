@@ -688,7 +688,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 這些 repo 都保留了搬移檔案原本的 git 歷史；搬走的筆記與任務不再列入本 repo 的任務總表。
 
 <!-- BEGIN GENERATED: catalog -->
-### 1. CLI 工具與驗證器（`tools/`，共 30 支）
+### 1. CLI 工具與驗證器（`tools/`，共 31 支）
 | 腳本 | 用途 | 對應測試 |
 | :--- | :--- | :--- |
 | [`tools/task_cli.py`](./tools/task_cli.py) | AI 與維護者共用的任務佇列查詢、認領、結案與狀態同步 CLI | [`tests/test_inbox.py`](./tests/test_inbox.py) |
@@ -703,6 +703,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/public_apis_indexer.py`](./tools/public_apis_indexer.py) | Public APIs 本地離線索引與免金鑰 API 篩選工具 | [`tests/test_public_apis_indexer.py`](./tests/test_public_apis_indexer.py) |
 | [`tools/render_artifact_html.py`](./tools/render_artifact_html.py) | 把「語意草稿（Draft）」確定性地編譯成單檔自包含 HTML（規格：docs/visual-agent-artifacts-engineering-spec.md） | [`tests/test_render_artifact_html.py`](./tests/test_render_artifact_html.py) |
 | [`tools/review_ledger.py`](./tools/review_ledger.py) | 新筆記獨立審查紀錄（設計見 docs/review-pipeline-plan.md，審查標準見 docs/source-review-sop.md） | [`tests/test_review_ledger.py`](./tests/test_review_ledger.py) |
+| [`tools/review_pipeline.py`](./tools/review_pipeline.py) | 新筆記獨立審查的派審與入帳（設計見 docs/review-pipeline-plan.md；審查清單的唯一來源是 docs/source-review-sop.md 第 6 節） | [`tests/test_review_pipeline.py`](./tests/test_review_pipeline.py) |
 | [`tools/toml_validator.py`](./tools/toml_validator.py) | TOML 設定檔輕量校驗工具（只用標準庫 tomllib，需要 Python 3.11+） | [`tests/test_toml_validator.py`](./tests/test_toml_validator.py) |
 | [`tools/verify_a11y_tree_snapshot.py`](./tools/verify_a11y_tree_snapshot.py) | Windows UI Automation (UIA) 與 OS 級無障礙樹快照與 Ref 點擊驗證工具 | [`tests/test_verify_a11y_tree_snapshot.py`](./tests/test_verify_a11y_tree_snapshot.py) |
 | [`tools/verify_academic_and_latex_guard.py`](./tools/verify_academic_and_latex_guard.py) | 學術論文雙語翻譯「LaTeX 公式與引用零竄改保護」及「5W1H-CQR-KSU 結構」之外部裁判驗證器（純 Python stdlib） | [`tests/test_verify_academic_and_latex_guard.py`](./tests/test_verify_academic_and_latex_guard.py) |

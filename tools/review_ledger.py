@@ -37,7 +37,9 @@ SCOPES = ("source", "facts", "evidence", "task_impact")
 ROLES = ("review", "audit")
 VERDICTS = ("pass", "changes_requested")
 SOURCE_REVIEW_VALUES = ("full", "partial", "unavailable")
-RUNTIMES = ("claude", "codex", "antigravity", "hermes", "human")
+RUNTIMES = ("claude", "codex", "antigravity", "hermes", "human", "legacy")
+# 制度上線前就有的筆記不知道作者 session，補審或修改時 written_by 用這個佔位；只准基準裡的筆記使用
+LEGACY_AUTHOR = "legacy/unknown@pre-review"
 SAMPLE_MODULO = 5  # 現行雜湊前 8 碼 mod 5 == 0 的筆記，一定要強模型覆核（抽查約 1/5）
 CORRECTIONS_TRIGGER = 2  # 一次審查提出幾處以上更正，就要強模型覆核
 
@@ -167,6 +169,8 @@ class ReviewState:
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     authors: list[Identity] = field(default_factory=list)
+    overdue: bool = False  # 待審超過寬限（errors 最後一筆就是這個訊息）
+    covered: set[str] = field(default_factory=set)  # 現行內容已有 pass 的範圍
 
     @property
     def pending(self) -> bool:
@@ -188,6 +192,8 @@ def _validate_entry(name: str, idx: int, r, slug: str, root: Path, today: dt.dat
         return None, [f"{where}: 需為物件"]
     errs = []
     ident = parse_identity(str(r.get("reviewer", "")))
+    if ident and ident.runtime == "legacy":
+        errs.append(f"{where}: reviewer 不能是 legacy 佔位身分")
     if not ident:
         errs.append(f"{where}: reviewer 需為 <runtime>/<model>@<session>，runtime 為 {'/'.join(RUNTIMES)}")
     d = _date(r.get("reviewed_at"))
@@ -226,8 +232,11 @@ def _validate_entry(name: str, idx: int, r, slug: str, root: Path, today: dt.dat
     return ident, errs
 
 
-def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path | None = None) -> ReviewState:
-    """一篇筆記的審查狀態與錯誤。規則見 docs/review-pipeline-plan.md 第 2.2、2.5 節。"""
+def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path | None = None,
+             backfill: bool = False) -> ReviewState:
+    """一篇筆記的審查狀態與錯誤。規則見 docs/review-pipeline-plan.md 第 2.2、2.5 節。
+
+    backfill=True：給 review_pipeline 補審免審舊筆記用，當成受管筆記算出還缺什麼（作者用 legacy 佔位、不算寬限）。"""
     root = root or bi.REPO_ROOT
     slug = note.slug
     text = note.path.read_text(encoding="utf-8")
@@ -239,6 +248,10 @@ def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path |
     st.errors.extend(ledger_errs)
 
     authors, bad = parse_identities(note.meta.get("written_by", ""))
+    if any(a.runtime == "legacy" for a in authors) and slug not in legacy:
+        st.errors.append(f"{name}: written_by 的 {LEGACY_AUTHOR} 只能用在制度上線前就有的筆記（reviews/{LEGACY_BASELINE_NAME}）")
+    if backfill and not governed and not authors:
+        authors = [parse_identity(LEGACY_AUTHOR)]
     st.authors = authors
     author_sessions = {a.session.lower() for a in authors}
     if governed:
@@ -290,7 +303,7 @@ def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path |
         else:
             cycle_sessions.add(s)
 
-    if not governed:
+    if not governed and not backfill:
         return st
     if st.errors:
         st.needs.append("先修正上列錯誤")
@@ -312,6 +325,7 @@ def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path |
         if r["verdict"] == "changes_requested" and not any(j > i for j in audit_pass_idx):
             st.needs.append(f"修正後再審（第 {i + 1} 筆要求修改，報告 {r['report']}）")
     covered = {s for _, r, _ in passes for s in r["scope"]}
+    st.covered = covered
     missing = [s for s in SCOPES if s not in covered]
     if passes and missing:
         st.needs.append(f"補審範圍 {'/'.join(missing)}")
@@ -338,12 +352,13 @@ def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path |
 
 
 def _grace(st: ReviewState, note: bi.Note, analyzed, revised, today: dt.date) -> ReviewState:
-    if st.reviewed:
+    if st.reviewed or not st.governed:  # 補審舊筆記不算寬限
         return st
     start = max(d for d in (analyzed, revised, dt.date.min) if d)
     waited = (today - start).days
     msg = f"{note.path.name}: 待獨立審查（{waited} 天）：{'；'.join(st.needs) or '—'}"
     if waited > GRACE_DAYS:
+        st.overdue = True
         st.errors.append(msg + f"。超過寬限 {GRACE_DAYS} 天，跑 python tools/review_pipeline.py queue 派審")
     else:
         st.warnings.append(msg)

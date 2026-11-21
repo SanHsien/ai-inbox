@@ -22,6 +22,7 @@ C:\GitHub\ai-inbox\
 │   ├── _judge_common.py             # 外部裁判共用：剝註解、結構下限、報告輸出
 │   ├── video_transcript.py          # 影片音訊下載 + faster-whisper (CUDA/CPU) 逐字稿轉寫（見 docs/video-transcript-howto.md）
 │   └── 其他功能型工具               # audit_*、cli_to_skill、generate_dod_verifier、public_apis_indexer、render_artifact_html、toml_validator
+├── reviews/                         # 獨立審查紀錄：<slug>.json、reports/<slug>/ 報告、legacy-baseline.json（見流程 C）
 ├── docs/                            # 技術規格、實測報告與 SOP 手冊（跨 Agent 派工指令見 docs/agent-dispatch.md）
 ├── assets/                          # 單檔 HTML / Generative UI / Canvas 互動成品
 └── tests/                           # tools/ 的單元測試
@@ -58,12 +59,15 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
    - 填寫 YAML frontmatter、核心觀點摘要、對現有環境（Skills / Hooks / 各專案）的價值評估，並拆解出**具體可驗證的待辦事項（Action Items）**。分析內容依 5W1H 結構初篩；若為包含明確實驗數據或論文發表的 AI 文章，主動填寫 CQR（Claim - Evidence - Reasoning）論證檢驗區塊（本 repo 改編版；原作者版本是 Claim - Question - Relation，對照見 `templates/academic-reading-prompt.md` 第 0 節）。
    - 每個待辦事項編號格式為：`T-YYYYMMDD-XX`（例如 `T-20261017-01`）。若同一天有多篇文章，序號接續往後編，確保整個 Repo 內任務 ID 唯一。
 
+   - frontmatter 必填 `written_by`：寫內容的 agent 身分 `<runtime>/<model>@<session id>`（例：`claude/opus-5.5@798b1dc7-…`、`codex/gpt-6.1-sol@019a…`；Claude Code 的 session id 在環境變數 `CLAUDE_CODE_SESSION_ID`）。你標的 `source_review` 只是作者聲明，要由別的 agent 審過才算數（流程 C）。
+
    - 任務行必須完全照範本格式：``- [ ] **`T-YYYYMMDD-XX`**｜**[優先級：高/中/低]** 標題``，底下至少有 `目標範圍` 與 `驗收標準（DoD）`。格式不符的任務總表讀不到，驗證會失敗。
 
 2. **重產總表並驗證**：
    - `python tools/build_index.py`（更新 README 任務表與索引）
    - `python tools/verify_inbox.py`（必須 `[PASS]`）
    - 知識圖譜由 frontmatter 的 `cluster`、`cluster_role`、`short_title` 自動產生，不需手動編輯 README；漏填時 `verify_inbox.py` 會失敗。
+   - 新筆記提交後是「⏳ 待獨立審查」：README 會標出來，它的任務不能 `claim`／`complete`；7 天內沒審完 `verify_inbox.py` 會失敗。不要自己審自己的筆記。
 
 3. **提交與推送**（驗證通過才提交）：
    - `python tools/verify_inbox.py && git add -A && git commit -m "docs(inbox): add analysis and tasks for <slug>" && git push`
@@ -97,7 +101,30 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
      ```
 3. **提交與推送**（驗證通過才提交）：
    - `python tools/verify_inbox.py && python -m unittest discover -s tests && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
+   - 筆記還在「待獨立審查」時，`claim`／`complete` 會被拒絕（任務可能建立在還沒查核的前提上）；`close` 不受限。
 4. **開新 Session 派工與完工回報**：Antigravity、Claude、Codex、Hermes 四套桌面端開新對話、派工與回報的指令，見 [`docs/agent-dispatch.md`](docs/agent-dispatch.md)。
+
+---
+
+### 流程 C：獨立審查（2026-11-21 起）
+
+寫筆記的人不能放行自己的筆記。設計與規則見 [`docs/review-pipeline-plan.md`](docs/review-pipeline-plan.md)，審查清單的唯一來源是 [`docs/source-review-sop.md`](docs/source-review-sop.md) 第 6 節。
+
+```text
+寫筆記（written_by）──▶ ⏳ 待審 ──▶ review_pipeline.py 派審 ──┬─ codex 道（官方文件、repo、數字、Reddit）：排程自動跑
+                                                              └─ chrome 道（Threads／FB／X／IG 留言與圖片）：Claude in Chrome
+審查報告 ──ingest──▶ reviews/<slug>.json ──▶ pass：已審｜changes_requested：作者或整合者修正後再審｜觸發覆核：強模型 audit
+```
+
+1. **看佇列**：`python tools/review_pipeline.py queue`（`--lane codex|chrome|fix`；`--legacy N` 另列 N 篇舊筆記補審）。
+2. **審查**（你必須不在該篇的 `written_by` 裡）：`python tools/review_pipeline.py prompt <slug> --lane <道>` 印出審查指示，照做後把報告存成檔案，再入帳：
+   ```bash
+   python tools/review_pipeline.py ingest <slug> --report <報告.md> --reviewer "claude/opus-5.5@$CLAUDE_CODE_SESSION_ID"      --lane chrome --role review --scope source --sha <prompt 印出的雜湊> --author-claim <prompt 印出的作者聲明> --commit
+   ```
+   Codex 道不用手動：`python tools/review_pipeline.py run --lane codex --commit` 會跑 `codex --search exec -s read-only`，從 Codex 事件取 thread id 當身分。
+3. **修正**（`fix` 道）：照報告改筆記，`written_by` 用 `; ` 加上自己，填 `revised_at`（今天）；改完內容雜湊變了，佇列會自動排再審。審查回報的已完成任務產出檔問題，由整合者照 SOP 第 3 節處理。
+4. **改舊筆記**：制度上線前的筆記內容沒變就免審；一改分析內容（任務狀態欄位除外）就要填 `written_by`（原作者不明時寫 `legacy/unknown@pre-review; <你的身分>`）與 `revised_at`，並在 7 天內送審。
+5. **不要做**：不要改 `reviews/legacy-baseline.json` 或 `tools/review_ledger.py` 的 `LEGACY_BASELINE_SHA256` 讓驗證變綠；不要手寫或修改別人的審查紀錄；不要用別的 session 身分入帳。
 
 ---
 
