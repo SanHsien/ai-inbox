@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
+import os
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
 import json
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 from audit_fullstack_security import (
@@ -19,10 +22,36 @@ from audit_fullstack_security import (
 
 class TestAuditFullstackSecurity(unittest.TestCase):
     def setUp(self):
-        self.test_dir = Path(tempfile.mkdtemp(prefix="test_audit_"))
+        # Wrangler 檢查以 git 的實際判定為準，所以稽核目標要是真的 git 工作樹。
+        # 全域設定與全域忽略檔換成空檔，測試結果不受執行機器的 git 設定影響。
+        self.base_dir = Path(tempfile.mkdtemp(prefix="test_audit_"))
+        self.test_dir = self.base_dir / "repo"
+        self.test_dir.mkdir()
+        (self.base_dir / "empty_ignore").write_text("", encoding="utf-8")
+        (self.base_dir / "gitconfig").write_text(
+            "[core]\n\texcludesFile = " + (self.base_dir / "empty_ignore").as_posix() + "\n", encoding="utf-8")
+        env = patch.dict(os.environ, {"GIT_CONFIG_GLOBAL": str(self.base_dir / "gitconfig"),
+                                      "GIT_CONFIG_NOSYSTEM": "1"})
+        env.start()
+        self.addCleanup(env.stop)
+        for key in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE"):
+            os.environ.pop(key, None)
+        self._git("init", "-q")
 
     def tearDown(self):
-        shutil.rmtree(self.test_dir, ignore_errors=True)
+        shutil.rmtree(self.base_dir, ignore_errors=True)
+
+    def _git(self, *args, cwd=None):
+        done = subprocess.run(["git", "-C", str(cwd or self.test_dir), *args],
+                              capture_output=True, text=True, encoding="utf-8", errors="replace")
+        self.assertEqual(done.returncode, 0, done.stderr)
+        return done.stdout
+
+    def _git_would_commit(self, rel):
+        """對照組：git 自己認為這個路徑不會被忽略（check-ignore 結束碼 1）。"""
+        done = subprocess.run(["git", "-C", str(self.test_dir), "check-ignore", "-q", "--no-index", rel],
+                              capture_output=True)
+        return done.returncode == 1
 
     def test_clean_project_passes(self):
         # 1. 建立合格的 .gitignore
@@ -304,6 +333,128 @@ class TestAuditFullstackSecurity(unittest.TestCase):
         (self.test_dir / '.gitignore').write_text('.dev.vars\n', encoding='utf-8')
         self.assertTrue(check_wrangler_config(self.test_dir))
         (d / '.gitignore').write_text('.dev.vars.*\n', encoding='utf-8')
+        self.assertEqual(check_wrangler_config(self.test_dir), [])
+
+    # ---- 第三輪（2026-11-21 稽核退回 T-20261108-05）：忽略判定以 git 為準 ----
+    def _project(self, where, ignore_files, dev_vars=('.dev.vars',), toml='name="d"\n'):
+        for rel, text in ignore_files.items():
+            path = self.test_dir / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text, encoding='utf-8')
+        d = self.test_dir / where
+        d.mkdir(parents=True, exist_ok=True)
+        (d / 'wrangler.toml').write_text(toml, encoding='utf-8')
+        for name in dev_vars:
+            (d / name).write_text('A=1\n', encoding='utf-8')
+        return check_wrangler_config(self.test_dir)
+
+    def test_root_anchored_rule_does_not_cover_subdirectory_project(self):
+        # 重現 1：根目錄錨定規則只管根目錄那一層，app/.dev.vars 會被提交
+        issues = self._project('app', {'.gitignore': '/.dev.vars\n/.dev.vars.*\n'})
+        self.assertTrue(self._git_would_commit('app/.dev.vars'))
+        self.assertTrue(any('app' in i and "'.dev.vars'" in i for i in issues), issues)
+        # 同一份規則去掉錨點就真的忽略，不可誤報
+        self.assertEqual(self._project('app', {'.gitignore': '.dev.vars\n.dev.vars.*\n'}), [])
+
+    def test_intermediate_gitignore_negation_is_honoured(self):
+        # 重現 2：中間層 a/.gitignore 的 "!" 把根目錄規則反轉，a/b/.dev.vars 會被提交
+        issues = self._project('a/b', {'.gitignore': '.dev.vars*\n', 'a/.gitignore': '!.dev.vars\n'})
+        self.assertTrue(self._git_would_commit('a/b/.dev.vars'))
+        self.assertTrue(any('a/b' in i and "'.dev.vars'" in i for i in issues), issues)
+        # 再往下一層重新忽略就沒事
+        self.assertEqual(self._project('a/b', {'a/b/.gitignore': '.dev.vars\n'}), [])
+
+    def test_wrangler_vars_short_secret_key_names(self):
+        # 重現 3：DB_PASS、AUTH 這類鍵名的明文值要報，而且只報鍵名不輸出值
+        marker = 'synthetic-value-do-not-print'
+        keys = ('DB_PASS', 'AUTH', 'DBPASS', 'dbPass', 'MYSQL_PWD', 'BASIC_AUTH', 'Authorization',
+                'SMTP_PASSWD', 'SENTRY_DSN', 'TLS_CERT', 'SIGNING_PRIVATE', 'UNLOCK_PASSPHRASE', 'oauth')
+        issues = self._wrangler('name="d"\n[vars]\n' + ''.join(f'{key}="{marker}"\n' for key in keys))
+        for key in keys:
+            with self.subTest(key=key):
+                self.assertTrue(any(i.endswith(f'vars.{key} 為敏感變數，所有值型別皆須移至 secrets') for i in issues), issues)
+        self.assertEqual(len(issues), len(keys), issues)
+        self.assertFalse(any(marker in i for i in issues), issues)
+        # 最小重現：只有 DB_PASS 與 AUTH 兩個鍵，各報一項
+        issues = self._wrangler(f'name="d"\n[vars]\nDB_PASS="{marker}"\nAUTH="Basic {marker}"\n')
+        self.assertEqual(len(issues), 2, issues)
+        # env.<名稱>.vars 一樣要報
+        issues = self._wrangler(f'name="d"\n[env.prod.vars]\nDB_PASS="{marker}"\n')
+        self.assertTrue(any('env.prod.vars.DB_PASS' in i for i in issues), issues)
+        # 一般變數不可因為新增的鍵名而誤報
+        clean = ('ENVIRONMENT', 'AUTHOR_NAME', 'COMPASS_URL', 'PUBLIC_URL', 'CERTAIN_MODE', 'PASSENGER_LIMIT')
+        self.assertEqual(self._wrangler('name="d"\n[vars]\n' + ''.join(f'{key}="x1"\n' for key in clean)), [])
+
+    def test_dev_vars_tracked_despite_ignore_rule_is_reported(self):
+        # 攻擊者角度 4：.gitignore 有規則，但檔案早已被追蹤（或 git add -f），規則對它無效
+        self._project('', {'.gitignore': '.dev.vars*\n'})
+        self._git('add', '-f', '.dev.vars')
+        self.assertIn('.dev.vars', self._git('ls-files'))
+        issues = check_wrangler_config(self.test_dir)
+        self.assertTrue(any("'.dev.vars'" in i and '追蹤' in i for i in issues), issues)
+
+    def test_dev_vars_ignored_only_by_local_exclude_is_reported(self):
+        # 攻擊者角度 5：只靠 .git/info/exclude 或個人全域忽略檔，規則不會跟著 repo 走，別人 clone 後照樣提交
+        (self.test_dir / '.git' / 'info').mkdir(exist_ok=True)
+        (self.test_dir / '.git' / 'info' / 'exclude').write_text('.dev.vars*\n', encoding='utf-8')
+        issues = self._project('', {'.gitignore': 'node_modules\n'})
+        self.assertFalse(self._git_would_commit('.dev.vars'))  # 本機 git 的確會忽略
+        self.assertTrue(any('本機' in i and "'.dev.vars'" in i for i in issues), issues)
+        (self.test_dir / '.git' / 'info' / 'exclude').write_text('', encoding='utf-8')
+        (self.base_dir / 'empty_ignore').write_text('.dev.vars*\n', encoding='utf-8')
+        self.assertFalse(self._git_would_commit('.dev.vars'))
+        issues = check_wrangler_config(self.test_dir)
+        self.assertTrue(any('本機' in i and "'.dev.vars'" in i for i in issues), issues)
+
+    def test_dev_vars_case_variant_file_is_checked(self):
+        # 攻擊者角度 6：檔名大小寫不同（Windows／macOS 上 Wrangler 照樣讀得到），
+        # repo 設成分大小寫時小寫規則管不到它
+        self._git('config', 'core.ignorecase', 'false')
+        issues = self._project('', {'.gitignore': '.dev.vars*\n'}, dev_vars=('.DEV.VARS',))
+        self.assertTrue(self._git_would_commit('.DEV.VARS'))
+        self.assertTrue(any("'.DEV.VARS'" in i for i in issues), issues)
+
+    def test_dev_vars_local_variant_with_anchored_rule(self):
+        # 攻擊者角度 7：.dev.vars.local 這類變體放在子目錄，根目錄只寫錨定規則
+        issues = self._project('svc', {'.gitignore': '.dev.vars\n/.dev.vars.*\n'},
+                               dev_vars=('.dev.vars.local',))
+        self.assertTrue(self._git_would_commit('svc/.dev.vars.local'))
+        self.assertTrue(any("'.dev.vars.local'" in i for i in issues), issues)
+
+    def test_ignored_parent_directory_counts_as_ignored(self):
+        # 整個目錄被忽略時 git 不會提交裡面的檔，不可誤報
+        self.assertEqual(self._project('local', {'.gitignore': '/local/\n'}), [])
+
+    def test_outside_git_work_tree_is_reported_as_unknown(self):
+        # 不在 git 工作樹內：無從得知會不會被提交，不可默認安全
+        plain = self.base_dir / 'plain'
+        plain.mkdir()
+        (plain / '.gitignore').write_text('.dev.vars*\n', encoding='utf-8')
+        (plain / 'wrangler.toml').write_text('name="d"\n', encoding='utf-8')
+        with patch.dict(os.environ, {'GIT_CEILING_DIRECTORIES': str(self.base_dir)}):
+            issues = check_wrangler_config(plain)
+            report = audit_fullstack_security(plain)
+        self.assertTrue(any('無法' in i and '未完成稽核' in i for i in issues), issues)
+        self.assertFalse(report['passed'])
+
+    def test_git_unavailable_is_reported_as_unknown(self):
+        (self.test_dir / '.gitignore').write_text('.dev.vars*\n', encoding='utf-8')
+        (self.test_dir / 'wrangler.toml').write_text('name="d"\n', encoding='utf-8')
+        import audit_fullstack_security as tool
+        for error in (FileNotFoundError('git'), subprocess.TimeoutExpired('git', 1)):
+            with self.subTest(error=type(error).__name__):
+                with patch.object(tool.subprocess, 'run', side_effect=error):
+                    issues = check_wrangler_config(self.test_dir)
+                self.assertTrue(any('無法' in i and '未完成稽核' in i for i in issues), issues)
+
+    def test_nested_repository_uses_its_own_rules(self):
+        # 外層 repo 的規則管不到內層獨立 repo；逐目錄問該目錄所屬的 repo
+        inner = self.test_dir / 'vendor' / 'svc'
+        inner.mkdir(parents=True)
+        self._git('init', '-q', cwd=inner)
+        issues = self._project('vendor/svc', {'.gitignore': '.dev.vars*\n'})
+        self.assertTrue(any('vendor/svc' in i and "'.dev.vars'" in i for i in issues), issues)
+        (inner / '.gitignore').write_text('.dev.vars*\n', encoding='utf-8')
         self.assertEqual(check_wrangler_config(self.test_dir), [])
 
 

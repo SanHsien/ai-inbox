@@ -15,6 +15,7 @@ import fnmatch
 import json
 import os
 import re
+import subprocess
 import sys
 import tomllib
 from pathlib import Path
@@ -200,6 +201,102 @@ def _reject_json_constant(value):
     raise ValueError("nonstandard JSON constant")
 
 
+class _SensitiveKeyName:
+    """Wrangler vars 的敏感鍵名判定；只回答鍵名像不像機密，不看也不輸出值。
+
+    TOKEN／KEY／SECRET／PASSWORD／CREDENTIAL 沿用子字串比對（MYTOKEN、APIKEY 都算）。
+    PASS、PWD、AUTH 這類短字改以「單字」比對：鍵名先依底線、連字號、點與駝峰切開，
+    單字等於或以它結尾才算（DB_PASS、DBPASS、dbPass、BASIC_AUTH、oauth），
+    避免 AUTHOR_NAME、COMPASS_URL、PASSENGER_LIMIT 這類一般變數誤報。
+    """
+
+    _SUBSTRING = re.compile(r"(?:TOKEN|KEY|SECRET|PASSWORD|CREDENTIAL)", re.IGNORECASE)
+    _WORD = re.compile(r"[A-Z]+(?![a-z])|[A-Z]?[a-z]+|[0-9]+")
+    _EXACT = {"AUTHORIZATION", "DSN", "CERT", "CERTS", "CERTIFICATE", "PRIVATE",
+              "PASSPHRASE", "PASSCODE", "PASSWD"}
+    _SUFFIX = ("PASS", "PASSWD", "PWD", "AUTH")
+    # 以 PASS 結尾但不是通行碼的常見英文字
+    _NOT_SECRET = {"COMPASS", "BYPASS", "ENCOMPASS", "SURPASS", "UNDERPASS", "OVERPASS", "TRESPASS"}
+
+    @classmethod
+    def search(cls, key: str) -> bool:
+        if cls._SUBSTRING.search(key):
+            return True
+        for word in (w.upper() for w in cls._WORD.findall(key)):
+            if word in cls._EXACT:
+                return True
+            if word.endswith(cls._SUFFIX) and word not in cls._NOT_SECRET:
+                return True
+        return False
+
+
+def _run_git(directory: Path, git_args: list[str], stdin: bytes | None = None) -> bytes | None:
+    """在 directory 執行 git；找不到 git、逾時或結束碼非 0／1 時回 None（呼叫端視為無法確認）。"""
+    # 從 git hook 或其他 git 指令內被呼叫時，繼承來的 GIT_DIR 等會讓 git 看錯 repo。
+    env = {k: v for k, v in os.environ.items()
+           if k not in ("GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE", "GIT_PREFIX", "GIT_COMMON_DIR")}
+    try:
+        done = subprocess.run(["git", "-C", str(directory), *git_args], input=stdin,
+                              capture_output=True, timeout=30, env=env)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if done.returncode not in (0, 1):
+        return None
+    return done.stdout
+
+
+def _git_dev_vars_verdict(directory: Path, names: list[str],
+                          existing: list[str]) -> tuple[list[str], list[str], list[str]] | None:
+    """問 git：directory 底下的 names 會不會被提交。
+
+    回傳（沒有任何規則忽略、只被本機規則忽略、已被追蹤）三份檔名清單；無法確認時回 None。
+    """
+    cdup = _run_git(directory, ["rev-parse", "--show-cdup"])
+    if cdup is None:
+        return None
+    try:
+        top = (directory / cdup.decode("utf-8").strip()).resolve()
+    except (OSError, UnicodeDecodeError, ValueError):
+        return None
+
+    # -v -n -z：每個路徑輸出「規則來源 NUL 行號 NUL 樣式 NUL 路徑 NUL」，沒有規則符合時前三欄為空。
+    # --no-index：只看規則本身，已追蹤的檔另外用 ls-files 查。
+    stdin = b"".join(name.encode("utf-8", errors="surrogateescape") + b"\0" for name in names)
+    out = _run_git(directory, ["check-ignore", "-v", "-n", "-z", "--no-index", "--stdin"], stdin)
+    if out is None:
+        return None
+    fields = out.decode("utf-8", errors="surrogateescape").split("\0")
+    if fields and fields[-1] == "":
+        fields.pop()
+    if len(fields) != 4 * len(names):
+        return None
+    not_ignored: list[str] = []
+    local_only: list[str] = []
+    for i, name in enumerate(names):
+        source, _lineno, pattern, path = fields[4 * i:4 * i + 4]
+        if path != name:
+            return None
+        if not source or pattern.startswith("!"):
+            not_ignored.append(name)
+            continue
+        # 規則要寫在工作樹內的 .gitignore 才會跟著 repo 走；
+        # .git/info/exclude 與 core.excludesFile 只在這台機器有效。
+        src = Path(source)
+        in_tree = (not src.is_absolute() and src.name == ".gitignore"
+                   and ".git" not in src.parts and ".." not in src.parts and (top / src).is_file())
+        if not in_tree:
+            local_only.append(name)
+
+    tracked: list[str] = []
+    if existing:
+        out = _run_git(directory, ["--literal-pathspecs", "ls-files", "-z", "--", *existing])
+        if out is None:
+            return None
+        listed = {n for n in out.decode("utf-8", errors="surrogateescape").split("\0") if n}
+        tracked = [name for name in existing if name in listed]
+    return not_ignored, local_only, tracked
+
+
 def check_wrangler_config(root: Path) -> list[str]:
     """檢查 Cloudflare Wrangler (wrangler.toml / wrangler.json / wrangler.jsonc) 與 .dev.vars 安全規範"""
     issues: list[str] = []
@@ -219,64 +316,48 @@ def check_wrangler_config(root: Path) -> list[str]:
         dirnames[:] = sorted(d for d in dirnames if d not in ("node_modules", ".git"))
         here = Path(dirpath)
         for name in sorted(filenames):
-            if name in ("wrangler.toml", "wrangler.json", "wrangler.jsonc"):
+            # 不分大小寫：Windows／macOS 的檔案系統上 Wrangler 讀得到 .DEV.VARS、Wrangler.toml
+            lower = name.lower()
+            if lower in ("wrangler.toml", "wrangler.json", "wrangler.jsonc"):
                 wrangler_files.append(here / name)
                 dev_var_dirs.setdefault(here, set())
-            elif name == ".dev.vars" or (name.startswith(".dev.vars.") and name != ".dev.vars.example"):
+            elif lower == ".dev.vars" or (lower.startswith(".dev.vars.") and lower != ".dev.vars.example"):
                 dev_var_dirs.setdefault(here, set()).add(name)
     issues.extend(walk_errors)
     if not dev_var_dirs and not wrangler_files:
         return issues
 
-    # 1. .dev.vars 與 .dev.vars.<env> 皆須被 .gitignore 忽略（"!" 否定規則以最後符合者為準）。
-    #    每個含 wrangler 設定或 .dev.vars* 的目錄：以根目錄加該目錄的 .gitignore 判定；
+    # 1. .dev.vars 與 .dev.vars.<env> 不可被 git 提交。判定一律問 git（check-ignore），不自行解析
+    #    .gitignore：錨定規則（/.dev.vars 只管該層）、中間層 .gitignore 的 "!" 反轉、目錄整個被忽略、
+    #    core.ignorecase 等語意只有 git 自己算得準。逐目錄以該目錄為工作目錄呼叫，內層獨立 repo 用它自己的規則。
     #    探針 ".dev.vars" 與 ".dev.vars.production" 代表 ".dev.vars" 及 ".dev.vars.*"，另加實際存在的檔名。
-    def load_rules(gitignore: Path) -> list[tuple[bool, str]]:
-        rules: list[tuple[bool, str]] = []
-        text = gitignore.read_text(encoding="utf-8-sig", errors="ignore")
-        for line in (ln.strip() for ln in text.splitlines()):
-            if not line or line.startswith("#"):
-                continue
-            negated = line.startswith("!")
-            glob = (line[1:] if negated else line).lstrip("/")
-            if glob.startswith("**/"):
-                glob = glob[3:]
-            rules.append((negated, glob.rstrip("/")))
-        return rules
-
-    def is_ignored(name: str, rules: list[tuple[bool, str]]) -> bool:
-        ignored = False
-        for negated, glob in rules:
-            if fnmatch.fnmatchcase(name, glob):
-                ignored = not negated
-        return ignored
-
-    root_ignore = root / ".gitignore"
+    #    不在 git 工作樹內或 git 無法執行時回報「無法確認」，不默認安全。
     for directory in sorted(dev_var_dirs):
         rel_dir = directory.relative_to(root).as_posix()
         label = "." if rel_dir == "." else rel_dir
-        candidates = [g for g in {root_ignore, directory / ".gitignore"} if g.exists()]
-        if not candidates:
-            issues.append(f"Cloudflare Wrangler 專案（{label}）缺少 .gitignore，無法確認 .dev.vars 隔離")
+        existing = dev_var_dirs[directory]
+        verdict = _git_dev_vars_verdict(
+            directory, sorted({".dev.vars", ".dev.vars.production"} | existing), sorted(existing))
+        if verdict is None:
+            issues.append(f"Cloudflare Wrangler 專案（{label}）無法以 git 確認 .dev.vars 是否會被提交"
+                          "（不在 git 工作樹內，或 git 無法執行），未完成稽核")
             continue
-        try:
-            rules: list[tuple[bool, str]] = []
-            for g in sorted(candidates, key=lambda x: len(x.parts)):
-                rules.extend(load_rules(g))
-        except OSError:
-            issues.append(f"Cloudflare Wrangler 專案（{label}）之 .gitignore 無法讀取，未完成稽核")
-            continue
-        probes = {".dev.vars", ".dev.vars.production"} | dev_var_dirs[directory]
-        missing = [probe for probe in sorted(probes) if not is_ignored(probe, rules)]
-        if missing:
+        not_ignored, local_only, tracked = verdict
+        if not_ignored:
             issues.append(f"Cloudflare Wrangler 專案（{label}）之 .gitignore 未忽略本地機密檔 "
-                          + "、".join(f"'{m}'" for m in missing))
+                          + "、".join(f"'{m}'" for m in not_ignored))
+        if local_only:
+            issues.append(f"Cloudflare Wrangler 專案（{label}）之本地機密檔 "
+                          + "、".join(f"'{m}'" for m in local_only)
+                          + " 只被本機規則忽略（.git/info/exclude 或個人全域忽略檔），"
+                            "repo 內的 .gitignore 沒有對應規則，其他 clone 會提交")
+        if tracked:
+            issues.append(f"Cloudflare Wrangler 專案（{label}）之本地機密檔 "
+                          + "、".join(f"'{m}'" for m in tracked)
+                          + " 已被 git 追蹤，.gitignore 對已追蹤的檔案無效，會被提交")
 
     # 2. 掃描 wrangler.toml / wrangler.json(c) 是否在明文 vars 中存放敏感金鑰或真實 Token
-    secret_key_name_re = re.compile(
-        r"(?:TOKEN|KEY|SECRET|PASSWORD|CREDENTIAL)",
-        re.IGNORECASE,
-    )
+    secret_key_name_re = _SensitiveKeyName
     def check_values(value, location, sensitive_keys=False):
         if isinstance(value, dict):
             for key, child in value.items():
@@ -297,10 +378,10 @@ def check_wrangler_config(root: Path) -> list[str]:
         rel_wf = wf.relative_to(root).as_posix()
         try:
             raw = wf.read_text(encoding="utf-8-sig")
-            if wf.suffix == ".toml":
+            if wf.suffix.lower() == ".toml":
                 data = tomllib.loads(raw)
             else:
-                data = json.loads(_jsonc_to_json(raw) if wf.suffix == ".jsonc" else raw,
+                data = json.loads(_jsonc_to_json(raw) if wf.suffix.lower() == ".jsonc" else raw,
                                   object_pairs_hook=_unique_json_object,
                                   parse_constant=_reject_json_constant)
             if not isinstance(data, dict) or not data:
