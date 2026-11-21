@@ -187,7 +187,8 @@ class VerifyAutoloopDispatchGuardTest(unittest.TestCase):
                 self.assertEqual(self._cli_rc(b), 0)
 
     def test_round2_self_approval_tool_names_case_insensitive(self) -> None:
-        for name in ("Autoloop_Answer", " ANSWER_CARD ", "MCP__AutoLoop__Answer", "Agent-Autoloop Answer"):
+        for name in ("Autoloop_Answer", " ANSWER_CARD ", "MCP__AutoLoop__Answer", "Agent-Autoloop Answer",
+                     "agent-autoloop  answer", "agent-autoloop\tanswer", "agent-autoloop　answer"):
             b = vadg.default_clean_bundle(); b["isolation"]["worker_tools"] = ["read_file", name]
             with self.subTest(name=name):
                 self.assertEqual(self._cli_rc(b), 1)

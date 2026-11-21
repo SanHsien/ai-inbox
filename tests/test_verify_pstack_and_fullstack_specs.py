@@ -96,6 +96,11 @@ class TestVerifyPstackAndFullstackSpecs(unittest.TestCase):
         self.assertTrue(any("SpaceX" in e for e in errors_sx), f"未攔截未標註的 SpaceX 頭銜：{errors_sx}")
         labeled = raw + "\n轉述來源稱作者任職 SpaceX，未查證。\n"
         self.assertEqual(vps.verify_pstack_playbooks(labeled), [])
+        # 2026-11-21 稽核：改寫成 Space X、Space-X、全形也要擋；workspace 之類的字不誤擋
+        for variant in ("Space X", "Space-X", "ＳｐａｃｅＸ", "SpaceX首席"):
+            errors_v = vps.verify_pstack_playbooks(raw + f"\n作者是前 {variant} 工程師。\n")
+            self.assertTrue(any("SpaceX" in e for e in errors_v), f"未攔截 {variant}：{errors_v}")
+        self.assertEqual(vps.verify_pstack_playbooks(raw + "\n切到 workspace X 再執行。\n"), [])
 
     def test_claude_plugins_review_missing_plugins_or_unverified(self):
         """3. 反例攔截：Claude 外掛評測缺少推薦、排除或未查證標註。"""

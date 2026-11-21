@@ -14,8 +14,9 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 
+# http:// 與 www. 寫法也收（2026-11-21 稽核：原本會被靜默略過、不列入檢查），一律正規化成 https://github.com/
 GITHUB = re.compile(
-    r'https://github\.com/([A-Za-z0-9_-]+)/([A-Za-z0-9_.-]+)', re.I)
+    r'https?://(?:www\.)?github\.com/([A-Za-z0-9_-]+)/([A-Za-z0-9_.-]+)', re.I)
 ARXIV = re.compile(
     r'https?://arxiv\.org/(?:abs|pdf)/'
     r'(\d{4}\.\d{4,5}(?:v\d+)?|[a-z-]+(?:\.[A-Z]{2})?/\d{7}(?:v\d+)?)')

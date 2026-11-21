@@ -133,6 +133,22 @@ class ParseTest(unittest.TestCase):
         self.assertEqual(2, len(errs), errs)
         self.assertTrue(all("待辦行缺任務 ID" in e and f"{n.path.name}:" in e for e in errs), errs)
 
+    def test_idless_checkbox_other_list_markers_detected(self):
+        # 2026-11-21 稽核：`* [ ]`、`+ [ ]`、`1. [ ]`、縮排 1-3 格同樣會畫成待辦，總表讀不到
+        n = make_note(self.tmp)
+        extra = "\n* [ ] 星號\n+ [x] 加號\n1. [ ] 編號\n2) [ ] 括號編號\n   - [ ] 縮排三格\n"
+        text = n.path.read_text(encoding="utf-8") + extra
+        errs = vi.check_idless_checkboxes([n], {n.path: text})
+        self.assertEqual(5, len(errs), errs)
+        # 四格縮排是巢狀／程式碼，不算頂層待辦
+        self.assertEqual([], vi.check_idless_checkboxes([n], {n.path: n.path.read_text(encoding="utf-8") + "\n    - [ ] 四格\n"}))
+
+    def test_loose_task_line_other_markers_detected(self):
+        n = make_note(self.tmp)
+        text = n.path.read_text(encoding="utf-8") + "\n* [ ] **`T-20261020-03`**｜**[優先級：中]** 星號開頭\n"
+        errs = vi.check_task_ids([n], {n.path: text})
+        self.assertTrue(any("格式不符範本" in e for e in errs), errs)
+
     def test_valid_task_lines_not_reported_as_idless(self):
         n = make_note(self.tmp)
         text = n.path.read_text(encoding="utf-8")

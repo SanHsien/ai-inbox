@@ -31,6 +31,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+import unicodedata
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -81,6 +82,8 @@ OFFICIAL_PLAYBOOK_FILES: Tuple[str, ...] = (
 PLAYBOOK_REF_RE = re.compile(r"playbooks/([A-Za-z0-9_-]+\.md)")
 # 已更正的錯誤前提：官方是 22 套，不是五套
 FIVE_PLAYBOOKS_RE = re.compile(r"(?:五|5)\s*大[^\n。]{0,12}Playbook", re.IGNORECASE)
+# 未查證的 SpaceX 頭銜：含空白、連字號寫法
+SPACEX_RE = re.compile(r"(?<![A-Za-z])space[\s\-_]?x(?![A-Za-z])", re.IGNORECASE)
 
 REQUIRED_PSTACK_CLIS: List[str] = [
     "Claude Code",
@@ -225,9 +228,10 @@ def verify_pstack_playbooks(source: Union[str, Path]) -> List[str]:
     # 3.1 已更正的錯誤前提不得再出現
     if FIVE_PLAYBOOKS_RE.search(text):
         errors.append("出現「五大／5 大 Playbook」的說法；官方是 22 套")
+    # 「Space X」「Space-X」「ＳｐａｃｅＸ」等寫法也算（2026-11-21 稽核補強）
     unlabeled_spacex = [
         line.strip()[:40] for line in text.splitlines()
-        if "spacex" in line.lower() and "未查證" not in line
+        if SPACEX_RE.search(unicodedata.normalize("NFKC", line)) and "未查證" not in line
     ]
     if unlabeled_spacex:
         errors.append(

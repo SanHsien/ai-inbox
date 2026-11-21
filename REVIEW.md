@@ -254,3 +254,35 @@
 
 **已知影響**：本 repo 的 CI 從來沒有跑過詞彙檢查（只跑單元測試與 `verify_inbox`），這次沒有變；`--zhtw` 的實際修補在 CI 上會 skip，只在本機有 `zhtw-vocab-guard` 時驗到。
 
+## 16. 2026-11-14～11-20 結案任務稽核（2026-11-21）
+
+**範圍**：完成日期落在 2026-11-14～11-20 的 44 項任務，扣除已由筆記與任務 session 當場驗收的 6 項（T-20261119-01～04、T-20261118-01、T-20261120-01），稽核 38 項。證據 commit 沒有 11-20 之後由 Claude Opus 5.5 共同撰寫者，不另外排除。
+
+**方式**：標準同第 5 節，DoD 逐條對照產出檔與證據 commit。工具類實跑測試，並自己構造至少 2 個壞輸入（繞過寫法、空檔、格式錯誤）；文件類抽查關鍵事實對一手來源（GitHub API 讀固定 commit、官方文件頁）。搬到其他 repo 的工具（agent-safety-checks、zhtw-vocab-guard）與交付在其他 repo 的任務（agent-relay、agent-advisor、video-autopilot-kit、code-as-video-studio、`SanHsien/agent-assets`（私有））在該 repo 實跑。
+
+**結果**：通過 31 項；輕缺陷 6 項（5 項本次修掉，1 項在別的 repo、記錄待修）；重缺陷 1 項，退回佔列。
+
+### 16.1 重缺陷（退回）
+
+- ⏸ [高] T-20261108-05（`tools/audit_fullstack_security.py` 的 Wrangler 檢查）：「`.gitignore` 是否忽略 `.dev.vars`」的判斷與 git 實際行為不一致，會把會被提交的機密檔判為已忽略（假綠）。單元測試全綠，三個反例都用 `git check-ignore` 對照：
+  - 重現 1：根目錄 `.gitignore` 寫 `/.dev.vars`、`/.dev.vars.*`，專案在子目錄 `app/`（`app/wrangler.toml`、`app/.dev.vars`）。git 不忽略 `app/.dev.vars`（check-ignore exit 1），工具回 0 項。原因：`load_rules` 用 `lstrip("/")` 去掉錨點，錨定規則被當成任何層都適用。
+  - 重現 2：根目錄 `.gitignore` 寫 `.dev.vars`，中間層 `a/.gitignore` 寫 `!.dev.vars`，專案在 `a/b/`。git 不忽略 `a/b/.dev.vars`，工具回 0 項。原因：只讀根目錄與專案目錄兩份 `.gitignore`，中間層的否定規則沒讀。
+  - 重現 3：`wrangler.toml` 的 `[vars]` 寫 `DB_PASS = "hunter2-prod"`、`AUTH = "Basic …"`，工具回 0 項。鍵名只認 TOKEN／KEY／SECRET／PASSWORD／CREDENTIAL。
+  - 建議修法：專案在 git 工作樹內時直接呼叫 `git check-ignore -q --no-index <路徑>` 判斷（探針檔用實際存在的檔名加 `.dev.vars`、`.dev.vars.production`），不在 git 內或 git 不可用時回「無法確認」（判失敗）；自行解析時要逐層讀從根目錄到專案目錄的每一份 `.gitignore`，並保留錨定語意（含 `/` 的規則相對於該 `.gitignore` 所在目錄）。鍵名清單補 `PASS`、`PWD`、`AUTH`、`PRIVATE`、`CERT`、`DSN`。三個重現都要寫成回歸測試，修正前須為紅燈。
+  - 處置：任務改回未完成、狀態標「🟡 進行中（2026-11-21 稽核退回）」，原證據保留為「原結案證據（稽核前）」。
+
+### 16.2 輕缺陷
+
+- ✅ [中] T-20261108-01：DoD 第二條要求「實際對本篇 Threads 網址執行並 exit 0」，但 11-14 重修後的證據寫「真實 Threads 下載本輪未重跑」，等於 DoD 未驗證。→ 本次以現行程式實跑 DoD 指令：exit 0、46 秒音訊、CUDA 轉寫，逐字稿內容是本篇影片；證據補在筆記。暫存檔已刪。
+- ✅ [中] T-20261114-04（`verify_inbox` 缺 ID 待辦檢查）：只抓 `- [ ] ` 開頭，改用 `* [ ]`、`+ [ ]`、`1. [ ]` 或縮排 1～3 格，Markdown 一樣畫成待辦，總表卻讀不到，檢查也不報。「看起來像任務但格式不符」的檢查同樣只認 `- `。→ 兩項檢查改用同一個頂層核取方塊前綴（CommonMark 頂層清單、最多 3 格縮排）；現有筆記沒有這類寫法，不新增誤報；補 2 項測試。
+- ✅ [低] T-20261108-02（`verify_autoloop_dispatch_guard.py`）：Worker 工具名正規化只去頭尾空白，`agent-autoloop  answer`（兩個空白）、`agent-autoloop<Tab>answer` 能繞過自審工具檢查，但 shell 會把它們當成同一個指令。→ `norm()` 把連續空白（含 Tab、全形空白）併成一格；補 3 個子測試。
+- ✅ [低] T-20261018-19（`verify_pstack_and_fullstack_specs.py`）：未標註 SpaceX 的檢查只比對 `spacex` 子字串，寫成 `Space X`、`Space-X`、全形就放行。→ 先 NFKC 再用允許空白／連字號的樣式比對，英文字母邊界避免誤擋 `workspace X`；補測試。上游 playbook 清單 2026-11-21 以 GitHub API 重列，仍與工具內 22 個檔名一致。
+- ✅ [低] T-20261108-06（`check_external_refs.py`）：只收 `https://github.com/`，`http://github.com/`、`https://www.github.com/` 的連結被靜默略過，失效也不報。→ 兩種寫法都收並正規化；補測試。現有筆記沒有這類連結，離線總數不變（146）。
+- ⏸ [中] T-20261107-05（MCP 設定憑證檢查，工具已移至 `SanHsien/agent-safety-checks`）：DoD 範圍內的 Bearer 與 `ya29.` 都擋得住，但 args 裡的一般 API key 不報：`["mcp-remote", "https://…", "--header", "X-Api-Key:<32 位 hex>"]` 與 `["server.js", "--api-key=<32 位 hex>"]` 都回 exit 0。`mcp-remote --header` 是 Claude Desktop 傳標頭最常見的寫法。headers／env 的敏感鍵名檢查沒有套到 args。→ 不在本 repo 修（工具已搬走）；建議在該 repo 對 args 補「`--<敏感名>=值`、`--header <敏感名>:值`、旗標後一個參數為值」三種寫法，先補反例測試。不退回本任務。
+
+### 16.3 通過（抽查重點）
+
+- 工具：T-20261104-02、T-20261107-01、T-20261108-04（agent-safety-checks 335 項測試綠；自擬的跳出 ADS、反斜線穿越、換 receipt 重送、換內容、`--dangerously-skip-permissions`、`defaultMode: bypassPermissions`、`iwr | iex` 皆被擋，不存在的目錄回 2）；T-20261107-02、-06（zhtw-vocab-guard 39 項綠；行內反引號、圍欄、「數位轉型」反例不動，修補冪等，空檔與非 UTF-8 回 2）；T-20261104-03（範本內的熔斷函式由測試直接執行，bool、NaN、負值成本被拒）；T-20261115-20（2330 項斷言綠；自擬兩個改壞的腳本——查詢字串接 `Disable-ScheduledTask`、呼叫 `Registry::SetValue`——都被測試擋下）；T-20261114-05（agent-relay 487 項測試綠；重複代號、全形 `Ａ`、尾端空白的推薦、單一選項、含零寬字元的代號都被拒）；T-20261115-05（agent-advisor dev_check 通過；自擬兩個契約改壞——加一句「只剩 needs_validation 可回 ship」、把「blocks ship」改成「不擋 ship」——都讓測試變紅）；T-20261115-11（video-autopilot-kit 23 項含真實 ffmpeg 9.1 合成全綠；空音訊回錯、`--fps 0` 回錯、輸出已存在時回 1 且原檔不動。註：本機 PATH 仍指向已被升級移除的 ffmpeg 9.0.2 目錄，直接跑會 skip 8 項並標「DoD NOT verified」，屬環境問題）；T-20261115-12、-19（各 repo 測試綠；pr-demo 的隱私檢查只看 DOM 文字，canvas、`data:` 圖片內的字看不到，VALIDATION.md 已寫明）。
+- 文件（每項抽查 1～3 個一手事實，全部相符）：T-20261026-35（block/buzz #2698、#2459、#2265、#2388 仍開啟，PR #2703 已關未合併）；T-20261026-36（四個 repo 星數量級、grill-me 157 bytes、VoltAgent 4 個檔案）；T-20261104-01；T-20261107-03（上游 sync.sh 在固定 SHA 的 `checkout -B`、`.base-sha`）；T-20261108-03（README 的 11.8 個百分點與 Web access 段落）；T-20261108-07（官方頁原文「Each advisor call processes the full transcript anew」、顧問模型費率、沒有限制次數的設定；agent-advisor `5ab3b22` 警語在）；T-20261114-01（官方頁 Terra 35–285、Sol 15–160、credits 25／1.25／125 對 50／2.5／250、Fast 2.5x／2x、「limits are unchanged」）；T-20261114-03（表格數字與 `results.json` 一致）；T-20261115-06（SKILL.md「`full`: exceptional only」）；T-20261115-10（plugin 規範只允許實體商品、不得加「Plugin」後綴）；T-20261115-04（SKILL.md 第 123 行 quick 6／standard 7 的保留數）；T-20261115-17（pii-guard 0.2.0、MIT、`enhanced_audit.py` win32 回 `LOCAL_MODEL_UNVERIFIED`、固定 127.0.0.1）；T-20261115-15（db52e28 為 1.0.6、Stop hook 註冊、CI 只有 ubuntu）；T-20261115-14（固定 commit 的 MIT）；T-20261115-01（Pi `prepare: husky`）；T-20261115-16（speak-human-tw MIT、claude-code-resources 為 CC BY-NC-SA 4.0）；T-20261115-03（LogoLoom `npx -y vtracer-cli` 備援與字串拼接 `execSync`）；T-20261115-18、-21（公開版只寫抽象結論，私有報告 `2955bab` 存在）。
+
+修復 commit：見本節提交（2026-11-21）。

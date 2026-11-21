@@ -169,4 +169,4 @@ tags:
     - `python -m unittest tests/test_video_transcript.py -v` 全數通過。
     - 實際對本篇 Threads 貼文網址 `https://www.threads.com/@roboa.ai/post/DfRx2oUk-Vv` 執行 `python tools/video_transcript.py` 成功產出逐字稿且 exit 0。
   - **完成日期**：2026-11-14
-  - **實作紀錄 / 證據**：修正（2026-11-14）：Threads 解析只取網址 post ID 對應的目標貼文影片，推薦與引用貼文的影片不會被選中；排除 rsrc.php；schema 無效或找不到目標回 RuntimeError。新增 4 項測試，刪除 rsrc.php 排除條件的 mutation 會讓測試變紅。真實 Threads 下載本輪未重跑。
+  - **實作紀錄 / 證據**：修正（2026-11-14）：Threads 解析只取網址 post ID 對應的目標貼文影片，推薦與引用貼文的影片不會被選中；排除 rsrc.php；schema 無效或找不到目標回 RuntimeError。新增 4 項測試，刪除 rsrc.php 排除條件的 mutation 會讓測試變紅。真實 Threads 下載本輪未重跑。 **補驗（2026-11-21 結案稽核）**：以現行程式實跑 DoD 指令 `python tools/video_transcript.py https://www.threads.com/@roboa.ai/post/DfRx2oUk-Vv --out <暫存目錄>`，exit 0，下載 46 秒音訊（device=cuda，yt-dlp 2026.10.26、faster-whisper 1.2.1），逐字稿內容是本篇 Frigate 監視器影片；暫存音訊與逐字稿已刪，未提交。

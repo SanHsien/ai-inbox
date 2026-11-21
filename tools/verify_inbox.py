@@ -36,6 +36,9 @@ SECRET_PATTERNS = {
     "內部 Session 連結": r"conversation://",
 }
 LINK = re.compile(r"\]\((?!https?://|mailto:|#|<)([^)\s]+)\)")
+# 頂層核取方塊：`- `、`* `、`+ `、`1. `、`1) ` 都會被 Markdown 畫成待辦，總表只認 `- [ ] ` 開頭的任務行。
+# 最多 3 格縮排仍是頂層清單（CommonMark）；2026-11-21 稽核補強，原本只抓 `- [ ] `，換成 `* [ ] ` 就漏掉。
+CHECKBOX_PREFIX = r"^ {0,3}(?:[-*+]|\d{1,9}[.)])[ \t]+\[[ xX]\](?:[ \t]|$)"
 
 
 def rel(path: Path) -> str:
@@ -140,7 +143,7 @@ def check_task_ids(notes: list[bi.Note], texts: dict[Path, str]) -> list[str]:
         defined.setdefault(t.id, t)
 
     # 抓出看起來像任務定義、但不符合範本格式（因此不會進總表）的行（略過程式碼圍欄）
-    loose = re.compile(rf"^- \[[ xX]\] .*{bi.TASK_ID}")
+    loose = re.compile(rf"{CHECKBOX_PREFIX}.*{bi.TASK_ID}")
     for n in notes:
         for idx, line in bi.iter_outside_fences(texts[n.path].split("\n")):
             lineno = idx + 1
@@ -157,7 +160,7 @@ def check_task_ids(notes: list[bi.Note], texts: dict[Path, str]) -> list[str]:
 
 def check_idless_checkboxes(notes: list[bi.Note], texts: dict[Path, str]) -> list[str]:
     """圍欄外、行首的核取方塊若不含任務 ID，總表讀不到，一律報錯（templates/ 不在 notes 內，不掃）。"""
-    idless = re.compile(r"^- \[[ xX]\] ")
+    idless = re.compile(CHECKBOX_PREFIX)
     errors = []
     for n in notes:
         for idx, line in bi.iter_outside_fences(texts[n.path].split("\n")):

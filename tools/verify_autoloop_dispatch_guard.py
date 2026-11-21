@@ -66,8 +66,11 @@ def ensure_utf8_stdout() -> None:
 
 
 def norm(value: Any) -> str:
-    """鍵名／來源／工具名比對前的正規化：NFKC、去頭尾空白、轉小寫。"""
-    return unicodedata.normalize("NFKC", str(value)).strip().casefold()
+    """鍵名／來源／工具名比對前的正規化：NFKC、連續空白（含 Tab）併成一格、去頭尾空白、轉小寫。
+
+    併空白：shell 把 `agent-autoloop  answer` 與 `agent-autoloop\tanswer` 都當成同一個指令（2026-11-21 稽核補強）。
+    """
+    return " ".join(unicodedata.normalize("NFKC", str(value)).split()).casefold()
 
 
 def find_forbidden_keys(value: Any, path: str = "") -> list[str]:

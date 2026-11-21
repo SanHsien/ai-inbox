@@ -6,7 +6,7 @@ source_platform: "Facebook (@ccckmit 陳鍾誠)"
 author: "陳鍾誠 (國立金門大學資訊工程系教授, @ccckmit)"
 analyzed_at: 2026-11-08
 analyzed_by: "Antigravity"
-status: done
+status: in-progress
 cluster: "4"
 cluster_role: "全端部署與自動化落地"
 short_title: "陳鍾誠Cloudflare一鍵部署評估"
@@ -28,7 +28,7 @@ tags:
 
 - **來源連結**：[Facebook 分享短網址](https://www.facebook.com/share/1GJKuLJkSt/) ｜ [貼文永久網址 (@ccckmit)](https://www.facebook.com/814251892/posts/10164685081236893/) ｜ [陳鍾誠 GitHub (`ccckmit`)](https://github.com/ccckmit)
 - **歸屬集群**：集群 4：全端商業建站、資料庫與安全審計（角色：`全端部署與自動化落地`）
-- **當前狀態**：`🟢 已完成 (Done)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-hansun-fullstack-agent-deployment-manual.md`](./2026-10-17-hansun-fullstack-agent-deployment-manual.md)（HanSun 全端建置部署手冊與 `audit_fullstack_security.py`）
   - [`notes/2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md`](./2026-10-31-cloudflare-agents-sdk-browser-run-verification-loop.md)（Cloudflare Agents SDK 與 Durable Objects 邊緣運行時）
@@ -143,7 +143,8 @@ tags:
 
 本庫既有 `T-20261017-24` 已建置 [`docs/production-smoke-security-checklist.md`](../docs/production-smoke-security-checklist.md) 與 [`tools/audit_fullstack_security.py`](../tools/audit_fullstack_security.py)，但原先僅涵蓋 Next.js + Supabase + Vercel，尚未納管 Cloudflare `wrangler.toml` / `.dev.vars` 的機密防洩漏檢查。直接擴充既有工具與檢核表完成閉環：
 
-- [x] **`T-20261108-05`**｜**[優先級：中]** 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核
+- [ ] **`T-20261108-05`**｜**[優先級：中]** 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核
+  - **狀態**：🟡 進行中（2026-11-21 稽核退回：`.dev.vars` 忽略判斷與 git 實際行為不符，會把會被提交的機密檔判為已忽略）
   - **目標範圍**：`tools/audit_fullstack_security.py`、`tests/test_audit_fullstack_security.py`、`docs/production-smoke-security-checklist.md`
   - **具體實作步驟**：
     1. 在 `tools/audit_fullstack_security.py` 新增 `check_wrangler_config(root)`：當專案存在 `wrangler.toml` / `wrangler.json` / `wrangler.jsonc` 或 `.dev.vars` 時，強制驗證 `.gitignore` 是否忽略 `.dev.vars`，並攔截在 `wrangler.toml` 明文定義 `SECRET` / `API_KEY` / `PRIVATE_KEY` / `ACCESS_TOKEN` / `PASSWORD` 或真實金鑰特徵。
@@ -152,5 +153,5 @@ tags:
   - **驗收標準（DoD）**：
     - `python -m unittest tests/test_audit_fullstack_security.py -v` 全數通過。
     - `python tools/verify_inbox.py` 契約與覆蓋率檢查回傳 `[PASS]`。
-  - **完成日期**：2026-11-14
-  - **實作紀錄 / 證據**：修正兩輪（2026-11-14）：用 tomllib／json（JSONC 去註解）解析 wrangler 設定並遞迴找子目錄；遍歷 vars 與 env.*.vars 所有型別；敏感鍵名涵蓋 TOKEN/KEY/SECRET/PASSWORD/CREDENTIAL，值掃內嵌帳密與 rk_live_ 等樣式；.dev.vars 與 .dev.vars.* 須被 .gitignore 忽略並處理 ! 否定規則；checklist 的 KV 延遲依官方文件更正。原審查與 Opus 新繞過共 8 例由 exit 0 變 1。限制：鍵名含 KEY 的一般變數會誤報。
+  - **重開紀錄（2026-11-21 結案稽核）**：單元測試全綠，但具體做法 1 的「強制驗證 `.gitignore` 是否忽略 `.dev.vars`」可被繞過，三個反例都以 `git check-ignore` 對照：(1) 根目錄 `.gitignore` 寫錨定規則 `/.dev.vars`，子目錄 `app/.dev.vars` git 不會忽略（check-ignore exit 1），工具卻回 0 項；(2) 中間層 `a/.gitignore` 寫 `!.dev.vars` 把根目錄規則反轉，`a/b/.dev.vars` 會被提交，工具只讀根目錄與專案目錄的 `.gitignore`，回 0 項；(3) `[vars]` 的 `DB_PASS`、`AUTH` 明文值不報（鍵名只認 TOKEN／KEY／SECRET／PASSWORD／CREDENTIAL）。修法建議見 `REVIEW.md` 第 16 節。修完再結案。
+  - **原結案證據（稽核前）**：修正兩輪（2026-11-14）：用 tomllib／json（JSONC 去註解）解析 wrangler 設定並遞迴找子目錄；遍歷 vars 與 env.*.vars 所有型別；敏感鍵名涵蓋 TOKEN/KEY/SECRET/PASSWORD/CREDENTIAL，值掃內嵌帳密與 rk_live_ 等樣式；.dev.vars 與 .dev.vars.* 須被 .gitignore 忽略並處理 ! 否定規則；checklist 的 KV 延遲依官方文件更正。原審查與 Opus 新繞過共 8 例由 exit 0 變 1。限制：鍵名含 KEY 的一般變數會誤報。

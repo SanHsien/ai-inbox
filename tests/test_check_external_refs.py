@@ -59,6 +59,14 @@ class ExternalRefsTest(unittest.TestCase):
             'https://arxiv.org/abs/2301.12345v2',
             'https://github.com/owner/repo'])
 
+    def test_http_and_www_github_links_are_collected(self):
+        # 2026-11-21 稽核：http:// 與 www. 寫法原本被靜默略過，失效也查不到
+        (self.notes / 'a.md').write_text(
+            'http://github.com/Old/Http\nhttps://www.github.com/Www/Repo\n', encoding='utf-8')
+        self.assertEqual(list(refs.collect_refs(self.notes)), [
+            'https://github.com/old/http', 'https://github.com/www/repo'])
+        self.assertEqual(self.run_check({'status': 404})[0], 1)
+
     def test_arxiv_404_exit_one(self):
         (self.notes / 'a.md').write_text(
             'https://arxiv.org/abs/2301.12345', encoding='utf-8')
