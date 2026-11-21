@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 254 項任務：🔴 未做 1／🟡 進行中 1／🟢 已做 173／⚪ 不做 79
+> 共 255 項任務：🔴 未做 2／🟡 進行中 1／🟢 已做 173／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -48,6 +48,7 @@
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261108-05` | 🟡 進行中 | 中 | 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核 | `tools/audit_fullstack_security.py`、`tests/test_audit_fullstack_security.py`、`docs/production-smoke-security-checklist.md` | [2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) | 2026-11-08 |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
+| `T-20261120-07` | 🔴 未做 | 低 | 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md` | `C:\GitHub\ai-inbox\docs\code-as-video-creative-patterns.md`（收錄於集群 2） | [2026-11-20-nicekate-opus-5-5-code-as-video-10-cases](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | 2026-11-20 |
 
 ### 🟢 已做（Done）
 
@@ -482,6 +483,7 @@
 | 2026-11-20 | 🟢 | [InfoQ 深度評析：Gemini Decision 1 與 Decisions API（$0.10/M 輸入、零輸出費、0.0250 ECE 低誤差路由模型）](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | `gemini-decision-1`, `decisions-api`, `model-routing` | 1 / 1 |
 | 2026-11-20 | 🟢 | [Woshipm 評估：OpenAI GPT-6.2 Astra 與 Sol 雙模型發布、基準實測與六階段生產級路由架構](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) | `openai`, `gpt-6-2-astra`, `gpt-6-2-sol` | 1 / 1 |
 | 2026-11-20 | 🟢 | [Woshipm 評估：GPT-6.2 Sol 實測基準（FrontierCode 43.8% 比肩 Astra、GDPval 3.3萬 Token 高效壓縮）與工位路由實踐](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md) | `openai`, `gpt-6-2-sol`, `gpt-6-2-astra` | 1 / 1 |
+| 2026-11-20 | 🔴 | [YouTube 影音評估：NiceKate AI《迷上 Opus 5.5 做視頻：10個案例》與 Code-as-Video 創意分鏡解構](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | `claude-opus-5-5`, `code-as-video`, `creative-coding` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -546,6 +548,7 @@
 - CC0人臉參考庫：[CC0日系AI人臉庫](./notes/2026-11-19-ai-portrait-gallery-cc0-face-reference.md)
 - 網站六技能與驗證閘：[建站六技能與驗證討論](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md)
 - 海報視覺解構Prompt：[關聖帝君瑞士Riso海報](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md)
+- 代碼影片創意分鏡：[Opus5.5影片十案例](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
