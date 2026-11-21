@@ -55,6 +55,12 @@ class LaneTest(PipelineBase):
         self.add_review(verdict="changes_requested", corrections=1)
         self.assertEqual(["fix"], [o.lane for o in self.orders(bi.parse_note(self.root / "notes" / f"{self.slug}.md"))])
 
+    def test_only_source_missing_goes_to_chrome_even_for_non_social(self):
+        self.write_note()
+        self.add_review(scope=["facts", "evidence", "task_impact"])
+        orders = self.orders(bi.parse_note(self.root / "notes" / f"{self.slug}.md"))
+        self.assertEqual([("chrome", ["source"])], [(o.lane, o.scopes) for o in orders])
+
     def test_weak_review_produces_audit_order(self):
         self.write_note()
         self.add_review(reviewer=WEAK)
@@ -126,7 +132,9 @@ class IngestTest(PipelineBase):
             report(findings=[finding]),  # 有 findings 卻 pass
             report(verdict="changes_requested", findings=[finding], corrections=3),
             report(verdict="changes_requested", findings=[{**finding, "evidence": ""}]),  # 更正沒附出處
-            report(scope=["facts"]),  # 範圍不符
+            report(scope=["facts", "vibes"]),  # 範圍不在派工內
+            report(scope=[]),
+            report(verdict="changes_requested", scope=["facts"], findings=[{**finding, "kind": "source"}]),  # 沒審 source 卻怪筆記
             "```json\n{\"verdict\": \"pass\"}\n```",
         ]
         for text in bad:
@@ -135,6 +143,26 @@ class IngestTest(PipelineBase):
             with self.assertRaises(rp.PipelineError, msg=text[:80]):
                 self.ingest(text)
             self.assertFalse((self.root / "reviews" / f"{self.slug}.json").exists())
+
+    def test_reviewer_may_drop_scope_it_could_not_do(self):
+        self.write_note()
+        entry = self.ingest(report(scope=["facts", "evidence", "task_impact"], source_review="partial"))
+        self.assertEqual(["facts", "evidence", "task_impact"], entry["scope"])
+        self.assertEqual("full", entry["source_review"])  # 沒審 source 就不判定讀完度
+        st = rl.evaluate(bi.parse_note(self.root / "notes" / f"{self.slug}.md"), {}, dt.date(2026, 11, 23), self.root)
+        self.assertFalse(st.reviewed)
+        self.assertTrue(any("source" in n for n in st.needs), st.needs)
+
+    def test_report_taken_from_events_not_last_message(self):
+        body = report()
+        events = "\n".join(json.dumps(e, ensure_ascii=False) for e in [
+            {"type": "thread.started", "thread_id": "t-1"},
+            {"type": "item.completed", "item": {"type": "agent_message", "text": "開始審查"}},
+            {"type": "item.completed", "item": {"type": "agent_message", "text": body}},
+            {"type": "item.completed", "item": {"type": "agent_message", "text": "已補核對，結論不變。"}},
+        ]) + "\nnot json\n"
+        self.assertEqual(body, rp.report_from_events(events))
+        self.assertEqual("", rp.report_from_events("{}\n"))
 
     def test_last_json_block_wins(self):
         self.write_note()

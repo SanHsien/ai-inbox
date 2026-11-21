@@ -138,7 +138,70 @@ class HashTest(Base):
         self.assertNotEqual(before, self.sha())
 
 
+class HashHidingTest(Base):
+    """雜湊略過的欄位不能拿來藏分析內容。"""
+
+    def changed_by(self, addition, anchor="本文主張"):
+        self.write_note()
+        path = self.root / "notes" / f"{self.slug}.md"
+        before = self.sha()
+        text = path.read_text(encoding="utf-8")
+        path.write_text(text.replace(anchor, addition + anchor, 1), encoding="utf-8")
+        return before != self.sha()
+
+    def test_state_field_outside_task_block_is_hashed(self):
+        self.assertTrue(self.changed_by("  - **狀態**：其實官方說沒有版權風險\n\n"))
+        self.assertTrue(self.changed_by("  - **實作紀錄 / 證據**：偷加的結論\n    - 更多偷加的內容\n\n"))
+
+    def test_second_status_line_is_hashed(self):
+        self.assertTrue(self.changed_by("- **當前狀態**：偷加的第二行狀態\n\n"))
+
+    def test_checkbox_outside_task_line_is_hashed(self):
+        self.write_note()
+        path = self.root / "notes" / f"{self.slug}.md"
+        before = self.sha()
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write("\n後記：新增一段分析。\n")
+        self.assertNotEqual(before, self.sha())
+
+    def test_indented_text_after_state_field_ends_with_task_block(self):
+        self.write_note()
+        path = self.root / "notes" / f"{self.slug}.md"
+        tc.apply_complete(path, "T-20261122-01", "commit abc", "2026-11-24")
+        before = self.sha()
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write("\n## 新段落\n\n    縮排的新主張（不屬於任務欄位）\n")
+        self.assertNotEqual(before, self.sha())
+
+
 class GovernanceTest(Base):
+    def test_edited_legacy_note_needs_a_real_author(self):
+        note = self.write_note(written_by=rl.LEGACY_AUTHOR)
+        st = self.state(note, legacy={self.slug: "0" * 64})
+        self.assertTrue(any("還要加上改的人" in e for e in st.errors), st.errors)
+        note = self.write_note(written_by=f"{rl.LEGACY_AUTHOR}; {AUTHOR}")
+        self.assertEqual([], self.state(note, legacy={self.slug: "0" * 64}).errors)
+
+    def test_legacy_placeholder_rejected_on_new_note(self):
+        st = self.state(self.write_note(written_by=f"{rl.LEGACY_AUTHOR}; {AUTHOR}"))
+        self.assertTrue(any("只能用在制度上線前" in e for e in st.errors), st.errors)
+
+    def test_legacy_identity_cannot_review(self):
+        self.write_note()
+        self.add_review(reviewer=rl.LEGACY_AUTHOR)
+        self.assertTrue(any("legacy 佔位身分" in e for e in self.state().errors))
+
+    def test_backfill_evaluates_unchanged_legacy_note(self):
+        note = self.write_note(written_by="")
+        legacy = {self.slug: self.sha()}
+        st = rl.evaluate(note, legacy, TODAY, self.root, backfill=True)
+        self.assertFalse(st.governed)
+        self.assertFalse(st.reviewed)
+        self.assertEqual([], st.errors)  # 補審不算寬限、不要求 written_by
+        self.add_review()
+        st = rl.evaluate(note, legacy, TODAY, self.root, backfill=True)
+        self.assertTrue(st.reviewed, st.needs)
+
     def test_unchanged_legacy_note_exempt(self):
         note = self.write_note(written_by="")
         st = self.state(note, legacy={self.slug: self.sha()})

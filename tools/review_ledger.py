@@ -30,7 +30,7 @@ REVIEWS_DIRNAME = "reviews"
 REPORTS_DIRNAME = "reports"
 LEGACY_BASELINE_NAME = "legacy-baseline.json"
 # 基準檔（reviews/legacy-baseline.json）位元組的 SHA-256。改這個值等於宣告「這些筆記免審」，要在 REVIEW.md 說明理由。
-LEGACY_BASELINE_SHA256 = "6a3be2dc169ee5323de9a1dbd1770bedfd2fc4df62988fa00a152a03333a022a"
+LEGACY_BASELINE_SHA256 = "a4427fa0911d146e206eea83e7bfdb512fc5eb32c0cce10acf826cd9c46d1df6"
 
 GRACE_DAYS = 7  # 新筆記（或改過內容的筆記）最多可以待審幾天
 SCOPES = ("source", "facts", "evidence", "task_impact")
@@ -95,6 +95,8 @@ def analysis_text(text: str) -> str:
     out: list[str] = []
     fence: str | None = None
     skipping = False
+    in_task = False  # 狀態欄位只在任務區塊內略過；別處同名的行照算，不能拿來藏內容
+    status_line_seen = False
     for i, line in enumerate(lines):
         if 0 < i < fm_end:
             if re.match(r"^status\s*:", line):
@@ -106,16 +108,23 @@ def analysis_text(text: str) -> str:
             continue
         fence, in_fence = bi.fence_step(fence, line)
         if not in_fence:
-            if skipping and line.startswith("    ") and line.strip():
+            if bi.TASK_LINE.match(line):
+                in_task = True
+            elif line.strip() and not line.startswith(" "):
+                in_task = False
+            if skipping and in_task and line.startswith("    ") and line.strip():
                 continue
             skipping = False
             f = bi.TASK_FIELD.match(line)
-            if f and f["key"].strip() in STATE_FIELDS:
+            if in_task and f and f["key"].strip() in STATE_FIELDS:
                 skipping = True
                 continue
-            if line.startswith("- **當前狀態**"):
+            # task_cli 只改開頭 45 行內的第一個「當前狀態」行，這裡也只略過那一行
+            if not status_line_seen and i < 45 and line.startswith("- **當前狀態**："):
+                status_line_seen = True
                 continue
-            line = TASK_BOX.sub("- [ ] ", line)
+            if in_task:
+                line = TASK_BOX.sub("- [ ] ", line)
         out.append(line.rstrip())
     return "\n".join(out).strip() + "\n"
 
@@ -250,6 +259,8 @@ def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path |
     authors, bad = parse_identities(note.meta.get("written_by", ""))
     if any(a.runtime == "legacy" for a in authors) and slug not in legacy:
         st.errors.append(f"{name}: written_by 的 {LEGACY_AUTHOR} 只能用在制度上線前就有的筆記（reviews/{LEGACY_BASELINE_NAME}）")
+    if governed and authors and all(a.runtime == "legacy" for a in authors):
+        st.errors.append(f"{name}: 舊筆記的內容改過了，written_by 除了 {LEGACY_AUTHOR} 還要加上改的人（; <runtime>/<model>@<session>）")
     if backfill and not governed and not authors:
         authors = [parse_identity(LEGACY_AUTHOR)]
     st.authors = authors
