@@ -16,6 +16,11 @@
 | Grok Build CLI 的 headless 用法 `-p` / `--output-format streaming-json` | 已查證 | [docs.x.ai/build/overview](https://docs.x.ai/build/overview) |
 | `grok inspect` 可列出目前目錄被發現的設定來源、instructions、skills、plugins、hooks、MCP servers | 已查證（官方頁面文字，未實機測試，因本機未安裝 `grok`） | 同上 |
 
+> **2026-11-21 更正**（查閱日 2026-11-21）：
+> 1. **本機已沒有 Herdr**：`herdr` 不在 PATH，`%USERPROFILE%\.herdr` 也不存在。上表「本機已裝 0.9.1」與第 4.1 節的輸出是 2026-10-26 的紀錄，現在無法在本機重現；要照本文操作得先重新安裝，並以新版 `herdr agent start --help` 核對 `--kind` 的合法值。
+> 2. **Antigravity 的名稱**：[herdr.dev/docs/agents](https://herdr.dev/docs/agents/) 現在列的整合名稱是 `antigravity-cli`，Grok CLI 是 `grok`；第 4.1 節 0.9.1 的 `--help` 輸出寫的是 `agy`。新版 `--kind` 用哪個值【未查證】（本機已無 Herdr 可跑）。
+> 3. **`grok inspect` 的出處**：[docs.x.ai/build/overview](https://docs.x.ai/build/overview) 頁面上沒有提 `grok inspect`；提到它的是 [project-rules 頁](https://docs.x.ai/build/features/project-rules)，寫的是「列出找到的每個規則檔、路徑與大約的 token 數」。上表「可列出 skills、plugins、hooks、MCP servers」這一段在這兩頁都找不到，標【未查證】。安裝指令、`-p` 與 `--output-format streaming-json`、規則檔讀取順序與檔名清單重查後與上表一致。
+
 **本機限制**：撰寫本文件時，`which grok` 於本機 PATH 中找不到結果（未安裝 Grok Build CLI），因此第 4 節「驗證範例」只能對 Herdr 側（已安裝、可實測）給出真實輸出；Grok CLI 側的指令是依官方文件轉錄，標註「未在本機實測」。
 
 ---
@@ -149,7 +154,7 @@ grok inspect
 grok -p "讀 AGENTS.md 並回報摘要" --output-format streaming-json
 ```
 
-以上三行指令抄自 [docs.x.ai/build/overview](https://docs.x.ai/build/overview)（2026-10-26 查證），**未在本機執行**（未安裝 Grok Build CLI）；在本機真正接上 Grok Bot 派工前，應先手動跑一次 `grok inspect`，確認它是否真的列出 `AGENTS.md`，再決定 3.2 表格要不要把 Grok Build CLI 升級為「已查證：原生讀取」。
+以上三行指令抄自 [docs.x.ai/build/overview](https://docs.x.ai/build/overview)（2026-10-26 查證；2026-11-21 更正：`grok inspect` 出自 project-rules 頁，不在 overview 頁），**未在本機執行**（未安裝 Grok Build CLI）；在本機真正接上 Grok Bot 派工前，應先手動跑一次 `grok inspect`，確認它是否真的列出 `AGENTS.md`，再決定 3.2 表格要不要把 Grok Build CLI 升級為「已查證：原生讀取」。
 
 ---
 

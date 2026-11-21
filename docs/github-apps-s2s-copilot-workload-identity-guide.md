@@ -23,6 +23,8 @@
 
 筆記裡引用的 Threads 貼文與留言（@alicken、@ginsengtrycatch 等人的說法）**本次未開啟驗證**，本指南不引用其中的任何斷言；GitHub 官方 Changelog 與文件才是依據。
 
+> **2026-11-21 抽查**：重開 Changelog、SDK 的 server-to-server 權杖頁、組織管理頁與 installation token 頁（網址見第 8 節），上表逐項仍與官方一致：仍是 public preview；`useLoggedInUser: false` 會關掉環境變數權杖；REST 權限鍵 `organization_copilot_requests`；`app_client_id` 只在 CSV 匯出；Read-only 仍會消耗組織額度；2026-04-27 起新權杖改為較長格式。來源筆記已在 2026-11-16／11-17 讀過貼文與留言並依本表改正正文，結論是：GitHub App 身分本來就有，新的是「Copilot 接受組織安裝 App 的權杖」；貼文圖裡的「監聽 Jira」是貼文作者想像的情境，Changelog 沒有提。
+
 ---
 
 ## 1. 認證全貌

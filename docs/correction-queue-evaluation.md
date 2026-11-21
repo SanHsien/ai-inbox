@@ -1,8 +1,9 @@
 # 評估：在共用 SSOT 倉庫引進「糾正審查佇列」（correction-queue.jsonl）
 
 > 對應任務：`T-20261026-25`｜來源筆記：[`notes/2026-10-26-ai-shared-memory-template-team-collaboration.md`](../notes/2026-10-26-ai-shared-memory-template-team-collaboration.md)
-> 評估對象：[Private Repo: 跨Agent資產庫]（跨 Agent 共用規則、知識、技能的 SSOT；私有，以下只寫結構與數字，不貼內容）
+> 評估對象：`SanHsien/agent-assets`（私有）（跨 Agent 共用規則、知識、技能的 SSOT；以下只寫結構與數字，不貼內容。2026-11-21 更正：原用舊的別名寫法，依 `AGENTS.md` 第 4 節改寫真名加「（私有）」）
 > 佇列機制出處：[`Leoceeport/ai-memory-template`](https://github.com/Leoceeport/ai-memory-template) @ `ad84653`，規格整理見 [`docs/ai-shared-memory-engineering-spec.md`](./ai-shared-memory-engineering-spec.md) 第 4 節。
+> 2026-11-21 抽查：範本 repo 與 commit `ad84653` 存在（GitHub API；該 commit 日期 2026-09-17），`correction-queue.jsonl` 在 `domains/lessons/` 下，與下文一致；該 repo 沒有授權檔，照抄內容前要先問作者。第 3 節的提交數與檔案大小是 2026-10-26 當天的快照，之後沒有重算。
 > 評估日期：2026-10-26。方法：唯讀閱讀該倉庫的維護指引、SSOT 契約、操作手冊、收錄流程、`verify_repo.py`、登記簿與 git 歷史；**未修改該倉庫任何檔案、未執行其腳本**。
 
 ---

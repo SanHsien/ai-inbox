@@ -7,6 +7,14 @@
 - **No Stubs**：禁止敷衍式的空殼函式（`pass`、`...`、`NotImplementedError`）。
 - **Runtime Verification Gate**：任何聲稱「完成」的代碼必須具備真實終端機執行日誌證據，並經受執行期政策檢驗。
 
+> **2026-11-21 更正（依來源筆記第 0 段與官方 repo [`cursor/plugins` 的 `pstack/`](https://github.com/cursor/plugins/tree/main/pstack)，GitHub API 查閱日 2026-11-21）**：
+>
+> - **作者背景寫反了**。官方 README 的自我介紹只寫 Meta、Netflix、Cursor 與 React 核心團隊，沒有提 SpaceX。「SpaceX 首席工程師」只出現在轉述的貼文與影片，而且說的是**現任**（影片的說法是 Cursor 被 SpaceX 收購），不是「曾任」；這個頭銜【未查證】。
+> - **上面三條口號不是 pstack 的原文**。官方是 24 條原則（`skills/principle-*`，例如 `prove-it-works`、`fix-root-causes`、`test-behavior-not-implementation`）、22 套 playbook 與 34 個 skill；「No Reproduction, No Fix」「No Stubs」「Runtime Verification Gate」是本 repo 取其「先重現、要有執行證據」精神自己歸納的說法，也是 agent-relay 閘門實際檢查的項目。
+> - 官方 README 直接提供 Claude Code 安裝方式，不必靠社群移植版。本文件只融合驗證與 TDD 防線，沒有安裝 pstack 本身。
+>
+> 第 2 節以後講的是 agent-relay 與 AGT 的實作，不依賴上述背景，內容不受影響。本機路徑（`agent-relay`、`agent-governance-toolkit`、兩份 `quality-loop`、`verification-protocol`）與 `gates.py` 的 `governance_fallback` 邏輯同日實查都在。
+
 本文件記錄將 `pstack` 紀律、維護者 fork `agent-relay` 驗收閘門（`agent_relay.gates`）與維護者 fork `agent-governance-toolkit`（AGT）運行期政策引擎完成深度整合的架構規格、實作細節與真實終端測試證據。
 
 ---

@@ -22,7 +22,10 @@ Anthropic 官方 `security-guidance@claude-plugins-official` 外掛在執行 Lay
 # safe: verified internal constant, no external input
 result = eval(internal_expression)
 ```
-審查模型讀取到 `safe:`、`nosec` 或明確豁免說明時，會將其識別為已知合規項目，避免無效阻擋。
+外掛 README 的說法是：在該行加註解說明為什麼安全，LLM 審查員會把行內理由當成排除依據。`safe:`、`nosec` 只是本 repo 慣用的寫法，不是外掛認得的關鍵字；重點是把理由寫清楚。
+
+### Windows 注意事項（2026-11-22 依外掛 2.0.21 實測）
+- 原生安裝（`%USERPROFILE%\.local\bin\claude.exe`）或 PATH 上有 `claude.exe` 時，**不需要**設 `SG_AGENTIC_CLI_PATH`；只有 npm 的 `claude.cmd` 或找不到 `claude.exe` 時才要設，而且要填 `claude.exe` 的完整路徑。判斷方式與實測紀錄見 [`docs/claude-security-guidance-windows-setup.md`](../docs/claude-security-guidance-windows-setup.md)。
 
 ---
 
@@ -88,6 +91,8 @@ result = eval(internal_expression)
 │ Layer 3 │ git commit / push   │ Agentic 追蹤 │ 10K~50K Token│ 5 ~ 15 秒     │
 └─────────┴─────────────────────┴──────────────┴──────────────┴───────────────┘
 ```
+
+> 表中的 Token 消耗與延遲是估計值，本 repo 沒有量測紀錄（外掛尚未在本機安裝執行）。實際用量看外掛紀錄檔 `~/.claude/security/log.txt` 的 `Review usage:` 行。
 
 ### 成本調度實踐指南
 

@@ -2,6 +2,12 @@
 
 > 本文件收錄於 `docs/android-cli-plugin-windows-validation.md`，為任務 `T-20261019-06` 針對 Google 官方 `android-cli-plugin` 與 `android` CLI 在 Windows 11 原生環境下的安裝機制、安全風險與整合流水線的完整技術評估與實測驗證。依據安全規範與免改全域 PATH 硬閘門要求，本階段於暫存沙盒（`$env:TEMP\android-cli-sandbox`）完成手動解壓、行程級 PATH 注入、`android --version`、`android skills list` 及 `android create` 最小測試專案實跑，並記錄真實完整終端輸出。
 
+> **2026-11-21 抽查與更正**：
+> - **`android-cli-plugin` 不是 Google 官方外掛的名稱。** 它是維護者本機 Antigravity 外掛目錄裡的一個外掛（筆記第 3 節），官方提供的是 `android` CLI 與 [`android/skills`](https://github.com/android/skills)（Apache-2.0）。官方的 agent 外掛安裝方式是 Claude Code 的 `/plugin marketplace add android/skills` 加 `/plugin install android-skills@android-skills`，Codex 有對應的 `codex plugin` 指令（官方 README，查閱日 2026-11-21）。標題與首段的「Google 官方 `android-cli-plugin`」請讀成「本機外掛與官方 `android` CLI」。
+> - **技能數是當時的數字**：下文的 33 個是 2026-10-23 實測結果；2026-11-21 以 GitHub API 列官方 repo，`SKILL.md` 共 37 個，數量持續增加。
+> - **下載端點是 `latest`，內容會變**：2026-11-21 以 HEAD 請求查（沒有下載），`install.cmd` 為 2,043 bytes、`android.exe` 為 3,177,624 bytes，兩者最後修改日都是 2026-11-13；下文的 3,177,112 bytes 與 `1.1.16717390` 是 2026-10-23 當時的版本，第 1 節節錄的腳本內容與行號可能已不同，這次沒有重審新版腳本。
+> - **新增風險**：官方 `android-cli` 技能會指示 agent 自動執行 `curl … | bash` 安裝 CLI（[issue #61](https://github.com/android/skills/issues/61)，今天仍開啟）。`android skills add` 不加 `--all` 時裝的就是這個技能；用官方外掛方式整包安裝也會帶進來。本報告當時採用的「先審腳本、手動下載到沙盒」做法不受影響。
+
 ---
 
 ## 1. 官方安裝腳本安全性審查（Security Audit）

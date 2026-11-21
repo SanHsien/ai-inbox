@@ -4,6 +4,7 @@
 - **查閱與建立日期**：2026-10-25
 - **適用對象**：維護者評估或執行任何涉及 AI 生成人物、虛擬網紅（AI Influencer）、相片 Avatar、聲音複製（Voice Cloning）及口播影片產製專案
 - **使用方式**：在專案動工、生成、發布前，逐項檢查並勾選確認；未全數符合前不得上線或公開發布
+- **2026-11-21 抽查更正**：對照官方頁面重查四項（Instagram 帳號層級標籤、HeyGen 與 ElevenLabs 商用條款、ELVIS Act 的適用範圍），改了三處，各處已加註；本清單不是法律意見
 
 ---
 
@@ -13,7 +14,7 @@
 > 確保閱聽眾與平台明確知悉內容包含生成式 AI 元素，符合透明度規範並避免處罰。
 
 - [ ] **貼文與短影音標籤**：於 Instagram、Facebook 等平台發布擬真人物影音前，在編輯或發布頁面主動啟用原生「AI Info」或「Add AI label」標籤。
-- [ ] **帳號層級虛擬人物揭露**：若帳號定位為完全由 AI 虛擬人物經營，已於個人檔案設定中開啟「AI-generated profile」標籤，避免遭演算法限制探索與推薦資格。
+- [ ] **帳號層級虛擬人物揭露**：若帳號定位為完全由 AI 虛擬人物經營，已於個人檔案設定中開啟「AI-generated profile」標籤，避免遭演算法限制探索與推薦資格。（2026-11-21 補依據：Instagram 2026-08-31 公告把原「AI creator」標籤改名為此，未標示而被偵測到的帳號可能失去推薦資格，可補標或申訴；主動標示者觸及不變。只是創作過程用到 AI 工具、帳號主角不是 AI 生成人物的，不需要這個標籤。）
 - [ ] **畫面視覺揭露提示**：在口播影片本體或限時動態畫面適當位置，保留或加入清晰可辨之文字提示（例如「本影像包含 AI 生成內容」）或保留 C2PA / SynthID 等中繼資料數位水印。
 
 ---
@@ -32,14 +33,14 @@
 
 - [ ] **原發音人書面合法同意**：複製他人聲音前，已取得原發音人明確之書面授權合約，載明允許將其語音樣本訓練為文字轉語音（TTS）模型並進行特定商業口播。
 - [ ] **完成平台語音驗證**：遵循 ElevenLabs 平台之 Voice Verification 驗證流程，確保帳號具備合法授權，禁止透過非授權錄音樣本私自複製他人聲線。
-- [ ] **聲線仿冒法規審查**：確認語音生成之內容不涉及名人聲線仿冒、政治宣傳、誤導性聲明，符合美國 ELVIS Act 及相關防範不正競爭與人格權保護法規。
+- [ ] **聲線仿冒法規審查**：確認語音生成之內容不涉及名人聲線仿冒、政治宣傳、誤導性聲明，符合美國田納西州 ELVIS Act（州法，不是聯邦法；2026-11-21 更正原文「美國 ELVIS Act」的寫法）及發布地、被仿冒者所在地相關的不正競爭與人格權保護法規。
 
 ---
 
 ### 類別四：商用條款（Commercial Licensing & Subscription Compliance）
 > 確保工具合約授權與商業營運目的相符，避免侵犯軟體著作權。
 
-- [ ] **全面採用付費商用授權方案**：確認產製商用影音所涉及之工具（如 HeyGen Creator 以上方案、ElevenLabs Starter 以上方案）均具備有效商業使用授權（Commercial License），嚴禁使用免費版生成商用營利素材。
+- [ ] **全面採用付費商用授權方案**：確認產製商用影音所涉及之工具（如 HeyGen Creator 以上方案、ElevenLabs Starter 以上方案）均具備有效商業使用授權（Commercial License），嚴禁使用免費版生成商用營利素材。（2026-11-21 查證：HeyGen 條款第 4 節明定 Free Plan 產出僅限個人、非商業與內部評估用途，第 3 節對 Creator／Pro／Business 不限制商用；ElevenLabs 定價頁自 Starter 起列有 Commercial License。方案名稱與條文會變動，簽約前再看一次。）
 - [ ] **額度與點數合法取得**：依循官方訂閱機制購買 Credits 與點數，嚴禁透過腳本批次註冊免費試用帳號等違反服務條款（Terms of Service）之手段規避付費。
 - [ ] **商用合約憑證留存**：留存軟體訂閱購買發票、收據與生效時之官方條款截圖，作為維護者日後因應版權或合作方查核之商業授權舉證依據。
 
@@ -60,11 +61,11 @@
 
 1. **Meta 官方內容標示與政策**：
    - [Meta Newsroom: Meta’s Approach to Labeling AI-Generated Content and Manipulated Media](https://about.fb.com/news/2024/04/metas-approach-to-labeling-ai-generated-content-and-manipulated-media/)（查閱日期：2026-10-25）
-   - [Meta Transparency Center: Manipulated Media Policy](https://transparency.meta.com/policies/community-standards/manipulated-media/)（查閱日期：2026-10-25）
-   - [Instagram Help Center: About AI-generated profiles on Instagram](https://help.instagram.com/)（查閱日期：2026-10-25）
+   - [Meta Transparency Center: Manipulated Media Policy](https://transparency.meta.com/policies/community-standards/manipulated-media/)（查閱日期：2026-10-25；2026-11-21 開啟時會轉到 Misinformation 政策頁）
+   - [Instagram for Creators：Bringing More Transparency to AI-Generated Profiles on Instagram](https://creators.instagram.com/blog/ai-generated-profile-label)（2026-08-31 發布；查閱日期：2026-11-21。原列的 `help.instagram.com` 只是說明中心首頁，不是具體條文，已換成這則官方公告）
 2. **HeyGen 官方使用條款與倫理守則**：
    - [HeyGen Terms of Service](https://www.heygen.com/terms)（查閱日期：2026-10-25）
-   - [HeyGen Ethics & Trust Guidelines](https://www.heygen.com/ethics)（查閱日期：2026-10-25）
+   - [HeyGen Ethics & Trust Guidelines](https://www.heygen.com/ethics)（查閱日期：2026-10-25；2026-11-21 開啟時會轉到 `/trust-and-safety`）
    - [HeyGen Official Pricing & Commercial Plans](https://www.heygen.com/pricing)（查閱日期：2026-10-25）
 3. **ElevenLabs 官方服務條款與安全政策**：
    - [ElevenLabs Terms of Service](https://elevenlabs.io/terms)（查閱日期：2026-10-25）

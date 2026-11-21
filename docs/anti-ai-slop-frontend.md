@@ -1,8 +1,10 @@
 # 反 AI 罐頭設計前端工程規範 (Anti-AI-Slop Frontend Guidelines)
 
-本規範提煉自 Shipper `epstein.md` 核心設計哲學，旨在消除由 AI（如 v0、bolt.new、Lovable、Claude Artifacts）生成前端介面時普遍出現的「千篇一律視覺疲勞（AI Slop）」。
+本規範提煉自 Shipper 對外公布的 `epstein.md` 禁用清單，旨在消除由 AI（如 v0、bolt.new、Lovable、Claude Artifacts）生成前端介面時普遍出現的「千篇一律視覺疲勞（AI Slop）」。
 
 核心哲學：**「好設計不是告訴模型要做什麼，而是以嚴密的負向約束（Negative Constraints as Spec）明確禁止老套路」**。
+
+> **來源說明（2026-11-21 更正，依筆記 [`2026-10-17-shipper-epstein-md-anti-ai-slop`](../notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md) 第 0 段）**：Shipper 沒有公開釋出 `epstein.md` 原檔（在 X 上只說已整合進自家產品，多人索取都沒有回應），本 repo 沒有讀過原檔。第 1 節五條禁制是依貼文轉述的禁用清單（卡片陰影、Emoji、綠色 LIVE 標籤、藍紫漸層、AI 常用詞）自行蒸餾；上面那句「核心哲學」與第 2 節「正向工程標準」是本 repo 的歸納與延伸，不是原檔內容。原檔的效果沒有公開測試佐證。本規範的用法是**檢查輸出**（第 4 節的掃描腳本），不要把整份禁用詞表塞進提示詞。
 
 ---
 
@@ -68,4 +70,4 @@
 ```bash
 python tools/verify_no_slop.py assets/anti-slop-demo/index.html
 ```
-驗收通過標準為：掃描報告為 `0 violations found (PASS)`。
+驗收通過標準為：結束碼 0，且輸出 `[PASS] 零罐頭特徵 (0 violations found)！`（2026-11-21 實跑確認，原寫的輸出字樣與腳本實際輸出不符，已改）。

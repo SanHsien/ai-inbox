@@ -4,6 +4,9 @@
 > 查證基準：本機 `C:\GitHub\buzz`（`SanHsien/buzz`，fork 自 [`block/buzz`](https://github.com/block/buzz)，Apache-2.0），commit `9e8c9fc`（2026-10-23）。
 > 查證日期：2026-10-26。下文「檔案:行號」都指這個 commit；上游之後會變動，行號僅供對照。
 > 範圍：只讀原始碼與文件做解析；**未在本機建置或執行 Buzz**（編譯與 Job Object 實測是 `T-20261026-09` 的範圍）。
+>
+> **2026-11-21 抽查**：在本機 clone 的 commit `9e8c9fc` 上重開第 0 節三處引用，`config.rs` 的 `max_sessions`（`usize::MAX`）與 `max_parallel_tools`（8）、`git-sign-nostr/src/lib.rs` 的 Unix-only 註解、`buzz-audit/src/hash.rs` 的雜湊計算都與下文一致；上游 `block/buzz` 授權 Apache-2.0（GitHub API）。上游之後的變動沒有重讀。
+> 補充一點本文沒寫到的（來源筆記 2026-11-16／11-17 重審）：上游 [issue #2698](https://github.com/block/buzz/issues/2698)（今天仍開啟）指出 `buzz-acp` 的回覆交付是隱含約定，較弱的模型會把答案留在 session 文字裡而沒有送出訊息，額度正常、log 沒有錯誤也會發生；金鑰被沙盒拿掉、權限模式擋住、runtime 沒掛工具也會造成同樣的「已讀不回」。第 3 節的協議序列圖畫的是正常路徑，不代表回合結束就一定有送出回覆。Windows 支援在上游文件裡是列為待補的區塊。
 
 ---
 

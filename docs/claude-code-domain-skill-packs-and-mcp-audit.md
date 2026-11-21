@@ -34,6 +34,14 @@
 
 > **查證狀態（2026-11-14）**：下表的星數是 2026-11-08 的快照，本次未重新查證。8 則 IG 貼文的內容、各專案的 Skill 數量與 CLI 子指令，除第 3 節與第 4.9 節另外註明來源者之外，都取自來源筆記，本次**未查證**。Impeccable 的「62 條決定性規則」已對照其 [README](https://raw.githubusercontent.com/pbakaus/impeccable/main/README.md)（2026-11-14 讀取，原文 `62 deterministic rules`）。
 
+> **2026-11-21 抽查更正**（GitHub API 與各 repo README，查閱日 2026-11-21）：
+> - **UI UX Pro Max**：README 現在寫 **194 條推理規則、194 組配色、74 組字型搭配、130 條 UX 準則**；下表與第 1 節圖裡的「192」是舊數字，「80 種可搜尋 UI 風格」在現行 README 找不到【未查證】。
+> - **Earshot**：「252 種以程式碼儲存的音效」「只用 CPU」與 `critique` 等子指令查得到；「對照 7 部專業宣傳片計算 23 項指標」「80ms 轉場對齊誤差」在現行 README 找不到【未查證】，沿用來源筆記的說法。
+> - **21st MCP**：要先到 21st.dev 申請 API key（免費申請）；README 寫明伺服器含**付費的程式碼取得與 AI 生成點數**，不是全免費。「10,000+ 元件」README 沒寫【未查證】。
+> - **claudex-loop**：`LICENSE` 是 MIT，但附註部分內容改自其他專案，GitHub API 因此判為無法辨識（NOASSERTION）。
+> - 查得到且相符的：YouTube 版 11 個 skill、21 個開頭公式與 6 支 Python 工具；IG 版 13 個 skill、26 個公式、154 個套話詞彙、18 類隱藏字元，以及第 3 節的 74 支、AUC 0.83／0.56、8%→49%；Impeccable Apache-2.0；其餘 repo 的授權與下表相同。
+> - 星數（2026-11-21）：MMAudio 2,324、Earshot 5,409、YouTube 6,706、Instagram 7,794、UI UX Pro Max 152,306、Impeccable 114,245、21st MCP 6,617、claudex-loop 3,534。下表仍是 2026-11-08 的快照。
+
 | 領域象限 | 來源 IG 貼文 | 核心開源專案 / 工具 | GitHub Stars / 授權 | 核心確定性工具與架構機制 |
 | :--- | :--- | :--- | :--- | :--- |
 | **A. 影音音效自動合成與聽覺自審** | [`DfMpBTvh_Yj`](https://www.instagram.com/reel/DfMpBTvh_Yj/) (`@kwons_en`) | 1. **Openverse API**<br>2. [`hkchengrex/MMAudio`](https://github.com/hkchengrex/MMAudio)<br>3. [`Leonxlnx/earshot`](https://github.com/Leonxlnx/earshot) | MMAudio: `2,307★` (MIT)<br>Earshot: `4,156★` (MIT) | - **Openverse**：檢索 500 萬+ CC0/開放授權音效。<br>- **MMAudio**（CVPR 2025）：依影片畫面幀同步合成音訊。<br>- **Earshot**：純 CPU 本地執行 CLI/MCP，提供 `describe`、`match`、`timeline`、`sheet` 與 `critique`（對照 7 部專業宣傳片計算 23 項指標、LUFS 響度與 80ms 轉場對齊誤差），以及 `earshot forge` / `fit` 程式碼合成音效。 |

@@ -54,7 +54,7 @@ terms = [
 | :--- | :---: | :---: | :--- |
 | `~/.claude/mods/` / `.claude/mods` | **0** | **0** | **不存在**。官方二進位完全無此載入目錄邏輯。 |
 | `defineMod` | **1 (無關)** | **1 (無關)** | **不存在**。唯一匹配點位於前端保留字庫（緊鄰 `defineModel`、`defineProps` 等 Vue 巨集），無任何模組定義函式。 |
-| `Token Weather` | **0** | **0** | **不存在**。官方無此範例名稱。 |
+| `Token Weather` | **0** | **0** | ~~**不存在**。官方無此範例名稱。~~ **2026-11-21 更正**：二進位裡搜不到，但 Token Weather 是官方教學的三個範例之一（另兩個是 Blast Radius、Replay Theater；依筆記第 0 段，範例程式碼在 `anthropics/claude-code-playground`），不隨 CLI 內建，所以掃描結果是 0。 |
 | `AbovePrompt` | **76** | **152** | **內部 UI 元件**。存在於 Ink 介面元件樹與內部外掛中介軟體，並非對外開放的模組 API。 |
 | `$.state` | **15** | **15** | **內部中介軟體狀態管理**。屬於外掛與 hooks 系統的內部狀態傳遞介面。 |
 | `.claude-plugin/plugin.json` | **多處** | **多處** | **官方正規插件機制**。外掛是以專案或全域插件形式註冊，規範於 `.claude-plugin/`。 |
@@ -82,6 +82,8 @@ Guidelines:
 - Windows paths: for example C:/Users/me/.claude/statusline.ps1 or the ~ shorthand.
   Do not use backslashes: the command must use forward slashes.
 ```
+
+> **2026-11-21 註記**：下面兩點與第 5 節第 1、3 點是 2026-10-25 的錯誤結論，保留作紀錄，以文首更正與第 6 節為準。mod 機制存在，官方有教學與公告；`AbovePrompt`、`$.state` 是對外的 mod 介面，不是「內部元件」；任務 `T-20261018-09` 最後是依官方機制實作結案，不是「不做」。另依官方教學，mod 與 Claude Code 有相同的電腦存取權限，只從可信來源安裝。
 
 二進位查驗徹底證實：
 1. **原貼文描述的 `~/.claude/mods/` 與 `defineMod(...)` 為作者虛構或混淆內部名詞的產物**。
@@ -172,6 +174,8 @@ PS C:\GitHub\ai-inbox> "{}" | python %USERPROFILE%\.gemini\antigravity\brain\8b2
 ---
 
 ## 5. 總結與任務結論
+
+> **2026-11-21 註記**：本節第 1、3 點已被文首更正推翻（見第 3 節註記與第 6 節）。
 
 1. **原貼文 API 判定**：
    社群貼文所宣稱的「`~/.claude/mods/`」與「`defineMod`」在官方 Claude Code 2.1.309 二進位中**完全不存在**，為概念性拼湊或非官方實驗分支。

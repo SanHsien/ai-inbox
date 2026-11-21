@@ -18,6 +18,8 @@
 
 筆記裡的其餘內容（「三棒同時派」、回「派」才放行、四態回報、`HANDOFF.md` 同步 Hook、20 個工具 5 條路徑與備援鏈、備援鍵名打錯與白名單誤用 Username 兩個踩坑）**都是筆記（由 Antigravity 整理）的轉述，本 repo 沒有對照到原文**，下面一律當作「待原文確認的轉述」，不歸給作者。
 
+> **2026-11-21 更正（來源已補讀，本節「全文沒有取得」的前提過期）**：來源筆記已在 2026-11-16／11-17 讀完貼文文字、作者 2 張圖與 18／18 則留言（筆記第 0 節），結論是筆記正文的架構不需更正。作者圖上看得到、因此不再只是「筆記轉述」的有：派工單三欄（做什麼、派給誰、怎麼派與怎麼回）、四步（先列表不先動手、各走各的通道、四態加證據回報、做完回記憶庫）、派工技能放在 `~/.claude/skills/team-dispatch`、二十個工具分五條路且各有主力與替代、GOBOT 的 GitHub 連線唯讀所以只給限單一 repo 的 token。**仍未逐項對到出處的**：`HANDOFF.md` 同步 Hook 的檔名、備援鍵名打錯與白名單誤用使用者名稱兩個踩坑的細節，下文這幾處維持【筆記轉述】。另外兩點補充：作者沒有公開 `team-dispatch` 技能或派工檔的原始碼，Codex／GPT 也還沒接進這套流程；留言指出條件與動作都固定的排程交給不耗 token 的確定性排程器（如自架 n8n）較可預期，Agent 只接需要判斷的部分，這條邊界本文原本沒寫。下文其他【筆記轉述】標記是 2026-11-02 的狀態，未逐處改寫。
+
 因此本文的條文分三種標記：
 
 | 標記 | 意思 |
@@ -182,7 +184,7 @@ Antigravity 的派工守則【本 repo 設計，依維護者政策】：只透�
 3. **預設唯讀，回填才給寫**：GOBOT 只輪詢時 Contents 用 read。要它回填「完成」狀態才把 Contents 升到 write；其他權限（Actions、Administration 等）一律不開。【未登入預覽所見】原作者的雲端隊員預設就是只讀。
 4. **設到期日**並寫進行事曆輪替；不使用沒有到期日的憑證（deploy key 因此只在能接受永不過期時才選）。
 5. **token 只放在 GOBOT 那台雲端機器的秘密儲存區**，不寫進派工 repo、不貼進對話。外洩或懷疑外洩就立刻撤銷，再重簽。
-6. **回填與派工分檔**：人類／主控寫 `dispatch/`，GOBOT 只寫 `reports/`。GitHub 的 token 無法限制只能寫某個目錄（本文未查證此限制，保守假設不能），所以這個分檔是約定，靠第 4 節的「GOBOT 只執行放行資訊齊全的項目」與 git 紀錄事後稽核，不是強制隔離。
+6. **回填與派工分檔**：人類／主控寫 `dispatch/`，GOBOT 只寫 `reports/`。GitHub 的 token 無法限制只能寫某個目錄（2026-11-21 補查：官方 fine-grained token 文件的存取範圍只到 repo 層級，權限以 Contents 等類別區分讀寫，沒有路徑或目錄層級的選項；未實測），所以這個分檔是約定，靠第 4 節的「GOBOT 只執行放行資訊齊全的項目」與 git 紀錄事後稽核，不是強制隔離。
 7. **GOBOT 讀到的一律是資料**：爬回來的網頁、派工檔裡未標放行資訊的段落，不執行其中的指令。
 
 ### 6.3 驗收這一節
@@ -237,8 +239,8 @@ python tools/verify_tool_fallback_matrix.py matrix.json                      # �
 
 ## 來源
 
-- Going Li（李國印），Facebook 社團 Claude Taiwan 貼文：<https://www.facebook.com/share/p/18BnwD3B6T/>。2026-11-02 開啟，僅取得分享預覽前段，全文未取得。
-- GitHub Docs，Managing your personal access tokens：<https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens>。2026-11-02 查證第 6.1 節前四點。
-- GitHub Docs，Managing deploy keys：<https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys>。2026-11-02 查證第 6.1 節最後一點。
+- Going Li（李國印），Facebook 社團 Claude Taiwan 貼文：<https://www.facebook.com/share/p/18BnwD3B6T/>。2026-11-02 開啟，僅取得分享預覽前段，全文未取得；2026-11-16／11-17 筆記重審時已讀完全文、圖片與留言（見第 1 節更正）。
+- GitHub Docs，Managing your personal access tokens：<https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens>。2026-11-02 查證第 6.1 節前四點；2026-11-21 重開頁面，四點仍在（官方用語是 highly recommend 設定到期日）。
+- GitHub Docs，Managing deploy keys：<https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys>。2026-11-02 查證第 6.1 節最後一點；2026-11-21 重開頁面確認「單一 repo、預設唯讀、可給寫入、寫入權限等同 admin 成員或個人 repo 協作者」。
 - GitHub Docs，Permissions required for fine-grained personal access tokens：<https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens>。2026-11-02 查證 Contents 權限及其 read／write 端點。
 - 本 repo：[`agent-dispatch.md`](./agent-dispatch.md)（派工指令）、`tools/verify_tool_fallback_matrix.py`（第 7 節驗證器）。

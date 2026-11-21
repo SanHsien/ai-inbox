@@ -1,6 +1,8 @@
 # 跨 Agent 派工與完工回報
 
 > 從 `AGENTS.md` 流程 B 第 4 點搬出（2026-10-25）。內容是四套 Agent 桌面端開新對話、派工與回報的操作指令；`AGENTS.md` 只保留本 repo 的讀寫協定。
+>
+> **2026-11-21 抽查**：本機實查 `claude --bg`／`--desktop`／`-n`、`codex queue`／`agents`／`app`／`-C`、`hermes -z`／`--in`／`--pass-session-id`／`sessions`、`language_server.exe` 路徑與 `python -m agent_relay send` 都存在（只看 `--help`，沒有實際派工）。`agent-relay` 這個短指令不一定在 PATH 上，找不到時改用 `python -m agent_relay`。Antigravity 的 `--model` 梯隊與底層模型名稱對應是 2026-10-25 當時的本機觀察，沒有官方文件可對照，這次【未查證】，版本更新後可能不同。
 
 ## 開啟新 Session 派工注意事項（四大 Agent Desktop 左側欄可視新對話＋自動回報）
 

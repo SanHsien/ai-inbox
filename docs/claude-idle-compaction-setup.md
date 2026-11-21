@@ -2,6 +2,8 @@
 
 > 本文件收錄於 `docs/claude-idle-compaction-setup.md`，為任務 `T-20261017-27` 針對 Anthropic Claude Code 官方閒置壓縮機制（Idle Compaction）與環境參數 `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS` 在 Windows 11 原生環境下的最佳實踐配置指南、運作機制剖析與實機驗收紀錄。
 > 關聯研究筆記：[`notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md`](../notes/2026-10-17-claude-code-idle-compaction-cc-session-reader.md)。
+>
+> **2026-11-21 更正（對照官方文件）**：依 Claude Code 官方 [設定參考 `idleCompaction`](https://code.claude.com/docs/en/settings-reference#idlecompaction) 與 [環境變數表](https://code.claude.com/docs/en/env-vars)（查閱日 2026-11-21）改了三處：(1) 最低版本是 **v2.1.290**，本文原寫 2.1.299，查無出處；(2) 官方只寫閒置「約一小時」，「54 分鐘」出自原貼文回覆串裡網友引用的更新紀錄，官方文件沒有這個數字；(3) 官方另列三個本文原本沒寫的前提：`autoCompactEnabled` 開啟、對話使用一小時快取 TTL、電腦在這段時間沒有睡眠。本機驗收結果（2.1.309、門檻 350000）不受影響。
 
 ---
 
@@ -11,7 +13,7 @@
 在長會話開發中，Anthropic 伺服器端的 Prompt Cache 有效時間（TTL）約為 5 分鐘至 1 小時。當開發者在長會話中暫時離開（如會議、用餐或跨日）超過 1 小時，服務端快取將徹底失效。若會話累積至 200k+ tokens，快取過期後的下一條 Prompt 必須重新支付全量 Cache Write 與計算成本，伴隨極高的初字延遲（TTFT）。
 
 為減緩快取失效衝擊，Claude Code 引入了後台 **閒置壓縮（Idle Compaction）**：
-- **觸發條件**：在會話閒置約 54 分鐘（快取過期前）且會話累積 Tokens 達到門檻時，後台自動執行 Compact。
+- **觸發條件**：在會話閒置約一小時（快取過期前；官方寫 about an hour，「約 54 分鐘」是網友引用更新紀錄的說法，官方文件未載）且會話累積 Tokens 達到門檻時，後台自動執行 Compact。另須 `autoCompactEnabled` 開啟、對話使用一小時快取 TTL、電腦保持清醒。
 - **預設問題**：預設觸發門檻為 `200k` tokens，採「有損壓縮（Lossy Compaction）」，將對話濃縮為抽象摘要，容易丟失中間探索決策、原始提問細節與除錯因果。
 
 ### 1.2 最佳實踐配置目標
@@ -19,7 +21,7 @@
 1. **防止大型連貫專案被過早抽象化**：在 200k~350k 區間內保持完整原始記憶。
 2. **與分層記憶體系協同**：
    - 會話內長跑（In-Session）：由 `autocompact 400K` 與結構化記憶管理。
-   - 跨會話 / 快取過期（Inter-Session）：若真正需要歷史重建，搭配 `SanHsien/cc-session-reader`（`cc-session inherit`）以靜態 Go 引擎無損抽取對話（過濾 85% 工具雜訊，保留 100% 對話），取代粗暴的有損摘要。
+   - 跨會話 / 快取過期（Inter-Session）：若真正需要歷史重建，搭配 `SanHsien/cc-session-reader`（`cc-session inherit`）以靜態 Go 引擎抽取對話（「過濾 85% 工具雜訊、保留 100% 對話」是上游作者宣稱，2026-11-21 查該 repo 的 README 沒有這組數字，【未查證】），取代粗暴的有損摘要。
 
 ---
 
@@ -43,7 +45,7 @@ C:\Users\<Username>\.claude\settings.json
 ```
 
 > **參數說明**：
-> - `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS`：數值型字串，門檻最低限制為 `100000`（100k），無上限。設為 `350000`（350k）可避免長會話在 200k 時過早進入有損壓縮。
+> - `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS`：數值型字串，須為正整數；低於 `100000`（100k）會被拉高到 100000。官方文件沒有寫上限。設為 `350000`（350k）可避免長會話在 200k 時過早進入有損壓縮。
 > - 若欲完全停用閒置壓縮，可在 `settings.json` 最外層加上 `"idleCompaction": false`；但在搭配門檻提高至 350k 的策略下，保留預設開啟（`idleCompaction: true`）作為 350k 瀕臨崩潰時的最後防線更具彈性。
 
 ### 2.3 PowerShell 環境變數配置（全域 / 使用者層級）
@@ -63,8 +65,8 @@ $env:CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS = "350000"
 
 | 參數 / 條件 | 官方預設值 | 最佳實踐建議值 | 說明 |
 | :--- | :--- | :--- | :--- |
-| **最低版本支援** | >= 2.1.299 | **2.1.309+** | 2.1.299 起正式支援 `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS` 環境參數 |
-| **觸發閒置時間** | ~54 分鐘 | ~54 分鐘 | Prompt Cache 瀕臨 1 小時過期臨界點 |
+| **最低版本支援** | >= 2.1.290 | **2.1.309+** | 官方文件寫 v2.1.290 起支援 `idleCompaction` 與 `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS`（2026-11-21 更正，原寫 2.1.299） |
+| **觸發閒置時間** | 約一小時 | 約一小時（不可調） | 官方寫「距上次請求約一小時」；54 分鐘是網友說法，官方未載 |
 | **觸發 Token 門檻** | `200000` (200k) | **`350000` (350k)** | 最低可設 100k，設為 350k 延後有損壓縮觸發時機 |
 | **退出開關 (`idleCompaction`)** | `true` | 保留預設或 `false` | 設為 `false` 可徹底關閉後台閒置壓縮 |
 
@@ -79,7 +81,7 @@ $env:CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS = "350000"
 ```text
 2.1.309 (Claude Code)
 ```
-- **判定**：版本 `2.1.309` 高於官方要求門檻 `2.1.299`，完整支援 Idle Compaction 參數。
+- **判定**：版本 `2.1.309` 高於官方要求門檻 `2.1.290`（2026-11-21 更正，原寫 2.1.299），支援 Idle Compaction 參數。
 
 ### 4.2 本地 `settings.json` 參數檢驗
 安全讀取本機 `~/.claude/settings.json`（已過濾任何機敏憑證與 API Keys）：
@@ -96,7 +98,7 @@ env_CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS : 350000
 ```
 - **判定**：
   - `CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS` 已成功設定為 `350000`。
-  - `idleCompaction` 未顯式設為 `false`，代表保留 Claude Code 預設開啟行為，在累積滿 350k tokens 且閒置逾 54 分鐘時方作為保底機制運作。
+  - `idleCompaction` 未顯式設為 `false`，代表保留 Claude Code 預設開啟行為，在累積滿 350k tokens 且閒置約一小時時方作為保底機制運作。
 
 ---
 
@@ -110,13 +112,13 @@ env_CLAUDE_CODE_IDLE_COMPACT_MIN_TOKENS : 350000
  [會話進行中 (In-Session)]
    │
    ├─► 0 ~ 350k Tokens：保留 100% 原始對話與完整推論上下文（不受預設 200k 閒置壓縮干擾）
-   ├─► 超過 350k Tokens 且閒置 54 分鐘：觸發保底 Idle Compaction（摘要壓縮）
+   ├─► 超過 350k Tokens 且閒置約一小時：觸發保底 Idle Compaction（摘要壓縮）
    └─► 搭配 claude-mem：由背景 Observer 記錄關鍵技術決策與專案針式記憶
 
  [會話過期或跨日接手 (Inter-Session)]
    │
    └─► 執行 `cc-session inherit <session-id>`
          └─► Go 引擎 context 外解析原生 transcript.jsonl
-         └─► 過濾 85% Bash/Tool Dump 雜訊
+         └─► 過濾 Bash/Tool Dump 雜訊（比例為作者宣稱，未查證）
          └─► 無損繼承純對話歷史（降至 30k~50k Tokens），徹底避開快取失效與摘要失憶
 ```

@@ -131,6 +131,7 @@ uv venv .mineru --python 3.12
 uv pip install -U "mineru>=4.0,<5"
 
 # 解析單篇 PDF；預設在本機處理
+# （2026-11-21 更正：依官方 README，帶 --json 的 parse 預設只回前 10 頁，其餘要用回傳的定位資訊續讀或加 --pages）
 mineru parse "paper.pdf" --json
 
 # 關掉使用統計

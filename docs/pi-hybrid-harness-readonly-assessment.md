@@ -89,6 +89,8 @@ Windows 原生是官方列出的使用方式：npm 路徑要求上述 Node 版�
 
 ## 驗證紀錄與 DoD
 
+> **2026-11-21 查證**（GitHub API，查閱日 2026-11-21）：固定 commit 的 `packages/coding-agent/package.json` 是 1.5.2、MIT、Node >=22.19.0，與上文一致。上游最新發行版已是 **v1.6.0**（2026-11-20），上表「最新發行版 v1.5.2」是 2026-11-17 的狀態；#9361 仍開啟（14 則留言）、PR #10538 已關閉未合併、#7547 仍開啟、#581 已關閉，狀態沒變。v1.6.0 是否修了 #9361 本次未查證。
+
 固定來源、安全／安裝風險、Windows 前提、三家授權狀態、重疊表與採納結論均已列於上文。文件檢查結果在本節記錄；檢查只能驗證 repo 文件契約，不能證明 Pi 動態安全、授權或相容性。
 
 - relay 唯讀版本：`0cabfe33c46bc0ca80234fad579c2ea8ba82896c`；[固定 SPEC](https://github.com/SanHsien/agent-relay/blob/0cabfe33c46bc0ca80234fad579c2ea8ba82896c/SPEC.md)。第 16 節另有維護者禁用 agy 工人政策，應維持 Desktop sidecar 路徑。

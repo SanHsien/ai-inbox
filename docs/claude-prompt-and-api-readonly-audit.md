@@ -34,11 +34,11 @@
 | 分類 | 位置／發現 | 建議與適用條件 |
 | --- | --- | --- |
 | 已確認的治理範圍衝突風險 | ai-inbox [`templates/agent-reach/SKILL.md:4`](https://github.com/SanHsien/ai-inbox/blob/main/templates/agent-reach/SKILL.md#L4)、`:8`、`:28` 對任何網路查詢／URL 宣告 MUST USE；`:39–43` 又擴張到多平台蒐集與版本檢查 | 與本輪只用必要一手來源、禁止啟動第三方工具的明確限制衝突時，以本輪授權為準。後續可把範本觸發條件限縮為明確採用該工具且通過審計的任務，移除無條件附帶檢查。範本存在不代表目前已安裝或啟用，這不是模型 API 錯誤 |
-| 待確認：載入條件 | 三 repo 採用 AGENTS 指引，不能僅由檔案存在推導 Claude 已載入 | 官方目前支援 AGENTS，但受版本、Project instructions 設定、其他 CLAUDE 指令檔與 plugin 狀態影響；須由維護者日後在既有 session 查看載入證據。本輪未讀原生設定或執行 Claude，不要求補建 CLAUDE.md。[官方載入規則](https://code.claude.com/docs/en/memory#project-instructions-with-agentsmd) |
+| 待確認：載入條件 | 三 repo 採用 AGENTS 指引，不能僅由檔案存在推導 Claude 已載入 | 官方目前支援 AGENTS，但受版本、Project instructions 設定、其他 CLAUDE 指令檔與 plugin 狀態影響；須由維護者日後在既有 session 查看載入證據。本輪未讀原生設定或執行 Claude，不要求補建 CLAUDE.md。[官方載入規則](https://code.claude.com/docs/en/memory#agents-md)（2026-11-21 複查：該段的錨點現為 `#agents-md`，原連結的錨點已失效，已改） |
 | 範圍差異，非 API 衝突 | ai-inbox [`AGENTS.md:144`](https://github.com/SanHsien/ai-inbox/blob/main/AGENTS.md#L144) 附近採私有 repo 真名加私有標示；relay [`AGENTS.md:50`](https://github.com/SanHsien/agent-relay/blob/main/AGENTS.md#L50) 採別名 | 此報告遵循交付 repo 與派工要求，使用真名加「私有」。日後跨 repo 搬文件須按目的地去識別，不把一方的局部規則當成另一方的全域規則 |
 | 合理的 worker 限制 | relay [`agent_relay/dispatch.py:578–592`](https://github.com/SanHsien/agent-relay/blob/main/agent_relay/dispatch.py#L578) 區分唯讀與可寫工作，要求實際讀檔與證據，並把 handover 視為資料 | 保留。明確工具使用與證據要求有實際用途，不因 MUST／不要等強語氣而機械刪除；官方 changelog 也說應保留有文件根據的 thinking 關鍵字。[官方 changelog](https://code.claude.com/docs/en/changelog) |
 | 私有摘要 | `SanHsien/agent-assets`（私有）已完成相關範圍的唯讀檢閱 | 只確認共用資產與原生治理應分開評估；具體 findings 不公開。私有 findings 只記在私有報告，本文不轉載，也不宣稱完整私有稽核以外的保證 |
-| 過時／不精確的稽核說法 | 把兩種 prompt audit 當同一功能，或把全部 thinking 字詞判為應刪除 | `/claude-api prompt-audit` 處理 prompts／tool descriptions；`/doctor prompt-audit`（別名 `/checkup prompt-audit`）處理指令檔／skills／agents／commands。官方 changelog 現可確認後者在 **2.1.283** 加入；本輪沒有檢查本機 Claude 版本，也沒有執行任何一種稽核。[官方 changelog](https://code.claude.com/docs/en/changelog) |
+| 過時／不精確的稽核說法 | 把兩種 prompt audit 當同一功能，或把全部 thinking 字詞判為應刪除 | `/claude-api prompt-audit` 處理 prompts／tool descriptions；`/doctor prompt-audit`（別名 `/checkup prompt-audit`）處理指令檔／skills／agents／commands。官方 changelog 現可確認後者在 **2.1.283** 加入；本輪沒有檢查本機 Claude 版本，也沒有執行任何一種稽核。[官方 changelog](https://code.claude.com/docs/en/changelog)（2026-11-21 複查 changelog 原文：`/doctor prompt-audit` 列在 2.1.283（2026-09-25）條目下，本列說法正確；來源筆記第 0 段 11-17 那則「2.1.283 只出現在 Remote Control 條件」的紀錄與 changelog 不符） |
 
 ## 3. API consumer 與相容性判定
 

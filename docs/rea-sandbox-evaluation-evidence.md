@@ -1,6 +1,7 @@
 # REA（Reverse Engineer Anything）沙盒環境實測報告
 
 > 本報告記錄在 Windows 11 沙盒環境（`C:\GitHub\_sandbox\rea\`）下，對 `SanHsien/rea`（來源 URL: `https://github.com/SanHsien/rea`，上游 URL: `https://github.com/morluto/rea`）及 REA 工具鏈（實測版本 v6.7.0，發布於 2026-10-18；2026-10-30 重驗，來源 URL: `https://www.npmjs.com/package/rea-agents` 與 `https://registry.npmjs.org/rea-agents`，最新版本已發布 v6.8.0 於 2026-10-25）進行之實測驗證。  
+> 2026-11-21 抽查：npm registry 顯示 v6.7.0 發布於 2026-10-18、v6.8.0 發布於 2026-10-25，與上文一致；之後又出了 v6.9.0（2026-11-12），目前最新是 v6.10.1。本報告的工具數與行為只代表 v6.7.0，新版未重測。上游 `morluto/rea` 與 fork `SanHsien/rea` 都存在，授權 MIT（GitHub API）。  
 > 依據維護者安全邊界決策：  
 > 1. 允許在沙盒目錄下載可攜版 JDK 21 與 Ghidra 官方發行版（不寫入系統登錄檔、不更動系統 PATH、僅於進程內透過環境變數傳入路徑）；  
 > 2. 嚴格禁止執行改寫正式 Agent 配置的 `npx rea-agents setup`，改為在沙盒環境手動啟動 MCP Server 並透過協議驗證；  

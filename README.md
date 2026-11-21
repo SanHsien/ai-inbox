@@ -39,13 +39,14 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 257 項任務：🔴 未做 4／🟡 進行中 0／🟢 已做 174／⚪ 不做 79
+> 共 257 項任務：🔴 未做 4／🟡 進行中 1／🟢 已做 173／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
+| `T-20261023-01` | 🟡 進行中 | 高 | 在 Windows 11 本地測試 `security-guidance@claude-plugins-official` 外掛安裝與 `SG_AGENTIC_CLI_PATH` 配置驗證 | 本地 Claude Code 開發環境（`~/.claude/` 與環境變數） | [2026-10-23-claude-plugin-security-guidance](./notes/2026-10-23-claude-plugin-security-guidance.md) | 2026-10-23 |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
 | `T-20261120-07` | 🔴 未做 | 低 | 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md` | `C:\GitHub\ai-inbox\docs\code-as-video-creative-patterns.md`（收錄於集群 2） | [2026-11-20-nicekate-opus-5-5-code-as-video-10-cases](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | 2026-11-20 |
 | `T-20261121-01` | 🔴 未做 | 低 | 評估引入 `PrefectHQ/fastmcp` 作為本機自訂 Python MCP Server 標準腳手架與安全性規範 | `C:\GitHub\ai-inbox\docs\fastmcp-scaffolding-eval.md` | [2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | 2026-11-21 |
@@ -53,7 +54,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 174 項）</summary>
+<details><summary>展開查看已完成任務（共 173 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -105,7 +106,6 @@
 | `T-20261021-10` | 2026-10-21 | `relay status` 總覽與收件端心跳 | [SanHsien/agent-relay@26d4dea](https://github.com/SanHsien/agent-relay/commit/26d4dea)（SPEC 第 16 節），實測見 [docs/evidence/2026-10-21-t10-status.md](https://github.com/SanHsien/agent-relay/blob/main/docs/evidence/2026-10-21-t10-status.md)。 | [2026-10-21-agent-relay-pipeline-phase4](./notes/2026-10-21-agent-relay-pipeline-phase4.md) |
 | `T-20261021-11` | 2026-10-21 | `relay gc` 清理 | [SanHsien/agent-relay@d209958](https://github.com/SanHsien/agent-relay/commit/d209958)、[@276344b](https://github.com/SanHsien/agent-relay/commit/276344b)、[@35c7556](https://github.com/SanHsien/agent-relay/commit/35c7556)（SPEC 第 17 節），實測見 [docs/evidence/2026-10-21-t11-gc.md](https://github.com/SanHsien/agent-relay/blob/main/docs/evidence/2026-10-21-t11-gc.md)。 | [2026-10-21-agent-relay-pipeline-phase4](./notes/2026-10-21-agent-relay-pipeline-phase4.md) |
 | `T-20261021-14` | 2026-10-23 | 針對開源長上下文模型設計「Agent 循環執行死鎖偵測與強制熔斷 Hook（Anti-Doom-Loop Hook）」，防止長任務中重複執行相同指令 | 在個人 Fork `SanHsien/harness-guard` 完成實作。新增 PreToolUse 守護腳本 `hooks/anti-doom-loop-guard/claude-code/anti_doom_loop_guard.py`，支援 Bash/Read 連續 3 次重複命令之滑動視窗比對與熔斷攔截，並記錄審計日誌至 audit.jsonl；新增迴歸測試 `hooks/anti-doom-loop-guard/tests/run-tests.py`（15/15 通過），整合進 CI 矩陣，本地全量 guardrail 測試綠燈，提交並推至 origin（Commit `5f069e2`），未寫入任何 agent 正式設定。 | [2026-10-21-0x-alpha-glm-5-3-flash-1m-context](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) |
-| `T-20261023-01` | 2026-10-25 | 在 Windows 11 本地測試 `security-guidance@claude-plugins-official` 外掛安裝與 `SG_AGENTIC_CLI_PATH` 配置驗證 | 已於 Windows 11 原生環境完成安裝評估與源碼分析，驗證 `llm.py` 防禦 Binary Planting 因而需顯式配置 `SG_AGENTIC_CLI_PATH` 之機制；透過 Python 實測驗證 `eval_injection` 與 `os_system_injection` 之 Layer 1 正則 100% 準確命中，並驗證 `_base.py` 成功於 `~/.claude/security/log.txt` 產生日誌與 1 MB 自動輪替。完整測試日誌與環境配置步驟詳見 `docs/claude-security-guidance-windows-setup.md`。 | [2026-10-23-claude-plugin-security-guidance](./notes/2026-10-23-claude-plugin-security-guidance.md) |
 | `T-20261023-02` | 2026-10-25 | 建立跨專案「`.claude/claude-security-guidance.md` 範本與三層防禦對齊手冊」，將全域硬閘門注入 Claude Code 資安審查 | 已建立 `templates/claude-security-guidance.md` 範本，成功將「憑證機密零暴露」、「專案目錄外禁止讀寫刪改」、「禁止假資料與空殼函式」及「高危執行階段指令注入」轉化為精確的審查條款與對比案例；並於 `docs/claude-security-guidance-windows-setup.md` 完整記錄三層防禦成本控制策略（`SECURITY_REVIEW_MODEL=claude-sonnet-5-5`、`ENABLE_STOP_REVIEW=0` 敏捷調度）與三種違規情境的整合驗證結果。詳細規範參見 `templates/claude-security-guidance.md` 與 `docs/claude-security-guidance-windows-setup.md`。 | [2026-10-23-claude-plugin-security-guidance](./notes/2026-10-23-claude-plugin-security-guidance.md) |
 | `T-20261023-03` | 2026-10-25 | 取得 WebToApp 並實測：把一個本機靜態網頁打包成可安裝 APK，記錄限制 | 已於 Windows 11 本機環境利用既有 Android SDK（Emulator 32.1.15.0、API 34 google_apis x86_64 映像檔、Build-tools 36.0.0 aapt/apksigner、ADB 34.0.4）建立 AVD 完成完整實測：1. 下載官方 release `web-to-app-2.8.2.APK`（26.3 MB）並以 `aapt dump badging/permissions` 與 `apksigner verify` 取得真實權限與 v2 簽章；2. 啟動模擬器成功開機（`sys.boot_completed=1`），安裝 WebToApp 宿主（`com.webtoapp.ui.MainActivity`）；3. 撰寫本機深色風格測試頁 `index.html`，透過本機 HTTP server 搭配 `adb reverse tcp:8080 tcp:8080` 供 WebToApp 進行分析與建立應用；4. 於手機端成功調用 `ApkBuilder` 從 `assets/template/webview_shell.apk` 模板完成二進位補丁與簽名，於設備私有目錄生成 `webtoapp_keystore.p12`（RSA-2048、V1+V2+V3 簽章）並輸出子包 `WebToAppSample_v1.0.0.APK`（8.3 MB，包名 `com.w2a.rybz`）；5. 實機安裝該子 APK（`Performing Streamed Install -> Success`）並啟動 `com.webtoapp.ui.shell.ShellActivity`（PID 9093），Logcat 證實成功啟動系統 WebView 載入 `http://127.0.0.1:8080/index.html`；6. 完整記錄前端表單 URL 嚴格校驗（拒絕 `file://`）、軟體鍵盤遮蔽保存按鈕與 ADB 版本衝突等邊界限制，全數數據與真實終端輸出已完整寫入 `docs/web-to-app-evaluation.md`，獲致「結論：可行」。 | [2026-10-23-web-to-app-android-packaging](./notes/2026-10-23-web-to-app-android-packaging.md) |
 | `T-20261023-04` | 2026-10-25 | 在 T-20261023-03 結論為「可行」的前提下，撰寫「網站轉 App 接案流程規格」 | 已於 `docs/web-to-app-freelance-workflow.md` 完整定義網站轉 App 接案之六大標準步驟（1. 需求確認與範疇界定、2. 網站可用性檢查、3. 封裝與打包作業、4. 金鑰簽名與安全管理、5. 上架材料準備與商店送審、6. 交付驗收與後續維護）及四大風險防範與免責條款清單（第三方內容授權、隱私政策合規、Google Play 政策審查與被拒風險、金鑰保管與終生更新維護責任），全篇規範嚴謹並採用統一維護者視角。 | [2026-10-23-web-to-app-android-packaging](./notes/2026-10-23-web-to-app-android-packaging.md) |
@@ -360,7 +360,7 @@
 | 2026-10-21 | 🟢 | [0x Alpha（GLM-5.3-Flash）解構：神秘盲測登頂的 1M 上下文開源模型、320B 混合稀疏注意力與 Agentic 代碼工程實踐](./notes/2026-10-21-0x-alpha-glm-5-3-flash-1m-context.md) | `0x-alpha`, `glm-5-3-flash`, `1m-context` | 1 / 1（+1 不做） |
 | 2026-10-21 | 🟢 | [多 Agent 派工與驗收閉環流水線 Phase 4：前三階段檢討補強、Hermes／Codex 工人、跨機器結果回傳與指揮者驗收合併](./notes/2026-10-21-agent-relay-pipeline-phase4.md) | `agent-workflow`, `multi-agent`, `agent-relay` | 8 / 8 |
 | 2026-10-21 | ⚪ | [Strata 架構解構：12GB 消費級顯卡流暢運行 125B MoE 大模型、VRAM-RAM-SSD 三層卸載黑科技與 Coding Agent 離線本地化部署實踐](./notes/2026-10-21-strata-consumer-gpu-large-llm-inference.md) | `strata`, `local-llm`, `qwen-125b` | 0 / 0（+2 不做） |
-| 2026-10-23 | 🟢 | [Anthropic 官方 security-guidance 外掛解構：Claude Code 三層左移資安防禦、正則即時攔截、Diff 語意審查與 Agentic Commit 閘門實踐](./notes/2026-10-23-claude-plugin-security-guidance.md) | `claude-code`, `security-guidance`, `shift-left-security` | 3 / 3 |
+| 2026-10-23 | 🟡 | [Anthropic 官方 security-guidance 外掛解構：Claude Code 三層左移資安防禦、正則即時攔截、Diff 語意審查與 Agentic Commit 閘門實踐](./notes/2026-10-23-claude-plugin-security-guidance.md) | `claude-code`, `security-guidance`, `shift-left-security` | 2 / 3 |
 | 2026-10-23 | 🟢 | [WebToApp 解構：手機端把網站打包成 Android App、內建 Node/PHP/Python 執行環境、AI Agent 生成與 AAB 簽名上架，及接案變現評估](./notes/2026-10-23-web-to-app-android-packaging.md) | `webtoapp`, `android`, `apk` | 2 / 2 |
 | 2026-10-23 | 🟢 | [Zeabur 2026 年十月資安事件解構：內部明文憑證外洩、共享叢集與 GCP 專用伺服器淪陷、平台資料庫環境變數被讀取，及對自身雲端憑證衛生的應變清單](./notes/2026-10-23-zeabur-october-2026-security-incident.md) | `zeabur`, `security-incident`, `credential-rotation` | 3 / 3 |
 | 2026-10-24 | 🟢 | [AI 網紅 IG 限動口播流程：自拍→ChatGPT 生成同場景人物→HeyGen 開口→ElevenLabs 變聲的影片解構（逐字稿已取得）](./notes/2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs.md) | `ai-influencer`, `heygen`, `elevenlabs` | 2 / 2 |

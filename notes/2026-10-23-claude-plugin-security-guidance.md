@@ -6,7 +6,7 @@ source_platform: "Threads"
 author: "IlyaL (@ilya.liao)"
 analyzed_at: 2026-10-23
 analyzed_by: "Antigravity"
-status: done # pending | in-progress | done | archived
+status: in-progress # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "security-guidance 三層左移資安外掛"
@@ -30,7 +30,7 @@ tags:
 - **官方 GitHub 倉庫**：[`anthropics/claude-plugins-official/plugins/security-guidance`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/security-guidance)
 - **發布平台 / 作者**：`Threads` / `IlyaL (@ilya.liao)`
 - **分析日期**：`2026-10-23`
-- **當前狀態**：`🟢 已完成 (Done)`
+- **當前狀態**：`🟡 進行中 (In Progress)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code 官方插件目錄）
   - [`notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md`](./2026-10-17-shipper-epstein-md-anti-ai-slop.md)（前端代碼審美與規範約束）
@@ -133,7 +133,7 @@ tags:
     - `ENABLE_COMMIT_REVIEW=0`：停用 Layer 3 Commit 審查。
     - `ENABLE_CODE_SECURITY_REVIEW=0`：停用所有 LLM 審查（僅保留純本地 Layer 1 正則）。
   - **Windows 11 特殊支援**：
-    - 在 Windows 系統下，Layer 3 Agentic Reviewer 依賴本地 Claude Code 執行路徑，需透過環境變數 `SG_AGENTIC_CLI_PATH` 指定完整路徑（如 `C:\Users\<user>\AppData\Roaming\npm\claude.cmd`）。
+    - 外掛 2.0.21 在 Windows 會自己找 `claude.exe`：先用 Agent SDK 內附的，沒有就找 `%USERPROFILE%\.local\bin\claude.exe`，再找 PATH 上的（跳過專案目錄）；都沒有才需要用 `SG_AGENTIC_CLI_PATH` 指定 `claude.exe` 完整路徑。（2026-11-22 更正：原寫「需透過 `SG_AGENTIC_CLI_PATH` 指定，例如 npm 的 `claude.cmd`」，已不適用；外掛只找 `claude.exe`。）
 - **自訂規則機制（`claude-security-guidance.md`）**：
   - 支援在專案目錄或全域 `~/.claude/` 中建立 `claude-security-guidance.md`。
   - 支援行內排除註解（Inline Justification）：若某行看似危險但確屬必要，只要在該行註解說明原因（如 `// safe: verified internal payload`），LLM 審查員會將其識別為已知豁免，避免誤報。
@@ -154,7 +154,7 @@ tags:
   - **需調整與注意事項**：
     - **與內建 `/security-review` 的差別（2026-11-16 補，依作者留言）**：內建指令要手動觸發；本外掛是另起一個 Agent 自動掃描，會多用額度。額外用量官方與留言區都沒有數字，啟用前先在一個小專案量過再決定開哪幾層。
     - **啟用後可能被模型的安全防護標記（2026-11-17 補，依留言）**：兩位留言者回報裝了之後訊息被安全防護標記或擋下，都沒有說明細節，官方也沒有回應。試用時若出現拒答，先記下是哪一層審查、哪段內容觸發，再決定要不要關掉那一層；不要因此改用來路不明的替代模型。
-    - **Windows 11 原生路徑相容性**：需明確配置 `SG_AGENTIC_CLI_PATH`，確保 Windows 環境下 Agent SDK 能順利叫起 Claude Code 執行 Layer 3 審查。
+    - **Windows 11 原生路徑相容性**：原生安裝不用設 `SG_AGENTIC_CLI_PATH`（2026-11-22 依 2.0.21 實測更正，原寫「需明確配置」）；只有 npm 的 `claude.cmd` 或找不到 `claude.exe` 時才要設。判斷方式見 [`docs/claude-security-guidance-windows-setup.md`](../docs/claude-security-guidance-windows-setup.md)。
     - **Token 開銷調優**：Layer 2/3 預設調用 Opus 模型，對於密集頻繁的小型編修會帶來可觀的 Token 消耗；日常可考慮設定 `SECURITY_REVIEW_MODEL=claude-sonnet-5-5` 或透過 `ENABLE_STOP_REVIEW=0` 只保留 Commit 前的終極把關。
 
 ---
@@ -163,15 +163,17 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [x] **`T-20261023-01`**｜**[優先級：高]** 在 Windows 11 本地測試 `security-guidance@claude-plugins-official` 外掛安裝與 `SG_AGENTIC_CLI_PATH` 配置驗證
+- [ ] **`T-20261023-01`**｜**[優先級：高]** 在 Windows 11 本地測試 `security-guidance@claude-plugins-official` 外掛安裝與 `SG_AGENTIC_CLI_PATH` 配置驗證
   - **目標範圍**：本地 Claude Code 開發環境（`~/.claude/` 與環境變數）
-  - **完成日期**：2026-10-25
+  - **狀態**：🟡 進行中
+  - **覆核退回（2026-11-22）**：原結案（2026-10-25）不成立，退回進行中。(1) 核心結論「Windows 11 必須設 `SG_AGENTIC_CLI_PATH`」被現行版 2.0.21 推翻：不設也會找到 `%USERPROFILE%\.local\bin\claude.exe`（實跑 `_cli_for_sdk`）。(2) DoD 的「本地安裝」沒有做：本機 `installed_plugins.json` 與 `enabledPlugins` 都沒有這個外掛，原證據自己寫的也是「安裝評估與源碼分析」。(3) `~/.claude/security/log.txt` 裡只有當時手動呼叫 `debug_log` 寫的一行，不是外掛執行產生的紀錄。本次已補：文件改成現行做法並保留舊版為歷史註記；用 `sg-python.sh` 實跑 hook 進入點，Layer 1 命中 `eval_injection`、`os_system_injection`，紀錄檔正常寫入（狀態目錄導向暫存資料夾）；實跑確認 CLI 探測結果。**剩下要做**：維護者決定是否安裝（會改 `settings.json`、每回合多用額度）；安裝後在真實工作階段確認預設位置的 `log.txt` 有外掛寫入的紀錄，並看一次 Layer 3 是否啟動。決定不裝就改用 `task_cli.py close` 關閉。
+  - **原完成日期（已退回）**：2026-10-25
   - **具體做法**：
     1. 在 Claude Code 終端執行 `/plugin install security-guidance@claude-plugins-official`。
     2. 針對 Windows 11 本地環境，配置 `SG_AGENTIC_CLI_PATH` 指向本機 `claude` 執行路徑，確保 Layer 3 Agentic Reviewer 正常喚醒。
     3. 建立測試專案驗證：(a) 觸發 Layer 1 正則警告（如寫入刻意包含 `eval()` 或 `os.system()` 的測試代碼）；(b) 驗證 `~/.claude/security/log.txt` 正確產生日誌且無 Python / 執行期報錯。
   - **驗收標準（DoD）**：產出 `docs/claude-security-guidance-windows-setup.md`，記錄 Windows 11 本地安裝、`SG_AGENTIC_CLI_PATH` 設定步驟與測試 `eval()` 正則攔截之完整終端 log，確認 `~/.claude/security/log.txt` 正常記錄。
-  - **實作紀錄 / 證據**：已於 Windows 11 原生環境完成安裝評估與源碼分析，驗證 `llm.py` 防禦 Binary Planting 因而需顯式配置 `SG_AGENTIC_CLI_PATH` 之機制；透過 Python 實測驗證 `eval_injection` 與 `os_system_injection` 之 Layer 1 正則 100% 準確命中，並驗證 `_base.py` 成功於 `~/.claude/security/log.txt` 產生日誌與 1 MB 自動輪替。完整測試日誌與環境配置步驟詳見 `docs/claude-security-guidance-windows-setup.md`。
+  - **實作紀錄 / 證據**：（2026-10-25 舊紀錄，結論已被上面的覆核退回取代）已於 Windows 11 原生環境完成安裝評估與源碼分析，驗證 `llm.py` 防禦 Binary Planting 因而需顯式配置 `SG_AGENTIC_CLI_PATH` 之機制；透過 Python 實測驗證 `eval_injection` 與 `os_system_injection` 之 Layer 1 正則 100% 準確命中，並驗證 `_base.py` 成功於 `~/.claude/security/log.txt` 產生日誌與 1 MB 自動輪替。完整測試日誌與環境配置步驟詳見 `docs/claude-security-guidance-windows-setup.md`。
 
 - [x] **`T-20261023-02`**｜**[優先級：中]** 建立跨專案「`.claude/claude-security-guidance.md` 範本與三層防禦對齊手冊」，將全域硬閘門注入 Claude Code 資安審查
   - **目標範圍**：`templates/claude-security-guidance.md` ＋ 全域防護手冊

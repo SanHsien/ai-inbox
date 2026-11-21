@@ -36,7 +36,7 @@ Git repo 更新不等於核准新版本、部署到 consumer 或讓既有 sessio
 | relay 輪詢生命週期 | [`agent_relay/poller.py:23–60`](https://github.com/SanHsien/agent-relay/blob/main/agent_relay/poller.py#L23) | 已有 Windows Task Scheduler XML；採 InteractiveToken、LeastPrivilege、IgnoreNew、具工作目錄。原始碼不等於本機已安裝或登出仍執行 | relay 排程維護者 |
 | consumer discovery／session 使用 | [Claude 官方指令載入說明](https://code.claude.com/docs/en/memory)；本輪未操作任何 consumer | 檔案一致不代表已載入。須按具體平台、版本與 session 取得證據；不能概括保證熱更新 | 每台 consumer 的操作維護者 |
 
-特別注意：relay 既有信箱同步使用 rebase／autostash（上述 `gitsync.py:146`），其假設不應直接搬到共享技能 repo。資產更新遇 dirty／diverged 時應停止，不預設替使用者 stash、reset 或 merge。
+特別注意：relay 既有信箱同步使用 rebase／autostash（上述 `gitsync.py:146`；2026-11-21 更正：表內行號是 2026-11-15 當時的位置，連結指向 `main` 會隨改版漂移，今天查 `main`（`5d3b146`）這一行在第 160 行，`SHARED_DIRS` 仍在第 24 行，`poller.py` 的排程 XML 仍在第 23–60 行範圍內），其假設不應直接搬到共享技能 repo。資產更新遇 dirty／diverged 時應停止，不預設替使用者 stash、reset 或 merge。
 
 缺口是**跨機需求與逐機版本證據未建立**，不是缺少另一支 pull 腳本。既有發布紀錄能否隔離同平台不同機器、如何彙整離線節點，也未實測；若後續需要，先在私有環境確認，不把裝置清單或私有結構放進公開報告。
 

@@ -6,6 +6,8 @@
 
 參考專案 [KKKKhazix/agent-autoloop 官方 README](https://github.com/KKKKhazix/agent-autoloop/blob/main/README.md)描述事件來源、派工、Worker 回覆後退出及人工回答後續接的流程。此為上游文件描述，本次未安裝或執行上游；「1,850 行」、交易持久性、整個系統 0 RSS／0 Token 等量化保證未查證，不作為本工具驗收結論。
 
+> **2026-11-21 更正**（依據：上游 README 與來源筆記第 0 段，查閱日 2026-11-21）：(1)「1,850 行」是舊數字，來源筆記 2026-11-14 以 GitHub API 計 `kernel/` 11 檔為 2,057 行；上游 README 現在沒有寫行數。(2)「整個系統 0 RSS」說法不對：README 寫的是等待期間 **Agent 行程退出、不花 Token**，中台本身仍在背景執行，README 的量測是閒置約 59.94 MB RSS（Apple M5 Pro、Node 24.21.0）。(3) README 寫明強制終止行程後已確認的紀錄不遺失，但「整機斷電沒有單獨測過」。(4) 上游現在原生支援 Windows、macOS、Linux，需要 Node 24 以上；MIT 授權，約 6,150 顆星。
+
 以下是本 repo 的檢驗模型；輸入是設定快照，不是實際執行環境。來源：[audit_bundle 與 default_clean_bundle](../tools/verify_autoloop_dispatch_guard.py)。
 
 ```text

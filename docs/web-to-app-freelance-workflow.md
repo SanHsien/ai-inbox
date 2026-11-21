@@ -2,7 +2,7 @@
 
 > 本文件收錄於 `docs/web-to-app-freelance-workflow.md`，為任務 `T-20261023-04` 在 `T-20261023-03` 評估結論（可行）基礎上，所制定的標準商業接案全流程手冊與法律/政策風險免責條款。
 >
-> ✅ **前提已實測驗證（2026-10-25）**：`T-20261023-03` 已於 Windows 11 本機 Android 34 模擬器（`wta_test_api34`）完成 `WebToApp v2.8.2` 靜態頁打包 APK（`WebToAppSample_v1.0.0.APK`）、安裝啟動、`aapt dump permissions` 與 `apksigner` 簽章實測驗證（詳見 [`docs/web-to-app-evaluation.md`](./web-to-app-evaluation.md)）。
+> ✅ **前提已實測驗證（2026-10-25）**：`T-20261023-03` 已於 Windows 11 本機 Android 34 模擬器（`wta_test_api34`）完成 `WebToApp v2.8.2` 靜態頁打包 APK（`WebToAppSample_v1.0.0.APK`）、安裝啟動、`aapt dump permissions` 與 `apksigner` 簽章實測驗證（詳見 [`docs/web-to-app-evaluation.md`](./web-to-app-evaluation.md)）。上游 `shiaho777/web-to-app` 在 2026-11-21 的最新版是 v2.8.8（2026-11-11 發布，GitHub API），授權 Unlicense；v2.8.2 之後的版本本 repo 沒有重測。
 >
 > ⚠️ **行情數字不可當報價依據（2026-11-18 補）**：本流程的起點是 Facebook 粉絲專頁「一人公司研究所」2026-10-19 的貼文，文中說幫店家打包 App「一次收幾千到上萬元」、「展示即成交」。該粉專在留言區自己承認整個頻道由 AI 助理代管，貼文沒有附任何實際接案紀錄，17 則留言也沒有人回報真的靠它接到案。這些數字只是文案，報價要另外依工時、上架與維護成本估算。出處見[來源筆記](../notes/2026-10-23-web-to-app-android-packaging.md)第 0 節。
 
@@ -85,7 +85,9 @@
 若專案包含上架 Google Play Store 或第三方應用商店，需協助客戶完備以下官方材料：
 > 動工前先照步驟四「上架前先確認版本」檢查工具是否仍能輸出 AAB（上游 issue #1496）。
 - **開發者帳號準備**：
-  - 指引客戶註冊 Google Play Console 組織或個人開發者帳號（需繳納 25 美元一次性註冊費，並完成雙證件身分驗證與 D-U-N-S 企業編碼核驗）。
+  - 指引客戶註冊 Google Play Console 組織或個人開發者帳號（需繳納 25 美元一次性註冊費，並完成身分驗證）。
+  - **2026-11-21 更正**：原寫「雙證件身分驗證與 D-U-N-S 企業編碼核驗」不分帳號類型，不精確。D-U-N-S 編號是**組織帳號**才需要，個人帳號不用（此點依 Google 一貫說明，這次沒有重開該頁，【未重查】）；「雙證件」查無官方出處，已刪。25 美元一次性費用已核對（[Play Console 註冊說明](https://support.google.com/googleplay/android-developer/answer/6112435)，查閱日 2026-11-21）。
+  - **個人帳號另有封閉測試門檻（原文漏列，影響交期）**：2023-11-13 之後建立的個人開發者帳號，要先做封閉測試，至少 12 位測試者連續加入滿 14 天，才能申請正式版發布權限（[官方說明](https://support.google.com/googleplay/android-developer/answer/14151465)，查閱日 2026-11-21）。用客戶新開的個人帳號上架，報價與時程要把這兩週以上算進去；組織帳號不受此限。
 - **商品詳情材料（Store Listing Assets）**：
   - **App 標題**：不超過 30 個字元。
   - **簡短說明**：不超過 80 個字元。

@@ -6,6 +6,13 @@
 
 ## 2. 核心機制多維度對照表
 
+> **2026-11-21 更正（上游已改版）**：下表 feedback-desk 欄位寫的是固定 commit `0061f8c`（2026-11-02 查）當時的行為。查上游 `main`（[`src/shared/status.ts`](https://github.com/aixwangtw/feedback-desk/blob/main/src/shared/status.ts)、[`src/shared/work-rule.ts`](https://github.com/aixwangtw/feedback-desk/blob/main/src/shared/work-rule.ts)，查閱日 2026-11-21）有兩處已不同：
+>
+> - **狀態顯示名稱**：資料庫的值仍是 `new`／`needs_input`／`completed`，但顯示名稱改成「等工程師／等客戶／已完成」；「待處理」「待審核」只剩輸入時相容的舊名。現行版的「待審」指客戶看不到的留言草稿，不是工單狀態。
+> - **結案變成硬閘門**：團隊、AI、CLI、MCP、團隊 API 把狀態改成 `completed` 會被伺服器拒絕（錯誤碼 `completed_by_client_only`），只有客戶在網頁按「完成」或確認留言上的「通過」才能結案。下表「人工確認閘門」列寫的「不是硬閘門、CLI 只印提醒」是舊版行為；理由欄「防禦強度高於 feedback-desk 以規則文字約束 AI」這個比較對現行版不成立，兩邊都是機械擋下，只是擋的位置不同（feedback-desk 擋結案，agent-relay 擋合併）。
+>
+> 各列「已有／缺少／不需要」的判斷與第 3 節結論不受影響。授權 MIT、40 顆星（GitHub API，2026-11-21）。
+
 | 維度 | feedback-desk 機制 | agent-relay 現況 | 判斷 | 理由 |
 | :--- | :--- | :--- | :--- | :--- |
 | **狀態機** | 採工單生命週期三態：`new`（待處理）→ `needs_input`（待審核）→ `completed`（已完成）（`src/shared/status.ts`）。AI 完成修改後填寫調整重點並切換至 `needs_input`，經客戶審核後結案。 | 採 Maildir 形式信箱目錄原子改名狀態機：`new → cur → done`。派工回信結構化記錄 `status`（`ok` / `failed` / `timeout` / `refused` / `error` / `interrupted`）與驗收閘門日誌 `gate.status`。 | 已有 | agent-relay 的 Maildir 狀態轉移具備檔案系統原子性與跨機器 Git 合併無衝突特性，派工回信狀態定義已充分涵蓋自動化排程與中斷補救，無需退化為簡化的工單三態。 |
@@ -14,7 +21,7 @@
 | **動作署名（帳號＋AI 工具）** | 每筆留言、狀態切換與交接紀錄均強制記錄「帳號＋AI 工具」複合身分（例如「王小明（Codex）」、「李大華（Claude Code）」），由環境變數 `FEEDBACK_DESK_AGENT` 或 MCP 來源解析。 | 信封欄位記錄 `from`（信箱名，如 `commander`）、`host`（主機名）、`dispatch.runtime`（`claude`、`codex`、`agy`、`hermes`），並於回信附帶 `result.runtime` 與 Ed25519 簽章，但尚未對一般手動回信提供固定格式的「維護者＋AI 工具」署名標記。 | 缺少 | 在多終端、多模型交互對話場景下，明確在動作日誌或信件摘要註明「維護者帳號（特定 AI Runtime）」能大幅提升稽核歷史與除錯追蹤的清晰度，此命名慣例值得納入信封擴充參考。 |
 | **人工確認閘門** | 人工驗收閉環：工作規則要求 AI 只推進到「待審核（`needs_input`）」，由提出的人或負責人確認後才改為「已完成（`completed`）」。這是規則文字加警告，不是硬閘門：MCP 與 CLI 不擋 AI 改成 `completed`，CLI 只印提醒（`src/cli/commands/reports.ts` 第 329–331 行）；只有排程巡檢 token 因沒有結案路由而真正做不到（`src/worker/routes/patrol.ts`）。 | 實體隔離閘門：派工工人僅能在獨立 git worktree（`relay/<id>` 分支）修改檔案，預設剝離 shell 執行權限且不具備 push / commit 主分支能力；成果由維護者收信檢閱 `diff --stat` 與測試結果後，手動決定是否合併。 | 已有 | agent-relay 在作業系統與版本控制層實施物理隔離，維護者的合併審查權限構成最高等級的安全確認閘門，防禦強度高於 feedback-desk 以規則文字約束 AI 的做法（巡檢 token 除外）。 |
 | **客戶可見範圍** | 多專案租戶隔離，提供專屬客戶開單與追蹤入口，隔離內部敏感討論，客戶僅能瀏覽與開立自身專案工單並上傳截圖。 | 專注於本地與內網各 Agent 間之點對點非同步通訊，儲存層為私人 Git 儲存庫的孤兒分支，無公開 Web UI，無客戶身分管理模組。 | 不需要 | 本地協作環境屬於個人與內部多 Agent 協同開發，目前無對外接案或開放客戶直接操作之業務需求；維持無對外暴露介面能完全杜絕外部攻擊面，不應引入多餘的客戶端系統。 |
-| **通訊與儲存傳輸架構** | 依賴 Cloudflare Workers + D1 (SQLite) + R2 物件儲存，需公網域名、Cloudflare 帳號與 API 憑證，透過 HTTP REST / MCP 伺服器進行雲端通訊。 | 依賴本機檔案系統與 Git 孤兒分支（Mailbox 分支），無對外開放 Port、免公網 IP、免第三方雲端資料庫，透過標準 Git push/pull 與原生檔案鎖達成非同步同步。 | 不需要 | 本地以 Git 為底層之傳輸架構具備天然的版本控制、離線可用性與零第三方依賴，無需承擔雲端平台（如 Zeabur 或 Cloudflare）之連線中斷或外洩風險。 |
+| **通訊與儲存傳輸架構** | 依賴 Cloudflare Workers + D1 (SQLite) + R2 物件儲存（上游另有功能較多的 Laravel 主機版分支，本表只比 Cloudflare 版），需公網域名、Cloudflare 帳號與 API 憑證，透過 HTTP REST / MCP 伺服器進行雲端通訊。 | 依賴本機檔案系統與 Git 孤兒分支（Mailbox 分支），無對外開放 Port、免公網 IP、免第三方雲端資料庫，透過標準 Git push/pull 與原生檔案鎖達成非同步同步。 | 不需要 | 本地以 Git 為底層之傳輸架構具備天然的版本控制、離線可用性與零第三方依賴，無需承擔雲端平台（如 Zeabur 或 Cloudflare）之連線中斷或外洩風險。 |
 | **機密邊界與 Token 防護** | 透過 `mcp install` 簽發個別 Bearer Token 存於本地設定檔，CLI 提示要求 AI 不看密碼，但在雲端 Worker 端仍需維護帳號密碼與全域 `APP_SECRET`。 | SPEC 第 1 節與第 8 節明訂機密過濾規則，信件與交接包自動遮罩 Token 形狀（如 `sk-`、`ghp_` 等），採用 Ed25519 非對稱簽章驗證寄件者，任何 Token 與金鑰不進信件、不進 Git 歷史。 | 已有 | agent-relay 採零憑證進儲存庫與非對稱金鑰簽章機制，架構設計上嚴格落實防禦性機密邊界。 |
 
 ## 3. 採納建議與架構結論

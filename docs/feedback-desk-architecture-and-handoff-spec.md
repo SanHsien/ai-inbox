@@ -25,6 +25,8 @@
 
 另外，本 repo 既有的 `docs/feedback-desk-vs-agent-relay.md` 把狀態寫成 `open`／`review`／`closed`，與原始碼的 `new`／`needs_input`／`completed` 不符（`src/shared/status.ts`）。那份文件不在本任務範圍，這裡只記錄差異，未修改。
 
+> **2026-11-21 更正**（GitHub API，查閱日 2026-11-21）：(1) 上面那份 `docs/feedback-desk-vs-agent-relay.md` 之後已改成 `new`／`needs_input`／`completed`，這段差異已不存在。(2) 本文固定的 commit `0061f8c` 重查相符：MIT、`src/shared/status.ts` 的三個狀態值與顯示名稱「待處理／待審核／已完成」；作者提交時間是 2026-10-30T16:05Z，換成台灣時間才是 10-31。(3) 上游在這個 commit 之後還有更新（最後推送 2026-11-21，約 40 顆星），顯示名稱等細節已有變動，見 `feedback-desk-vs-agent-relay.md` 開頭的註記；本文的 [upstream] 敘述只對固定的 commit 成立。
+
 ## 1. 架構拓撲
 
 ```text

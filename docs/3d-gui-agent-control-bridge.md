@@ -1,6 +1,11 @@
 # AI Agent 操控 3D 與本機 GUI 軟體之雙軌橋接方案規格
 
-> 來源：`notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md`（任務 `T-20261026-30`），回應觀眾 `@payson1998` 在孔老師 AI 研習社影片留言區的提問（作者宣稱，原影片未附回覆內容，屬社群轉貼，不花時間查證留言者身分）。
+> 來源：`notes/2026-10-26-chatgpt-6-1-gpt-work-codex-skills-practitioner-guide.md`（任務 `T-20261026-30`），回應觀眾 `@payson1998` 在孔老師 AI 研習社影片留言區的提問（不花時間查證留言者身分）。
+>
+> **2026-11-21 更正（依筆記 2026-11-16／11-17 原始資料重審）**：
+> - 本文件原寫「原影片未附回覆內容」。實際上頻道作者有回覆這則留言：**不用裝外掛，聊天就可以**。影片示範的 3D 是請模型直接生成可互動的 3D 場景（屬下方方案 A），不是操控本機 3D 軟體；觀眾把它理解成後者，才會得到「無法直接操作」。第 5 節的結論已照此改寫。
+> - `ahujasid/blender-mcp` 已改名為 `ahujasid/mcp-for-blender`（舊網址會轉址，舊指令 `uvx blender-mcp` 仍可用）。2026-11-21 以 GitHub API 與 README 重查：授權 MIT、`BLENDER_MCP_SAFE_MODE`、Socket 無驗證與加密、`execute_blender_code` 可跑任意 Python、「ALWAYS save your work」都與下文一致。README 現在把 `curl … | sh`／`irm … | iex` 一鍵安裝放在最前面，依本 repo 規則不直接執行遠端安裝腳本，請用下文的 `uvx mcp-for-blender install-addon`。
+> - `HKUDS/CLI-Anything` 授權 Apache-2.0、7 階段流水線、README 內的 208 項測試數字，2026-11-21 重查仍在；測試數仍是作者宣稱，本機未重跑。
 
 ---
 
@@ -106,7 +111,7 @@ Renderer.render() 迴圈（requestAnimationFrame）
 
 | 專案 | 角色 | 連結 | 授權 | 關鍵風險 |
 | :--- | :--- | :--- | :--- | :--- |
-| `ahujasid/blender-mcp`（現名 **MCP for Blender**） | Blender 端 addon（Socket Server）＋ MCP Server，讓具 MCP 能力的 Agent 透過 JSON-over-TCP 呼叫 Blender | <https://github.com/ahujasid/blender-mcp> | MIT | `execute_blender_code` 可執行任意 Python；Socket **無驗證/加密**，只能綁 localhost，可用 `BLENDER_MCP_SAFE_MODE=1` 擋高風險操作（檔案存取、執行外部程式、網路） |
+| `ahujasid/mcp-for-blender`（原 `ahujasid/blender-mcp`，產品名 **MCP for Blender**） | Blender 端 addon（Socket Server）＋ MCP Server，讓具 MCP 能力的 Agent 透過 JSON-over-TCP 呼叫 Blender | <https://github.com/ahujasid/blender-mcp> | MIT | `execute_blender_code` 可執行任意 Python；Socket **無驗證/加密**，只能綁 localhost，可用 `BLENDER_MCP_SAFE_MODE=1` 擋高風險操作（檔案存取、執行外部程式、網路） |
 | `HKUDS/CLI-Anything`（含 `cli-anything-blender` harness） | 把任意軟體（含 Blender，透過 `bpy`）包成 Agent-Native CLI；7 階段流水線分析→設計→實作→測試→文件→發布 | <https://github.com/HKUDS/CLI-Anything> | Apache-2.0 | 生成的 CLI 呼叫真實應用後端，等同該應用的操作權限；文件稱 208 項測試通過（作者宣稱，未在本機重現） |
 
 MCP 傳輸層的官方規範（與本機連線安全直接相關）：**標準傳輸只有 stdio 與 Streamable HTTP 兩種**；本機跑的 Streamable HTTP server 規範要求「必須驗證 Origin header、本機應只綁 127.0.0.1、應實作身分驗證」，出處：[MCP 規格 Transports](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports)（2026-10-26 查證）。這對應到 `blender-mcp` 的風險提示：Socket 沒做這些防護時，**任何能連到該 port 的程式都能跑 Python**，因此只能本機使用，不可對外開放。
@@ -161,8 +166,8 @@ MCP 傳輸層的官方規範（與本機連線安全直接相關）：**標準�
 
 ## 5. 回應觀眾提問的結論
 
-`@payson1998` 問「3D 的部份是要安裝外掛程式嗎？還是進工作模式跟他聊天就可以了？」的直接回答：**兩者都不是單靠聊天能完成**。
-- 若目的只是「看 3D 結果」：不需要外掛，Agent 直接生成方案 A 的 Three.js HTML 工件即可，瀏覽器打開就能轉動模型。
+`@payson1998` 問「3D 的部份是要安裝外掛程式嗎？還是進工作模式跟他聊天就可以了？」的回答要分兩種情況（2026-11-21 更正：原寫「兩者都不是單靠聊天能完成」，與作者實際回覆及影片內容不符）：
+- 若目的只是「看 3D 結果」：不需要外掛，**聊天就可以**，這也是頻道作者的回覆與影片實際示範的做法；Agent 直接生成方案 A 的 Three.js HTML 工件，瀏覽器打開就能轉動模型。
 - 若目的是「要它真的在 Blender 裡做事」：**需要**安裝橋接外掛（方案 B 的 `MCP for Blender` addon 或 `CLI-Anything` 的 Blender harness），單純對話視窗無法讓大模型取得 Blender 內部的場景圖與建模 API。
 
 ---

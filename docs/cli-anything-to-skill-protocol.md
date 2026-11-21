@@ -2,11 +2,16 @@
 
 > 本協議文件收錄於 `docs/cli-anything-to-skill-protocol.md`，定義將 CLI-Anything 生成的 7-Stage CLI Harness 自動轉換為 Antigravity 與 Claude Code 相容之 `SKILL.md` 的標準規範與安全防護準則。以 ai-inbox 範本形式交付。
 
+> **2026-11-21 更正**（依據：<https://github.com/HKUDS/CLI-Anything> 的 README 與 `cli-anything-plugin/HARNESS.md`，查閱日 2026-11-21；Apache-2.0，約 6.2 萬顆星）：
+> 1. 上游的用詞是 **7 個階段（7-phase）**：程式碼分析、CLI 架構設計、實作、測試規劃、測試實作、測試文件、發布到 PyPI。本文的「7-Stage」指的就是這個；「動態追蹤」上游文件沒有提，是舊版多寫的。
+> 2. **上游自己就會產生 `SKILL.md`**（`HARNESS.md` 的 Phase 6.5，名稱格式 `cli-anything-<software>`）。所以本協議與 `tools/cli_to_skill.py` 不是在補上游的缺口，而是本 repo 另訂的一套：輸入是**自己定義的** CLI Definition JSON（第 4.1 節），用途是替任何 CLI 產生帶安全警語的技能檔，不限 CLI-Anything 的產物。
+> 3. 第 2 節說的「CLI-Anything 產出的 CLI 中繼描述檔（JSON Schema 或 Command Tree）」上游沒有這種固定輸出格式【未查證到】；第 2.1 節的 `intent_keywords`、第 2.3 節的結束碼分類（0／1／2／126／127）都是**本 repo 的約定**，不是上游規格。上游的硬性要求是每個指令都要支援 `--json`。
+
 ---
 
 ## 1. 背景與設計哲學
 
-傳統 GUI-based Computer Use 面臨截圖延遲高、坐標偏移、解析度差異與不可確定性等多重痛點。香港大學（HKUDS）提出的 **CLI-Anything** 框架倡導「Agent-Native Computer Use」：透過靜態代碼分析、動態追蹤與 7-Stage 生成流水線，將任意既有軟體或函式庫封裝為具備嚴格 `--json` 輸出、清楚 Command Tree 與明確 Exit Code 的 CLI Harness。
+傳統 GUI-based Computer Use 面臨截圖延遲高、坐標偏移、解析度差異與不可確定性等多重痛點。香港大學（HKUDS）提出的 **CLI-Anything** 框架倡導「Agent-Native Computer Use」：透過程式碼分析與 7 階段（7-phase）生成流程，將任意既有軟體或函式庫封裝為具備嚴格 `--json` 輸出、清楚 Command Tree 與明確 Exit Code 的 CLI Harness。
 
 本協議旨在串接 CLI-Anything 的輸出層與現代 Coding Agent（如 Antigravity、Claude Code）的擴充生態（Skills 體系），建立雙向對齊的自動化標準，使生成的 CLI 能被 Agent 零摩擦、高可靠地調用。
 

@@ -3,6 +3,14 @@
 - **文件版本**：1.0.0
 - **生效日期**：2026-11-01
 - **架構依據**：Vercel Labs `agent-desktop`（Rust Core）與各作業系統原生無障礙 API
+- **2026-11-21 複查**（上游 [README](https://github.com/vercel-labs/agent-desktop#readme) 與 GitHub API，查閱日 2026-11-21）：
+  - 專案作者是 Lahfir（`lahfir`），Chris Tate 是發布者（依來源筆記第 0 段）；授權 Apache-2.0；repo 建立於 2026-02-19；最新版 `v1.3.1`（本文寫作時是 1.0.2）。
+  - **README 查得到的**：ref 格式 `@<snapshot_id>:<ref_id>`、不帶快照前綴的 `@e8` 會回 `INVALID_ARGS`、`STALE_REF`、`AMBIGUOUS_TARGET`、`snapshot --skeleton`／`--root`／`-i`／`--compact`、PowerShell 要用單引號包 ref、只有 `error.disposition.retry` 是 `safe` 才重試、`--headed` 才允許實體輸入、`set-value`。
+  - **README 查不到、屬本文推演的**【未查證】：3.1 節「8 位雜湊指紋，依時間戳與樹節點幾何生成」；第 4 節狀態圖的「TTL 超時」「ACTION_FAILED」與 4.1 節的 `SNAPSHOT_NOT_FOUND`；5.1 節 `delivery` 三個值對應 `retry` 的整張矩陣（來源只看得到 `delivered_unverified`、`delivered_verified` 兩個值各出現一次）；2.2 節 macOS「Command Host」的說明。完整錯誤碼與信封欄位要以上游 [JSON output 文件](https://agent-browser.dev/desktop/json-output)為準，本次沒有逐項核對。
+  - 第 5 節範例信封的 `"version": "2.5"` 是寫作當時的值，README 現在的範例是 `2.6`。
+  - 2.3 節「支援 X11 與 Wayland」：README 的平台表寫 X11 或 Wayland；來源圖卡另註明 Linux 的滑鼠輸入與視窗控制限 X11，Windows 的 Shell surfaces 當時標「Planned」。
+  - 2.1 節「600+ 視窗」是本機一次實測的數字，repo 內沒有留原始輸出。
+  - 來源圖卡的三個提醒本文原本沒收：多個 agent 共用同一批已登入的應用程式、沒有按應用程式分權限、snapshot 可能帶到隱私內容；Anthropic 建議 computer use 放在專用虛擬機或容器裡跑。
 - **適用範圍**：全系統 AI Agent（Antigravity、Claude Code、Codex、Hermes）之跨平台桌面 GUI 自動化操作
 - **核心主張**：揚棄高成本脆弱的視覺截圖猜座標迴圈（Visual Loop），轉為以作業系統原生無障礙樹（Accessibility Tree）為核心的語意化操控架構。
 

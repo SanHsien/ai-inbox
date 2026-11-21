@@ -1,12 +1,12 @@
 # 雲端算力竊盜防禦：LLMJacking、AMOS 與延遲式自動停用
 
-本文件區分威脅研究、個案來源與本地建議；查證日期為 2026-11-14。LLMJacking 指濫用遭竊雲端或模型憑證來使用、轉售模型資源，已有 [Google 威脅研究](https://cloud.google.com/blog/topics/threat-intelligence/llmjacking-monetizing-compromised-cloud-models) 記錄。這不代表下述個案的攻擊者、入侵方式或轉售行為已獲確認。
+本文件區分威脅研究、個案來源與本地建議；查證日期為 2026-11-14（2026-11-21 複查：Google 威脅研究一文、Huntress IOC、GCP／AWS／Azure 官方連結都還在，內容與本文引用相符；Huntress 文中 `.agent` 只寫是隱藏腳本，沒有給完整路徑）。LLMJacking 指濫用遭竊雲端或模型憑證來使用、轉售模型資源，已有 [Google 威脅研究](https://cloud.google.com/blog/topics/threat-intelligence/llmjacking-monetizing-compromised-cloud-models) 記錄。這不代表下述個案的攻擊者、入侵方式或轉售行為已獲確認。
 
 ## 1. 個案與歸因的證據邊界
 
 | 證據層級 | 可寫入的內容 | 來源與限制 |
 | :--- | :--- | :--- |
-| 來源自述（未查證原文） | 既有筆記將 Nicholas Lin 的遭遇描述為假 Claude Code 下載後發生 GCP 異常費用 | [原貼文](https://www.facebook.com/100044633940228/posts/29811157725155734/) 本次無法取得全文；[本庫轉述](../notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) 不是獨立證據。姓名歸屬、日期、損失及細節皆未查證。 |
+| 來源自述（未查證原文） | 既有筆記將 Nicholas Lin 的遭遇描述為假 Claude Code 下載後發生 GCP 異常費用 | [原貼文](https://www.facebook.com/100044633940228/posts/29811157725155734/) 本次無法取得全文；[本庫轉述](../notes/2026-11-04-nicholas-lin-gcp-vertex-ai-amos-llmjacking.md) 不是獨立證據。姓名歸屬、日期、損失及細節皆未查證。**2026-11-21 更正**：這一列寫於 11-14；筆記在 11-16、11-17 重審時已讀到貼文全文、1 張圖與平台可顯示的 67 則留言（見筆記第 0 段）。所以「發文者、發文時間（11 月 4 日 00:03，UTC+8）、損失將近新台幣 3 萬元、Google 受理申訴後減免大部分」現在是**讀過原文的作者自述**，不再是「無法取得原文」。但圖只是標題卡，沒有帳單、Log 或木馬檔案截圖；作者說 `~/.agent` 腳本已不存在，「Cookie／Session 被偷」是他用排除法的推論。鑑識層級的證據仍然沒有，下一列的判斷不變。 |
 | 個案鑑別推測 | 木馬竊取 Cookie／憑證，再建立服務帳號維持存取，最後呼叫模型 API，是待驗假說 | 需個案端點鑑識、登入與 Cloud Audit Logs 支持；目前未取得。不能宣稱「完美繞過 2FA」、精確啟用時間／數量、來源 IP 國別或特定模型已確認。 |
 | 已確認的一般威脅指標 | Huntress 調查另一宗 AMOS 入侵，列出 `/Library/LaunchDaemons/com.finder.helper.plist`、`.agent` 與 `.helper` | [Huntress 原始調查及 IOC 表](https://www.huntress.com/blog/amos-stealer-chatgpt-grok-ai-trust)；不能用另一案 IOC 證明本案感染 AMOS。`~/.mainhelper` 作為本案特徵仍未查證。 |
 | 已確認的一般雲端濫用行為 | 竊取憑證、建立未授權身分與濫用模型資源有研究紀錄 | [Google 原始調查](https://cloud.google.com/blog/topics/threat-intelligence/llmjacking-monetizing-compromised-cloud-models)；不是 Nicholas Lin 案的鑑識報告。 |

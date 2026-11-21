@@ -2,6 +2,11 @@
 
 > 本規格文件收錄於 `docs/target-story-generative-ui-spec.md`，定義基於許榮哲「靶心人故事模型」的 Generative UI / Antigravity Widget 互動架構、狀態機、視覺排版與資料契約。以 ai-inbox 範本形式交付。
 
+> **2026-11-21 更正**（依據：[來源筆記](../notes/2026-10-18-target-story-generative-ui-editor.md)第 0 段 2026-11-16 重審的原貼文附圖與作者留言）：
+> 1. **節點名稱**：原始的靶心人公式七個節點是 **A 目標、B 阻礙、C 努力、D 結果、E 意外、F 轉彎、G 結局**（許榮哲的公式；貼文作者是張永錫）。第 1 節列的「超越 (Climax)」與 V 字型情緒走勢是**本 repo 編輯器（`assets/target-story-editor/index.html`）自己的改編**，沒有「結果」這一節，不是原公式。要照原公式檢查請用第 3.2 節的驗證器格式。
+> 2. **版面**：原貼文的畫面是三欄四排：左欄 A、B、C，右欄 G、F、E，中欄 H1～H3 三個箭頭，最下排中央是 D 結果；H1～H3 的對照關係（結局對目標、轉彎對阻礙、意外對努力）與下文一致。
+> 3. **平台與適用範圍**：原 Prompt 是為 ChatGPT 的對話內互動介面寫的，用途是檢查約 1,000 字短文的結構；對應到 Antigravity Widget 是本 repo 的延伸。第 2.1 節的九宮格九個欄位名稱也是本 repo 編輯器的設計【本 repo 延伸】。
+
 ---
 
 ## 1. 核心模型與幾何佈局 (V-Shape Geometry)

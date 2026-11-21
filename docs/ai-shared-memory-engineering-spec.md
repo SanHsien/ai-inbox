@@ -3,7 +3,12 @@
 > 對應任務：`T-20261026-23`｜來源筆記：[`notes/2026-10-26-ai-shared-memory-template-team-collaboration.md`](../notes/2026-10-26-ai-shared-memory-template-team-collaboration.md)
 > 原始來源：[`Leoceeport/ai-memory-template`](https://github.com/Leoceeport/ai-memory-template) @ `ad84653`（最後推送 2026-09-17；GitHub 顯示 1 star，**授權欄位為空**，README 只寫「自用與團隊內部使用皆可，改成自己的版本不需回報」）。查證日期 2026-10-26。
 > 因授權欄位為空，本文用自己的話整理規格，不轉貼範本內容；範本的檔案逐一讀過（README、`MEMORY.md`、`.claude/CLAUDE.md`、`domains/` 各索引、`_meta_kind.md`、`rules_summary.md`、`lessons/README.md`、`scripts/*.sh`、`hooks/*`、`docs/monthly_consolidation.md`），**沒有執行任何腳本**。
-> 維護者既有做法只引用「結構與數字」，不引用私人記憶內容；私有 repo 一律用別名（`[Private Repo: 跨Agent資產庫]`）。
+> 維護者既有做法只引用「結構與數字」，不引用私人記憶內容；私有 repo 寫真名並標「（私有）」（`SanHsien/agent-assets`（私有））。
+>
+> **2026-11-21 更正**（GitHub API，查閱日 2026-11-21）：
+> 1. **上游已更新**：本文依據的 `ad84653` 是範本 v2。上游之後推了 v3（`d08b6b0`，2026-10-30）與 v3.1（`e7fc964`，2026-10-31），多了逐字稿層（`transcripts/`、`hooks/transcript_archive.py`）、檢索層（`scripts/build_embeddings.py`、`query_embeddings.py`）、時間軸（`scripts/build_timeline.py`）、三支 JavaScript hook 與外接碟備份腳本。**本文沒有涵蓋這些新增部分**；下文的檔案清單、腳本行為與「全部是 POSIX `sh`」的說法只對 v2 成立。現況仍是 1 顆星、授權欄位為空、沒有 `.github/`（沒有 CI 設定）。
+> 2. **私有 repo 寫法**：舊版用別名 `[Private Repo: 跨Agent資產庫]`，別名制度已於 2026-10-26 廢止，本文兩處改成真名加「（私有）」。
+> 3. **Facebook 討論串已讀**：第 8 節原寫「需登入，未讀取」。來源筆記 2026-11-17 已登入讀完 32 則留言：範本連結是留言者 `Leo Lee` 自己貼的（屬實），但他沒有與貼文作者往返討論；Going Li 的做法沒有公開 repo 或腳本。
 
 ---
 
@@ -97,7 +102,7 @@ B = B_entry + B_topic + Σ B_file(i)         i = 1..k，k 為跳 3 讀的檔數
 
 與維護者既有結構的對照（只比較結構）：
 
-| 面向 | 範本 | 維護者的 Claude 記憶庫 | 共用 SSOT 倉庫 `[Private Repo: 跨Agent資產庫]` |
+| 面向 | 範本 | 維護者的 Claude 記憶庫 | 共用 SSOT 倉庫 `SanHsien/agent-assets`（私有） |
 |---|---|---|---|
 | 一檔一事實 | 是（帶日期檔名） | 是：170 個 .md 檔，依前綴分 `feedback-`／`project-`／`reference-`／`insight-`／`daily-`／`user-` | `knowledge/` 為「有來源與日期的精煉知識」，3 個主題檔 |
 | 索引 | `MEMORY.md` → `_index.md` | `MEMORY.md` 單層、章節分群 | `knowledge/README.md` 為索引 |
@@ -285,6 +290,6 @@ git pull --rebase origin <當前分支>
 未查證／未實測：
 
 - 範本腳本在任何環境的實際執行結果（只讀碼）；
-- Facebook 社團討論串（<https://www.facebook.com/groups/1224997379198346/permalink/1423729639325118>）需登入，**未讀取**，筆記中 Going Li／顏志吉／Max DDuan 的說法均為轉述，未驗證；
+- Facebook 社團討論串（<https://www.facebook.com/groups/1224997379198346/permalink/1423729639325118>）撰寫本文時需登入、未讀取；2026-11-21 更正：來源筆記已於 2026-11-17 登入讀完全部 32 則留言，Going Li／顏志吉／Max DDuan 的說法已對過原串（見來源筆記第 0 段），本文沒有引用這些說法當規格依據；
 - `merge=union` 對 JSONL 的實際合併效果；
 - token 數（只給字元與位元組數）。

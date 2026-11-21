@@ -8,6 +8,8 @@
 
 LICENSE 為 MIT，署名 Dustin Yuchen Teng；專案授權不代表全部模型與依賴授權已完成稽核。pyproject 為 0.2.0、Python >=3.11，Mod manifest 另為 0.1.0。以下全部連結固定該 commit；SHA 是 Git blob SHA，並非 SHA-256。
 
+2026-11-21 複查（GitHub API）：固定 commit 存在（2026-10-25 提交），抽查 `pyproject.toml` 與 `src/pii_guard/_compat.py` 的 blob SHA 與下表相符；授權 MIT。補 Windows 支援的 PR #4 於 2026-08-31 合併，早於固定 commit，所以本文讀到的已是含 Windows 修正的版本（來源筆記第 0 段寫「先後未比對」，這裡補上）。`main` 目前比固定 commit 多 1 個 commit，內容沒有比對。本機 `agent-safety-checks` 的兩支工具路徑與比較用的 HEAD `060cd3d` 都還在。
+
 | 關鍵檔案（固定來源） | Git blob SHA |
 |---|---|
 | [LICENSE](https://github.com/danyuchn/pii-guard/blob/3d55636785868785e6452e5590052571dc459659/LICENSE) | `cf3b9052d36f05227a3e3c364910b9f96c86cc5f` |

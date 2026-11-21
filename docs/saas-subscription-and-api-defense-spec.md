@@ -14,6 +14,8 @@
 
 筆記起點是一則貼文，說「訂閱制 Grok 的 OAuth 登入可以被轉成本機 OpenAI 相容 API」。逐項核對如下。
 
+> **2026-11-21 更正（依來源筆記第 0 段）**：貼文沒有點名工具，只說「有人寫了一個工具」。下表查的 `kimws/grok-oauth`（GitHub API 2026-11-21：2 顆星、未封存，commit `d1d698f` 存在）是原筆記自己找來對應的 repo，**不是貼文的主角**。從貼文作者附的截圖看，他指的是 [`yetone/magpie`](https://github.com/yetone/magpie)（MIT，約 3.97 萬星）：一個本機閘道，README 寫明可以把已登入的 Claude、ChatGPT、Copilot、Gemini、Grok 訂閱當成供應商給其他 Agent 用。所以下表是「這類工具確實存在」的一個實例，不能讀成「貼文講的就是這個 repo」；magpie 的行為本文沒有查證。另外留言有一則使用者自述被封號的回報，也有人說廠商不太擋，兩種說法並存，都沒有佐證。這些不影響第 2 節以後的防禦設計，也不影響本 repo「生產管線不用非官方代理消耗訂閱額度」的立場。Anthropic「Legal and compliance」條文同日重讀，與下方引述相符。
+
 | 說法 | 查證結果 |
 | :--- | :--- |
 | 有社群工具把 Grok CLI 的 OAuth 登入包成本機 API | 屬實。`kimws/grok-oauth`（查證時最新 commit `d1d698f`，2026-08-04）與 `dvcrn/grok-oauth-proxy` 兩個 repo 都存在且未封存。 |

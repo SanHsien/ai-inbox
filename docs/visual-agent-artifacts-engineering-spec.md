@@ -4,6 +4,8 @@
 > 參考實作：本 repo 的 [`tools/render_artifact_html.py`](../tools/render_artifact_html.py)（`T-20261026-07`）。
 > 查證日期：2026-10-26。
 
+> **2026-11-21 查證**（上游 <https://github.com/QingYunA/answer-me-with-html> README，查閱日 2026-11-21；MIT，約 6,600 顆星）：本文引用的上游數字與現行 README 相符：9 頁手寫平均 4,893 token、草稿平均 612（約 1/8）、31 秒降到 12 秒，方法是 3 個主題各跑 3 次取中位數。這些仍是作者自己的量測，本文沒有重跑。本次沒有發現要改的內容。
+
 ## 0. 一頁結論
 
 - 作法：Agent 只寫一份短的「語意草稿（Draft）」，版面、配色、連線、互動腳本由本機確定性渲染器產生。

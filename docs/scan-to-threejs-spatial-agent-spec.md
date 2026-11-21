@@ -3,6 +3,11 @@
 > 來源：[`wesbos/3d-model-anything`](https://github.com/wesbos/3d-model-anything)（MIT）的 `scan-to-threejs` 技能，筆記見 [`notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md`](../notes/2026-10-26-3d-model-anything-iphone-lidar-threejs.md)。
 > 查證日期：2026-10-26。本規範配套工具：[`tools/verify_spatial_alignment.py`](../tools/verify_spatial_alignment.py)（幾何契約校驗）、[`assets/spatial-room-viewer/index.html`](../assets/spatial-room-viewer/index.html)（Three.js 檢視器）。
 > 本 repo 不含 Swift／Xcode；只規範「拿到掃描資料之後」，由 Agent 用 Three.js 重建並驗證。
+>
+> **2026-11-21 抽查與適用邊界**：
+> - 重查上游：`LICENSE` 檔內容是 MIT（`Copyright (c) 2026 Wes Bos`；GitHub API 的授權欄顯示無法判定，以檔案為準），`.agents/skills/scan-to-threejs/` 下的 `SKILL.md` 與 `references/house-capture.md` 仍在，本文連結有效。
+> - 依筆記 2026-11-16／11-17 重審：來源影片是廠商合作內容，成品是 LLM 反覆修正出來的，不是一鍵轉換；原始掃描品質不高，細節多由模型補上；作者沒有公開任何精度數字。影片裡的比對閉環是「同位姿成對圖，由 agent 自己列差異」，不是自動評分。**本規範不可當成量測級工具的依據**；第 5 節以後的容許誤差（例如 5 cm）是本 repo 訂的驗收門檻，不是上游實測結果。
+> - 已知缺口（未改契約，回報整合者）：契約有量測值、容許誤差與信心值欄位，但沒有要求每個元素標明是「掃描量測得到」還是「模型推測補上」。使用時請自行在輸出加這個標記，兩者不要混在一起當量測結果引用。
 
 ---
 
