@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 256 項任務：🔴 未做 3／🟡 進行中 1／🟢 已做 173／⚪ 不做 79
+> 共 257 項任務：🔴 未做 4／🟡 進行中 1／🟢 已做 173／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -50,6 +50,7 @@
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
 | `T-20261120-07` | 🔴 未做 | 低 | 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md` | `C:\GitHub\ai-inbox\docs\code-as-video-creative-patterns.md`（收錄於集群 2） | [2026-11-20-nicekate-opus-5-5-code-as-video-10-cases](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | 2026-11-20 |
 | `T-20261121-01` | 🔴 未做 | 低 | 評估引入 `PrefectHQ/fastmcp` 作為本機自訂 Python MCP Server 標準腳手架與安全性規範 | `C:\GitHub\ai-inbox\docs\fastmcp-scaffolding-eval.md` | [2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | 2026-11-21 |
+| `T-20261121-02` | 🔴 未做 | 低 | 梳理「以 Markdown 檔案為外部硬碟」的確定性 Agent 狀態機與沙盒讀寫邊界規範，納入 `docs/deterministic-gtd-agent-harness-spec.md` | `C:\GitHub\ai-inbox\docs\deterministic-gtd-agent-harness-spec.md`（收錄於集群 1） | [2026-11-21-ben-thompson-write-things-down-harness-memory](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md) | 2026-11-21 |
 
 ### 🟢 已做（Done）
 
@@ -486,6 +487,7 @@
 | 2026-11-20 | 🟢 | [Woshipm 評估：GPT-6.2 Sol 實測基準（FrontierCode 43.8% 比肩 Astra、GDPval 3.3萬 Token 高效壓縮）與工位路由實踐](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md) | `openai`, `gpt-6-2-sol`, `gpt-6-2-astra` | 1 / 1 |
 | 2026-11-20 | 🔴 | [YouTube 影音評估：NiceKate AI《迷上 Opus 5.5 做視頻：10個案例》與 Code-as-Video 創意分鏡解構](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | `claude-opus-5-5`, `code-as-video`, `creative-coding` | 0 / 1 |
 | 2026-11-21 | 🔴 | [Threads 貼文評估：AI郵報介紹 PrefectHQ/fastmcp 開源框架與 Python 裝飾器構建 MCP Server 實踐](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | `mcp`, `fastmcp`, `prefecthq` | 0 / 1 |
+| 2026-11-21 | 🔴 | [Stratechery 評析：Ben Thompson《寫下來》（Write Things Down）——以 Harness 外部檔案為硬碟的 AGI 本質與確定性 GTD 狀態機](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md) | `ben-thompson`, `stratechery`, `harness` | 0 / 1 |
 | 2026-11-21 | ⚪ | [InfoQ 評析：Gemini 4 Neon 接入 Antigravity 後 SWE-sweep 解題率三倍躍升與 Harness 聯合訓練效應](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md) | `gemini-4-neon`, `antigravity`, `swe-sweep` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -527,6 +529,7 @@
 - 決策路由專用模型：[Gemini Decision 1](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md)
 - GPT-6.2雙模型路由：[GPT-6.2雙模型與路由](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md)
 - Sol高性價比路由：[Sol基準與Token效率](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md)
+- Harness記憶哲學：[寫下來Harness記憶](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md)
 - Neon+AGY效應：[Neon接入AGY三倍](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
