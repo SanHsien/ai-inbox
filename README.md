@@ -484,6 +484,7 @@
 | 2026-11-20 | 🟢 | [Woshipm 評估：OpenAI GPT-6.2 Astra 與 Sol 雙模型發布、基準實測與六階段生產級路由架構](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) | `openai`, `gpt-6-2-astra`, `gpt-6-2-sol` | 1 / 1 |
 | 2026-11-20 | 🟢 | [Woshipm 評估：GPT-6.2 Sol 實測基準（FrontierCode 43.8% 比肩 Astra、GDPval 3.3萬 Token 高效壓縮）與工位路由實踐](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md) | `openai`, `gpt-6-2-sol`, `gpt-6-2-astra` | 1 / 1 |
 | 2026-11-20 | 🔴 | [YouTube 影音評估：NiceKate AI《迷上 Opus 5.5 做視頻：10個案例》與 Code-as-Video 創意分鏡解構](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | `claude-opus-5-5`, `code-as-video`, `creative-coding` | 0 / 1 |
+| 2026-11-21 | ⚪ | [InfoQ 評析：Gemini 4 Neon 接入 Antigravity 後 SWE-sweep 解題率三倍躍升與 Harness 聯合訓練效應](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md) | `gemini-4-neon`, `antigravity`, `swe-sweep` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -524,6 +525,7 @@
 - 決策路由專用模型：[Gemini Decision 1](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md)
 - GPT-6.2雙模型路由：[GPT-6.2雙模型與路由](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md)
 - Sol高性價比路由：[Sol基準與Token效率](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md)
+- Neon+AGY效應：[Neon接入AGY三倍](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
