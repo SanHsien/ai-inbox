@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 254 項任務：🔴 未做 6／🟡 進行中 0／🟢 已做 169／⚪ 不做 79
+> 共 254 項任務：🔴 未做 1／🟡 進行中 0／🟢 已做 174／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -47,15 +47,10 @@
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
-| `T-20261120-02` | 🔴 未做 | 低 | 將 `Gemini Decision 1`（Decisions API）前置路由／安全守門定位補入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（與 `T-20261118-01` 協同增補 Google 模型選型章節） | [2026-11-20-gemini-decision-1-decisions-api-eval](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | 2026-11-20 |
-| `T-20261120-03` | 🔴 未做 | 低 | 將 `Gemini 4 Neon` / `Hydrogen` / `GPT-6.2 Sol` 基準與雙模型接力數據補入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（可與 `T-20261118-01`、`T-20261120-02` 合併更新 Google 生態章節） | [2026-11-20-antigravity-gemini4-neon-12-prompts-eval](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | 2026-11-20 |
-| `T-20261120-04` | 🔴 未做 | 低 | 沙盒唯讀安檢並評估 `DeusData/codebase-memory-mcp` 與 `oil-oil/agy-fast-io` | `C:\GitHub\_sandbox\agy-plugins-audit` 與 `C:\GitHub\ai-inbox\docs\agy-fast-io-and-codebase-memory-audit.md` | [2026-11-20-antigravity-gemini4-neon-12-prompts-eval](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | 2026-11-20 |
-| `T-20261120-05` | 🔴 未做 | 低 | 將 OpenAI GPT-6.2 Astra / Sol 定價、快取折扣與生產級六階段路由架構納入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（可與 `T-20261120-02`、`T-20261120-03` 合併更新） | [2026-11-20-gpt-6-2-astra-sol-routing-eval](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) | 2026-11-20 |
-| `T-20261120-06` | 🔴 未做 | 低 | 將 GPT-6.2 Sol 的 Token Efficiency 壓縮比與 FrontierCode / AA-3D 量化指標納入 `docs/model-burn-rate-routing-matrix.md` | `C:\GitHub\ai-inbox\docs\model-burn-rate-routing-matrix.md`（可與 `T-20261120-05` 協同編修） | [2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md) | 2026-11-20 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 169 項）</summary>
+<details><summary>展開查看已完成任務（共 174 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -228,6 +223,11 @@
 | `T-20261119-03` | 2026-11-19 | 在沙盒唯讀檢閱 `lobehub/acceptance` 架構與 `.acceptances/` 多模態驗收規格 | docs/lobehub-acceptance-eval.md；唯讀檢閱 commit 5e9115da，記錄八步工作流、.acceptances/ 目錄與 result.json 欄位、對 verification-protocol 的 10 項對照（5 項建議採用）；lh CLI 不在 repo 內標未查證，結論不安裝只借鏡規則 | [2026-11-19-lobehub-super-agent-and-acceptance-eval](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) |
 | `T-20261119-04` | 2026-11-19 | 對照 Anthropic 五大原語檢視 `agent-relay` 的事件去重（Idempotency）與 Outbox 通知節流機制 | docs/always-on-relay-gap-check.md：對照 agent-relay@0cabfe3 五原語逐項列出已覆蓋與缺口（附路徑:行號）與 R1–R9 建議；agent-relay 未改動 | [2026-11-19-anthropic-building-always-on-agents-blueprint](./notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md) |
 | `T-20261120-01` | 2026-11-20 | 唯讀審查 `citrolabs/ego-lite` 安全性、授權與 Windows CLI `handOff` 流程評估 | 產出 docs/ego-lite-security-eval.md（審查 commit f499162，2026-11-20 唯讀靜態檢閱，未安裝未執行）；verify_agent_skill_pack_safety 整庫結束碼 1（FAIL 1 經人工判為誤判、REVIEW 2）；結論：SDK 為 MIT 但瀏覽器本體閉源，Space 與使用者共用設定檔 Cookie 且 page.cdp 不過濾方法，不符最小權限，不安裝、不匯入，僅借鏡 handOff 流程與清除範圍對照表 | [2026-11-20-citrolabs-ego-lite-browser-handoff-eval](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) |
+| `T-20261120-02` | 2026-11-21 | 將 `Gemini Decision 1`（Decisions API）前置路由／安全守門定位補入 `docs/model-burn-rate-routing-matrix.md` | docs/model-burn-rate-routing-matrix.md 第 11.9、11.10 節收錄 Gemini Decision 1 規格（官方部落格與 Decisions API 文件，2026-11-21）、Top-1 ECE 0.0250（官方圖表）、When2Call 79.9% 輸 TypeSafe Jev 82.0% 的邊界與前置路由用法、限制；筆記重審 full | [2026-11-20-gemini-decision-1-decisions-api-eval](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) |
+| `T-20261120-03` | 2026-11-21 | 將 `Gemini 4 Neon` / `Hydrogen` / `GPT-6.2 Sol` 基準與雙模型接力數據補入 `docs/model-burn-rate-routing-matrix.md` | docs/model-burn-rate-routing-matrix.md 第 11.8、11.10 節收錄 Neon／Hydrogen 價格與基準（模型卡、價格頁，標明各項由誰計算）；24%／19% 改正為官方 Carbon＋Hydrogen 版【官方自述】；筆記重審 full（22 圖） | [2026-11-20-antigravity-gemini4-neon-12-prompts-eval](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) |
+| `T-20261120-04` | 2026-11-21 | 沙盒唯讀安檢並評估 `DeusData/codebase-memory-mcp` 與 `oil-oil/agy-fast-io` | docs/agy-fast-io-and-codebase-memory-audit.md：唯讀淺層 clone agy-fast-io c9231ac5／codebase-memory-mcp 1111d9a9（2026-11-21），skill-pack 掃描結束碼 2／1 逐項人工判讀；agy-fast-io 不安裝只借鏡兩段寫法，codebase-memory-mcp 不跑安裝程式、可限縮試用；本機未安裝或註冊；未用 Antigravity 訂閱額度 | [2026-11-20-antigravity-gemini4-neon-12-prompts-eval](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) |
+| `T-20261120-05` | 2026-11-21 | 將 OpenAI GPT-6.2 Astra / Sol 定價、快取折扣與生產級六階段路由架構納入 `docs/model-burn-rate-routing-matrix.md` | docs/model-burn-rate-routing-matrix.md 第 12.2～12.7 節收錄 GPT-6.2 Astra／Sol 價格、快取、Plus 額度與 Fast／Ultrafast 倍率、Agents' Last Exam 78.3%／$2.89；第 3、6、9.4、10.2 節加更正註記；原文沒有六階段架構，改收實際路由矩陣【單一來源自述】 | [2026-11-20-gpt-6-2-astra-sol-routing-eval](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) |
+| `T-20261120-06` | 2026-11-21 | 將 GPT-6.2 Sol 的 Token Efficiency 壓縮比與 FrontierCode / AA-3D 量化指標納入 `docs/model-burn-rate-routing-matrix.md` | docs/model-burn-rate-routing-matrix.md 第 12.3、12.4、12.6 節收錄 FrontierCode 2.0（官方圖表）、GDPval v2 輸出 token 對照（OpenAI 內部基準，倍數為推算）、AA-3D 分數、少於 20 檔門檻【單一來源自述】 | [2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md) |
 
 </details>
 
@@ -477,11 +477,11 @@
 | 2026-11-19 | 🟢 | [Woshipm 長文評估：LobeHub（Super-agent 組織化協作）與 lobehub/acceptance 實事求是驗收架構](./notes/2026-11-19-lobehub-super-agent-and-acceptance-eval.md) | `lobehub`, `super-agent`, `acceptance` | 1 / 1 |
 | 2026-11-19 | ⚪ | [Threads 討論評估：@0mar_samad《網站與 AI 應用六大 Skills》及留言區 Verification Gate 三態防線](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md) | `skills`, `ui-ux-pro-max`, `impeccable` | 0 / 0 |
 | 2026-11-19 | ⚪ | [Threads 案例評估：學甲聖安殿關聖帝君「真圖+解構瑞士Riso風格抽象視覺標識」提示詞與神明海報實例](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md) | `image-generation`, `prompt-engineering`, `swiss-design` | 0 / 0 |
-| 2026-11-20 | 🔴 | [Woshipm 長文評估：Gemini 4 Neon 實測基準、Antigravity 12 項配置與第三方插件零信任審查](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | `antigravity`, `gemini-4-neon`, `gemini-4-hydrogen` | 0 / 2 |
+| 2026-11-20 | 🟢 | [Woshipm 長文評估：Gemini 4 Neon 實測基準、Antigravity 12 項配置與第三方插件零信任審查](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) | `antigravity`, `gemini-4-neon`, `gemini-4-hydrogen` | 2 / 2 |
 | 2026-11-20 | 🟢 | [Facebook 實測評估：Ego Lite（citrolabs/ego-lite）人機協作瀏覽器與 handOff 機制及安全邊界](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md) | `ego-lite`, `browser-automation`, `human-in-the-loop` | 1 / 1 |
-| 2026-11-20 | 🔴 | [InfoQ 深度評析：Gemini Decision 1 與 Decisions API（$0.10/M 輸入、零輸出費、0.0250 ECE 低誤差路由模型）](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | `gemini-decision-1`, `decisions-api`, `model-routing` | 0 / 1 |
-| 2026-11-20 | 🔴 | [Woshipm 評估：OpenAI GPT-6.2 Astra 與 Sol 雙模型發布、基準實測與六階段生產級路由架構](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) | `openai`, `gpt-6-2-astra`, `gpt-6-2-sol` | 0 / 1 |
-| 2026-11-20 | 🔴 | [Woshipm 評估：GPT-6.2 Sol 實測基準（FrontierCode 43.8% 比肩 Astra、GDPval 3.3萬 Token 高效壓縮）與工位路由實踐](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md) | `openai`, `gpt-6-2-sol`, `gpt-6-2-astra` | 0 / 1 |
+| 2026-11-20 | 🟢 | [InfoQ 深度評析：Gemini Decision 1 與 Decisions API（$0.10/M 輸入、零輸出費、0.0250 ECE 低誤差路由模型）](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | `gemini-decision-1`, `decisions-api`, `model-routing` | 1 / 1 |
+| 2026-11-20 | 🟢 | [Woshipm 評估：OpenAI GPT-6.2 Astra 與 Sol 雙模型發布、基準實測與六階段生產級路由架構](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) | `openai`, `gpt-6-2-astra`, `gpt-6-2-sol` | 1 / 1 |
+| 2026-11-20 | 🟢 | [Woshipm 評估：GPT-6.2 Sol 實測基準（FrontierCode 43.8% 比肩 Astra、GDPval 3.3萬 Token 高效壓縮）與工位路由實踐](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md) | `openai`, `gpt-6-2-sol`, `gpt-6-2-astra` | 1 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -701,8 +701,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_tool_fallback_matrix.py`](./tools/verify_tool_fallback_matrix.py) | 檢查「產出導向工具流矩陣」設定檔（JSON）：五條產出路徑都要有主力與合格備援， | [`tests/test_verify_tool_fallback_matrix.py`](./tests/test_verify_tool_fallback_matrix.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 81 份）
-<details><summary>展開查看全部 81 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 82 份）
+<details><summary>展開查看全部 82 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -716,6 +716,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/agent-driven-onboarding-and-security-spec.md`](./docs/agent-driven-onboarding-and-security-spec.md) | 面向非技術用戶的 Agent-Driven 開源專案安裝指引規範（AGENTS.md 最佳實踐與資安防線） |
 | [`docs/agent-skills-curation-and-context-budget-spec.md`](./docs/agent-skills-curation-and-context-budget-spec.md) | Agent Skills 評選矩陣與上下文預算工程規範 |
 | [`docs/agents-knowledge-ab-test-protocol.md`](./docs/agents-knowledge-ab-test-protocol.md) | AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議 |
+| [`docs/agy-fast-io-and-codebase-memory-audit.md`](./docs/agy-fast-io-and-codebase-memory-audit.md) | agy-fast-io 與 codebase-memory-mcp 唯讀安全審查：都不跑安裝程式，各借鏡一部分 |
 | [`docs/ai-influencer-claims-check.md`](./docs/ai-influencer-claims-check.md) | AI 網紅與數位人口播流程宣稱查證報告（Claims Verification） |
 | [`docs/ai-persona-compliance-checklist.md`](./docs/ai-persona-compliance-checklist.md) | AI 生成人物與聲音使用合規檢查清單（AI Persona Compliance Checklist） |
 | [`docs/ai-shared-memory-engineering-spec.md`](./docs/ai-shared-memory-engineering-spec.md) | 多 Agent 團隊共用記憶系統工程規範 |

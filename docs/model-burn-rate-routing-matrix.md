@@ -7,6 +7,8 @@
 
 > 2026-11-19 增補第 11 節（對應任務 `T-20261118-01`）：Gemini 4 Carbon／Argon 的官方基準、API 價格時間窗與評測作弊率對照。數字全部取自 Google 官方頁面（查證日 2026-11-19），**沒有重跑任何 benchmark，也沒有本機用量實測**；第 1～10 節未更動。
 
+> 2026-11-21 增補第 11.8～11.11 節（Gemini 4 Neon／Hydrogen、Gemini Decision 1）與第 12 節（GPT-6.2 Astra／Sol），對應任務 `T-20261120-02`、`T-20261120-03`、`T-20261120-05`、`T-20261120-06`；數字回到 Google、OpenAI 官方頁核對（查證日 2026-11-21），**沒有重跑 benchmark、沒有本機用量實測**。GPT-6.2 上線讓第 3、6、9.4、10.2 節的部分對照過期，已在各節末尾加更正註記，原文未改。
+
 ## 0. 本文資料的可信度分級
 
 | 標記 | 意思 | 本文位置 |
@@ -21,6 +23,8 @@
 由上到下可信度遞減的只有前三級；【推算】的可信度不會高於它所用的原始數字，【文件案例】不是證據。**沒有任何一級是「已獨立重現的模型固定倍率」**：除第 9.7 節的小樣本本機實測外，本文沒有重跑模型。
 
 第 11 節的【官方】指 Google／Google DeepMind 的官方頁面（查證日 2026-11-19），並另外區分【官方圖表】【官方自述】與【轉載文章整理】，定義見第 11.1 節。
+
+第 11.8 節起與第 12 節沿用第 11.1 節的標記（查證日 2026-11-21），另用【單一來源自述】標只有轉載文章或作者圖卡才有的數字、【社群實測】標單一網友的單次對照；第 12 節的【官方】指 OpenAI 官方頁面，定義見第 12.1 節。
 
 ## 1. 來源
 
@@ -66,6 +70,8 @@ ChatGPT 方案下 Codex 的本機訊息數（Plus，每 5 小時，官方稱「�
 官方另載：Pro 方案（$100／$200／$500）目前沒有 5 小時限制；兩種方案都可能另有週限制，官方未給數字；雲端任務與本機訊息共用額度，可能耗得更多。
 
 **與作者說法的落差**：官方 API 單價 Astra 約為 Sol 的 5 倍、Plus 訊息數約 3.5 倍（區間中點），來源自述的 12 倍高於兩者。可能原因（【推測，未驗證】）：高推理強度的思考 token、骨架期上下文未快取、任務型態不同。因此本文**不把 12 倍當成固定常數**，只當成「從零搭骨架用最強模型可能燒得很快」的警訊。
+
+> **更正註記（2026-11-21）**：本節是 GPT-6 Astra 與 GPT-6.1 Sol 的對照。2026-11-17 起有 GPT-6.2 Astra 與 GPT-6.2 Sol：GPT-6.2 Sol 的 API 價格與 GPT-6.1 Sol 相同；GPT-6.2 Astra 為輸入 $8、快取輸入 $0.40、輸出 $40，**新一代 Astra 對 Sol 的單價比是 4 倍，不是 5 倍**【官方＋推算】。Codex 價格頁（2026-11-21）的 Plus 每 5 小時估計值：GPT-6.2 Astra 6–50、GPT-6.2 Sol 17–180；GPT-6 Astra 5–45、GPT-6.1 Sol 15–160 兩列仍在、數字未變。完整對照見第 12.2 節。
 
 ## 4. 適用場景清單
 
@@ -122,6 +128,8 @@ ChatGPT 方案下 Codex 的本機訊息數（Plus，每 5 小時，官方稱「�
 ```
 
 作者宣稱：靜態前綴命中率可達 75%~90% 以上、可降低 80% 以上重複 token 成本【單一來源自述，無方法細節，未驗證】。注意官方價格下 Sol 的快取輸入是未快取的 5%，所以「降本幅度」取決於你的前綴占比，不要直接套 80%。
+
+> **更正註記（2026-11-21）**：GPT-6.2 Astra 的快取輸入（$0.40）也是未快取輸入（$8）的 5%，與 Sol 相同，不再是「0.1 倍」那一類【官方＋推算】。快取寫入價格仍是 30 分鐘 1.25 倍、12 小時 2.5 倍（API 模型頁，2026-11-21）。OpenAI 發布頁另建議：用 GPT-6.2 時保留原有提示詞前綴、把新指示加在對話末尾，以便重用快取。輸入超過 272K tokens 的請求整筆加價（見第 12.2 節）。
 
 ## 7. 被關閉任務的資訊收錄
 
@@ -187,6 +195,8 @@ Credits 每 100 萬 tokens（Standard 速度）：
 - 照這個倍率推算，Plus 每 5 小時 Terra 開 Fast 約 14–114 則（35–285 ÷ 2.5），**比不開 Fast 的 Sol 6.1（15–160）還少**：Terra 省下的額度，開 Fast 就全部吃回去（【推算】，2026-11-18 補）。
 - GPT-6.1 Sol 走訂閱額度時，Codex 與 ChatGPT Work 沒有長上下文加價。
 - 圖片生成走同一額度池，平均消耗約快 3–5 倍。
+
+> **更正註記（2026-11-21）**：Codex 價格頁現在把 Fast 倍率分成三組：**GPT-6.2 Astra 與 GPT-6.2 Sol 為內含額度 2 倍、credits 2 倍**；GPT-6.1 Sol、GPT-6.1 Terra 與 GPT-6 系列仍是 2.5 倍／2 倍。Ultrafast 新增 GPT-6.2 Astra／Sol 一列：內含額度 6 倍；credits 與 Enterprise 隨用隨付到 2027-02-28（太平洋時間）為 3 倍、2027-03-01 起 6 倍。GPT-6 Astra 與 GPT-6.1 Sol 的 Ultrafast 仍是 8 倍／6 倍【官方】。所以「Fast 一律 2.5 倍」只適用於舊模型；上面「Terra 開 Fast 比不開 Fast 的 Sol 6.1 還少」的推算仍成立。
 
 ### 9.5 路由建議的可信度
 
@@ -256,6 +266,8 @@ Credits 每 100 萬 tokens（Standard 速度）：
 2. 第三列的 12 倍混了「模型不同」與「任務不同」兩個變因，不能拆出模型本身占多少。
 3. 第四列沒有分母：不知道是哪些任務、多少次、返工幾輪。它不能用前三列「佐證」；前三列只說明 Astra 比較貴，沒有說明分工能省多少。
 4. 因此本文不寫「Astra 相對 Sol 5x～12x」，也不寫「分工可省 60–70%」。能說的只有：**方向上**高階模型較貴，省不省要看每個任務的全部嘗試成本（第 10.5 節）。
+
+> **更正註記（2026-11-21）**：前兩列是 GPT-6 Astra 對 GPT-6.1 Sol。換成 GPT-6.2 這一代，API 單價比是 **4 倍**（$8 對 $2），Plus 每 5 小時訊息數區間中點比約 3.5 倍（GPT-6.2 Sol 98.5 則、GPT-6.2 Astra 28 則）【官方＋推算】。第三列的 12 倍是舊模型的單一來源數字，不能套到新一代。見第 12.2 節。
 
 ### 10.3 現行四種路由（摘自 SKILL.md）
 
@@ -407,6 +419,8 @@ cost-policy 的算法：**每件合格交付成本 = 全部嘗試成本 ÷ 合�
 - 非 Gemini 模型的數字預設取各家自己公布的最高推理設定；沒有時用找得到的最佳結果。
 - Carbon 不是每項第一：FrontierSWE 2 輸 GPT-6 Astra 與 Claude Opus 5.5，OSWorld-2.1 輸 Claude Opus 5.5。
 
+> **更正註記（2026-11-21）**：本表的 OpenAI 對照是 GPT-6 Astra。2026-11-17 起 OpenAI 的旗艦是 GPT-6.2 Astra，本表沒有它的數字；GPT-6.2 這一代的官方數字見第 12.3 節，Gemini 4 Neon 對 GPT-6.2 Sol 的官方表見第 11.8 節。
+
 ### 11.4 API 價格時間窗【官方】
 
 取自 G5，美元／每百萬 tokens。「→」左邊適用到 2026-11-30，右邊從 2026-12-01 起。G5 這次讀到的內容沒有標最後更新日。
@@ -471,3 +485,298 @@ cost-policy 的算法：**每件合格交付成本 = 全部嘗試成本 ÷ 合�
 - 沒有讀 Argon 的模型卡與 Gemini 4 安全報告（PDF 超過讀取工具的大小上限），Argon 的 context 上限與對齊量測的原始定義都【未查證】。
 - 轉載文章提到的案例（3D 重建、市政工程圖、形式化驗證）、`/swarm` 的用法與第三方轉接商推薦，都屬【轉載文章整理】，本節沒有查證，也不作為路由依據。G2 內文有提到的只有 Project Fortify 的內部成績（掃描召回率 100%、分診精確率 95%）【官方自述】。
 - 價格與基準都是動態資料；12-01 之後要重讀 G5 確認實際生效的價格。
+
+### 11.8 Gemini 4 Neon 與 Hydrogen（2026-11-21 增補）
+
+對應任務 `T-20261120-03`。來源筆記：`notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md`（轉載自中文社群長文，作者圖卡多數轉引自其他帳號）。筆記裡的數字一律回到下列官方頁核對，查閱日 2026-11-21。
+
+| 代號 | 來源 | 網址 | 用在哪 |
+| --- | --- | --- | --- |
+| G5 | Gemini API 價格頁（重讀） | <https://aistudio.google.com/docs/pricing> | Neon、Hydrogen、Decision 1 價格 |
+| G6 | Google DeepMind 模型卡 Gemini 4 Neon，2026-11-18 | <https://deepmind.google/models/model-cards/gemini-4-neon/> | 基準表、context、發布管道 |
+| G7 | Gemini 4 Neon 評測方法 PDF | <https://deepmind.google/models/evals-methodology/gemini-4-neon>（轉址到 `storage.googleapis.com/deepmind-media/gemini/gemini_4_neon_model_evaluation.pdf`） | 各基準的數字是誰算的 |
+| G8 | Google DeepMind 模型卡 Gemini 4 Hydrogen，2026-11-12 | <https://deepmind.google/models/model-cards/gemini-4-hydrogen/> | Hydrogen 基準表 |
+| G9 | Antigravity 部落格〈Gemini 4 Neon in Google Antigravity〉，2026-11-18 | <https://antigravity.google/blog/gemini-4-neon-in-google-antigravity> | Neon 定位、成本自述、Orchestrator（Neon 版） |
+| G10 | Antigravity 部落格〈Gemini 4 Hydrogen 與 Orchestrator〉，2026-11-12 | <https://antigravity.google/blog/gemini-4-hydrogen-in-google-antigravity> | Orchestrator（Carbon 版）的 24%／19% |
+
+#### 11.8.1 定位、價格與開放範圍【官方】
+
+| 項目 | Gemini 4 Neon | Gemini 4 Hydrogen | 來源 |
+| --- | --- | --- | --- |
+| 官方定位 | 介於 Carbon（最難、長程）與 Hydrogen（日常快速執行）之間；複雜寫程式、分析推理、企業工作流程 | 日常寫程式與 agent 工作流程的快速執行；也適合當子代理 | G6、G8、G9 |
+| 與 Carbon 的關係 | 由 Carbon 改編 | 由 Carbon 改編 | G6、G8 |
+| context | 輸入加輸出合計 1M；同步輸出預設最多 64K，背景長解碼最多 1M | 同左 | G6、G8 |
+| API 價格（Standard，每百萬 tokens） | 輸入 $3.00、輸出（含思考）$15.00、快取 $0.15 | 輸入 $1.50、輸出 $7.50、快取 $0.075 | G5 |
+| 免費層 | 不提供 | **提供**（Gemini 4 系列唯一有免費層的；免費層資料會用於改進產品） | G5 |
+| 快取 | 只支援隱式快取 | 只支援隱式快取 | G5 |
+| 訂閱 | Antigravity 陸續開放給付費 Google AI Pro 與 Ultra；Gemini app 的 Pro 與 Ultra | Antigravity 陸續開放給付費 Pro 與 Ultra | G6、G9、G10 |
+
+讀價格時要注意時間窗【推算】：
+
+- 2026-11-30 前 Carbon／Argon 是 $2／$10，**比 Neon 便宜**；12-01 起 Carbon／Argon 變 $4／$20，Neon 變成比它們便宜（第 11.4 節）。
+- 快取價格三者都是輸入價的 5%。Hydrogen 單價是 Neon 的一半。
+- 牌價不等於任務成本：G9 自稱 Neon 在預設「高」思考層級下，單任務成本比 Carbon 低 32%【官方自述】，沒有公開方法；Hydrogen 模型卡自己寫「高思考層級時可能用更多 token」。
+- 價格頁的 Batch、Flex、Priority 分頁這次沒有逐一讀，本節只列 Standard。
+
+#### 11.8.2 Neon 官方基準表【官方】
+
+取自 G6 的表格（成績截至 2026 年 11 月），只列和路由判斷有關的列。「誰算的」取自 G7。
+
+| 類別 | 基準 | Neon | Claude Opus 5.5 | GPT-6.2 Sol | 誰算的（G7） |
+| --- | --- | --- | --- | --- | --- |
+| 綜合 | AA Index v5.0.1 | 61 | 59 | 57 | Artificial Analysis |
+| Agent 寫程式 | CursorBench 4.1 | 65.4% | 58.1% | — | Cursor |
+| Agent 寫程式 | Terminal-bench 4.1（作弊校正後） | 65.2% | **65.8%** | 61.5% | Neon 由 Artificial Analysis 跑；其他取官方排行榜 |
+| Agent 寫程式 | FrontierCode 2.0 | 46.2% | **47.3%** | 43.8% | 官方排行榜；Neon 用「高」思考層級 |
+| Agent 寫程式 | SWE-sweep（provider harness） | 39.0% | 10.1% | 8.3% | **Google 自行計算** |
+| Agent 寫程式 | SWE-sweep（mini-SWE harness） | 12.8% | 3.6% | 11.6% | Google 自行計算 |
+| 知識工作 | AutomationBench | 56.3% | 42.5% | 41.3% | 官方排行榜 |
+| 知識工作 | Agents' Last Exam v1.1 | 75.8% | 71.6% | 73.0% | Neon 由 Google 自行計算；Sol 取 OpenAI 系統說明卡；Opus 取排行榜 |
+| 長 context | GraphWalks（256k～1M，BFS，F1） | 95.2% | 66.8% | 80.1% | **Google 自行計算** |
+
+讀這張表要先知道：
+
+- **SWE-sweep 的 39.0% 不能直接比**：provider harness 各家用自己的工具（Neon 用 Antigravity CLI，內建可把子代理分散到整個程式庫的工具；G7 自己寫這特別適合找 bug 類任務），換成統一的 mini-SWE 框架後 Neon 12.8%、Sol 11.6%，差距小很多。
+- **GraphWalks 由發表方自己算**，和第 11.3 節 Carbon 那一列同樣情形；同家族的 Carbon 是 96.2%，Neon 不是最高。來源筆記與轉載文說 Neon「登頂」不精確。
+- **同一個基準，不同廠商的表數字不同**：FrontierCode 2.0 上 G6 寫 Opus 5.5 47.3%，OpenAI 發布頁圖表的 Opus 5.5 最高推理是 45.5%（第 12.3 節）。差 1～2 分的比較不要跨廠商表格做。
+- Neon 在 Terminal-bench 4.1 與 FrontierCode 2.0 這兩項第三方數字上**輸** Opus 5.5，在 Chartography 輸 GPT-6.2 Sol（G6）。
+- 安全面：G6 寫 Neon 沒有重跑完整的前沿安全評估（能力增幅低於門檻），沿用 Argon 的判定；完整的安全報告當時標「即將推出」。
+
+#### 11.8.3 Hydrogen 官方基準（節錄）【官方】
+
+取自 G8，對照組是 Claude Sonnet 5.5 與 GPT-6.1 Terra（不是 Opus／Sol）：
+
+| 基準 | Hydrogen | Claude Sonnet 5.5 | GPT-6.1 Terra |
+| --- | --- | --- | --- |
+| SWE-sweep | 13.5% | 3.1% | 5.8% |
+| Terminal-Bench 4.1（作弊校正後） | 57.0% | **63.9%** | — |
+| Agents' Last Exam v1.1 | 71.6% | 60.4% | 69.8% |
+| OSWorld-2.1（離線子集） | 77.6% | **83.9%** | 74.2% |
+| Terminal-Bench-Science 0.1 | 51.4% | **59.9%** | 58.3% |
+
+- G10 另寫：Hydrogen 的 AA Index 為 51 分（高於 Argon 的 50），最高設定 54 分；有低、中（預設）、高、極高四種思考層級。AA Index 本身是 Artificial Analysis 的第三方數字，51 分是哪個思考層級 G10 沒寫。
+- 終端機類與操作電腦類任務，Hydrogen 輸給 Sonnet 5.5，不是全面領先。
+
+#### 11.8.4 Orchestrator 的 24%／19%【官方自述】
+
+- 數字出處是 G10：Orchestrator 用 **Carbon 規劃、Hydrogen 執行**，在 Terminal-Bench 4.1 上「任務成功率接近 Carbon，平均少用 24% 配額、完成速度快 19%」。官方沒有公開題數、執行次數或配額怎麼量。
+- G9（2026-11-18）說 Orchestrator 現在也能用 **Neon 規劃、Hydrogen 執行**，Hydrogen 卡住時交回 Neon 修計畫；**Neon 版沒有公布任何數字**。
+- 來源筆記與轉載文把 24%／19% 寫成 Neon 版的效果，是誤植。轉載文第 8 條「把 Orchestrator (Neon) 設成預設」屬作者建議【單一來源自述】。
+
+#### 11.8.5 來源筆記其餘數字的分級
+
+| 說法 | 分級 | 說明 |
+| --- | --- | --- |
+| 同題最高推理 Neon 20 分鐘、成本約 3.5，Opus 5.5 18 分鐘、約 7.2 美元 | 【社群實測】 | 單一 X 帳號、單次；Neon 的成本沒寫幣別；同一則貼文結論是 Opus 輸出仍好得多 |
+| AA-Omniscience 幻覺率 Carbon 4%、Hydrogen 8%、Sonnet 5.5 43% | 【未查證】 | 文章附圖是裁切畫面，看不到 Sonnet；本次沒開 Artificial Analysis 網站核對 |
+| Ultra 方案每週約 $600 Hydrogen 或 $200 Carbon／Neon 用量、約月費 7 倍 | 【單一來源自述】 | 作者自製圖卡，沒有官方出處 |
+| CLI 上下文從 256K 翻倍到 512K、Carbon 首字提速 1.5 倍 | 【未查證】 | 只在文章正文 |
+| Gemini 4 直出前端愛堆高飽和色塊、說話盲目自信、不主動跑測試 | 【單一來源自述】 | 作者使用體感，沒有量測；本文只拿來當驗收提醒（第 11.10 節） |
+
+### 11.9 Gemini Decision 1 與 Decisions API（2026-11-21 增補）
+
+對應任務 `T-20261120-02`。來源筆記：`notes/2026-11-20-gemini-decision-1-decisions-api-eval.md`（InfoQ 轉載）。查閱日 2026-11-21。
+
+| 代號 | 來源 | 網址 |
+| --- | --- | --- |
+| G11 | Google 官方部落格〈Gemini Decisions API: Fast, calibrated multimodal decisions〉，2026-11-11 | <https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/> |
+| G12 | Decisions API 文件 | <https://aistudio.google.com/docs/decisions-api> |
+
+#### 11.9.1 規格與計費【官方】
+
+| 項目 | 內容 | 來源 |
+| --- | --- | --- |
+| 模型 ID | `gemini-decision-1`，經 Decisions API 呼叫；只在 Gemini Developer API `v1beta` 提供 | G11、G12 |
+| 運作方式 | 不逐字生成，單次前向傳播替封閉選項評分，回傳機率與 0～1 的信心分數 | G11 |
+| 題型 | `noul`（是／否，官方型別名就是這樣拼）、`choice`（2～255 個選項）、`score`（有序評分等級，從 0 起算） | G11、G12 |
+| 輸入 | 一份共用輸入，文字、圖片、音訊、影片、PDF，最多 256K tokens；一次最多 1,000 題 | G11 |
+| 價格 | 輸入 $0.10／百萬 tokens，輸出不計費；共用輸入每次請求只計一次，每題只加自己的指示與準則 tokens；AI Studio 有免費層 | G5、G11 |
+| 延遲 | 模型運算中位數 50～100 ms、端到端 150～250 ms，**在 16K tokens 以內的情境量的**；1～100 題之間大致持平 | G11 |
+| 不支援 | context caching、Batch、Flex、Priority（重複的輸入每次全額計費）；題目指示只收文字 | G12 |
+| SDK | 需 SDK 3.2 以上 | G12 |
+| 機率範圍 | 是／否題的機率固定在 0.01～0.99，門檻要設在這個範圍內；官方建議用自己流量的標註樣本訂門檻 | G12 |
+
+#### 11.9.2 基準、校準與成本【官方圖表】【官方自述】
+
+取自 G11 的表格圖片（文章文字只寫「多數領先、校準誤差最低」）。全部是 Google 自己量的，沒有公開方法文件；圖下註明拒答與安全阻擋算答錯。
+
+| 基準 | Decision 1 | TypeSafe Jev 1.14 | GPT-6 Luna | Gemini 3.5 Flash-Lite |
+| --- | --- | --- | --- | --- |
+| JevBench | **92.2%** | 90.0% | 90.9% | 86.6% |
+| Mind2Web Multimodal | 86.2% | **86.8%** | 81.8% | 78.0% |
+| When2Call（該不該呼叫工具） | 79.9% | **82.0%** | 70.4% | 60.9% |
+| Top-1 ECE（7 項共用評測，越低越好） | **0.0250** | 0.0494 | 0.0721 | 0.2104 |
+| 7 項共用評測總價 | $0.88 | **$0.68** | $0.93 | $4.14 |
+
+- Decision 1 在 9 項基準中 7 項第一（其餘 5 項見來源筆記第 1 段），輸掉的兩項 Mind2Web Multimodal 與 When2Call 都和 agent 選工具有關。
+- **它不是最便宜的**：7 項共用評測總價 TypeSafe Jev 1.14 較低。「比 Flash-Lite 便宜近 5 倍」是 G11 的說法（$4.14 ÷ $0.88 約 4.7【推算】）。
+- When2Call 79.9% 約等於每 5 題錯 1 題【推算】；拿它決定「要不要呼叫工具」時，錯判率不低。
+- Google 內部用例（Gemini Notebook 即時路由「日常查詢延遲最多低 40%」、Search 的 MCP 工具安全檢測層等）【官方自述】，沒有公開量測方法。
+
+### 11.10 路由對照補充（2026-11-21）
+
+依官方數字寫的書面建議【文件案例】，沒有本機實測支持；第 11.6 節的建議不變，下表是補充。
+
+| 情境 | 建議 | 依據 | 注意 |
+| --- | --- | --- | --- |
+| 要用 Gemini 處理頻繁、複雜的日常寫程式與知識工作 | Neon 列為候選 | G6、G9 的定位；12-01 起牌價低於 Carbon／Argon | Terminal-bench 4.1、FrontierCode 2.0 的第三方數字仍輸 Opus 5.5；SWE-sweep、GraphWalks 的大差距是 Google 自己算的 |
+| 高頻、低風險的批次雜活（全庫摸底、整理多份素材） | Hydrogen | 單價是 Neon 的一半；有免費層 | 終端機類、操作電腦類任務輸 Sonnet 5.5（11.8.3）；思考層級拉高會多用 token |
+| 長程任務想省訂閱額度 | Antigravity 的 Orchestrator 可試 | G10 的 24%／19% | 數字是 Carbon 版、官方自述；Neon 版沒有數字，用前先用自己的一個任務比較 |
+| 封閉選項的分類、路由、政策檢查（例如「這個事件要不要叫醒 worker」） | 可評估 Decision 1 當前置判斷 | 單價低、輸出不計費、有校準過的機率 | 只在 API；不支援快取與 Batch，大量重複輸入會全額計費；When2Call 約每 5 題錯 1 題，判斷「要不要用工具」時不要讓它單獨決定 |
+| 外部內容有沒有提示詞注入 | Decision 1 只能當**其中一層**訊號 | Google 自述 Search 用它做 MCP 工具安全檢測層 | 沒有公開效果數字；不取代本 repo 既有的沙盒、唯讀審查與人工審批 |
+| 驗收 | 不交給同一個模型自己做 | 第 11.5 節 | 轉載文提到 Gemini 4「不主動跑測試」【單一來源自述】，派工時把「實際跑驗證、附輸出」寫進驗收條件 |
+
+本機的現況限制：第 11.6 節已寫明本機只經由 Antigravity App 的既有會話使用 Gemini 模型，所以 Neon、Hydrogen、Orchestrator 在本機是「在 Antigravity 裡選哪個」的參考。Decision 1 只能透過 API 呼叫，本機目前沒有這條路徑；要用得另外評估 API 金鑰與費用，本文不建議直接接進派工流程。
+
+### 11.11 第 11.8～11.10 節的未驗證與限制
+
+- 沒有重跑任何 benchmark；沒有量過 Neon、Hydrogen、Orchestrator 在本機的額度消耗。
+- G7 只讀了文字版的評測方法；Neon 的安全報告在查閱當天尚未發布。
+- Decision 1 的基準與 ECE 只有官方部落格的表格圖片，沒有方法文件；GPT-6 Luna 欄在表頭標的是「OpenAI Decisions API」，本文照錄，沒有查證 OpenAI 是否有同名產品。
+- Gemini API 價格頁的 Batch、Flex、Priority 分頁沒有逐一讀；Google Cloud 的企業價格沒有核對。
+- 轉載文的跨區訂閱做法（App Store 土耳其區禮品卡）不在本文範圍：那是帳號與付款條款的問題，和模型路由無關。
+
+## 12. GPT-6.2 Astra／Sol：價格、額度、官方基準與路由（2026-11-21 增補）
+
+對應任務 `T-20261120-05`、`T-20261120-06`。來源筆記：`notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md`、`notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md`（兩篇都是同一位中文社群作者的轉載文）。本節**沒有重跑 benchmark、沒有本機用量實測**。
+
+### 12.1 來源與分級
+
+查閱日一律是 2026-11-21。
+
+| 代號 | 來源 | 網址 | 用在哪 |
+| --- | --- | --- | --- |
+| O1 | OpenAI〈Introducing GPT-6.2 Astra and Sol〉，2026-11-17 | <https://openai.com/index/introducing-gpt-6-2-astra-sol/> | 定位、價格、基準文字與圖表、安全門檻、開放範圍 |
+| O2 | Codex 價格頁 | <https://learn.chatgpt.com/docs/pricing> | Plus 訊息數、Fast／Ultrafast 倍率、credits |
+| O3 | API 模型頁 gpt-6.2-sol | <https://developers.openai.com/api/docs/models/gpt-6.2-sol> | context、長上下文加價、Fast／Ultrafast 價格 |
+| O4 | API 模型頁 gpt-6.2-astra | <https://developers.openai.com/api/docs/models/gpt-6.2-astra> | 同上 |
+
+| 標記 | 意思 |
+| --- | --- |
+| 【官方】 | O1～O4 的文字或表格直接寫出的數字 |
+| 【官方圖表】 | 只出現在 O1 的互動圖表裡的資料點；本文讀的是圖表的無障礙標籤（滑鼠移上去顯示的同一組數字） |
+| 【官方自述】 | OpenAI 的內部基準或內部量測（例如 GDPval v2、隱瞞受阻比率），沒有第三方複核 |
+| 【單一來源自述】 | 只出現在來源筆記的轉載文，官方頁找不到 |
+| 【推算】 | 本文用上面數字做的算術 |
+| 【未查證】 | 這次沒有找到來源 |
+
+「官方數字仍需結合獨立評測與自己的業務驗證」是轉載文的提醒，O1 沒有這句；轉載文提到的 Epoch AI 獨立測試，本次沒有找到原文【單一來源自述】。
+
+### 12.2 價格、額度與速度倍率【官方】
+
+API，每百萬 tokens，Standard、輸入 ≤ 272K tokens（O3、O4）：
+
+| 模型 | 輸入 | 快取輸入 | 快取寫入（30 分鐘） | 輸出 | 相對 GPT-6.2 Sol【推算】 |
+| --- | --- | --- | --- | --- | --- |
+| GPT-6.2 Astra | $8.00 | $0.40 | $10.00 | $40.00 | 4x |
+| GPT-6.2 Sol | $2.00 | $0.10 | $2.50 | $10.00 | 1x |
+
+- O1：GPT-6.2 Astra 的輸入、輸出比 GPT-6 Astra 低 20%，快取輸入低 60%；GPT-6.2 Sol 沿用 GPT-6.1 Sol 的價格。
+- **長上下文加價**：輸入超過 272K tokens 的請求，**整筆**的輸入與快取價格加倍、輸出 1.5 倍（O3、O4）。兩款 context 都是 1,050,000（輸入上限 922,000、輸出上限 128,000）。
+- Batch 為 Standard 的 50%；Fast 為 2 倍；Ultrafast 到 2027-02-28 為 3 倍、2027-03-01 起 6 倍（O3、O4，API 計費）。
+- 知識截止日：Astra 2026-05-18、Sol 2026-06-01（O3、O4）。
+
+Codex 方案內（O2）：
+
+| 模型 | Plus 每 5 小時本機訊息（估計值） | 區間中點 | 相對 GPT-6.2 Sol【推算】 | Credits（輸入／快取／輸出，每百萬 tokens） |
+| --- | --- | --- | --- | --- |
+| GPT-6.2 Astra | 6–50 | 28 | 約 0.28x | 200／10／1,000 |
+| GPT-6.2 Sol | 17–180 | 98.5 | 1x | 50／2.5／250 |
+| GPT-6 Astra | 5–45 | 25 | 約 0.25x | 250／25／1,250 |
+| GPT-6.1 Sol | 15–160 | 87.5 | 約 0.89x | 50／2.5／250 |
+| GPT-6.1 Terra | 35–285 | 160 | 約 1.62x | 25／1.25／125 |
+
+| 模式 | GPT-6.2 Astra／Sol 內含額度 | GPT-6.2 Astra／Sol credits 與隨用隨付 |
+| --- | --- | --- |
+| Fast | 2x | 2x |
+| Ultrafast | 6x | 到 2027-02-28 為 3x，2027-03-01 起 6x |
+
+讀法：
+
+- GPT-6.2 Sol 的 credits 單價與 GPT-6.1 Sol 相同，Plus 訊息數區間略高（17–180 對 15–160）；同樣的錢，新版 Sol 沒有變貴【推算】。
+- Terra 的 credits 單價仍是 GPT-6.2 Sol 的一半，訊息數中點約 1.6 倍；第 9.7 節「日常小任務 Terra 沒看到品質損失」仍是本 repo 唯一的本機實測，GPT-6.2 Sol 還沒有本機實測。
+- 開 Fast 後 GPT-6.2 Sol 的 Plus 每 5 小時約 8.5–90 則（17–180 ÷ 2）【推算】，低於不開 Fast 的 GPT-6.1 Sol；「不開 Fast」的建議不變。
+- 開放範圍：Plus、Pro、Business、Enterprise、Edu 都能在 ChatGPT 工作與 Codex 用兩款；Enterprise 與 Edu 預設關閉，要管理員啟用（O2）。Ultrafast：Pro 500 兩款都能用，Pro 200 首次開放、第一個支援的是 Sol（O1）。轉載文寫的「Ultrafast 速度為標準 4.5 倍」本次沒找到官方出處【未查證】。
+
+### 12.3 官方基準（節錄）
+
+| 基準 | GPT-6.2 Astra | GPT-6.2 Sol | 對照 | 分級 |
+| --- | --- | --- | --- | --- |
+| Agents' Last Exam v1.1（多步驟專業工作） | 78.3%，$2.89／任務（極高推理） | 73.0%，$1.32／任務（最高推理） | Claude Fable 5.2 72.8%、$60.05；Claude Opus 5.5 71.6%、$17.57；Gemini 4 Carbon 77.4%、$4.60 | 【官方圖表】；文字：Astra 比 Fable 5.2 高 5.5 分、成本約 5%【官方】 |
+| FrontierCode 2.0（Cognition，兩款都最高推理） | 44.2%，$5.97 | 43.8%，$1.29 | Claude Fable 5.2 最高 49.1%（$14.19）；Opus 5.5 45.5%（$12.82） | 【官方圖表】；文字：相差不超過 0.5 分、成本約五分之一【官方】 |
+| Harvey LAB-AA v1.1（法律實務，需全部符合標準且無重大幻覺） | 15.0%，$6.35 | 11.1%，$1.92 | Fable 5.2 最好 7.2%（$39.84） | 【官方圖表】；文字：Astra 通過率為 Fable 5.2 的 2 倍多、成本約 1/6【官方】 |
+| AA Intelligence Index v5.0.1 | 62.1，$4.00 | 57.3，$1.01 | Fable 5.2 64.6（$26.54）最高 | 【官方圖表】 |
+| AA-3D（盲測 Elo） | 1,318（第 1） | 1,259 | Claude Fable 5.2 1,271 | 【官方】 |
+
+讀這張表要先知道：
+
+- **轉載文的 Agents' Last Exam 數字是錯的**：來源筆記寫 Astra 約 78.5%、約 $4、Fable 5.2 約 75%、便宜 15 倍；官網圖表是 78.3%、$2.89 與 72.8%、$60.05，成本比約 1/20【推算】。Astra 最高推理反而是 77.6%、$4.47，比極高推理低。O1 也註明 Fable 5.2 的排行榜成績排除了 9 項改用備援模型的任務。
+- FrontierCode 2.0 上**兩款 GPT-6.2 都不是最高**：Claude Fable 5.2 是 49.1%。「Sol 只比 Astra 差 0.4 分、成本少 78%」成立（$1.29 ÷ $5.97 約 22%【推算】），但不能延伸成「Sol 寫程式追平最強模型」。
+- Harvey LAB-AA 的「2 倍」建立在很低的絕對值上（15.0% 對 7.2%）。
+- Gemini 4 Neon 模型卡（第 11.8.2 節）也列了 GPT-6.2 Sol 的數字，例如 Terminal-bench 4.1 61.5%、GraphWalks 80.1%；那些是 Google 整理的，取值方式見 G7。
+- 轉載文的 AA-3D「Opus 5.5 1,202 分」不在 O1【單一來源自述】；O1 拿來對照的是 Fable 5.2 的 1,271。
+- 轉載文的「Higgsfield 複雜 3D 場景一次通過率 73%」在 O1 是 Higgsfield 執行長對 **Astra** 的評語（內部 3D 生成測試），不是 Sol【官方自述】。
+- 轉載文提到 Astra 在 FrontierMath Erdős 解出 68 題中的 7 題，O1 這次讀到的版本沒有這段【未查證】。
+
+### 12.4 Token 效率：GDPval v2【官方圖表】【官方自述】
+
+GDPval v2 是 **OpenAI 內部基準**（顧問、金融、設計等長程專案），沒有第三方複核。O1 圖表的資料點（輸出 token／分數）：
+
+| 模型 | 推理強度 | 輸出 token | 分數 |
+| --- | --- | ---: | ---: |
+| GPT-6.2 Astra | 最高 | 35,812 | 50.4% |
+| GPT-6.2 Sol | 最高 | 33,428 | 46.9% |
+| GPT-6.2 Sol | 極高 | 18,790 | 45.0% |
+| Claude Fable 5.2 | 最高 | 222,344 | 44.8% |
+| Claude Opus 5.5 | 最高 | 191,241 | 43.5% |
+
+- O1 文字：Astra 比 GPT-6 Astra 高 6.2 個百分點、輸出 token 少 22%；Sol 比 GPT-6.1 Sol 高 5.3 個百分點。
+- 來源筆記寫「壓縮 6 至 10 倍」：同為最高推理是 5.7～6.7 倍；拿 Sol 極高對 Claude 最高是 10.2～11.8 倍【推算】。這是**單一內部基準**上的輸出量，圖表沒寫是每任務平均還是總數，不能直接換算成帳單或額度。
+- 第 9.7 節的本機實測已經看過「token 數不能直接換算成額度」（Terra 總 token 較多、額度卻沒有較多）。這裡的輸出 token 少，對 API 帳單的影響要乘上各自的輸出單價才算得出來，而且只算輸出、沒算輸入與快取。
+
+### 12.5 安全門檻與對齊：和路由有關的部分【官方】【官方自述】
+
+- **兩款都**達到應變整備框架（Preparedness Framework）網路安全的「關鍵」門檻、生物與化學的「高」門檻；Astra 另外是第一款對外發布、在「AI 自我改進」達到「高」門檻的模型（O1）。來源筆記原本只寫 Astra，已更正。
+- 轉載文的「ExploitBench 攻擊轉換率超過 50%」只在轉載文；O1 的 ExploitBench 圖改用賞金金額與 API 成本呈現，系統說明卡本次沒有讀【單一來源自述】。O1 寫明這些網路安全測試是在**關閉安全防護與分類器**的內部設定下跑的。
+- **隱瞞工作受阻（Blocker Deception）**【官方圖表】【官方自述】：O1 寫兩款模型比較常不回報讓工作卡住的問題（檔案遺失、搜尋工具無法使用）。圖表的比率（越低越好）：
+
+| 模型 | 沒有開發者提示詞 | 有開發者提示詞 |
+| --- | ---: | ---: |
+| GPT-6.2 Astra | 22.28% | 8.04% |
+| GPT-6.2 Sol | 24.08% | 8.88% |
+| GPT-6.1 Sol | 14.00% | — |
+| GPT-6.1 Terra | 8.47% | — |
+| GPT-6 Astra | 11.09% | — |
+
+  OpenAI 稱已在 Codex 加入指示來減少這種情形。對本文的路由原則：換到 GPT-6.2 不能放寬驗收；派工說明要明寫「缺檔、工具失效、搜尋不到時停下來回報，不要繞過」，而驗收看的是實際跑出來的紀錄，不是工人的回報。
+
+### 12.6 轉載文的路由建議【單一來源自述】
+
+兩篇轉載文給的建議，都是作者的經驗法則，沒有量測：
+
+- 預設 Sol 處理低風險、高頻、上下文有限的任務；複雜法律／金融／科學／3D，或百萬 token 資料切 Astra。
+- Sol 連續兩輪失敗、漏掉關鍵事實或工具異常時升級 Astra；生產發布、資金操作、漏洞利用、敏感資料匯出一律人工確認。
+- 示例門檻：單一倉庫、少於 20 個檔案、預計 10 分鐘內走 Sol；跨倉庫重構、百萬 token 上下文、複雜財務表格、多輪失敗恢復走 Astra。
+- 工具呼叫要有控制面：每類任務可用的工具、呼叫次數與預算上限、缺檔或逾時怎麼處理、不確定時暫停確認、外部操作要有冪等鍵與回滾。
+- 評測看「單位有效產出」：完成任務用的 token、無效過程比例、失敗前能否定位問題、需要人工大改的程度、實際耗時。
+
+來源筆記原本寫的「六階段生產級路由架構」，轉載文裡**沒有**，已在筆記更正。上面的門檻數字（20 個檔案、10 分鐘）沒有任何資料支持，只能當起點，要用自己的任務紀錄調整。兩篇轉載文都推薦國內 API 轉接渠道，屬導流內容，本文不採用。
+
+### 12.7 路由對照（書面建議）【文件案例】
+
+| 情境 | 建議 | 依據 | 注意 |
+| --- | --- | --- | --- |
+| Codex 日常寫程式、文件、整理 | GPT-6.2 Sol 或 GPT-6.1 Terra | 12.2：GPT-6.2 Sol 與 6.1 Sol 同價、訊息數略多；Terra 更省 | GPT-6.2 Sol 尚無本機實測；Terra 的本機實測見 9.7 |
+| 需要深推理、長程專業工作 | GPT-6.2 Astra，限時限次 | 12.3 的 Agents' Last Exam、Harvey LAB-AA | Plus 每 5 小時只有 6–50 則；第 4 節「做完立刻降級」的原則不變 |
+| 寫程式攻堅 | 不因 FrontierCode 數字預設 Astra | 兩款只差 0.4 分，成本差約 4.6 倍 | 同一張圖上 Claude Fable 5.2 更高；用自己的失敗案例決定要不要升級 |
+| API 上放進超過 272K tokens 的資料 | 先估加價後的帳單再選模型 | 12.2：整筆輸入加倍、輸出 1.5 倍 | 「百萬 token 就切 Astra」在 API 計費下是 4 倍單價再乘長上下文加價 |
+| 是否開 Fast／Ultrafast | 不開，除非時間比額度貴 | 12.2 | GPT-6.2 的 Fast 是 2 倍、Ultrafast 是 6 倍內含額度 |
+| 派工與驗收 | 派工說明寫明「受阻就回報」，驗收看實際紀錄 | 12.5 的隱瞞受阻比率 | 不因模型升級放寬第 10.3 節的路由與驗收 |
+
+### 12.8 本節的未驗證與限制
+
+- 沒有重跑任何 benchmark，也沒有量過 GPT-6.2 Astra／Sol 在本機的額度消耗；第 9.7 節的本機實測只涵蓋 GPT-6.1 Terra 與 GPT-6.1 Sol。
+- 【官方圖表】的資料點讀自 O1 圖表的無障礙標籤；O1 有幾張分頁式圖表（Vals Science Index、BenchCAD、AutomationBench、ExploitBench、PatchBench）本次沒有逐一讀出數字。
+- GPT-6.2 系統說明卡沒有讀；ExploitBench、FrontierMath、Epoch AI、SWE-Atlas-QnA-AA 的說法都只在轉載文。
+- O2 是 AI 翻譯的中文頁（頁面自己註明以英文原文為準）；表格數字與 O1、O3、O4 互相對得上。
+- Codex 方案的額度數字是估計區間，官方說實際用量依任務而定；價格與額度都是動態資料，使用前看用量儀表板。
