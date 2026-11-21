@@ -41,6 +41,45 @@ GENERATED_BLOCK = re.compile(
 )
 
 
+# 筆記正文開頭的「當前狀態」標記；task_cli 依任務狀態改寫它，審查雜湊（review_ledger）只略過這幾個標準值
+STATUS_BODY_LABELS = {
+    "pending": "`🔴 未做 (Pending)`",
+    "in-progress": "`🟡 進行中 (In Progress)`",
+    "done": "`🟢 已完成 (Done)`",
+    "archived": "`⚪ 已封存 (Archived)`",
+}
+STATUS_BODY_PREFIX = "- **當前狀態**："
+STATUS_BODY_SCAN_LINES = 45  # 只看檔案開頭這幾行內的第一個當前狀態行
+# frontmatter 的 status 行：value 是狀態值，rest 是值後面的東西（行尾註解等）
+STATUS_META = re.compile(r"^status:[ \t]*(?P<value>[^\s#]+)?(?P<rest>.*)$")
+
+
+def frontmatter_end(lines: list[str]) -> int:
+    """frontmatter 結尾 `---` 的 0-based 行號；沒有 frontmatter 回傳 -1。"""
+    if lines and lines[0].strip() == "---":
+        return next((i for i in range(1, len(lines)) if lines[i].strip() == "---"), -1)
+    return -1
+
+
+def find_status_meta_line(lines: list[str]) -> int | None:
+    """frontmatter 裡第一個 `status:` 行（task_cli 會改它、審查雜湊只略過它的值）。"""
+    for i in range(1, frontmatter_end(lines)):
+        if STATUS_META.match(lines[i]):
+            return i
+    return None
+
+
+def find_status_body_line(lines: list[str]) -> int | None:
+    """task_cli 會改寫的正文「當前狀態」行：frontmatter 之後、前 45 行內、程式碼圍欄外的第一個。
+    審查雜湊（review_ledger.analysis_text）與 task_cli 都用這個函式，兩邊才會認同同一行。"""
+    fence: str | None = None
+    for i in range(frontmatter_end(lines) + 1, min(len(lines), STATUS_BODY_SCAN_LINES)):
+        fence, in_fence = fence_step(fence, lines[i])
+        if not in_fence and lines[i].startswith(STATUS_BODY_PREFIX):
+            return i
+    return None
+
+
 def fence_step(fence: str | None, line: str) -> tuple[str | None, bool]:
     """程式碼圍欄狀態機：回傳 (下一行開始時的圍欄狀態, 這一行是否屬於圍欄)。
 

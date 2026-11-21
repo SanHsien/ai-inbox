@@ -1,0 +1,21 @@
+{
+ "note": "2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-21",
+   "reviewer": "codex/gpt-6.1-sol@01a1fcb9-6070-7fc1-9407-2a5b4823514b",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "18bac7ec5a0e7f4707071c9a7c8af6299b9b413ac0bce0223d715c96f4e06b2a",
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 5,
+   "report": "reviews/reports/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval/2026-11-21-01-review-codex.md"
+  }
+ ]
+}

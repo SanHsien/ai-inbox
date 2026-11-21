@@ -59,7 +59,7 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
    - 填寫 YAML frontmatter、核心觀點摘要、對現有環境（Skills / Hooks / 各專案）的價值評估，並拆解出**具體可驗證的待辦事項（Action Items）**。分析內容依 5W1H 結構初篩；若為包含明確實驗數據或論文發表的 AI 文章，主動填寫 CQR（Claim - Evidence - Reasoning）論證檢驗區塊（本 repo 改編版；原作者版本是 Claim - Question - Relation，對照見 `templates/academic-reading-prompt.md` 第 0 節）。
    - 每個待辦事項編號格式為：`T-YYYYMMDD-XX`（例如 `T-20261017-01`）。若同一天有多篇文章，序號接續往後編，確保整個 Repo 內任務 ID 唯一。
 
-   - frontmatter 必填 `written_by`：寫內容的 agent 身分 `<runtime>/<model>@<session id>`（例：`claude/opus-5.5@798b1dc7-…`、`codex/gpt-6.1-sol@019a…`；Claude Code 的 session id 在環境變數 `CLAUDE_CODE_SESSION_ID`）。你標的 `source_review` 只是作者聲明，要由別的 agent 審過才算數（流程 C）。
+   - frontmatter 必填 `written_by`：寫內容的 agent 身分 `<runtime>/<model>@<session id>`（例：`claude/opus-5.5@<完整 session UUID>`、`codex/gpt-6.1-sol@<完整 thread UUID>`；Claude Code 的 session id 在環境變數 `CLAUDE_CODE_SESSION_ID`）。**`claude`、`codex` 的 session 一定要完整 UUID（8-4-4-4-12），不可縮寫**（縮寫會被驗證器拒絕）；`antigravity`、`hermes` 至少 8 字元；維護者本人寫 `human/maintainer@YYYY-MM-DD`。你標的 `source_review` 只是作者聲明，要由別的 agent 審過才算數（流程 C）。
 
    - 任務行必須完全照範本格式：``- [ ] **`T-YYYYMMDD-XX`**｜**[優先級：高/中/低]** 標題``，底下至少有 `目標範圍` 與 `驗收標準（DoD）`。格式不符的任務總表讀不到，驗證會失敗。
 
@@ -119,9 +119,12 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
 1. **看佇列**：`python tools/review_pipeline.py queue`（`--lane codex|chrome|fix`；`--legacy N` 另列 N 篇舊筆記補審）。
 2. **審查**（你必須不在該篇的 `written_by` 裡）：`python tools/review_pipeline.py prompt <slug> --lane <道>` 印出審查指示，照做後把報告存成檔案，再入帳：
    ```bash
-   python tools/review_pipeline.py ingest <slug> --report <報告.md> --reviewer "claude/opus-5.5@$CLAUDE_CODE_SESSION_ID"      --lane chrome --role review --scope source --sha <prompt 印出的雜湊> --author-claim <prompt 印出的作者聲明> --commit
+   python tools/review_pipeline.py ingest <slug> --report <報告.md> --reviewer "claude/opus-5.5@$CLAUDE_CODE_SESSION_ID" --lane chrome --role review --scope source --sha <prompt 印出的雜湊>
    ```
-   Codex 道不用手動：`python tools/review_pipeline.py run --lane codex --commit` 會跑 `codex --search exec -s read-only`，從 Codex 事件取 thread id 當身分。
+   - `claude` 身分的 session 必須等於 `CLAUDE_CODE_SESSION_ID`（沒設或不同會被拒）；`ingest` 不接受 `codex` 身分，也沒有 `--author-claim`（作者聲明由 `ingest` 從筆記的 `source_review` 讀）。`audit` 要涵蓋全部四個範圍，讀不到來源時改派能讀的那一道。
+   - **不加 `--commit`**：`ingest` 只寫檔（紀錄檔、新報告、重產的 README）。由你照一般流程提交：`python tools/verify_inbox.py && git add <ingest 列出的檔案> README.md && git commit -m "chore(review): ..." && git push`。
+   - **要自動提交**：`--commit` 只准在專用工作樹執行（動手前會檢查路徑、detached HEAD、工作樹乾淨）。先跑 `python tools/review_pipeline.py cron --lane chrome`，它同步專用工作樹並印出路徑與待審清單；`cd` 進那個工作樹後再執行 `prompt` 與 `ingest ... --commit`。
+   Codex 道不用手動：排程跑 `python tools/review_pipeline.py cron --lane codex`（在專用工作樹執行 `run --lane codex --commit`，會跑 `codex --search exec -s read-only`，從 Codex 事件取 thread id 當身分）。
 3. **修正**（`fix` 道）：照報告改筆記，`written_by` 用 `; ` 加上自己，填 `revised_at`（今天）；改完內容雜湊變了，佇列會自動排再審。審查回報的已完成任務產出檔問題，由整合者照 SOP 第 3 節處理。
 4. **改舊筆記**：制度上線前的筆記內容沒變就免審；一改分析內容（任務狀態欄位除外）就要填 `written_by`（原作者不明時寫 `legacy/unknown@pre-review; <你的身分>`）與 `revised_at`，並在 7 天內送審。
 5. **不要做**：不要改 `reviews/legacy-baseline.json` 或 `tools/review_ledger.py` 的 `LEGACY_BASELINE_SHA256` 讓驗證變綠；不要手寫或修改別人的審查紀錄；不要用別的 session 身分入帳。

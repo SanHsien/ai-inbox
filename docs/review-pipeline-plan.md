@@ -26,10 +26,11 @@ review_pipeline.py queue ── 依來源平台分派 ──┬─ codex 道：�
 
 ### 2.1 審查紀錄（機器可檢查）
 
-- 筆記 frontmatter 新增 `written_by`：寫過內容的 agent，格式 `<runtime>/<model>@<session>`，多人以 `; ` 分隔；之後修改內容的人要把自己加上，並填 `revised_at`。
-- `reviews/<slug>.json`：該篇的審查紀錄（只追加），每筆含審查者身分、角色（`review`／`audit`）、範圍、`content_sha256`、結論、審查者判定的 `source_review`、更正數、報告路徑。
-- 內容雜湊算的是「分析內容」：去掉任務狀態（勾選框、`狀態`、`完成日期`、`實作紀錄 / 證據` 欄位、frontmatter `status`、正文「當前狀態」行），所以 `task_cli` 認領／結案不會讓審查失效；其他任何改動都會。
-- 報告存 `reviews/reports/<slug>/`，內文必須含雜湊與審查者身分（防止拿別篇的報告冒用）。
+- 筆記 frontmatter 新增 `written_by`：寫過內容的 agent，格式 `<runtime>/<model>@<session>`，多人以 `; ` 分隔；之後修改內容的人要把自己加上，並填 `revised_at`。**session 格式依 runtime 收緊**：`claude`、`codex` 必須是完整 UUID（不可縮寫）；`antigravity`、`hermes` 至少 8 字元；`human` 只接受 `human/maintainer@<YYYY-MM-DD>`；`legacy` 只接受 `legacy/unknown@pre-review`。
+- `reviews/<slug>.json`：該篇的審查紀錄（只追加），每筆含審查者身分、角色（`review`／`audit`）、範圍、`content_sha256`、結論、審查者判定的 `source_review`、作者聲明 `author_claim`、更正數、報告路徑。`author_claim` 不由審查者給：`ingest` 從筆記 frontmatter 的 `source_review` 讀，驗證器要求現行雜湊上的紀錄與筆記現值相同。
+- 內容雜湊算的是「分析內容」。**不算進雜湊**的只有：任務勾選框（`[x]` 視同 `[ ]`）、任務區塊內 `狀態`／`完成日期`／`實作紀錄 / 證據` 三個欄位**那一行本身**的值、frontmatter 第一個 `status:` 行的值、正文第一個「當前狀態」行（且值是 `task_cli` 的標準標記）。所以 `task_cli` 認領／結案不會讓審查失效；其他任何改動都會。反過來說，**這幾個單行欄位裡的文字不受審查保護**（關閉理由、單行證據都是）：欄位的更深縮排續行、`status:` 行尾註解、非標準的當前狀態文字、頂層圍欄之後的同名欄位，都算進雜湊。`task_cli` 也只改寫標準標記的當前狀態行（找行時跳過程式碼圍欄），不會悄悄改掉算進雜湊的文字。
+- 報告存 `reviews/reports/<slug>/`。**紀錄與報告必須一致**：驗證器解析報告最後一個 ```` ```json ```` 區塊（與 `ingest` 共用同一個解析函式），要求 `verdict`、`corrections`（且等於 findings 筆數）、`scope`（集合相等）與紀錄相同；報告 header 的 `- reviewer:`、`- content_sha256:`、`- role:` 逐行與紀錄相同（不是「字串出現在內文任何地方」）。只改紀錄檔的 verdict 就想翻成 pass 會被擋。
+- **只追加**：git 可用時，`HEAD` 上的 `reviews/<slug>.json` 必須是現行陣列的前綴（已提交的紀錄不可改、不可刪、不可重排），`HEAD` 已追蹤的 `reviews/reports/**` 內容不可變更。git 不可用或檔案不在 `HEAD` 就略過。
 
 ### 2.2 驗證器規則（只加不減）
 
@@ -37,11 +38,15 @@ review_pipeline.py queue ── 依來源平台分派 ──┬─ codex 道：�
 | --- | --- |
 | 作者 | 受管筆記缺 `written_by` 或格式錯 |
 | 日期 | `analyzed_at`／`revised_at` 晚於今天，或 `revised_at` 早於 `analyzed_at` |
-| 審查者獨立 | 審查者的 session 出現在 `written_by`；audit 的 session 與同輪審查者相同 |
-| 紀錄完整 | 欄位缺漏、值不合法、報告不存在、報告不含雜湊或身分、日期倒退、紀錄指向不存在的筆記 |
-| 結論一致 | `pass` 卻有更正；`pass` 的 `source_review` 與筆記現值不同 |
+| 審查者獨立 | 審查者的 session 出現在 `written_by`；audit 的 session 與同輪審查者相同（session 比對：小寫後相等，或一方是另一方的前綴，防縮寫） |
+| 紀錄完整 | 欄位缺漏、值不合法、身分格式不符 runtime 規定、報告不存在、日期倒退、紀錄指向不存在的筆記 |
+| 紀錄與報告一致 | 報告 header 的身分／雜湊／角色與紀錄不同；結果區塊的 verdict、corrections、scope 與紀錄不同；解析不到結果區塊 |
+| 只追加 | 已提交（`HEAD`）的紀錄被改、刪、重排；已提交的報告被改或刪 |
+| 結論一致 | `pass` 卻有更正；`pass` 的 `source_review` 與筆記現值不同；現行雜湊的 `author_claim` 與筆記現在的 `source_review` 不同 |
+| audit 範圍 | `audit` 的 `scope` 沒有涵蓋四個範圍（讀不到來源時 audit 要改派能讀的那一道） |
 | 覆核 | 觸發條件成立卻沒有強模型 audit 通過現行雜湊 |
-| 寬限 | 待審超過 7 天（從 `analyzed_at` 與 `revised_at` 較晚者起算） |
+| 待審期間的任務 | 筆記待審時，有任務已勾選且完成日期不早於待審起算日；新筆記待審時有任務「進行中」 |
+| 寬限 | 待審超過 7 天（從 `analyzed_at` 與 `revised_at` 較晚者起算；補審被要求修改的舊筆記從該筆 `reviewed_at` 起算） |
 | 基準凍結 | `reviews/legacy-baseline.json` 的雜湊與程式內常數不符 |
 
 「已審」＝現行雜湊上有 `pass` 紀錄，涵蓋 `source`、`facts`、`evidence`、`task_impact` 四個範圍，且覆核條件都滿足。
@@ -51,14 +56,17 @@ review_pipeline.py queue ── 依來源平台分派 ──┬─ codex 道：�
 - 合併當下 `main` 上的每篇筆記，把「分析內容雜湊」寫進 `reviews/legacy-baseline.json`，檔案雜湊釘在 `tools/review_ledger.py`。內容沒變的舊筆記免審；**一改內容就變成受管筆記**，要填 `written_by`、`revised_at` 並在寬限內送審。
 - 不用日期切分：檔名日期是作者自己填的，用日期切分等於可以把新筆記寫成舊日期繞過。
 - 舊筆記之後用 Codex 額度逐步補審（`queue --legacy N`、`run --legacy N`），補審通過的就有紀錄，不再依賴基準。
+- **補審被要求修改**：內容與基準相同的舊筆記，若現行雜湊上有未被後續 audit pass 推翻的 `changes_requested`，視為待審——`pending` 為 True（README 標 ⏳、`task_cli` 鎖認領與結案、進預設 `queue` 的 `fix` 道），寬限從該筆 `reviewed_at` 起算，超過 7 天 `verify_inbox` 失敗。內容還沒被改，所以不要求 `written_by`。照報告改完內容後，筆記就變成一般的受管筆記（要填 `written_by`、`revised_at`，再送審）。
 - 舊筆記不知道作者 session：補審與修改時作者寫佔位身分 `legacy/unknown@pre-review`，驗證器只准基準裡的筆記使用它（新筆記寫它會失敗，防止冒充「作者不明」來自審）。
 
 ### 2.4 派審
 
 - 狀態與執行紀錄放 `~/codex-work/ai-inbox-review/`（不放 `AppData\Local`：Codex 的 `-o` 拒絕寫入含 reparse point 的路徑，2026-11-21 實測）。
 - `tools/review_pipeline.py`：`queue`（列待審與該走哪一道）、`prompt`（從 SOP 標記區段產生審查指示）、`run`（codex 道：`codex --search exec -s read-only`，stdin 關閉、逾時、先查 bridge）、`ingest`（驗證報告格式與雜湊未變，寫紀錄）。
-- Codex 道由 Windows 工作排程器每天跑一次 `run --lane codex`，只提交 `reviews/` 下的新檔。Windows 三問：排程器與被審的 repo／agent 不同生共死；既有的 agent-relay codex 工人關閉網路、做不了網頁查證，所以不重用它；Windows 原生可跑。
-- Chrome 道：只有登入的 Claude in Chrome 讀得到留言。用 Claude Desktop 的排程工作（既有機制）每天跑一次，照 `queue --lane chrome` 審，`ingest` 寫紀錄。Pro 額度小，只做 Chrome 才能做的「原始資料讀完度」範圍，事實查核留給 Codex。
+- `ingest`（CLI）的身分限制：Codex 的審查只能由 `run` 從事件取得 thread id 入帳，`ingest` 一律拒絕 `codex` 身分；`claude` 身分的 session 必須等於環境變數 `CLAUDE_CODE_SESSION_ID`（沒設或不同就拒絕）。`audit` 少範圍也拒絕。
+- **提交只在專用工作樹**：每一道各有一個（codex 道 `STATE_DIR/repo`、chrome 道 `STATE_DIR/repo-chrome`），互不清理對方的。`--commit`（`ingest`、`run`）只准在這兩個工作樹執行，且 HEAD 為 detached、動手前 `git status --porcelain` 乾淨；否則報錯並指向 `cron`。`git add` 只加這次入帳寫入的檔案（紀錄檔與新報告）與 `README.md`。提交前驗證是「沒有引入新錯誤」（入帳前先記下 `verify_inbox` 的錯誤行，入帳後只有新出現的才算失敗）；失敗時還原這次寫入的檔案。push 被拒就 rebase 後重驗再推，最後失敗則 reset 回入帳前。
+- Codex 道由 Windows 工作排程器每天跑一次 `cron --lane codex`（在專用工作樹同步 `origin/main` 後執行 `run --lane codex --commit`），提交「這次的審查紀錄、報告與 `README.md`」。專用工作樹有上次殘留的改動時，`cron` 先 `reset --hard`＋`clean -fd`（動手前確認路徑確實是 `STATE_DIR/repo` 且在 `git worktree list` 裡；那是管線自己的工作樹，不是任何人的工作目錄）再同步，不會永久卡住。Windows 三問：排程器與被審的 repo／agent 不同生共死；既有的 agent-relay codex 工人關閉網路、做不了網頁查證，所以不重用它；Windows 原生可跑。
+- Chrome 道：只有登入的 Claude in Chrome 讀得到留言。用 Claude Desktop 的排程工作（既有機制）每天跑一次 `cron --lane chrome`：它同步專用工作樹並印出工作樹路徑與待審清單，Claude in Chrome 工作階段 `cd` 進去後執行 `prompt`／`ingest --commit`。Pro 額度小，只做 Chrome 才能做的「原始資料讀完度」範圍，事實查核留給 Codex。
 - Codex 對話自動出現在派工儀表板（127.0.0.1:8765 讀 Codex 的 state 資料庫），不另做儀表板。
 
 ### 2.5 審查被驗收
@@ -67,10 +75,10 @@ review_pipeline.py queue ── 依來源平台分派 ──┬─ codex 道：�
 
 1. 審查者把作者的 `full` 下修成 `partial`／`unavailable`。
 2. 一次審查提出 ≥2 處更正。
-3. 審查者模型不是強模型（`tools/review_ledger.py` 的 `STRONG_MODEL`：Opus、GPT-6.x Sol／Astra、維護者本人；Sonnet、Haiku、Fable、Gemini 等都要覆核）。
-4. 抽查：現行雜湊前 8 碼轉整數 mod 5 = 0（約 1/5）。
+3. 審查者模型不是強模型（`tools/review_ledger.py` 的 `STRONG_MODEL`：`opus-<數字>(.<數字>)?`、`gpt-6(.<數字>)?-(sol|astra)`、`human/maintainer`；其餘一律不是，`opus-anything`、別的 runtime 掛 `maintainer` 都不算；Sonnet、Haiku、Fable、Gemini 等都要覆核）。
+4. 抽查：**slug** 的 SHA-256 前 8 碼轉整數 mod 5 = 0（約 1/5）。用 slug 不用內容雜湊：看內容雜湊的話，改一個字就能換到不被抽中的雜湊。
 
-audit 的 session 不能是作者，也不能是同輪審查者。上一次 audit 通過之後的審查才計入觸發。
+audit 的 session 不能是作者，也不能是同輪審查者；audit 的範圍必須是四個範圍全部。上一次 audit 通過之後的審查才計入觸發。
 
 ## 3. 階段、驗收與回復
 
@@ -85,6 +93,10 @@ audit 的 session 不能是作者，也不能是同輪審查者。上一次 audi
 
 ## 4. 威脅模型與已知極限
 
-- 防的是**疏忽與自我放行**（自己標 full、沒人看、改完不重審），不是惡意偽造：能推 main 的 agent 都能改驗證器或寫假報告。偽造要同時寫出含正確雜湊的報告與紀錄，會在 diff 裡留下痕跡；REVIEW.md 記錄這個邊界。
+- 防的是**疏忽與自我放行**（自己標 full、沒人看、改完不重審），不是惡意偽造：能推 main 的 agent 都能改驗證器或寫假報告。偽造要同時寫出一致的報告與紀錄，會在 diff 裡留下痕跡；REVIEW.md 記錄這個邊界。
+- **偽造的難度照實寫**：`ingest` 會代寫報告格式，所以「會用 CLI」不構成防線；現在靠這幾道提高門檻——session 依 runtime 規定格式（claude／codex 要完整 UUID，不能縮寫來躲比對）、`claude` 身分要等於 `CLAUDE_CODE_SESSION_ID`、Codex 審查只能由 `run` 從事件取 thread id 入帳、紀錄與報告逐項一致、已提交的紀錄與報告只追加。仍然**不防蓄意偽造**：能直接改檔的 agent 可以同時寫出一致的假報告與假紀錄、或設環境變數，只是會在 diff 與 git 歷史裡留下痕跡。
 - 身分是自報的 session id；Codex 道由 `run` 從 Codex 的 JSON 事件取得 thread id，不靠審查者自報。
-- 雜湊不含任務狀態欄位，所以「實作紀錄 / 證據」裡的文字不受審查保護；那是任務證據，不是分析內容。
+- 雜湊不含任務狀態欄位的單行值，所以「實作紀錄 / 證據」與「關閉理由」的那一行文字不受審查保護；那是任務證據，不是分析內容。要分析內容受保護就別寫進這三個單行欄位（欄位的續行、行尾註解、非標準的當前狀態文字都算進雜湊）。任務欄位行不要求固定縮排（兩格以上都算欄位），所以單行欄位是唯一的「窗口」。
+- 待審期間任務結案的檢查看「完成日期 ≥ 待審起算日」：把完成日期倒填成更早的日期可以躲過，那在 diff 與 git 歷史裡是可見的竄改，不另防。
+- **`revised_at` 重置寬限（已知極限，不修）**：作者每次改內容都可以把 `revised_at` 往後填，讓 7 天寬限重新起算。待審期間任務鎖住、README 標 ⏳、佇列持續派審，所以拖延不會讓筆記變成「已審」，只是延後 `verify_inbox` 的逾期錯誤。
+- 未知的 `當前狀態` 變體（例如帶說明的「封存（理由…）」）算進雜湊，`task_cli` 因此不改寫它們：筆記的任務狀態以 frontmatter `status` 與任務欄位為準，正文標記只是顯示用。

@@ -24,12 +24,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_index as bi  # noqa: E402
 
-STATUS_BODY_LABELS = {
-    "pending": "`🔴 未做 (Pending)`",
-    "in-progress": "`🟡 進行中 (In Progress)`",
-    "done": "`🟢 已完成 (Done)`",
-    "archived": "`⚪ 已封存 (Archived)`",
-}
+STATUS_BODY_LABELS = bi.STATUS_BODY_LABELS  # 常數放 build_index：審查雜湊（review_ledger）要用同一份，避免循環匯入
 
 
 def find_task(notes: list[bi.Note], task_id: str) -> bi.Task:
@@ -41,24 +36,23 @@ def find_task(notes: list[bi.Note], task_id: str) -> bi.Task:
 
 
 def _update_note_frontmatter_status(text: str, new_status: str) -> str:
-    """更新 YAML frontmatter 中的 status 欄位與正文頂部的當前狀態標記。"""
+    """更新 YAML frontmatter 中的 status 欄位與正文頂部的當前狀態標記。
+
+    正文「當前狀態」行只有在值是標準標記（STATUS_BODY_LABELS）時才改寫：非標準的文字
+    （例如帶說明的「已封存（理由…）」）是筆記內容，審查雜湊要把它算進去，task_cli 不能悄悄改掉它而讓審查失效。
+    找行時跳過程式碼圍欄，與審查雜湊（review_ledger.analysis_text）認同同一行（bi.find_status_body_line）。"""
     lines = text.split("\n")
-    if lines and lines[0].strip() == "---":
-        try:
-            end = next(i for i in range(1, len(lines)) if lines[i].strip() == "---")
-            for i in range(1, end):
-                m = re.match(r"^(status:\s*)([^\s#]+)(.*)$", lines[i])
-                if m:
-                    lines[i] = f"{m.group(1)}{new_status}{m.group(3)}"
-                    break
-        except StopIteration:
-            pass
+    meta_idx = bi.find_status_meta_line(lines)
+    if meta_idx is not None:
+        m = re.match(r"^(status:\s*)([^\s#]+)(.*)$", lines[meta_idx])
+        if m:
+            lines[meta_idx] = f"{m.group(1)}{new_status}{m.group(3)}"
     body_label = STATUS_BODY_LABELS.get(new_status)
-    if body_label:
-        for i, line in enumerate(lines[:45]):
-            if line.startswith("- **當前狀態**："):
-                lines[i] = f"- **當前狀態**：{body_label}"
-                break
+    body_idx = bi.find_status_body_line(lines)
+    if body_label and body_idx is not None:
+        value = lines[body_idx][len(bi.STATUS_BODY_PREFIX):].strip()
+        if value in STATUS_BODY_LABELS.values():
+            lines[body_idx] = f"{bi.STATUS_BODY_PREFIX}{body_label}"
     return "\n".join(lines)
 
 

@@ -7,14 +7,18 @@ tools/review_pipeline.py
     python tools/review_pipeline.py prompt <slug> --lane codex|chrome [--role review|audit]
     python tools/review_pipeline.py run --lane codex [--max 2] [--commit]      # Codex 道：codex --search exec（唯讀）
     python tools/review_pipeline.py ingest <slug> --report <報告.md> --reviewer <id> --lane <lane> --role <role> \\
-        --scope <s,...> --sha <派工時的雜湊> --author-claim <full|partial|unavailable> [--commit]
+        --scope <s,...> --sha <派工時的雜湊> [--commit]
     python tools/review_pipeline.py cron --lane codex|chrome                   # 排程用：在專用工作樹同步 main 後執行
 
 道（lane）：
-- codex：官方文件、repo、數字、Reddit 等網頁查證，`codex --search exec -s read-only`，thread id 從 JSON 事件取得。
+- codex：官方文件、repo、數字、Reddit 等網頁查證，`codex --search exec -s read-only`，thread id 從 JSON 事件取得；
+  Codex 的審查只能由 `run` 入帳，`ingest` 不接受 codex 身分。
 - chrome：Threads／Facebook／X／Instagram 的留言與圖片，只有登入的 Claude in Chrome 讀得到；由 Claude Desktop 排程工作執行，
-  身分用 claude/<model>@$CLAUDE_CODE_SESSION_ID。
+  身分用 claude/<model>@$CLAUDE_CODE_SESSION_ID（`ingest` 會比對環境變數）。
 - fix：審查要求修改，或紀錄有錯；由作者或整合者處理，不自動派。
+
+`--commit`（ingest、run）只准在專用工作樹（STATE_DIR/repo，由 `cron` 建立與同步）執行；不加 --commit 時只寫檔。
+`author_claim` 不由 CLI 給：ingest 從筆記 frontmatter 的 source_review 讀。
 """
 
 from __future__ import annotations
@@ -28,7 +32,7 @@ import shutil
 import subprocess
 import sys
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -43,7 +47,7 @@ DEFAULT_CODEX_MODEL = "gpt-6.1-sol"
 STATE_DIR = Path(os.environ.get("AI_INBOX_REVIEW_STATE") or Path.home() / "codex-work" / "ai-inbox-review")
 FLEET_CODEX_STATUS = Path(r"C:\GitHub\repo-fleet-ops\tools\codex_status.py")
 RESULT_KEYS = ("verdict", "source_review", "source_images", "source_replies", "corrections", "findings", "task_impact", "scope")
-JSON_BLOCK = re.compile(r"```json\s*\n(.*?)\n```", re.DOTALL)
+JSON_BLOCK = rl.JSON_BLOCK  # 結果區塊的解析與驗證器共用（review_ledger.last_json_block）
 
 
 class PipelineError(Exception):
@@ -57,7 +61,6 @@ class WorkOrder:
     role: str  # review / audit
     scopes: list[str]
     sha: str
-    author_claim: str
     reason: str
 
 
@@ -69,9 +72,9 @@ def is_social(note: bi.Note) -> bool:
 
 def orders_for(note: bi.Note, st: rl.ReviewState) -> list[WorkOrder]:
     """一篇待審筆記下一步要派的工作。順序：先修錯→補審範圍→覆核。"""
-    claim = str(note.meta.get("source_review", "")).strip()
-    base = dict(slug=note.slug, sha=st.content_sha256, author_claim=claim)
-    record_errors = st.errors[:-1] if st.overdue else st.errors
+    base = dict(slug=note.slug, sha=st.content_sha256)
+    # 寬限逾期與「待審期間任務被結案」不是紀錄本身的錯，不該擋住派審
+    record_errors = [e for e in st.errors if e != st.overdue_error and e not in st.task_errors]
     if record_errors or any(n.startswith("修正後再審") for n in st.needs):
         reason = "；".join(record_errors or [n for n in st.needs if n.startswith("修正後再審")])
         return [WorkOrder(lane="fix", role="review", scopes=[], reason=reason, **base)]
@@ -107,7 +110,9 @@ def queue(notes: list[bi.Note] | None = None, lane: str | None = None, legacy: i
     if legacy > 0:
         baseline, _ = rl.load_legacy()
         picked = 0
-        for n in sorted((n for n in notes if not states[n.slug].governed), key=lambda n: n.slug, reverse=True):
+        # 補審被要求修改的舊筆記（flagged）已經在上面的待審佇列，不重複列
+        for n in sorted((n for n in notes if not states[n.slug].governed and not states[n.slug].flagged),
+                        key=lambda n: n.slug, reverse=True):
             if picked >= legacy:
                 break
             st = rl.evaluate(n, baseline, dt.date.today(), backfill=True)
@@ -141,7 +146,7 @@ def build_prompt(note: bi.Note, order: WorkOrder, root: Path | None = None) -> s
         f"- 原始來源：{note.meta.get('source_url', '-')}",
         f"- 內容雜湊：`{order.sha}`（入帳時會比對；審查期間筆記若被改，這份審查作廢）",
         f"- 角色：`{order.role}`；這次要審的範圍：`{', '.join(order.scopes)}`（只對這些範圍下結論）",
-        f"- 作者聲明：source_review = `{order.author_claim}`；作者 written_by = `{note.meta.get('written_by', '')}`",
+        f"- 作者聲明：source_review = `{str(note.meta.get('source_review', '')).strip()}`；作者 written_by = `{note.meta.get('written_by', '')}`",
         "",
         "審查標準是 repo 裡的 `docs/source-review-sop.md`，以下兩段從它原文擷取：",
         "",
@@ -186,13 +191,10 @@ def build_prompt(note: bi.Note, order: WorkOrder, root: Path | None = None) -> s
 
 
 def parse_result(report: str, scopes: list[str]) -> dict:
-    blocks = JSON_BLOCK.findall(report)
-    if not blocks:
-        raise PipelineError("報告最後沒有 ```json 結果區塊")
     try:
-        data = json.loads(blocks[-1])
+        data = rl.last_json_block(report)
     except ValueError as e:
-        raise PipelineError(f"結果區塊不是合法 JSON：{e}") from None
+        raise PipelineError(str(e)) from None
     missing = [k for k in RESULT_KEYS if k not in data]
     if missing:
         raise PipelineError(f"結果缺欄位：{', '.join(missing)}")
@@ -229,9 +231,48 @@ def _sanitize(text: str) -> str:
     return vi.HOME_PATH.sub(repl, text)
 
 
+class Snapshot:
+    """記下檔案入帳前的樣子，驗證失敗時還原（新檔刪掉、舊檔寫回、這次新建的空資料夾移除）。"""
+
+    def __init__(self, root: Path):
+        self.root = root
+        self.saved: dict[str, bytes | None] = {}
+        self.new_dirs: list[Path] = []
+
+    def track(self, rel: str) -> None:
+        if rel not in self.saved:
+            p = self.root / rel
+            self.saved[rel] = p.read_bytes() if p.is_file() else None
+
+    def track_dir(self, folder: Path) -> None:
+        if not folder.exists() and folder not in self.new_dirs:
+            self.new_dirs.append(folder)
+
+    def restore(self) -> None:
+        for rel, data in self.saved.items():
+            p = self.root / rel
+            if data is None:
+                p.unlink(missing_ok=True)
+            else:
+                p.write_bytes(data)
+        for folder in reversed(self.new_dirs):
+            try:
+                folder.rmdir()
+            except OSError:
+                pass
+
+
+def entry_files(slug: str, entry: dict) -> list[str]:
+    """這次入帳寫入的檔案（相對 repo 根目錄）：紀錄檔與新報告。"""
+    return [f"{rl.REVIEWS_DIRNAME}/{slug}.json", entry["report"]]
+
+
 def ingest(slug: str, report_text: str, reviewer: str, lane: str, role: str, scopes: list[str], sha: str,
-           author_claim: str, root: Path | None = None, today: dt.date | None = None, source_ref: str = "") -> dict:
-    """驗證審查報告並入帳：reviews/reports/<slug>/ 存報告、reviews/<slug>.json 追加紀錄。回傳寫入的紀錄。"""
+           root: Path | None = None, today: dt.date | None = None, source_ref: str = "",
+           snapshot: Snapshot | None = None) -> dict:
+    """驗證審查報告並入帳：reviews/reports/<slug>/ 存報告、reviews/<slug>.json 追加紀錄。回傳寫入的紀錄。
+
+    author_claim 不由呼叫端給：一律從筆記 frontmatter 的 source_review 讀（審查者不能自己填）。"""
     root = root or bi.REPO_ROOT
     today = today or dt.date.today()
     note_path = root / "notes" / f"{slug}.md"
@@ -239,10 +280,14 @@ def ingest(slug: str, report_text: str, reviewer: str, lane: str, role: str, sco
         raise PipelineError(f"找不到筆記 notes/{slug}.md")
     ident = rl.parse_identity(reviewer)
     if not ident:
-        raise PipelineError(f"reviewer 格式不合法：{reviewer}")
+        raise PipelineError(f"reviewer 格式不合法：{reviewer}（claude／codex 的 session 要完整 UUID，antigravity／hermes 至少 8 字元，"
+                            "human 只能是 human/maintainer@YYYY-MM-DD）")
     note = bi.parse_note(note_path)
+    author_claim = str(note.meta.get("source_review", "")).strip()
+    if author_claim not in rl.SOURCE_REVIEW_VALUES:
+        raise PipelineError(f"筆記 frontmatter 的 source_review 需為 {'/'.join(rl.SOURCE_REVIEW_VALUES)}，現在是 {author_claim or '未填'}")
     authors, _ = rl.parse_identities(note.meta.get("written_by", ""))
-    if ident.session.lower() in {a.session.lower() for a in authors}:
+    if any(rl.same_session(ident.session, a.session) for a in authors):
         raise PipelineError(f"{reviewer} 在 written_by 裡，不能審自己寫的內容")
     if role == "audit" and not ident.strong:
         raise PipelineError(f"audit 要強模型，{ident.model} 不是")
@@ -251,13 +296,24 @@ def ingest(slug: str, report_text: str, reviewer: str, lane: str, role: str, sco
         raise PipelineError(f"筆記在審查期間被改過（派工 {sha[:12]}，現在 {current[:12]}），這份審查作廢，重派")
     result = parse_result(report_text, scopes)
     scopes = result["scope"]  # 審查者實際審完的範圍（派工範圍的子集）
+    if role == "audit" and set(scopes) != set(rl.SCOPES):
+        raise PipelineError(f"audit 要涵蓋全部範圍（{'/'.join(rl.SCOPES)}），這份只有 {'/'.join(scopes)}；"
+                            "讀不到來源時 audit 要改派能讀的那一道（例如社群貼文改派 chrome 道）")
     if "source" not in scopes:
         result["source_review"] = author_claim  # 範圍不含 source 的審查者不判定讀完度
 
     folder = root / rl.REVIEWS_DIRNAME / rl.REPORTS_DIRNAME / slug
-    folder.mkdir(parents=True, exist_ok=True)
-    seq = len(list(folder.glob("*.md"))) + 1
+    seq = len(list(folder.glob("*.md"))) + 1 if folder.is_dir() else 1
     report_rel = f"{rl.REVIEWS_DIRNAME}/{rl.REPORTS_DIRNAME}/{slug}/{today.isoformat()}-{seq:02d}-{role}-{ident.runtime}.md"
+    if (root / report_rel).exists():
+        raise PipelineError(f"報告檔已存在 {report_rel}，不覆寫")
+    ledger_rel = f"{rl.REVIEWS_DIRNAME}/{slug}.json"
+    if snapshot:
+        snapshot.track(report_rel)
+        snapshot.track(ledger_rel)
+        for d in (root / rl.REVIEWS_DIRNAME, root / rl.REVIEWS_DIRNAME / rl.REPORTS_DIRNAME, folder):  # 由外而內，還原時由內而外
+            snapshot.track_dir(d)
+    folder.mkdir(parents=True, exist_ok=True)
     header = "\n".join([
         f"# 獨立審查報告：{slug}",
         "",
@@ -355,42 +411,119 @@ def report_from_events(events: str) -> str:
 # ---------- 提交 ----------
 
 def git(root: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace", check=check)
+    r = subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if check and r.returncode != 0:
+        raise PipelineError(f"git {' '.join(args)} 失敗（exit {r.returncode}）：{(r.stdout + r.stderr).strip()[-500:]}")
+    return r
 
 
-def verify(root: Path) -> None:
+LANES_WITH_WORKTREE = ("codex", "chrome")
+
+
+def dedicated_worktree(lane: str = "codex") -> Path:
+    """每一道各有一個專用工作樹：codex 排程清理自己的工作樹時，不會動到 Chrome 工作階段正在用的那一個。"""
+    return STATE_DIR / ("repo" if lane == "codex" else f"repo-{lane}")
+
+
+def is_dedicated_worktree(path: Path) -> bool:
+    return any(_same_path(path, dedicated_worktree(lane)) for lane in LANES_WITH_WORKTREE)
+
+
+def _same_path(a: Path, b: Path) -> bool:
+    return os.path.normcase(str(Path(a).resolve())) == os.path.normcase(str(Path(b).resolve()))
+
+
+def require_dedicated_worktree(root: Path, clean: bool = True) -> None:
+    """--commit 只准在專用工作樹（STATE_DIR/repo）執行：detached HEAD、動手前沒有未提交改動。
+    在別人的工作目錄提交會連帶動到他們的暫存區、分支與未提交檔案。"""
+    wt = root if is_dedicated_worktree(root) else dedicated_worktree()
+    hint = ("自動提交請用 python tools/review_pipeline.py cron --lane codex|chrome（它會在專用工作樹同步 main 後執行）；"
+            "不加 --commit 時 ingest 只寫檔，照 AGENTS.md 流程 C 自行驗證與提交")
+    if not is_dedicated_worktree(root):
+        raise PipelineError(f"--commit 只准在專用工作樹 {wt} 執行（目前在 {root}）。{hint}")
+    if git(root, "symbolic-ref", "-q", "HEAD", check=False).returncode == 0:
+        raise PipelineError(f"專用工作樹 {wt} 的 HEAD 不是 detached（站在分支上），不提交。{hint}")
+    if clean and git(root, "status", "--porcelain").stdout.strip():
+        raise PipelineError(f"專用工作樹 {wt} 有未提交改動，不提交。{hint}")
+
+
+def verify_errors(root: Path) -> set[str]:
+    """跑 verify_inbox，回傳錯誤行集合（`  - ` 開頭的行）。失敗卻解析不到錯誤行＝工具壞了，不當成沒事。"""
     r = subprocess.run([sys.executable, "-B", str(root / "tools" / "verify_inbox.py")], cwd=root,
                        capture_output=True, text=True, encoding="utf-8", errors="replace")
-    if r.returncode != 0:
-        raise PipelineError("verify_inbox 失敗，不提交：\n" + r.stdout[-2000:])
+    errs = {m["msg"].strip() for m in (re.match(r"^  - (?P<msg>.*)$", line) for line in r.stdout.splitlines()) if m}
+    if r.returncode != 0 and not errs:
+        raise PipelineError("verify_inbox 失敗但解析不到錯誤行（工具壞了？）：\n" + (r.stdout + r.stderr)[-1500:])
+    return errs
 
 
-def commit_and_push(root: Path, message: str) -> str:
-    """只提交 reviews/ 與 README.md；push 被拒時 rebase 到最新 main、重跑驗證再推（最多 3 次）。"""
-    bi_main(root)
-    verify(root)
-    git(root, "add", "--", "reviews", "README.md")
+def commit_and_push(root: Path, message: str, files: list[str], base_errors: set[str], snapshot: Snapshot) -> str:
+    """只提交這次入帳寫入的檔案（files）與 README.md，一個 commit。
+
+    提交前驗證是「沒有引入新錯誤」：base_errors 是入帳前 verify_inbox 的錯誤行集合，入帳後出現不在其中的錯誤行就還原
+    （snapshot：刪新報告、還原紀錄檔與 README）並 raise。push 被拒時 rebase 到最新 main、重驗再推（最多 3 次）；
+    提交後的任何失敗都 reset 回提交前，不留下半成品。"""
+    require_dedicated_worktree(root, clean=False)
+    paths = [*files, "README.md"]
+
+    def check_no_new_errors() -> None:
+        bi_main(root)
+        new = sorted(verify_errors(root) - base_errors)
+        if new:
+            raise PipelineError("這次入帳引入了新的驗證錯誤，不提交：\n" + "\n".join(f"  - {e}" for e in new))
+
+    try:
+        check_no_new_errors()
+    except (PipelineError, OSError, subprocess.CalledProcessError) as e:
+        snapshot.restore()
+        raise (e if isinstance(e, PipelineError) else PipelineError(f"提交前驗證失敗，已還原：{e}")) from None
+    pre = git(root, "rev-parse", "HEAD").stdout.strip()
+
+    def give_up(reason: str):
+        git(root, "rebase", "--abort", check=False)
+        git(root, "reset", "--hard", pre, check=False)  # 專用工作樹，回到入帳前的樣子
+        raise PipelineError(reason + "（已還原到入帳前）")
+
+    git(root, "add", "--", *paths)
     if not git(root, "diff", "--cached", "--name-only").stdout.strip():
         return "沒有變更"
-    git(root, "commit", "-m", message, "--", "reviews", "README.md")
+    git(root, "commit", "-m", message, "--", *paths)
     for attempt in range(3):
         if git(root, "push", "origin", "HEAD:main", check=False).returncode == 0:
             return git(root, "rev-parse", "--short", "HEAD").stdout.strip()
-        git(root, "fetch", "-q", "origin")
+        if git(root, "fetch", "-q", "origin", check=False).returncode != 0:
+            give_up("push 被拒後 fetch origin 也失敗")
         if git(root, "rebase", "origin/main", check=False).returncode != 0:
-            git(root, "rebase", "--abort", check=False)
-            raise PipelineError("rebase 到最新 main 衝突，留給整合者處理")
-        bi_main(root)
-        verify(root)
+            give_up("rebase 到最新 main 衝突，留給整合者處理")
+        try:
+            check_no_new_errors()
+        except (PipelineError, OSError, subprocess.CalledProcessError) as e:
+            give_up(f"rebase 後驗證失敗：{e}")
         if git(root, "status", "--porcelain", "--", "README.md").stdout.strip():
-            git(root, "commit", "-m", "chore(review): rebuild README after rebase", "--", "README.md")
+            git(root, "commit", "--amend", "--no-edit", "--", "README.md")  # 維持一個 commit
         time.sleep(2 * (attempt + 1))
-    raise PipelineError("push 連續失敗 3 次")
+    give_up("push 連續失敗 3 次")
 
 
 def bi_main(root: Path) -> None:
     subprocess.run([sys.executable, "-B", str(root / "tools" / "build_index.py")], cwd=root, check=True,
                    capture_output=True)
+
+
+def reset_dedicated_worktree(src: Path, wt: Path) -> bool:
+    """專用工作樹有殘留改動（上次中斷、提交失敗）就清掉：那是管線自己的工作樹，不是任何人的工作目錄。
+    動手前確認路徑確實是 STATE_DIR/repo、而且在 `git worktree list` 裡；回傳是否真的清過。"""
+    if not git(wt, "status", "--porcelain").stdout.strip():
+        return False
+    if not is_dedicated_worktree(wt):
+        raise PipelineError(f"{wt} 不是專用工作樹（{STATE_DIR} 下的 repo／repo-chrome），拒絕 reset／clean")
+    listed = {os.path.normcase(str(Path(line[len("worktree "):]).resolve()))
+              for line in git(src, "worktree", "list", "--porcelain").stdout.splitlines() if line.startswith("worktree ")}
+    if os.path.normcase(str(wt.resolve())) not in listed:
+        raise PipelineError(f"{wt} 不在 git worktree list 裡，拒絕 reset／clean（不確定它是專用工作樹）")
+    git(wt, "reset", "--hard")
+    git(wt, "clean", "-fd")
+    return True
 
 
 # ---------- 指令 ----------
@@ -410,52 +543,92 @@ def cmd_queue(args) -> int:
 def _order(slug: str, lane: str, role: str | None) -> tuple[bi.Note, WorkOrder]:
     note = bi.parse_note(bi.NOTES_DIR / f"{slug}.md")
     matches = [o for o in queue([note], legacy=1) if o.lane == lane and (not role or o.role == role)]
+    if not matches and role == "audit":
+        # 覆核要涵蓋全部範圍：原派的那一道讀不到來源時，允許改派另一道（例如 codex 讀不到的非社群來源改走 chrome）
+        matches = [replace(o, lane=lane) for o in queue([note], legacy=1) if o.role == "audit"]
     if not matches:
         raise PipelineError(f"{slug} 沒有 {lane} 道{('的 ' + role) if role else ''}待派工作（python tools/review_pipeline.py queue）")
     return note, matches[0]
 
 
+def check_cli_reviewer(reviewer: str) -> None:
+    """ingest（CLI）的身分限制：Codex 只能由 run 從事件取得 thread id 入帳；Claude 的 session 必須是這個工作階段自己的。"""
+    ident = rl.parse_identity(reviewer)
+    if not ident:
+        return  # 格式不合法由 ingest() 報
+    if ident.runtime == "codex":
+        raise PipelineError("ingest 不接受 codex 身分：Codex 審查只能由 run 從事件取得 thread id 入帳（身分不靠自報）")
+    if ident.runtime == "claude":
+        env = os.environ.get("CLAUDE_CODE_SESSION_ID", "").strip()
+        if not env:
+            raise PipelineError("reviewer 為 claude 時要在 Claude Code 工作階段內執行：環境變數 CLAUDE_CODE_SESSION_ID 沒設")
+        if ident.session.lower() != env.lower():
+            raise PipelineError(f"reviewer 的 session（{ident.session}）必須等於 CLAUDE_CODE_SESSION_ID（{env}）；不可用別的 session 身分入帳")
+
+
 def cmd_prompt(args) -> int:
     note, order = _order(args.slug, args.lane, args.role)
     print(build_prompt(note, order))
-    print(f"<!-- ingest: --lane {order.lane} --role {order.role} --scope {','.join(order.scopes)} --sha {order.sha} --author-claim {order.author_claim} -->")
+    print(f"<!-- ingest: --lane {order.lane} --role {order.role} --scope {','.join(order.scopes)} --sha {order.sha} -->")
     return 0
 
 
 def cmd_ingest(args) -> int:
+    check_cli_reviewer(args.reviewer)
+    root = bi.REPO_ROOT
+    base: set[str] = set()
+    if args.commit:
+        require_dedicated_worktree(root)
+        base = verify_errors(root)
+    snap = Snapshot(root)
+    snap.track("README.md")
     report = Path(args.report).read_text(encoding="utf-8")
-    entry = ingest(args.slug, report, args.reviewer, args.lane, args.role, args.scope.split(","), args.sha, args.author_claim,
-                   source_ref=args.source_ref or "")
+    entry = ingest(args.slug, report, args.reviewer, args.lane, args.role, args.scope.split(","), args.sha,
+                   source_ref=args.source_ref or "", snapshot=snap)
+    files = entry_files(args.slug, entry)
     print(f"[*] 已入帳 {args.slug}：{entry['verdict']}（{entry['report']}）")
     if args.commit:
-        print(f"[*] 提交：{commit_and_push(bi.REPO_ROOT, f'chore(review): {entry['verdict']} {args.slug} ({entry['role']})')}")
+        print(f"[*] 提交：{commit_and_push(root, f'chore(review): {entry['verdict']} {args.slug} ({entry['role']})', files, base, snap)}")
     else:
-        bi_main(bi.REPO_ROOT)
+        bi_main(root)
+        print(f"[*] 未加 --commit，只寫了檔。驗證通過後自行提交：\n"
+              f"    python tools/verify_inbox.py && git add {' '.join(files)} README.md && git commit -m \"chore(review): {entry['verdict']} {args.slug}\" && git push")
     return 0
 
 
 def cmd_run(args) -> int:
     if args.lane != "codex":
         raise PipelineError("run 只自動跑 codex 道；chrome 道由 Claude Desktop 排程工作照 queue --lane chrome 執行")
+    root = bi.REPO_ROOT
+    base: set[str] = set()
+    if args.commit and not args.dry_run:
+        require_dedicated_worktree(root)
+        base = verify_errors(root)
     orders = queue(lane="codex", legacy=args.legacy)[: args.max]
     if not orders:
         print("[*] 沒有 codex 道待派審查")
         return 0
-    done, failed = [], []
+    snap = Snapshot(root)
+    snap.track("README.md")
+    done, failed, files = [], [], []
     for o in orders:
         note = bi.parse_note(bi.NOTES_DIR / f"{o.slug}.md")
         if args.dry_run:
             print(f"[dry-run] {o.slug} {o.role} {','.join(o.scopes)}")
             continue
         try:
-            report, thread = run_codex(o, note, bi.REPO_ROOT, args.model, args.timeout)
-            entry = ingest(o.slug, report, f"codex/{args.model}@{thread}", o.lane, o.role, o.scopes, o.sha, o.author_claim,
-                           source_ref=f"codex thread {thread}")
+            report, thread = run_codex(o, note, root, args.model, args.timeout)
+            entry = ingest(o.slug, report, f"codex/{args.model}@{thread}", o.lane, o.role, o.scopes, o.sha,
+                           source_ref=f"codex thread {thread}", snapshot=snap)  # run 內部呼叫：身分來自 Codex 事件，不受 CLI 限制
             done.append(f"{o.slug}:{entry['verdict']}")
+            files.extend(entry_files(o.slug, entry))
         except PipelineError as e:
             failed.append(f"{o.slug}: {e}")
     if done and args.commit:
-        print(f"[*] 提交：{commit_and_push(bi.REPO_ROOT, 'chore(review): codex reviews ' + ', '.join(done))}")
+        print(f"[*] 提交：{commit_and_push(root, 'chore(review): codex reviews ' + ', '.join(done), list(dict.fromkeys(files)), base, snap)}")
+    elif done:
+        bi_main(root)
+        print(f"[*] 未加 --commit，只寫了檔：{' '.join(dict.fromkeys(files))} README.md")
     for d in done:
         print(f"[OK] {d}")
     for f in failed:
@@ -477,14 +650,16 @@ def cmd_cron(args) -> int:
         fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
     os.close(fd)
     try:
-        wt = STATE_DIR / "repo"
+        wt = dedicated_worktree(args.lane)
         src = bi.REPO_ROOT
+        if is_dedicated_worktree(src):
+            raise PipelineError("cron 要從主 checkout 啟動，不能從專用工作樹本身執行")
         if not (wt / ".git").exists():
             git(src, "fetch", "-q", "origin")
             git(src, "worktree", "add", "--detach", str(wt), "origin/main")
         git(wt, "fetch", "-q", "origin")
-        if git(wt, "status", "--porcelain").stdout.strip():
-            raise PipelineError(f"專用工作樹 {wt} 有未提交改動，先人工檢查")
+        if reset_dedicated_worktree(src, wt):
+            print(f"[*] 專用工作樹 {wt} 有上次殘留的改動，已 reset／clean（那是管線自己的工作樹）")
         git(wt, "checkout", "-q", "--detach", "origin/main")
         script = wt / "tools" / "review_pipeline.py"
         if args.lane == "codex":
@@ -498,7 +673,12 @@ def cmd_cron(args) -> int:
             fh.write(f"\n## {dt.datetime.now():%Y-%m-%d %H:%M} exit {r.returncode}\n{r.stdout}{r.stderr}")
         print(r.stdout + r.stderr)
         if args.lane == "chrome":
-            print(f"[*] 工作樹：{wt}（在這裡跑 prompt／ingest --commit）")
+            print(f"\n[*] 專用工作樹：{wt}\n"
+                  "[*] 上面是待審清單。Claude in Chrome 工作階段請 cd 進專用工作樹再執行（--commit 只准在這裡）：\n"
+                  f"    cd \"{wt}\"\n"
+                  "    python tools/review_pipeline.py prompt <slug> --lane chrome\n"
+                  "    python tools/review_pipeline.py ingest <slug> --report <報告.md> --reviewer \"claude/<model>@$CLAUDE_CODE_SESSION_ID\" "
+                  "--lane chrome --role review --scope source --sha <prompt 印出的雜湊> --commit")
         return r.returncode
     finally:
         lock.unlink(missing_ok=True)
@@ -524,9 +704,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--role", choices=rl.ROLES, required=True)
     p.add_argument("--scope", required=True)
     p.add_argument("--sha", required=True, help="prompt 印出的派工雜湊")
-    p.add_argument("--author-claim", choices=rl.SOURCE_REVIEW_VALUES, required=True)
     p.add_argument("--source-ref", help="審查來源（session、thread）")
-    p.add_argument("--commit", action="store_true", help="驗證通過後只提交 reviews/ 與 README.md 並推送")
+    p.add_argument("--commit", action="store_true", help="只准在專用工作樹：驗證沒有新錯誤後，只提交這次寫入的檔案與 README.md 並推送")
     p = sub.add_parser("run", help="自動跑 codex 道")
     p.add_argument("--lane", choices=("codex",), default="codex")
     p.add_argument("--max", type=int, default=2)

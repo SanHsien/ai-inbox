@@ -10,6 +10,8 @@ public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
+| 舊筆記逐步補審 | 審查制度上線時既有筆記以內容雜湊凍結免審，但其中仍有沒被第二人看過的；Codex 額度常有剩 | 每天排程 `python tools/review_pipeline.py cron --lane codex --legacy 2` 補審最新的免審筆記；`python tools/review_pipeline.py queue --legacy 200` 不再列出 codex 道的 review 工作 | Codex（排程自動）；`fix` 道由整合者 | [規劃](docs/review-pipeline-plan.md) 2.3 節 |
+| 處理 `fix` 道 | 審查要求修改的筆記，要有人照報告改、再送審；放著超過 7 天 `verify_inbox.py` 會失敗 | `python tools/review_pipeline.py queue --lane fix` 為空 | 筆記原作者或整合者 | [AGENTS.md](AGENTS.md) 流程 C 第 3 步 |
 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
@@ -24,6 +26,7 @@ public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 
 ## 刻意不做
 | 不做什麼 | 理由 | 什麼情況下重新考慮 |
 | --- | --- | --- |
+| 審查紀錄加簽章（SSH／GPG） | 能推 main 的 agent 都拿得到本機金鑰，簽章擋不了它們，只多一層維護；現行做法是報告檔、內容雜湊與 git 歷史留痕 | 審查改由本機以外、金鑰不共用的服務執行 |
 | 把文件類 `verify_*` 擴充成段落限定的關鍵字驗證 | 關鍵字型裁判可被打亂行序繞過，已決定改做能攔真錯誤的檢查 | `docs/external-judge-audit.md` 第 5 節的前提改變 |
 | 改工具的 emoji 輸出以相容 cp950 | 只影響本機非 UTF-8 終端，CI 為 UTF-8；本機以 `PYTHONUTF8=1` 即可 | 維護者要在非 UTF-8 終端日常執行這些工具 |
 | 為了讓稽核欄位變綠而加沒有保護作用的 workflow | 沒有依賴宣告檔，freshness 以 waiver 登記才是誠實表達 | 出現依賴宣告檔（見中期） |
