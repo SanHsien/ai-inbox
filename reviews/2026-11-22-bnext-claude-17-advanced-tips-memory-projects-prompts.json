@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-22",
+   "reviewer": "codex/gpt-6.1-sol@01a20284-0b88-7351-91c2-f2a463c563a4",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "8844b559dd06eb38d84e099d24bedbaf5b35d41581582f5ecd58f82b55ae8a1b",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 5,
+   "report": "reviews/reports/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts/2026-11-22-01-review-codex.md"
+  }
+ ]
+}

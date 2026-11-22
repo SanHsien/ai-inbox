@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-22",
+   "reviewer": "codex/gpt-6.1-sol@01a20282-0232-7a51-8d1f-77ffbcf9a610",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "7f6cef9b970e597b1c114963cc678969b3cea6729f0de8ed9feb280a7ec57384",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 3,
+   "report": "reviews/reports/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval/2026-11-22-01-review-codex.md"
+  }
+ ]
+}

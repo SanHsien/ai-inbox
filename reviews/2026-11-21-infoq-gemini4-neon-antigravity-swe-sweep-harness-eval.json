@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-22",
+   "reviewer": "codex/gpt-6.1-sol@01a20288-9539-7912-9670-61e324b39a5b",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "db43c64dc8db4aea10732735d57091c6c7eb811eb33c064a3761febe9e495f71",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 4,
+   "report": "reviews/reports/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval/2026-11-22-01-review-codex.md"
+  }
+ ]
+}
