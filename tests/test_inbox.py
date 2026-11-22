@@ -10,6 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 import build_index as bi  # noqa: E402
+import review_ledger as rl  # noqa: E402
 import task_cli as tc  # noqa: E402
 import verify_inbox as vi  # noqa: E402
 
@@ -177,6 +178,16 @@ class ParseTest(unittest.TestCase):
                 [sys.executable, "-B", str(root / "tools" / "verify_inbox.py")],
                 capture_output=True, text=True, encoding="utf-8", cwd=root,
             )
+
+        # 對照組只留「凍結的舊筆記」（內容仍與 reviews/legacy-baseline.json 相同）：別的 agent 新增或修改的筆記是否合規，
+        # 是 verify_inbox 與審查管線的事，不該讓這個整合測試變紅。刪掉的筆記連同它的審查紀錄與報告一起刪，再重產 README。
+        legacy, _ = rl.load_legacy(root)
+        for p in (root / "notes").glob("*.md"):
+            if legacy.get(p.stem) != rl.content_hash(p.read_text(encoding="utf-8")):
+                p.unlink()
+                (root / "reviews" / f"{p.stem}.json").unlink(missing_ok=True)
+                shutil.rmtree(root / "reviews" / "reports" / p.stem, ignore_errors=True)
+        subprocess.run([sys.executable, "-B", str(root / "tools" / "build_index.py")], cwd=root, check=True, capture_output=True)
 
         control = run()
         self.assertEqual(0, control.returncode, control.stdout + control.stderr)

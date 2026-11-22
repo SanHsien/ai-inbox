@@ -118,8 +118,12 @@ audit 的 session 不能是作者，也不能是同輪審查者；audit 的範�
 - **審查者身分的來源只剩兩種**：`claude`（`ingest` 要求 session 等於 `CLAUDE_CODE_SESSION_ID`）與 `codex`（只能由 `run` 從事件取 thread id 入帳）。human、hermes、antigravity 不能當審查者：早先它們沒有任何身分檢查，兩行指令就能自寫報告、自審放行。**已知極限**：Claude 的模型名是自報的（Sonnet 工作階段可以自稱 opus，驗證器分辨不出來），也能自設環境變數；強模型清單防的是疏忽，不是蓄意。維護者本人審查不走這套紀錄：直接改筆記，再由管線審。
 - **雜湊算法定版**：見 2.1。雜湊算法改版曾讓唯一一筆真實審查紀錄（5 處更正）靜默失效，因為紀錄綁在舊算法的雜湊上。現在 `HASH_VERSION` 加 golden 測試擋住悄悄改動；真的要改，必須同時遷移基準與紀錄。
 - 雜湊不含的任務欄位只剩 `task_cli` 會寫的樣子（見 2.1）。**實際剩下的窗口**只有兩處：任務的**關閉理由**（`⚪ 不做（…）` 括號裡的文字）與**已完成任務的單行證據**（`實作紀錄 / 證據` 與 `完成日期` 的值）；這兩處的文字不受審查保護，那是任務證據，不是分析內容。要分析內容受保護就別寫進這裡。未完成任務的 `完成日期`／`實作紀錄 / 證據` 只有空值或固定的範本佔位字串（`review_ledger.PLACEHOLDER_VALUES` 白名單，來源是範本與現有筆記實際用過的寫法）才略過，其他 `*（` 開頭的任意文字算進雜湊；重複的欄位行、不同縮排、續行、非標準值也都算進雜湊。
+- **待審逾期是強制機制**：任何一篇待審超過 7 天，所有人的 `verify_inbox` 都會失敗，流程 A／B 的提交閘門跟著被擋。若 Codex 道停擺超過 7 天，處理方式是修好 Codex 道，或由整合者改派 Chrome 道把它審完。
+- **task_cli 不可默默讓已審或免審的筆記失效**：`claim`／`complete`／`close` 先在暫存複本上套用操作、比較前後的內容雜湊；已審或免審（內容與基準相同）的筆記，操作會改變雜湊就拒絕、不寫檔，訊息列出讓雜湊改變的行與白名單。常見原因是未完成任務的 `完成日期`／`實作紀錄 / 證據` 不是空值也不是範本佔位字串（例如退回重開的任務保留舊證據）。受管筆記則由驗證器在作者提交時就報錯（`review_ledger._unfinished_task_errors`），免審舊筆記原樣凍結、不套用；待審的筆記本來就要再審，`close` 照舊允許。
+- **報告恰好被一筆紀錄引用**：`reviews/reports/<slug>/` 底下每個 `.md` 都要被該篇紀錄檔裡恰好一筆的 `report` 引用；紀錄條目被刪掉（例如手動解衝突時弄丟）或兩筆共用同一份報告都報錯，所以這種狀況會持續報錯，不只紅一次 CI。登記在 `removed.json` 的 slug 不檢查。
 - **force-push 與 CI 基準**：只追加檢查在 CI 靠 `AI_INBOX_REVIEW_BASE`（push 前的 main 或 PR 的 base）。force-push 改寫 main 之後那個 commit 不存在，若默默略過，整個檢查就失效；所以基準有設卻抓不到或不是 `HEAD` 的祖先，驗證器報錯而不是放行。**main 目前沒有分支保護**，force-push 會讓 CI 報錯而不是放行，但改寫已經發生；要不要開分支保護（禁止 force-push）由維護者決定。
 - **兩道並行入帳同一篇**（社群筆記會同時派 chrome 與 codex）：後推的一道 push 被拒、rebase 時 `reviews/<slug>.json` 會兩邊都追加而衝突。`commit_and_push` 的 `redo`：`rebase --abort`、`reset --hard origin/main`，用同一份報告文字在最新 main 上重新入帳（紀錄重新追加、報告序號重編），重跑「沒有引入新錯誤」檢查後再推，最多重做 2 次；重做也失敗（例如筆記內容已變、雜湊不符）才放棄並還原。
+- `cron` 在對專用工作樹做任何 git 操作（fetch、checkout、reset、clean）之前，不論它乾不乾淨，先確認路徑是專用工作樹、在 `git worktree list` 裡、而且是 linked worktree；不符就報錯、不做任何 git 操作。CI 的 `AI_INBOX_REVIEW_BASE` 在 PR 事件用 base（PR 的 synchronize 也帶 `before`，force-push 後它不是祖先，會誤報）。
 - 自動 reset／clean 與 `--commit` 只對 linked worktree（`git rev-parse --git-dir` 與 `--git-common-dir` 不同）：主 checkout 或一般 clone 被放在專用路徑也拒絕。
 - 待審期間任務結案的檢查看「完成日期 ≥ 待審起算日」：把完成日期倒填成更早的日期可以躲過，那在 diff 與 git 歷史裡是可見的竄改，不另防。
 - **`revised_at` 重置寬限（已知極限，不修）**：作者每次改內容都可以把 `revised_at` 往後填，讓 7 天寬限重新起算。待審期間任務鎖住、README 標 ⏳、佇列持續派審，所以拖延不會讓筆記變成「已審」，只是延後 `verify_inbox` 的逾期錯誤。

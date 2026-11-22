@@ -39,5 +39,6 @@ jobs:
       - name: Run Contract Verification
         env:
           # 審查紀錄只追加檢查的比對基準：push 前的 main 或 PR 的 base（全零 SHA 或抓不到時驗證器會略過）
-          AI_INBOX_REVIEW_BASE: ${{ github.event.before || github.event.pull_request.base.sha }}
+          # PR 的 synchronize 事件也帶 before，force-push 後它不是祖先會誤報，所以 PR 一律用 base
+          AI_INBOX_REVIEW_BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
         run: python tools/verify_inbox.py

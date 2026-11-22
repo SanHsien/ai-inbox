@@ -260,10 +260,52 @@ def _require_reviewed(notes: list[bi.Note], task: bi.Task) -> None:
         )
 
 
+def _changed_lines(before: str, after: str, limit: int = 4) -> list[str]:
+    import difflib
+
+    out = []
+    for line in difflib.unified_diff(before.splitlines(), after.splitlines(), lineterm="", n=0):
+        if line[:1] in "+-" and not line.startswith(("+++", "---")):
+            out.append(line if len(line) <= 90 else line[:87] + "...")
+    return out[:limit]
+
+
+def _require_hash_stable(notes: list[bi.Note], task: bi.Task, apply) -> None:
+    """已審或免審（內容與舊筆記基準相同）的筆記，task_cli 的操作不可默默改變分析內容雜湊：
+    雜湊一變，已審筆記就變回待審、剛做的結案又被判「審查通過前結案」，卡死。
+    先在暫存複本上套用操作、比較操作前後的 content_hash；會變就拒絕（不寫檔）。待審的筆記不在此限（它本來就要再審）。"""
+    import tempfile
+
+    import review_ledger as rl
+
+    if task.note.slug in rl.pending_slugs(notes):
+        return
+    path = task.note.path
+    original = path.read_bytes()
+    with tempfile.TemporaryDirectory() as tmp:
+        work = Path(tmp) / path.name
+        work.write_bytes(original)
+        apply(work)
+        after = work.read_text(encoding="utf-8")
+    before = original.decode("utf-8")
+    if rl.content_hash(before) == rl.content_hash(after):
+        return
+    lines = _changed_lines(rl.analysis_text(before), rl.analysis_text(after))
+    raise ValueError(
+        f"{task.id}：這個操作會改變 {path.name} 的分析內容雜湊；已審或免審的筆記會因此失效、被打回待審，"
+        "剛做的結案還會被判「審查通過前結案」。已拒絕，沒有寫檔。\n"
+        "讓雜湊改變的行（- 是操作前、+ 是操作後）：\n  " + "\n  ".join(lines or ["（讀不出差異，請比對 review_ledger.analysis_text）"]) + "\n"
+        "常見原因：未完成任務的「完成日期」「實作紀錄 / 證據」不是空值也不是範本佔位字串。要先把那一行改成空值或下列其中一個："
+        + "、".join(sorted(rl.PLACEHOLDER_VALUES)) + "。\n"
+        "那是內容修改：照 AGENTS.md 流程 C 第 3／4 步，在 written_by 用「; 」加上自己、填 revised_at（今天），送審；審過再結案。"
+    )
+
+
 def cmd_claim(args: argparse.Namespace) -> int:
     notes = bi.load_notes()
     task = find_task(notes, args.task_id)
     _require_reviewed(notes, task)
+    _require_hash_stable(notes, task, lambda work: apply_claim(work, args.task_id))
     new_status = apply_claim(task.note.path, args.task_id)
     bi.main([])
     print(f"[*] 已認領 {args.task_id}（{task.note.path.name} status -> {new_status}）")
@@ -278,6 +320,7 @@ def cmd_complete(args: argparse.Namespace) -> int:
         raise ValueError(f"{args.task_id} 的 DoD 要求產出的檔案不存在，不可結案：{', '.join(missing)}")
     _require_reviewed(notes, task)
     date_str = args.date or dt.date.today().isoformat()
+    _require_hash_stable(notes, task, lambda work: apply_complete(work, args.task_id, args.evidence, date_str))
     new_status = apply_complete(task.note.path, args.task_id, args.evidence, date_str)
     bi.main([])
     print(f"[*] 已完成 {args.task_id}（{task.note.path.name} status -> {new_status}）")
@@ -287,6 +330,7 @@ def cmd_complete(args: argparse.Namespace) -> int:
 def cmd_close(args: argparse.Namespace) -> int:
     notes = bi.load_notes()
     task = find_task(notes, args.task_id)
+    _require_hash_stable(notes, task, lambda work: apply_close(work, args.task_id, args.reason))
     new_status = apply_close(task.note.path, args.task_id, args.reason)
     bi.main([])
     print(f"[*] 已關閉 {args.task_id} 為不做（{task.note.path.name} status -> {new_status}）")

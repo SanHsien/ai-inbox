@@ -560,11 +560,10 @@ def bi_main(root: Path) -> None:
                    capture_output=True)
 
 
-def reset_dedicated_worktree(src: Path, wt: Path) -> bool:
-    """專用工作樹有殘留改動（上次中斷、提交失敗）就清掉：那是管線自己的工作樹，不是任何人的工作目錄。
-    動手前確認路徑確實是 STATE_DIR/repo、而且在 `git worktree list` 裡；回傳是否真的清過。"""
-    if not git(wt, "status", "--porcelain").stdout.strip():
-        return False
+def ensure_safe_dedicated_worktree(src: Path, wt: Path) -> None:
+    """對專用工作樹做任何 git 操作（fetch、checkout、reset、clean）之前先檢查，不論它乾不乾淨：
+    路徑是專用工作樹、在 `git worktree list` 裡、而且是 linked worktree。不符就報錯、不做任何 git 操作。
+    （乾淨的一般 clone 被放在專用路徑時，cron 的 fetch／checkout --detach 也會改動它的 HEAD，所以不能只在髒的時候才查。）"""
     if not is_dedicated_worktree(wt):
         raise PipelineError(f"{wt} 不是專用工作樹（{STATE_DIR} 下的 repo／repo-chrome），拒絕 reset／clean")
     listed = {os.path.normcase(str(Path(line[len("worktree "):]).resolve()))
@@ -573,6 +572,14 @@ def reset_dedicated_worktree(src: Path, wt: Path) -> bool:
         raise PipelineError(f"{wt} 不在 git worktree list 裡，拒絕 reset／clean（不確定它是專用工作樹）")
     if not is_linked_worktree(wt):
         raise PipelineError(f"{wt} 不是 linked worktree（git-dir 與 git-common-dir 相同：它是主 checkout 或一般 clone），拒絕 reset／clean")
+
+
+def reset_dedicated_worktree(src: Path, wt: Path) -> bool:
+    """專用工作樹有殘留改動（上次中斷、提交失敗）就清掉：那是管線自己的工作樹，不是任何人的工作目錄。
+    先檢查（ensure_safe_dedicated_worktree）再看乾不乾淨；回傳是否真的清過。"""
+    ensure_safe_dedicated_worktree(src, wt)
+    if not git(wt, "status", "--porcelain").stdout.strip():
+        return False
     git(wt, "reset", "--hard")
     git(wt, "clean", "-fd")
     return True
@@ -733,6 +740,7 @@ def cmd_cron(args) -> int:
         if not (wt / ".git").exists():
             git(src, "fetch", "-q", "origin")
             git(src, "worktree", "add", "--detach", str(wt), "origin/main")
+        ensure_safe_dedicated_worktree(src, wt)  # 在 fetch／checkout 之前，不論乾不乾淨
         git(wt, "fetch", "-q", "origin")
         if reset_dedicated_worktree(src, wt):
             print(f"[*] 專用工作樹 {wt} 有上次殘留的改動，已 reset／clean（那是管線自己的工作樹）")

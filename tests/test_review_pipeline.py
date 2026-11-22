@@ -596,6 +596,40 @@ class LinkedWorktreeOnlyTest(GitFlowBase):
                 rp.require_dedicated_worktree(clone, clean=False)
         self.assertIn("linked worktree", str(ctx.exception))
 
+    def test_cron_refuses_a_clean_plain_clone_before_any_git_operation(self):
+        """S6：乾淨的一般 clone 放在專用路徑，cron 的 fetch／checkout --detach 也會動它的 HEAD；不論乾不乾淨都先檢查。"""
+        clone = self.t / "state3" / "repo"
+        clone.parent.mkdir()
+        run_git(self.t, "clone", "-q", str(self.origin), str(clone))
+        head = run_git(clone, "rev-parse", "HEAD").strip()
+        branch = run_git(clone, "rev-parse", "--abbrev-ref", "HEAD").strip()
+        tracking = run_git(clone, "rev-parse", "origin/main").strip()
+        other = self.t / "other"  # origin 往前走，fetch 會讓 origin/main 追蹤分支移動
+        run_git(self.t, "clone", "-q", str(self.origin), str(other))
+        (other / "x.txt").write_text("x\n", encoding="utf-8")
+        run_git(other, "add", "-A")
+        run_git(other, "commit", "-q", "-m", "origin moves on")
+        run_git(other, "push", "-q", "origin", "main")
+        args = unittest.mock.Mock(lane="codex", max=2, legacy=0)
+        with unittest.mock.patch.object(rp, "STATE_DIR", clone.parent), unittest.mock.patch.object(bi, "REPO_ROOT", self.src):
+            with self.assertRaises(rp.PipelineError) as ctx:
+                rp.cmd_cron(args)
+        self.assertTrue("worktree list" in str(ctx.exception) or "linked worktree" in str(ctx.exception), str(ctx.exception))
+        self.assertEqual(head, run_git(clone, "rev-parse", "HEAD").strip())
+        self.assertEqual(branch, run_git(clone, "rev-parse", "--abbrev-ref", "HEAD").strip())
+        self.assertEqual(tracking, run_git(clone, "rev-parse", "origin/main").strip())  # 沒有 fetch
+        self.assertEqual("", run_git(clone, "status", "--porcelain").strip())
+
+    def test_safety_check_applies_even_when_the_tree_is_clean(self):
+        clone = self.t / "state4" / "repo"
+        clone.parent.mkdir()
+        run_git(self.t, "clone", "-q", str(self.origin), str(clone))
+        with unittest.mock.patch.object(rp, "STATE_DIR", clone.parent):
+            with self.assertRaises(rp.PipelineError):
+                rp.reset_dedicated_worktree(clone, clone)  # 乾淨也先檢查，不是「乾淨就直接 return False」
+        with unittest.mock.patch.object(rp, "STATE_DIR", self.state):
+            self.assertFalse(rp.reset_dedicated_worktree(self.src, self.wt))  # 真的 linked worktree 且乾淨：正常
+
     def test_real_linked_worktree_is_accepted(self):
         self.assertTrue(rp.is_linked_worktree(self.wt))
         self.assertFalse(rp.is_linked_worktree(self.src))

@@ -102,6 +102,7 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
 3. **提交與推送**（驗證通過才提交）：
    - `python tools/verify_inbox.py && python -m unittest discover -s tests && git add -A && git commit -m "chore(tasks): mark T-YYYYMMDD-XX as done" && git push`
    - 筆記還在「待獨立審查」時，`claim`／`complete` 會被拒絕（任務可能建立在還沒查核的前提上）；`close` 不受限。
+   - `task_cli` 拒絕「會讓已審筆記失效」的操作（操作會改變分析內容雜湊，例如未完成任務的「完成日期」「實作紀錄 / 證據」不是空值或範本佔位字串）時，照錯誤訊息先改那一行並送審（流程 C 第 3／4 步），審過再結案。
 4. **開新 Session 派工與完工回報**：Antigravity、Claude、Codex、Hermes 四套桌面端開新對話、派工與回報的指令，見 [`docs/agent-dispatch.md`](docs/agent-dispatch.md)。
 
 ---

@@ -410,6 +410,22 @@ def _validate_entry(name: str, idx: int, r, slug: str, root: Path, today: dt.dat
     return ident, errs
 
 
+def _unfinished_task_errors(note: bi.Note) -> list[str]:
+    """受管筆記（不在基準、或內容與基準不同）裡，未完成任務的「完成日期」「實作紀錄 / 證據」只能是空值或範本佔位字串。
+    其他文字會算進分析內容雜湊，等到有人 task_cli complete 時雜湊才變、已審筆記失效；讓問題在作者提交時就被擋。
+    免審舊筆記不套用（原樣凍結）。"""
+    errs = []
+    for t in note.tasks:
+        if t.done:
+            continue
+        for key in ("完成日期", "實作紀錄 / 證據"):
+            v = t.fields.get(key, "").strip()
+            if v and v not in PLACEHOLDER_VALUES:
+                errs.append(f"{note.path.name}: {t.id} 未完成任務的「{key}」是 {v[:40]!r}；未完成任務的這兩欄只能是空的或範本佔位字串"
+                            f"（{'、'.join(sorted(PLACEHOLDER_VALUES))}）；要寫實作紀錄請在結案時用 task_cli complete")
+    return errs
+
+
 def _first_date(text: str) -> dt.date | None:
     m = re.search(r"\d{4}-\d{2}-\d{2}", str(text))
     return _date(m.group(0)) if m else None
@@ -474,6 +490,8 @@ def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path |
                 + (f"；不合法：{', '.join(bad)}" if bad else "")
                 + ("。這篇是改過內容的舊筆記，改的人要把自己加進去並填 revised_at" if slug in legacy else "")
             )
+    if governed:
+        st.errors.extend(_unfinished_task_errors(note))
     analyzed = _date(note.meta.get("analyzed_at"))
     revised_raw = note.meta.get("revised_at")
     revised = _date(revised_raw) if revised_raw else None
@@ -771,8 +789,33 @@ def evaluate_all(notes: list[bi.Note], today: dt.date | None = None, root: Path 
                 continue
             if p.stem not in states and p.stem not in gone:
                 errors.append(f"reviews/{p.name}: 對應的筆記 notes/{p.stem}.md 不存在{REMOVE_HINT}")
+        errors.extend(_report_reference_errors(root, gone))
         errors.extend(committed_history_errors(root, gone))
     return states, errors
+
+
+def _report_reference_errors(root: Path, gone: set[str]) -> list[str]:
+    """reviews/reports/<slug>/ 底下每個 .md 都必須被該篇紀錄檔裡恰好一筆的 report 引用。
+    沒被引用（紀錄條目被刪掉、手動解衝突時弄丟一筆）或被兩筆以上引用都報錯，讓這種狀況持續報錯，不只紅一次 CI。
+    已登記移出的 slug 不檢查。"""
+    base = reviews_dir(root) / REPORTS_DIRNAME
+    if not base.is_dir():
+        return []
+    errors = []
+    for folder in sorted(p for p in base.iterdir() if p.is_dir() and p.name not in gone):
+        reviews, _ = load_ledger(folder.name, root)
+        refs: dict[str, int] = {}
+        for r in reviews:
+            if isinstance(r, dict) and isinstance(r.get("report"), str):
+                refs[r["report"]] = refs.get(r["report"], 0) + 1
+        for report in sorted(folder.glob("*.md")):
+            rel = f"{REVIEWS_DIRNAME}/{REPORTS_DIRNAME}/{folder.name}/{report.name}"
+            n = refs.get(rel, 0)
+            if n != 1:
+                errors.append(f"{rel}: 報告被 {n} 筆紀錄引用（需恰好 1 筆）；"
+                              + ("紀錄檔 " + f"reviews/{folder.name}.json 裡找不到對應的條目（可能被刪掉或解衝突時弄丟）" if n == 0
+                                 else "同一份報告不能被兩筆紀錄共用"))
+    return errors
 
 
 def pending_slugs(notes: list[bi.Note]) -> set[str]:

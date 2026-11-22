@@ -1,5 +1,6 @@
 """tools/review_ledger.py：獨立審查紀錄的每條失敗條件都要有反例（docs/review-pipeline-plan.md 2.2、2.5 節）。"""
 
+import contextlib
 import datetime as dt
 import hashlib
 import json
@@ -401,8 +402,14 @@ class HashHidingTest(Base):
                 self.assertEqual(before, after, (key, ok))
 
     def test_every_placeholder_used_by_repo_notes_is_whitelisted(self):
-        """白名單要涵蓋現有筆記裡未勾選任務實際用過的固定寫法（不然 task_cli 操作會讓那些筆記雜湊變動）。"""
-        for note in bi.load_notes():
+        """白名單要涵蓋「凍結的舊筆記」（reviews/legacy-baseline.json 列出、且內容仍與基準相同）裡未勾選任務實際用過的固定寫法，
+        不然 task_cli 操作會讓那些筆記雜湊變動。新筆記不在這裡把關：它們由驗證器的「未完成任務佔位」規則
+        （review_ledger._unfinished_task_errors）擋在作者提交時，另一個 agent 寫了合規的新筆記也不會讓這個測試變紅。"""
+        legacy, errors = rl.load_legacy()
+        self.assertEqual([], errors)
+        frozen = [n for n in bi.load_notes() if legacy.get(n.slug) == rl.content_hash(n.path.read_text(encoding="utf-8"))]
+        self.assertGreater(len(frozen), 100)
+        for note in frozen:
             for task in note.tasks:
                 if task.done:
                     continue
@@ -1023,7 +1030,8 @@ class CommittedHistoryTest(Base):
         new = self.root / "reviews" / "reports" / self.slug / "2026-11-24-new.md"
         new.write_text("新報告\n", encoding="utf-8")
         run_git(self.root, "add", "-A")
-        self.assertEqual([], self.errors())
+        # 只看「對照基準」的只追加錯誤（這份新報告沒被紀錄引用，那是 S5 的另一條檢查）
+        self.assertEqual([], [e for e in self.errors() if "對照" in e])
 
     def errors(self):
         return rl.evaluate_all([bi.parse_note(self.note_path())], TODAY, self.root)[1]
@@ -1069,7 +1077,7 @@ class CommittedHistoryTest(Base):
             (other / "reviews").mkdir()
             self.assertEqual([], rl.committed_history_errors(other))
         (self.root / "reviews" / "reports" / self.slug / "new.md").write_text("x", encoding="utf-8")
-        self.assertEqual([], self.errors())
+        self.assertEqual([], [e for e in self.errors() if "對照" in e])
 
 
 class EscalationTest(Base):
@@ -1157,6 +1165,200 @@ class EscalationTest(Base):
         st = self.state()
         self.assertFalse(st.reviewed)
         self.assertTrue(any("audit 的 scope 必須涵蓋全部範圍" in e for e in st.errors), st.errors)
+
+
+class TaskCliGuardTest(Base):
+    """S1：task_cli 不可默默讓已審或免審的筆記失效（操作會改變分析內容雜湊就拒絕、不寫檔）；
+    驗證器也要在作者提交時就擋掉未完成任務的非白名單佔位。"""
+
+    OLD_EVIDENCE = "  - **實作紀錄 / 證據**：舊證據（退回重開的任務保留的）\n"
+    ANCHOR = "  - **驗收標準（DoD）**：做完\n"
+
+    def run_cmd(self, cmd, args, legacy=None):
+        patches = [unittest.mock.patch.object(bi, "REPO_ROOT", self.root), unittest.mock.patch.object(bi, "NOTES_DIR", self.root / "notes"),
+                   unittest.mock.patch.object(bi, "main"), unittest.mock.patch.object(bi, "missing_dod_artifacts", return_value=[])]
+        if legacy is not None:
+            patches.append(unittest.mock.patch.object(rl, "load_legacy", return_value=(legacy, [])))
+        evaluate_all = rl.evaluate_all
+
+        def pending_on_test_day(notes):  # 測試資料的日期是 2026-11-23～25，用真實的今天會被判「審查日期晚於今天」
+            states, _ = evaluate_all(notes, TODAY)
+            return {s for s, st in states.items() if st.pending}
+
+        patches.append(unittest.mock.patch.object(rl, "pending_slugs", side_effect=pending_on_test_day))
+        with contextlib.ExitStack() as stack:
+            for p in patches:
+                stack.enter_context(p)
+            return cmd(args)
+
+    def complete(self, legacy=None):
+        return self.run_cmd(tc.cmd_complete, tc.argparse.Namespace(task_id="T-20261122-01", evidence="commit abc", date="2026-11-24"), legacy)
+
+    def claim(self, legacy=None):
+        return self.run_cmd(tc.cmd_claim, tc.argparse.Namespace(task_id="T-20261122-01"), legacy)
+
+    def close(self, legacy=None):
+        return self.run_cmd(tc.cmd_close, tc.argparse.Namespace(task_id="T-20261122-01", reason="不做"), legacy)
+
+    def add_old_evidence(self):
+        path = self.note_path()
+        path.write_text(path.read_text(encoding="utf-8").replace(self.ANCHOR, self.ANCHOR + self.OLD_EVIDENCE, 1), encoding="utf-8")
+
+    def assert_refused(self, call, **kw):
+        before = self.note_path().read_bytes()
+        with self.assertRaises(ValueError) as ctx:
+            call(**kw)
+        self.assertIn("分析內容雜湊", str(ctx.exception))
+        self.assertIn("流程 C", str(ctx.exception))
+        self.assertEqual(before, self.note_path().read_bytes(), "被拒絕的操作不可寫檔")
+        return str(ctx.exception)
+
+    def test_reviewed_note_with_non_whitelisted_evidence_refuses_complete(self):
+        """(a) 已審筆記帶非白名單證據行（規則上線前就審過的情況）：complete 被拒、檔案未變，訊息指出哪一行與怎麼改。"""
+        self.write_note()
+        self.add_old_evidence()
+        with unittest.mock.patch.object(rl, "_unfinished_task_errors", return_value=[]):
+            self.add_review()
+            self.assertTrue(self.state().reviewed)
+            msg = self.assert_refused(self.complete)
+        self.assertIn("舊證據", msg)  # 讓雜湊改變的那一行
+        self.assertIn("*（待完成後由執行 Agent 填寫）*", msg)  # 白名單
+
+    def test_nonstandard_status_line_of_a_reviewed_note_refuses_claim(self):
+        self.write_note()
+        path = self.note_path()
+        path.write_text(path.read_text(encoding="utf-8").replace(self.ANCHOR, self.ANCHOR + "  - **狀態**：🟡 進行中（等人回覆）\n", 1), encoding="utf-8")
+        self.add_review()
+        self.assertTrue(self.state().reviewed)
+        self.assert_refused(self.claim)
+
+    def test_exempt_legacy_note_refuses_the_same_operations(self):
+        """(b) 免審舊筆記（內容與基準相同）同樣被拒。"""
+        self.write_note(written_by="")
+        self.add_old_evidence()
+        legacy = {self.slug: self.sha()}
+        self.assert_refused(self.complete, legacy=legacy)
+        self.assertEqual(self.sha(), legacy[self.slug])
+
+    def test_standard_notes_can_claim_complete_and_close(self):
+        """(c) 標準筆記照常：已審的與免審的都行，操作前後雜湊不變。"""
+        for legacy_note in (False, True):
+            for op in ("claim", "complete", "close"):
+                self.setUp()
+                if legacy_note:
+                    self.write_note(written_by="")
+                    legacy = {self.slug: self.sha()}
+                else:
+                    self.write_note()
+                    self.add_review()
+                    legacy = None
+                before = self.sha()
+                getattr(self, op)(legacy=legacy)
+                self.assertEqual(before, self.sha(), (legacy_note, op))
+                if op == "complete":
+                    self.assertIn("- [x] ", self.note_path().read_text(encoding="utf-8"))
+
+    def test_close_of_a_pending_note_is_not_blocked(self):
+        """待審的筆記本來就要再審，close 照舊允許（這裡只擋「會讓已審／免審筆記失效」的操作）。"""
+        self.write_note()
+        self.add_old_evidence()
+        self.assertTrue(self.state().pending)
+        self.close()
+        self.assertIn("⚪ 不做", self.note_path().read_text(encoding="utf-8"))
+
+    def test_validator_rejects_non_whitelisted_placeholder_on_managed_notes(self):
+        """(d) 受管筆記帶非白名單佔位 → 報錯，讓作者提交時就被擋；免審舊筆記不套用。"""
+        self.write_note()
+        self.add_old_evidence()
+        errors = self.state().errors
+        self.assertTrue(any("T-20261122-01" in e and "只能是空的或範本佔位" in e and "task_cli complete" in e for e in errors), errors)
+        for hidden in ("*（隱藏分析：其實 X 不成立）", "*（待實作後由執行者補上）*"):
+            self.setUp()
+            self.write_note()
+            path = self.note_path()
+            path.write_text(path.read_text(encoding="utf-8").replace(self.ANCHOR, self.ANCHOR + f"  - **完成日期**：{hidden}\n", 1), encoding="utf-8")
+            self.assertTrue(any("只能是空的或範本佔位" in e for e in self.state().errors), hidden)
+        self.setUp()
+        self.write_note(written_by="")
+        self.add_old_evidence()
+        self.assertEqual([], self.state(legacy={self.slug: self.sha()}).errors)
+
+    def test_validator_accepts_templates_and_completed_tasks(self):
+        self.write_note()
+        path = self.note_path()
+        path.write_text(path.read_text(encoding="utf-8").replace(
+            self.ANCHOR, self.ANCHOR + "  - **完成日期**：*（完成時填 YYYY-MM-DD）*\n  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*\n", 1), encoding="utf-8")
+        self.assertEqual([], [e for e in self.state().errors if "未完成任務" in e])
+        tc.apply_complete(path, "T-20261122-01", "commit abc 這是真的證據", "2026-11-24")
+        self.assertEqual([], [e for e in self.state().errors if "未完成任務" in e])
+
+    def test_real_repo_note_style_T_20261023_01_is_refused_on_a_synthetic_copy(self):
+        """(e) 用 repo 真實筆記 T-20261023-01 的寫法（退回重開的任務保留舊證據）做合成複本，免審狀態下 complete 被拒。"""
+        real = bi.REPO_ROOT / "notes" / "2026-10-23-claude-plugin-security-guidance.md"
+        if not real.is_file():
+            self.skipTest("真實筆記已不存在")
+        self.slug = real.stem
+        self.note_path().write_bytes(real.read_bytes())
+        task = next((t for t in bi.parse_note(self.note_path()).tasks if t.id == "T-20261023-01"), None)
+        if task is None or task.done or not task.fields.get("實作紀錄 / 證據", "").strip() \
+                or task.fields["實作紀錄 / 證據"].strip() in rl.PLACEHOLDER_VALUES:
+            self.skipTest("這個任務已不是『未完成但保留舊證據』的寫法")
+        legacy = {self.slug: self.sha()}
+        before = self.note_path().read_bytes()
+        with self.assertRaises(ValueError) as ctx:
+            self.run_cmd(tc.cmd_complete, tc.argparse.Namespace(task_id="T-20261023-01", evidence="commit abc", date="2026-11-24"), legacy)
+        self.assertIn("分析內容雜湊", str(ctx.exception))
+        self.assertEqual(before, self.note_path().read_bytes())
+
+
+class ReportReferenceTest(Base):
+    """S5：reviews/reports/<slug>/ 底下每個 .md 都必須被該篇紀錄檔裡恰好一筆的 report 引用。"""
+
+    def errors(self):
+        return rl.evaluate_all([bi.parse_note(self.note_path())], TODAY, self.root)[1]
+
+    def test_normal_ledger_is_fine(self):
+        self.write_note()
+        self.add_review()
+        self.add_review(reviewer=OTHER_CODEX)
+        self.assertEqual([], self.errors())
+
+    def test_report_without_a_ledger_entry_is_an_error(self):
+        """手動解衝突時弄掉一筆紀錄、報告還在：持續報錯。"""
+        self.write_note()
+        self.add_review()
+        self.add_review(reviewer=OTHER_CODEX)
+        path = self.root / "reviews" / f"{self.slug}.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        data["reviews"].pop()
+        path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        errors = self.errors()
+        self.assertTrue(any("被 0 筆紀錄引用" in e for e in errors), errors)
+
+    def test_report_referenced_by_two_entries_is_an_error(self):
+        self.write_note()
+        self.add_review()
+        path = self.root / "reviews" / f"{self.slug}.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        data["reviews"].append(dict(data["reviews"][0]))
+        path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        errors = self.errors()
+        self.assertTrue(any("被 2 筆紀錄引用" in e for e in errors), errors)
+
+    def test_report_folder_without_any_ledger_is_an_error(self):
+        self.write_note()
+        self.add_review()
+        (self.root / "reviews" / f"{self.slug}.json").unlink()
+        self.assertTrue(any("被 0 筆紀錄引用" in e for e in self.errors()))
+
+    def test_removed_slug_is_not_checked(self):
+        self.write_note()
+        self.add_review()
+        (self.root / "reviews" / f"{self.slug}.json").unlink()
+        self.note_path().unlink()
+        (self.root / "reviews" / rl.REMOVED_NAME).write_text(json.dumps({"removed": [
+            {"slug": self.slug, "removed_at": "2026-11-24", "reason": "移出"}]}), encoding="utf-8")
+        self.assertEqual([], rl.evaluate_all([], TODAY, self.root)[1])
 
 
 class ExemptNoteReviewOutcomeTest(Base):
