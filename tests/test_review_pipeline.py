@@ -724,3 +724,19 @@ class VerifyErrorsParsingTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class NoWindowTest(unittest.TestCase):
+    """排程用 pythonw 執行：每個子行程都要帶 CREATE_NO_WINDOW，不然 git 等程式會各開一個終端機分頁。"""
+
+    def test_every_subprocess_call_passes_no_window(self):
+        import ast
+
+        for name in ("review_pipeline.py", "review_ledger.py"):
+            src = (Path(__file__).resolve().parent.parent / "tools" / name).read_text(encoding="utf-8")
+            for node in ast.walk(ast.parse(src)):
+                if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) \
+                        and node.func.attr in ("run", "Popen", "call", "check_output", "check_call") \
+                        and isinstance(node.func.value, ast.Name) and node.func.value.id == "subprocess":
+                    flags = [k for k in node.keywords if k.arg == "creationflags"]
+                    self.assertTrue(flags, f"{name}:{node.lineno} 的 subprocess.{node.func.attr} 沒有 creationflags=NO_WINDOW")

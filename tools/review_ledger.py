@@ -29,6 +29,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_index as bi  # noqa: E402
 
+# 排程用 pythonw 執行時，git 等主控台程式不要各開一個終端機分頁（agent-relay 2026-10-21 的教訓）
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+
 REVIEWS_DIRNAME = "reviews"
 REPORTS_DIRNAME = "reports"
 LEGACY_BASELINE_NAME = "legacy-baseline.json"
@@ -682,7 +685,7 @@ def _grace(st: ReviewState, note: bi.Note, today: dt.date) -> ReviewState:
 def _git(root: Path, *args: str):
     try:
         return subprocess.run(["git", "-C", str(root), *args], capture_output=True, text=True,
-                              encoding="utf-8", errors="replace", timeout=60)
+                              encoding="utf-8", errors="replace", timeout=60, creationflags=NO_WINDOW)
     except (OSError, subprocess.SubprocessError):
         return None
 

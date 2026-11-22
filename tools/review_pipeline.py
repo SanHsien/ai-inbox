@@ -355,7 +355,8 @@ def codex_ready() -> tuple[bool, str]:
     status = Path(os.environ.get("AI_INBOX_CODEX_STATUS") or FLEET_CODEX_STATUS)
     if status.is_file():
         for attempt in range(2):  # bridge 的 healthz 偶爾一次不通（2026-11-21 實測），隔 30 秒再查一次
-            r = subprocess.run([sys.executable, str(status)], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120)
+            r = subprocess.run([sys.executable, str(status)], capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=120,
+                               creationflags=rl.NO_WINDOW)
             if r.returncode != 4 or attempt:
                 break
             time.sleep(30)
@@ -381,7 +382,7 @@ def run_codex(order: WorkOrder, note: bi.Note, root: Path, model: str, timeout_m
         try:
             # prompt 走 stdin 送完即關閉（stdin 不關會卡在 Reading additional input）
             proc = subprocess.run(argv, input=prompt.encode("utf-8"), stdout=out, stderr=subprocess.STDOUT,
-                                  timeout=timeout_min * 60, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+                                  timeout=timeout_min * 60, creationflags=rl.NO_WINDOW)
         except subprocess.TimeoutExpired:
             raise PipelineError(f"codex 超過 {timeout_min} 分鐘，紀錄在 {run_dir}") from None
     events = (run_dir / "events.jsonl").read_text(encoding="utf-8", errors="replace")
@@ -416,7 +417,8 @@ def report_from_events(events: str) -> str:
 # ---------- 提交 ----------
 
 def git(root: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess:
-    r = subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    r = subprocess.run(["git", *args], cwd=root, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                       creationflags=rl.NO_WINDOW)
     if check and r.returncode != 0:
         raise PipelineError(f"git {' '.join(args)} 失敗（exit {r.returncode}）：{(r.stdout + r.stderr).strip()[-500:]}")
     return r
@@ -474,7 +476,7 @@ def require_dedicated_worktree(root: Path, clean: bool = True) -> None:
 def verify_errors(root: Path) -> set[str]:
     """跑 verify_inbox，回傳錯誤行集合（`  - ` 開頭的行）。失敗卻解析不到錯誤行＝工具壞了，不當成沒事。"""
     r = subprocess.run([sys.executable, "-B", str(root / "tools" / "verify_inbox.py")], cwd=root,
-                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", creationflags=rl.NO_WINDOW)
     errs = {m["msg"].strip() for m in (re.match(r"^  - (?P<msg>.*)$", line) for line in r.stdout.splitlines()) if m}
     if r.returncode != 0 and not errs:
         raise PipelineError("verify_inbox 失敗但解析不到錯誤行（工具壞了？）：\n" + (r.stdout + r.stderr)[-1500:])
@@ -557,7 +559,7 @@ def commit_and_push(root: Path, message: str, files: list[str], base_errors: set
 
 def bi_main(root: Path) -> None:
     subprocess.run([sys.executable, "-B", str(root / "tools" / "build_index.py")], cwd=root, check=True,
-                   capture_output=True)
+                   capture_output=True, creationflags=rl.NO_WINDOW)
 
 
 def ensure_safe_dedicated_worktree(src: Path, wt: Path) -> None:
@@ -751,7 +753,8 @@ def cmd_cron(args) -> int:
                    "--legacy", str(args.legacy), "--commit"]
         else:
             cmd = [sys.executable, "-B", str(script), "queue", "--lane", "chrome", "--legacy", str(args.legacy)]
-        r = subprocess.run(cmd, cwd=wt, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        r = subprocess.run(cmd, cwd=wt, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                           creationflags=rl.NO_WINDOW)
         log = STATE_DIR / f"{args.lane}-{dt.date.today():%Y%m}.log"
         with log.open("a", encoding="utf-8") as fh:
             fh.write(f"\n## {dt.datetime.now():%Y-%m-%d %H:%M} exit {r.returncode}\n{r.stdout}{r.stderr}")
