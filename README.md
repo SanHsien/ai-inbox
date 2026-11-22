@@ -39,13 +39,14 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 260 項任務：🔴 未做 7／🟡 進行中 0／🟢 已做 174／⚪ 不做 79
+> 共 261 項任務：🔴 未做 8／🟡 進行中 0／🟢 已做 174／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
+| `T-20261122-04` | 🔴 未做 | 中 | 評估 Gemini API Tool Retrieval（按需動態載入工具 Schema 與 `defer_loading` / `tool_search` 機制）在多工具 Agent 實作之整合規範，並納入 `docs/gemini-tool-retrieval-and-mcp-spec.md` | `C:\GitHub\ai-inbox\docs\gemini-tool-retrieval-and-mcp-spec.md`（收錄於集群 3） | [2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | 2026-11-22 |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
 | `T-20261120-07` | 🔴 未做 | 低 | 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md` | `C:\GitHub\ai-inbox\docs\code-as-video-creative-patterns.md`（收錄於集群 2） | [2026-11-20-nicekate-opus-5-5-code-as-video-10-cases](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | 2026-11-20 |
 | `T-20261121-01` | 🔴 未做 | 低 | 評估引入 `PrefectHQ/fastmcp` 作為本機自訂 Python MCP Server 標準腳手架與安全性規範 | `C:\GitHub\ai-inbox\docs\fastmcp-scaffolding-eval.md` | [2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | 2026-11-21 |
@@ -495,6 +496,7 @@
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Claude 17 招進階實踐——Anthropic Agent 記憶架構（CL-Bench +28%）、精簡記憶治理與防自我污染提示法](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | `claude`, `anthropic`, `agent-memory` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Gemini Gems 轉型 Skills 實戰——SKILL.md 跨平台通用規範與防跳步首句定錨 Prompting](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | `gemini`, `gemini-skills`, `skill-md` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Google AI Pro 八大工具全景實測——Antigravity 電腦檔案代理、Flow 影片生成與跨產品 AI 點數制](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | `google-ai-pro`, `gemini`, `antigravity` | 0 / 1 |
+| 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群技術評析：Will 保哥評釋 Gemini API Tool Retrieval——按需動態載入工具 Schema、支援 MCP 與 Prefix Caching 的輕量級 Agent 架構](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | `gemini-api`, `tool-retrieval`, `tool-calling` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -597,6 +599,7 @@
 - FastMCP框架：[FastMCP開源框架評估](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md)
 - Gemini技能規格：[Gemini技能教學評估](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md)
 - Google八工具：[GoogleAIPro八工具評估](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md)
+- Gemini工具檢索：[Gemini工具按需檢索評估](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
