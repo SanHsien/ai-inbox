@@ -175,6 +175,25 @@ class IngestTest(PipelineBase):
                 self.assertIn("runtime 只接受", str(ctx.exception))
         self.assertFalse((self.root / "reviews" / f"{self.slug}.json").exists())
 
+    def test_reviewer_is_normalized_before_it_is_recorded(self):
+        """R8：尾端空白的 reviewer 入帳後，紀錄與報告 header 是同一個正規化字串，驗證器通過（不是紀錄帶空白、header 被 strip）。"""
+        self.write_note()
+        entry = self.ingest(report(), reviewer=f"  {REVIEWER} \n")
+        self.assertEqual(REVIEWER, entry["reviewer"])
+        st = rl.evaluate(bi.parse_note(self.note_path()), {}, dt.date(2026, 11, 23), self.root)
+        self.assertEqual([], st.errors)
+
+    def test_uppercase_reviewer_is_rejected(self):
+        """R7：UUID、model、runtime 必須小寫（大寫會讓抽查結果可以靠改大小寫躲）。"""
+        self.write_note()
+        uuid = sess(0xabcdef)  # 含十六進位字母，大寫才會和小寫不同
+        for reviewer in (f"codex/gpt-6.1-sol@{uuid}".upper(), f"codex/GPT-6.1-sol@{uuid}", f"Codex/gpt-6.1-sol@{uuid}",
+                         f"codex/gpt-6.1-sol@{uuid.upper()}"):
+            with self.assertRaises(rp.PipelineError, msg=reviewer) as ctx:
+                self.ingest(report(), reviewer=reviewer)
+            self.assertIn("格式不合法", str(ctx.exception))
+        self.assertFalse((self.root / "reviews" / f"{self.slug}.json").exists())
+
     def test_entry_records_hash_version(self):
         self.write_note()
         self.assertEqual(rl.HASH_VERSION, self.ingest(report())["hash_version"])
@@ -545,6 +564,116 @@ class DedicatedWorktreeTest(GitFlowBase):
                 rp.reset_dedicated_worktree(self.src, fake)
         self.assertIn("worktree list", str(ctx.exception))
         self.assertTrue((fake / "mine.txt").exists())
+
+
+class LinkedWorktreeOnlyTest(GitFlowBase):
+    """R9：reset／clean 與自動提交只對 linked worktree；主 checkout 或一般 clone 放在專用路徑也一律拒絕。"""
+
+    def plain_clone_at_state_repo(self) -> Path:
+        other_state = self.t / "state2"
+        other_state.mkdir()
+        clone = other_state / "repo"
+        run_git(self.t, "clone", "-q", str(self.origin), str(clone))
+        (clone / "mine.txt").write_text("人的檔案", encoding="utf-8")
+        (clone / "README.md").write_text("人的修改\n", encoding="utf-8")
+        return clone
+
+    def test_reset_refuses_a_plain_clone_at_the_dedicated_path(self):
+        clone = self.plain_clone_at_state_repo()
+        with unittest.mock.patch.object(rp, "STATE_DIR", clone.parent):
+            self.assertFalse(rp.is_linked_worktree(clone))
+            with self.assertRaises(rp.PipelineError) as ctx:
+                rp.reset_dedicated_worktree(clone, clone)
+        self.assertIn("linked worktree", str(ctx.exception))
+        self.assertTrue((clone / "mine.txt").exists())
+        self.assertEqual("人的修改", (clone / "README.md").read_text(encoding="utf-8").strip())
+
+    def test_require_refuses_a_plain_clone_at_the_dedicated_path(self):
+        clone = self.plain_clone_at_state_repo()
+        run_git(clone, "checkout", "-q", "--detach")
+        with unittest.mock.patch.object(rp, "STATE_DIR", clone.parent):
+            with self.assertRaises(rp.PipelineError) as ctx:
+                rp.require_dedicated_worktree(clone, clean=False)
+        self.assertIn("linked worktree", str(ctx.exception))
+
+    def test_real_linked_worktree_is_accepted(self):
+        self.assertTrue(rp.is_linked_worktree(self.wt))
+        self.assertFalse(rp.is_linked_worktree(self.src))
+
+
+class ParallelLanesTest(GitFlowBase):
+    """R3：同一篇社群筆記同時派 chrome 與 codex 兩道，後推的不可因 rebase 衝突丟掉審查結果。"""
+
+    CHROME = f"claude/opus-5.5@{sess(60)}"
+
+    def setUp(self):
+        super().setUp()
+        self.chrome_wt = self.state / "repo-chrome"
+        run_git(self.src, "worktree", "add", "-q", "--detach", str(self.chrome_wt), "origin/main")
+        self.sha = rl.content_hash((self.wt / "notes" / f"{self.SLUG}.md").read_text(encoding="utf-8"))
+
+    def commit_in(self, root, files, snap, redo=None):
+        def rebuild(r):
+            with (r / "README.md").open("a", encoding="utf-8", newline="\n") as fh:
+                fh.write("rebuilt\n")
+        with unittest.mock.patch.object(rp, "bi_main", side_effect=rebuild), \
+                unittest.mock.patch.object(rp, "verify_errors", return_value=set()):
+            return rp.commit_and_push(root, "chore(review): test", files, set(), snap, redo=redo)
+
+    def ingest_in(self, root, reviewer, scope, text):
+        snap = rp.Snapshot(root)
+        snap.track("README.md")
+        entry = rp.ingest(self.SLUG, text, reviewer, "chrome" if reviewer == self.CHROME else "codex", "review", list(scope),
+                          self.sha, root=root, snapshot=snap)
+        return entry, rp.entry_files(self.SLUG, entry), snap
+
+    def test_second_lane_is_redone_on_latest_main_instead_of_being_dropped(self):
+        _, files1, snap1 = self.ingest_in(self.chrome_wt, self.CHROME, ["source"], report(scope=["source"]))
+        self.commit_in(self.chrome_wt, files1, snap1)  # chrome 先推
+        codex_scope = ["facts", "evidence", "task_impact"]
+        codex_report = report(scope=codex_scope)
+        _, files2, snap2 = self.ingest_in(self.wt, REVIEWER, codex_scope, codex_report)
+        job = dict(slug=self.SLUG, report=codex_report, reviewer=REVIEWER, lane="codex", role="review", scopes=codex_scope,
+                   sha=self.sha, source_ref="")
+        self.commit_in(self.wt, files2, snap2, redo=rp.make_redo(self.wt, [job]))  # codex 後推：push 被拒、rebase 衝突
+        log = self.origin_log()
+        self.assertEqual(3, len(log))  # seed、chrome 的、codex 的（只多一個 commit）
+        self.assertEqual(1, int(run_git(self.origin, "rev-list", "--count", f"{log[1]}..{log[0]}").strip()))
+        ledger = json.loads(run_git(self.origin, "show", f"main:reviews/{self.SLUG}.json"))
+        self.assertEqual([self.CHROME, REVIEWER], [r["reviewer"] for r in ledger["reviews"]])
+        reports = run_git(self.origin, "ls-tree", "-r", "--name-only", "main", f"reviews/reports/{self.SLUG}").split()
+        self.assertEqual(2, len(reports), reports)
+        self.assertEqual("", run_git(self.wt, "status", "--porcelain", "--untracked-files=no").strip())
+
+    def test_without_redo_the_conflict_is_given_up_and_reverted(self):
+        _, files1, snap1 = self.ingest_in(self.chrome_wt, self.CHROME, ["source"], report(scope=["source"]))
+        self.commit_in(self.chrome_wt, files1, snap1)
+        _, files2, snap2 = self.ingest_in(self.wt, REVIEWER, ["facts", "evidence", "task_impact"],
+                                          report(scope=["facts", "evidence", "task_impact"]))
+        with self.assertRaises(rp.PipelineError) as ctx:
+            self.commit_in(self.wt, files2, snap2)
+        self.assertIn("已還原", str(ctx.exception))
+        self.assertEqual(self.seed, run_git(self.wt, "rev-parse", "HEAD").strip())
+        self.assertEqual(2, len(self.origin_log()))
+
+    def test_redo_failure_such_as_a_changed_note_gives_up_and_reverts(self):
+        _, files1, snap1 = self.ingest_in(self.chrome_wt, self.CHROME, ["source"], report(scope=["source"]))
+        self.commit_in(self.chrome_wt, files1, snap1)
+        other = self.t / "other"
+        run_git(self.t, "clone", "-q", str(self.origin), str(other))
+        note = other / "notes" / f"{self.SLUG}.md"
+        note.write_text(note.read_text(encoding="utf-8").replace("本文主張", "別人改過的主張"), encoding="utf-8", newline="\n")
+        run_git(other, "commit", "-q", "-am", "someone edited the note")
+        run_git(other, "push", "-q", "origin", "main")
+        scope = ["facts", "evidence", "task_impact"]
+        text = report(scope=scope)
+        _, files2, snap2 = self.ingest_in(self.wt, REVIEWER, scope, text)
+        job = dict(slug=self.SLUG, report=text, reviewer=REVIEWER, lane="codex", role="review", scopes=scope, sha=self.sha)
+        with self.assertRaises(rp.PipelineError) as ctx:
+            self.commit_in(self.wt, files2, snap2, redo=rp.make_redo(self.wt, [job]))
+        self.assertIn("被改過", str(ctx.exception))
+        self.assertEqual(self.seed, run_git(self.wt, "rev-parse", "HEAD").strip())
+        self.assertEqual(3, len(self.origin_log()))  # 沒有多推任何東西
 
 
 class VerifyErrorsParsingTest(unittest.TestCase):

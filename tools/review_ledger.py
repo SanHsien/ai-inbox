@@ -32,6 +32,7 @@ import build_index as bi  # noqa: E402
 REVIEWS_DIRNAME = "reviews"
 REPORTS_DIRNAME = "reports"
 LEGACY_BASELINE_NAME = "legacy-baseline.json"
+REMOVED_NAME = "removed.json"  # 登記移出 repo 的筆記（只追加）：有審查紀錄的筆記不能改名，要移出就登記
 # 基準檔（reviews/legacy-baseline.json）位元組的 SHA-256。改這個值等於宣告「這些筆記免審」，要在 REVIEW.md 說明理由。
 LEGACY_BASELINE_SHA256 = "b2ddf2fd5d18a867e840328e8304750eb961d7f62e2e2edf72b837dabdef00b9"
 
@@ -58,7 +59,7 @@ STRONG_MODEL = {
 }
 
 IDENTITY = re.compile(r"^(?P<runtime>[a-z][a-z0-9-]*)/(?P<model>[A-Za-z0-9._-]+)@(?P<session>[A-Za-z0-9._:-]+)$")
-UUID = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")  # 一律小寫（大寫會讓抽查雜湊與各處比對不一致）
 SHORT_SESSION_MIN = 8  # antigravity、hermes 沒有 UUID 格式的 session，至少要這麼長
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -106,8 +107,9 @@ def _session_ok(runtime: str, model: str, session: str) -> bool:
 
 def parse_identity(text: str) -> Identity | None:
     m = IDENTITY.match(text.strip())
-    if not m or m["runtime"] not in RUNTIMES or not _session_ok(m["runtime"], m["model"], m["session"]):
-        return None
+    if (not m or m["runtime"] not in RUNTIMES or m["model"] != m["model"].lower()
+            or not _session_ok(m["runtime"], m["model"], m["session"])):
+        return None  # runtime、model 必須小寫；claude／codex 的 session UUID 也必須小寫
     return Identity(m["runtime"], m["model"], m["session"])
 
 
@@ -132,13 +134,26 @@ def sampled(slug: str, first_reviewer: str | None) -> bool:
     """抽查：sha256(slug + "\n" + 第一筆紀錄的 reviewer) 前 8 碼 mod SAMPLE_MODULO == 0。
     不看內容雜湊（改內容躲不掉），也不只看 slug（作者自己挑 slug 就能躲）；第一筆審查者的 session 不是作者能選的。
     還沒有任何紀錄時不算抽中。"""
-    if not first_reviewer:
+    if not first_reviewer or not first_reviewer.strip():
         return False
-    return int(hashlib.sha256((slug + "\n" + first_reviewer).encode("utf-8")).hexdigest()[:8], 16) % SAMPLE_MODULO == 0
+    key = (slug + "\n" + first_reviewer.strip()).lower()  # 小寫：審查者不能靠改大小寫換掉抽查結果
+    return int(hashlib.sha256(key.encode("utf-8")).hexdigest()[:8], 16) % SAMPLE_MODULO == 0
 
 
 STATE_FIELD_LINE = re.compile(r"^  - \*\*(?P<key>狀態|完成日期|實作紀錄 / 證據)\*\*：(?P<value>.*)$")
 CLOSED_STATUS = re.compile(r"^⚪ 不做（.+）$")
+
+
+# 未勾選任務的「完成日期」「實作紀錄 / 證據」可略過的固定佔位字串（白名單，完全相等才算；其他 `*（` 開頭的任意文字算進雜湊）。
+# 來源：templates/article-analysis.md 的範本兩行，加上現有筆記實際用過的固定寫法（2026-11-22 統計：
+# 較短的「待完成後由執行 Agent 填寫」62 處、「不做，無實作」1 處、「待未來立項後填寫」1 處）。
+PLACEHOLDER_VALUES = frozenset({
+    "*（完成時填 YYYY-MM-DD）*",
+    "*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*",
+    "*（待完成後由執行 Agent 填寫）*",
+    "*（不做，無實作）*",
+    "*（待未來立項後填寫）*",
+})
 
 
 def _state_value_skippable(key: str, value: str, task_done: bool) -> bool:
@@ -148,7 +163,7 @@ def _state_value_skippable(key: str, value: str, task_done: bool) -> bool:
         return v == "🟡 進行中" or bool(CLOSED_STATUS.match(v))
     if task_done:
         return _date(v) is not None if key == "完成日期" else True
-    return v == "" or v.startswith("*（")
+    return v == "" or v in PLACEHOLDER_VALUES
 
 
 def analysis_text(text: str) -> str:
@@ -159,9 +174,10 @@ def analysis_text(text: str) -> str:
     - 正文第一個「當前狀態」行，且值是 STATUS_BODY_LABELS 的標準標記（其他文字照算）
     - 任務區塊內、剛好兩格縮排、格式嚴格為 `  - **<鍵>**：<值>` 的欄位行，每個任務每個鍵只略過第一次出現，且：
         狀態：值完全是 `🟡 進行中`，或 `⚪ 不做（…）`（task_cli close 寫的格式）
-        完成日期／實作紀錄 / 證據：任務已勾選時略過（完成日期另須是 YYYY-MM-DD）；未勾選時只有值為空或範本佔位（`*（` 開頭）才略過
+        完成日期／實作紀錄 / 證據：任務已勾選時略過（完成日期另須是 YYYY-MM-DD）；未勾選時只有值為空，或完全等於 PLACEHOLDER_VALUES 的固定佔位字串才略過
     其餘一律照算：重複的欄位行、更深或不同縮排、鍵名前後有空白、半形冒號、續行、非標準的值。
-    剩下的窗口只有：關閉理由，與已完成任務的單行證據。這兩處文字不受審查保護。"""
+    剩下的窗口只有：關閉理由（`⚪ 不做（…）` 括號裡）與已完成任務的單行證據、完成日期。這兩處文字不受審查保護；
+    未完成任務的佔位只認固定字串，不再有可任意填字的窗口。"""
     lines = text.replace("\r\n", "\n").split("\n")
     fm_end = bi.frontmatter_end(lines)
     meta_idx = bi.find_status_meta_line(lines)
@@ -554,19 +570,38 @@ def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path |
 
 
 def _evaluate_exempt(note: bi.Note, st: ReviewState, reviews: list, idents: list, sha: str, today: dt.date) -> ReviewState:
-    """內容與舊筆記基準相同的免審筆記。例外：現行雜湊上有未被後續 audit pass 推翻的 changes_requested
-    （補審被要求修改）視為待審，寬限從該筆 reviewed_at 起算；內容還沒被改，所以不要求 written_by。"""
+    """內容與舊筆記基準相同的免審筆記。下列四種補審結論不可被忽略，視為待審（flagged）；
+    內容還沒被改，所以不要求 written_by：
+    1. 該筆記的紀錄檔有任何錯誤（格式錯、壞資料）：不可因提早 return 變回不待審；
+    2. 現行雜湊上的 pass 紀錄，source_review 與筆記現值不同（例如審查者把 full 下修）；
+    3. 現行雜湊上有未被後續 audit pass 推翻的 changes_requested；
+    4. （不算待審）只是「還沒審完」——缺範圍、需要 audit 但還沒做——維持免審，只在 queue --legacy 出現。
+    寬限從相關那筆紀錄的 reviewed_at 起算（紀錄檔壞到讀不出日期時，用最早的可讀日期，再不行用 analyzed_at）。"""
     st.errors = list(dict.fromkeys(st.errors))
-    if st.errors:
-        return st
-    cur = [(i, r) for i, r in enumerate(reviews) if r.get("content_sha256") == sha]
-    audit_pass_idx = [i for i, r in cur if r["role"] == "audit" and r["verdict"] == "pass"]
-    open_idx = [i for i, r in cur if r["verdict"] == "changes_requested" and not any(j > i for j in audit_pass_idx)]
-    if not open_idx:
+    note_sr = str(note.meta.get("source_review", "")).strip()
+    since: list[dt.date] = []
+    if any(e.startswith(f"{REVIEWS_DIRNAME}/") for e in st.errors):
+        dates = [d for d in (_date(r.get("reviewed_at")) if isinstance(r, dict) else None for r in reviews) if d]
+        since.append(min(dates) if dates else (_date(note.meta.get("analyzed_at")) or today))
+        st.needs.append("先修正上列錯誤")
+    else:
+        cur = [(i, r) for i, r in enumerate(reviews) if r.get("content_sha256") == sha]
+        audit_pass_idx = [i for i, r in cur if r["role"] == "audit" and r["verdict"] == "pass"]
+        open_idx = [i for i, r in cur if r["verdict"] == "changes_requested" and not any(j > i for j in audit_pass_idx)]
+        for i in open_idx:
+            st.needs.append(f"修正後再審（第 {i + 1} 筆要求修改，報告 {reviews[i]['report']}）")
+            since.append(_date(reviews[i]["reviewed_at"]))
+        for i, r in cur:
+            if r["verdict"] == "pass" and r["source_review"] != note_sr:
+                st.errors.append(
+                    f"reviews/{note.slug}.json 第 {i + 1} 筆: 審查判定 source_review 為 {r['source_review']}，筆記寫 {note_sr}；"
+                    "筆記要照審查結論改，改完再審")
+                st.needs.append(f"筆記要照第 {i + 1} 筆的審查結論改 source_review")
+                since.append(_date(r["reviewed_at"]))
+    if not since:
         return st
     st.flagged = True
-    st.needs.extend(f"修正後再審（第 {i + 1} 筆要求修改，報告 {reviews[i]['report']}）" for i in open_idx)
-    st.since = min(_date(reviews[i]["reviewed_at"]) for i in open_idx)
+    st.since = min(since)
     _add_task_errors(note, st, {note.slug: sha})  # 免審筆記一定在基準裡
     return _grace(st, note, today)
 
@@ -595,14 +630,18 @@ def _git(root: Path, *args: str):
         return None
 
 
-def history_bases(root: Path) -> list[tuple[str, str]]:
-    """只追加檢查的比對基準 (標籤, commit)，存在才比、重複的只留一個：
+def history_bases(root: Path) -> tuple[list[tuple[str, str]], list[str]]:
+    """只追加檢查的比對基準 ([(標籤, commit)], 錯誤)，存在才比、重複的只留一個：
     HEAD（工作樹未提交的改動）、環境變數 AI_INBOX_REVIEW_BASE 指的 commit（CI 用：push 前的 main 或 PR 的 base），
     以及 `git merge-base HEAD origin/main`（本機分支上已提交但還沒進 main 的改動）。
-    基準 commit 不存在（全零 SHA、shallow 抓不到、ref 不存在）就略過該基準。"""
+    本機的 HEAD、merge-base 基準不存在就略過。AI_INBOX_REVIEW_BASE 有設、不是空白也不是全零時，
+    若該 commit 抓不到或不是 HEAD 的祖先（force-push 改寫了 main），就報錯而不是默默略過：
+    否則 force-push 能讓整個只追加檢查失效。全零（新分支的第一次 push）、空白、未設仍略過。"""
+    errors: list[str] = []
     candidates = [("HEAD", "HEAD")]
     env = os.environ.get("AI_INBOX_REVIEW_BASE", "").strip()
-    if env:
+    env_is_real = bool(env) and set(env) != {"0"}
+    if env_is_real:
         candidates.append(("AI_INBOX_REVIEW_BASE", env))
     mb = _git(root, "merge-base", "HEAD", "origin/main")
     if mb is not None and mb.returncode == 0 and mb.stdout.strip():
@@ -611,15 +650,34 @@ def history_bases(root: Path) -> list[tuple[str, str]]:
     for label, ref in candidates:
         r = _git(root, "rev-parse", "--verify", "-q", f"{ref}^{{commit}}")
         sha = r.stdout.strip() if r is not None and r.returncode == 0 else ""
+        if label == "AI_INBOX_REVIEW_BASE" and env_is_real:
+            anc = _git(root, "merge-base", "--is-ancestor", sha, "HEAD") if sha else None
+            if not sha or anc is None or anc.returncode != 0:
+                errors.append(f"審查紀錄只追加檢查的比對基準 AI_INBOX_REVIEW_BASE={env} 抓不到或不是 HEAD 的祖先"
+                              "（可能是 force-push 改寫了 main，或 checkout 太淺）；只追加檢查無法進行")
+                continue
         if sha and all(sha != s for _, s in out):
             out.append((label, sha))
-    return out
+    return out, errors
 
 
-def committed_history_errors(root: Path) -> list[str]:
+def _under_removed(rel: str, removed: set[str]) -> bool:
+    """reviews/<slug>.json 或 reviews/reports/<slug>/… 是否屬於已登記移出（且筆記已不在）的 slug。"""
+    parts = rel.split("/")
+    if len(parts) == 2 and parts[1].endswith(".json"):
+        return parts[1][: -len(".json")] in removed
+    return len(parts) >= 4 and parts[1] == REPORTS_DIRNAME and parts[2] in removed
+
+
+REMOVE_HINT = f"（筆記要移出 repo 請在 {REVIEWS_DIRNAME}/{REMOVED_NAME} 登記）"
+
+
+def committed_history_errors(root: Path, removed: set[str] = frozenset()) -> list[str]:
     """git 可用且 root 就是 repo 根目錄時，對每個比對基準（history_bases）要求：
-    基準上的 reviews/<slug>.json 的 reviews 陣列必須是現行陣列的前綴（不可改、刪、重排）；
+    基準上的 reviews/<slug>.json 的 reviews 陣列必須是現行陣列的前綴（不可改、刪、重排），
+    reviews/removed.json 的 removed 陣列同樣只追加；
     基準上已存在的 reviews/reports/** 沒被改或刪（只看 M／D／T；新檔、已 git add 的新檔不算）。
+    removed：已登記移出且 notes/<slug>.md 已不存在的 slug，它們的紀錄檔與報告被刪除不算違反。
     git 不可用或檔案不在基準上就略過。"""
     top = _git(root, "rev-parse", "--show-toplevel")
     if top is None or top.returncode != 0:
@@ -629,8 +687,8 @@ def committed_history_errors(root: Path) -> list[str]:
             return []
     except OSError:
         return []
-    errors: list[str] = []
-    for label, base in history_bases(root):
+    bases, errors = history_bases(root)
+    for label, base in bases:
         tree = _git(root, "ls-tree", "-r", "--name-only", "-z", base, "--", REVIEWS_DIRNAME)
         if tree is None or tree.returncode != 0:
             continue
@@ -638,42 +696,82 @@ def committed_history_errors(root: Path) -> list[str]:
             parts = rel.split("/")
             if len(parts) != 2 or not rel.endswith(".json") or parts[1] == LEGACY_BASELINE_NAME:
                 continue
+            is_removed_list = parts[1] == REMOVED_NAME
+            if not is_removed_list and _under_removed(rel, removed):
+                continue
+            key = "removed" if is_removed_list else "reviews"
             old_raw = _git(root, "show", f"{base}:{rel}")
             if old_raw is None or old_raw.returncode != 0:
                 continue
             try:
-                old = json.loads(old_raw.stdout)["reviews"]
+                old = json.loads(old_raw.stdout)[key]
             except (ValueError, KeyError, TypeError):
                 continue
             path = root / rel
             if not path.is_file():
-                errors.append(f"{rel}: 已提交的審查紀錄被刪除（對照 {label}；紀錄只能在尾端追加）")
+                errors.append(f"{rel}: 已提交的審查紀錄被刪除（對照 {label}；紀錄只能在尾端追加）{REMOVE_HINT}")
                 continue
             try:
-                cur = json.loads(path.read_text(encoding="utf-8"))["reviews"]
+                cur = json.loads(path.read_text(encoding="utf-8"))[key]
             except (ValueError, KeyError, TypeError):
-                continue  # 壞掉的格式由 load_ledger 報
+                continue  # 壞掉的格式由 load_ledger／load_removed 報
             if not isinstance(old, list) or not isinstance(cur, list) or cur[: len(old)] != old:
                 errors.append(f"{rel}: 已提交的審查紀錄被改動、刪除或重排（對照 {label}；紀錄只能在尾端追加）")
         diff = _git(root, "diff", "--name-only", "-z", "--no-renames", "--diff-filter=MDT", base, "--",
                     f"{REVIEWS_DIRNAME}/{REPORTS_DIRNAME}")
         if diff is not None and diff.returncode == 0:
-            errors.extend(f"{p}: 已提交的審查報告被改動或刪除（對照 {label}；報告只能新增）" for p in diff.stdout.split("\0") if p)
+            errors.extend(f"{p}: 已提交的審查報告被改動或刪除（對照 {label}；報告只能新增）{REMOVE_HINT}"
+                          for p in diff.stdout.split("\0") if p and not _under_removed(p, removed))
     return list(dict.fromkeys(errors))
 
 
+def load_removed(root: Path, today: dt.date) -> tuple[set[str], list[str]]:
+    """reviews/removed.json：`{"removed": [{"slug", "removed_at", "reason"}]}`（只追加；檔案不存在視為空）。
+    回傳 (已登記的 slug, 錯誤)。每筆要有三個欄位，日期合法且不晚於今天。"""
+    path = reviews_dir(root) / REMOVED_NAME
+    if not path.is_file():
+        return set(), []
+    name = f"{REVIEWS_DIRNAME}/{REMOVED_NAME}"
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as e:
+        return set(), [f"{name}: 不是合法 JSON：{e}"]
+    if not isinstance(data, dict) or not isinstance(data.get("removed"), list):
+        return set(), [f"{name}: 格式需為 {{\"removed\": [{{\"slug\": ..., \"removed_at\": \"YYYY-MM-DD\", \"reason\": ...}}]}}"]
+    slugs: set[str] = set()
+    errors: list[str] = []
+    for i, e in enumerate(data["removed"]):
+        where = f"{name} 第 {i + 1} 筆"
+        if not isinstance(e, dict) or not all(isinstance(e.get(k), str) and e.get(k).strip() for k in ("slug", "removed_at", "reason")):
+            errors.append(f"{where}: 需為物件，slug、removed_at、reason 三個欄位都要有非空字串")
+            continue
+        d = _date(e["removed_at"])
+        if not d or d > today:
+            errors.append(f"{where}: removed_at 需為不晚於今天的 YYYY-MM-DD")
+        slugs.add(e["slug"])
+    return slugs, errors
+
+
 def evaluate_all(notes: list[bi.Note], today: dt.date | None = None, root: Path | None = None) -> tuple[dict[str, ReviewState], list[str]]:
-    """全部筆記的審查狀態，以及與單篇無關的錯誤（基準被改、孤兒紀錄、已提交的紀錄被改動）。"""
+    """全部筆記的審查狀態，以及與單篇無關的錯誤（基準被改、孤兒紀錄、已提交的紀錄被改動、移出清單）。"""
     root = root or bi.REPO_ROOT
     today = today or dt.date.today()
     legacy, errors = load_legacy(root)
     states = {n.slug: evaluate(n, legacy, today, root) for n in notes}
+    removed, removed_errors = load_removed(root, today)
+    errors.extend(removed_errors)
+    for slug in sorted(removed & set(states)):
+        errors.append(f"{REVIEWS_DIRNAME}/{REMOVED_NAME}: {slug} 已登記移出，但 notes/{slug}.md 又出現了；"
+                      "同名筆記不可復活（否則刪掉紀錄再放回，舊筆記就能回到免審）")
+    gone = removed - set(states)  # 已登記移出且筆記確實不在：紀錄檔與報告可以刪、留著也不算孤兒
     rdir = reviews_dir(root)
     if rdir.is_dir():
         for p in sorted(rdir.glob("*.json")):
-            if p.name != LEGACY_BASELINE_NAME and p.stem not in states:
-                errors.append(f"reviews/{p.name}: 對應的筆記 notes/{p.stem}.md 不存在")
-        errors.extend(committed_history_errors(root))
+            if p.name in (LEGACY_BASELINE_NAME, REMOVED_NAME):
+                continue
+            if p.stem not in states and p.stem not in gone:
+                errors.append(f"reviews/{p.name}: 對應的筆記 notes/{p.stem}.md 不存在{REMOVE_HINT}")
+        errors.extend(committed_history_errors(root, gone))
     return states, errors
 
 

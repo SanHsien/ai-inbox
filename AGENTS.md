@@ -22,7 +22,7 @@ C:\GitHub\ai-inbox\
 │   ├── _judge_common.py             # 外部裁判共用：剝註解、結構下限、報告輸出
 │   ├── video_transcript.py          # 影片音訊下載 + faster-whisper (CUDA/CPU) 逐字稿轉寫（見 docs/video-transcript-howto.md）
 │   └── 其他功能型工具               # audit_*、cli_to_skill、generate_dod_verifier、public_apis_indexer、render_artifact_html、toml_validator
-├── reviews/                         # 獨立審查紀錄：<slug>.json、reports/<slug>/ 報告、legacy-baseline.json（見流程 C）
+├── reviews/                         # 獨立審查紀錄：<slug>.json、reports/<slug>/ 報告、legacy-baseline.json、removed.json（見流程 C）
 ├── docs/                            # 技術規格、實測報告與 SOP 手冊（跨 Agent 派工指令見 docs/agent-dispatch.md）
 ├── assets/                          # 單檔 HTML / Generative UI / Canvas 互動成品
 └── tests/                           # tools/ 的單元測試
@@ -127,7 +127,8 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
    Codex 道不用手動：排程跑 `python tools/review_pipeline.py cron --lane codex`（在專用工作樹執行 `run --lane codex --commit`，會跑 `codex --search exec -s read-only`，從 Codex 事件取 thread id 當身分）。
 3. **修正**（`fix` 道）：照報告改筆記，`written_by` 用 `; ` 加上自己，填 `revised_at`（今天）；改完內容雜湊變了，佇列會自動排再審。審查回報的已完成任務產出檔問題，由整合者照 SOP 第 3 節處理。
 4. **改舊筆記**：制度上線前的筆記內容沒變就免審；一改分析內容（任務狀態欄位除外）就要填 `written_by`（原作者不明時寫 `legacy/unknown@pre-review; <你的身分>`）與 `revised_at`，並在 7 天內送審。
-5. **不要做**：不要改 `reviews/legacy-baseline.json` 或 `tools/review_ledger.py` 的 `LEGACY_BASELINE_SHA256` 讓驗證變綠；不要手寫或修改別人的審查紀錄；不要用別的 session 身分入帳。
+5. **改名與移出**：有審查紀錄的筆記**不要改檔名**（紀錄綁 slug，改名會讓舊紀錄變孤兒、新檔名變待審）。要把筆記移出 repo，就在 `reviews/removed.json` 登記（`{"removed": [{"slug": "...", "removed_at": "YYYY-MM-DD", "reason": "..."}]}`，只追加），再刪筆記；登記過的 slug 不可再放回同名筆記。
+6. **不要做**：不要改 `reviews/legacy-baseline.json` 或 `tools/review_ledger.py` 的 `LEGACY_BASELINE_SHA256` 讓驗證變綠；不要手寫或修改別人的審查紀錄；不要用別的 session 身分入帳。session、model、runtime 一律小寫。
 
 ---
 

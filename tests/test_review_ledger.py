@@ -102,11 +102,12 @@ tags:
   - **驗收標準（DoD）**：做完
 - [ ] **`T-20261122-04`**｜**[優先級：低]** 非標準寫法的任務
   - **狀態**：🟡 進行中（等人回覆）
-  - **完成日期**：*（完成後填寫）*
+  - **完成日期**：*（完成時填 YYYY-MM-DD）*
+  - **實作紀錄 / 證據**：*（任意佔位文字不在白名單，算進雜湊）*
   - **目標範圍**：`some/repo`
   - **驗收標準（DoD）**：做完
 """
-GOLDEN_HASH = "3ec680d12f4e15b9d3d904de9947b643b925ef4a067564406069b67cf8122b88"
+GOLDEN_HASH = "36f10aeee427a2a42bd9ec55203e133e81a14ad2630b4f08a123a81cd227216a"
 
 
 class Base(unittest.TestCase):
@@ -233,8 +234,17 @@ class HashTest(Base):
         self.write_note(want_sampled=True)
         self.assertFalse([n for n in self.state().needs if "抽查" in n])  # 還沒有紀錄：不觸發抽查
 
+    def test_sampling_ignores_case_and_surrounding_whitespace(self):
+        """R7：同一個 session 寫成大寫或帶空白，抽查結果不能變。"""
+        slug = "2026-11-22-test-note"
+        for n in range(200, 230):
+            r = f"claude/opus-5.5@{sess(n)}"
+            self.assertEqual(rl.sampled(slug, r), rl.sampled(slug, r.upper()))
+            self.assertEqual(rl.sampled(slug, r), rl.sampled(slug, f" {r} \n"))
+
     def test_golden_hash_of_a_fixed_note(self):
-        """雜湊算法定版：改了 analysis_text 會讓 main 上所有審查紀錄與 legacy 基準失效。
+        """雜湊算法定版（R6 是上線前最後一次調整：此時 main 上還沒有任何審查紀錄，所以只重產基準、HASH_VERSION 維持 1）。
+        改了 analysis_text 會讓 main 上所有審查紀錄與 legacy 基準失效。
         要改必須寫遷移（重算基準、把仍對應現行內容的紀錄重新派審）並遞增 HASH_VERSION，不可只更新這個期望值。"""
         self.assertEqual(1, rl.HASH_VERSION)
         self.assertEqual(GOLDEN_HASH, rl.content_hash(GOLDEN_NOTE),
@@ -374,9 +384,32 @@ class HashHidingTest(Base):
         text = path.read_text(encoding="utf-8")
         anchor = "  - **驗收標準（DoD）**：做完\n"
         for extra in ("  - **狀態**：🟡 進行中\n", "  - **狀態**：⚪ 不做（理由 含（括號））\n",
-                      "  - **完成日期**：*（完成後填寫）*\n", "  - **實作紀錄 / 證據**：*（完成後填寫）*\n", "  - **完成日期**：\n"):
+                      "  - **完成日期**：*（完成時填 YYYY-MM-DD）*\n", "  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*\n",
+                      "  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫 Commit / PR / 驗證輸出摘要）*\n", "  - **完成日期**：\n"):
             path.write_text(text.replace(anchor, anchor + extra, 1), encoding="utf-8")
             self.assertEqual(before, self.sha(), extra)
+
+    def test_unchecked_task_placeholder_window_is_a_whitelist(self):
+        """R6：未完成任務的「完成日期」「實作紀錄 / 證據」不能再用任意 `*（` 開頭的文字藏分析內容；只認固定佔位字串。"""
+        for key in ("完成日期", "實作紀錄 / 證據"):
+            for hidden in ("*（隱藏分析：其實 X 不成立）", "*（待完成後由執行 Agent 填寫）*之外多的字", "*（待完成後由執行 Agent 填寫", "*（隱藏）*"):
+                before, after = self.hash_after_inserting(f"  - **{key}**：{hidden}\n")
+                self.assertNotEqual(before, after, (key, hidden))
+        for key in ("完成日期", "實作紀錄 / 證據"):
+            for ok in sorted(rl.PLACEHOLDER_VALUES):
+                before, after = self.hash_after_inserting(f"  - **{key}**：{ok}\n")
+                self.assertEqual(before, after, (key, ok))
+
+    def test_every_placeholder_used_by_repo_notes_is_whitelisted(self):
+        """白名單要涵蓋現有筆記裡未勾選任務實際用過的固定寫法（不然 task_cli 操作會讓那些筆記雜湊變動）。"""
+        for note in bi.load_notes():
+            for task in note.tasks:
+                if task.done:
+                    continue
+                for key in ("完成日期", "實作紀錄 / 證據"):
+                    v = task.fields.get(key, "").strip()
+                    if v.startswith("*（") and v.endswith("）*"):
+                        self.assertIn(v, rl.PLACEHOLDER_VALUES, (note.slug, task.id, key))
 
     def test_task_cli_skips_fenced_status_line_and_nonstandard_value(self):
         """F11：task_cli 找「當前狀態」行要跳過程式碼圍欄；非標準值不改寫（那是筆記內容）。"""
@@ -431,11 +464,13 @@ class TaskCliKeepsHashOnRealNotesTest(unittest.TestCase):
 class IdentityTest(unittest.TestCase):
     def test_runtime_specific_session_formats(self):
         uuid = "01a1fcb9-6070-7fc1-9407-2a5b4823514b"
-        ok = [f"claude/opus-5.5@{uuid}", f"codex/gpt-6.1-sol@{uuid.upper()}", "antigravity/gemini-3@abcdefgh",
+        ok = [f"claude/opus-5.5@{uuid}", f"codex/gpt-6.1-sol@{uuid}", "antigravity/gemini-3@abcdefgh",
               "hermes/xiaoma@hermes-session-1", "human/maintainer@2026-11-21", rl.LEGACY_AUTHOR]
         for text in ok:
             self.assertIsNotNone(rl.parse_identity(text), text)
         bad = [f"claude/opus-5.5@{uuid[:8]}",  # 縮寫
+               f"claude/opus-5.5@{uuid.upper()}", f"codex/gpt-6.1-sol@{uuid.upper()}",  # R7：UUID 必須小寫
+               f"codex/GPT-6.1-Sol@{uuid}", f"claude/Opus-5.5@{uuid}", f"Claude/opus-5.5@{uuid}",  # runtime、model 必須小寫
                f"codex/gpt-6.1-sol@{uuid}0", f"claude/opus-5.5@{uuid[:-1]}", "claude/opus-5.5@author-session-1",
                "antigravity/gemini-3@abcdefg", "hermes/xiaoma@short",
                "human/maintainer@today", "human/maintainer@2026-13-45", "human/someone@2026-11-21", "human/maintainer@798b1dc7",
@@ -446,7 +481,7 @@ class IdentityTest(unittest.TestCase):
     def test_strong_model_is_strict(self):
         uuid = sess(9)
         strong = [f"claude/opus-5.5@{uuid}", f"claude/opus-5@{uuid}", f"codex/gpt-6.1-sol@{uuid}", f"codex/gpt-6-astra@{uuid}",
-                  f"codex/GPT-6.2-Sol@{uuid}"]
+                  f"codex/gpt-6.2-sol@{uuid}"]
         # N1：模型綁 runtime；human/maintainer 不再是強模型
         weak = [f"claude/opus-anything@{uuid}", f"claude/opus@{uuid}", f"claude/opus-5.5-fast@{uuid}", f"codex/gpt-5.5-sol@{uuid}",
                 f"codex/gpt-6.1-solx@{uuid}", f"claude/sonnet-5.5@{uuid}", f"claude/maintainer@{uuid}",
@@ -486,7 +521,7 @@ class IdentityEnforcementTest(Base):
     def test_same_uuid_under_another_runtime_cannot_audit_own_round(self):
         self.write_note()
         self.add_review(reviewer=f"codex/gpt-6.1-sol@{sess(9)}", verdict="changes_requested", corrections=2)
-        self.add_review(reviewer=f"claude/opus-5.5@{sess(9).upper()}", role="audit")
+        self.add_review(reviewer=f"claude/opus-5.5@{sess(9)}", role="audit")
         self.assertTrue(any("覆核要換人" in e for e in self.state().errors))
 
     def test_reviewer_runtime_must_be_claude_or_codex(self):
@@ -723,7 +758,7 @@ class ReviewTest(Base):
 
     def test_same_session_different_model_label_is_self_review(self):
         self.write_note(written_by=f"claude/opus-5.5@{sess(11)}")
-        self.add_review(reviewer=f"claude/sonnet-5.5@{sess(11).upper()}")
+        self.add_review(reviewer=f"claude/sonnet-5.5@{sess(11)}")
         self.assertTrue(any("不能審自己寫的內容" in e for e in self.state().errors))
 
     def test_edit_after_review_needs_rereview(self):
@@ -947,10 +982,26 @@ class CommittedHistoryTest(Base):
         self.assertTrue(any("已提交的審查紀錄被改動" in e and "AI_INBOX_REVIEW_BASE" in e for e in errors), errors)
         self.assertTrue(any("已提交的審查報告被改動或刪除" in e for e in errors), errors)
 
-    def test_unusable_bases_are_skipped(self):
-        for base in ("0" * 40, "no-such-ref", "  "):
+    def test_blank_or_all_zero_bases_are_skipped(self):
+        for base in ("0" * 40, "0" * 64, "  ", ""):
             with unittest.mock.patch.dict(os.environ, {"AI_INBOX_REVIEW_BASE": base}):
                 self.assertEqual([], self.errors(), base)
+
+    def test_missing_or_non_ancestor_base_is_an_error(self):
+        """R2：CI 給了真的基準卻抓不到（force-push、checkout 太淺）或不是 HEAD 的祖先，不可默默略過。"""
+        # 存在但不是祖先：從 first_commit 分岔出去的另一條線
+        run_git(self.root, "checkout", "-q", "-b", "other", self.first_commit)
+        (self.root / "other.txt").write_text("x", encoding="utf-8")
+        run_git(self.root, "add", "-A")
+        run_git(self.root, "commit", "-q", "-m", "diverged")
+        diverged = run_git(self.root, "rev-parse", "HEAD").strip()
+        run_git(self.root, "checkout", "-q", "-")
+        for base in ("1" * 40, "no-such-ref", diverged):
+            with unittest.mock.patch.dict(os.environ, {"AI_INBOX_REVIEW_BASE": base}):
+                errors = self.errors()
+            self.assertTrue(any("AI_INBOX_REVIEW_BASE" in e and "祖先" in e for e in errors), (base, errors))
+        with unittest.mock.patch.dict(os.environ, {"AI_INBOX_REVIEW_BASE": self.first_commit}):
+            self.assertEqual([], self.errors())  # 真正的祖先照常通過
 
     def test_merge_base_with_origin_main_is_a_base_too(self):
         """本機分支上已提交但還沒進 main 的改動：比 merge-base origin/main。"""
@@ -1103,6 +1154,152 @@ class EscalationTest(Base):
         self.assertTrue(any("audit 的 scope 必須涵蓋全部範圍" in e for e in st.errors), st.errors)
 
 
+class ExemptNoteReviewOutcomeTest(Base):
+    """R5：免審舊筆記的補審結論不可被忽略。只有「還沒審完」才維持免審。"""
+
+    def exempt(self, today=TODAY):
+        note = self.write_note(written_by="")
+        return note, {self.slug: self.sha()}
+
+    def evaluate(self, note, legacy, today=TODAY):
+        return rl.evaluate(note, legacy, today, self.root)
+
+    def test_record_with_errors_makes_the_note_pending(self):
+        note, legacy = self.exempt()
+        self.add_review(verdict="changes_requested", corrections=1)
+        self.add_review(reviewer="someone")  # 壞資料
+        st = self.evaluate(note, legacy)
+        self.assertTrue(st.flagged and st.pending)
+        self.assertTrue(any(e.startswith("reviews/") for e in st.errors), st.errors)
+        self.assertEqual([], [e for e in st.errors if "超過寬限" in e])  # 寬限內
+
+    def test_corrupt_ledger_file_makes_the_note_pending(self):
+        note, legacy = self.exempt()
+        (self.root / "reviews" / f"{self.slug}.json").write_text("{壞掉", encoding="utf-8")
+        st = self.evaluate(note, legacy)
+        self.assertTrue(st.pending)
+        self.assertTrue(any("不是合法 JSON" in e for e in st.errors), st.errors)
+
+    def test_pass_that_disagrees_with_note_source_review_makes_the_note_pending(self):
+        note, legacy = self.exempt()
+        self.add_review(source_review="partial")  # 筆記寫 full，審查者判 partial（下修）
+        st = self.evaluate(note, legacy)
+        self.assertTrue(st.flagged and st.pending)
+        self.assertTrue(any("筆記要照審查結論改" in e for e in st.errors), st.errors)
+        st = self.evaluate(note, legacy, today=dt.date(2026, 12, 2))  # 審查 11-23，第 9 天
+        self.assertTrue(st.overdue)
+
+    def test_unfinished_review_keeps_the_note_exempt(self):
+        """缺範圍、需要 audit 但還沒做：不算待審，只在 queue --legacy 出現。"""
+        note, legacy = self.exempt()
+        self.add_review(scope=["facts"])
+        st = self.evaluate(note, legacy)
+        self.assertFalse(st.pending)
+        self.assertEqual([], st.errors)
+        self.setUp()
+        note, legacy = self.exempt()
+        self.add_review(reviewer=WEAK)  # 弱模型 pass：要 audit，但還沒做
+        st = self.evaluate(note, legacy)
+        self.assertFalse(st.pending)
+        self.assertEqual([], st.errors)
+        backfill = rl.evaluate(note, legacy, TODAY, self.root, backfill=True)
+        self.assertTrue(any("強模型覆核" in n for n in backfill.needs), backfill.needs)
+
+    def test_open_changes_requested_still_pending(self):
+        note, legacy = self.exempt()
+        self.add_review(verdict="changes_requested", corrections=1)
+        self.assertTrue(self.evaluate(note, legacy).pending)
+
+
+class RemovedNotesTest(Base):
+    """R4：有審查紀錄的筆記不能改名；要移出 repo 就在 reviews/removed.json 登記（只追加），同名筆記不可復活。"""
+
+    def setUp(self):
+        super().setUp()
+        env = {k: v for k, v in os.environ.items() if k != "AI_INBOX_REVIEW_BASE"}
+        patcher = unittest.mock.patch.dict(os.environ, env, clear=True)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        run_git(self.root, "init", "-q")
+        self.write_note()
+        self.add_review()
+        run_git(self.root, "add", "-A")
+        run_git(self.root, "commit", "-q", "-m", "init")
+
+    def removed_path(self) -> Path:
+        return self.root / "reviews" / rl.REMOVED_NAME
+
+    def register(self, *slugs, extra=None):
+        path = self.removed_path()
+        data = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"removed": []}
+        for slug in slugs:
+            data["removed"].append({"slug": slug, "removed_at": "2026-11-24", "reason": "移到別的 repo", **(extra or {})})
+        path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+    def remove_note_and_records(self):
+        self.note_path().unlink()
+        (self.root / "reviews" / f"{self.slug}.json").unlink()
+        for p in (self.root / "reviews" / "reports" / self.slug).glob("*"):
+            p.unlink()
+
+    def errors(self, notes=()):
+        return rl.evaluate_all(list(notes), TODAY, self.root)[1]
+
+    def test_registered_removal_passes(self):
+        self.remove_note_and_records()
+        self.register(self.slug)
+        self.assertEqual([], self.errors())
+
+    def test_registered_removal_may_keep_the_ledger_without_orphan_error(self):
+        self.note_path().unlink()
+        self.register(self.slug)
+        self.assertEqual([], self.errors())
+
+    def test_unregistered_removal_is_rejected_with_a_hint(self):
+        self.remove_note_and_records()
+        errors = self.errors()
+        self.assertTrue(any("已提交的審查紀錄被刪除" in e and "removed.json" in e for e in errors), errors)
+        self.assertTrue(any("已提交的審查報告被改動或刪除" in e and "removed.json" in e for e in errors), errors)
+
+    def test_orphan_ledger_error_hints_at_registration(self):
+        self.note_path().unlink()
+        errors = self.errors()
+        self.assertTrue(any("不存在" in e and "removed.json" in e for e in errors), errors)
+
+    def test_registered_slug_cannot_come_back(self):
+        """登記後同名筆記又出現：報錯（否則刪掉紀錄再放回，舊筆記就能回到免審）。"""
+        self.remove_note_and_records()
+        self.register(self.slug)
+        note = self.write_note()
+        errors = self.errors([note])
+        self.assertTrue(any("不可復活" in e for e in errors), errors)
+
+    def test_removed_list_is_append_only(self):
+        self.remove_note_and_records()
+        self.register(self.slug)
+        run_git(self.root, "add", "-A")
+        run_git(self.root, "commit", "-q", "-m", "remove")
+        self.assertEqual([], self.errors())
+        self.removed_path().write_text(json.dumps({"removed": []}), encoding="utf-8")  # 清掉登記
+        self.assertTrue(any("removed.json" in e and "被改動" in e for e in self.errors()), self.errors())
+        self.removed_path().unlink()
+        self.assertTrue(any("removed.json" in e and "被刪除" in e for e in self.errors()), self.errors())
+        self.register(self.slug, "another-note")  # 追加是允許的
+        self.assertEqual([], self.errors())
+
+    def test_removed_entries_are_validated(self):
+        self.removed_path().write_text(json.dumps({"removed": [
+            {"slug": "a", "removed_at": "2026-11-24"},                                 # 缺 reason
+            {"slug": "b", "removed_at": "2027-01-01", "reason": "未來日期"},
+            {"slug": "c", "removed_at": "昨天", "reason": "日期格式錯"},
+            "不是物件",
+        ]}), encoding="utf-8")
+        errors = self.errors([bi.parse_note(self.note_path())])
+        self.assertEqual(4, sum(e.startswith("reviews/removed.json 第") for e in errors), errors)
+        self.removed_path().write_text("{壞", encoding="utf-8")
+        self.assertTrue(any("removed.json" in e and "JSON" in e for e in self.errors()))
+
+
 class RepoLevelTest(Base):
     def test_baseline_tamper_detected(self):
         p = self.root / "reviews" / rl.LEGACY_BASELINE_NAME
@@ -1128,14 +1325,17 @@ class RepoLevelTest(Base):
     def test_repo_real_ledgers_are_valid(self):
         """repo 裡現有的審查紀錄（如果有）在現行規則下合法；沒有紀錄也不該有單篇或基準錯誤。
         「對照 HEAD／基準」的只追加錯誤跟工作樹與提交狀態有關（例如尚未提交的 git rm），不在這個測試的範圍。"""
+        # R1：用今天的日期，並且只斷言「審查紀錄本身」的錯誤（訊息以 reviews/ 開頭）。筆記待審逾期、缺 written_by、
+        # analyzed_at 晚於寫死的日期等，是 verify_inbox 的事；寫死日期會讓合併後第一篇新筆記就把 CI 弄紅。
         notes = bi.load_notes()
-        states, errors = rl.evaluate_all(notes, dt.date(2026, 11, 21))
-        ledgers = [p for p in (bi.REPO_ROOT / "reviews").glob("*.json") if p.name != rl.LEGACY_BASELINE_NAME]
+        states, errors = rl.evaluate_all(notes, dt.date.today())
+        ledgers = [p for p in (bi.REPO_ROOT / "reviews").glob("*.json")
+                   if p.name not in (rl.LEGACY_BASELINE_NAME, rl.REMOVED_NAME)]
         for p in ledgers:
             self.assertIn(p.stem, states, p.name)
-            self.assertEqual([], states[p.stem].errors, p.name)
-        self.assertEqual([], [e for e in errors if "對照" not in e])
-        self.assertEqual([], [e for st in states.values() for e in st.errors])
+            self.assertEqual([], [e for e in states[p.stem].errors if e.startswith("reviews/")], p.name)
+        self.assertEqual([], [e for e in errors if e.startswith("reviews/") and "對照" not in e])
+        self.assertEqual([], [e for st in states.values() for e in st.errors if e.startswith("reviews/")])
 
     def test_orphan_ledger_detected(self):
         self.write_note()

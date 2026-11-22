@@ -278,9 +278,10 @@ def ingest(slug: str, report_text: str, reviewer: str, lane: str, role: str, sco
     note_path = root / "notes" / f"{slug}.md"
     if not note_path.is_file():
         raise PipelineError(f"找不到筆記 notes/{slug}.md")
+    reviewer = reviewer.strip()  # 寫進紀錄與報告 header 的是正規化後的字串（尾端空白會讓兩邊對不上）
     ident = rl.parse_identity(reviewer)
     if not ident:
-        raise PipelineError(f"reviewer 格式不合法：{reviewer}（claude／codex 的 session 要完整 UUID，antigravity／hermes 至少 8 字元，"
+        raise PipelineError(f"reviewer 格式不合法（runtime、model、UUID 都要小寫）：{reviewer}（claude／codex 的 session 要完整 UUID，antigravity／hermes 至少 8 字元，"
                             "human 只能是 human/maintainer@YYYY-MM-DD）")
     if ident.runtime not in rl.REVIEWER_RUNTIMES:
         raise PipelineError(f"reviewer 的 runtime 只接受 {'/'.join(rl.REVIEWER_RUNTIMES)}，{ident.runtime} 不行"
@@ -422,6 +423,7 @@ def git(root: Path, *args: str, check: bool = True) -> subprocess.CompletedProce
 
 
 LANES_WITH_WORKTREE = ("codex", "chrome")
+REDO_LIMIT = 2  # 兩道並行入帳同一篇、rebase 衝突時，最多在最新 main 上重做幾次
 
 
 def dedicated_worktree(lane: str = "codex") -> Path:
@@ -442,6 +444,16 @@ def _same_path(a: Path, b: Path) -> bool:
     return os.path.normcase(str(Path(a).resolve())) == os.path.normcase(str(Path(b).resolve()))
 
 
+def is_linked_worktree(path: Path) -> bool:
+    """path 是 `git worktree add` 出來的 linked worktree（--git-dir 與 --git-common-dir 解析後不同）。
+    主 checkout 或一般 clone 兩者相同：就算被放在專用路徑，也不能對它 reset／clean 或自動提交。"""
+    gd = git(path, "rev-parse", "--git-dir", check=False)
+    cd = git(path, "rev-parse", "--git-common-dir", check=False)
+    if gd.returncode != 0 or cd.returncode != 0:
+        return False
+    return not _same_path(Path(path) / gd.stdout.strip(), Path(path) / cd.stdout.strip())
+
+
 def require_dedicated_worktree(root: Path, clean: bool = True) -> None:
     """--commit 只准在專用工作樹（STATE_DIR/repo）執行：detached HEAD、動手前沒有未提交改動。
     在別人的工作目錄提交會連帶動到他們的暫存區、分支與未提交檔案。"""
@@ -450,6 +462,8 @@ def require_dedicated_worktree(root: Path, clean: bool = True) -> None:
             "不加 --commit 時 ingest 只寫檔，照 AGENTS.md 流程 C 自行驗證與提交")
     if not is_dedicated_worktree(root):
         raise PipelineError(f"--commit 只准在專用工作樹 {wt} 執行（目前在 {root}）。{hint}")
+    if not is_linked_worktree(root):
+        raise PipelineError(f"{root} 不是 linked worktree（它是主 checkout 或一般 clone），不提交。{hint}")
     if git(root, "symbolic-ref", "-q", "HEAD", check=False).returncode == 0:
         raise PipelineError(f"專用工作樹 {wt} 的 HEAD 不是 detached（站在分支上），不提交。{hint}")
     # 只看已追蹤檔的改動：工作樹裡的未追蹤檔（例如隨手放的報告草稿）不是被提交的對象，也不該擋住提交
@@ -467,12 +481,18 @@ def verify_errors(root: Path) -> set[str]:
     return errs
 
 
-def commit_and_push(root: Path, message: str, files: list[str], base_errors: set[str], snapshot: Snapshot) -> str:
+def commit_and_push(root: Path, message: str, files: list[str], base_errors: set[str], snapshot: Snapshot,
+                    redo=None) -> str:
     """只提交這次入帳寫入的檔案（files）與 README.md，一個 commit。
 
     提交前驗證是「沒有引入新錯誤」：base_errors 是入帳前 verify_inbox 的錯誤行集合，入帳後出現不在其中的錯誤行就還原
     （snapshot：刪新報告、還原紀錄檔與 README）並 raise。push 被拒時 rebase 到最新 main、重驗再推（最多 3 次）；
-    提交後的任何失敗都 reset 回提交前，不留下半成品。"""
+    提交後的任何失敗都 reset 回提交前，不留下半成品。
+
+    redo：可呼叫物件，回傳 (新的 files, 新的 Snapshot)，或 None 表示不支援。push 被拒後 rebase 衝突（例如 chrome 與 codex
+    兩道同時入帳同一篇，reviews/<slug>.json 兩邊都追加）時，不丟掉審查結果：rebase --abort、reset --hard origin/main，
+    呼叫 redo() 在最新 main 上重新入帳（同一份報告文字，重新追加紀錄、報告序號重編），重跑「沒有引入新錯誤」檢查後提交再推；
+    redo 也失敗（例如筆記內容已變、雜湊不符）才放棄並還原。最多重做 REDO_LIMIT 次。"""
     require_dedicated_worktree(root, clean=False)
     paths = [*files, "README.md"]
 
@@ -498,13 +518,33 @@ def commit_and_push(root: Path, message: str, files: list[str], base_errors: set
     if not git(root, "diff", "--cached", "--name-only").stdout.strip():
         return "沒有變更"
     git(root, "commit", "-m", message, "--", *paths)
-    for attempt in range(3):
+    redone = 0
+    for attempt in range(3 + REDO_LIMIT):
         if git(root, "push", "origin", "HEAD:main", check=False).returncode == 0:
             return git(root, "rev-parse", "--short", "HEAD").stdout.strip()
         if git(root, "fetch", "-q", "origin", check=False).returncode != 0:
             give_up("push 被拒後 fetch origin 也失敗")
         if git(root, "rebase", "origin/main", check=False).returncode != 0:
-            give_up("rebase 到最新 main 衝突，留給整合者處理")
+            git(root, "rebase", "--abort", check=False)
+            if redo is None or redone >= REDO_LIMIT:
+                give_up("rebase 到最新 main 衝突，留給整合者處理")
+            redone += 1
+            git(root, "reset", "--hard", "origin/main")
+            try:
+                again = redo()
+            except PipelineError as e:
+                give_up(f"rebase 衝突後在最新 main 上重新入帳失敗：{e}")
+            if again is None:
+                give_up("rebase 到最新 main 衝突，且這次入帳不支援重做")
+            files, snapshot = again
+            paths = [*files, "README.md"]
+            try:
+                check_no_new_errors()
+            except (PipelineError, OSError, subprocess.CalledProcessError) as e:
+                give_up(f"重新入帳後驗證失敗：{e}")
+            git(root, "add", "--", *paths)
+            git(root, "commit", "-m", message, "--", *paths)
+            continue
         try:
             check_no_new_errors()
         except (PipelineError, OSError, subprocess.CalledProcessError) as e:
@@ -512,7 +552,7 @@ def commit_and_push(root: Path, message: str, files: list[str], base_errors: set
         if git(root, "status", "--porcelain", "--", "README.md").stdout.strip():
             git(root, "commit", "--amend", "--no-edit", "--", "README.md")  # 維持一個 commit
         time.sleep(2 * (attempt + 1))
-    give_up("push 連續失敗 3 次")
+    give_up("push 連續失敗（含重做）")
 
 
 def bi_main(root: Path) -> None:
@@ -531,6 +571,8 @@ def reset_dedicated_worktree(src: Path, wt: Path) -> bool:
               for line in git(src, "worktree", "list", "--porcelain").stdout.splitlines() if line.startswith("worktree ")}
     if os.path.normcase(str(wt.resolve())) not in listed:
         raise PipelineError(f"{wt} 不在 git worktree list 裡，拒絕 reset／clean（不確定它是專用工作樹）")
+    if not is_linked_worktree(wt):
+        raise PipelineError(f"{wt} 不是 linked worktree（git-dir 與 git-common-dir 相同：它是主 checkout 或一般 clone），拒絕 reset／clean")
     git(wt, "reset", "--hard")
     git(wt, "clean", "-fd")
     return True
@@ -585,6 +627,21 @@ def cmd_prompt(args) -> int:
     return 0
 
 
+def make_redo(root: Path, jobs: list[dict]):
+    """commit_and_push 的 redo：在（已 reset 到最新 main 的）工作樹上，用同一批報告文字重新入帳。
+    任何一筆入帳失敗（例如筆記內容已變、雜湊不符）都會 raise PipelineError，由 commit_and_push 放棄並還原。"""
+    def redo():
+        snap = Snapshot(root)
+        snap.track("README.md")
+        files: list[str] = []
+        for j in jobs:
+            entry = ingest(j["slug"], j["report"], j["reviewer"], j["lane"], j["role"], j["scopes"], j["sha"],
+                           root=root, source_ref=j.get("source_ref", ""), snapshot=snap)
+            files.extend(entry_files(j["slug"], entry))
+        return list(dict.fromkeys(files)), snap
+    return redo
+
+
 def cmd_ingest(args) -> int:
     check_cli_reviewer(args.reviewer)
     root = bi.REPO_ROOT
@@ -600,7 +657,10 @@ def cmd_ingest(args) -> int:
     files = entry_files(args.slug, entry)
     print(f"[*] 已入帳 {args.slug}：{entry['verdict']}（{entry['report']}）")
     if args.commit:
-        print(f"[*] 提交：{commit_and_push(root, f'chore(review): {entry['verdict']} {args.slug} ({entry['role']})', files, base, snap)}")
+        job = dict(slug=args.slug, report=report, reviewer=args.reviewer, lane=args.lane, role=args.role,
+                   scopes=args.scope.split(","), sha=args.sha, source_ref=args.source_ref or "")
+        msg = f"chore(review): {entry['verdict']} {args.slug} ({entry['role']})"
+        print(f"[*] 提交：{commit_and_push(root, msg, files, base, snap, redo=make_redo(root, [job]))}")
     else:
         bi_main(root)
         print(f"[*] 未加 --commit，只寫了檔。驗證通過後自行提交：\n"
@@ -622,7 +682,7 @@ def cmd_run(args) -> int:
         return 0
     snap = Snapshot(root)
     snap.track("README.md")
-    done, failed, files = [], [], []
+    done, failed, files, jobs = [], [], [], []
     for o in orders:
         note = bi.parse_note(bi.NOTES_DIR / f"{o.slug}.md")
         if args.dry_run:
@@ -634,10 +694,13 @@ def cmd_run(args) -> int:
                            source_ref=f"codex thread {thread}", snapshot=snap)  # run 內部呼叫：身分來自 Codex 事件，不受 CLI 限制
             done.append(f"{o.slug}:{entry['verdict']}")
             files.extend(entry_files(o.slug, entry))
+            jobs.append(dict(slug=o.slug, report=report, reviewer=f"codex/{args.model}@{thread}", lane=o.lane, role=o.role,
+                             scopes=o.scopes, sha=o.sha, source_ref=f"codex thread {thread}"))
         except PipelineError as e:
             failed.append(f"{o.slug}: {e}")
     if done and args.commit:
-        print(f"[*] 提交：{commit_and_push(root, 'chore(review): codex reviews ' + ', '.join(done), list(dict.fromkeys(files)), base, snap)}")
+        msg = "chore(review): codex reviews " + ", ".join(done)
+        print(f"[*] 提交：{commit_and_push(root, msg, list(dict.fromkeys(files)), base, snap, redo=make_redo(root, jobs))}")
     elif done:
         bi_main(root)
         print(f"[*] 未加 --commit，只寫了檔：{' '.join(dict.fromkeys(files))} README.md")
