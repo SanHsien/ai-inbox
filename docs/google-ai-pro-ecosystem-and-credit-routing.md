@@ -7,10 +7,10 @@
 
 ## 0. 來源筆記與官方依據
 
-- **來源筆記**：[`notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md`](../notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md)
+- **來源筆記**：`notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md`
 - **交叉參照**：
   - [`notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md`](../notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md)（Antigravity 與 Gemini 4 Neon 配置）
-  - [`notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md`](../notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md)（Gemini 4 Neon 與 Antigravity SWE-sweep 評測）
+  - `notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md`（Gemini 4 Neon 與 Antigravity SWE-sweep 評測）
   - [`docs/model-burn-rate-routing-matrix.md`](./model-burn-rate-routing-matrix.md)（多模型選型與配額燃燒率矩陣）
 - **官方文件查證網址（2026-11-22 核實）**：
   - [Google Flow 點數官方說明](https://support.google.com/flow/answer/16526234?hl=en)

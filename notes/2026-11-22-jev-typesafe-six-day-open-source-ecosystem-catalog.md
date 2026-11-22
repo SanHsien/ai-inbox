@@ -7,10 +7,9 @@ author: "楊三賢 (SanHsien)"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
 written_by: "antigravity/claude-opus-4.6@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
-source_review: full
-source_images: 0
-source_replies: 0
+source_review: unavailable
 source_reviewed_at: "2026-11-22"
+source_review_note: "使用者於對話直接提供完整正文與留言區專案分類清單全文（無原始貼文 URL，無法於網頁重開原貼文核對圖片與留言計數）"
 status: pending
 cluster: 3
 cluster_role: "Jev六天開源生態"
@@ -40,24 +39,23 @@ tags:
 
 ---
 
-## 1. Jev 模型定位摘要
+## 1. Jev 模型定位摘要（依貼文與 TypeSafe AI 官方說明轉述）
 
-TypeSafe AI 於 2026-09-15 發布 Jev。核心特徵：
+TypeSafe AI 於 2026-09-15 發布 Jev。依貼文整理之官方文件核心特徵（二手轉述）：
 
 - **不生成文字**：只接收文字/JSON 狀態與有界選項集，回傳選擇結果與校準後的信心機率。
 - **三種判斷原語**：`Choice`（多選分類，最多 255 類）、`Noul`（布林機率）、`Score`（量尺評分）。
-- **延遲**：70～500 ms（官方宣稱）。
+- **延遲**：70～500 ms（貼文引述官方文件宣稱值，未獨立重測）。
 - **計費**：輸出 Token 為零、僅計入 Input Token。
-- **語言能力**：英文最準；中文、日文、韓文可用但官方明載精準度較低。
-- **支援模型版本**：Gemini 3.6 以上（包含全部 Gemini 4 系列）——此為上游 Google 在 Decisions API 層面的相容性聲明。
+- **語言能力**：官方文件聲明英文最準；中文、日文、韓文可用但精準度較低。
 
 ---
 
-## 2. 六日生態概觀：1,528 專案的結構化拆解
+## 2. 六日生態概觀：1,528 專案的結構化拆解（各專案 README 自述快照）
 
-截至 2026-09-21，GitHub 上 2026-09-12 以後建立、名稱或介紹同時提到 Jev 與 TypeSafe 的專案計 **1,528** 個。兩份社群清單加展示牆約收錄 260 個，其中附具體測試數字的約 40 個。
+依貼文統計（截至 2026-09-21 快照），GitHub 上 2026-09-12 以後建立、名稱或介紹同時提到 Jev 與 TypeSafe 的專案計 **1,528** 個。兩份社群清單加展示牆約收錄 260 個，其中附具體測試數字的約 40 個。
 
-以下按原文分類整理，標記「✓」代表原作者認為一般人也能用到或附有實測數據：
+> **證據等級聲明**：下表所列各專案功能、星數與實測數據，均為**貼文作者轉述各該開源專案 README 之自述數據（二手轉述，截至 2026-09-21 快照）**，多數專案未附完整測試集與重現腳本，本 repo 未逐一獨立重跑驗證。
 
 ### 2.1 內容過濾與雜訊清除（6 專案）
 
@@ -173,9 +171,9 @@ TypeSafe AI 於 2026-09-15 發布 Jev。核心特徵：
   │     ├── 優勢：生態先發、1,528+ 開源專案、MCP 工具支援
   │     └── 侷限：釣魚信 62.6% 準確率、中文精準度較低、無法讀圖
   │
-  ├── Google Decisions API / Decision 1（後發者）
-  │     ├── JevBench 92.2%、與 Gemini 生態深度整合
-  │     └── Tool Retrieval 按需載入與 Decisions API 互補
+  ├── Google Decisions API / Decision 1（後發者，2026-11-11）
+  │     ├── Google 官方自述 JevBench 92.2%、Top-1 ECE 0.0250、支援多模態輸入
+  │     └── 邊界：When2Call (79.9% vs Jev 82.0%) 與 7 項評測總成本 ($0.88 vs Jev $0.68) 仍由 Jev 領先
   │
   └── 本機替代方案
         └── JustVugg/colibri（三層式 MoE、Jev API 相容端點）

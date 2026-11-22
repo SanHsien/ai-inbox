@@ -7,9 +7,9 @@
 
 ## 0. 來源筆記與交叉參照
 
-- [`notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md`](../notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md)（Jev 上線六天 1,528 個開源專案生態盤點與實測數據彙整）
+- `notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md`（Jev 上線六天 1,528 個開源專案生態盤點與實測數據彙整）
 - [`notes/2026-11-20-gemini-decision-1-decisions-api-eval.md`](../notes/2026-11-20-gemini-decision-1-decisions-api-eval.md)（Google Gemini Decision 1 與 Decisions API 評析、ECE 校準誤差與官方限制）
-- [`notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md`](../notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md)（Gemini API Tool Retrieval 按需動態載入工具 Schema 與 MCP 整合）
+- `notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md`（Gemini API Tool Retrieval 按需動態載入工具 Schema 與 MCP 整合）
 - [`notes/2026-11-08-justvugg-colibri-hierarchical-moe-inference-engine.md`](../notes/2026-11-08-justvugg-colibri-hierarchical-moe-inference-engine.md)（`JustVugg/colibri` 三層式 MoE 推理引擎與零生成 `/v1/systemone` 決策端點）
 - [`notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md`](../notes/2026-10-31-claude-code-hierarchical-multi-model-orchestration.md)（四級模型分工中的快速決策層定位）
 - [`notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md`](../notes/2026-11-01-claude-code-four-role-dispatch-runtime-rules.md)（二元與枚舉決策 API 的執行期觸發機制）

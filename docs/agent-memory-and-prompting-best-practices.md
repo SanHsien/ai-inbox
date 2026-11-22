@@ -7,7 +7,7 @@
 
 ## 0. 來源筆記與官方依據
 
-- **來源筆記**：[`notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md`](../notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md)
+- **來源筆記**：`notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md`
 - **交叉參照**：
   - [`notes/2026-10-17-claude-mem-autocompact-context.md`](../notes/2026-10-17-claude-mem-autocompact-context.md)（Claude-Mem 記憶架構與壓縮臨界點）
   - [`notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md`](../notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md)（Always-On Agents 狀態與記憶藍圖）

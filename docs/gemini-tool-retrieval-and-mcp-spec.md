@@ -7,7 +7,7 @@
 
 ## 0. 來源筆記與交叉參照
 
-- [`notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md`](../notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md)（Will 保哥評釋 Gemini API Tool Retrieval、待命區設計與 Prefix Caching 相容性）
+- `notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md`（Will 保哥評釋 Gemini API Tool Retrieval、待命區設計與 Prefix Caching 相容性）
 - [`notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md`](../notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md)（FastMCP Python MCP 框架與工具治理）
 - [`notes/2026-11-20-gemini-decision-1-decisions-api-eval.md`](../notes/2026-11-20-gemini-decision-1-decisions-api-eval.md)（Gemini Decision 1 在 `When2Call` 79.9% 的邊界與前置路由分工）
 - [`docs/system-one-decision-model-landscape.md`](./system-one-decision-model-landscape.md)（System One 決策模型與 Tool Retrieval 的職責分工）

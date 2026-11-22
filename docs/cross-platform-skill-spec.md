@@ -7,7 +7,7 @@
 
 ## 0. 來源筆記與官方依據
 
-- **來源筆記**：[`notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md`](../notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md)
+- **來源筆記**：`notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md`
 - **交叉參照**：
   - [`notes/2026-10-19-android-official-skills-google-coding-agent.md`](../notes/2026-10-19-android-official-skills-google-coding-agent.md)（Google 官方 Agent Skills 目錄架構）
   - [`notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md`](../notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md)（Antigravity 全域與專案技能治理）
