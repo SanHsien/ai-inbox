@@ -13,7 +13,7 @@
   - [`notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md`](../notes/2026-11-19-anthropic-building-always-on-agents-blueprint.md)（Always-On Agents 狀態與記憶藍圖）
   - [`notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md`](../notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md)（以外部 Markdown 作為確定性記憶硬碟）
 - **官方文件查證網址**：
-  - Anthropic 研究文章：〈The components of agent memory〉（2026-11-06）
+  - [Anthropic 研究文章：〈The components of agent memory〉（2026-11-06）](https://www.anthropic.com/research/components-of-agent-memory)
   - [Anthropic 隱私中心：回饋資料保留與模型訓練說明](https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training)
 
 ---
@@ -30,14 +30,14 @@
 
 Anthropic 在〈The components of agent memory〉中揭露了三個不同模型遊玩《寶可夢 紅》的記憶檔案紀錄：
 
-| 模型版本 | 記憶檔案規模與結構 | 遊戲進度表現 | 官方指出的行為特徵 |
+| 模型版本 | 記憶檔案規模與結構（取樣基準） | 遊戲進度表現 | 官方指出的行為特徵 |
 | :--- | :--- | :--- | :--- |
-| **Claude Sonnet 3.7** | 建立 **413 個記憶檔**，分散於 **225 個資料夾** | 僅獲得 **1 枚徽章** | 記下大量**可直接從當前畫面讀到、且很快過時的瞬時狀態**；維護與翻找龐大記憶樹反而耗盡上下文與推理資源 |
-| **Claude Fable 5** | 約 **10 個檔案**（9 個檔案分置於 2 個資料夾，另加 1 個 `global.md`） | 獲得 **4 枚徽章**（未通關） | 捨棄瞬時畫面狀態，保留**自己推導出來並驗證過的策略與規則** |
-| **Claude Opus 5.5** | 官方僅描述「記憶資料夾很小」（**未公布具體檔案數**） | **成功通關** | 具備更強的基礎推理能力與精簡筆記習慣 |
+| **Claude Sonnet 3.7** | 建立 **413 個記憶檔**，分散於 **225 個資料夾**（單次紀錄，約 10,000 步時） | 僅獲得 **1 枚徽章** | 記下大量**可直接從當前畫面讀到、且很快過時的瞬時狀態**；維護與翻找龐大記憶樹反而耗盡上下文與推理資源 |
+| **Claude Fable 5** | 約 **10 個檔案**（9 個檔案分置於 2 個資料夾，另加 1 個 `global.md`；單次紀錄，約 10,000 步時） | 獲得 **4 枚徽章**（未通關） | 捨棄瞬時畫面狀態，保留**自己推導出來並驗證過的策略與規則** |
+| **Claude Opus 5.5** | 官方僅另述「記憶資料夾很小」（**未公布具體檔案數與實驗次數**） | **成功通關** | 具備更強的基礎推理能力與精簡筆記習慣 |
 
 > **方法論警示（嚴禁寫成因果規律）**：
-> 上表是**三個不同能力世代的模型各跑一次的案例觀察（Case Observation）**，實驗並未固定同一模型來單獨控制「記憶檔案數量」變數。因此，**不能宣稱「記憶檔案越少就必然表現越好」或將檔案數量當作通關的因果證明**。
+> 依 [Anthropic 官方研究原文](https://www.anthropic.com/research/components-of-agent-memory)，上表中 Sonnet 3.7 與 Fable 5 的比較各取一次（約一萬步時）的紀錄，而 Opus 5.5 通關為另述案例（官方未公布其實驗次數與檔案數）；整體屬案例觀察（Case Observation），並未固定同一模型來單獨控制「記憶檔案數量」變數。因此，**不能宣稱「記憶檔案越少就必然表現越好」或將檔案數量當作通關的因果證明**。
 >
 > **可採用的工程實踐**：
 > 記憶治理的重點不在於硬性限制檔案個數，而在於**「區分瞬時狀態（Ephemeral State）與持久策略（Verified Strategy）」**——凡是能從當前程式碼、終端機狀態或畫面直接查到的易過時資訊，一律不寫入長期記憶；長期記憶（如 `agent-assets`、`AGENTS.md`、專案 `REVIEW.md`）只保存**經過驗證的架構決策、防呆規則與跨 Session 教訓**。

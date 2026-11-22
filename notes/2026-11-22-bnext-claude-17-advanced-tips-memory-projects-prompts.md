@@ -6,7 +6,7 @@ source_platform: "bnext.com.tw (數位時代)"
 author: "蘇柔瑋 (整理 Ruben Hassid 與 Anthropic 官方研究)"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
-written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031"
+written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
 revised_at: "2026-11-22"
 source_review: full
 source_images: 1
@@ -44,7 +44,7 @@ tags:
 
 - **第一類：記憶與專案管理（技巧 1～3）**：
   - **Anthropic 官方研究量化佐證（技巧 1）**：引用 2026-11-06 Anthropic〈The components of agent memory〉，Claude Opus 5.5 在 CL-Bench 資料庫代理評測中，啟用跨工作階段記憶後平均得分由 `0.655` 大幅躍升至 `0.838`，**相對提升幅度達約 28%**。
-  - **精簡記憶治理（技巧 2，案例觀察）**：引述 Anthropic《寶可夢 紅》代理測試——Sonnet 3.7 建立 413 個記憶檔分散於 225 資料夾，僅獲 1 枚徽章；Fable 5 約 10 檔（9 檔分兩資料夾加 `global.md`），獲 4 枚徽章、沒有通關；**通關的是 Opus 5.5**，官方只說它的記憶資料夾很小，沒有給檔案數。這是不同模型各一次的紀錄，沒有控制模型能力來單獨驗證檔案數的效果，**不能宣稱檔案越少必然越好**。官方指出的問題是：Sonnet 3.7 記下大量可直接從畫面讀到、很快過時的狀態，維護與翻找記憶耗掉資源；Fable 5 保留的是自己推出來、驗證過的策略與規則。可採用的做法：不保存可直接取得、容易過時的狀態，保留策略與驗證過的規則。Hassid 建議定期以「保留、修正、刪除」三分法重構記憶（如將 105 條收斂至 26 條），屬二手轉述，待測。
+  - **精簡記憶治理（技巧 2，案例觀察）**：引述 [Anthropic《寶可夢 紅》代理測試](https://www.anthropic.com/research/components-of-agent-memory)——Sonnet 3.7 建立 413 個記憶檔分散於 225 資料夾，僅獲 1 枚徽章；Fable 5 約 10 檔（9 檔分兩資料夾加 `global.md`），獲 4 枚徽章、沒有通關；**通關的是 Opus 5.5**，官方只說它的記憶資料夾很小，沒有給檔案數。依官方原文，Sonnet 3.7 與 Fable 5 的比較各取一次（約一萬步時）的紀錄，而 Opus 5.5 通關為另述案例、實驗次數未公布；這項觀察沒有控制模型能力來單獨驗證檔案數的效果，**不能宣稱檔案越少必然越好**。官方指出的問題是：Sonnet 3.7 記下大量可直接從畫面讀到、很快過時的狀態，維護與翻找記憶耗掉資源；Fable 5 保留的是自己推出來、驗證過的策略與規則。可採用的做法：不保存可直接取得、容易過時的狀態，保留策略與驗證過的規則。Hassid 建議定期以「保留、修正、刪除」三分法重構記憶（如將 105 條收斂至 26 條），屬二手轉述，待測。
   - **Projects 隔離邊界（技巧 3）**：多客戶/專案管理時，必須在 Project 的 Memory 設定中關閉「Use account memory」，防止全域帳號偏好干擾專案專屬脈絡。
 - **第二類：改善回答品質與除錯機制（技巧 4～6）**：
   - **答錯時回頭編輯原提問（技巧 4，可選策略）**：錯誤內容會留在後續脈絡裡，可能持續影響回答。若反覆受錯誤前提影響（需求描述不清、方向被誤解），可回到出錯前的**使用者原提問**點「Edit」修改後重送——這會建立新的對話分支，不是重置整段上下文；或整理已確認資訊另開對話。若只是單一事實錯誤，直接指出並提供正確資料即可（原文也這樣寫）；Anthropic 官方文件也建議用後續提示要求模型查核、修正先前回答（iterative refinement），所以不是一律禁止後續糾正。
@@ -79,7 +79,7 @@ tags:
 - [ ] **`T-20261122-02`**｜**[優先級：低]** 將 Anthropic Agent Memory「記憶存策略、不存易過時狀態」的案例觀察（寶可夢紀錄）與「反覆走偏時編輯原提問」可選策略納入 `docs/agent-memory-and-prompting-best-practices.md`
   - **目標範圍**：`C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1）
   - **執行步驟**：
-    1. 整合 Anthropic〈The components of agent memory〉數據：Opus 5.5 CL-Bench +28%（限 Managed Agents 評測）；寶可夢紀錄分開寫 Sonnet 3.7（413 檔、1 枚徽章）、Fable 5（約 10 檔、4 枚徽章）、Opus 5.5（精簡筆記、通關、無檔案數），並註明是不同模型各一次的案例觀察，不是檔案數的因果證明。
+    1. 整合 Anthropic〈The components of agent memory〉數據：Opus 5.5 CL-Bench +28%（限 Managed Agents 評測）；寶可夢紀錄分開寫 Sonnet 3.7（413 檔、1 枚徽章）、Fable 5（約 10 檔、4 枚徽章）、Opus 5.5（精簡筆記、通關、無檔案數），並註明 Sonnet 3.7 與 Fable 5 各取一次（約一萬步）紀錄、Opus 5.5 為另述案例（實驗次數未公布），均屬案例觀察，不是檔案數的因果證明。
     2. 寫成可選策略並附適用條件：反覆受錯誤前提影響時編輯原提問（建立新分支）或整理已確認資訊另開對話；單一事實錯誤直接糾正；「10 行跨 Session 接手摘要」與「105→26 條記憶收斂」標為二手轉述、待測。
     3. 產出 `docs/agent-memory-and-prompting-best-practices.md`。
   - **驗收標準（DoD）**：產出 `docs/agent-memory-and-prompting-best-practices.md`，定義記憶收斂與對話修正規範；文件內記憶檔數只寫成案例觀察（不寫成因果規律）、編輯原提問寫成附適用條件的可選策略、二手建議標為待測，且 `python tools/verify_inbox.py` 驗證通過。

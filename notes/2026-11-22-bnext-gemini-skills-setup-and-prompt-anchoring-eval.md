@@ -6,7 +6,7 @@ source_platform: "bnext.com.tw (數位時代)"
 author: "韋惟珊"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
-written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031"
+written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
 revised_at: "2026-11-22"
 source_review: full
 source_images: 6
@@ -46,9 +46,9 @@ tags:
   - **免費帳號門檻**：年滿 18 歲之個人免費帳號即可在電腦版 Gemini「自訂」→「技能」分頁中啟用與建立，無需付費訂閱。
 - **SKILL.md 成為跨平台統一標準**：
   - Gemini 技能建立支援兩種方式：(1) 與 Gemini 對話生成；(2) **直接上傳包含 `SKILL.md` 的單檔或 ZIP 壓縮包**（可附帶 CSV、PY、TXT、MD 等參考資源檔）。
-  - 文章說 `SKILL.md` 可用在 **Gemini、Claude、ChatGPT、Antigravity**。格式可以帶著走，但功能要逐平台驗證：依官方說明，Gemini 技能的腳本不能連網、不能對外部網站動作，上傳檔只收純文字類格式（不收 `.ts`、`.tsx`、`.sql`、舊版 Office、壓縮檔、音訊影片等），全部檔案合計不超過 100 MB。[Agent Skills 規格](https://agentskills.io/specification)另有 `compatibility` 欄位可標示環境需求（工具、套件、網路），有這類需求的技能應填上。
+  - 文章說 `SKILL.md` 可用在 **Gemini、Claude、ChatGPT、Antigravity**。格式可以帶著走，但功能要逐平台驗證：依[官方說明](https://support.google.com/gemini/answer/17094296?hl=en)與[官方遷移指南](https://support.google.com/gemini/answer/18977944?hl=en)，Gemini 技能的腳本不能連網、不能對外部網站動作；外層可上傳單一 `SKILL.md` 或技能 `.zip` 壓縮包，包內附隨檔案除純文字與程式碼（`.md`、`.txt`、`.csv`、`.py` 等）外，**亦支援 PDF、DOCX、XLSX、PPTX 及 PNG、JPG 等多種圖片格式**；明確排除的是 `.ts`、`.tsx`、`.sql`、舊版 Office（如 `.doc`、`.xls`、`.ppt`）、**包內夾帶的壓縮附件**與音訊影片檔，且全部檔案合計不超過 100 MB。[Agent Skills 規格](https://agentskills.io/specification)另有 `compatibility` 欄位可標示環境需求（工具、套件、網路），有這類需求的技能應填上。
 - **「假呼叫」與流程跳步之實戰解法**：
-  - **實測痛點（文章作者的實測，二手轉述，本 repo 未重測）**：即使畫面上方已顯示 `Skills: [技能名稱]`，模型仍常因為提示詞語義漂移而「跳過流程第一步」（例如「深度提問設計師」本應先挖掘更高維度的潛在問題，模型卻直接輸出一般學習計畫）。
+  - **實測痛點（文章作者的單次實測，二手轉述，本 repo 未重測）**：依[同媒體刊載原文](https://1day1ai.bnextmedia.com.tw/articles/gemini-skills-setup-guide)，作者在單次實測中遇到畫面上方已顯示 `Skills: [技能名稱]`，模型第一次仍跳過流程第一步（例如「深度提問設計師」本應先挖掘更高維度的潛在問題，模型卻直接輸出一般學習計畫），第二次改寫提示詞後成功；原文僅記錄這一次跳步與一次改寫成功，未提供發生率數據，跳步原因亦未查證。
   - **文章建議的兩個寫法（待測技巧，效果未經對照測試）**：
     1. **句首寫出技能名稱**：在提示詞開頭直接寫出技能名稱（如 `深度提問設計師，下週有一位新同事...`）。文章沒有提供支持「這樣能強制載入技能」的研究或對照測試；[官方說明](https://support.google.com/gemini/answer/17102773)只寫 Gemini 依技能的名稱與描述判斷相關性，相關才讀完整指示，沒有提到注意力機制或句首點名會強制載入。比較可能的解釋是：技能名稱出現在提示詞裡，讓相關性判斷更容易命中，但這也是推論，要測過才知道。
     2. **邊界與首步強約束**：在句末明確補上最在意的第一步防呆要求（如 `請先依技能流程，幫我找出一個更值得問的問題`）。
