@@ -411,9 +411,14 @@ def _validate_entry(name: str, idx: int, r, slug: str, root: Path, today: dt.dat
 
 
 def _unfinished_task_errors(note: bi.Note) -> list[str]:
-    """受管筆記（不在基準、或內容與基準不同）裡，未完成任務的「完成日期」「實作紀錄 / 證據」只能是空值或範本佔位字串。
-    其他文字會算進分析內容雜湊，等到有人 task_cli complete 時雜湊才變、已審筆記失效；讓問題在作者提交時就被擋。
-    免審舊筆記不套用（原樣凍結）。"""
+    """受管筆記（不在基準、或內容與基準不同）的任務欄位規則；免審舊筆記不套用（原樣凍結）。讓問題在作者提交時就被擋：
+    1. 未完成任務的「完成日期」「實作紀錄 / 證據」只能是空值或範本佔位字串。其他文字會算進分析內容雜湊，
+       等到有人 task_cli complete 時雜湊才變、已審筆記失效。任務已是 `⚪ 不做`（已關閉）時，不要叫人結案，
+       要把證據移到關閉理由或正文。
+    2. 同一任務的同一欄位（狀態、完成日期、實作紀錄 / 證據）不可重複出現：build_index 取最後一次、雜湊看第一次，兩邊會對不上。
+    3. 「狀態」欄位只接受：沒有這行、`🟡 進行中`、或嚴格符合 task_cli close 寫出的 `⚪ 不做（…）`；
+       縮排不對、半形冒號的狀態行也報錯。"""
+    name = note.path.name
     errs = []
     for t in note.tasks:
         if t.done:
@@ -421,9 +426,43 @@ def _unfinished_task_errors(note: bi.Note) -> list[str]:
         for key in ("完成日期", "實作紀錄 / 證據"):
             v = t.fields.get(key, "").strip()
             if v and v not in PLACEHOLDER_VALUES:
-                errs.append(f"{note.path.name}: {t.id} 未完成任務的「{key}」是 {v[:40]!r}；未完成任務的這兩欄只能是空的或範本佔位字串"
-                            f"（{'、'.join(sorted(PLACEHOLDER_VALUES))}）；要寫實作紀錄請在結案時用 task_cli complete")
-    return errs
+                fix = ("這個任務已是 ⚪ 不做（已關閉）：把證據移到關閉理由（狀態行括號裡）或正文，這兩欄留空或放範本佔位" if t.archived
+                       else "要寫實作紀錄請在結案時用 task_cli complete")
+                errs.append(f"{name}: {t.id} 未完成任務的「{key}」是 {v[:40]!r}；未完成任務的這兩欄只能是空的或範本佔位字串"
+                            f"（{'、'.join(sorted(PLACEHOLDER_VALUES))}）；{fix}")
+    fence: str | None = None
+    task_id: str | None = None
+    seen: dict[str, int] = {}
+    for line in note.path.read_text(encoding="utf-8").replace("\r\n", "\n").split("\n"):
+        opened_here = fence is None
+        fence, in_fence = bi.fence_step(fence, line)
+        if in_fence:
+            if opened_here and not line.startswith(" "):
+                task_id = None
+            continue
+        m = bi.TASK_LINE.match(line)
+        if m:
+            task_id, seen = m["id"], {}
+            continue
+        if task_id is None:
+            continue
+        if line.strip() and not line.startswith(" "):
+            task_id = None
+            continue
+        f = bi.TASK_FIELD.match(line)
+        key = f["key"].strip() if f else ""
+        if key not in ("狀態", "完成日期", "實作紀錄 / 證據"):
+            continue
+        seen[key] = seen.get(key, 0) + 1
+        if seen[key] == 2:
+            errs.append(f"{name}: {task_id} 的「{key}」欄位重複出現；build_index 取最後一次、審查雜湊看第一次，兩邊會對不上，每個任務每個欄位只能有一行")
+        if key == "狀態":
+            sm = STATE_FIELD_LINE.match(line)
+            v = sm["value"].strip() if sm else ""
+            if not sm or not (v == "🟡 進行中" or CLOSED_STATUS.match(v)):
+                errs.append(f"{name}: {task_id} 的「狀態」行不合格式（{line.strip()[:50]!r}）；只接受沒有這行、"
+                            "`  - **狀態**：🟡 進行中`（兩格縮排、全形冒號），或 task_cli close 寫的 `  - **狀態**：⚪ 不做（理由）`")
+    return list(dict.fromkeys(errs))
 
 
 def _first_date(text: str) -> dt.date | None:

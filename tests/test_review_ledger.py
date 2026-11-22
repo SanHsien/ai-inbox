@@ -1228,9 +1228,92 @@ class TaskCliGuardTest(Base):
         self.write_note()
         path = self.note_path()
         path.write_text(path.read_text(encoding="utf-8").replace(self.ANCHOR, self.ANCHOR + "  - **狀態**：🟡 進行中（等人回覆）\n", 1), encoding="utf-8")
-        self.add_review()
-        self.assertTrue(self.state().reviewed)
-        self.assert_refused(self.claim)
+        with unittest.mock.patch.object(rl, "_unfinished_task_errors", return_value=[]):  # 模擬新規則上線前就審過的筆記
+            self.add_review()
+            self.assertTrue(self.state().reviewed)
+            self.assert_refused(self.claim)
+
+    def insert_after_anchor(self, text):
+        path = self.note_path()
+        path.write_text(path.read_text(encoding="utf-8").replace(self.ANCHOR, self.ANCHOR + text, 1), encoding="utf-8")
+
+    def field_errors(self, legacy=None):
+        return [e for e in self.state(legacy=legacy).errors if "T-20261122-01" in e]
+
+    def test_closed_task_with_evidence_is_told_to_move_it_not_to_complete(self):
+        """加固 1：任務已是 ⚪ 不做（已關閉）時，錯誤訊息改成「把證據移到關閉理由或正文」，不叫人 task_cli complete。
+        用 T-20261017-32（repo 真實筆記）的寫法做合成測試。"""
+        real = bi.REPO_ROOT / "notes" / "2026-10-17-cross-cli-subagent-orchestration-space-bunny.md"
+        if not real.is_file():
+            self.skipTest("真實筆記已不存在")
+        copy = self.root / "notes" / real.name
+        copy.write_bytes(real.read_bytes())
+        task = next(t for t in bi.parse_note(copy).tasks if t.id == "T-20261017-32")
+        if task.done or not task.archived or not task.fields.get("實作紀錄 / 證據", "").strip():
+            self.skipTest("這個任務已不是『已關閉但保留證據』的寫法")
+        errors = [e for e in rl._unfinished_task_errors(bi.parse_note(copy)) if "T-20261017-32" in e]
+        evidence = [e for e in errors if "實作紀錄 / 證據" in e]
+        self.assertTrue(evidence and all("移到關閉理由" in e and "task_cli complete" not in e for e in evidence), errors)
+        # 未關閉的任務維持原訊息
+        self.write_note()
+        self.insert_after_anchor(self.OLD_EVIDENCE)
+        self.assertTrue(any("task_cli complete" in e and "移到關閉理由" not in e for e in self.field_errors()))
+
+    def test_duplicate_state_fields_are_errors_on_managed_notes(self):
+        """加固 2：同一任務同一欄位重複出現 → 報錯（build_index 取最後一次、雜湊看第一次，兩邊會對不上）；免審舊筆記不套用。"""
+        for extra in ("  - **狀態**：🟡 進行中\n  - **狀態**：🟡 進行中\n",
+                      "  - **完成日期**：*（完成時填 YYYY-MM-DD）*\n  - **完成日期**：*（完成時填 YYYY-MM-DD）*\n",
+                      "  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*\n  - **實作紀錄 / 證據**：*（待完成後由執行 Agent 填寫）*\n"):
+            self.setUp()
+            self.write_note()
+            self.insert_after_anchor(extra)
+            self.assertTrue(any("欄位重複出現" in e for e in self.field_errors()), extra)
+            self.setUp()
+            self.write_note(written_by="")
+            self.insert_after_anchor(extra)
+            self.assertEqual([], self.field_errors(legacy={self.slug: self.sha()}), extra)
+
+    def test_duplicate_field_in_another_task_is_not_confused(self):
+        """不同任務各有一行同名欄位是正常的，只有同一任務重複才報錯。"""
+        self.write_note()
+        with self.note_path().open("a", encoding="utf-8") as fh:
+            fh.write("\n- [ ] **`T-20261122-02`**｜**[優先級：低]** 第二個任務\n  - **狀態**：🟡 進行中\n  - **目標範圍**：x\n")
+        self.insert_after_anchor("  - **狀態**：🟡 進行中\n")
+        self.assertEqual([], [e for e in self.state().errors if "欄位重複出現" in e])
+
+    def test_status_field_value_is_strict_on_managed_notes(self):
+        """加固 3：狀態欄位只接受沒有這行、🟡 進行中、或嚴格的 ⚪ 不做（…）；縮排不對、半形冒號也報錯；免審舊筆記不套用。"""
+        bad = ["  - **狀態**：🟡 進行中（等人回覆）\n", "  - **狀態**：⚪ 不做（理由）。\n", "  - **狀態**：⚪ 不做\n", "  - **狀態**：⚪ 不做（）\n",
+               "   - **狀態**：🟡 進行中\n", "    - **狀態**：🟡 進行中\n", "  - **狀態**:🟡 進行中\n", "  - ** 狀態 **：🟡 進行中\n",
+               "  - **狀態**：隨便寫的文字\n", "  - **狀態**：\n"]
+        for extra in bad:
+            self.setUp()
+            self.write_note()
+            self.insert_after_anchor(extra)
+            self.assertTrue(any("「狀態」行不合格式" in e for e in self.field_errors()), extra)
+            self.setUp()
+            self.write_note(written_by="")
+            self.insert_after_anchor(extra)
+            self.assertEqual([], self.field_errors(legacy={self.slug: self.sha()}), extra)
+        for ok in ("", "  - **狀態**：🟡 進行中\n", "  - **狀態**：⚪ 不做（理由 含（括號）的文字）\n"):
+            self.setUp()
+            self.write_note()
+            self.insert_after_anchor(ok)
+            self.assertEqual([], [e for e in self.field_errors() if "不合格式" in e or "重複" in e], ok)
+
+    def test_task_cli_output_always_passes_the_field_rules(self):
+        """task_cli claim／close／complete 寫出的格式不會被這幾條新規則擋。"""
+        for op in ("claim", "close", "complete"):
+            self.setUp()
+            self.write_note()
+            path = self.note_path()
+            if op == "claim":
+                tc.apply_claim(path, "T-20261122-01")
+            elif op == "close":
+                tc.apply_close(path, "T-20261122-01", "理由 含（括號）")
+            else:
+                tc.apply_complete(path, "T-20261122-01", "commit abc", "2026-11-24")
+            self.assertEqual([], [e for e in self.field_errors() if "不合格式" in e or "重複" in e or "未完成任務" in e], op)
 
     def test_exempt_legacy_note_refuses_the_same_operations(self):
         """(b) 免審舊筆記（內容與基準相同）同樣被拒。"""
