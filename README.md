@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 259 項任務：🔴 未做 6／🟡 進行中 0／🟢 已做 174／⚪ 不做 79
+> 共 260 項任務：🔴 未做 7／🟡 進行中 0／🟢 已做 174／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -52,6 +52,7 @@
 | `T-20261121-02` | 🔴 未做 | 低 | 梳理「以 Markdown 檔案為外部硬碟」的確定性 Agent 狀態機與沙盒讀寫邊界規範，納入 `docs/deterministic-gtd-agent-harness-spec.md` | `C:\GitHub\ai-inbox\docs\deterministic-gtd-agent-harness-spec.md`（收錄於集群 1） | [2026-11-21-ben-thompson-write-things-down-harness-memory](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md) | 2026-11-21 |
 | `T-20261122-01` | 🔴 未做 | 低 | 評估 `SKILL.md` 跨平台（Gemini / Claude / Antigravity）相容性檢查清單，並將「首句技能名稱定錨」與「前置步驟防跳步防呆語法」納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | 2026-11-22 |
 | `T-20261122-02` | 🔴 未做 | 低 | 將 Anthropic Agent Memory「精簡記憶勝於雜亂堆疊」原則（寶可夢 413 檔 vs 10 檔對照）與「編輯原提問避免錯誤自我污染」納入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | 2026-11-22 |
+| `T-20261122-03` | 🔴 未做 | 低 | 將 Google AI Pro 跨產品 AI 點數制度（Flow 點數、Antigravity 基本配額與溢出點數開關）與 8 大工具能力邊界梳理至 `docs/google-ai-pro-ecosystem-and-credit-routing.md` | `C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3） | [2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | 2026-11-22 |
 
 ### 🟢 已做（Done）
 
@@ -493,6 +494,7 @@
 | 2026-11-21 | ⚪ | [InfoQ 評析：Gemini 4 Neon 接入 Antigravity 後 SWE-sweep 解題率三倍躍升與 Harness 聯合訓練效應](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md) | `gemini-4-neon`, `antigravity`, `swe-sweep` | 0 / 0 |
 | 2026-11-22 | 🔴 | [數位時代評析：Claude 17 招進階實踐——Anthropic Agent 記憶架構（CL-Bench +28%）、精簡記憶治理與防自我污染提示法](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | `claude`, `anthropic`, `agent-memory` | 0 / 1 |
 | 2026-11-22 | 🔴 | [數位時代評析：Gemini Gems 轉型 Skills 實戰——SKILL.md 跨平台通用規範與防跳步首句定錨 Prompting](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | `gemini`, `gemini-skills`, `skill-md` | 0 / 1 |
+| 2026-11-22 | 🔴 | [數位時代評析：Google AI Pro 八大工具全景實測——Antigravity 電腦檔案代理、Flow 影片生成與跨產品 AI 點數制](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | `google-ai-pro`, `gemini`, `antigravity` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -594,6 +596,7 @@
 - 人機協作瀏覽器：[Ego Lite協作瀏覽器](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md)
 - FastMCP框架：[FastMCP開源框架評估](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md)
 - Gemini技能規格：[Gemini技能教學評估](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md)
+- Google八工具：[GoogleAIPro八工具評估](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
