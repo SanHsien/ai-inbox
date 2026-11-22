@@ -6,7 +6,7 @@ source_platform: "Threads"
 author: "IlyaL (@ilya.liao)"
 analyzed_at: 2026-10-23
 analyzed_by: "Antigravity"
-status: in-progress # pending | in-progress | done | archived
+status: done # pending | in-progress | done | archived
 cluster: "3"
 cluster_role: "端點資安與雲端基建"
 short_title: "security-guidance 三層左移資安外掛"
@@ -30,7 +30,7 @@ tags:
 - **官方 GitHub 倉庫**：[`anthropics/claude-plugins-official/plugins/security-guidance`](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/security-guidance)
 - **發布平台 / 作者**：`Threads` / `IlyaL (@ilya.liao)`
 - **分析日期**：`2026-10-23`
-- **當前狀態**：`🟡 進行中 (In Progress)`
+- **當前狀態**：`🟢 已完成 (Done)`
 - **相關交叉參照**：
   - [`notes/2026-10-17-claude-plugins-official-directory.md`](./2026-10-17-claude-plugins-official-directory.md)（Claude Code 官方插件目錄）
   - [`notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md`](./2026-10-17-shipper-epstein-md-anti-ai-slop.md)（前端代碼審美與規範約束）
@@ -163,17 +163,17 @@ tags:
 
 > ⚠️ 本節是任務的唯一資料來源：改完執行 `python tools/build_index.py` 重產 [`README.md`](../README.md) 總表。
 
-- [ ] **`T-20261023-01`**｜**[優先級：高]** 在 Windows 11 本地測試 `security-guidance@claude-plugins-official` 外掛安裝與 `SG_AGENTIC_CLI_PATH` 配置驗證
+- [x] **`T-20261023-01`**｜**[優先級：高]** 在 Windows 11 本地測試 `security-guidance@claude-plugins-official` 外掛安裝與 `SG_AGENTIC_CLI_PATH` 配置驗證
   - **目標範圍**：本地 Claude Code 開發環境（`~/.claude/` 與環境變數）
-  - **狀態**：🟡 進行中
-  - **覆核退回（2026-11-22）**：原結案（2026-10-25）不成立，退回進行中。(1) 核心結論「Windows 11 必須設 `SG_AGENTIC_CLI_PATH`」被現行版 2.0.21 推翻：不設也會找到 `%USERPROFILE%\.local\bin\claude.exe`（實跑 `_cli_for_sdk`）。(2) DoD 的「本地安裝」沒有做：本機 `installed_plugins.json` 與 `enabledPlugins` 都沒有這個外掛，原證據自己寫的也是「安裝評估與源碼分析」。(3) `~/.claude/security/log.txt` 裡只有當時手動呼叫 `debug_log` 寫的一行，不是外掛執行產生的紀錄。本次已補：文件改成現行做法並保留舊版為歷史註記；用 `sg-python.sh` 實跑 hook 進入點，Layer 1 命中 `eval_injection`、`os_system_injection`，紀錄檔正常寫入（狀態目錄導向暫存資料夾）；實跑確認 CLI 探測結果。**剩下要做**：維護者決定是否安裝（會改 `settings.json`、每回合多用額度）；安裝後在真實工作階段確認預設位置的 `log.txt` 有外掛寫入的紀錄，並看一次 Layer 3 是否啟動。決定不裝就改用 `task_cli.py close` 關閉。
+  - **覆核退回（2026-11-22）**：原結案（2026-10-25）不成立，退回進行中。(1) 核心結論「Windows 11 必須設 `SG_AGENTIC_CLI_PATH`」被現行版 2.0.21 推翻：不設也會找到 `%USERPROFILE%\.local\bin\claude.exe`（實跑 `_cli_for_sdk`）。(2) DoD 的「本地安裝」沒有做：本機 `installed_plugins.json` 與 `enabledPlugins` 都沒有這個外掛，原證據自己寫的也是「安裝評估與源碼分析」。(3) `~/.claude/security/log.txt` 裡只有當時手動呼叫 `debug_log` 寫的一行，不是外掛執行產生的紀錄。本次已補：文件改成現行做法並保留舊版為歷史註記；用 `sg-python.sh` 實跑 hook 進入點，Layer 1 命中 `eval_injection`、`os_system_injection`，紀錄檔正常寫入（狀態目錄導向暫存資料夾）；實跑確認 CLI 探測結果。**當時剩下要做（2026-11-22 下午已完成，見下方證據）**：維護者決定是否安裝（會改 `settings.json`、每回合多用額度）；安裝後在真實工作階段確認預設位置的 `log.txt` 有外掛寫入的紀錄，並看一次 Layer 3 是否啟動。決定不裝就改用 `task_cli.py close` 關閉。
   - **原完成日期（已退回）**：2026-10-25
   - **具體做法**：
     1. 在 Claude Code 終端執行 `/plugin install security-guidance@claude-plugins-official`。
     2. 針對 Windows 11 本地環境，配置 `SG_AGENTIC_CLI_PATH` 指向本機 `claude` 執行路徑，確保 Layer 3 Agentic Reviewer 正常喚醒。
     3. 建立測試專案驗證：(a) 觸發 Layer 1 正則警告（如寫入刻意包含 `eval()` 或 `os.system()` 的測試代碼）；(b) 驗證 `~/.claude/security/log.txt` 正確產生日誌且無 Python / 執行期報錯。
   - **驗收標準（DoD）**：產出 `docs/claude-security-guidance-windows-setup.md`，記錄 Windows 11 本地安裝、`SG_AGENTIC_CLI_PATH` 設定步驟與測試 `eval()` 正則攔截之完整終端 log，確認 `~/.claude/security/log.txt` 正常記錄。
-  - **實作紀錄 / 證據**：（2026-10-25 舊紀錄，結論已被上面的覆核退回取代）已於 Windows 11 原生環境完成安裝評估與源碼分析，驗證 `llm.py` 防禦 Binary Planting 因而需顯式配置 `SG_AGENTIC_CLI_PATH` 之機制；透過 Python 實測驗證 `eval_injection` 與 `os_system_injection` 之 Layer 1 正則 100% 準確命中，並驗證 `_base.py` 成功於 `~/.claude/security/log.txt` 產生日誌與 1 MB 自動輪替。完整測試日誌與環境配置步驟詳見 `docs/claude-security-guidance-windows-setup.md`。
+  - **完成日期**：2026-11-22
+  - **實作紀錄 / 證據**：2026-11-22 維護者同意後以 claude plugin install security-guidance@claude-plugins-official 安裝（2.0.21，user scope）；settings.json 先備份到 ~/.claude/backups/settings.json.bak-20261122-1455，env 加 ENABLE_STOP_REVIEW=0、SG_AGENTIC_MODEL=claude-sonnet-5-5、SECURITY_REVIEW_MODEL=claude-sonnet-5-5，其他設定與 hook 未動。以 claude -p 在暫存 repo 實測：Layer 1 寫檔後命中 eval_injection／os_system_injection、預設位置 ~/.claude/security/log.txt 有外掛紀錄；Layer 3 兩次提交都審查並找到問題，SDK 建好後為完整 agentic 審查（Sonnet、calls=3），找到 %USERPROFILE%\.local\bin\claude.exe，未設 SG_AGENTIC_CLI_PATH；Layer 2 的 4 次 Stop 全部記錄 ENABLE_STOP_REVIEW=0、review=stop 用量 0 筆；本機提交閘門 hook 照常攔截。完整紀錄與關 Layer 2 理由見 docs/claude-security-guidance-windows-setup.md 安裝紀錄與第 4 節驗證 F。
 
 - [x] **`T-20261023-02`**｜**[優先級：中]** 建立跨專案「`.claude/claude-security-guidance.md` 範本與三層防禦對齊手冊」，將全域硬閘門注入 Claude Code 資安審查
   - **目標範圍**：`templates/claude-security-guidance.md` ＋ 全域防護手冊

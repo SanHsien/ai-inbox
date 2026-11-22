@@ -6,9 +6,32 @@
 > - **「Windows 11 必須設定 `SG_AGENTIC_CLI_PATH`」不成立。** 現行版在 Windows 會自己找 `claude.exe`（邏輯與行號見第 1 節）；本機沒設這個變數，實跑仍找到 `%USERPROFILE%\.local\bin\claude.exe`。只有 `claude.exe` 不在原生安裝位置、也不在 PATH 上時才需要設。
 > - **第 3 節原本的 `(Get-Command claude.cmd).Source` 不該拿來設這個變數。** 原生安裝與 WinGet 安裝都沒有 `claude.cmd`；本機這行指令雖然有結果，找到的卻是維護者自己寫的包裝批次檔（`%USERPROFILE%\bin\claude.cmd`），不是 Claude Code 本體。要設就填 `claude.exe` 的完整路徑。
 > - **內建規則數是 25 條，原文「約 25 種」沒錯。** 2026-11-21 註記寫的 28 條是把 `patterns.py` 裡三處非規則定義的 `ruleName` 字樣也算進去；實際載入 `patterns.SECURITY_PATTERNS` 為 25 筆。
-> - **本機沒有安裝這個外掛。** `installed_plugins.json` 與 `settings.json` 的 `enabledPlugins` 都沒有 `security-guidance`，快取目錄也不存在；本文件所有實測都是直接執行市場複本裡的 hook 程式，不是在 Claude Code 工作階段裡由外掛觸發。Layer 2／Layer 3 的 LLM 審查從未在本機跑過（Agent SDK 也沒裝）。任務 `T-20261023-01` 因此於 2026-11-22 退回進行中。
+> - ~~本機沒有安裝這個外掛。~~（2026-11-22 上午的狀態；當天下午維護者同意後已安裝，見下方「安裝紀錄」與第 4 節「驗證 F」。）上午的實測都是直接執行市場複本裡的 hook 程式，不是在 Claude Code 工作階段裡由外掛觸發，任務 `T-20261023-01` 因此一度退回進行中。
 > - 預設審查模型：README 寫兩層審查預設都用最新的 Opus；第 3 節把模型指定成 Sonnet 是為了省用量的本 repo 建議，不是官方預設。`claude-sonnet-5-5` 是有效代號（[Anthropic 模型總覽](https://platform.claude.com/docs/en/about-claude/models/overview)，查閱日 2026-11-21）。
 > - 已核對無誤：`DEBUG_LOG_MAX_BYTES = 1 * 1024 * 1024`、`SECURITY_REVIEW_MODEL`／`SG_AGENTIC_MODEL`／`ENABLE_STOP_REVIEW` 三個環境變數名稱、`hooks/sg-python.sh` 存在、自訂規則 8 KB 預算（`extensibility.py` 的 `GUIDANCE_MAX_BYTES = 8 * 1024`）。
+
+## 安裝紀錄（2026-11-22，維護者同意安裝）
+
+| 項目 | 內容 |
+| :--- | :--- |
+| 安裝指令 | `claude plugin install security-guidance@claude-plugins-official`（結束碼 0，scope: user，版本 2.0.21） |
+| 改了什麼 | `~/.claude/settings.json`：`enabledPlugins` 加一筆 `security-guidance@claude-plugins-official: true`（安裝指令自己寫的）；`env` 加三個變數（見下表）。其他設定、權限、hook 都沒動（與備份逐鍵比對確認） |
+| 備份 | 改之前複製到 `~/.claude/backups/settings.json.bak-20261122-1455` |
+| 還原 | `claude plugin uninstall security-guidance@claude-plugins-official`，再把備份複製回 `~/.claude/settings.json`（或只刪 `env` 裡下表三個變數） |
+| 首次啟動時外掛自己建的東西 | `~/.claude/security/agent-sdk-venv`（SessionStart hook 在背景建 Agent SDK 虛擬環境，SDK 0.2.187，約 1～2 分鐘）、`~/.claude/security/log.txt`、各 session 的狀態檔 |
+
+實際組態（`settings.json` 的 `env`）：
+
+| 層 | 設定 | 理由 |
+| :--- | :--- | :--- |
+| Layer 1 本機 Regex 警告 | 預設開（不設變數） | 不呼叫模型、不花額度 |
+| Layer 2 回合結束 diff 審查 | `ENABLE_STOP_REVIEW=0`（關） | 每個回合結束都會觸發，主 session 與每個子 agent 各算一次；本機常有多個 session 與子 agent 同時跑，2026-11-23 起訂閱降為 Pro，額度小，開著會很快用完。官方 README 也說多 agent 共用 worktree 時適合關掉這層 |
+| Layer 3 提交／推送深度審查 | 預設開；`SG_AGENTIC_MODEL=claude-sonnet-5-5` | 只在 `git commit`／`push` 時觸發，次數少；審查模型從預設的 Opus 改成 Sonnet 省用量（model ID 查 [Anthropic 模型總覽](https://platform.claude.com/docs/en/about-claude/models/overview)，2026-11-22 最新 Sonnet 為 `claude-sonnet-5-5`） |
+| （預備）Layer 2 的模型 | `SECURITY_REVIEW_MODEL=claude-sonnet-5-5` | Layer 2 現在關著不會用到；之後打開時直接用 Sonnet，不會回到預設的 Opus |
+
+要開 Layer 2：把 `settings.json` 的 `env` 裡 `"ENABLE_STOP_REVIEW": "0"` 刪掉（或改成 `"1"`），新開的 session 才會生效。開之前先看 `~/.claude/security/log.txt` 的 `Review usage: review=commit` 行估一下用量。
+
+注意：外掛是使用者層級安裝，**本機所有 Claude Code session 都會套用**，包含安裝當下已經開著的 session（實測安裝後同一個 session 的下一次工具呼叫就有外掛紀錄）。所以任何 session 在任何 repo 做 `git commit`，只要提交裡有原始碼檔，就會跑一次 Layer 3 審查、算訂閱用量。
 
 ---
 
@@ -100,7 +123,7 @@ def _user_cli_path() -> Optional[str]:
 ```
 *備註：官方市場已預設啟用，安裝後外掛將下載至 `%USERPROFILE%\.claude\plugins\cache\claude-plugins-official\security-guidance\<version>`。*
 
-> 截至 2026-11-22，本機**還沒有執行這一步**（見文首重驗結論）。安裝會改動 `settings.json` 的 `enabledPlugins`，之後每回合結束與每次提交都會多用模型額度，由維護者決定要不要裝。
+> 2026-11-22 已在本機安裝，用的是等效的命令列指令 `claude plugin install security-guidance@claude-plugins-official`（不用進互動模式）。實際組態見文首「安裝紀錄」。
 
 ### 步驟二：確認外掛找得到 Claude Code（通常不用設定）
 
@@ -134,7 +157,17 @@ $env:SG_AGENTIC_MODEL = "claude-sonnet-5-5"
 # $env:ENABLE_STOP_REVIEW = "0"
 ```
 
-要永久生效再寫進使用者層級環境變數：
+本機實際做法是寫進 `~/.claude/settings.json` 的 `env`（只影響 Claude Code 與它啟動的 hook，不動系統環境變數；值見文首「安裝紀錄」）：
+
+```json
+"env": {
+  "ENABLE_STOP_REVIEW": "0",
+  "SG_AGENTIC_MODEL": "claude-sonnet-5-5",
+  "SECURITY_REVIEW_MODEL": "claude-sonnet-5-5"
+}
+```
+
+另一種做法是寫進使用者層級環境變數（會影響所有程式，本機沒有採用）：
 
 > ⚠️ 此操作會永久寫入「使用者」層級環境變數（登錄檔 `HKCU\Environment`），影響之後所有新開的程序；執行前先確認值正確。還原方式：`[Environment]::SetEnvironmentVariable("<名稱>", $null, "User")`。
 
@@ -338,6 +371,60 @@ PATH = [工作目錄, '.'] only -> None
 
 - **結果判定**：✅ 不設 `SG_AGENTIC_CLI_PATH` 也找得到原生安裝的 `claude.exe`；專案資料夾裡的同名程式會被跳過。舊版結論「未設定必然回傳 `None`、Layer 3 無法啟動」在現行版不成立（`_user_cli_path()` 仍回傳 `None`，但 Layer 3 走的是 `_cli_for_sdk`）。
 - **沒有驗到的**：只驗了「找到哪個路徑」，沒有真的啟動 Layer 3 審查。那需要安裝外掛（會改 `settings.json`、每回合多用額度）並裝 Agent SDK，留給維護者決定。
+
+---
+
+### 驗證 F：安裝後在真實 Claude Code 工作階段實測三層（2026-11-22）
+
+做法：在暫存 git repo 裡用 `claude -p --model claude-sonnet-5-5` 開非互動 session，只允許 `Write`、`git add`、`git commit`，叫它寫一個含危險樣式的檔再提交。共跑兩次（第一次 Layer 3 走了退路，見下），測完 repo 已刪。紀錄檔是預設位置 `%USERPROFILE%\.claude\security\log.txt`（下面節錄已去掉家目錄帳號與不相關的 `extensibility: skipping` 行；紀錄檔同時有其他 session 的內容，這裡只留測試 session 的）。
+
+**第一次：`calc.py` 寫 `return eval(user_input)`**
+
+```text
+[14:56:22.522] Processing: hook_event=UserPromptSubmit, tool=
+[14:56:37.038] Processing: hook_event=PostToolUse, tool=Write
+[14:56:37.111] Pattern matches for C:\GitHub\_sandbox\sg-test\calc.py: ['eval_injection']
+[14:56:47.959] Commit review: detected git commit in command
+[14:56:48.266] Commit review: 1/1 sha(s) resolved, 1 files
+[14:56:49.234] agentic_review: SDK unavailable (No module named 'claude_agent_sdk'); falling back
+[14:56:53.353] LLM code review found 1 high/critical vulnerabilities
+[14:56:53.657] Review usage: review=commit session=<id> model=claude-sonnet-5-5 calls=1 in=1013 out=548 cache_read=0 cache_write=14487 est_cost_usd=0.0656~
+[14:57:06.652] Processing: hook_event=Stop, tool=
+[14:57:06.710] Stop hook: ENABLE_STOP_REVIEW=0
+```
+
+session 收到的兩則外掛訊息（節錄）：寫檔後 `⚠️ Security Warning: eval() executes arbitrary code ...`；提交後 `Security Review: Potential vulnerabilities detected ... [CRITICAL] [Dynamic Code Evaluation]`，附改用 `ast` 解析的修法。
+
+- 這次 Layer 3 有啟動也有找到問題，但用的是退路（單次模型呼叫），不是多輪的 agentic 審查：外掛裝好後第一個 session 的 SessionStart hook 還在背景建 Agent SDK 虛擬環境，提交時 SDK 還不能用。
+
+**第二次（SDK 建好後）：`ping.py` 寫 `os.system('ping ' + host)`**
+
+```text
+[14:58:32.645] Pattern matches for C:\GitHub\_sandbox\sg-test\ping.py: ['os_system_injection']
+[14:58:41.258] Commit review: detected git commit in command
+[14:58:41.606] Commit review: 1/1 sha(s) resolved, 1 files
+[14:58:42.384] Review race: 1s already spent, fallback starts after 179s
+[14:58:48.928] agentic reviewer's CLI stderr | ⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set ...
+[14:59:10.270] Review usage: review=commit session=<id> model=claude-sonnet-5-5 calls=3 in=8 out=796 cache_read=13864 cache_write=13199 est_cost_usd=0.0424
+[14:59:20.386] Stop hook: ENABLE_STOP_REVIEW=0
+```
+
+session 回報提交後收到命令注入（HIGH）的審查結果，建議改用參數清單呼叫 `subprocess.run`。
+
+- `calls=3` 是 agentic 審查員啟動的 Claude Code 次數。啟動的是哪一個 `claude.exe`：紀錄檔不寫路徑；在同樣條件（載入外掛建的 SDK 虛擬環境）呼叫 `llm._cli_for_sdk(None)` 得到 `%USERPROFILE%\.local\bin\claude.exe`（原生安裝，未設 `SG_AGENTIC_CLI_PATH`）。SDK 自己也附了一份 `claude.exe`（2.1.330）。
+- 那行 `claude.ai connectors are disabled` 是審查員啟動的 Claude Code 自己印的提示（審查程序不載入 claude.ai 連接器），不影響審查。
+- 估計費用欄位是外掛依牌價算的，訂閱帳號實際是算進訂閱用量。
+
+**結果判定**
+
+| 項目 | 結果 |
+| :--- | :--- |
+| Layer 1 | ✅ 兩次都在 `Write` 後命中（`eval_injection`、`os_system_injection`），session 收到警告，預設位置 `log.txt` 有外掛寫的紀錄 |
+| Layer 3 | ✅ 兩次提交都有審查並找到問題；第二次是完整的 agentic 審查（Sonnet，3 次 Claude Code 執行），找到原生安裝的 `claude.exe` |
+| Layer 2 | ✅ 沒有觸發：當時紀錄檔裡 4 次 `hook_event=Stop` 全部是 `Stop hook: ENABLE_STOP_REVIEW=0`，`review=stop` 用量行 0 筆 |
+| 紀錄檔錯誤 | 無 Python 例外或錯誤（`FileNotFoundError` 只是自訂規則檔不存在的正常訊息） |
+| 與既有 hook 的相容性 | ✅ 外掛只掛 `SessionStart`、`UserPromptSubmit`、`PostToolUse`、`Stop`，沒有 `PreToolUse`，不會擋工具呼叫；`settings.json` 的 `hooks` 與備份完全相同。安裝後在同一個 session 試一次「測試 `;` 接 `git commit --dry-run`」，本機的提交閘門 hook 照樣擋下；兩次 `claude -p` 測試 session 的開場 hook 也照常輸出 |
+| 注意 | 第一個 session 的第一次提交會走退路；用量會出現在所有 session 的提交上（見文首「安裝紀錄」的注意） |
 
 ---
 

@@ -92,7 +92,9 @@ result = eval(internal_expression)
 └─────────┴─────────────────────┴──────────────┴──────────────┴───────────────┘
 ```
 
-> 表中的 Token 消耗與延遲是估計值，本 repo 沒有量測紀錄（外掛尚未在本機安裝執行）。實際用量看外掛紀錄檔 `~/.claude/security/log.txt` 的 `Review usage:` 行。
+> 表中的 Token 消耗與延遲是估計值。2026-11-22 本機安裝後實測一次小提交（單一檔、Sonnet）：Layer 3 agentic 審查約 25 秒、3 次 Claude Code 執行、輸出約 800 token、快取讀寫各約 13K token（外掛估計牌價約 0.04 美元）；Layer 2 沒有量（本機關著）。實際用量看外掛紀錄檔 `~/.claude/security/log.txt` 的 `Review usage:` 行，詳見 [`docs/claude-security-guidance-windows-setup.md`](../docs/claude-security-guidance-windows-setup.md) 第 4 節「驗證 F」。
+>
+> 本機採用的是下面的「日常高頻編碼模式」再加上 `SG_AGENTIC_MODEL=claude-sonnet-5-5`，環境變數放在 `~/.claude/settings.json` 的 `env`。
 
 ### 成本調度實踐指南
 
