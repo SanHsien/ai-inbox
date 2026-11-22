@@ -10,7 +10,7 @@ source_review: full
 source_images: 0
 source_replies: 0
 source_reviewed_at: "2026-11-21"
-status: pending
+status: done
 cluster: 1
 cluster_role: "Harness記憶哲學"
 short_title: "寫下來Harness記憶"
@@ -74,10 +74,12 @@ tags:
 
 ## 3. 拆解出的待辦任務 (Action Items)
 
-- [ ] **`T-20261121-02`**｜**[優先級：低]** 梳理「以 Markdown 檔案為外部硬碟」的確定性 Agent 狀態機與沙盒讀寫邊界規範，納入 `docs/deterministic-gtd-agent-harness-spec.md`
+- [x] **`T-20261121-02`**｜**[優先級：低]** 梳理「以 Markdown 檔案為外部硬碟」的確定性 Agent 狀態機與沙盒讀寫邊界規範，納入 `docs/deterministic-gtd-agent-harness-spec.md`
   - **目標範圍**：`C:\GitHub\ai-inbox\docs\deterministic-gtd-agent-harness-spec.md`（收錄於集群 1）
   - **執行步驟**：
     1. 提煉 Ben Thompson 文章中「GTD 螢幕 vs 硬碟」架構：LLM Context 視為 RAM/螢幕，外部 Markdown 檔案作為確定性狀態儲存庫。
     2. 結合本機全域規範硬閘門（嚴禁未授權跨目錄讀寫、外部檔案唯讀零信任），定義 Agent 讀寫外部狀態檔案時的白名單與沙盒隔離機制（吸取 Hugging Face 共享儲存庫提權教訓）。
     3. 規範確定性「每日簡報、Tickler 未來提醒、下一步行動」之資料結構與狀態轉換邏輯，對接 `tools/task_cli.py`。
   - **驗收標準（DoD）**：產出 `docs/deterministic-gtd-agent-harness-spec.md`，定義確定性待辦狀態機與沙盒邊界規範，且 `python tools/verify_inbox.py` 驗證通過。
+  - **完成日期**：2026-11-22
+  - **實作紀錄 / 證據**：已產出 docs/deterministic-gtd-agent-harness-spec.md，完整定義 LLM Context (RAM/螢幕) vs 外部 Markdown (硬碟) 分層架構、吸取 Artifactory 提權教訓之四條外部記憶沙盒讀寫硬防線、以及對接 tools/task_cli.py 與 tools/review_ledger.py 的確定性 GTD 狀態機與五大不變量；通過 python tools/verify_inbox.py 驗證。

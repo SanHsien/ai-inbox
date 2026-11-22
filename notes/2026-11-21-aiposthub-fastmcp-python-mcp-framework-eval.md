@@ -11,7 +11,7 @@ source_review: full
 source_images: 1
 source_replies: 2
 source_reviewed_at: "2026-11-21"
-status: pending
+status: done
 cluster: 3
 cluster_role: "FastMCP框架"
 short_title: "FastMCP開源框架評估"
@@ -67,10 +67,12 @@ tags:
 
 ## 3. 拆解出的待辦任務 (Action Items)
 
-- [ ] **`T-20261121-01`**｜**[優先級：低]** 評估引入 `PrefectHQ/fastmcp` 作為本機自訂 Python MCP Server 標準腳手架與安全性規範
+- [x] **`T-20261121-01`**｜**[優先級：低]** 評估引入 `PrefectHQ/fastmcp` 作為本機自訂 Python MCP Server 標準腳手架與安全性規範
   - **目標範圍**：`C:\GitHub\ai-inbox\docs\fastmcp-scaffolding-eval.md`
   - **執行步驟**：
     1. 唯讀評估 `PrefectHQ/fastmcp` 在 Windows 11 原生環境下的 stdio 與 SSE 通道相容性。
     2. 撰寫一份包含「Pydantic 參數驗證、路徑跨界檢查、未捕獲例外防護」的 FastMCP 安全開發範本。
     3. 產出評估文件 `docs/fastmcp-scaffolding-eval.md`。
   - **驗收標準（DoD）**：產出 `docs/fastmcp-scaffolding-eval.md`，定義本機 MCP Server 快速封裝與安全邊界指引，且 `python tools/verify_inbox.py` 驗證通過。
+  - **完成日期**：2026-11-22
+  - **實作紀錄 / 證據**：已產出 docs/fastmcp-scaffolding-eval.md，完成 PrefectHQ/fastmcp 在 Windows 11 原生環境下之 stdio 與 SSE 通道相容性評估，並制定含 UTF-8/stderr 保護、Pydantic 驗證、Path.is_relative_to 防跨界逃逸、敏感檔黑名單與禁止吞掉例外的安全開發範本；通過 python tools/verify_inbox.py 驗證。

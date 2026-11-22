@@ -10,7 +10,7 @@ source_review: full
 source_images: 0
 source_replies: 0
 source_reviewed_at: "2026-11-20"
-status: pending
+status: done
 cluster: 2
 cluster_role: "代碼影片創意分鏡"
 short_title: "Opus5.5影片十案例"
@@ -68,9 +68,11 @@ tags:
 
 ## 3. 拆解出的待辦任務 (Action Items)
 
-- [ ] **`T-20261120-07`**｜**[優先級：低]** 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md`
+- [x] **`T-20261120-07`**｜**[優先級：低]** 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md`
   - **目標範圍**：`C:\GitHub\ai-inbox\docs\code-as-video-creative-patterns.md`（收錄於集群 2）
   - **執行步驟**：
     1. 梳理影片中「高反差電影敘事（三蹦子/碟中蛋/搓澡）」與「精密科普動態（結構色/一體列印鉸鏈/肌肉流體）」兩大類 Prompt 結構。
     2. 定義 Code-as-Video 的五步分鏡規格（場景定義、核心反差公式、物理/數學運動規則、鏡頭運動、渲染引擎標記）。
   - **驗收標準（DoD）**：產出 `docs/code-as-video-creative-patterns.md`，包含具體可執行的分鏡模板，且 `python tools/verify_inbox.py` 驗證通過。
+  - **完成日期**：2026-11-22
+  - **實作紀錄 / 證據**：已產出 docs/code-as-video-creative-patterns.md，完整解構 NiceKate AI 10 款案例之「高反差電影敘事」與「精密科普動態」雙流派結構，制定五步分鏡規格（Timeline FSM、反差/科學公式、確定性物理規則、程式化運鏡與 HUD、渲染引擎約束）及兩套可直接執行的分鏡 Prompt 模板；通過 python tools/verify_inbox.py 驗證。

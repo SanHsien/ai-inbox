@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 262 項任務：🔴 未做 9／🟡 進行中 0／🟢 已做 174／⚪ 不做 79
+> 共 262 項任務：🔴 未做 6／🟡 進行中 0／🟢 已做 177／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -49,16 +49,13 @@
 | `T-20261122-04` | 🔴 未做 | 中 | 評估 Gemini API Tool Retrieval（按需動態載入工具 Schema 與 `defer_loading` / `tool_search` 機制）在多工具 Agent 實作之整合規範，並納入 `docs/gemini-tool-retrieval-and-mcp-spec.md` | `C:\GitHub\ai-inbox\docs\gemini-tool-retrieval-and-mcp-spec.md`（收錄於集群 3） | [2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | 2026-11-22 |
 | `T-20261122-05` | 🔴 未做 | 中 | 將 Jev by TypeSafe AI 生態中與 Agent 安全閘門（hermes-jev-approvals、jev-belay、limpet、progressgate）與模型路由（jev-codex-router、jev-router）相關的量化實測數據與架構模式，對照 Google Decisions API / Tool Retrieval 整理至 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3） | [2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | 2026-11-22 |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
-| `T-20261120-07` | 🔴 未做 | 低 | 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md` | `C:\GitHub\ai-inbox\docs\code-as-video-creative-patterns.md`（收錄於集群 2） | [2026-11-20-nicekate-opus-5-5-code-as-video-10-cases](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | 2026-11-20 |
-| `T-20261121-01` | 🔴 未做 | 低 | 評估引入 `PrefectHQ/fastmcp` 作為本機自訂 Python MCP Server 標準腳手架與安全性規範 | `C:\GitHub\ai-inbox\docs\fastmcp-scaffolding-eval.md` | [2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | 2026-11-21 |
-| `T-20261121-02` | 🔴 未做 | 低 | 梳理「以 Markdown 檔案為外部硬碟」的確定性 Agent 狀態機與沙盒讀寫邊界規範，納入 `docs/deterministic-gtd-agent-harness-spec.md` | `C:\GitHub\ai-inbox\docs\deterministic-gtd-agent-harness-spec.md`（收錄於集群 1） | [2026-11-21-ben-thompson-write-things-down-harness-memory](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md) | 2026-11-21 |
 | `T-20261122-01` | 🔴 未做 | 低 | 評估 `SKILL.md` 跨平台（Gemini / Claude / Antigravity）相容性檢查清單，並將「首句技能名稱定錨」與「前置步驟防跳步防呆語法」納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | 2026-11-22 |
 | `T-20261122-02` | 🔴 未做 | 低 | 將 Anthropic Agent Memory「記憶存策略、不存易過時狀態」的案例觀察（寶可夢紀錄）與「反覆走偏時編輯原提問」可選策略納入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | 2026-11-22 |
 | `T-20261122-03` | 🔴 未做 | 低 | 將 Google AI Pro 跨產品 AI 點數制度（Flow 點數、Antigravity 基本配額與溢出點數開關）與 8 大工具能力邊界梳理至 `docs/google-ai-pro-ecosystem-and-credit-routing.md` | `C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3） | [2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | 2026-11-22 |
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 174 項）</summary>
+<details><summary>展開查看已完成任務（共 177 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -236,6 +233,9 @@
 | `T-20261120-04` | 2026-11-21 | 沙盒唯讀安檢並評估 `DeusData/codebase-memory-mcp` 與 `oil-oil/agy-fast-io` | docs/agy-fast-io-and-codebase-memory-audit.md：唯讀淺層 clone agy-fast-io c9231ac5／codebase-memory-mcp 1111d9a9（2026-11-21），skill-pack 掃描結束碼 2／1 逐項人工判讀；agy-fast-io 不安裝只借鏡兩段寫法，codebase-memory-mcp 不跑安裝程式、可限縮試用；本機未安裝或註冊；未用 Antigravity 訂閱額度 | [2026-11-20-antigravity-gemini4-neon-12-prompts-eval](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md) |
 | `T-20261120-05` | 2026-11-21 | 將 OpenAI GPT-6.2 Astra / Sol 定價、快取折扣與生產級六階段路由架構納入 `docs/model-burn-rate-routing-matrix.md` | docs/model-burn-rate-routing-matrix.md 第 12.2～12.7 節收錄 GPT-6.2 Astra／Sol 價格、快取、Plus 額度與 Fast／Ultrafast 倍率、Agents' Last Exam 78.3%／$2.89；第 3、6、9.4、10.2 節加更正註記；原文沒有六階段架構，改收實際路由矩陣【單一來源自述】 | [2026-11-20-gpt-6-2-astra-sol-routing-eval](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) |
 | `T-20261120-06` | 2026-11-21 | 將 GPT-6.2 Sol 的 Token Efficiency 壓縮比與 FrontierCode / AA-3D 量化指標納入 `docs/model-burn-rate-routing-matrix.md` | docs/model-burn-rate-routing-matrix.md 第 12.3、12.4、12.6 節收錄 FrontierCode 2.0（官方圖表）、GDPval v2 輸出 token 對照（OpenAI 內部基準，倍數為推算）、AA-3D 分數、少於 20 檔門檻【單一來源自述】 | [2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md) |
+| `T-20261120-07` | 2026-11-22 | 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md` | 已產出 docs/code-as-video-creative-patterns.md，完整解構 NiceKate AI 10 款案例之「高反差電影敘事」與「精密科普動態」雙流派結構，制定五步分鏡規格（Timeline FSM、反差/科學公式、確定性物理規則、程式化運鏡與 HUD、渲染引擎約束）及兩套可直接執行的分鏡 Prompt 模板；通過 python tools/verify_inbox.py 驗證。 | [2026-11-20-nicekate-opus-5-5-code-as-video-10-cases](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) |
+| `T-20261121-01` | 2026-11-22 | 評估引入 `PrefectHQ/fastmcp` 作為本機自訂 Python MCP Server 標準腳手架與安全性規範 | 已產出 docs/fastmcp-scaffolding-eval.md，完成 PrefectHQ/fastmcp 在 Windows 11 原生環境下之 stdio 與 SSE 通道相容性評估，並制定含 UTF-8/stderr 保護、Pydantic 驗證、Path.is_relative_to 防跨界逃逸、敏感檔黑名單與禁止吞掉例外的安全開發範本；通過 python tools/verify_inbox.py 驗證。 | [2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) |
+| `T-20261121-02` | 2026-11-22 | 梳理「以 Markdown 檔案為外部硬碟」的確定性 Agent 狀態機與沙盒讀寫邊界規範，納入 `docs/deterministic-gtd-agent-harness-spec.md` | 已產出 docs/deterministic-gtd-agent-harness-spec.md，完整定義 LLM Context (RAM/螢幕) vs 外部 Markdown (硬碟) 分層架構、吸取 Artifactory 提權教訓之四條外部記憶沙盒讀寫硬防線、以及對接 tools/task_cli.py 與 tools/review_ledger.py 的確定性 GTD 狀態機與五大不變量；通過 python tools/verify_inbox.py 驗證。 | [2026-11-21-ben-thompson-write-things-down-harness-memory](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md) |
 
 </details>
 
@@ -490,9 +490,9 @@
 | 2026-11-20 | 🟢 | [InfoQ 深度評析：Gemini Decision 1 與 Decisions API（$0.10/M 輸入、零輸出費、0.0250 ECE 低誤差路由模型）](./notes/2026-11-20-gemini-decision-1-decisions-api-eval.md) | `gemini-decision-1`, `decisions-api`, `model-routing` | 1 / 1 |
 | 2026-11-20 | 🟢 | [Woshipm 評估：OpenAI GPT-6.2 Astra 與 Sol 雙模型發布、基準實測與六階段生產級路由架構](./notes/2026-11-20-gpt-6-2-astra-sol-routing-eval.md) | `openai`, `gpt-6-2-astra`, `gpt-6-2-sol` | 1 / 1 |
 | 2026-11-20 | 🟢 | [Woshipm 評估：GPT-6.2 Sol 實測基準（FrontierCode 43.8% 比肩 Astra、GDPval 3.3萬 Token 高效壓縮）與工位路由實踐](./notes/2026-11-20-gpt-6-2-sol-frontiercode-token-efficiency-eval.md) | `openai`, `gpt-6-2-sol`, `gpt-6-2-astra` | 1 / 1 |
-| 2026-11-20 | 🔴 | [YouTube 影音評估：NiceKate AI《迷上 Opus 5.5 做視頻：10個案例》與 Code-as-Video 創意分鏡解構](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | `claude-opus-5-5`, `code-as-video`, `creative-coding` | 0 / 1 |
-| 2026-11-21 | 🔴 | [Threads 貼文評估：AI郵報介紹 PrefectHQ/fastmcp 開源框架與 Python 裝飾器構建 MCP Server 實踐](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | `mcp`, `fastmcp`, `prefecthq` | 0 / 1 |
-| 2026-11-21 | 🔴 | [Stratechery 評析：Ben Thompson《寫下來》（Write Things Down）——以 Harness 外部檔案為硬碟的 AGI 本質與確定性 GTD 狀態機](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md) | `ben-thompson`, `stratechery`, `harness` | 0 / 1 |
+| 2026-11-20 | 🟢 | [YouTube 影音評估：NiceKate AI《迷上 Opus 5.5 做視頻：10個案例》與 Code-as-Video 創意分鏡解構](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | `claude-opus-5-5`, `code-as-video`, `creative-coding` | 1 / 1 |
+| 2026-11-21 | 🟢 | [Threads 貼文評估：AI郵報介紹 PrefectHQ/fastmcp 開源框架與 Python 裝飾器構建 MCP Server 實踐](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | `mcp`, `fastmcp`, `prefecthq` | 1 / 1 |
+| 2026-11-21 | 🟢 | [Stratechery 評析：Ben Thompson《寫下來》（Write Things Down）——以 Harness 外部檔案為硬碟的 AGI 本質與確定性 GTD 狀態機](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md) | `ben-thompson`, `stratechery`, `harness` | 1 / 1 |
 | 2026-11-21 | ⚪ | ⏳ 待獨立審查｜[InfoQ 評析：Gemini 4 Neon 接入 Antigravity 後 SWE-sweep 子任務加權分數升至三倍與 Harness 聯合訓練](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md) | `gemini-4-neon`, `antigravity`, `swe-sweep` | 0 / 0 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Claude 17 招進階實踐——Anthropic Agent 記憶架構（CL-Bench +28%）、精簡記憶治理與防自我污染提示法](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | `claude`, `anthropic`, `agent-memory` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Gemini Gems 轉型 Skills 實戰——SKILL.md 跨平台通用規範與防跳步首句定錨 Prompting](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | `gemini`, `gemini-skills`, `skill-md` | 0 / 1 |
@@ -729,8 +729,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_tool_fallback_matrix.py`](./tools/verify_tool_fallback_matrix.py) | 檢查「產出導向工具流矩陣」設定檔（JSON）：五條產出路徑都要有主力與合格備援， | [`tests/test_verify_tool_fallback_matrix.py`](./tests/test_verify_tool_fallback_matrix.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 83 份）
-<details><summary>展開查看全部 83 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 91 份）
+<details><summary>展開查看全部 91 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -742,6 +742,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/agent-desktop-computer-use-spec.md`](./docs/agent-desktop-computer-use-spec.md) | OS 級 Computer Use 架構規格書：Accessibility Tree 無障礙樹、命名空間 Ref 與無像素匹配設計手冊 |
 | [`docs/agent-dispatch.md`](./docs/agent-dispatch.md) | 跨 Agent 派工與完工回報 |
 | [`docs/agent-driven-onboarding-and-security-spec.md`](./docs/agent-driven-onboarding-and-security-spec.md) | 面向非技術用戶的 Agent-Driven 開源專案安裝指引規範（AGENTS.md 最佳實踐與資安防線） |
+| [`docs/agent-memory-and-prompting-best-practices.md`](./docs/agent-memory-and-prompting-best-practices.md) | Agent 記憶收斂與對話提示詞修正最佳實踐手冊 |
 | [`docs/agent-skills-curation-and-context-budget-spec.md`](./docs/agent-skills-curation-and-context-budget-spec.md) | Agent Skills 評選矩陣與上下文預算工程規範 |
 | [`docs/agents-knowledge-ab-test-protocol.md`](./docs/agents-knowledge-ab-test-protocol.md) | AGENTS.md 與 Skills 知識有效性 A/B 盲測實驗協議 |
 | [`docs/agy-fast-io-and-codebase-memory-audit.md`](./docs/agy-fast-io-and-codebase-memory-audit.md) | agy-fast-io 與 codebase-memory-mcp 唯讀安全審查：都不跑安裝程式，各借鏡一部分 |
@@ -767,22 +768,28 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/claude-security-guidance-windows-setup.md`](./docs/claude-security-guidance-windows-setup.md) | Claude Code security-guidance 外掛 Windows 11 安裝評估、配置驗證與三層防禦整合報告 |
 | [`docs/cli-anything-to-skill-protocol.md`](./docs/cli-anything-to-skill-protocol.md) | Agent-Native CLI 封裝與自動生成 Skill 標準協議 (CLI-Anything to Skill Protocol) |
 | [`docs/cloudflare-security-audit-readonly-review.md`](./docs/cloudflare-security-audit-readonly-review.md) | Cloudflare security-audit-skill 唯讀審查 |
+| [`docs/code-as-video-creative-patterns.md`](./docs/code-as-video-creative-patterns.md) | Code-as-Video 代碼驅動動態視覺：10 大創意反差與精密科普分鏡規範手冊 |
 | [`docs/codex-plugin-cc-readonly-assessment.md`](./docs/codex-plugin-cc-readonly-assessment.md) | codex-plugin-cc 唯讀評估：Windows 權限與 hook 邊界 |
 | [`docs/codex-skills-agents-bootstrap-guide.md`](./docs/codex-skills-agents-bootstrap-guide.md) | Codex／Claude Code／Antigravity：AGENTS.md 起步與 Skill 預算控制手冊 |
 | [`docs/codync-agent-fallback-and-mobile-relay-spec.md`](./docs/codync-agent-fallback-and-mobile-relay-spec.md) | Codync 解析：ACP 橋接、Agent 容錯降級與 E2EE 遠端審批規格 |
 | [`docs/correction-queue-evaluation.md`](./docs/correction-queue-evaluation.md) | 評估：在共用 SSOT 倉庫引進「糾正審查佇列」（correction-queue.jsonl） |
+| [`docs/cross-platform-skill-spec.md`](./docs/cross-platform-skill-spec.md) | SKILL.md 跨平台相容性檢查清單與提示詞定錨規範 |
+| [`docs/deterministic-gtd-agent-harness-spec.md`](./docs/deterministic-gtd-agent-harness-spec.md) | 以 Markdown 為外部硬碟之確定性 GTD Agent Harness 與沙盒邊界規範 |
 | [`docs/ego-lite-security-eval.md`](./docs/ego-lite-security-eval.md) | Ego Lite（citrolabs/ego-lite）唯讀安全審查：不安裝，只借鏡交接與清除範圍兩個設計 |
 | [`docs/elephant-goldfish-model-spec.md`](./docs/elephant-goldfish-model-spec.md) | 大象-金魚模型（EGM）規格手冊：長上下文起草、零上下文審查與 CUJ 驅動設計流程 |
 | [`docs/evidence/2026-10-26-buzz-windows-build.md`](./docs/evidence/2026-10-26-buzz-windows-build.md) | Buzz 在 Windows 11 的編譯檢查與 Job Object 驗證 |
 | [`docs/evidence/external-refs-check-2026-11.md`](./docs/evidence/external-refs-check-2026-11.md) | T-20261108-06：2026-11 外部連結巡檢證據 |
 | [`docs/evidence/windows-agent-ops-readonly-check.md`](./docs/evidence/windows-agent-ops-readonly-check.md) | Windows Agent 維運唯讀檢查證據 |
 | [`docs/external-judge-audit.md`](./docs/external-judge-audit.md) | AI Inbox 任務 DoD 外部裁判（External Judge）稽核報告 |
+| [`docs/fastmcp-scaffolding-eval.md`](./docs/fastmcp-scaffolding-eval.md) | PrefectHQ/fastmcp 本機 Python MCP Server 腳手架評估與安全邊界規範 |
 | [`docs/feedback-desk-architecture-and-handoff-spec.md`](./docs/feedback-desk-architecture-and-handoff-spec.md) | feedback-desk 架構解構與跨 Agent 工單交接規範 |
 | [`docs/feedback-desk-vs-agent-relay.md`](./docs/feedback-desk-vs-agent-relay.md) | feedback-desk 與 agent-relay 多 Agent 協作機制對照分析 |
 | [`docs/feedback-desk-windows-eval.md`](./docs/feedback-desk-windows-eval.md) | feedback-desk Windows 11 原生環境評估報告 |
 | [`docs/free-public-apis.md`](./docs/free-public-apis.md) | Public APIs 免金鑰與 CORS 支援精選手冊 |
 | [`docs/freelance-contract-scope-and-prerequisites-spec.md`](./docs/freelance-contract-scope-and-prerequisites-spec.md) | AI 接案防失控合約與時程前提規範指南 |
+| [`docs/gemini-tool-retrieval-and-mcp-spec.md`](./docs/gemini-tool-retrieval-and-mcp-spec.md) | Gemini API Tool Retrieval 與 MCP 百級工具按需載入架構規範 |
 | [`docs/github-apps-s2s-copilot-workload-identity-guide.md`](./docs/github-apps-s2s-copilot-workload-identity-guide.md) | GitHub Apps Server-to-Server 與 Copilot SDK 工作負載身分整合指南 |
+| [`docs/google-ai-pro-ecosystem-and-credit-routing.md`](./docs/google-ai-pro-ecosystem-and-credit-routing.md) | Google AI Pro 八大工具分工、點數路由與 Antigravity 權限安全規範 |
 | [`docs/grok-herdr-agents-bootstrap.md`](./docs/grok-herdr-agents-bootstrap.md) | Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範 |
 | [`docs/harness2-recursive-agent-harnessing-spec.md`](./docs/harness2-recursive-agent-harnessing-spec.md) | Harness² 雙層遞迴與 8 大模組演進及防弊規範 |
 | [`docs/irrefutable-evidence-and-invalid-patterns-spec.md`](./docs/irrefutable-evidence-and-invalid-patterns-spec.md) | 無可辯駁證據（Irrefutable Evidence）與無效證據黑名單規範 |
@@ -808,6 +815,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/scrapling-windows-eval.md`](./docs/scrapling-windows-eval.md) | Scrapling 在 Windows 11 的沙盒實測 |
 | [`docs/source-review-sop.md`](./docs/source-review-sop.md) | 筆記原始資料重審 SOP |
 | [`docs/speak-human-tw-assessment.md`](./docs/speak-human-tw-assessment.md) | speak-human-tw 唯讀評估 |
+| [`docs/system-one-decision-model-landscape.md`](./docs/system-one-decision-model-landscape.md) | System One 決策模型全景與 Agent 守門／路由架構手冊 |
 | [`docs/target-story-generative-ui-spec.md`](./docs/target-story-generative-ui-spec.md) | 靶心人故事編輯器 Generative UI 互動規格 (Target Story Generative UI Spec) |
 | [`docs/toml-config-engineering-spec.md`](./docs/toml-config-engineering-spec.md) | TOML v1.0 vs v1.1 規格差異與 AI Agent 設定檔工程指引 |
 | [`docs/video-transcript-howto.md`](./docs/video-transcript-howto.md) | 影片逐字稿 SOP：字幕取不到時，用 yt-dlp 抓音訊 + Whisper 本機 GPU 轉寫 |
