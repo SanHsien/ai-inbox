@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-22",
+   "reviewer": "codex/gpt-6.1-sol@01a2027d-da28-7f32-820d-92528c52e064",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "3e2712f7374db77b41a48b1a9c262e60ed788f619a82846ebad1a5a377fc0926",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 5,
+   "report": "reviews/reports/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval/2026-11-22-01-review-codex.md"
+  }
+ ]
+}

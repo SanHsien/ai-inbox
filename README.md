@@ -494,7 +494,7 @@
 | 2026-11-21 | ⚪ | [InfoQ 評析：Gemini 4 Neon 接入 Antigravity 後 SWE-sweep 解題率三倍躍升與 Harness 聯合訓練效應](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md) | `gemini-4-neon`, `antigravity`, `swe-sweep` | 0 / 0 |
 | 2026-11-22 | 🔴 | [數位時代評析：Claude 17 招進階實踐——Anthropic Agent 記憶架構（CL-Bench +28%）、精簡記憶治理與防自我污染提示法](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | `claude`, `anthropic`, `agent-memory` | 0 / 1 |
 | 2026-11-22 | 🔴 | [數位時代評析：Gemini Gems 轉型 Skills 實戰——SKILL.md 跨平台通用規範與防跳步首句定錨 Prompting](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | `gemini`, `gemini-skills`, `skill-md` | 0 / 1 |
-| 2026-11-22 | 🔴 | [數位時代評析：Google AI Pro 八大工具全景實測——Antigravity 電腦檔案代理、Flow 影片生成與跨產品 AI 點數制](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | `google-ai-pro`, `gemini`, `antigravity` | 0 / 1 |
+| 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Google AI Pro 八大工具全景實測——Antigravity 電腦檔案代理、Flow 影片生成與跨產品 AI 點數制](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | `google-ai-pro`, `gemini`, `antigravity` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
