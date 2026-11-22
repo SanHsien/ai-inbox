@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 257 項任務：🔴 未做 4／🟡 進行中 1／🟢 已做 173／⚪ 不做 79
+> 共 258 項任務：🔴 未做 5／🟡 進行中 1／🟢 已做 173／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -51,6 +51,7 @@
 | `T-20261120-07` | 🔴 未做 | 低 | 萃取「Code-as-Video」10 款創意反差與科普動畫之結構化分鏡模板，納入 `docs/code-as-video-creative-patterns.md` | `C:\GitHub\ai-inbox\docs\code-as-video-creative-patterns.md`（收錄於集群 2） | [2026-11-20-nicekate-opus-5-5-code-as-video-10-cases](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md) | 2026-11-20 |
 | `T-20261121-01` | 🔴 未做 | 低 | 評估引入 `PrefectHQ/fastmcp` 作為本機自訂 Python MCP Server 標準腳手架與安全性規範 | `C:\GitHub\ai-inbox\docs\fastmcp-scaffolding-eval.md` | [2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | 2026-11-21 |
 | `T-20261121-02` | 🔴 未做 | 低 | 梳理「以 Markdown 檔案為外部硬碟」的確定性 Agent 狀態機與沙盒讀寫邊界規範，納入 `docs/deterministic-gtd-agent-harness-spec.md` | `C:\GitHub\ai-inbox\docs\deterministic-gtd-agent-harness-spec.md`（收錄於集群 1） | [2026-11-21-ben-thompson-write-things-down-harness-memory](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md) | 2026-11-21 |
+| `T-20261122-01` | 🔴 未做 | 低 | 評估 `SKILL.md` 跨平台（Gemini / Claude / Antigravity）相容性檢查清單，並將「首句技能名稱定錨」與「前置步驟防跳步防呆語法」納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | 2026-11-22 |
 
 ### 🟢 已做（Done）
 
@@ -489,6 +490,7 @@
 | 2026-11-21 | 🔴 | [Threads 貼文評估：AI郵報介紹 PrefectHQ/fastmcp 開源框架與 Python 裝飾器構建 MCP Server 實踐](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md) | `mcp`, `fastmcp`, `prefecthq` | 0 / 1 |
 | 2026-11-21 | 🔴 | [Stratechery 評析：Ben Thompson《寫下來》（Write Things Down）——以 Harness 外部檔案為硬碟的 AGI 本質與確定性 GTD 狀態機](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md) | `ben-thompson`, `stratechery`, `harness` | 0 / 1 |
 | 2026-11-21 | ⚪ | [InfoQ 評析：Gemini 4 Neon 接入 Antigravity 後 SWE-sweep 解題率三倍躍升與 Harness 聯合訓練效應](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md) | `gemini-4-neon`, `antigravity`, `swe-sweep` | 0 / 0 |
+| 2026-11-22 | 🔴 | [數位時代評析：Gemini Gems 轉型 Skills 實戰——SKILL.md 跨平台通用規範與防跳步首句定錨 Prompting](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | `gemini`, `gemini-skills`, `skill-md` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -588,6 +590,7 @@
 - AGY與Neon實戰配置：[AGY十二配置與Neon](./notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md)
 - 人機協作瀏覽器：[Ego Lite協作瀏覽器](./notes/2026-11-20-citrolabs-ego-lite-browser-handoff-eval.md)
 - FastMCP框架：[FastMCP開源框架評估](./notes/2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval.md)
+- Gemini技能規格：[Gemini技能教學評估](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
