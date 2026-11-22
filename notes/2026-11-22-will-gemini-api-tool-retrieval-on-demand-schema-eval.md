@@ -6,7 +6,8 @@ source_platform: "facebook.com (Will 保哥的技術交流中心)"
 author: "Will 保哥 (黃保吸)"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
-written_by: "antigravity/gemini-pro@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
+written_by: "antigravity/gemini-pro@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031"
+revised_at: "2026-11-22"
 source_review: full
 source_images: 1
 source_replies: 0
@@ -27,7 +28,7 @@ tags:
 
 # 社群技術評析：Will 保哥評釋 Gemini API Tool Retrieval——按需動態載入工具 Schema、支援 MCP 與 Prefix Caching 的輕量級 Agent 架構
 
-- **來源文章**：[Will 保哥的技術交流中心 Facebook 貼文](https://www.facebook.com/share/19pihZf2MT/)（規範網址：`https://www.facebook.com/will.fans/posts/1606150151539068/`，發布於 `2026-11-20T16:05:40+08:00`）
+- **來源文章**：[Will 保哥的技術交流中心 Facebook 貼文](https://www.facebook.com/share/19pihZf2MT/)（規範網址：`https://www.facebook.com/will.fans/posts/1606150151539068/`，發布於 `2026-11-20T00:05+08:00`，依貼文頁顯示時間）
 - **官方參考源**：[Google AI Studio on X: "Introducing Tool Retrieval in the Gemini API"](https://x.com/GoogleAIStudio/status/2123489911684866251)
 - **發布平台 / 作者**：`facebook.com` / `Will 保哥 (黃保吸)`
 - **分析日期**：`2026-11-22`
@@ -49,12 +50,12 @@ tags:
 - **貼文核心內容逐字重點**：
   1. **解決傳統 Tool Calling 痛點**：以往開發複雜 Agent 時，若掛載數十至上百個工具，每次對話請求都必須將所有工具的完整 JSON 參數 Schema 塞進 Context。結果造成三大問題：**Token 消耗過快、推論延遲顯著拉長、候選工具過多導致模型挑錯（注意力分散）**。
   2. **待命區（Standby Pool）設計**：透過 Tool Retrieval，可將大量工具保留在待命區。初始請求模型僅看見工具名稱與簡明功能說明。
-  3. **按需即時加載（Just-in-Time Schema Loading）**：唯有當模型依據對話語意判定確實需要調用特定工具時，才在同一輪請求內部動態檢索並載入其完整參數定義（`tool_search` 配合 `defer_loading: true`），即時完成函式呼叫。
+  3. **按需即時加載（Just-in-Time Schema Loading）**：唯有當模型依據對話語意判定確實需要調用特定工具時，才在同一輪請求內部動態檢索並載入其完整參數定義（`tool_search` 配合 `defer_loading: true`），即時完成函式呼叫。貼文只寫「程式只要加一個 `tool_search`」；把工具標成待命的 `defer_loading: true` 寫法出自 [Google AI Studio 官方 X 文章](https://x.com/GoogleAIStudio/status/2123489911684866251)，貼文沒有提。
   4. **託管式伺服器端搜尋**：開發者無需自建向量資料庫或自維護檢索微服務，工具搜尋由 Google 伺服器端全託管完成，程式端僅需指定 `tool_search`。
   5. **完整相容 Model Context Protocol (MCP)**：支援整台 MCP Server 的工具集合批次按需載入，無需在客戶端一個一個手動宣告。
   6. **快取友善（Prefix Caching Compatible）**：按需動態載入機制完全相容 Gemini 的 Prefix Caching，不會破壞靜態前綴快取結構。
   7. **零加價計價架構**：不另收檢索服務費，完全依照原始 Input / Output Token 計費。節省下來的 Token 來自所有未被觸發載入的參數 Schema，**掛載工具越多，節省效益越巨大**。
-  8. **支援模型範圍**：目前支援 Gemini 3.6 以上版本，並全數支援所有 Gemini 4 系列模型（包含 Neon、Pro、Flash 等）。
+  8. **支援模型範圍**：目前支援 Gemini 3.6 以上版本，包含所有 Gemini 4 模型（貼文與官方 X 文章都只這樣寫，沒有列出個別型號）。
 
 ---
 
