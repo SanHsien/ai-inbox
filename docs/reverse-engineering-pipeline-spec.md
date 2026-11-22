@@ -1,20 +1,29 @@
 # REA + CLI-Anything 逆向分析與功能重造流水線規格 (Reverse Engineering Pipeline Spec)
 
-> 本規格文件收錄於 `docs/reverse-engineering-pipeline-spec.md`，定義 Coding Agent 協同調用本地逆向工具鏈（REA 與 CLI-Anything），實現從「觀測行為 → 理解結構 → 重造功能」的端到端自動化工作流。以 ai-inbox 範本形式交付。
+> 本規格文件收錄於 `docs/reverse-engineering-pipeline-spec.md`，定義 Coding Agent 用本機工具走完「觀測行為 → 理解結構 → 重造功能」的工作流，並附一次對開源應用的實測（第 3 節）。以 ai-inbox 範本形式交付。
+
+> **2026-11-21 更正**（依據：<https://github.com/morluto/rea> 與 <https://github.com/HKUDS/CLI-Anything> 的 README，查閱日 2026-11-21）。第 1～3 節的原稿是 2026-10 依筆記寫的設計稿，下列幾處與兩個上游的實際情形不符。**2026-11-22 已依這份更正改寫第 1～3 節**（見第 5 點），以下保留當時的更正內容，「第 N 節」指改寫前的原稿：
+> 1. **CLI-Anything 不能拿來探測封閉的執行檔**。上游 README 的限制一節寫明它的 7 階段流程是**讀原始碼**來產生 CLI，只有編譯後二進位的軟體不在支援範圍；「把封閉軟體與網路服務包成 CLI」還列在待辦清單上。第 3 節步驟 1 的 `cli-anything probe --target ...` 這個指令**上游沒有**，是示意寫法；第 1.1 節的「動態參數探測」與輸出檔 `execution_trace.json` 也不是上游功能。本流水線的「行為觀測」階段實際上要靠 REA 的執行期與網路紀錄功能或人工操作。
+> 2. **REA 的工具名稱是示意**。第 2 節的 `asar_extract`、`js_beautify` 與第 3 節的 `rea_unpack_asar` 在上游 repo 以程式碼搜尋找不到（0 筆）。上游有文件的入口是 `npx rea-agents setup`（向 agent 註冊 MCP 與調查技能）與命令列 `rea-agents analyze-javascript-application <目錄或 ASAR> --json`；實際的 MCP 工具名稱以安裝後列出的為準【未查證】。
+> 3. **原生二進位的分析引擎**：README 寫的是 Hopper、Ghidra、IDA 或 Kuna（用本機已裝的，Hopper 可在同意後由 setup 安裝）；涵蓋範圍含原生二進位、JavaScript／Electron、網站、.NET、Android App、韌體與錄下的執行期／網路活動。README 沒有點名 JADX，第 1.1 與第 2 節的「JADX」沿用筆記【未查證】。
+> 4. 第 3 節整段（封閉 Electron 轉檔軟體、SHA-256 水印）是**虛構的示意情境**，沒有對應的實測。REA 為 MIT 授權。
+> 5. **2026-11-22 重做**：第 3 節換成對開源的 Electron 預設應用（MIT）實際走通的紀錄，指令與輸出都是實跑結果；第 1.1 節矩陣與第 2 節的工具名稱改成實際用到、查得到的（`@electron/asar`、`rea-agents analyze-javascript-application`、`playwright-core`）。上面第 1、2 點列的 `cli-anything probe`、`execution_trace.json`、`asar_extract`、`js_beautify`、`rea_unpack_asar` 上游都沒有，已從正文移除；虛構的轉檔軟體範例與 `tools/media_watermark.py` 一併刪除。沒有驗到的部分列在 3.4。
 
 ---
 
 ## 1. 架構概述與工具矩陣
 
-現代軟體分析面臨兩大挑戰：封閉應用的黑箱行為難以捉摸，以及傳統 GUI 點擊觀測的不可靠性。本流水線結合香港大學的 `CLI-Anything` 與開源逆向 MCP `morluto/rea`，打造「證據驅動」的 Agent-Native 逆向分析架構。
+軟體分析有兩個常見難處：只看得到行為、看不到結構；以及靠 GUI 點擊觀測不穩定。本流水線把工作拆成「觀測行為 → 理解結構 → 重造功能」三段，每一段都留下可重跑的指令與輸出當證據。第 3 節是 2026-11-22 對一個開源應用實際走通的紀錄。
 
 ### 1.1 工具責任矩陣與架構決策
 
 | 工具組件 | 角色與責任邊界 | 採用狀態 | 決策理由與輸入輸出契約 |
 | :--- | :--- | :--- | :--- |
-| **CLI-Anything** | **行為探針與驅動層**<br>動態參數探測、命令樹建立、CLI Harness 生成 | **核心採用** | 提供確定性 CLI 輸入與 stdout `--json` 捕獲，取代脆弱的視覺點擊。<br>輸出：`execution_trace.json`、CLI Command Schema。 |
-| **REA (morluto/rea)** | **結構理解與逆向核心**<br>Chrome CDP 網路觀測、ASAR 解包、JS AST 審查、Ghidra/JADX 反編譯 | **核心採用** | 透過 MCP 提供開箱即用的跨平台靜態與動態逆向工具鏈。<br>輸出：`decompiled_source/`、API 協議分析報告、函數呼叫圖。 |
-| **desktop-sense** | **本機螢幕截圖與 OCR 視覺感知** | **【選用、未採用】** | **未採用理由**：<br>1. **隱私與安全防線**：全域截圖容易在公開對話或日誌中洩漏桌面機密與個人隱私；而且它不是純本機工具——依上游 README，程式本身不連網，但預設的背景分析會把最新截圖與去識別化的 OCR 文字透過使用者自己的 `claude` CLI 送到雲端模型，自動研究會把錯誤訊息送去網路搜尋，要改用全本機模式或關掉 `analyzer.enabled`、`research.enabled` 畫面才不離開本機（2026-11-16 補，見[來源筆記](../notes/2026-10-18-desktop-sense-local-screen-context.md)第 0 段）；<br>2. **效率低下**：多模態截圖 Token 消耗巨大且有坐標抖動；<br>3. **替代方案成熟**：REA 之 CDP 模式與 CLI-Anything 結構化 stdout 已能 100% 覆蓋行為觀測需求，無需依賴視覺點擊。 |
+| **應用自己的命令列＋Playwright** | **行為觀測與操控層**<br>以旗標、環境變數操作目標並擷取 stdout／stderr／結束碼；有視窗時用 `playwright-core` 的 `_electron` 讀 DOM 文字 | **核心採用（第 3 節實測）** | 輸入輸出都是文字，可逐案重跑比對，不需要截圖。<br>輸出：每個輸入對應的 stdout、stderr、結束碼、行程是否自行結束。 |
+| **CLI-Anything** | **有原始碼時的 CLI 包裝產生器**<br>上游的 7 階段流程是讀原始碼產生 CLI 外掛 | **選用（第 3 節未使用、未實測）** | 上游 README 寫明只有編譯後二進位的軟體不在支援範圍，所以它不能當封閉軟體的行為探針；目標有原始碼且想要一套 `--json` 命令列時才用。把重造結果包成 Skill 的做法見 [`docs/cli-anything-to-skill-protocol.md`](cli-anything-to-skill-protocol.md)。 |
+| **REA (morluto/rea)** | **結構理解與逆向核心**<br>JavaScript／Electron 應用的結構圖（ASAR 清點、BrowserWindow、preload、IPC 頻道），以及 README 列出的原生二進位、網站、.NET、Android、韌體、執行期／網路紀錄 | **核心採用（第 3 節實測 JavaScript 應用分析一項）** | 第 3 節用的是有文件的命令列入口 `rea-agents analyze-javascript-application <目錄或 ASAR> --json`。<br>輸出：一份帶 SHA-256 的 Evidence JSON（節點、邊、IPC 摘要、限制清單）。原生二進位要搭配本機已裝的 Hopper、Ghidra、IDA 或 Kuna，第 3 節沒有用到。 |
+| **`@electron/asar`** | **ASAR 清點與解包** | **核心採用（第 3 節實測）** | Electron 官方的封存工具，`asar list`、`asar extract` 兩個指令。<br>輸出：解包後的檔案目錄。 |
+| **desktop-sense** | **本機螢幕截圖與 OCR 視覺感知** | **【選用、未採用】** | **未採用理由**：<br>1. **隱私與安全防線**：全域截圖容易在公開對話或日誌中洩漏桌面機密與個人隱私；而且它不是純本機工具——依上游 README，程式本身不連網，但預設的背景分析會把最新截圖與去識別化的 OCR 文字透過使用者自己的 `claude` CLI 送到雲端模型，自動研究會把錯誤訊息送去網路搜尋，要改用全本機模式或關掉 `analyzer.enabled`、`research.enabled` 畫面才不離開本機（2026-11-16 補，見[來源筆記](../notes/2026-10-18-desktop-sense-local-screen-context.md)第 0 段）；<br>2. **效率低下**：多模態截圖 Token 消耗巨大且有坐標抖動；<br>3. **有不截圖的替代做法**：第 3 節的觀測全靠命令列輸出與 Playwright 讀 DOM 文字完成，沒有用到截圖。這只代表該案例不需要，不代表所有目標都不需要。 |
 
 ---
 
@@ -23,72 +32,267 @@
 ```text
 [階段一：行為觀測]             [階段二：結構逆向]              [階段三：無菌重造]
 ┌──────────────────┐          ┌──────────────────┐          ┌──────────────────┐
-│  CLI-Anything    │          │    REA MCP       │          │  Cleanroom Spec  │
-│  動態參數探測     │ ──Trace─▶│  ASAR/CDP/AST   │ ──Specs─▶│  Agent-Native    │
-│  捕獲 Exit Code   │          │  提取核心演算法  │          │  重造乾淨實作     │
+│ 應用自己的命令列  │          │ @electron/asar   │          │  Cleanroom Spec  │
+│ Playwright 讀 DOM │ ──觀測─▶│ rea-agents 分析  │ ──規格─▶│  獨立重寫        │
+│ 記錄輸出與結束碼  │   紀錄   │ 讀解包後的程式   │          │  逐案與原版比對  │
 └──────────────────┘          └──────────────────┘          └──────────────────┘
 ```
 
 ### 階段一：動態行為觀測 (Behavior Observation)
-1. **目標啟動**：透過 CDP（Chrome DevTools Protocol）或原生子進程啟動目標應用。
-2. **通訊攔截**：監聽 Network Request/Response，自動過濾掉靜態資源（css/png），鎖定核心 REST / RPC / WebSocket 封包。
-3. **邊界探測**：傳入極值與異常參數，記錄目標軟體的 Exit Code 與錯誤提示。
+1. **目標啟動**：用應用自己的命令列旗標啟動，或以 Playwright 的 `_electron.launch()` 啟動並取得視窗。
+2. **記錄可觀測結果**：每個輸入記下 stdout、stderr、結束碼，以及行程會不會自己結束。目標有網路行為時，再用 REA 的執行期／網路紀錄功能（第 3 節的目標沒有網路行為，這一項未實測）。
+3. **邊界探測**：試缺參數、不認得的旗標、旗標順序對調，把「看起來怪」的結果留給階段二解釋。
 
 ### 階段二：結構反編譯與靜態分析 (Structural Decompilation)
-1. **多目標自動路由**：
-   - 若為 **Electron 應用**：調用 REA 之 `asar_extract` 解包 `app.asar`，提取前端 JS/TS bundle。
-   - 若為 **網頁/前端應用**：調用 REA 之 `js_beautify` 與 AST 分析器，恢復變數符號並找出核心邏輯入口。
-   - 若為 **Android APK / 原生二進位**：自動路由至 JADX / Ghidra 執行反編譯，搜尋加密金鑰或編解碼演算法。
+1. **依目標類型選工具**：
+   - **Electron 應用**：`asar list`／`asar extract` 解開 `app.asar`（或 `default_app.asar`），再用 `rea-agents analyze-javascript-application` 取得視窗、preload、IPC 的結構圖。
+   - **網頁／前端應用**：同一個 `analyze-javascript-application` 入口吃目錄；壓縮過的 bundle 怎麼還原，第 3 節的目標沒有壓縮，未實測。
+   - **Android APK／原生二進位**：依 REA README 搭配本機已裝的反編譯引擎；本文件未實測，T-20261019-09 的紀錄見 [`docs/rea-sandbox-evaluation-evidence.md`](rea-sandbox-evaluation-evidence.md)。
 2. **證據提煉 (Evidence Extraction)**：
-   - 提取資料結構定義（Schema）、封包加解密演算法（Hashing / HMAC）、核心計算邏輯。
+   - 把看到的行為規則寫成條列規格（輸入怎麼掃描、優先序、輸出字串格式、結束碼），每條對回階段一的一個觀測。
 
 ### 階段三：無菌室乾淨重造 (Cleanroom Re-implementation)
-1. **防版權污染**：僅參考逆向提煉出的「規格定義（Functional Spec）」與「I/O 契約」，不複製任何反編譯程式碼。
-2. **Agent-Native 生成**：由 Agent 以現代標準技術（Python stdlib、TypeScript）重新實作核心演算法，並封裝為具備 `--json` 輸出的 CLI 或標準 Skill。
+1. **防版權污染**：只參考階段二寫出的「規格定義（Functional Spec）」與「I/O 契約」，不複製解包或反編譯出來的程式碼。
+2. **Agent-Native 生成**：以標準技術（Python stdlib、TypeScript）重新實作，輸出結構化結果。
+3. **逐案比對**：同一組輸入分別餵給原版與重寫版，stdout、結束碼要一致；再故意改壞重寫版一處，確認比對真的會變紅。
 
 ---
 
-## 3. 端到端實戰範例：Electron 跨平台多媒體轉換器逆向與重造
+## 3. 端到端實測：Electron 預設應用的命令列分派（2026-11-22）
 
-以下示範如何使用本流水線分析某封閉 Electron 轉檔軟體之私有運算演算法：
+### 3.0 對象、授權與環境
 
-### 步驟 1：行為觀測 (CLI-Anything 探針)
+| 項目 | 內容 |
+| :--- | :--- |
+| 對象 | Electron 的**預設應用**（default app）：沒有指定應用時 Electron 自己載入的那個小應用，放在發行檔的 `resources/default_app.asar`（110,835 bytes，13 個檔案） |
+| 來源與版本 | npm 官方 registry 的 `electron@45.4.1`；封存檔 SHA-256 `eac55d6cfcf4eab7e31a45356567f549ef7eb669e3699226b48a8492ad34f510` |
+| 授權 | MIT（發行檔內附 `LICENSE`，原始碼在 <https://github.com/electron/electron> 的 `default_app/`）。MIT 允許使用、修改與再散布，逆向與改作不需要另外取得同意，也沒有授權保護要繞過 |
+| 選擇理由 | 是上游自己打包的真實 ASAR（不是為了示範自己包的）；體積小；同時有命令列行為與視窗；行為完全在本機，不連外部服務 |
+| 只分析的範圍 | 只看 `default_app.asar`。同一個發行檔裡的 Chromium 等元件另有授權，不在範圍內 |
+| 環境 | Windows 11、Node.js 26.12.1、npm 11.20.0、Python 3.14.10；全部裝在隔離目錄 `C:\GitHub\_sandbox\re-walkthrough\`，做完整個目錄送資源回收筒 |
+| 工具版本 | `@electron/asar@4.3.2`、`rea-agents@6.8.0`、`playwright-core@1.65.1`，都用 `npm install --ignore-scripts --save-exact` 從官方 registry 安裝；只有 `electron` 另外執行它自己的 `install.js` 下載執行檔 |
+
 ```bash
-# 透過 CLI-Anything 探針觸發目標軟體之轉檔指令並捕獲輸出
-cli-anything probe --target "./legacy-converter.exe" --input "sample.mp4" --args "--preset=fast"
-# 產出：發現其背後呼叫私有演算法對音軌注入特定水印元數據
+npm install --ignore-scripts --save-exact electron@45.4.1
+node node_modules/electron/install.js        # exit 0，取得 dist/electron.exe 與 resources/default_app.asar
 ```
 
-### 步驟 2：結構逆向 (REA MCP 解包)
-Agent 透過 MCP 調用 REA 工具：
+### 3.1 階段一：操控與行為觀測
+
+**命令列**（以下 `electron` 指沙盒裡的 `node_modules/electron/dist/electron.exe`）：
+
+```text
+$ electron --version      → v45.4.1          exit=0
+$ electron -v             → v45.4.1          exit=0
+$ electron --abi          → 150              exit=0
+$ electron -a             → 150              exit=0
+$ electron --help         → 印出下列文字後不結束，30 秒逾時才被砍掉（exit=124）
+Electron 45.4.1 - Build cross platform desktop apps with JavaScript, HTML, and CSS
+Usage: electron [options] [path]
+  ...
+Options:
+  -i, --interactive     Open a REPL to the main process.
+  -r, --require         Module to preload (option can be repeated).
+  -v, --version         Print the version.
+  -a, --abi             Print the Node ABI version.
+```
+
+留給階段二的疑問：說明文字沒有列 `--help`，為什麼它會印說明卻不結束？
+
+**視窗**：用 `playwright-core` 的 `_electron.launch({ executablePath })` 不帶參數啟動，等 `.electron-version a` 出現後讀 DOM 文字，再 `app.close()`。不截圖。
+
 ```json
-// REA MCP Request
 {
-  "tool": "rea_unpack_asar",
-  "arguments": {
-    "archive_path": "./resources/app.asar",
-    "output_dir": "./artifacts/unpacked_app"
-  }
+ "title": "Electron",
+ ".electron-version": "Electron v45.4.1",
+ ".chrome-version": "Chromium v156.0.8078.100",
+ ".node-version": "Node v24.22.3",
+ ".v8-version": "v8 v15.6.75.57-electron.c2a1644ee688c616",
+ ".command-example": "target\\node_modules\\electron\\dist\\electron.exe path-to-app",
+ "links": 9
 }
 ```
-隨後在 `unpacked_app/dist/main.js` 透過 AST 搜尋，發現私有音訊水印生成函式：
-```javascript
-// 反編譯提煉出的演算法邏輯（證據）：
-// 水印為 SHA-256(timestamp + salt) 的前 8 bytes 注入 ID3 tag
+
+踩到的坑：Electron 預設把使用者資料寫到 `%APPDATA%\Electron`，在沙盒之外（這台機器上該目錄 2026-10-24 就已存在，本次只是多寫了快取）。之後啟動請加 `--user-data-dir=<沙盒內目錄>`；實測加了之後資料改寫進沙盒，預設應用不認得這個旗標所以不受影響。
+
+### 3.2 階段二：結構逆向
+
+```text
+$ npx --no-install asar list default_app.asar          # 13 個檔案，以下併行排列
+\default_app.js  \icon.png  \index.html  \main.js  \package.json  \preload.js  \styles.css
+\octicon\{book-24,code-square-24,gift-24,mark-github-16,star-fill-24}.svg  \octicon\build.css
+$ npx --no-install asar extract default_app.asar ../unpacked     # exit 0
+$ cat ../unpacked/package.json
+{ "name": "electron", "productName": "Electron", "main": "main.js", "type": "module" }
 ```
 
-### 步驟 3：無菌室重造 (Cleanroom Re-creation)
-Agent 完全不引用原始二進位，直接使用 Python stdlib 寫出標準 CLI 工具 `tools/media_watermark.py`（示意檔名，本 repo 並未收錄此工具）：
+`main.js`（9,851 bytes）是 TypeScript 編譯後的 ES module，沒有壓縮或混淆，直接讀得懂；所以這個案例沒有驗到「還原壓縮程式碼」的能力。
+
+```text
+$ npx --no-install rea-agents analyze-javascript-application <沙盒>\...\default_app.asar --json
+exit 0；stdout 是一份 2.27 MB 的 Evidence JSON，進度訊息走 stderr（33 則）
+  subject.digest.sha256      eac55d6c…f510（與上表一致）
+  format                     asar
+  statistics                 relevant_files 5、parsed_javascript_files 3、visited_ast_nodes 1966、
+                             findings 51、parse_failures 0
+  graph                      62 個節點、74 條邊；含 electron-main 1、browser-window 1、
+                             context-bridge-api 1、ipc-channel 1
+  summary                    browser_windows 1、preload_entrypoints 1、explicit_web_preferences 4、
+                             ipc: literal_channels 1、main_handlers 1、renderer_transmissions 1、
+                             paired_renderer_transmissions 1
+  integrity_contradictions   []
+```
+
+REA 的結果和解包後的程式對得上：`default_app.js` 建一個 `BrowserWindow`，`webPreferences` 明寫 4 項（preload、`contextIsolation: true`、`sandbox: true`、`nodeIntegration: false`）；`ipcMain.handle('bootstrap', …)` 配 `preload.js` 的 `ipcRenderer.invoke('bootstrap')`；`contextBridge` 公開一個 `electronDefaultApp`，裡面只有 `initialize`。階段一讀到的四個版本字串就是 `initialize` 填進 DOM 的。REA 給的是結構圖；下面的命令列規則是人讀 `main.js` 整理的，REA 的輸出沒有直接列出這些。
+
+**提煉出的規格**（I/O 契約；輸入是執行檔之後的參數，依序掃描）：
+
+| # | 規則 |
+| :--- | :--- |
+| S1 | `--version`／`-v`：記下「要印版本」並**停止掃描** |
+| S2 | `--app=<值>`：以等號切開取第 2 段當目標並停止掃描（`--app=a=b` 的目標是 `a`） |
+| S3 | `--interactive`／`-i`／`-repl`：記下互動模式，繼續掃 |
+| S4 | `--require`／`-r`：下一個參數是要預先載入的模組，可重複；掃完還缺模組就往 stderr 印 `Invalid Usage: --require [file]`、結束碼 1 |
+| S5 | `--abi`／`-a`、`--no-help`、`--test-type=webdriver`：各記一個旗標，繼續掃 |
+| S6 | 其他以 `-` 開頭的參數**一律略過** |
+| S7 | 第一個不以 `-` 開頭的參數是目標，停止掃描 |
+| S8 | 分派優先序：有目標（且非 webdriver）→ 依網址／`.html`／其他分三種載入；否則版本 → ABI → 互動 → 預設視窗 |
+| S9 | 版本印 `v<Electron 版本>`、ABI 印 `process.versions.modules`，結束碼都是 0；預先載入的模組在分派前就載入 |
+| S10 | 互動模式在 Windows 往 stderr 印 `Electron REPL not currently supported on Windows`、結束碼 1 |
+| S11 | 預設視窗：除非有 `--no-help` 或環境變數 `ELECTRON_NO_HELP`，先印歡迎文字；行程不自行結束 |
+
+S6＋S11 回答了階段一的疑問：`--help` 不是它認得的旗標，被當成「不認得的旗標」略過，結果走到預設視窗那一支，所以印了歡迎文字又開著視窗不結束。
+
+### 3.3 階段三：重造與一致性驗證
+
+依 S1～S11 用 Python 標準函式庫寫一個 `decide(argv)`，回傳分派結果、應有的 stdout／stderr 與結束碼。歡迎文字沒有重現（那是字串不是邏輯）；載入網址、`.html`、找不到應用時的錯誤對話框沒有比對（見 3.4）。
+
 ```python
-import hashlib
-import time
+import os
+from dataclasses import dataclass, field
+from urllib.parse import urlsplit
 
-def generate_watermark(salt: str) -> str:
-    """依據逆向提取之規格乾淨重造演算法"""
-    payload = f"{int(time.time())}_{salt}".encode("utf-8")
-    return hashlib.sha256(payload).hexdigest()[:16]
+@dataclass
+class Decision:
+    action: str
+    stdout: str = ""
+    stderr: str = ""
+    exit_code: int | None = None        # None：行程不會自己結束
+    modules: list[str] = field(default_factory=list)
+    target: str | None = None
+    prints_welcome: bool = False
+
+def decide(argv, *, electron_version, node_abi, platform="win32", env_no_help=False):
+    file = None
+    version = abi = interactive = webdriver = False
+    no_help, modules, want_module = env_no_help, [], False
+    for arg in argv:
+        if want_module:
+            modules.append(arg); want_module = False
+        elif arg in ("--version", "-v"):
+            version = True; break
+        elif arg.startswith("--app="):
+            file = arg.split("=")[1]; break
+        elif arg in ("--interactive", "-i", "-repl"):
+            interactive = True
+        elif arg == "--test-type=webdriver":
+            webdriver = True
+        elif arg in ("--require", "-r"):
+            want_module = True
+        elif arg in ("--abi", "-a"):
+            abi = True
+        elif arg == "--no-help":
+            no_help = True
+        elif arg[:1] == "-":
+            pass
+        else:
+            file = arg; break
+    if want_module:
+        return Decision("usage-error", exit_code=1,
+                        stderr='Invalid Usage: --require [file]\n\n"file" is required\n')
+    d = Decision("default-window", modules=modules)
+    if file and not webdriver:
+        d.target = file
+        scheme = urlsplit(file).scheme.lower() if "://" in file or file.startswith("file:") else ""
+        if scheme in {"http", "https", "file", "chrome"}:
+            d.action = "load-url"
+        elif os.path.splitext(file)[1] in (".html", ".htm"):
+            d.action = "load-html"
+        else:
+            d.action = "load-package"
+    elif version:
+        d.action, d.stdout, d.exit_code = "version", f"v{electron_version}\n", 0
+    elif abi:
+        d.action, d.stdout, d.exit_code = "abi", f"{node_abi}\n", 0
+    elif interactive:
+        if platform == "win32":
+            d.action, d.exit_code = "repl-unsupported", 1
+            d.stderr = "Electron REPL not currently supported on Windows\n"
+        else:
+            d.action = "repl"
+    else:
+        d.prints_welcome = not no_help
+    return d
 ```
-最後依據 `docs/cli-anything-to-skill-protocol.md` 自動生成相應的 `SKILL.md`，完成從黑箱到 Agent-Native 工具的完整閉環。
+
+**比對方式**：30 組參數各自真的執行一次 `electron.exe`，把 stdout、stderr、結束碼和 `decide()` 的預測比。要驗「載入哪個應用、預先載入哪些模組」時，用自己寫的探針：三個只會印 `APP:<名稱>` 然後結束的小應用（有 `package.json` 的目錄、只有 `index.js` 的目錄、單一 `.js` 檔），兩個只會印 `PRELOAD:<名稱>` 的模組；預測的目標與模組清單換算成應該出現的標記行。預設視窗那一支的判準是「7 秒內沒有自行結束」加上「歡迎文字有沒有出現」，然後連同子行程一起砍掉。比較時去掉空白行與行尾空白（Windows 上輸出前面會多一個空行）。
+
+```text
+$ python -I rebuild/compare.py 150          # 150 是階段一觀測到的 ABI
+PASS  --version                                    -> version           exit=0
+PASS  -v                                           -> version           exit=0
+PASS  --abi                                        -> abi               exit=0
+PASS  -a                                           -> abi               exit=0
+PASS  -a -v                                        -> version           exit=0
+PASS  -v -a                                        -> version           exit=0
+PASS  --abi --version                              -> version           exit=0
+PASS  -r                                           -> usage-error       exit=1
+PASS  --require                                    -> usage-error       exit=1
+PASS  -a -r                                        -> usage-error       exit=1
+PASS  -i                                           -> repl-unsupported  exit=1
+PASS  --interactive                                -> repl-unsupported  exit=1
+PASS  -repl                                        -> repl-unsupported  exit=1
+PASS  -i -a                                        -> abi               exit=0
+PASS  -r ./pre1.cjs -v                             -> version           exit=0
+PASS  -r ./pre1.cjs --require ./pre2.cjs -a        -> abi               exit=0
+PASS  appdir                                       -> load-package      exit=0
+PASS  appidx                                       -> load-package      exit=0
+PASS  single.js                                    -> load-package      exit=0
+PASS  --app=appdir                                 -> load-package      exit=0
+PASS  --app=appdir=zzz                             -> load-package      exit=0
+PASS  --unknown-flag appdir                        -> load-package      exit=0
+PASS  -r ./pre1.cjs appdir                         -> load-package      exit=0
+PASS  appdir -v                                    -> load-package      exit=0
+PASS  -a appdir                                    -> load-package      exit=0
+PASS  -v appdir                                    -> version           exit=0
+PASS  --no-help -i appidx                          -> load-package      exit=0
+PASS  --help                                       -> default-window    exit=None
+PASS  --no-help                                    -> default-window    exit=None
+PASS  (無參數)  [ELECTRON_NO_HELP=1]               -> default-window    exit=None
+
+30/30 一致
+exit=0
+```
+
+**反向對照**（確認比對不是永遠綠）：把重寫版 S1 的「停止掃描」拿掉再跑其中 4 組，`-v appdir` 變紅，結束碼 1。
+
+```text
+FAIL  -v appdir                                    -> load-package      exit=0
+     預期 stdout: ['APP:appdir'] exit: 0 stderr: []
+     實際 stdout: ['v45.4.1'] stderr: []
+3/4 一致
+exit=1
+```
+
+### 3.4 這次走通沒有涵蓋的事
+
+- **不是嚴格的無菌室**：讀程式整理規格的和寫重寫版的是同一個 agent、同一段對話，沒有做到「分析者與實作者分開」。對象是 MIT 授權，這裡不構成侵權風險；要拿這套流程處理授權較嚴的對象，兩個角色必須分開，實作者只能拿到 3.2 那張規格表。
+- **對象沒有壓縮、混淆，也沒有網路行為**：還原壓縮 bundle、攔截網路請求這兩件事沒有驗到。
+- **只在 Windows 跑**：S10 在其他平台會進入 REPL，那一支沒有比對。
+- **沒有比對的分支**：載入網址與 `.html`（會開視窗）、目標不存在時的錯誤對話框（會跳出要人按的視窗）、`--test-type=webdriver`、`package.json` 的 `version`／`productName`／`v8Flags` 處理。重寫版對前兩者只回傳分類，沒有實跑驗證。
+- **CLI-Anything 沒有用到**；REA 只用了 JavaScript 應用分析一個入口，是命令列不是 MCP。MCP 工具清單的實際名稱仍未查證。
+- **沒有和上游原始碼逐行對照**：規格來自解包後的 `main.js`，沒有另外去比對 GitHub 上的 `default_app/main.ts`。
+- 沙盒已刪除，上面的重寫版程式碼是唯一留存；比對腳本沒有收進本 repo 的 `tools/`。
 
 ---
 

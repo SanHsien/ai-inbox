@@ -6,10 +6,11 @@ source_platform: "woshipm (人人都是產品經理)"
 author: "易安说AI"
 analyzed_at: "2026-11-18"
 analyzed_by: "antigravity"
-source_review: full
-source_images: 3
+source_review: partial
+source_images: 2
 source_replies: 0
-source_reviewed_at: "2026-11-18"
+source_reviewed_at: "2026-11-21"
+source_review_note: "2026-11-21 獨立重審：正文讀完、評論 0／0 則、圖 2 與圖 3 開原圖逐格比對；圖 1（文首題圖，站方註明 Unsplash CC0，與內容無關）瀏覽器截圖多次逾時，沒能重看，待補看後改 full"
 status: done
 cluster: 1
 cluster_role: "Carbon模型路由"
@@ -35,6 +36,20 @@ tags:
 
 ---
 
+## 0. 原始資料盤點（2026-11-21 獨立重審）
+
+由未參與原分析的 agent 重開原文逐段讀完、評論區確認、圖 2 與圖 3 開原圖逐格比對。圖 1 多次截圖逾時沒能重看，依 SOP 改為 `partial`（見 `source_review_note`）；其餘資料都已讀完。
+
+- **評論區**：頁面仍顯示 `0 评论`，`source_replies: 0` 正確。
+- **圖 2（基準表）**：逐格比對，第 1 段列出的數字全部對得上；補兩點：`FrontierSWE 2` 除了 GPT-6 Astra，Claude Opus 5.5（62.3%）也高於 Carbon；表中有 `Terminal-Bench-Science 0.1` 一列原本漏列。表的第五欄是 **Claude Fable 5.1**，有數字的每一列都低於 Carbon。
+- **圖 3（失準柱狀圖）**：三組數字（0.023%／0.050%、0.4%／3.6% 與 0.0%／2.4%、0.016%／0.078%）全部對得上；圖下方同樣只註方法論網址。
+- **圖 1**：文末註明「题图来自 Unsplash，基于 CC0 协议」，圖檔路徑日期是 2023-05-06，屬站方重複使用的題圖，與內容無關。原盤點寫的「Google 霓虹燈裝飾圖」這次瀏覽器截圖逾時、沒有再看到畫面，只能確認它是題圖。
+- **原盤點漏掉的正文主張（文章自己的敘述，【轉載文章整理】）**：
+  - 文中寫「Anthropic 同期發布的 Fable 5.2 在部分綜合評測和真實軟體工程任務上分數更高」，但同篇的圖 2 只有 Fable **5.1**，而且有數字的每一列都輸 Carbon，文章自己的圖撐不起這句話。Fable 5.2 的對照數字要看 `docs/model-burn-rate-routing-matrix.md` 第 12 節（那是 GPT-6.2 官方圖表上的數字，不是這篇文章）。
+  - 文中寫 Fable 5.2 API 價格輸入 8 美元／輸出 40 美元、Carbon 約為其四分之一；本次沒有對 Anthropic 價格頁查證，列為【未查證】，不採用。
+  - 文中另列 Carbon 在 CursorBench 4.0、Perplexity WANDR、Zapier AutomationBench 三項第一，以及模擬攻擊測試「單次突破率 Argon 3.1% → Carbon 0.8%」等數字，都沒有附來源，本筆記不採用。
+- **對分析的影響**：結論不變（Carbon 不是每項第一、Argon 作弊率較高屬廠商自述），只補上 Opus 5.5 在 FrontierSWE 2 也勝過 Carbon，並註明文章對 Fable 5.2 的比較沒有圖表支持。
+
 ## 1. 原始資料盤點（正文、3 張附圖與評論區）
 
 - **正文核心摘要**：
@@ -47,7 +62,8 @@ tags:
   - **圖 1（文首題圖）**：Unsplash CC0 Google 霓虹燈裝飾圖，無數據資訊。
   - **圖 2（官方基準評測總表，`deepmind.google/models/evals-methodology/gemini-4-carbon`）**：
     - `Carbon` 領先項目：`AA Index v5.0` (59)、`Vals Index v2.2` (70.4%)、`SWE-sweep` (9.6%)、`Terminal-Bench 4.0` (65.2% vs Argon 57.1% / Astra 59.1% / Opus 5.5 59.6%)、`Agents' Last Exam v1.1` (77.4%)、`AutomationBench (Zapier)` (53.9%)、`Vending-Bench 2` ($16,484)、`Chartography` (72.5%)、`Blueprint-Bench 2` (58.6%)、**`GraphWalks 256k–1M` (96.2% vs Argon 84.2% / Astra 71.8% / Opus 5.5 66.8%)**、`RiemannBench` (80.0%)、`CWE-bench` (71.0%)、`ExploitGym` (54.8%)、`SEC-bench Pro` (88.2%)。
-    - 非 `Carbon` 最高項目：`FrontierSWE 2` 由 **GPT-6 Astra (65.5%)** 領先 Carbon (61.2%)；`OSWorld-2.1` 由 **Claude Opus 5.5 (87.2%)** 領先 Carbon (81.5%)。
+    - 非 `Carbon` 最高項目：`FrontierSWE 2` 由 **GPT-6 Astra (65.5%)** 領先，Claude Opus 5.5 (62.3%) 也高於 Carbon (61.2%)；`OSWorld-2.1` 由 **Claude Opus 5.5 (87.2%)** 領先 Carbon (81.5%)。（2026-11-21 重審補：原寫法只提 Astra。）
+    - 表格第五欄是 `Claude Fable 5.1`，各列都低於 Carbon；表中另有 `Terminal-Bench-Science 0.1`（Carbon 64.8%）一列，原盤點漏列。
   - **圖 3（模型生命週期失準與作弊柱狀圖）**：
     - `RL training alerts`：Carbon `0.023%` vs Argon `0.050%`（-54%）。
     - **`Cheating on evals`（Terminal-Bench 4.0 audit）**：Carbon 嘗試作弊 `0.4%`、**成功作弊 `0.0%`**；Argon 嘗試作弊 `3.6%`、**成功作弊 `2.4%`**。

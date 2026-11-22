@@ -287,3 +287,30 @@
 - 文件（每項抽查 1～3 個一手事實，全部相符）：T-20261026-35（block/buzz #2698、#2459、#2265、#2388 仍開啟，PR #2703 已關未合併）；T-20261026-36（四個 repo 星數量級、grill-me 157 bytes、VoltAgent 4 個檔案）；T-20261104-01；T-20261107-03（上游 sync.sh 在固定 SHA 的 `checkout -B`、`.base-sha`）；T-20261108-03（README 的 11.8 個百分點與 Web access 段落）；T-20261108-07（官方頁原文「Each advisor call processes the full transcript anew」、顧問模型費率、沒有限制次數的設定；agent-advisor `5ab3b22` 警語在）；T-20261114-01（官方頁 Terra 35–285、Sol 15–160、credits 25／1.25／125 對 50／2.5／250、Fast 2.5x／2x、「limits are unchanged」）；T-20261114-03（表格數字與 `results.json` 一致）；T-20261115-06（SKILL.md「`full`: exceptional only」）；T-20261115-10（plugin 規範只允許實體商品、不得加「Plugin」後綴）；T-20261115-04（SKILL.md 第 123 行 quick 6／standard 7 的保留數）；T-20261115-17（pii-guard 0.2.0、MIT、`enhanced_audit.py` win32 回 `LOCAL_MODEL_UNVERIFIED`、固定 127.0.0.1）；T-20261115-15（db52e28 為 1.0.6、Stop hook 註冊、CI 只有 ubuntu）；T-20261115-14（固定 commit 的 MIT）；T-20261115-01（Pi `prepare: husky`）；T-20261115-16（speak-human-tw MIT、claude-code-resources 為 CC BY-NC-SA 4.0）；T-20261115-03（LogoLoom `npx -y vtracer-cli` 備援與字串拼接 `execSync`）；T-20261115-18、-21（公開版只寫抽象結論，私有報告 `2955bab` 存在）。
 
 修復 commit：`d4a14f6`（2026-11-21，16.2 的 5 項 ✅ 修正、T-20261108-05 退回、本節）。
+
+## 2026-11-21 文件稽核後重做
+
+2026-11-21 的文件稽核發現五個已結案任務沒達到 DoD（文件裡當天已加更正註記，但缺的東西沒補）。2026-11-22 逐項補做，本節共 5 項（T-20261019-05、T-20261017-07、T-20261020-01、T-20261025-09、T-20261019-10），都達成 DoD，任務維持 `[x]`，各筆記的證據已補重做紀錄；各項沒驗到的範圍寫在該項的「限制」。修復 commit：尚未提交（由整合者提交後回填）。
+
+- ✅ [高] T-20261019-05（`docs/android-official-skills-anti-hallucination.md`）：DoD 要「觸發情境與輸入輸出契約」，原文件只有職責摘要；Compose 一節不是官方內容。
+  - 重做：以 GitHub API 讀 `android/skills` commit `c72942584fff970dac86ced78b367fce0c441e52`（2026-11-15）全部 37 個 skill 主檔的 frontmatter 與正文，新增 1.1 節契約表（37 列，三欄：觸發情境、輸入／前置條件、輸出／完成判準）。第 2 節改成 2.1 官方 `migrate-xml-views-to-jetpack-compose` 的 10 個步驟與參考檔路徑、2.2 其他官方 skill 的 Compose 遷移部分、2.3 本 repo 延伸（標明非官方）。文件引用的 11 個上游路徑都對過該 commit 的檔案樹。
+  - 驗證器（只加強）：`tools/verify_re_and_android_specs.py` 新增契約表檢查：編號 C1～C37 不重複、逐一對上盤點表的 skill 名稱、三欄不可空、須註明上游 commit。先寫 4 個會紅的測試（2 失敗、2 錯誤）再實作；`tests/test_verify_re_and_android_specs.py` 17 項通過。
+  - 限制：只讀各 skill 的主檔，`references/` 子檔沒有逐一讀；官方沒有統一的輸入／輸出欄位，契約表是從正文的前置條件、驗證、檢查清單段落整理的，文件已寫明。
+  - 順帶發現：官方該 skill 主檔的摘要清單與詳細步驟，第 8、9 步順序相反（文件已註明以詳細步驟為準）。
+- ✅ [高] T-20261017-07（`docs/claude-plugins-official-review.md`）：DoD 要「實測指令輸出」，原文件第 5 節寫「示意，未於本 repo 實測」。
+  - 重做：把 `CLAUDE_CONFIG_DIR` 指到全新的暫存目錄，在 Claude Code 2.1.327（Windows 11 原生）實際執行 `claude plugin marketplace add anthropics/claude-plugins-official`、三個 `install`（`security-guidance` 2.0.21、`skill-creator`、`pr-review-toolkit` 1.0.1）、`list`、三個 `details`、兩個 `validate`，結束碼全為 0，輸出去識別後貼入第 5 節取代示意段。本機 `installed_plugins.json`、`known_marketplaces.json`、`settings.json` 的 SHA-256 前後相同。
+  - 實測發現：`skill-creator` 的 `quick_validate.py` 在繁中 Windows（預設編碼 cp950）讀含非 ASCII 字元的 SKILL.md 會 `UnicodeDecodeError`，連外掛自己的 SKILL.md 都過不了，加 `python -X utf8` 才回 `Skill is valid!`；腳本需要 PyYAML，原文件寫的「stdlib 腳本」已更正。
+  - 限制：沒有在互動 session 載入外掛，hook（`security-guidance` 的 SessionStart 會跑 `ensure_agent_sdk.py`）與 agent、`/review-pr` 的實際執行未測；其餘 5 個推薦外掛未安裝實測。文件第 5 節開頭已寫明。
+- ✅ [中] T-20261020-01（`docs/free-public-apis.md`、`tools/public_apis_indexer.py`）：索引停在 2026-10 快照（462 筆／42 類），來源已變。
+  - 重做：索引工具新增來源快照（自動查來源 README 所在 repo 的 HEAD commit 與日期，來源檔有未提交修改就不記；也可用 `--snapshot-commit`、`--snapshot-date` 指定），手冊開頭固定寫出快照 commit、日期與「三欄為投稿者自填」提醒。從 `SanHsien/public-apis` commit `a4ba55a58aad299676d06ae4c0bfbe7ca967df3c`（2026-11-21）重產：583 筆／43 類。重測 Open-Meteo、PokéAPI、Open Library 三個端點，皆 HTTP 200 且回傳有效 JSON。
+  - 順帶修掉的兩個既有問題：預設輸出把篩選條件寫成小寫（`Auth: no`，與驗證器要的 `Auth: No` 不符，代表舊版產出後有人手改過）；Windows 上輸出 CRLF 換行。各補一個測試或改為固定 LF。
+- ✅ [中] T-20261025-09（`tools/verify_agent_reach_and_data_specs.py`）：把 462／42 寫成固定值，索引一重產就紅。
+  - 重做（只加強）：拿掉固定值，改成從文件內容對帳：宣告筆數＝表格列數、宣告分類數＝實際分類數、目錄每個分類的筆數＝該分類實際列數（舊版只比加總）、分類數不低於任務 DoD 的 10 類、須有來源快照行（40 位 commit 與兩個日期）。新增 `--public-apis-source <README>`，用索引工具同一套解析逐筆對帳。
+  - 測試：先寫會紅的測試（新增 5 項、改 1 項；改前 6 失敗 2 錯誤），實作後 `tests/test_verify_agent_reach_and_data_specs.py` 12 項、`tests/test_public_apis_indexer.py` 14 項通過。舊的 462 筆索引餵給新驗證器會被擋（缺來源快照）；對新來源逐筆對帳報出 18 筆已不在來源、139 筆缺漏。
+  - 註：第二批稽核者在索引檔寫的「驗證器把 462／42 寫成固定值，所以沒重產」註記已隨重產移除，檔頭改為現況（快照 commit、日期、583 筆／43 類）。兩則筆記的原結案證據仍寫 462／42（當時的事實，保留不改），後面接著 2026-11-22 的重做紀錄；README 任務表是 `build_index.py` 的產生區塊，由整合者重產。
+- ✅ [高] T-20261019-10（`docs/reverse-engineering-pipeline-spec.md`）：DoD 要「選定一個開源應用，從操控→逆向→重造完整走通」，原文件第 3 節是虛構的封閉 Electron 轉檔軟體，用的 `cli-anything probe`、`asar_extract`、`js_beautify`、`rea_unpack_asar` 上游都沒有。
+  - 重做（2026-11-22）：對象改為 MIT 授權的 Electron 預設應用（npm `electron@45.4.1` 發行檔裡上游自己打包的 `default_app.asar`），在隔離目錄實際走通。操控：應用自己的命令列旗標，加 `playwright-core@1.65.1` 的 `_electron` 讀視窗 DOM 文字（不截圖）。逆向：`@electron/asar@4.3.2` 的 `list`／`extract`，`rea-agents@6.8.0 analyze-javascript-application`（exit 0，62 節點／74 邊，視窗、preload、IPC 頻道與解包後程式相符），人工閱讀 `main.js` 整理出 11 條命令列分派規格。重造：Python 標準函式庫重寫分派邏輯，30 組參數各自實跑原版 `electron.exe` 逐案比對 stdout、stderr、結束碼，30/30 一致；把重寫版改壞一處，比對變紅（3/4，exit 1）。
+  - 文件：第 1～3 節改寫成實測紀錄，不存在的指令與工具名、虛構範例與 `tools/media_watermark.py` 從正文移除；2026-11-21 的更正註記保留並補第 5 點。工具矩陣改成實際用到的工具，CLI-Anything 改標「選用（未使用、未實測）」。
+  - 限制（文件 3.4 已寫明）：分析與重寫是同一個 agent，不是嚴格的無菌室；對象沒有壓縮、混淆與網路行為，這兩種能力沒驗到；只在 Windows 跑；載入網址／`.html`、錯誤對話框等會開視窗的分支只做分類沒有實跑；CLI-Anything 沒有用到，REA 用的是命令列不是 MCP。本機的 `C:\GitHub\rea` 沒有建置產物（`dist/` 不存在），改從 npm 裝同版號到沙盒。DoD 的「人工審閱責任劃分」需要維護者過目，agent 無法代為宣稱。
+  - 實測發現：`electron --help` 會印說明但不結束——`--help` 不是預設應用認得的旗標，被當成不認得的旗標略過後走到開預設視窗那一支。Electron 預設把使用者資料寫到沙盒外的 `%APPDATA%\Electron`，之後要加 `--user-data-dir`（已實測有效，文件 3.1 已寫）。
+  - 驗證器：沒有改 `tools/verify_re_and_android_specs.py`，改寫後原有檢查照過。

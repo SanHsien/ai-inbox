@@ -9,8 +9,8 @@ analyzed_at: "2026-11-19"
 analyzed_by: "antigravity"
 source_review: full
 source_images: 1
-source_replies: 25
-source_reviewed_at: "2026-11-19"
+source_replies: 26
+source_reviewed_at: "2026-11-21"
 status: done
 cluster: 1
 cluster_role: "雙CLI協作生態全景"
@@ -38,6 +38,22 @@ tags:
 
 ---
 
+## 0. 原始資料盤點（2026-11-21 獨立重審）
+
+由未參與原分析的 agent 重開原貼文（發文時間 2026-11-17 22:21），留言切到「所有留言」後用真滾輪捲到底、邊捲邊收，結果維持 `full`。
+
+- **計數**：貼文顯示 78 個心情、26 則留言、35 次分享。平台顯示 26 則已全部讀完，沒有子回覆（畫面上沒有「查看回覆」可展開）。比原分析多 1 則：`洪伯昌`（2026-11-20 留言，建議直接叫 Claude 用官方連線模式操作 Codex），是原分析之後才新增的，`source_replies` 改為 26。
+- **留言編號**：原表的 `#N` 與「所有留言」排序的順序逐一對得上（例如 #20 Haha Jao、#22／#25 方士軒），沒有張冠李戴。
+- **留言附圖**：全串只有 `刘家权`（#8）附 1 張照片，其餘是頭像與連結預覽卡。放大原圖確認原表描述正確：左側是 Claude Code（`/goal active`、等待 Orca worker 訊息、合併分支），右側 worker 標示 `DeepSeek V4.1 Flash · OpenCode Go` 並跑 `vitest`，左下角有多家額度百分比。
+- **補充原表漏掉或寫得不夠精確的地方**：
+  - **兩則是工具作者自薦**：`Haha Jao`（#20）開頭就說「自推一下，我自己也做了 ccc-mcp」；`黃祈豫`（#13）說「我做了 pyloxa.com」。這兩則是作者自述，不是第三方實測。
+  - **ccc-mcp 的主控是 ChatGPT**：同一則留言寫「目前主要還是由 ChatGPT 當 PM 推進工作流」，上游 README 也寫它把 ChatGPT（可選 Codex、Claude Code）接成角色團隊；原表寫成 Claude 與 Codex 之間的編排器，少了這一點。README 另寫「證據覆蓋率」評分引擎**預設關閉**，要另外開啟。19 種角色、7 套內建工作流、`pip install ccc-mcp`（PyPI 可查到）與額度備援在 README 都查得到。
+  - **Pyloxa**：官網寫明是 Windows 10／11 桌面程式，每個任務開獨立 git worktree、用使用者的驗證指令檢查；額度用完時「確認後」才換另一家 CLI，**自動切換屬付費 Pro（US$79／年，目前免費預覽）**。原表寫「quota fallback」沒交代要手動確認。
+  - #21 Kwok Ming Clement Wong 另提到 `claude-codex-bridge`、`cc-pair`，但只用過 `codex-plugin-cc`。
+  - 原表沒列的路線：`方 世弘`（#9，全用 Codex，由主 agent 自己開 SA／PG／CR 子 agent）、`Hsien-wei Chung`（#5，用 GitHub Issue 讓兩邊定期查看派工）、`Wang Joan`（#14，互相訂閱 PR 通知）、`司馬億`（#4，有 MCP 就接 MCP）、`Isaac Chang`／`Tim Wang`／`洪伯昌`（直接讓 Claude Code 呼叫 Codex CLI）、`Tung-hsing Hsieh`（#12，Grok + Herdr）、`許家銘`（#23，Herdr）。
+- **一手來源抽查**：`openai/codex-plugin-cc`（說明「Use Codex from Claude Code to review code or delegate tasks」）與 `bruce601080102/ccc-mcp`（MIT）都存在；`pyloxa.com`、`avengents.ai`、`blog.sd0x.dev/blog/codex-dev-team/` 都能開。
+- **對分析的影響**：結論不變（工作單寫死路徑與驗收、證據閘門、不迷信重框架）；改正的是 ccc-mcp 的定位（ChatGPT 主控、評分預設關閉）與 Pyloxa 的額度切換條件，並標明兩則工具推薦是作者自薦。
+
 ## 1. 原始資料盤點（主文、1 張留言實拍圖與全部 25 則留言）
 
 - **主貼文提問（Nicky Lui）**：詢問如何將 `Claude Code`（規劃／審查大腦）與 `Codex CLI`（編寫／測試執行代理）串聯成免手動切換的自動閉環，包含失敗自動修正、額度不足切換模型，以及能否直接使用各自每月 US$200 官方訂閱額度免付 API Token 費。
@@ -47,10 +63,10 @@ tags:
 | :--- | :--- | :--- |
 | **原生 CLI 腳本＋工作單** | #16 Frank Liao、#22 / #25 方士軒 | **訂閱帳密認證確可走訂閱額度（非 API 費），但自動化狂跑極易撞限額**。無需上 `n8n` 重框架，用 `claude -p` 與 `codex exec` 配輕量 Python/Shell 協調，工作單寫死**允許路徑、測試方式、通過條件、重試上限**；Claude 只讀審查，修正交回原執行代理防同時改檔衝突。 |
 | **`codex-plugin-cc` 等橋接外掛** | #2 TruthfulMoose5123、#21 Kwok Ming Clement Wong | 官方外掛 [`openai/codex-plugin-cc`](https://github.com/openai/codex-plugin-cc) 可從 Claude Code 呼叫 Codex；但 #21 實測認為若一開始架構與規格沒寫好，單純雙模型修補意義有限。 |
-| **`bruce601080102/ccc-mcp`** | #20 Haha Jao | 開源 MCP 編排器（`pip install ccc-mcp`），主打「不輕信 AI 口頭說 tests passed」：**本機測試 + Git Diff 計算證據覆蓋率評分**、需求/決策/變更**版本化共用上下文**、19 角色/7 工作流、**額度不足自動切換接續**與 Web UI。 |
+| **`bruce601080102/ccc-mcp`** | #20 Haha Jao（作者自薦） | 開源 MCP 編排器（`pip install ccc-mcp`；目前以 ChatGPT 當 PM 主控，Claude Code、Codex CLI 為可選執行者，見第 0 段），主打「不輕信 AI 口頭說 tests passed」：**本機測試 + Git Diff 計算證據覆蓋率評分**、需求/決策/變更**版本化共用上下文**、19 角色/7 工作流、**額度不足自動切換接續**與 Web UI。 |
 | **`Herdr`** | #3 王建智、#7 周建廷、#10 Orange Lei、#12、#23 | 同專案開多 agent 並用 `herdr wait` 等派工回傳，搭配 `herdr-web` 手機遠端控盤免持續 SSH。 |
 | **`Orca`（＋附圖 1 張）** | #3、#8 刘家权、#19 Ho Lau Ho | **附圖 1 實拍**：MacBook 雙欄同時跑 Claude 主協調（`/goal`、合併多個 worktree 分支、等待 worker 訊息）＋ OpenCode Go / DeepSeek V4.1 Flash worker 跑 `vitest` 與驗證；左下角監控各家額度百分比。**但 #19 實測吐槽：rate limit 到頭自動 reuse 仍卡頓，常需開新 session 重做**。 |
-| **其他桌面／流程方案** | #6 戴元衍、#13 黃祈豫、#15 張峻瑜、#17 YuHao Chen、#24 Bencent Huang | `Pyloxa`（`pyloxa.com`，Windows 版 Claude+Codex worktree 協調與 quota fallback）、`Avengents`（`avengents.ai`）、`Codex Dev Team`（`blog.sd0x.dev/blog/codex-dev-team/`）、`Paperclip` + `OpenBot` + GitHub Issue 派工。 |
+| **其他桌面／流程方案** | #6 戴元衍、#13 黃祈豫、#15 張峻瑜、#17 YuHao Chen、#24 Bencent Huang | `Pyloxa`（`pyloxa.com`，#13 作者自薦；Windows 版 Claude+Codex worktree 協調，額度用完確認後才換 CLI，自動切換屬付費 Pro）、`Avengents`（`avengents.ai`）、`Codex Dev Team`（`blog.sd0x.dev/blog/codex-dev-team/`）、`Paperclip` + `OpenBot` + GitHub Issue 派工。 |
 
 - **原始資料對分析的影響**：主貼文只是新手架構提問；25 則留言與 Orca 實拍圖直接揭示了實際落地時的兩大致命現實——(1) 訂閱制雖然免 API 費但自動化會極速撞限額，且現成工具的自動額度 reuse 在實戰中依然容易卡頓；(2) `ccc-mcp` 與方士軒的「工作單寫死路徑＋本機實測證據評分」與本機自建的 `agent-relay`、`claim_evidence_guard` 高度同源。
 

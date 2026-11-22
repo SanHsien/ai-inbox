@@ -204,7 +204,7 @@ android skills add --all
   - **目標範圍**：`android/skills`、`android-cli-plugin`
   - **驗收標準（DoD）**：產出 `docs/android-official-skills-anti-hallucination.md`，盤點官方收錄之 30 個 Skills 規格、觸發情境與輸入輸出契約，重點標注 Compose 遷移與 Play Billing 政策防護清單。
   - **完成日期**：2026-10-23
-  - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。直連檢驗官方 `android/skills` 倉庫，如實釐清收錄清單實為 33 個 Skills（非原宣稱 30 個），產出完整盤點與防幻覺手冊 `docs/android-official-skills-anti-hallucination.md`，深度涵蓋 16 大領域、官方相對來源路徑、XML 轉 Compose 紀律與 Play Billing 政策防線。
+  - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。直連檢驗官方 `android/skills` 倉庫，如實釐清收錄清單實為 33 個 Skills（非原宣稱 30 個），產出完整盤點與防幻覺手冊 `docs/android-official-skills-anti-hallucination.md`，深度涵蓋 16 大領域、官方相對來源路徑、XML 轉 Compose 紀律與 Play Billing 政策防線。 **2026-11-21 稽核後重做（2026-11-22 完成）**：原交付缺 DoD 的「觸發情境與輸入輸出契約」。以 GitHub API 讀 `android/skills` commit `c72942584fff970dac86ced78b367fce0c441e52` 全部 37 個 skill 主檔，於文件新增 1.1 節契約表（37 列：觸發情境、輸入／前置條件、輸出／完成判準）；第 2 節改成只列官方 `migrate-xml-views-to-jetpack-compose` 的 10 步驟與參考檔路徑、其他官方 skill 的 Compose 遷移部分，本 repo 延伸另列 2.3 節。`tools/verify_re_and_android_specs.py` 新增契約表檢查（先寫 4 個會紅的測試），`python -m unittest tests.test_verify_re_and_android_specs` 17 項通過。各 skill 的 `references/` 子檔未逐一讀。
 - [x] **`T-20261019-06`**｜**[優先級：中]** 評估本地 `android-cli-plugin` 與 `android skills add --all` 之 Windows 11 安裝與整合驗證，建立自動化 Android 專案建置與 AI 輔助開發測試流水線
   - **目標範圍**：`android-cli`、本地 Android 開發環境
   - **驗收標準（DoD）**：產出 `docs/android-cli-plugin-windows-validation.md`，記錄在 Windows 11 本地終端執行 `android skills list` 與建立測試專案之完整命令輸出日誌，驗證本地 CLI 外掛可用。

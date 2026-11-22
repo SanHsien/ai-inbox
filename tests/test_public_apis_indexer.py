@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
 
 from public_apis_indexer import (
     ApiEntry,
+    display_filter_value,
     filter_apis,
     generate_markdown,
     group_by_category,
@@ -115,6 +116,33 @@ class PublicApisIndexerTest(unittest.TestCase):
         self.assertIn("Cat Facts", md)
         self.assertIn("https://api.open-meteo.com/v1/forecast", md)
         self.assertIn("### Animals", md)
+
+    def test_markdown_records_source_snapshot(self):
+        """產出的手冊要註明來源快照 commit 與日期，並保留「三欄為投稿者自填」的提醒。"""
+        entries = filter_apis(parse_markdown_table_rows(SAMPLE_README), auth="no", cors="yes")
+        md = generate_markdown(
+            entries,
+            snapshot_commit="b" * 40,
+            snapshot_date="2026-11-21",
+            generated_date="2026-11-22",
+        )
+        self.assertIn("**來源快照**：commit `" + "b" * 40 + "`（2026-11-21），本檔產生日 2026-11-22", md)
+        self.assertIn("投稿者自己填的", md)
+
+    def test_markdown_without_snapshot_says_unknown(self):
+        """沒有 commit 資訊時要明寫未記錄，不可留空或編造。"""
+        entries = filter_apis(parse_markdown_table_rows(SAMPLE_README), auth="no", cors="yes")
+        md = generate_markdown(entries)
+        self.assertIn("**來源快照**：未記錄", md)
+
+    def test_cli_filter_values_use_source_spelling(self):
+        """命令列預設的 no／yes 要寫成來源清單的 No／Yes，手冊才會標出「Auth: No 且 CORS: Yes」。"""
+        self.assertEqual(display_filter_value("no"), "No")
+        self.assertEqual(display_filter_value("YES"), "Yes")
+        self.assertEqual(display_filter_value("apiKey"), "apiKey")
+        entries = filter_apis(parse_markdown_table_rows(SAMPLE_README), auth="no", cors="yes")
+        md = generate_markdown(entries, auth=display_filter_value("no"), cors=display_filter_value("yes"))
+        self.assertIn("`Auth: No` 且 `CORS: Yes`（免申請金鑰", md)
 
     def test_locate_source_file_custom(self):
         sample_file = self.tmp / "sample.md"

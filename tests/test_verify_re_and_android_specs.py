@@ -182,6 +182,56 @@ class TestVerifyReAndAndroidSpecs(unittest.TestCase):
         errors_billing = vre.verify_android_skills_anti_hallucination(no_ack)
         self.assertTrue(any("Play Billing" in e or "AcknowledgePurchaseParams" in e for e in errors_billing), f"未攔截 Play Billing 缺失：{errors_billing}")
 
+    # ------------------------------------------------------------------
+    # 2026-11-21 稽核後重做（T-20261019-05）：DoD 要求的「觸發情境與輸入輸出契約」
+    # ------------------------------------------------------------------
+
+    def _android_doc(self) -> str:
+        return (REPO_ROOT / "docs" / "android-official-skills-anti-hallucination.md").read_text(encoding="utf-8")
+
+    def test_android_contract_table_covers_every_skill(self):
+        """11. 契約表要逐一涵蓋盤點表的每個 skill，且觸發、輸入、輸出三欄都有內容。"""
+        raw = self._android_doc()
+        self.assertEqual(vre.verify_android_skills_anti_hallucination(raw), [])
+        rows = vre.parse_android_contract_rows(raw)
+        self.assertEqual(len(rows), vre.EXPECTED_ANDROID_SKILLS)
+        self.assertEqual(sorted(rows), sorted(vre.parse_android_inventory_names(raw)))
+
+    def test_android_contract_row_missing_is_rejected(self):
+        """12. 反例：契約表少一個 skill 要被擋。"""
+        raw = self._android_doc()
+        kept = [
+            line for line in raw.splitlines()
+            if not (line.startswith("| C") and "`r8-analyzer`" in line)
+        ]
+        self.assertNotEqual(len(kept), len(raw.splitlines()), "測試前提：契約表應有 r8-analyzer 這一列")
+        errors = vre.verify_android_skills_anti_hallucination("\n".join(kept))
+        self.assertTrue(any("契約" in e and "r8-analyzer" in e for e in errors), f"未攔截契約表缺列：{errors}")
+
+    def test_android_contract_empty_cell_is_rejected(self):
+        """13. 反例：契約表某列的輸出欄是空的（或只有破折號）要被擋。"""
+        raw = self._android_doc()
+        out_lines = []
+        hit = False
+        for line in raw.splitlines():
+            if line.startswith("| C") and "`camerax`" in line:
+                cells = line.split("|")
+                cells[-2] = " — "
+                line = "|".join(cells)
+                hit = True
+            out_lines.append(line)
+        self.assertTrue(hit, "測試前提：契約表應有 camerax 這一列")
+        errors = vre.verify_android_skills_anti_hallucination("\n".join(out_lines))
+        self.assertTrue(any("契約" in e and "camerax" in e for e in errors), f"未攔截契約表空欄：{errors}")
+
+    def test_android_contract_requires_pinned_upstream_commit(self):
+        """14. 反例：契約表沒有註明讀的是 android/skills 哪個 commit 要被擋。"""
+        raw = self._android_doc()
+        pinned = vre.ANDROID_SNAPSHOT_PATTERN.search(raw)
+        self.assertIsNotNone(pinned, "測試前提：文件應註明上游快照 commit")
+        errors = vre.verify_android_skills_anti_hallucination(raw.replace(pinned.group(1), "某個版本"))
+        self.assertTrue(any("快照" in e for e in errors), f"未攔截缺少上游快照 commit：{errors}")
+
     def test_android_cli_registry_and_size_limit_gates(self):
         """10. 反例攔截：Registry PATH 違規攔截或超過 1 GB 下載硬閘門缺漏。"""
         raw = (REPO_ROOT / "docs" / "android-cli-plugin-windows-validation.md").read_text(encoding="utf-8")

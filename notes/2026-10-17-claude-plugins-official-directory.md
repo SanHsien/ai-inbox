@@ -114,7 +114,7 @@ Claude Code Plugin 將一個完整能力封裝為獨立套件，通常包含：
     2. 評估 2~3 個與維護者環境（Windows 11 + Git + 跨 Agent）高度相關的插件功能。
     3. 實測在 Claude Code 中安裝並測試其指令運作與 Windows 相容性。
   - **驗收標準（DoD）**：產出清單評估筆記，標明推薦啟用的官方外掛名稱與實測指令輸出。
-  - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付於 `docs/claude-plugins-official-review.md`，直接 clone 並讀取 `anthropics/claude-plugins-official` 真實目錄與 `marketplace.json`，深度評比 8 款高度適配維護者 Windows 11+Python+TS 工作流之推薦插件、6 款不相容/偏離項目與排除原因，並對 3 款閉源 SaaS 標明「未查證」。
+  - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付於 `docs/claude-plugins-official-review.md`，直接 clone 並讀取 `anthropics/claude-plugins-official` 真實目錄與 `marketplace.json`，深度評比 8 款高度適配維護者 Windows 11+Python+TS 工作流之推薦插件、6 款不相容/偏離項目與排除原因，並對 3 款閉源 SaaS 標明「未查證」。 **2026-11-21 稽核後重做（2026-11-22 完成）**：原交付的指令段是「示意、未實測」，不符 DoD。改在隔離的 `CLAUDE_CONFIG_DIR` 暫存目錄（Claude Code 2.1.327、Windows 11）實際執行 `claude plugin marketplace add`、`install`（`security-guidance`、`skill-creator`、`pr-review-toolkit`）、`list`、`details`、`validate`，結束碼皆 0，輸出貼入文件第 5 節；本機設定檔 SHA-256 前後相同。實跑 `skill-creator` 的 `quick_validate.py` 發現 Windows 相容性問題：預設編碼 cp950 下 `UnicodeDecodeError`，加 `-X utf8` 才通過，且需要 PyYAML（非純標準函式庫）。未在互動 session 載入外掛，hook 與 agent 的實際執行未測；其餘 5 個推薦外掛未安裝實測。
 
 - [x] **`T-20261017-08`**｜**[優先級：低]** 評估比照官方規格打包個人常用工具為標準 Plugin
   - **目標範圍**：`跨專案規範 / 自製 Plugin 打包`

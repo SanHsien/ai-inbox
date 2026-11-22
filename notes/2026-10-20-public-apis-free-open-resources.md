@@ -134,7 +134,7 @@ tags:
   - **具體做法**：撰寫 Python 腳本解析已有 Fork `SanHsien/public-apis` 倉庫之 README 或 raw markdown，過濾出 `Auth: No` 且 `CORS: Yes` 的高品質免費 API，輸出分類 Markdown 手冊，供 Agent 開發時一鍵按類別（天氣、書籍、金融、百科、測試資料等）精準引用
   - **驗收標準（DoD）**：腳本能成功解析並生成結構化索引，涵蓋至少 10 大常用類別，且實測至少 3 個端點（如 Open-Meteo、PokéAPI、Open Library）可直接 `curl` 回傳有效 JSON
   - **完成日期**：2026-10-22
-  - **實作紀錄 / 證據**：實作 tools/public_apis_indexer.py（單純 Python 標準庫）與 tests/test_public_apis_indexer.py（單元測試通過）；解析 SanHsien/public-apis README 產出 docs/free-public-apis.md，抽取 462 筆 Auth: No 且 CORS: Yes 之 API，涵蓋 42 個類別；實測 curl Open-Meteo、PokéAPI 與 Open Library 端點均成功回傳有效 JSON。
+  - **實作紀錄 / 證據**：實作 tools/public_apis_indexer.py（單純 Python 標準庫）與 tests/test_public_apis_indexer.py（單元測試通過）；解析 SanHsien/public-apis README 產出 docs/free-public-apis.md，抽取 462 筆 Auth: No 且 CORS: Yes 之 API，涵蓋 42 個類別；實測 curl Open-Meteo、PokéAPI 與 Open Library 端點均成功回傳有效 JSON。 **2026-11-21 稽核後重做（2026-11-22 完成）**：原索引停在 2026-10 快照（462 筆／42 類）。`tools/public_apis_indexer.py` 新增來源快照（自動查來源 repo 的 commit 與日期，寫進手冊開頭），並修正預設輸出把篩選條件寫成小寫與 CRLF 換行；從 `SanHsien/public-apis` commit `a4ba55a58aad299676d06ae4c0bfbe7ca967df3c`（2026-11-21）重產 `docs/free-public-apis.md`：583 筆／43 類。`python tools/verify_agent_reach_and_data_specs.py --public-apis-source <來源 README>` 逐筆對帳通過；重測 Open-Meteo、PokéAPI、Open Library 三個端點皆 HTTP 200 且回傳有效 JSON。
 - [x] **`T-20261020-02`**｜**[優先級：中]** 封裝「Public APIs 動態檢索 Skill / MCP 伺服器規格」，讓 Agent 能依專案需求自動查詢合適的公開 API 並生成 Generative UI 串接代碼
   - **目標範圍**：`~/.gemini/config/skills/` 或本地 MCP 外掛規格
   - **具體做法**：設計 `public-apis-search` 技能規格與 Prompt 範本，定義 Agent 在接收到使用者「做一個天氣/圖書/字典小工具」指令時，自動比對 `public-apis` 推薦清單、確認 CORS/Auth 限制，並直接生成具備 Live Data 抓取能力的前端或腳本

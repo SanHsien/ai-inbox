@@ -206,7 +206,7 @@ tags:
   - **具體做法**：撰寫整合規格文件，定義三個工具的責任邊界與資料交換契約（CLI-Anything 產出操作日誌 → REA 產出逆向證據 → desktop-sense 產出視覺快照），設計 Agent 調用這三個 MCP 的標準 Prompt 模板
   - **驗收標準（DoD）**：規格文件完成、包含至少一個端到端範例（選定一個開源應用，從操控→逆向→重造完整走通），經人工審閱確認各工具責任劃分無重疊無遺漏
   - **完成日期**：2026-10-23
-  - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。撰寫三階段逆向分析流水線規格手冊 `docs/reverse-engineering-pipeline-spec.md`，定義 CLI-Anything（行為觀測探針）、REA（結構逆向與解包核心）與 Cleanroom 重造標準；因桌面截圖隱私外洩與 Token 開銷過高，明確將 desktop-sense 標註為「選用、未採用」並附端到端 Electron 逆向實戰範例。
+  - **實作紀錄 / 證據**：以 ai-inbox 範本形式交付。撰寫三階段逆向分析流水線規格手冊 `docs/reverse-engineering-pipeline-spec.md`，定義 CLI-Anything（行為觀測探針）、REA（結構逆向與解包核心）與 Cleanroom 重造標準；因桌面截圖隱私外洩與 Token 開銷過高，明確將 desktop-sense 標註為「選用、未採用」並附端到端 Electron 逆向實戰範例。**2026-11-22 重做（2026-11-21 稽核指出原範例是虛構的封閉軟體、所用指令與工具名上游沒有，DoD 的「選定一個開源應用完整走通」未達成）**：改以 MIT 授權的 Electron 預設應用（npm `electron@45.4.1` 的 `default_app.asar`）在隔離目錄實際走通三段——操控：應用自己的命令列旗標加 `playwright-core@1.65.1` 讀視窗 DOM；逆向：`@electron/asar@4.3.2` 解包、`rea-agents@6.8.0 analyze-javascript-application`（exit 0，62 節點／74 邊）加人工閱讀整理出 11 條命令列分派規格；重造：Python 標準函式庫重寫分派邏輯，30 組參數與原版 `electron.exe` 逐案比對 30/30 一致，改壞一處的反向對照會變紅。文件第 1～3 節改寫，不存在的指令與工具名已移除；未涵蓋項（非嚴格無菌室、對象未壓縮且無網路行為、只在 Windows、CLI-Anything 未使用）列在文件 3.4。DoD 的「人工審閱責任劃分」仍待維護者過目。
 - [x] **`T-20261025-07`**｜**[優先級：高]** 實作逆向工程流水線（REA + CLI-Anything）與 Android 官方 33 Skills 防幻覺規範之「外部裁判」結構驗證器
   - **狀態**：🟢 已完成（外部裁判與單元測試全數通過）
   - **目標範圍**：`tools/verify_re_and_android_specs.py` 與 `tests/test_verify_re_and_android_specs.py`

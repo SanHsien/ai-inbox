@@ -14,6 +14,7 @@ tools/verify_re_and_android_specs.py
    - 驗證系統環境變數 PATH 與全域登錄檔零變更/零污染結論，及未改寫正式 Agent 配置。
 3. docs/android-official-skills-anti-hallucination.md：
    - 驗證 37 個官方 Skills 完整盤點表格與代表性技能（數量見 EXPECTED_ANDROID_SKILLS）；
+   - 驗證「觸發情境與輸入／輸出契約」表逐一涵蓋盤點表的每個 skill、三欄都有內容，並註明上游快照 commit；
    - 驗證 XML View 遷移至 Jetpack Compose 之現代防幻覺規範（廢除 findViewById/ViewBinding/synthetic、UDF、LazyColumn 等）；
    - 驗證 Google Play Billing 與 Policy Insights 政策合規審查防線（AcknowledgePurchaseParams、Data Safety 與權限宣告一致性）。
 4. docs/android-cli-plugin-windows-validation.md：
@@ -167,6 +168,71 @@ def verify_rea_sandbox_evidence(source: Union[Path, str]) -> List[str]:
 # 上游會再增減；重新盤點文件時，這個數字要跟著文件的表格一起改。
 EXPECTED_ANDROID_SKILLS = 37
 
+# 2026-11-21 稽核後重做（T-20261019-05）：DoD 要求「觸發情境與輸入輸出契約」。
+# 契約表列格式：| C<編號> | `skill 名稱` | 觸發情境 | 輸入／前置條件 | 輸出／完成判準 |
+# 並要註明讀的是 android/skills 哪個 commit（上游由機器人定期更新，不釘住就無法重查）。
+ANDROID_SNAPSHOT_PATTERN = re.compile(r"`android/skills`\s*commit\s*`([0-9a-f]{40})`")
+ANDROID_CONTRACT_MIN_CELL_CHARS = 8
+_INVENTORY_ROW = re.compile(r"^\|\s*\d+\s*\|[^|]*\|\s*`[^`|]*SKILL\.md`\s*\|\s*`([^`|]+)`\s*\|")
+_CONTRACT_ROW = re.compile(r"^\|\s*C(\d+)\s*\|\s*`([^`|]+)`\s*\|(.*)\|\s*$")
+
+
+def parse_android_inventory_names(text: str) -> List[str]:
+    """盤點表（| 編號 | 分類 | `路徑/SKILL.md` | `名稱` | 職責 |）裡的 skill 名稱，依出現順序。"""
+    names: List[str] = []
+    for line in text.splitlines():
+        row = _INVENTORY_ROW.match(line.strip())
+        if row:
+            names.append(row.group(1).strip())
+    return names
+
+
+def parse_android_contract_rows(text: str) -> Dict[str, List[str]]:
+    """契約表各列：skill 名稱 -> [觸發情境, 輸入／前置條件, 輸出／完成判準]。欄數不是三欄的列不收。"""
+    rows: Dict[str, List[str]] = {}
+    for line in text.splitlines():
+        row = _CONTRACT_ROW.match(line.strip())
+        if not row:
+            continue
+        cells = [c.strip() for c in row.group(3).split("|")]
+        if len(cells) == 3:
+            rows[row.group(2).strip()] = cells
+    return rows
+
+
+def _verify_android_contract_table(text: str) -> List[str]:
+    errors: List[str] = []
+    if not ANDROID_SNAPSHOT_PATTERN.search(text):
+        errors.append("契約表缺少上游快照：需寫明讀的是 `android/skills` commit `<40 位 commit>`")
+
+    inventory = parse_android_inventory_names(text)
+    contracts = parse_android_contract_rows(text)
+
+    contract_numbers = sorted(
+        int(m.group(1)) for m in (_CONTRACT_ROW.match(line.strip()) for line in text.splitlines()) if m
+    )
+    if contract_numbers != list(range(1, len(inventory) + 1)):
+        errors.append(
+            f"契約表編號異常：需恰為 C1~C{len(inventory)} 且不重複，實際解析出 {len(contract_numbers)} 列"
+        )
+
+    missing = [name for name in inventory if name not in contracts]
+    if missing:
+        errors.append(f"契約表缺少 {len(missing)} 個 skill 的觸發情境與輸入輸出契約：{', '.join(missing[:5])}")
+    extra = [name for name in contracts if name not in inventory]
+    if extra:
+        errors.append(f"契約表有盤點表沒有的 skill：{', '.join(extra[:5])}")
+
+    labels = ("觸發情境", "輸入／前置條件", "輸出／完成判準")
+    for name in inventory:
+        cells = contracts.get(name)
+        if not cells:
+            continue
+        for label, cell in zip(labels, cells):
+            if len(re.sub(r"[\s—\-–]", "", cell)) < ANDROID_CONTRACT_MIN_CELL_CHARS:
+                errors.append(f"契約表 {name} 的「{label}」欄是空的或過短")
+    return errors
+
 
 @doc_guard
 def verify_android_skills_anti_hallucination(source: Union[Path, str]) -> List[str]:
@@ -199,6 +265,9 @@ def verify_android_skills_anti_hallucination(source: Union[Path, str]) -> List[s
             f"官方 Skills 清單盤點不足 {expected} 個或編號異常（含 SKILL.md 路徑的表格列解析出 {skill_count} 個，"
             f"編號需恰為 1~{expected} 且不重複）"
         )
+
+    # 1b. 觸發情境與輸入／輸出契約表：逐一涵蓋盤點表的每個 skill
+    errors.extend(_verify_android_contract_table(text))
 
     # 檢查關鍵代表性技能存在
     required_key_skills = [

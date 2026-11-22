@@ -5,7 +5,7 @@ Public APIs 本地離線索引與免金鑰 API 篩選工具。
 
 解析維護者的 fork 倉庫（SanHsien/public-apis）的 README.md，
 篩選免金鑰（Auth: No）且支援跨域（CORS: Yes）之端點，產出結構化索引與 Markdown 快速查閱手冊。
-只使用 Python 標準函式庫。
+只使用 Python 標準函式庫。產出的手冊會註明來源 repo 的 commit 與日期（來源快照）。
 """
 
 from __future__ import annotations
@@ -14,8 +14,10 @@ import argparse
 import json
 import os
 import re
+import subprocess
 import sys
 from dataclasses import asdict, dataclass
+from datetime import date
 from pathlib import Path
 from typing import Iterable, List, Optional, Sequence
 
@@ -169,18 +171,40 @@ def generate_markdown(
     source_ref: str = "SanHsien/public-apis",
     auth: str = "No",
     cors: str = "Yes",
+    snapshot_commit: Optional[str] = None,
+    snapshot_date: Optional[str] = None,
+    generated_date: Optional[str] = None,
 ) -> str:
-    """生成分類 Markdown 查閱手冊。"""
+    """生成分類 Markdown 查閱手冊。
+
+    snapshot_commit／snapshot_date 是來源 README 所在 repo 當下的 commit 與其日期；
+    沒有就明寫「未記錄」，不留空也不編造。
+    """
     grouped = group_by_category(entries)
     sorted_categories = sorted(grouped.keys())
+
+    if snapshot_commit and snapshot_date:
+        snapshot_line = (
+            f"- **來源快照**：commit `{snapshot_commit}`（{snapshot_date}），"
+            f"本檔產生日 {generated_date or date.today().isoformat()}"
+        )
+    else:
+        snapshot_line = "- **來源快照**：未記錄（產生時沒有取得來源 repo 的 commit）"
 
     lines: List[str] = [
         f"# {title}",
         "",
         f"- **資料來源**：`{source_ref}`",
+        snapshot_line,
         f"- **篩選條件**：`Auth: {auth}` 且 `CORS: {cors}`"
         + ("（免申請金鑰、支援前端/Generative UI 直連跨域）" if (auth, cors) == ("No", "Yes") else ""),
         f"- **涵蓋項目數**：共 {len(entries)} 個公開端點，跨 {len(sorted_categories)} 個分類",
+        "",
+        "> 這是上面那個來源快照當下的內容，不會自動更新；來源之後新增或移除的端點不在本檔。"
+        "要最新清單請重跑 `python tools/public_apis_indexer.py --source <public-apis 的 README.md>`。",
+        ">",
+        "> `Auth`、`HTTPS`、`CORS` 三欄是來源清單投稿者自己填的，本 repo 沒有逐一連線測試；"
+        "「免金鑰、可跨域」在實際呼叫前要自己確認，端點也可能已停用或改成要金鑰。",
         "",
         "---",
         "",
@@ -277,6 +301,44 @@ def locate_source_file(custom_path: Optional[str] = None) -> Path:
     )
 
 
+def display_filter_value(value: str) -> str:
+    """命令列的篩選值（no／yes，不分大小寫）轉成來源清單的寫法（No／Yes）；其餘原樣。"""
+    return {"no": "No", "yes": "Yes", "unknown": "Unknown"}.get(value.lower(), value)
+
+
+def detect_source_snapshot(source_path: Path) -> tuple[Optional[str], Optional[str]]:
+    """查來源 README 所在 git repo 的 HEAD commit 與其提交日期（YYYY-MM-DD）。
+
+    來源檔若有未提交的修改，commit 就代表不了內容，回傳 (None, None)。
+    不是 git repo、沒有 git 或查詢失敗也回傳 (None, None)。
+    """
+    repo_dir = str(source_path.resolve().parent)
+
+    def _git(*git_args: str) -> Optional[str]:
+        try:
+            done = subprocess.run(
+                ["git", "-C", repo_dir, *git_args],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=30,
+                check=False,
+            )
+        except (OSError, subprocess.SubprocessError):
+            return None
+        return done.stdout.strip() if done.returncode == 0 else None
+
+    dirty = _git("status", "--porcelain", "--", source_path.name)
+    if dirty is None or dirty:
+        return None, None
+    commit = _git("rev-parse", "HEAD")
+    commit_date = _git("log", "-1", "--format=%cs", "HEAD")
+    if not commit or not re.fullmatch(r"[0-9a-f]{40}", commit) or not commit_date:
+        return None, None
+    return commit, commit_date
+
+
 def main() -> int:
     # 要在解析參數之前設定：--help 由 argparse 直接印出，晚設就會用系統編碼（Windows cp950）輸出成亂碼
     for stream in (sys.stdout, sys.stderr):
@@ -329,6 +391,15 @@ def main() -> int:
         help="僅輸出統計摘要",
     )
 
+    parser.add_argument(
+        "--snapshot-commit",
+        help="來源快照的 40 位 commit（預設自動查來源 README 所在的 git repo）",
+    )
+    parser.add_argument(
+        "--snapshot-date",
+        help="來源快照 commit 的日期 YYYY-MM-DD（與 --snapshot-commit 一起給）",
+    )
+
     args = parser.parse_args()
 
     try:
@@ -336,6 +407,19 @@ def main() -> int:
     except FileNotFoundError as err:
         print(f"[ERROR] {err}", file=sys.stderr)
         return 1
+
+    if args.snapshot_commit or args.snapshot_date:
+        if not (
+            args.snapshot_commit
+            and args.snapshot_date
+            and re.fullmatch(r"[0-9a-f]{40}", args.snapshot_commit)
+            and re.fullmatch(r"\d{4}-\d{2}-\d{2}", args.snapshot_date)
+        ):
+            print("[ERROR] --snapshot-commit（40 位十六進位）與 --snapshot-date（YYYY-MM-DD）要一起給且格式正確", file=sys.stderr)
+            return 1
+        snapshot_commit, snapshot_date = args.snapshot_commit, args.snapshot_date
+    else:
+        snapshot_commit, snapshot_date = detect_source_snapshot(source_path)
 
     try:
         content = source_path.read_text(encoding="utf-8-sig")
@@ -358,6 +442,7 @@ def main() -> int:
     print(f"[*] 總解析條目: {len(all_entries)} 筆")
     print(f"[*] 符合條件條目 (Auth: {args.auth}, CORS: {args.cors}): {len(filtered)} 筆")
     print(f"[*] 涵蓋分類數: {len(grouped)} 個")
+    print(f"[*] 來源快照: {snapshot_commit or '未取得'}" + (f"（{snapshot_date}）" if snapshot_date else ""))
 
     if args.summary:
         print("\n各分類項目分佈：")
@@ -368,8 +453,14 @@ def main() -> int:
     if args.output:
         out_path = Path(args.output)
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        md_text = generate_markdown(filtered, auth=args.auth, cors=args.cors)
-        out_path.write_text(md_text, encoding="utf-8")
+        md_text = generate_markdown(
+            filtered,
+            auth=display_filter_value(args.auth),
+            cors=display_filter_value(args.cors),
+            snapshot_commit=snapshot_commit,
+            snapshot_date=snapshot_date,
+        )
+        out_path.write_text(md_text + "\n", encoding="utf-8", newline="\n")
         print(f"[+] 已產出 Markdown 手冊: {out_path.resolve()}")
 
     if args.json_output:
@@ -377,6 +468,8 @@ def main() -> int:
         json_path.parent.mkdir(parents=True, exist_ok=True)
         data = {
             "source": str(source_path),
+            "source_commit": snapshot_commit,
+            "source_commit_date": snapshot_date,
             "filters": {"auth": args.auth, "cors": args.cors},
             "total_count": len(filtered),
             "categories_count": len(grouped),
@@ -389,8 +482,14 @@ def main() -> int:
     if not args.output and not args.json_output:
         default_out = Path(__file__).resolve().parent.parent / "docs" / "free-public-apis.md"
         default_out.parent.mkdir(parents=True, exist_ok=True)
-        md_text = generate_markdown(filtered, auth=args.auth, cors=args.cors)
-        default_out.write_text(md_text, encoding="utf-8")
+        md_text = generate_markdown(
+            filtered,
+            auth=display_filter_value(args.auth),
+            cors=display_filter_value(args.cors),
+            snapshot_commit=snapshot_commit,
+            snapshot_date=snapshot_date,
+        )
+        default_out.write_text(md_text + "\n", encoding="utf-8", newline="\n")
         print(f"[+] 已產出預設 Markdown 手冊: {default_out.resolve()}")
 
     return 0

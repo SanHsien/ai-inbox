@@ -13,6 +13,7 @@ tests/test_verify_agent_reach_and_data_specs.py
 
 from __future__ import annotations
 
+import re
 import sys
 import tempfile
 import unittest
@@ -103,11 +104,13 @@ class TestVerifyAgentReachAndDataSpecs(unittest.TestCase):
         """5. 反例攔截：free-public-apis.md 筆數宣告被破壞或表格資料出現非 No/Yes 異常。"""
         raw_index = (REPO_ROOT / "docs" / "free-public-apis.md").read_text(encoding="utf-8")
 
-        # (A) 破壞筆數宣告
-        corrupted_count = raw_index.replace("共 462 個公開端點", "共 400 個公開端點")
+        # (A) 破壞筆數宣告：宣告的筆數與實際表格列數不符
+        declared = re.search(r"共 (\d+) 個公開端點", raw_index)
+        self.assertIsNotNone(declared, "索引缺少筆數宣告")
+        corrupted_count = raw_index.replace(declared.group(0), "共 400 個公開端點")
         errors_count = vsp.verify_free_public_apis_index(corrupted_count)
         self.assertTrue(
-            any("462 個公開端點" in e for e in errors_count),
+            any("宣告" in e and "400" in e for e in errors_count),
             f"未攔截到筆數宣告異常：{errors_count}",
         )
 
@@ -122,6 +125,82 @@ class TestVerifyAgentReachAndDataSpecs(unittest.TestCase):
             any("未通過 'Auth: No' 門檻" in e or "資料列數異常" in e for e in errors_row),
             f"未攔截到異常資料行：{errors_row}",
         )
+
+    # ------------------------------------------------------------------
+    # 2026-11-21 稽核後重做：筆數不再寫死，改由文件內容自行對帳，並要求來源快照 commit
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _synthetic_index(categories: int = 12, rows_per_category: int = 2, with_snapshot: bool = True) -> str:
+        names = [f"Cat{i:02d}" for i in range(categories)]
+        total = categories * rows_per_category
+        lines = [
+            "# Public APIs 免金鑰與 CORS 支援精選手冊",
+            "",
+            "- **資料來源**：`SanHsien/public-apis`",
+        ]
+        if with_snapshot:
+            lines.append("- **來源快照**：commit `" + "a" * 40 + "`（2026-11-21），本檔產生日 2026-11-22")
+        lines += [
+            "- **篩選條件**：`Auth: No` 且 `CORS: Yes`",
+            f"- **涵蓋項目數**：共 {total} 個公開端點，跨 {categories} 個分類",
+            "",
+            "## 常用分類索引（Table of Contents）",
+            "",
+        ]
+        lines += [f"- [{n}](#{n.lower()}) ({rows_per_category})" for n in names]
+        lines += ["", "## 分類詳細清單", ""]
+        for n in names:
+            lines += [
+                f"### {n}",
+                "",
+                "| API | 說明 | 驗證 (Auth) | HTTPS | 跨域 (CORS) |",
+                "| :--- | :--- | :--- | :--- | :--- |",
+            ]
+            lines += [
+                f"| [{n}-{k}](https://example.com/{n}/{k}) | demo | No | Yes | Yes |"
+                for k in range(rows_per_category)
+            ]
+            lines.append("")
+        return "\n".join(lines)
+
+    def test_11_counts_are_computed_from_data_not_hardcoded(self):
+        """11. 筆數與分類數自洽、但不是 462／42 的索引也要能通過（不得寫死快照數字）。"""
+        errors = vsp.verify_free_public_apis_index(self._synthetic_index())
+        self.assertEqual(errors, [], f"自洽的索引不應被擋：{errors}")
+        self.assertFalse(hasattr(vsp, "TOTAL_PUBLIC_APIS_COUNT"), "驗證器不應再有寫死的總筆數常數")
+        self.assertFalse(hasattr(vsp, "TOTAL_PUBLIC_APIS_CATEGORIES"), "驗證器不應再有寫死的分類數常數")
+
+    def test_12_missing_snapshot_commit_is_rejected(self):
+        """12. 反例：沒有註明來源快照 commit 與日期的索引要被擋。"""
+        errors = vsp.verify_free_public_apis_index(self._synthetic_index(with_snapshot=False))
+        self.assertTrue(any("來源快照" in e for e in errors), f"未攔截到缺少來源快照：{errors}")
+
+    def test_13_toc_per_category_mismatch_is_rejected(self):
+        """13. 反例：目錄的單一分類筆數與該分類實際列數不符（即使加總相同）要被擋。"""
+        text = self._synthetic_index()
+        text = text.replace("- [Cat00](#cat00) (2)", "- [Cat00](#cat00) (3)")
+        text = text.replace("- [Cat01](#cat01) (2)", "- [Cat01](#cat01) (1)")
+        errors = vsp.verify_free_public_apis_index(text)
+        self.assertTrue(any("Cat00" in e for e in errors), f"未攔截到分類筆數不符：{errors}")
+
+    def test_14_too_few_categories_is_rejected(self):
+        """14. 反例：分類數低於任務 DoD 的 10 類下限要被擋（防止刪到只剩幾列仍自洽通過）。"""
+        errors = vsp.verify_free_public_apis_index(self._synthetic_index(categories=3))
+        self.assertTrue(any("10" in e and "分類" in e for e in errors), f"未攔截到分類數過少：{errors}")
+
+    def test_15_index_vs_source_snapshot(self):
+        """15. 有來源 README 時逐筆對帳：多出或缺少的條目都要報。"""
+        source = "\n".join(
+            ["### Animals", "API | Description | Auth | HTTPS | CORS |", "|:---|:---|:---|:---|:---|"]
+            + ["| [A1](https://a/1) | d | No | Yes | Yes |", "| [A2](https://a/2) | d | No | Yes | Yes |"]
+        )
+        index_ok = "### Animals\n\n| [A1](https://a/1) | d | No | Yes | Yes |\n| [A2](https://a/2) | d | No | Yes | Yes |\n"
+        self.assertEqual(vsp.verify_index_matches_source(index_ok, source), [])
+        index_stale = "### Animals\n\n| [A1](https://a/1) | d | No | Yes | Yes |\n| [Gone](https://a/9) | d | No | Yes | Yes |\n"
+        errors = vsp.verify_index_matches_source(index_stale, source)
+        self.assertTrue(any("Gone" in e for e in errors), f"未報出來源已移除的條目：{errors}")
+        self.assertTrue(any("A2" in e for e in errors), f"未報出索引缺少的條目：{errors}")
 
     def test_9_safe_resolve_no_enametoolong_on_multiline_string(self):
         """9. 驗證多行巨量字串傳入時絕不觸發 Linux CI ENAMETOOLONG 異常。"""
