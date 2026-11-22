@@ -61,6 +61,53 @@ source_replies: 3
 
 FINDING = {"kind": "fact", "claim": "x", "problem": "y", "evidence": "https://example.com", "fix": "z"}
 
+# 雜湊算法定版用的固定範例（golden test）：涵蓋 frontmatter status（含註解）、當前狀態行、已完成與未完成與進行中與不做的任務、
+# 狀態欄位、非標準欄位寫法、程式碼圍欄。不要為了讓測試綠而改這份文字或期望值。
+GOLDEN_NOTE = """---
+id: 2026-11-22-golden
+title: "固定範例"
+source_url: "https://example.com/golden"
+analyzed_at: 2026-11-22
+written_by: "claude/opus-5.5@00000001-0000-4000-8000-000000000001"
+status: in-progress # 註解算進雜湊
+cluster: 1
+source_review: full
+tags:
+  - golden
+---
+
+# 固定範例
+
+- **當前狀態**：`🟡 進行中 (In Progress)`
+
+本文主張固定的內容。
+
+```text
+- [x] **`T-20261122-99`**｜**[優先級：高]** 圍欄裡的不是任務
+  - **狀態**：圍欄裡的文字照算
+```
+
+- [x] **`T-20261122-01`**｜**[優先級：高]** 已完成的任務
+  - **目標範圍**：`some/repo`
+  - **驗收標準（DoD）**：做完
+  - **完成日期**：2026-11-24
+  - **實作紀錄 / 證據**：commit abc
+- [ ] **`T-20261122-02`**｜**[優先級：中]** 進行中的任務
+  - **狀態**：🟡 進行中
+  - **目標範圍**：`some/repo`
+  - **驗收標準（DoD）**：做完
+- [ ] **`T-20261122-03`**｜**[優先級：低]** 不做的任務
+  - **狀態**：⚪ 不做（理由）
+  - **目標範圍**：`some/repo`
+  - **驗收標準（DoD）**：做完
+- [ ] **`T-20261122-04`**｜**[優先級：低]** 非標準寫法的任務
+  - **狀態**：🟡 進行中（等人回覆）
+  - **完成日期**：*（完成後填寫）*
+  - **目標範圍**：`some/repo`
+  - **驗收標準（DoD）**：做完
+"""
+GOLDEN_HASH = "3ec680d12f4e15b9d3d904de9947b643b925ef4a067564406069b67cf8122b88"
+
 
 class Base(unittest.TestCase):
     def setUp(self):
@@ -70,7 +117,7 @@ class Base(unittest.TestCase):
         self.root = Path(self._tmp.name)
         (self.root / "notes").mkdir()
         (self.root / "reviews").mkdir()
-        self.slug = "2026-11-22-test-note"
+        self.slug = "2026-11-22-test-note-1"  # 第一筆審查者是 REVIEWER 時不會被抽查（rl.sampled）
 
     def tearDown(self):
         self._tmp.cleanup()
@@ -78,11 +125,11 @@ class Base(unittest.TestCase):
     def note_path(self) -> Path:
         return self.root / "notes" / f"{self.slug}.md"
 
-    def write_note(self, written_by=AUTHOR, extra_meta="", claim=None, want_sampled=False):
-        """寫筆記；預設用不會被抽查（slug 雜湊 mod 5 != 0）的 slug，want_sampled=True 則換成會被抽中的 slug。"""
-        if rl.sampled(self.slug) != want_sampled:
+    def write_note(self, written_by=AUTHOR, extra_meta="", claim=None, want_sampled=False, first_reviewer=REVIEWER):
+        """寫筆記；預設用「第一筆審查者是 first_reviewer 時不會被抽查」的 slug，want_sampled=True 則換成會被抽中的 slug。"""
+        if rl.sampled(self.slug, first_reviewer) != want_sampled:
             base = self.slug
-            self.slug = next(f"{base}-{i}" for i in range(1, 200) if rl.sampled(f"{base}-{i}") == want_sampled)
+            self.slug = next(f"{base}-{i}" for i in range(1, 400) if rl.sampled(f"{base}-{i}", first_reviewer) == want_sampled)
         text = NOTE.format(slug=self.slug, written_by=written_by, extra_meta=extra_meta, claim=claim or "X")
         self.note_path().write_text(text, encoding="utf-8")
         return bi.parse_note(self.note_path())
@@ -111,7 +158,7 @@ class Base(unittest.TestCase):
         report = f"reviews/reports/{self.slug}/2026-11-23-{n}.md"
         entry = {
             "reviewed_at": "2026-11-23", "reviewer": reviewer, "role": "review",
-            "scope": list(rl.SCOPES), "content_sha256": sha, "verdict": "pass",
+            "scope": list(rl.SCOPES), "content_sha256": sha, "hash_version": rl.HASH_VERSION, "verdict": "pass",
             "source_review": "full", "author_claim": "full", "corrections": 0, "report": report,
         }
         entry.update(over)
@@ -166,16 +213,33 @@ class HashTest(Base):
             fh.write("\n- [ ] **`T-20261122-02`**｜**[優先級：高]** 建立在錯誤前提上的新任務\n  - **目標範圍**：x\n")
         self.assertNotEqual(before, self.sha())
 
-    def test_sampling_is_by_slug_not_by_content(self):
-        """抽查看 slug：改內容躲不掉（舊制看內容雜湊，改一個字就能換到不被抽中的雜湊）。"""
+    def test_sampling_is_not_decided_by_content(self):
+        """抽查不看內容：改內容躲不掉（舊制看內容雜湊，改一個字就能換到不被抽中的雜湊）。"""
         self.write_note(want_sampled=True)
-        self.assertTrue(rl.sampled(self.slug))
+        self.assertTrue(rl.sampled(self.slug, REVIEWER))
         self.add_review()
         path = self.note_path()
         path.write_text(path.read_text(encoding="utf-8").replace("本文主張", "改個字再主張"), encoding="utf-8")
-        self.add_review(reviewer=OTHER_CODEX)
+        self.add_review(reviewer=OTHER_CODEX)  # 第一筆審查者仍是 REVIEWER
         st = self.state()
         self.assertTrue(any("抽查" in n for n in st.needs), st.needs)
+
+    def test_sampling_depends_on_first_reviewer_which_the_author_cannot_pick(self):
+        """N7：只看 slug 的話，作者自己挑 slug 就能躲；加上第一筆審查者（作者選不了）。沒有紀錄時不算抽中。"""
+        self.assertFalse(rl.sampled("any-slug", None))
+        self.assertFalse(rl.sampled("any-slug", ""))
+        slug = "2026-11-22-test-note"
+        self.assertEqual({True, False}, {rl.sampled(slug, f"codex/gpt-6.1-sol@{sess(n)}") for n in range(60, 160)})
+        self.write_note(want_sampled=True)
+        self.assertFalse([n for n in self.state().needs if "抽查" in n])  # 還沒有紀錄：不觸發抽查
+
+    def test_golden_hash_of_a_fixed_note(self):
+        """雜湊算法定版：改了 analysis_text 會讓 main 上所有審查紀錄與 legacy 基準失效。
+        要改必須寫遷移（重算基準、把仍對應現行內容的紀錄重新派審）並遞增 HASH_VERSION，不可只更新這個期望值。"""
+        self.assertEqual(1, rl.HASH_VERSION)
+        self.assertEqual(GOLDEN_HASH, rl.content_hash(GOLDEN_NOTE),
+                         "改了 analysis_text 會讓 main 上所有審查紀錄與 legacy 基準失效；要改必須寫遷移"
+                         "（重算基準、把仍對應現行內容的紀錄重新派審），不可只更新這個期望值")
 
 
 class HashHidingTest(Base):
@@ -260,6 +324,60 @@ class HashHidingTest(Base):
         path.write_text(text.replace("`🔴 未做 (Pending)`", "`⚪ 封存 (Archived)`", 1), encoding="utf-8")
         self.assertNotEqual(before, self.sha())
 
+    def hash_after_inserting(self, extra_lines, complete=False):
+        """在任務欄位後插入幾行，回傳（插入前雜湊, 插入後雜湊）。"""
+        self.write_note()
+        path = self.note_path()
+        if complete:
+            tc.apply_complete(path, "T-20261122-01", "commit abc", "2026-11-24")
+        before = self.sha()
+        text = path.read_text(encoding="utf-8")
+        anchor = "  - **驗收標準（DoD）**：做完\n"
+        path.write_text(text.replace(anchor, anchor + extra_lines, 1), encoding="utf-8")
+        return before, self.sha()
+
+    def test_repeated_or_malformed_state_fields_are_hashed(self):
+        """N3：任務區塊內的欄位行不限行數、不限縮排地被略過，可以藏任意文字；現在只略過 task_cli 會寫的那一行。"""
+        for extra in (
+            "  - **狀態**：🟡 進行中\n  - **狀態**：🟡 進行中\n",                  # 同鍵第二次出現
+            "  - **狀態**：偷加的非標準狀態文字\n",                                # 非標準值
+            "      - **實作紀錄 / 證據**：更深縮排但長得像欄位\n",
+            "  - ** 狀態 **：鍵名前後有空白\n",
+            "  - **狀態**:半形冒號的偷加文字\n",
+            "   - **狀態**：三格縮排\n",
+            "  - **完成日期**：2026-11-24\n",                                      # 未完成任務不該有完成日期
+            "  - **實作紀錄 / 證據**：未完成任務的偷加證據\n",
+            "  - **完成日期**：偷加的非日期\n",
+        ):
+            before, after = self.hash_after_inserting(extra)
+            self.assertNotEqual(before, after, extra)
+
+    def test_repeated_fields_on_a_completed_task_are_hashed(self):
+        before, after = self.hash_after_inserting("  - **實作紀錄 / 證據**：第二行證據偷藏結論\n", complete=True)
+        self.assertNotEqual(before, after)
+        before, after = self.hash_after_inserting("  - **完成日期**：2026-11-25\n", complete=True)
+        self.assertNotEqual(before, after)
+
+    def test_completed_task_with_non_date_completion_field_is_hashed(self):
+        self.write_note()
+        path = self.note_path()
+        tc.apply_complete(path, "T-20261122-01", "commit abc", "2026-11-24")
+        before = self.sha()
+        path.write_text(path.read_text(encoding="utf-8").replace("完成日期**：2026-11-24", "完成日期**：其實沒做完", 1), encoding="utf-8")
+        self.assertNotEqual(before, self.sha())
+
+    def test_what_task_cli_writes_is_still_skipped(self):
+        """反過來：task_cli 寫的格式（進行中、不做（理由）、已完成的日期與單行證據、範本佔位）不進雜湊。"""
+        self.write_note()
+        path = self.note_path()
+        before = self.sha()
+        text = path.read_text(encoding="utf-8")
+        anchor = "  - **驗收標準（DoD）**：做完\n"
+        for extra in ("  - **狀態**：🟡 進行中\n", "  - **狀態**：⚪ 不做（理由 含（括號））\n",
+                      "  - **完成日期**：*（完成後填寫）*\n", "  - **實作紀錄 / 證據**：*（完成後填寫）*\n", "  - **完成日期**：\n"):
+            path.write_text(text.replace(anchor, anchor + extra, 1), encoding="utf-8")
+            self.assertEqual(before, self.sha(), extra)
+
     def test_task_cli_skips_fenced_status_line_and_nonstandard_value(self):
         """F11：task_cli 找「當前狀態」行要跳過程式碼圍欄；非標準值不改寫（那是筆記內容）。"""
         fenced = "```text\n- **當前狀態**：`🔴 未做 (Pending)`\n```\n"
@@ -272,11 +390,18 @@ class HashHidingTest(Base):
 
 
 class TaskCliKeepsHashOnRealNotesTest(unittest.TestCase):
+    # 已知例外（N3 嚴格欄位格式的後果，回報給維護者，不為它放寬規則）：這個任務的「狀態」行是非標準寫法
+    # （`⚪ 不做（…）。` 句尾多了句點）且未完成任務的「實作紀錄 / 證據」有實質內容，所以算進雜湊；
+    # task_cli 對它做任何操作都會改雜湊，等於這篇筆記被動過內容，要走審查。
+    KNOWN_NONSTANDARD = {("2026-10-17-cross-cli-subagent-orchestration-space-bunny", "T-20261017-32")}
+
     def test_claim_complete_close_never_change_hash_of_any_repo_note(self):
-        """對 repo 現有全部筆記模擬 claim／complete／close：分析內容雜湊都不變（task_cli 不會讓舊筆記變回待審）。"""
+        """對 repo 現有全部筆記模擬 claim／complete／close：分析內容雜湊都不變（task_cli 不會讓舊筆記變回待審）。
+        只有 KNOWN_NONSTANDARD 列出的非標準寫法可以例外，而且那些例外必須真的還會變（清單不能過期）。"""
         notes = bi.load_notes()
         self.assertGreater(len(notes), 100)
         checked = 0
+        changed = set()
         with tempfile.TemporaryDirectory() as tmp:
             work = Path(tmp) / "n.md"
             for note in notes:
@@ -294,9 +419,13 @@ class TaskCliKeepsHashOnRealNotesTest(unittest.TestCase):
                                 tc.apply_complete(work, task.id, "commit abc", "2026-11-24")
                             else:
                                 tc.apply_close(work, task.id, "不做")
-                        self.assertEqual(before, rl.content_hash(work.read_text(encoding="utf-8")), (note.slug, task.id, ops))
+                        if (note.slug, task.id) not in self.KNOWN_NONSTANDARD:
+                            self.assertEqual(before, rl.content_hash(work.read_text(encoding="utf-8")), (note.slug, task.id, ops))
+                        elif before != rl.content_hash(work.read_text(encoding="utf-8")):
+                            changed.add((note.slug, task.id))
                         checked += 1
         self.assertGreater(checked, 50)
+        self.assertEqual(self.KNOWN_NONSTANDARD, changed, "KNOWN_NONSTANDARD 裡的筆記已經不會變了：把它從清單拿掉")
 
 
 class IdentityTest(unittest.TestCase):
@@ -317,10 +446,13 @@ class IdentityTest(unittest.TestCase):
     def test_strong_model_is_strict(self):
         uuid = sess(9)
         strong = [f"claude/opus-5.5@{uuid}", f"claude/opus-5@{uuid}", f"codex/gpt-6.1-sol@{uuid}", f"codex/gpt-6-astra@{uuid}",
-                  f"codex/GPT-6.2-Sol@{uuid}", "human/maintainer@2026-11-21"]
+                  f"codex/GPT-6.2-Sol@{uuid}"]
+        # N1：模型綁 runtime；human/maintainer 不再是強模型
         weak = [f"claude/opus-anything@{uuid}", f"claude/opus@{uuid}", f"claude/opus-5.5-fast@{uuid}", f"codex/gpt-5.5-sol@{uuid}",
                 f"codex/gpt-6.1-solx@{uuid}", f"claude/sonnet-5.5@{uuid}", f"claude/maintainer@{uuid}",
-                "hermes/maintainer@abcdefgh", "antigravity/maintainer@abcdefgh"]
+                "hermes/maintainer@abcdefgh", "antigravity/maintainer@abcdefgh", "human/maintainer@2026-11-21",
+                "hermes/opus-5@abcdefgh", "antigravity/opus-5@abcdefgh", f"codex/opus-5.5@{uuid}", f"claude/gpt-6.1-sol@{uuid}",
+                "hermes/gpt-6.1-sol@abcdefgh"]
         for text in strong:
             self.assertTrue(rl.parse_identity(text).strong, text)
         for text in weak:
@@ -347,29 +479,58 @@ class IdentityEnforcementTest(Base):
         self.assertTrue(any("reviewer 需為" in e for e in self.state().errors))
 
     def test_prefix_of_author_session_cannot_review(self):
-        self.write_note(written_by="antigravity/gemini-3@abcdefgh12345")
-        self.add_review(reviewer="hermes/xiaoma@abcdefgh")
+        self.write_note(written_by=f"antigravity/gemini-3@{sess(8)[:20]}")
+        self.add_review(reviewer=f"claude/opus-5.5@{sess(8)}")
         self.assertTrue(any("不能審自己寫的內容" in e for e in self.state().errors))
 
-    def test_prefix_of_reviewer_session_cannot_audit(self):
+    def test_same_uuid_under_another_runtime_cannot_audit_own_round(self):
         self.write_note()
-        self.add_review(reviewer="hermes/xiaoma@abcdefgh12345", verdict="changes_requested", corrections=2)
-        self.add_review(reviewer="antigravity/gemini-3@abcdefgh", role="audit")  # 不是強模型也會報，但覆核要換人這條一定要在
+        self.add_review(reviewer=f"codex/gpt-6.1-sol@{sess(9)}", verdict="changes_requested", corrections=2)
+        self.add_review(reviewer=f"claude/opus-5.5@{sess(9).upper()}", role="audit")
         self.assertTrue(any("覆核要換人" in e for e in self.state().errors))
 
-    def test_maintainer_name_under_other_runtime_is_not_strong_audit(self):
+    def test_reviewer_runtime_must_be_claude_or_codex(self):
+        """N1：human、hermes、antigravity 都不能當審查者（也不能 audit）；它們可以當作者。"""
+        for reviewer in ("human/maintainer@2026-11-22", "hermes/opus-5@whatever-1234", "antigravity/opus-5@whatever-1234"):
+            for role in ("review", "audit"):
+                self.setUp()
+                self.write_note()
+                self.add_review(reviewer=reviewer, role=role)
+                st = self.state()
+                self.assertFalse(st.reviewed, (reviewer, role))
+                self.assertTrue(any("runtime 只接受" in e for e in st.errors), (reviewer, role, st.errors))
+
+    def test_forged_human_maintainer_pair_cannot_release_a_note(self):
+        """N1 重現：human/maintainer 的 review 加 audit 兩筆放行的做法，現在每一筆都報錯。"""
         self.write_note()
-        self.add_review(reviewer=WEAK)
-        self.add_review(reviewer="hermes/maintainer@abcdefgh", role="audit")
+        self.add_review(reviewer="human/maintainer@2026-11-22")
+        self.add_review(reviewer="human/maintainer@2026-11-21", role="audit")
         st = self.state()
         self.assertFalse(st.reviewed)
-        self.assertTrue(any("強模型執行" in e for e in st.errors), st.errors)
+        self.assertEqual(2, sum("runtime 只接受" in e for e in st.errors), st.errors)
 
-    def test_human_maintainer_can_audit(self):
+    def test_other_runtimes_can_still_be_authors(self):
+        for wb in ("hermes/xiaoma@hermes-session-1", "antigravity/gemini-3@abcdefgh", "human/maintainer@2026-11-22"):
+            st = self.state(self.write_note(written_by=wb))
+            self.assertEqual([], [e for e in st.errors if "written_by" in e], (wb, st.errors))
+
+    def test_hash_version_is_required_and_must_match(self):
+        """N2：紀錄要帶 hash_version，不等於現行版本就報錯並指向遷移。"""
+        for over in ({"hash_version": 0}, {"hash_version": rl.HASH_VERSION + 1}, {"hash_version": None}):
+            self.setUp()
+            self.write_note()
+            self.add_review(**over)
+            st = self.state()
+            self.assertFalse(st.reviewed, over)
+            self.assertTrue(any("hash_version" in e and "遷移" in e for e in st.errors), (over, st.errors))
+        self.setUp()
         self.write_note()
-        self.add_review(reviewer=WEAK)
-        self.add_review(reviewer="human/maintainer@2026-11-24", role="audit")
-        self.assertTrue(self.state().reviewed, self.state().needs)
+        entry = self.add_review()
+        path = self.root / "reviews" / f"{self.slug}.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        del data["reviews"][0]["hash_version"]
+        path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        self.assertTrue(any("hash_version" in e for e in self.state().errors), entry)
 
 
 class GovernanceTest(Base):
@@ -757,12 +918,56 @@ class CommittedHistoryTest(Base):
 
     def setUp(self):
         super().setUp()
+        env = {k: v for k, v in os.environ.items() if k != "AI_INBOX_REVIEW_BASE"}
+        patcher = unittest.mock.patch.dict(os.environ, env, clear=True)
+        patcher.start()
+        self.addCleanup(patcher.stop)
         run_git(self.root, "init", "-q")
         self.write_note()
         self.add_review(verdict="changes_requested", corrections=1)
         self.add_review(reviewer=OTHER_CODEX)
         run_git(self.root, "add", "-A")
         run_git(self.root, "commit", "-q", "-m", "init")
+        self.first_commit = run_git(self.root, "rev-parse", "HEAD").strip()
+
+    def test_tampering_that_was_committed_is_caught_against_the_ci_base(self):
+        """N4：改紀錄 verdict 並在報告尾端加一個新的 pass 區塊，一旦 commit，只比 HEAD 就看不出來；CI 用前一個 commit 當基準。"""
+        data = json.loads(self.ledger().read_text(encoding="utf-8"))
+        data["reviews"][0].update(verdict="pass", corrections=0)
+        self.ledger().write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        report = self.root / data["reviews"][0]["report"]
+        with report.open("a", encoding="utf-8", newline="\n") as fh:
+            fh.write('\n```json\n{"verdict": "pass", "corrections": 0, "scope": ["source", "facts", "evidence", "task_impact"], "findings": []}\n```\n')
+        self.assertTrue(self.errors())  # 未提交：HEAD 基準擋得住
+        run_git(self.root, "add", "-A")
+        run_git(self.root, "commit", "-q", "-m", "tamper")
+        self.assertEqual([], self.errors())  # 提交之後只比 HEAD：沒東西可比，等於失效（N4 的原始洞）
+        with unittest.mock.patch.dict(os.environ, {"AI_INBOX_REVIEW_BASE": self.first_commit}):
+            errors = self.errors()
+        self.assertTrue(any("已提交的審查紀錄被改動" in e and "AI_INBOX_REVIEW_BASE" in e for e in errors), errors)
+        self.assertTrue(any("已提交的審查報告被改動或刪除" in e for e in errors), errors)
+
+    def test_unusable_bases_are_skipped(self):
+        for base in ("0" * 40, "no-such-ref", "  "):
+            with unittest.mock.patch.dict(os.environ, {"AI_INBOX_REVIEW_BASE": base}):
+                self.assertEqual([], self.errors(), base)
+
+    def test_merge_base_with_origin_main_is_a_base_too(self):
+        """本機分支上已提交但還沒進 main 的改動：比 merge-base origin/main。"""
+        run_git(self.root, "update-ref", "refs/remotes/origin/main", self.first_commit)
+        data = json.loads(self.ledger().read_text(encoding="utf-8"))
+        data["reviews"] = data["reviews"][::-1]
+        self.ledger().write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+        run_git(self.root, "commit", "-q", "-am", "reorder")
+        errors = self.errors()
+        self.assertTrue(any("merge-base origin/main" in e for e in errors), errors)
+
+    def test_staged_new_report_is_not_flagged(self):
+        """N5：已 git add 的新報告不是「被改動或刪除」。"""
+        new = self.root / "reviews" / "reports" / self.slug / "2026-11-24-new.md"
+        new.write_text("新報告\n", encoding="utf-8")
+        run_git(self.root, "add", "-A")
+        self.assertEqual([], self.errors())
 
     def errors(self):
         return rl.evaluate_all([bi.parse_note(self.note_path())], TODAY, self.root)[1]
@@ -921,14 +1126,16 @@ class RepoLevelTest(Base):
         self.assertTrue(legacy)
 
     def test_repo_real_ledgers_are_valid(self):
-        """repo 裡真實的審查紀錄（Codex 實跑入帳的那筆）在新規則下仍然合法。"""
+        """repo 裡現有的審查紀錄（如果有）在現行規則下合法；沒有紀錄也不該有單篇或基準錯誤。
+        「對照 HEAD／基準」的只追加錯誤跟工作樹與提交狀態有關（例如尚未提交的 git rm），不在這個測試的範圍。"""
         notes = bi.load_notes()
         states, errors = rl.evaluate_all(notes, dt.date(2026, 11, 21))
         ledgers = [p for p in (bi.REPO_ROOT / "reviews").glob("*.json") if p.name != rl.LEGACY_BASELINE_NAME]
         for p in ledgers:
             self.assertIn(p.stem, states, p.name)
             self.assertEqual([], states[p.stem].errors, p.name)
-        self.assertEqual([], errors)
+        self.assertEqual([], [e for e in errors if "對照" not in e])
+        self.assertEqual([], [e for st in states.values() for e in st.errors])
 
     def test_orphan_ledger_detected(self):
         self.write_note()

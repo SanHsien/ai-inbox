@@ -121,9 +121,9 @@ notes/*.md + tools/ + docs/ + templates/ + assets/
    ```bash
    python tools/review_pipeline.py ingest <slug> --report <報告.md> --reviewer "claude/opus-5.5@$CLAUDE_CODE_SESSION_ID" --lane chrome --role review --scope source --sha <prompt 印出的雜湊>
    ```
-   - `claude` 身分的 session 必須等於 `CLAUDE_CODE_SESSION_ID`（沒設或不同會被拒）；`ingest` 不接受 `codex` 身分，也沒有 `--author-claim`（作者聲明由 `ingest` 從筆記的 `source_review` 讀）。`audit` 要涵蓋全部四個範圍，讀不到來源時改派能讀的那一道。
+   - **審查者（reviewer）只能是 `claude` 或 `codex`**：`ingest` 只接受 `claude/<model>@$CLAUDE_CODE_SESSION_ID`（沒設或不同會被拒），不接受 `codex`（只能由 `run` 入帳）、也不接受 `human`、`hermes`、`antigravity`、`legacy`——它們可以當作者（`written_by`），不能當審查者。維護者本人審查不走這套紀錄：直接改筆記，再由管線審。`ingest` 也沒有 `--author-claim`（作者聲明由它從筆記的 `source_review` 讀）。`audit` 要涵蓋全部四個範圍，讀不到來源時改派能讀的那一道。
    - **不加 `--commit`**：`ingest` 只寫檔（紀錄檔、新報告、重產的 README）。由你照一般流程提交：`python tools/verify_inbox.py && git add <ingest 列出的檔案> README.md && git commit -m "chore(review): ..." && git push`。
-   - **要自動提交**：`--commit` 只准在專用工作樹執行（動手前會檢查路徑、detached HEAD、工作樹乾淨）。先跑 `python tools/review_pipeline.py cron --lane chrome`，它同步專用工作樹並印出路徑與待審清單；`cd` 進那個工作樹後再執行 `prompt` 與 `ingest ... --commit`。
+   - **要自動提交**：`--commit` 只准在專用工作樹執行（動手前會檢查路徑、detached HEAD、已追蹤檔沒有未提交改動）。先跑 `python tools/review_pipeline.py cron --lane chrome`，它同步專用工作樹，並印出工作樹路徑、待審清單與**報告草稿目錄**（`STATE_DIR/drafts/`，在工作樹外）。把報告草稿存到那個目錄（不要存進工作樹：下次 cron 的 reset／clean 會刪掉工作樹裡未入帳的檔案），`cd` 進專用工作樹後再執行 `prompt` 與 `ingest --report <草稿目錄>/<報告>.md ... --commit`。
    Codex 道不用手動：排程跑 `python tools/review_pipeline.py cron --lane codex`（在專用工作樹執行 `run --lane codex --commit`，會跑 `codex --search exec -s read-only`，從 Codex 事件取 thread id 當身分）。
 3. **修正**（`fix` 道）：照報告改筆記，`written_by` 用 `; ` 加上自己，填 `revised_at`（今天）；改完內容雜湊變了，佇列會自動排再審。審查回報的已完成任務產出檔問題，由整合者照 SOP 第 3 節處理。
 4. **改舊筆記**：制度上線前的筆記內容沒變就免審；一改分析內容（任務狀態欄位除外）就要填 `written_by`（原作者不明時寫 `legacy/unknown@pre-review; <你的身分>`）與 `revised_at`，並在 7 天內送審。

@@ -168,7 +168,8 @@ class ParseTest(unittest.TestCase):
         for name in ("tools", "tests", "notes", "docs", "templates", "assets", "reviews"):
             shutil.copytree(bi.REPO_ROOT / name, root / name, ignore=shutil.ignore_patterns("__pycache__"))
         for item in bi.REPO_ROOT.iterdir():
-            if item.is_file():
+            # 在 git worktree 裡 `.git` 是指向原 repo 的檔案；複製它會讓複本的審查「只追加」檢查對照到原 repo 的 HEAD
+            if item.is_file() and item.name != ".git":
                 shutil.copy2(item, root / item.name)
 
         def run():

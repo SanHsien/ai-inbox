@@ -282,6 +282,9 @@ def ingest(slug: str, report_text: str, reviewer: str, lane: str, role: str, sco
     if not ident:
         raise PipelineError(f"reviewer 格式不合法：{reviewer}（claude／codex 的 session 要完整 UUID，antigravity／hermes 至少 8 字元，"
                             "human 只能是 human/maintainer@YYYY-MM-DD）")
+    if ident.runtime not in rl.REVIEWER_RUNTIMES:
+        raise PipelineError(f"reviewer 的 runtime 只接受 {'/'.join(rl.REVIEWER_RUNTIMES)}，{ident.runtime} 不行"
+                            "（維護者本人審查不走這套紀錄：直接改筆記，再由管線審）")
     note = bi.parse_note(note_path)
     author_claim = str(note.meta.get("source_review", "")).strip()
     if author_claim not in rl.SOURCE_REVIEW_VALUES:
@@ -330,7 +333,8 @@ def ingest(slug: str, report_text: str, reviewer: str, lane: str, role: str, sco
     (root / report_rel).write_text(header + _sanitize(report_text).strip() + "\n", encoding="utf-8", newline="\n")
     entry = {
         "reviewed_at": today.isoformat(), "reviewer": reviewer, "role": role, "scope": scopes,
-        "content_sha256": sha, "verdict": result["verdict"], "source_review": result["source_review"],
+        "content_sha256": sha, "hash_version": rl.HASH_VERSION, "verdict": result["verdict"],
+        "source_review": result["source_review"],
         "author_claim": author_claim, "corrections": result["corrections"], "report": report_rel,
     }
     ledger = root / rl.REVIEWS_DIRNAME / f"{slug}.json"
@@ -425,6 +429,11 @@ def dedicated_worktree(lane: str = "codex") -> Path:
     return STATE_DIR / ("repo" if lane == "codex" else f"repo-{lane}")
 
 
+def drafts_dir() -> Path:
+    """報告草稿放這裡（工作樹外）：cron 的 reset／clean 只動專用工作樹，不會刪掉還沒入帳的草稿。"""
+    return STATE_DIR / "drafts"
+
+
 def is_dedicated_worktree(path: Path) -> bool:
     return any(_same_path(path, dedicated_worktree(lane)) for lane in LANES_WITH_WORKTREE)
 
@@ -443,8 +452,9 @@ def require_dedicated_worktree(root: Path, clean: bool = True) -> None:
         raise PipelineError(f"--commit 只准在專用工作樹 {wt} 執行（目前在 {root}）。{hint}")
     if git(root, "symbolic-ref", "-q", "HEAD", check=False).returncode == 0:
         raise PipelineError(f"專用工作樹 {wt} 的 HEAD 不是 detached（站在分支上），不提交。{hint}")
-    if clean and git(root, "status", "--porcelain").stdout.strip():
-        raise PipelineError(f"專用工作樹 {wt} 有未提交改動，不提交。{hint}")
+    # 只看已追蹤檔的改動：工作樹裡的未追蹤檔（例如隨手放的報告草稿）不是被提交的對象，也不該擋住提交
+    if clean and git(root, "status", "--porcelain", "--untracked-files=no").stdout.strip():
+        raise PipelineError(f"專用工作樹 {wt} 有已追蹤檔的未提交改動，不提交。{hint}")
 
 
 def verify_errors(root: Path) -> set[str]:
@@ -558,12 +568,14 @@ def check_cli_reviewer(reviewer: str) -> None:
         return  # 格式不合法由 ingest() 報
     if ident.runtime == "codex":
         raise PipelineError("ingest 不接受 codex 身分：Codex 審查只能由 run 從事件取得 thread id 入帳（身分不靠自報）")
-    if ident.runtime == "claude":
-        env = os.environ.get("CLAUDE_CODE_SESSION_ID", "").strip()
-        if not env:
-            raise PipelineError("reviewer 為 claude 時要在 Claude Code 工作階段內執行：環境變數 CLAUDE_CODE_SESSION_ID 沒設")
-        if ident.session.lower() != env.lower():
-            raise PipelineError(f"reviewer 的 session（{ident.session}）必須等於 CLAUDE_CODE_SESSION_ID（{env}）；不可用別的 session 身分入帳")
+    if ident.runtime != "claude":
+        raise PipelineError(f"ingest 的 reviewer 只接受 claude/<model>@<CLAUDE_CODE_SESSION_ID>，{ident.runtime} 不行"
+                            "（human、hermes、antigravity、legacy 都不是審查來源；維護者本人審查不走這套紀錄：直接改筆記，再由管線審）")
+    env = os.environ.get("CLAUDE_CODE_SESSION_ID", "").strip()
+    if not env:
+        raise PipelineError("reviewer 為 claude 時要在 Claude Code 工作階段內執行：環境變數 CLAUDE_CODE_SESSION_ID 沒設")
+    if ident.session.lower() != env.lower():
+        raise PipelineError(f"reviewer 的 session（{ident.session}）必須等於 CLAUDE_CODE_SESSION_ID（{env}）；不可用別的 session 身分入帳")
 
 
 def cmd_prompt(args) -> int:
@@ -639,6 +651,7 @@ def cmd_run(args) -> int:
 def cmd_cron(args) -> int:
     """排程入口：在專用工作樹（不碰任何人的工作目錄）同步到 origin/main，再用工作樹自己的腳本執行。"""
     STATE_DIR.mkdir(parents=True, exist_ok=True)
+    drafts_dir().mkdir(exist_ok=True)
     lock = STATE_DIR / f"{args.lane}.lock"
     try:
         fd = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
@@ -674,10 +687,12 @@ def cmd_cron(args) -> int:
         print(r.stdout + r.stderr)
         if args.lane == "chrome":
             print(f"\n[*] 專用工作樹：{wt}\n"
-                  "[*] 上面是待審清單。Claude in Chrome 工作階段請 cd 進專用工作樹再執行（--commit 只准在這裡）：\n"
+                  f"[*] 報告草稿目錄（工作樹外，cron 的 reset／clean 不會動它）：{drafts_dir()}\n"
+                  "[*] 上面是待審清單。Claude in Chrome 工作階段請把報告存到草稿目錄，再 cd 進專用工作樹執行（--commit 只准在這裡）：\n"
                   f"    cd \"{wt}\"\n"
                   "    python tools/review_pipeline.py prompt <slug> --lane chrome\n"
-                  "    python tools/review_pipeline.py ingest <slug> --report <報告.md> --reviewer \"claude/<model>@$CLAUDE_CODE_SESSION_ID\" "
+                  f"    python tools/review_pipeline.py ingest <slug> --report \"{drafts_dir()}\\<報告>.md\" "
+                  "--reviewer \"claude/<model>@$CLAUDE_CODE_SESSION_ID\" "
                   "--lane chrome --role review --scope source --sha <prompt 印出的雜湊> --commit")
         return r.returncode
     finally:
@@ -699,7 +714,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("ingest", help="驗證審查報告並入帳")
     p.add_argument("slug")
     p.add_argument("--report", required=True)
-    p.add_argument("--reviewer", required=True, help="<runtime>/<model>@<session>；Claude 用 $CLAUDE_CODE_SESSION_ID")
+    p.add_argument("--reviewer", required=True, help="claude/<model>@$CLAUDE_CODE_SESSION_ID（只接受 claude；Codex 只能由 run 入帳）")
     p.add_argument("--lane", choices=("codex", "chrome"), required=True)
     p.add_argument("--role", choices=rl.ROLES, required=True)
     p.add_argument("--scope", required=True)

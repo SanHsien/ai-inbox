@@ -160,10 +160,24 @@ class IngestTest(PipelineBase):
         with self.assertRaises(rp.PipelineError) as ctx:
             self.ingest(report(), reviewer=f"claude/opus-5.5@{sess(40)[:8]}")
         self.assertIn("reviewer 格式不合法", str(ctx.exception))
-        self.write_note(written_by="antigravity/gemini-3@abcdefgh12345")
+        self.write_note(written_by=f"antigravity/gemini-3@{sess(41)[:20]}")
         with self.assertRaises(rp.PipelineError) as ctx:
-            self.ingest(report(), reviewer="hermes/xiaoma@abcdefgh")
+            self.ingest(report(), reviewer=f"claude/opus-5.5@{sess(41)}")
         self.assertIn("written_by", str(ctx.exception))
+
+    def test_reviewer_runtime_must_be_claude_or_codex(self):
+        """N1：ingest() 函式本身也拒絕 claude／codex 以外的 runtime（不只是 CLI）。"""
+        self.write_note()
+        for reviewer in ("human/maintainer@2026-11-22", "hermes/opus-5@whatever-1234", "antigravity/opus-5@whatever-1234"):
+            for role in ("review", "audit"):
+                with self.assertRaises(rp.PipelineError, msg=reviewer) as ctx:
+                    self.ingest(report(), reviewer=reviewer, role=role)
+                self.assertIn("runtime 只接受", str(ctx.exception))
+        self.assertFalse((self.root / "reviews" / f"{self.slug}.json").exists())
+
+    def test_entry_records_hash_version(self):
+        self.write_note()
+        self.assertEqual(rl.HASH_VERSION, self.ingest(report())["hash_version"])
 
     def test_weak_audit_rejected(self):
         self.write_note()
@@ -272,6 +286,16 @@ class CliIdentityTest(PipelineBase):
 
     def ledger_exists(self):
         return (self.root / "reviews" / f"{self.slug}.json").exists()
+
+    def test_non_claude_identities_are_rejected(self):
+        """N1：human、hermes、antigravity、legacy 一律拒絕（只剩 claude 且 session 等於環境變數）。"""
+        self.write_note()
+        for reviewer in ("human/maintainer@2026-11-22", "hermes/opus-5@whatever-1234", "antigravity/opus-5@whatever-1234",
+                         rl.LEGACY_AUTHOR):
+            code, err = self.run_cli(reviewer, env={"CLAUDE_CODE_SESSION_ID": sess(3)})
+            self.assertEqual(2, code, reviewer)
+            self.assertIn("只接受 claude", err)
+            self.assertFalse(self.ledger_exists())
 
     def test_codex_identity_is_rejected(self):
         self.write_note()
@@ -463,12 +487,28 @@ class DedicatedWorktreeTest(GitFlowBase):
             rp.require_dedicated_worktree(self.wt)
         self.assertIn("detached", str(ctx.exception))
 
-    def test_rejects_dirty_tree_but_commit_stage_tolerates_it(self):
+    def test_rejects_modified_tracked_file_but_commit_stage_tolerates_it(self):
         (self.wt / "README.md").write_text("改過\n", encoding="utf-8")
         with self.assertRaises(rp.PipelineError) as ctx:
             rp.require_dedicated_worktree(self.wt)
         self.assertIn("未提交改動", str(ctx.exception))
         rp.require_dedicated_worktree(self.wt, clean=False)
+
+    def test_untracked_files_do_not_block_commit(self):
+        """N6：照文件把報告放進工作樹時（未追蹤檔），--commit 仍可進行；已追蹤檔有改動才擋。"""
+        (self.wt / "draft-report.md").write_text("草稿\n", encoding="utf-8")
+        rp.require_dedicated_worktree(self.wt)
+        _, files, snap = self.do_ingest()
+        self.commit(files, snap)
+        self.assertEqual(2, len(self.origin_log()))
+        self.assertTrue((self.wt / "draft-report.md").exists())  # 草稿原封不動、沒被提交
+        self.assertNotIn("draft-report.md", run_git(self.origin, "show", "--name-only", "--format=", "main"))
+
+    def test_drafts_dir_is_outside_every_dedicated_worktree(self):
+        d = rp.drafts_dir()
+        self.assertEqual(self.state / "drafts", d)
+        for lane in rp.LANES_WITH_WORKTREE:
+            self.assertNotIn(rp.dedicated_worktree(lane).resolve(), d.resolve().parents)
 
     def test_run_checks_before_doing_anything(self):
         args = unittest.mock.Mock(lane="codex", commit=True, dry_run=False)

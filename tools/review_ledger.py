@@ -33,29 +33,35 @@ REVIEWS_DIRNAME = "reviews"
 REPORTS_DIRNAME = "reports"
 LEGACY_BASELINE_NAME = "legacy-baseline.json"
 # 基準檔（reviews/legacy-baseline.json）位元組的 SHA-256。改這個值等於宣告「這些筆記免審」，要在 REVIEW.md 說明理由。
-LEGACY_BASELINE_SHA256 = "c04898281159a973668323e6841bc3a8d6a85ce906832023700b081af6b09125"
+LEGACY_BASELINE_SHA256 = "b2ddf2fd5d18a867e840328e8304750eb961d7f62e2e2edf72b837dabdef00b9"
 
 GRACE_DAYS = 7  # 新筆記（或改過內容的筆記）最多可以待審幾天
 SCOPES = ("source", "facts", "evidence", "task_impact")
 ROLES = ("review", "audit")
 VERDICTS = ("pass", "changes_requested")
 SOURCE_REVIEW_VALUES = ("full", "partial", "unavailable")
-RUNTIMES = ("claude", "codex", "antigravity", "hermes", "human", "legacy")
+RUNTIMES = ("claude", "codex", "antigravity", "hermes", "human", "legacy")  # written_by（作者）可用全部
+REVIEWER_RUNTIMES = ("claude", "codex")  # 審查者只有這兩種：管線只有 codex 道（run）與 chrome 道（Claude in Chrome）
+# 雜湊算法版本。analysis_text 的任何改動都會讓 main 上所有審查紀錄與 legacy 基準失效，所以定版：
+# 要改就必須寫遷移（重算基準、把仍對應現行內容的紀錄重新派審）並遞增這個值；tests 有 golden 測試擋住悄悄改動。
+HASH_VERSION = 1
 # 制度上線前就有的筆記不知道作者 session，補審或修改時 written_by 用這個佔位；只准基準裡的筆記使用
 LEGACY_AUTHOR = "legacy/unknown@pre-review"
-SAMPLE_MODULO = 5  # slug 的 SHA-256 前 8 碼 mod 5 == 0 的筆記，一定要強模型覆核（抽查約 1/5）
+SAMPLE_MODULO = 5  # sha256(slug + 換行 + 第一筆審查者) 前 8 碼 mod 5 == 0 的筆記，一定要強模型覆核（抽查約 1/5）
 CORRECTIONS_TRIGGER = 2  # 一次審查提出幾處以上更正，就要強模型覆核
 
 # 強模型：可以當 audit、且當審查者時不會自動觸發覆核。其他模型（Sonnet、Haiku、Gemini Flash…）當審查者都要覆核。
-# maintainer 只有 human runtime 算（見 Identity.strong）。
-STRONG_MODEL = re.compile(r"^(?:opus-\d+(?:\.\d+)?|gpt-6(?:\.\d+)?-(?:sol|astra)|maintainer)$", re.IGNORECASE)
+# 模型綁 runtime：claude 只有 opus，codex 只有 gpt-6 的 sol／astra；別的組合（hermes/opus-5、codex/opus-5.5）都不算。
+STRONG_MODEL = {
+    "claude": re.compile(r"^opus-\d+(?:\.\d+)?$", re.IGNORECASE),
+    "codex": re.compile(r"^gpt-6(?:\.\d+)?-(?:sol|astra)$", re.IGNORECASE),
+}
 
 IDENTITY = re.compile(r"^(?P<runtime>[a-z][a-z0-9-]*)/(?P<model>[A-Za-z0-9._-]+)@(?P<session>[A-Za-z0-9._:-]+)$")
 UUID = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
 SHORT_SESSION_MIN = 8  # antigravity、hermes 沒有 UUID 格式的 session，至少要這麼長
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-STATE_FIELDS = ("狀態", "完成日期", "實作紀錄 / 證據")
 TASK_BOX = re.compile(r"^- \[[xX]\] (?=\*\*`T-)")
 JSON_BLOCK = re.compile(r"```json\s*\n(.*?)\n```", re.DOTALL)
 HEADER_FIELD = re.compile(r"^- (?P<key>reviewer|content_sha256|role): ?(?P<value>.*)$")
@@ -78,11 +84,8 @@ class Identity:
 
     @property
     def strong(self) -> bool:
-        if not STRONG_MODEL.match(self.model):
-            return False
-        if self.model.lower() == "maintainer":
-            return self.runtime == "human"  # 別的 runtime 掛 maintainer 這個名字不算
-        return True
+        pattern = STRONG_MODEL.get(self.runtime)
+        return bool(pattern and pattern.match(self.model))
 
     def __str__(self) -> str:
         return f"{self.runtime}/{self.model}@{self.session}"
@@ -125,18 +128,40 @@ def same_session(a: str, b: str) -> bool:
     return bool(a) and bool(b) and (a == b or a.startswith(b) or b.startswith(a))
 
 
-def sampled(slug: str) -> bool:
-    """抽查：slug 的 SHA-256 前 8 碼 mod SAMPLE_MODULO == 0。用 slug 不用內容雜湊，改內容躲不掉。"""
-    return int(hashlib.sha256(slug.encode("utf-8")).hexdigest()[:8], 16) % SAMPLE_MODULO == 0
+def sampled(slug: str, first_reviewer: str | None) -> bool:
+    """抽查：sha256(slug + "\n" + 第一筆紀錄的 reviewer) 前 8 碼 mod SAMPLE_MODULO == 0。
+    不看內容雜湊（改內容躲不掉），也不只看 slug（作者自己挑 slug 就能躲）；第一筆審查者的 session 不是作者能選的。
+    還沒有任何紀錄時不算抽中。"""
+    if not first_reviewer:
+        return False
+    return int(hashlib.sha256((slug + "\n" + first_reviewer).encode("utf-8")).hexdigest()[:8], 16) % SAMPLE_MODULO == 0
+
+
+STATE_FIELD_LINE = re.compile(r"^  - \*\*(?P<key>狀態|完成日期|實作紀錄 / 證據)\*\*：(?P<value>.*)$")
+CLOSED_STATUS = re.compile(r"^⚪ 不做（.+）$")
+
+
+def _state_value_skippable(key: str, value: str, task_done: bool) -> bool:
+    """這個欄位值是不是 task_cli 會寫（或範本本來就有）的樣子；不是就算進雜湊。"""
+    v = value.strip()
+    if key == "狀態":
+        return v == "🟡 進行中" or bool(CLOSED_STATUS.match(v))
+    if task_done:
+        return _date(v) is not None if key == "完成日期" else True
+    return v == "" or v.startswith("*（")
 
 
 def analysis_text(text: str) -> str:
-    """筆記去掉任務狀態後的「分析內容」。不算進雜湊的只有：
+    """筆記去掉任務狀態後的「分析內容」。目標：task_cli 的 claim／complete／close 不改變雜湊，其他任何手寫文字都算進去。
+    不算進雜湊的只有：
     - 任務勾選框（`[x]` 視同 `[ ]`）
-    - 任務區塊內 狀態／完成日期／實作紀錄 / 證據 這三個欄位**那一行本身**（更深縮排的續行照算）
     - frontmatter 第一個 `status:` 行的值（值後面的註解照算）
     - 正文第一個「當前狀態」行，且值是 STATUS_BODY_LABELS 的標準標記（其他文字照算）
-    所以關閉理由、證據的文字不受審查保護；單行狀態欄位別拿來寫分析。"""
+    - 任務區塊內、剛好兩格縮排、格式嚴格為 `  - **<鍵>**：<值>` 的欄位行，每個任務每個鍵只略過第一次出現，且：
+        狀態：值完全是 `🟡 進行中`，或 `⚪ 不做（…）`（task_cli close 寫的格式）
+        完成日期／實作紀錄 / 證據：任務已勾選時略過（完成日期另須是 YYYY-MM-DD）；未勾選時只有值為空或範本佔位（`*（` 開頭）才略過
+    其餘一律照算：重複的欄位行、更深或不同縮排、鍵名前後有空白、半形冒號、續行、非標準的值。
+    剩下的窗口只有：關閉理由，與已完成任務的單行證據。這兩處文字不受審查保護。"""
     lines = text.replace("\r\n", "\n").split("\n")
     fm_end = bi.frontmatter_end(lines)
     meta_idx = bi.find_status_meta_line(lines)
@@ -145,6 +170,8 @@ def analysis_text(text: str) -> str:
     out: list[str] = []
     fence: str | None = None
     in_task = False  # 狀態欄位只在任務區塊內略過；別處同名的行照算，不能拿來藏內容
+    task_done = False
+    seen: set[str] = set()  # 這個任務已經出現過的欄位鍵（只有第一次出現可能被略過）
     for i, line in enumerate(lines):
         if i <= fm_end:
             if i == meta_idx:
@@ -160,13 +187,19 @@ def analysis_text(text: str) -> str:
             if opened_here and not line.startswith(" "):
                 in_task = False  # 頂層圍欄結束目前任務的欄位區（與 bi.parse_note 一致）
         else:
-            if bi.TASK_LINE.match(line):
+            task_match = bi.TASK_LINE.match(line)
+            if task_match:
                 in_task = True
+                task_done = task_match["box"] in "xX"
+                seen = set()
             elif line.strip() and not line.startswith(" "):
                 in_task = False
-            f = bi.TASK_FIELD.match(line)
-            if in_task and f and f["key"].strip() in STATE_FIELDS:
-                continue
+            f = STATE_FIELD_LINE.match(line) if in_task else None
+            if f:
+                key, first = f["key"], f["key"] not in seen
+                seen.add(key)
+                if first and _state_value_skippable(key, f["value"], task_done):
+                    continue
             if i == body_idx and line[len(bi.STATUS_BODY_PREFIX):].strip() in labels:
                 continue
             if in_task:
@@ -314,9 +347,14 @@ def _validate_entry(name: str, idx: int, r, slug: str, root: Path, today: dt.dat
     ident = parse_identity(str(r.get("reviewer", "")))
     if ident and ident.runtime == "legacy":
         errs.append(f"{where}: reviewer 不能是 legacy 佔位身分")
+    elif ident and ident.runtime not in REVIEWER_RUNTIMES:
+        errs.append(f"{where}: reviewer 的 runtime 只接受 {'/'.join(REVIEWER_RUNTIMES)}（管線只有 codex 道與 chrome 道；"
+                    f"{ident.runtime} 可以當作者，不能當審查者；維護者本人審查不走這套紀錄：直接改筆記，再由管線審）")
     if not ident:
-        errs.append(f"{where}: reviewer 需為 <runtime>/<model>@<session>，runtime 為 {'/'.join(RUNTIMES)}；"
-                    "claude／codex 的 session 要完整 UUID，antigravity／hermes 至少 8 字元，human 只能是 human/maintainer@YYYY-MM-DD")
+        errs.append(f"{where}: reviewer 需為 <runtime>/<model>@<session>，runtime 為 {'/'.join(REVIEWER_RUNTIMES)}，session 要完整 UUID")
+    if r.get("hash_version") != HASH_VERSION:
+        errs.append(f"{where}: hash_version 需為 {HASH_VERSION}（現在是 {r.get('hash_version')!r}）；"
+                    "雜湊算法改版要寫遷移（重算基準、把仍對應現行內容的紀錄重新派審），不能讓舊紀錄靜默失效")
     d = _date(r.get("reviewed_at"))
     if not d or d > today:
         errs.append(f"{where}: reviewed_at 需為不晚於今天的 YYYY-MM-DD")
@@ -504,8 +542,9 @@ def evaluate(note: bi.Note, legacy: dict[str, str], today: dt.date, root: Path |
             triggers.append(f"第 {i + 1} 筆提出 {r['corrections']} 處更正")
         if ident and not ident.strong:
             triggers.append(f"第 {i + 1} 筆審查者 {ident.model} 不是強模型")
-    if sampled(slug) and not audit_pass_idx:
-        triggers.append("抽查（slug 抽中）")
+    first_reviewer = reviews[0].get("reviewer") if reviews and isinstance(reviews[0], dict) else None
+    if sampled(slug, first_reviewer) and not audit_pass_idx:
+        triggers.append("抽查（slug 與第一筆審查者抽中）")
     if triggers:
         st.needs.append("強模型覆核 audit（" + "；".join(triggers) + "）")
     st.errors = list(dict.fromkeys(st.errors))
@@ -556,9 +595,32 @@ def _git(root: Path, *args: str):
         return None
 
 
+def history_bases(root: Path) -> list[tuple[str, str]]:
+    """只追加檢查的比對基準 (標籤, commit)，存在才比、重複的只留一個：
+    HEAD（工作樹未提交的改動）、環境變數 AI_INBOX_REVIEW_BASE 指的 commit（CI 用：push 前的 main 或 PR 的 base），
+    以及 `git merge-base HEAD origin/main`（本機分支上已提交但還沒進 main 的改動）。
+    基準 commit 不存在（全零 SHA、shallow 抓不到、ref 不存在）就略過該基準。"""
+    candidates = [("HEAD", "HEAD")]
+    env = os.environ.get("AI_INBOX_REVIEW_BASE", "").strip()
+    if env:
+        candidates.append(("AI_INBOX_REVIEW_BASE", env))
+    mb = _git(root, "merge-base", "HEAD", "origin/main")
+    if mb is not None and mb.returncode == 0 and mb.stdout.strip():
+        candidates.append(("merge-base origin/main", mb.stdout.strip()))
+    out: list[tuple[str, str]] = []
+    for label, ref in candidates:
+        r = _git(root, "rev-parse", "--verify", "-q", f"{ref}^{{commit}}")
+        sha = r.stdout.strip() if r is not None and r.returncode == 0 else ""
+        if sha and all(sha != s for _, s in out):
+            out.append((label, sha))
+    return out
+
+
 def committed_history_errors(root: Path) -> list[str]:
-    """git 可用且 root 就是 repo 根目錄時：HEAD 上的 reviews/<slug>.json 必須是現行陣列的前綴，
-    HEAD 已追蹤的 reviews/reports/** 內容不可變更或刪除。git 不可用或檔案不在 HEAD 就略過。"""
+    """git 可用且 root 就是 repo 根目錄時，對每個比對基準（history_bases）要求：
+    基準上的 reviews/<slug>.json 的 reviews 陣列必須是現行陣列的前綴（不可改、刪、重排）；
+    基準上已存在的 reviews/reports/** 沒被改或刪（只看 M／D／T；新檔、已 git add 的新檔不算）。
+    git 不可用或檔案不在基準上就略過。"""
     top = _git(root, "rev-parse", "--show-toplevel")
     if top is None or top.returncode != 0:
         return []
@@ -567,38 +629,37 @@ def committed_history_errors(root: Path) -> list[str]:
             return []
     except OSError:
         return []
-    head = _git(root, "rev-parse", "--verify", "-q", "HEAD")
-    if head is None or head.returncode != 0:
-        return []
-    tree = _git(root, "ls-tree", "-r", "--name-only", "-z", "HEAD", "--", REVIEWS_DIRNAME)
-    if tree is None or tree.returncode != 0:
-        return []
     errors: list[str] = []
-    for rel in (p for p in tree.stdout.split("\0") if p):
-        parts = rel.split("/")
-        if len(parts) != 2 or not rel.endswith(".json") or parts[1] == LEGACY_BASELINE_NAME:
+    for label, base in history_bases(root):
+        tree = _git(root, "ls-tree", "-r", "--name-only", "-z", base, "--", REVIEWS_DIRNAME)
+        if tree is None or tree.returncode != 0:
             continue
-        old_raw = _git(root, "show", f"HEAD:{rel}")
-        if old_raw is None or old_raw.returncode != 0:
-            continue
-        try:
-            old = json.loads(old_raw.stdout)["reviews"]
-        except (ValueError, KeyError, TypeError):
-            continue
-        path = root / rel
-        if not path.is_file():
-            errors.append(f"{rel}: 已提交的審查紀錄被刪除（紀錄只能在尾端追加）")
-            continue
-        try:
-            cur = json.loads(path.read_text(encoding="utf-8"))["reviews"]
-        except (ValueError, KeyError, TypeError):
-            continue  # 壞掉的格式由 load_ledger 報
-        if not isinstance(old, list) or not isinstance(cur, list) or cur[: len(old)] != old:
-            errors.append(f"{rel}: 已提交的審查紀錄被改動、刪除或重排（紀錄只能在尾端追加）")
-    diff = _git(root, "diff", "--name-only", "-z", "--no-renames", "HEAD", "--", f"{REVIEWS_DIRNAME}/{REPORTS_DIRNAME}")
-    if diff is not None and diff.returncode == 0:
-        errors.extend(f"{p}: 已提交的審查報告被改動或刪除（報告只能新增）" for p in diff.stdout.split("\0") if p)
-    return errors
+        for rel in (p for p in tree.stdout.split("\0") if p):
+            parts = rel.split("/")
+            if len(parts) != 2 or not rel.endswith(".json") or parts[1] == LEGACY_BASELINE_NAME:
+                continue
+            old_raw = _git(root, "show", f"{base}:{rel}")
+            if old_raw is None or old_raw.returncode != 0:
+                continue
+            try:
+                old = json.loads(old_raw.stdout)["reviews"]
+            except (ValueError, KeyError, TypeError):
+                continue
+            path = root / rel
+            if not path.is_file():
+                errors.append(f"{rel}: 已提交的審查紀錄被刪除（對照 {label}；紀錄只能在尾端追加）")
+                continue
+            try:
+                cur = json.loads(path.read_text(encoding="utf-8"))["reviews"]
+            except (ValueError, KeyError, TypeError):
+                continue  # 壞掉的格式由 load_ledger 報
+            if not isinstance(old, list) or not isinstance(cur, list) or cur[: len(old)] != old:
+                errors.append(f"{rel}: 已提交的審查紀錄被改動、刪除或重排（對照 {label}；紀錄只能在尾端追加）")
+        diff = _git(root, "diff", "--name-only", "-z", "--no-renames", "--diff-filter=MDT", base, "--",
+                    f"{REVIEWS_DIRNAME}/{REPORTS_DIRNAME}")
+        if diff is not None and diff.returncode == 0:
+            errors.extend(f"{p}: 已提交的審查報告被改動或刪除（對照 {label}；報告只能新增）" for p in diff.stdout.split("\0") if p)
+    return list(dict.fromkeys(errors))
 
 
 def evaluate_all(notes: list[bi.Note], today: dt.date | None = None, root: Path | None = None) -> tuple[dict[str, ReviewState], list[str]]:
