@@ -6,6 +6,8 @@ source_platform: "bnext.com.tw (數位時代)"
 author: "蘇柔瑋"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
+written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031"
+revised_at: "2026-11-22"
 source_review: full
 source_images: 8
 source_replies: 0
@@ -43,13 +45,13 @@ tags:
 
 | 工具名稱 | 核心場景與功能特徵 | 操作難度 | 額度計算機制 |
 | :--- | :--- | :---: | :--- |
-| **Gemini App** | 日常對話、創意發想、多語言翻譯、文字潤飾與程式碼諮詢 | ★☆☆ | 依選用模型與進階功能設定使用上限，不與其他工具共佔 |
+| **Gemini App** | 日常對話、創意發想、多語言翻譯、文字潤飾與程式碼諮詢 | ★☆☆ | 依選用模型與進階功能設定基本使用上限；符合資格者可另購 AI 點數增加用量（與 Flow、Antigravity 共用同一種購買點數） |
 | **Google 搜尋 AI 模式** | 即時網路資訊查詢、規格與價格跨店比價、多模態圖文搜尋 | ★☆☆ | 依搜尋次數與模型配額計算，進階模型提供較高上限 |
 | **Gemini Notebook**（原 NotebookLM） | 匯入 PDF、研究報告與網站，進行可溯源 Grounding 問答與語音摘要 | ★★☆ | 筆記本數量、單本來源文件數與音訊摘要生成各有獨立上限 |
 | **Gmail / Google 文件內建 Gemini** | 跨郵件長串摘要、內聯草擬回覆、段落潤飾與 PTCF 提示框架 | ★★☆ | 依 Google Workspace 帳號方案與語言地區限制 |
-| **Google Antigravity** | 桌面端 Agent 開發工具、授權本地資料夾多檔案修改、網站建置與 Vibe Coding | ★★★ | **Pro 基本配額**；用完後可自選是否消耗**額外跨產品 AI 點數** |
-| **Google Flow** | 文字描述或參考圖片生成影片、運鏡視角控制、社群短影音素材製作 | ★★☆ | **每日 50 點免費**（當日結算）+ **Pro 每月 1,000 點**訂閱點數；可額外加購 |
-| **Google AI Studio** | 開發者模型原型驗證、Prompt 調校、Gemini API Key 配額調用 | ★★★ | 依 API Key 方案與模型 RPM/TPM 獨立計費，不等於 Pro 吃到飽 |
+| **Google Antigravity** | 桌面端 Agent 開發工具、授權本地資料夾多檔案修改、網站建置與 Vibe Coding | ★★★ | **Pro 基本配額**；用完後可自選是否消耗**購買或一次性促銷取得的 AI 點數**（開關在 Antigravity `Settings > Models`） |
+| **Google Flow** | 文字描述或參考圖片生成影片、運鏡視角控制、社群短影音素材製作 | ★★☆ | **Google Flow credits**：每日 50 點（所有使用者，不累計）+ **Pro 每月另加 1,000 點**（不遞延）；不夠時可另用購買的 AI 點數 |
+| **Google AI Studio** | 開發者模型原型驗證、Prompt 調校、Gemini API Key 配額調用 | ★★★ | 配額（RPM／TPM／RPD）按 Google Cloud 專案計算、不是按 API Key；付費層依模型按每百萬 token 計價；不等於 Pro 吃到飽 |
 | **Google Colab** | 雲端 Jupyter/Python 環境、GPU/TPU 算力調用、資料分析與 ML 運算 | ★★★ | 依運算單元（Compute Units）與連線工作階段時長限制 |
 
 ### 8 張插圖實測解析
@@ -70,24 +72,28 @@ tags:
 
 ```
 [Google AI Pro 訂閱體系]
-  ├── 【獨立隔離額度層】（互不扣抵、獨立重置）
-  │     ├── Gemini App（聊天次數 / 模型輪次）
-  │     ├── Google 搜尋 AI 模式（即時檢索配額）
+  ├── 【各產品基本用量】（各自計算、各自重置）
+  │     ├── Gemini App（依模型與功能的使用上限）
+  │     ├── Google 搜尋 AI 模式
   │     ├── Gemini Notebook（筆記本數量 / 來源數 / 音訊摘要）
-  │     └── Workspace 內建 Gemini（Gmail / Docs 內嵌調用）
+  │     ├── Workspace 內建 Gemini（Gmail / Docs）
+  │     └── Google Antigravity（Pro 基本配額）
   │
-  └── 【跨產品 AI 點數（AI Credits）流通層】
-        ├── Google Flow
-        │     ├── 每日免費額度：50 點 / 日（當日歸零，不累計至次日）
-        │     └── Pro 專屬點數：1,000 點 / 月（帳單週期重置，不遞延）
-        │
-        └── Google Antigravity
-              ├── Pro 會員基本配額（桌面 Agent 日常專案開發基礎額度）
-              └── 溢出點數控制（基本配額耗盡時，可自選「暫停」或「消耗額外加購 AI 點數」）
+  ├── 【Google Flow credits】（只能用在 Flow）
+  │     ├── 每日 50 點（所有使用者，用不完不累計）
+  │     └── Pro 每月另加 1,000 點（用不完不遞延）
+  │
+  └── 【AI credits】（購買或一次性促銷取得，不是訂閱附贈）
+        └── 增加 Gemini、Flow、Antigravity 的用量（日本除外）
+              ├── Antigravity：基本配額用完後，是否扣 AI 點數由 Settings > Models 的開關決定
+              └── Google One：查點數餘額與使用紀錄
 ```
 
-- **無效累積規則**：每日贈送點數（50 點）每日歸零；每月訂閱點數（1,000 點）次月不遞延。唯有獨立購買之付費點數封包具備自訂有效期限。
-- **防止意外溢出之安全開關**：Antigravity 支援在 Google One AI 點數管理介面中設定「是否允許使用額外 AI 點數」，此機制為防止長時間運行或自動迴圈（Loop）引發非預期點數燒盡之關鍵防線。
+- **兩種點數不要混為一談**：訂閱附贈的是 Google Flow credits，只能用在 Flow；Antigravity 超額用的是購買或一次性促銷取得的 AI credits。官方說明沒有寫 Flow 點數能拿去扣 Antigravity。
+- **點數不累計**：Flow 每日點數當天用不完不累計，每月點數不遞延到下個月。購買的 AI 點數依購買時的條款到期，官方沒寫固定天數。
+- **防止點數意外燒光的開關**：開關在 Antigravity 的 `Settings > Models`（toggle AI credit overages），不在 Google One；Google One 只能查點數餘額與使用紀錄。長時間執行或自動迴圈的工作，先確認這個開關的狀態。
+- **API 配額不是價格**：AI Studio／Gemini API 的 RPM、TPM、RPD 是限流上限，按 Google Cloud 專案計算（同專案多把 Key 共用）；價格另依模型按每百萬 token 計算。
+- **官方查證（2026-11-22，依獨立審查報告修正）**：[Flow 點數](https://support.google.com/flow/answer/16526234?hl=en)、[Antigravity 方案](https://antigravity.google/docs/plans)、[Antigravity 設定](https://antigravity.google/docs/settings)、[Google One AI 點數](https://support.google.com/googleone/answer/16287445)、[Gemini API 限流](https://aistudio.google.com/docs/rate-limits)、[Gemini API 價格](https://aistudio.google.com/docs/pricing)。
 
 ---
 
@@ -96,8 +102,8 @@ tags:
 報導首度將 Antigravity 列入主流消費級 AI 訂閱評析，並給出三個核心操作指引：
 1. **先計畫再實作（Show me your plan before making any changes）**：
    報導推薦之提示詞範式明訂要求 Agent 先輸出變更計畫，確認無誤後才允許寫入。此機制完全契合本專案與全域規範之「先調研再動手、先計畫再實作」原則。
-2. **目錄授權隔離**：
-   操作時明確要求使用者建立獨立資料夾（如「日本旅遊網站」），並在「New Project」中指定載入。此與全域規範「不要在專案目錄外讀寫或刪改、所有專案統一置於 `C:\GitHub\<repo>`」形成一致的安全邊界防護。
+2. **專用資料夾是操作建議，不是安全邊界**：
+   報導建議建立獨立資料夾（如「日本旅遊網站」），在「New Project」中載入。這能減少誤改其他檔案的機會，但不等於隔離：實際能存取什麼，取決於權限模式。依[官方權限文件](https://antigravity.google/docs/permissions)，App 有 Request Review、Default、Auto、Turbo 四種預設；Default 與 Auto 可存取工作區加暫存目錄，Turbo 可存取整個檔案系統、終端指令不受限；核准提示時也能擴大授權範圍，另有 `Non-Workspace Access` 設定（預設關閉）可讓代理讀寫工作區外的檔案。要當成安全邊界，必須同時確認權限模式不是 Turbo、`Non-Workspace Access` 關閉、核准提示不隨意擴大範圍。
 3. **開發者工具邊界**：
    報導特別提示「Antigravity 目前偏向程式開發與技術工作，非一般文書處理軟體」，初學者切勿將重要系統磁區或非專案目錄隨意掛載，且須防範高風險指令。
 
@@ -106,7 +112,7 @@ tags:
 ## 4. 對既有專案與架構之啟發
 
 1. **多模型與額度路由矩陣收斂**：
-   目前 `docs/model-burn-rate-routing-matrix.md` 著重於 API Token 與成本計算。本文所呈現之 Google AI Pro 點數流通邏輯（Flow 點數與 Antigravity 跨產品點數）應正式被納入資產治理，建立日常開發時的「基本配額優先、溢出點數嚴格警示」控管準則。
+   目前 `docs/model-burn-rate-routing-matrix.md` 著重於 API Token 與成本計算。本文所呈現之 Google AI Pro 點數邏輯（Flow 專用點數與購買的 AI 點數分開計算）應正式被納入資產治理，建立日常開發時的「基本配額優先、溢出點數嚴格警示」控管準則。
 2. **工具分工與鏈路清晰化**：
    日常知識庫 ingestion 與文獻分析優先派工至 Gemini Notebook / Search AI，程式庫批次修改交由 Antigravity，避免將重度程式碼編輯交由純網頁端 Gemini App 造成斷頭與上下文丟失。
 
@@ -118,6 +124,6 @@ tags:
   - **目標範圍**：`C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3）
   - **執行步驟**：
     1. 記錄 8 大工具定位（聊天、搜尋、文件、筆記、影音、程式代理、API、雲端運算）。
-    2. 詳列 Google Flow 點數刷新機制（50 點/日、1,000 點/月）與 Antigravity 專屬配額/額外點數扣抵開關。
-    3. 整合 Antigravity 專案掛載目錄安全規範（目錄白名單、先計畫再實作）。
-  - **驗收標準（DoD）**：產出 `docs/google-ai-pro-ecosystem-and-credit-routing.md`，定義點數路由與目錄邊界防護規則，且 `python tools/verify_inbox.py` 驗證通過。
+    2. 分開寫 Google Flow credits（50 點/日、Pro 另加 1,000 點/月，只能用在 Flow）與購買的 AI credits（Gemini、Flow、Antigravity 共用），以及 Antigravity 超額開關的位置（`Settings > Models`）。
+    3. 寫 Antigravity 權限設定規則：四種權限預設各能存取什麼、哪些情況禁用 Turbo、`Non-Workspace Access` 保持關閉、先計畫再實作。
+  - **驗收標準（DoD）**：產出 `docs/google-ai-pro-ecosystem-and-credit-routing.md`，兩種點數分開說明並附官方網址，權限規則對應官方權限預設，且 `python tools/verify_inbox.py` 驗證通過。
