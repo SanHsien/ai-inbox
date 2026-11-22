@@ -31,7 +31,7 @@
   "2026-10-21-0x-alpha-glm-5-3-flash-1m-context": "8a6549ef2672c077aafd87a611afa5861a5d664a67231006ee9680ceac532a19",
   "2026-10-21-agent-relay-pipeline-phase4": "5b80c7fd02426dbeebaf887be766f36ee92f912cb54cf880bc93842a9bdf3001",
   "2026-10-21-strata-consumer-gpu-large-llm-inference": "f5cf39513b7b9facb57a44f61d5c92772fbccee48c586d98deb9df212b7860b5",
-  "2026-10-23-claude-plugin-security-guidance": "feb3cd77609140fc10a7af47d61370099c03e3238276d69bf048593e3e363863",
+  "2026-10-23-claude-plugin-security-guidance": "a9b0691d89c5ab3ecdda1abee092bcee7fbd5ee5fd6c3e214be1dd5203afd579",
   "2026-10-23-web-to-app-android-packaging": "770acdcbbb4b54d03bcb9edc70a26856e8b50a1c4a2873008956b5cebef2f618",
   "2026-10-23-zeabur-october-2026-security-incident": "6dc3a87bacde0162c45395cb2d823c7535bdc55a0fecfe3c07717e9d45ad03bf",
   "2026-10-24-ai-influencer-ig-story-chatgpt-heygen-elevenlabs": "4ffab9966481871b8f5ae2360ddf02a502b74bb8ecb07cbd767f899df163e96c",
@@ -160,6 +160,8 @@
   "2026-11-21-aiposthub-fastmcp-python-mcp-framework-eval": "b30e40444b55d535cae1b8ed1bf8d9efcbf177027a856ebeabba2798de02643f",
   "2026-11-21-ben-thompson-write-things-down-harness-memory": "083009a7126b3c91053550f98a84479d28d3491997db12b7157f7cc18228e341",
   "2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval": "db43c64dc8db4aea10732735d57091c6c7eb811eb33c064a3761febe9e495f71",
-  "2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval": "7f6cef9b970e597b1c114963cc678969b3cea6729f0de8ed9feb280a7ec57384"
+  "2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts": "8844b559dd06eb38d84e099d24bedbaf5b35d41581582f5ecd58f82b55ae8a1b",
+  "2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval": "7f6cef9b970e597b1c114963cc678969b3cea6729f0de8ed9feb280a7ec57384",
+  "2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval": "3e2712f7374db77b41a48b1a9c262e60ed788f619a82846ebad1a5a377fc0926"
  }
 }
