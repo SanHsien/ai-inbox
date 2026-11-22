@@ -6,7 +6,7 @@ source_platform: "bnext.com.tw (數位時代)"
 author: "蘇柔瑋"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
-written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031"
+written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
 revised_at: "2026-11-22"
 source_review: full
 source_images: 8
@@ -47,7 +47,7 @@ tags:
 | :--- | :--- | :---: | :--- |
 | **Gemini App** | 日常對話、創意發想、多語言翻譯、文字潤飾與程式碼諮詢 | ★☆☆ | 依選用模型與進階功能設定基本使用上限；符合資格者可另購 AI 點數增加用量（與 Flow、Antigravity 共用同一種購買點數） |
 | **Google 搜尋 AI 模式** | 即時網路資訊查詢、規格與價格跨店比價、多模態圖文搜尋 | ★☆☆ | 依搜尋次數與模型配額計算，進階模型提供較高上限 |
-| **Gemini Notebook**（原 NotebookLM） | 匯入 PDF、研究報告與網站，進行可溯源 Grounding 問答與語音摘要 | ★★☆ | 筆記本數量、單本來源文件數與音訊摘要生成各有獨立上限 |
+| **Gemini Notebook**（原 NotebookLM） | 匯入 PDF、研究報告與網站，進行可溯源 Grounding 問答與語音摘要 | ★★☆ | 分為**結構上限**（筆記本數量、單本來源文件數）與**共用動態運算額度**（依提示複雜度、模型、音訊／問答功能與對話長度計算，每 5 小時更新，另有每週上限） |
 | **Gmail / Google 文件內建 Gemini** | 跨郵件長串摘要、內聯草擬回覆、段落潤飾與 PTCF 提示框架 | ★★☆ | 依 Google Workspace 帳號方案與語言地區限制 |
 | **Google Antigravity** | 桌面端 Agent 開發工具、授權本地資料夾多檔案修改、網站建置與 Vibe Coding | ★★★ | **Pro 基本配額**；用完後可自選是否消耗**購買或一次性促銷取得的 AI 點數**（開關在 Antigravity `Settings > Models`） |
 | **Google Flow** | 文字描述或參考圖片生成影片、運鏡視角控制、社群短影音素材製作 | ★★☆ | **Google Flow credits**：每日 50 點（所有使用者，不累計）+ **Pro 每月另加 1,000 點**（不遞延）；不夠時可另用購買的 AI 點數 |
@@ -75,7 +75,7 @@ tags:
   ├── 【各產品基本用量】（各自計算、各自重置）
   │     ├── Gemini App（依模型與功能的使用上限）
   │     ├── Google 搜尋 AI 模式
-  │     ├── Gemini Notebook（筆記本數量 / 來源數 / 音訊摘要）
+  │     ├── Gemini Notebook（結構上限：筆記本與來源數；共用運算額度：每 5 小時更新＋每週上限）
   │     ├── Workspace 內建 Gemini（Gmail / Docs）
   │     └── Google Antigravity（Pro 基本配額）
   │
@@ -93,7 +93,7 @@ tags:
 - **點數不累計**：Flow 每日點數當天用不完不累計，每月點數不遞延到下個月。購買的 AI 點數依購買時的條款到期，官方沒寫固定天數。
 - **防止點數意外燒光的開關**：開關在 Antigravity 的 `Settings > Models`（toggle AI credit overages），不在 Google One；Google One 只能查點數餘額與使用紀錄。長時間執行或自動迴圈的工作，先確認這個開關的狀態。
 - **API 配額不是價格**：AI Studio／Gemini API 的 RPM、TPM、RPD 是限流上限，按 Google Cloud 專案計算（同專案多把 Key 共用）；價格另依模型按每百萬 token 計算。
-- **官方查證（2026-11-22，依獨立審查報告修正）**：[Flow 點數](https://support.google.com/flow/answer/16526234?hl=en)、[Antigravity 方案](https://antigravity.google/docs/plans)、[Antigravity 設定](https://antigravity.google/docs/settings)、[Google One AI 點數](https://support.google.com/googleone/answer/16287445)、[Gemini API 限流](https://aistudio.google.com/docs/rate-limits)、[Gemini API 價格](https://aistudio.google.com/docs/pricing)。
+- **官方查證（2026-11-22，依獨立審查報告修正）**：[Flow 點數](https://support.google.com/flow/answer/16526234?hl=en)、[Gemini Notebook 用量說明](https://support.google.com/gemininotebook/answer/17670842?hl=en)、[Gemini Notebook 方案限制](https://support.google.com/gemininotebook/answer/16213268?hl=en)、[Antigravity 方案](https://antigravity.google/docs/plans)、[Antigravity 設定](https://antigravity.google/docs/settings)、[Antigravity 權限規則](https://antigravity.google/docs/permissions)、[Antigravity 舊版與企業代理設定](https://antigravity.google/docs/agent-settings)、[Google One AI 點數](https://support.google.com/googleone/answer/16287445)、[Gemini API 限流](https://aistudio.google.com/docs/rate-limits)、[Gemini API 價格](https://aistudio.google.com/docs/pricing)。
 
 ---
 
@@ -103,7 +103,7 @@ tags:
 1. **先計畫再實作（Show me your plan before making any changes）**：
    報導推薦之提示詞範式明訂要求 Agent 先輸出變更計畫，確認無誤後才允許寫入。此機制完全契合本專案與全域規範之「先調研再動手、先計畫再實作」原則。
 2. **專用資料夾是操作建議，不是安全邊界**：
-   報導建議建立獨立資料夾（如「日本旅遊網站」），在「New Project」中載入。這能減少誤改其他檔案的機會，但不等於隔離：實際能存取什麼，取決於權限模式。依[官方權限文件](https://antigravity.google/docs/permissions)，App 有 Request Review、Default、Auto、Turbo 四種預設；Default 與 Auto 可存取工作區加暫存目錄，Turbo 可存取整個檔案系統、終端指令不受限；核准提示時也能擴大授權範圍，另有 `Non-Workspace Access` 設定（預設關閉）可讓代理讀寫工作區外的檔案。要當成安全邊界，必須同時確認權限模式不是 Turbo、`Non-Workspace Access` 關閉、核准提示不隨意擴大範圍。
+   報導建議建立獨立資料夾（如「日本旅遊網站」），在「New Project」中載入。這能減少誤改其他檔案的機會，但不等於隔離：實際能存取什麼，取決於所使用的權限設定體系。依[官方權限文件（新版預設）](https://antigravity.google/docs/permissions)，App 提供 Request Review、Default、Auto、Turbo 四種權限預設（Default 與 Auto 可存取工作區加暫存目錄，Turbo 可存取整個檔案系統、終端指令不受限），並可配置明確的允許／詢問／拒絕規則與沙盒外執行授權；而在[舊版設定體系（以及沿用該組設定的企業帳號）](https://antigravity.google/docs/agent-settings)中，則提供 `Non-Workspace Access` 開關（預設關閉）控制是否允許代理讀寫工作區外的檔案。要落實安全邊界，新版設定應確認權限預設不是 Turbo、檢查明確權限規則與沙盒授權且不隨意在核准提示擴大範圍；使用舊版或企業設定體系者則須確認 `Non-Workspace Access` 保持關閉。
 3. **開發者工具邊界**：
    報導特別提示「Antigravity 目前偏向程式開發與技術工作，非一般文書處理軟體」，初學者切勿將重要系統磁區或非專案目錄隨意掛載，且須防範高風險指令。
 
@@ -125,5 +125,5 @@ tags:
   - **執行步驟**：
     1. 記錄 8 大工具定位（聊天、搜尋、文件、筆記、影音、程式代理、API、雲端運算）。
     2. 分開寫 Google Flow credits（50 點/日、Pro 另加 1,000 點/月，只能用在 Flow）與購買的 AI credits（Gemini、Flow、Antigravity 共用），以及 Antigravity 超額開關的位置（`Settings > Models`）。
-    3. 寫 Antigravity 權限設定規則：四種權限預設各能存取什麼、哪些情況禁用 Turbo、`Non-Workspace Access` 保持關閉、先計畫再實作。
+    3. 寫 Antigravity 權限設定規則：區分新版四種權限預設（各能存取什麼、哪些情況禁用 Turbo、明確權限規則與沙盒授權）與舊版／企業設定體系（`Non-Workspace Access` 保持關閉），以及先計畫再實作。
   - **驗收標準（DoD）**：產出 `docs/google-ai-pro-ecosystem-and-credit-routing.md`，兩種點數分開說明並附官方網址，權限規則對應官方權限預設，且 `python tools/verify_inbox.py` 驗證通過。

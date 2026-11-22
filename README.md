@@ -46,8 +46,8 @@
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
-| `T-20261122-04` | 🔴 未做 | 中 | 評估 Gemini API Tool Retrieval（按需動態載入工具 Schema 與 `defer_loading` / `tool_search` 機制）在多工具 Agent 實作之整合規範，並納入 `docs/gemini-tool-retrieval-and-mcp-spec.md` | `C:\GitHub\ai-inbox\docs\gemini-tool-retrieval-and-mcp-spec.md`（收錄於集群 3） | [2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | 2026-11-22 |
-| `T-20261122-05` | 🔴 未做 | 中 | 將 Jev by TypeSafe AI 生態中與 Agent 安全閘門（hermes-jev-approvals、jev-belay、limpet、progressgate）與模型路由（jev-codex-router、jev-router）相關的量化實測數據與架構模式，對照 Google Decisions API / Tool Retrieval 整理至 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3） | [2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | 2026-11-22 |
+| `T-20261122-04` | 🔴 未做 | 中 | 評估 Gemini API Tool Retrieval（`v1beta` Interactions API、`defer_loading` / `tool_search`、計費與隱式快取邊界）在多工具 Agent 之整合規範，並納入 `docs/gemini-tool-retrieval-and-mcp-spec.md` | `C:\GitHub\ai-inbox\docs\gemini-tool-retrieval-and-mcp-spec.md`（收錄於集群 3） | [2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | 2026-11-22 |
+| `T-20261122-05` | 🔴 未做 | 中 | 將 Jev by TypeSafe AI 生態中與 Agent 安全閘門（`anpicasso/hermes-jev-approvals`、`valentynkit/jev-belay`、`noplan-inc/limpet`、`AshutoshVJTI/progressgate`）與模型路由（`0xNatoshi/jev-codex-router`、`gargpratyush/jev-router`）相關的專案架構與數據限制，對照 Google Decisions API / Colibri 整理至 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3） | [2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | 2026-11-22 |
 | `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
 | `T-20261122-01` | 🔴 未做 | 低 | 評估 `SKILL.md` 跨平台（Gemini / Claude / Antigravity）相容性檢查清單，並將「首句技能名稱定錨」與「前置步驟防跳步防呆語法」納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | 2026-11-22 |
 | `T-20261122-02` | 🔴 未做 | 低 | 將 Anthropic Agent Memory「記憶存策略、不存易過時狀態」的案例觀察（寶可夢紀錄）與「反覆走偏時編輯原提問」可選策略納入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | 2026-11-22 |
@@ -498,7 +498,7 @@
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Gemini Gems 轉型 Skills 實戰——SKILL.md 跨平台通用規範與防跳步首句定錨 Prompting](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | `gemini`, `gemini-skills`, `skill-md` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Google AI Pro 八大工具全景實測——Antigravity 電腦檔案代理、Flow 影片生成與跨產品 AI 點數制](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | `google-ai-pro`, `gemini`, `antigravity` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群原創盤點：Jev by TypeSafe AI 上線六天 1,528 專案生態——Agent 守門員、模型路由、瀏覽器自動化與分類判斷全景分析](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | `jev`, `typesafe-ai`, `agent-guardrails` | 0 / 1 |
-| 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群技術評析：Will 保哥評釋 Gemini API Tool Retrieval——按需動態載入工具 Schema、支援 MCP 與 Prefix Caching 的輕量級 Agent 架構](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | `gemini-api`, `tool-retrieval`, `tool-calling` | 0 / 1 |
+| 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群技術評析：Will 保哥評釋 Gemini API Tool Retrieval——按需動態載入工具 Schema、Interactions API 限制與計費／快取邊界核實](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | `gemini-api`, `tool-retrieval`, `tool-calling` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -787,7 +787,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/feedback-desk-windows-eval.md`](./docs/feedback-desk-windows-eval.md) | feedback-desk Windows 11 原生環境評估報告 |
 | [`docs/free-public-apis.md`](./docs/free-public-apis.md) | Public APIs 免金鑰與 CORS 支援精選手冊 |
 | [`docs/freelance-contract-scope-and-prerequisites-spec.md`](./docs/freelance-contract-scope-and-prerequisites-spec.md) | AI 接案防失控合約與時程前提規範指南 |
-| [`docs/gemini-tool-retrieval-and-mcp-spec.md`](./docs/gemini-tool-retrieval-and-mcp-spec.md) | Gemini API Tool Retrieval 與 MCP 百級工具按需載入架構規範 |
+| [`docs/gemini-tool-retrieval-and-mcp-spec.md`](./docs/gemini-tool-retrieval-and-mcp-spec.md) | Gemini API Tool Retrieval 與 MCP 工具按需延遲載入架構規範 |
 | [`docs/github-apps-s2s-copilot-workload-identity-guide.md`](./docs/github-apps-s2s-copilot-workload-identity-guide.md) | GitHub Apps Server-to-Server 與 Copilot SDK 工作負載身分整合指南 |
 | [`docs/google-ai-pro-ecosystem-and-credit-routing.md`](./docs/google-ai-pro-ecosystem-and-credit-routing.md) | Google AI Pro 八大工具分工、點數路由與 Antigravity 權限安全規範 |
 | [`docs/grok-herdr-agents-bootstrap.md`](./docs/grok-herdr-agents-bootstrap.md) | Grok Bot + Herdr 統一工作目錄進入點與 AGENTS.md 起步驅動規範 |

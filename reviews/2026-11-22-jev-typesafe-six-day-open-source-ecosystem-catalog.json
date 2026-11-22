@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-22",
+   "reviewer": "codex/gpt-6.1-sol@01a203cd-ed3b-73a3-a269-0afb3030f7e1",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "76c7774f80133997ccca5a9455b28d1ac7e5a672c383cae2895d64de25b4cebf",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "unavailable",
+   "author_claim": "unavailable",
+   "corrections": 7,
+   "report": "reviews/reports/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog/2026-11-22-01-review-codex.md"
+  }
+ ]
+}

@@ -61,7 +61,7 @@ tags:
   - **回饋資料隱私提醒（技巧 16）**：依 [Anthropic 隱私中心](https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training)，提交回饋（讚 / 倒讚）可能使相關完整對話保留最長 5 年，並**可能**用於研究及模型訓練（不是每筆必然用於訓練；使用前會與使用者 ID 脫鉤）。該頁說明的是商業方案，個人方案另有說明。涉密任務提交回饋前先確認規則；銀行 CSV 上傳前先做個資去標識化。
   - **精簡過長的自訂指令（技巧 17）**：避免過度定義「我的風格」導致模型回答陷入僵化範本。
 - **研究邊界與個人經驗嚴格區分**：
-  - 文章特別提醒：28% 提昇僅限於 Claude Managed Agents 之 CL-Bench 基準，非一般聊天視窗日常任務；自動切換舊模型為作者經驗，缺乏官方文檔背書。
+  - 文章特別提醒：28% 提昇僅限於 Claude Managed Agents 之 CL-Bench 基準，非一般聊天視窗日常任務；至於模型自動降級，特定安全檢查觸發 Opus 5 / 5.5 自動降級已有[官方說明文件](https://support.claude.com/en/articles/16049681-why-claude-switched-models-in-your-conversation-with-opus-5-or-opus-5-5)（聊天介面預設啟用並顯示切換通知），但作者個案是否屬此安全降級機制尚未確認，不可外推為一般對話會任意切換模型。
 
 ---
 
