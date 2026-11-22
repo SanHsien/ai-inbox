@@ -32,7 +32,7 @@ review_pipeline.py queue ── 依來源平台分派 ──┬─ codex 道：�
   - 任務勾選框（`[x]` 視同 `[ ]`）；
   - frontmatter 第一個 `status:` 行的值（行尾註解照算）；正文第一個「當前狀態」行，且值是 `task_cli` 的標準標記（其他文字照算；`task_cli` 也只改寫標準標記的行，找行時跳過程式碼圍欄）；
   - 任務區塊內、**剛好兩格縮排**、格式嚴格為 `  - **<鍵>**：<值>`（鍵名前後無空白、全形冒號）的欄位行，**每個任務每個鍵只略過第一次出現**：`狀態` 的值完全是 `🟡 進行中` 或 `⚪ 不做（…）`；`完成日期`、`實作紀錄 / 證據` 在任務已勾選時略過（完成日期另須是 `YYYY-MM-DD`），未勾選時只有值為空，或完全等於範本固定佔位字串（白名單 `PLACEHOLDER_VALUES`）才略過。
-  其餘一律算進雜湊：重複的欄位行、不同縮排、鍵名變形、半形冒號、續行、非標準的值、頂層圍欄之後的同名欄位。repo 裡有一個任務因為非標準寫法（`⚪ 不做（…）。` 句尾多一個句點）而對 `task_cli` 操作敏感，列在 `tests/test_review_ledger.py` 的 `KNOWN_NONSTANDARD`，不為它放寬規則。
+  其餘一律算進雜湊：重複的欄位行、不同縮排、鍵名變形、半形冒號、續行、非標準的值、頂層圍欄之後的同名欄位。任務用了非標準寫法（例：`⚪ 不做（…）。` 句尾多一個句點；退回重開的任務保留舊的「實作紀錄 / 證據」），`task_cli` 操作後雜湊就會變，那篇筆記要走審查；這是安全的方向，不為它放寬規則。`tests/test_review_ledger.py` 只抽查真實筆記「絕大多數任務操作後雜湊不變」，不逐篇釘死，避免別人寫了一個非標準任務就讓 CI 變紅。
 - **雜湊算法定版**：`review_ledger.HASH_VERSION`，新紀錄寫入 `hash_version`，驗證器要求它存在且等於現行版本。`tests/test_review_ledger.py` 有 golden 測試（固定範例筆記對固定雜湊）：改 `analysis_text` 會讓 main 上所有審查紀錄與 legacy 基準失效，要改必須寫遷移（重算基準、把仍對應現行內容的紀錄重新派審）並遞增版本，不可只更新期望值。
 - 報告存 `reviews/reports/<slug>/`。**紀錄與報告必須一致**：驗證器解析報告最後一個 ```` ```json ```` 區塊（與 `ingest` 共用同一個解析函式），要求 `verdict`、`corrections`（且等於 findings 筆數）、`scope`（集合相等）與紀錄相同；報告 header 的 `- reviewer:`、`- content_sha256:`、`- role:` 逐行與紀錄相同（不是「字串出現在內文任何地方」）。只改紀錄檔的 verdict 就想翻成 pass 會被擋。
 - **只追加**：git 可用時，對每個比對基準——`HEAD`（工作樹未提交的改動）、環境變數 `AI_INBOX_REVIEW_BASE` 指的 commit（CI 設成 push 前的 main 或 PR 的 base，workflow 用 `fetch-depth: 0`）、`git merge-base HEAD origin/main`（本機分支上已提交但還沒進 main 的改動）——基準上的 `reviews/<slug>.json` 必須是現行陣列的前綴（已提交的紀錄不可改、不可刪、不可重排），基準上已存在的 `reviews/reports/**` 不可被改或刪（只看修改與刪除，新檔、已 `git add` 的新檔不算）。基準 commit 不存在（全零 SHA、shallow 抓不到）就略過該基準。只比 `HEAD` 的話，提交之後（＝CI 的 checkout）檢查就是 no-op，所以 CI 一定要給 `AI_INBOX_REVIEW_BASE`。

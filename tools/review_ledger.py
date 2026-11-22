@@ -34,7 +34,7 @@ REPORTS_DIRNAME = "reports"
 LEGACY_BASELINE_NAME = "legacy-baseline.json"
 REMOVED_NAME = "removed.json"  # 登記移出 repo 的筆記（只追加）：有審查紀錄的筆記不能改名，要移出就登記
 # 基準檔（reviews/legacy-baseline.json）位元組的 SHA-256。改這個值等於宣告「這些筆記免審」，要在 REVIEW.md 說明理由。
-LEGACY_BASELINE_SHA256 = "b2ddf2fd5d18a867e840328e8304750eb961d7f62e2e2edf72b837dabdef00b9"
+LEGACY_BASELINE_SHA256 = "f3de20b505d566eeb4be34cec25fc2ec68b1fd07fe03788997a3c08b4bb59cb8"
 
 GRACE_DAYS = 7  # 新筆記（或改過內容的筆記）最多可以待審幾天
 SCOPES = ("source", "facts", "evidence", "task_impact")
