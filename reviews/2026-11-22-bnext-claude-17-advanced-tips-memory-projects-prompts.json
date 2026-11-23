@@ -68,6 +68,21 @@
    "author_claim": "full",
    "corrections": 0,
    "report": "reviews/reports/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts/2026-11-23-04-review-codex.md"
+  },
+  {
+   "reviewed_at": "2026-11-23",
+   "reviewer": "claude/opus-5.5@875b2527-34d5-49c0-8720-89827cc71a07",
+   "role": "review",
+   "scope": [
+    "source"
+   ],
+   "content_sha256": "306845f40ccbb30c4b9c3a7e944cad3cd42ae487635f9d0ddd0e60b0918e0b00",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts/2026-11-23-05-review-claude.md"
   }
  ]
 }
