@@ -7,11 +7,11 @@ author: "蘇柔瑋 (整理 Ruben Hassid 與 Anthropic 官方研究)"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
 written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
-revised_at: "2026-11-22"
+revised_at: "2026-11-23"
 source_review: full
 source_images: 1
 source_replies: 0
-source_reviewed_at: "2026-11-22"
+source_reviewed_at: "2026-11-23"
 status: pending
 cluster: 1
 cluster_role: "Claude記憶與提示"
@@ -53,15 +53,15 @@ tags:
   - **「目標＋背景＋反問」結構（技巧 7）**：要求模型「若缺少重要資訊，請先向我提問」，有助減少資訊不足時的猜測，但**不能保證消除幻覺**；Anthropic 官方減少幻覺的做法是允許說「不知道」、以原文引用為依據、逐項核對引用，且明說這些技巧也無法完全消除幻覺，事實仍須查證。
   - **明確完成標準 DoD（技巧 8）**：定義交付規格與暫停確認閾值。
   - **反向批判提問（技巧 9）**：禁止引導式讚同，強制要求提出「3 個最強的反對理由」。
-  - **具體多樣性約束（技巧 10）**：要求產出 20 個差異明顯的選項並以客群/價格/風格建立對照矩陣。
-  - **多模態截圖輔助（技巧 11）**：視覺與排版直接提供參考截圖。
+  - **具體多樣性約束（技巧 10）**：Hassid 原技巧為「要求產出 20 個差異明顯的選項，並請模型估計其他 AI 給出相同答案的可能性」（二手轉述）；文章接著附註但書，提醒 AI 自估的機率不能當作真實統計數據，並另外建議可改用指定不同客群、價格策略、風格或使用情境來讓選項差異可比較。
+  - **多模態截圖與語音輔助（技巧 11）**：視覺與排版可直接提供參考截圖，或以語音口述交代複雜需求。
 - **第四類：檔案生成與外部整合（技巧 12～15）**：
-  - 支援 Google Workspace 側邊欄、GitHub 專案結構參考、上傳 CSV 製作互動儀表板，以及直接輸出 Word、Excel、PDF 實體文件。
+  - 支援 Google Workspace 側邊欄（原文註明為測試版且限特定方案）、GitHub 專案結構參考（原文提醒貼上 GitHub 連結不等於 Claude 能自動讀完整個專案）、上傳 CSV 製作互動儀表板，以及直接輸出 Word、Excel、PDF 實體文件。
 - **第五類：隱私與個人設定安全防線（技巧 16～17）**：
   - **回饋資料隱私提醒（技巧 16）**：依 [Anthropic 隱私中心](https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training)，提交回饋（讚 / 倒讚）可能使相關完整對話保留最長 5 年，並**可能**用於研究及模型訓練（不是每筆必然用於訓練；使用前會與使用者 ID 脫鉤）。該頁說明的是商業方案，個人方案另有說明。涉密任務提交回饋前先確認規則；銀行 CSV 上傳前先做個資去標識化。
-  - **精簡過長的自訂指令（技巧 17）**：避免過度定義「我的風格」導致模型回答陷入僵化範本。
+  - **精簡或清空過長的自訂指令（技巧 17，Hassid 個人主張，二手）**：Hassid 主張移除過度定義「我的風格」的自訂指令以免回答僵化；惟原文明確標註這是 **Hassid 的個人主張、並非 Anthropic 官方要求，也不一定適合所有人**——若工作需要維持一致的品牌語氣或固定輸出格式，保留清楚的自訂指令仍然有用（文末限制表亦將「自訂指令全部清空」列為應視為個人建議而非通則的項目）。
 - **研究邊界與個人經驗嚴格區分**：
-  - 文章特別提醒：28% 提昇僅限於 Claude Managed Agents 之 CL-Bench 基準，非一般聊天視窗日常任務；至於模型自動降級，特定安全檢查觸發 Opus 5 / 5.5 自動降級已有[官方說明文件](https://support.claude.com/en/articles/16049681-why-claude-switched-models-in-your-conversation-with-opus-5-or-opus-5-5)（聊天介面預設啟用並顯示切換通知），但作者個案是否屬此安全降級機制尚未確認，不可外推為一般對話會任意切換模型。
+  - 文章特別提醒：28% 提昇僅限於 Claude Managed Agents 之 CL-Bench 基準，非一般聊天視窗日常任務；清空自訂指令（技巧 17）屬 Hassid 個人建議而非官方通則；至於模型自動降級（技巧 5），特定安全檢查觸發 Opus 5 / 5.5 自動降級已有[官方說明文件](https://support.claude.com/en/articles/16049681-why-claude-switched-models-in-your-conversation-with-opus-5-or-opus-5-5)（聊天介面預設啟用並顯示切換通知），但作者個案是否屬此安全降級機制尚未確認，不可外推為一般對話會任意切換模型。
 
 ---
 

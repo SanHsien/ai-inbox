@@ -7,11 +7,11 @@ author: "Will 保哥 (黃保翕)"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
 written_by: "antigravity/gemini-pro@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
-revised_at: "2026-11-22"
+revised_at: "2026-11-23"
 source_review: full
 source_images: 1
 source_replies: 0
-source_reviewed_at: "2026-11-22"
+source_reviewed_at: "2026-11-23"
 status: pending
 cluster: 3
 cluster_role: "Gemini工具檢索"
@@ -28,7 +28,7 @@ tags:
 
 # 社群技術評析：Will 保哥評釋 Gemini API Tool Retrieval——按需動態載入工具 Schema、Interactions API 限制與計費／快取邊界核實
 
-- **來源文章**：[Will 保哥的技術交流中心 Facebook 貼文](https://www.facebook.com/share/19pihZf2MT/)（規範網址：`https://www.facebook.com/will.fans/posts/1606150151539068/`，發布於 `2026-11-20T00:05+08:00`，依貼文頁顯示時間）
+- **來源文章**：[Will 保哥的技術交流中心 Facebook 貼文](https://www.facebook.com/share/19pihZf2MT/)（規範網址：`https://www.facebook.com/will.fans/posts/1606150151539068/`，發布於 `2026-11-20T16:05:40+08:00`，依貼文頁面資料 `creation_time=1795161940` 與時間戳懸停提示「2026年11月20日 星期五下午4:05」核實）
 - **官方參考源**：[Google AI Studio on X: "Introducing Tool Retrieval in the Gemini API"](https://x.com/GoogleAIStudio/status/2123489911684866251)、[Gemini API Tool Retrieval 官方文件](https://aistudio.google.com/docs/tool-retrieval)、[Gemini API Caching 官方文件](https://aistudio.google.com/docs/caching)（2026-11-22 查核）
 - **發布平台 / 作者**：`facebook.com` / `Will 保哥 (黃保翕)`（姓名依[多奇數位講師介紹](https://www.duotify.com/Training/Detail/32)核實）
 - **分析日期**：`2026-11-22`
@@ -53,8 +53,8 @@ tags:
   3. **按需即時加載與 API 端點硬限制（`v1beta` Interactions API 限定）**：當模型判定需要特定工具時，由伺服器端透過 `tool_search` 動態檢索並載入完整參數定義。**官方硬限制（貼文未提）**：依 [官方限制說明](https://aistudio.google.com/docs/tool-retrieval#limitations)，此功能目前為**預覽版（Preview），僅限 `v1beta` 的 `Interactions API` 支援，傳統的 `generateContent` 端點並不支援**，既有基於 `generateContent` 的程式碼無法僅靠加一個 `tool_search` 參數直接套用。
   4. **託管式伺服器端搜尋**：工具檢索由 Google 伺服器端託管，開發者不需自建本地向量資料庫或檢索微服務。
   5. **支援遠端 MCP 工具集整批延遲載入**：依 [官方說明](https://aistudio.google.com/docs/tool-retrieval)，支援將遠端 Model Context Protocol (MCP) Server 的工具集合整批設定為延後載入（`defer_loading: true`）。
-  6. **快取機制邊界（僅支援隱式快取 Implicit Caching）**：貼文稱「完全相容 Prefix Caching」。依 [官方快取文件](https://aistudio.google.com/docs/caching) 與 Tool Retrieval 規範，**Interactions API 目前不支援顯式快取（Explicit Context Caching），僅相容隱式快取（Implicit Caching）**；隱式快取仍有最低長度門檻與自動命中條件，保持前綴穩定不等於保證命中、折扣或低延遲，實際是否命中須由回應的 `usage.total_cached_tokens` 確認。
-  7. **計費結構與成本反轉邊界（搜尋會產生額外模型呼叫）**：貼文稱「不另收服務費、掛載工具越多越省」。依 [官方計費說明](https://aistudio.google.com/docs/tool-retrieval#pricing)，雖然沒有獨立的檢索服務費，但**每次觸發 `tool_search` 都會產生一次額外的模型呼叫，且搜尋時傳入的完整對話上下文與載入之 Schema Token 會計入 `total_tool_use_tokens` 並按輸入費率計費**。官方明確指出：當工具數量較少、或對話上下文很長且頻繁觸發 `tool_search` 時，**傳統靜態全量載入反而可能比 Tool Retrieval 更便宜**，並非工具越多就必然越省。
+  6. **快取機制邊界（僅支援隱式快取 Implicit Caching）**：貼文稱「也相容 prefix caching，快取不會被破壞」。依 [官方快取文件](https://aistudio.google.com/docs/caching) 與 Tool Retrieval 規範，**Interactions API 目前不支援顯式快取（Explicit Context Caching），僅相容隱式快取（Implicit Caching）**；隱式快取仍有最低長度門檻與自動命中條件，保持前綴穩定不等於保證命中、折扣或低延遲，實際是否命中須由回應的 `usage.total_cached_tokens` 確認。
+  7. **計費結構與成本反轉邊界（搜尋會產生額外模型呼叫）**：貼文寫「計費方式沒有額外收費」與「工具越多，省得越明顯」。依 [官方計費說明](https://aistudio.google.com/docs/tool-retrieval#pricing)，雖然沒有獨立的檢索服務費，但**每次觸發 `tool_search` 都會產生一次額外的模型呼叫，且搜尋時傳入的完整對話上下文與載入之 Schema Token 會計入 `total_tool_use_tokens` 並按輸入費率計費**。官方明確指出：當工具數量較少、或對話上下文很長且頻繁觸發 `tool_search` 時，**傳統靜態全量載入反而可能比 Tool Retrieval 更便宜**，並非工具越多就必然越省。
   8. **支援模型精確清單（官方列舉 6 款型號）**：貼文與官方 X 推文概括寫「支援 Gemini 3.6 以上、包含所有 Gemini 4 模型」；但依 [官方支援型號清單](https://aistudio.google.com/docs/tool-retrieval#supported-models)（2026-11-22 查核），官方採明確型號列舉，目前僅列出 6 款：**`gemini-4-carbon`、`gemini-4-neon`、`gemini-4-hydrogen`、`gemini-4-argon`、`gemini-3.8-flash`、`gemini-3.6-flash`**，不能推論任何版本號較新的模型皆自動支援。
 
 ---

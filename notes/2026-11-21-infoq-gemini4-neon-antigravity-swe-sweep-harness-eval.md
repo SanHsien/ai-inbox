@@ -6,12 +6,12 @@ source_platform: "infoq.cn"
 author: "Tina"
 analyzed_at: "2026-11-21"
 analyzed_by: "antigravity"
-written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031"
-revised_at: "2026-11-22"
+written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
+revised_at: "2026-11-23"
 source_review: full
-source_images: 10
+source_images: 5
 source_replies: 0
-source_reviewed_at: "2026-11-21"
+source_reviewed_at: "2026-11-23"
 status: archived
 cluster: 1
 cluster_role: "Neon+AGY效應"
@@ -40,7 +40,7 @@ tags:
 
 ---
 
-## 1. 原始資料盤點（正文、10 張圖片與評論區）
+## 1. 原始資料盤點（正文、5 張圖片與評論區）
 
 - **Neon 定位與速度優勢**：
   - 2026-11-18 發布，為 Google DeepMind 七週內的第四款 Gemini 4 模型（Argon → Carbon → Hydrogen → Neon）。
@@ -61,11 +61,12 @@ tags:
   GPT-6.2 Sol + Codex  11.6%  →   8.3%  (Codex)         0.7×
   ```
 
-  - **Antigravity Harness 與 Gemini 經過聯合訓練**（[Antigravity 官方文件](https://antigravity.google/docs/overview?tab=ide) 寫明 harness 與 Gemini 模型 co-trained，但沒有量化效果），Neon 針對長程程式 Session 優化了不必要的檔案讀取並改善上下文管理；AGY 並行調度多個 Hydrogen 子代理在各自 Git worktree 中工作並驗證合併。Google 評測方法也註明 Antigravity-CLI 預設有可分派子代理掃描整個程式庫的工具，特別適合 SWE-sweep 這類找 bug 任務——也就是這組比較同時改變了框架與工具能力。
+  - **Antigravity Harness 與 Gemini 經過聯合訓練**（[Antigravity 官方文件](https://antigravity.google/docs/overview?tab=ide) 寫明 harness 與 Gemini 模型 co-trained，但沒有量化效果），Neon 針對長程程式 Session 優化了不必要的檔案讀取並改善上下文管理。原文分兩段說明多代理能力：其一是 Antigravity 可讓多個子 Agent 在各自獨立的 Git worktree 中工作並驗證改動（原文此處未限定子代理由哪款模型擔任）；其二是 Neon 透過 Carbon 推出的 `/swarm` 功能可並行調度多個 Hydrogen 子 Agent，且 Google 未公布這套分工的單任務成本。Google 評測方法也註明 Antigravity-CLI 預設有可分派子代理掃描整個程式庫的工具，特別適合 SWE-sweep 這類找 bug 任務——也就是這組比較同時改變了框架與工具能力；原文亦在該段附註但書：「只公布 mini-SWE 和 Antigravity 兩套配置成績，各項優化貢獻多少、換到其他程式庫能否複現還有待驗證」。
   - **GPT-6.2 Sol 接入 Codex 反而下降**（11.6% → 8.3%），為三組中唯一負向的 Harness 耦合效果。
+  - **原文另列之其他基準數據**：Terminal-Bench 4.1 為 `65.2%`、FrontierCode 2.0 為 `46.2%`。
 
 - **知識工作與視覺推理進步**：
-  - **GDP.pdf**：Neon high 33.4%（Carbon high 28.4%，高出 5 個百分點，與該評測最高成績相當）。
+  - **GDP.pdf**：Neon high 33.4%（Carbon high 28.4%，高出 5 個百分點，與該評測最高成績相當；原文另列 Neon xhigh 為 28.0%）。
   - **AA-Briefcase**：Neon xhigh 1700 Elo（Carbon 1611），仍低於 Claude Fable 5.2 (1785) 和 Sonnet 5.5 (1815)；演示文稿分項升至 1771（新紀錄，超越 Sonnet 5.5 的 1726）。
   - **MKA（多模態知識 Agent）**：Neon Climb WSR 56%（Carbon 54%，落後 Fable 5.2 的 57% 僅 1 個百分點）。
 
@@ -75,8 +76,13 @@ tags:
   - 文章補充 Antigravity 歷史背景：Mohan 與 Douglas Chen 共同創辦 Windsurf → 2025.07 被 Google 招入 DeepMind 並取得非獨家授權 → 四個月後推出 Antigravity。
 
 - **圖片與評論區**：
-  - 共 10 張圖片（含封面圖、Artificial Analysis 智能指數對比圖、SWE-sweep 配對實驗圖、GDP.pdf 對比圖、AA-Briefcase Elo 圖、速度 token 圖、定價表等）。
-  - 評論區：`0` 則留言。
+  - 正文共 **5 張圖片**（2026-11-23 重審確認；GDP.pdf、AA-Briefcase 與速度數字在原文中僅為文字，無對應圖表）：
+    1. Artificial Analysis Intelligence Index 長條圖（Neon 標示 61）
+    2. Intelligence Index vs. Cost per Task 成本散佈圖
+    3. 四款 Gemini 4 模型定價表（Hydrogen、Carbon 嚐鮮價／標準價、Argon、Neon）
+    4. SWE-sweep 配置對照表（Provider harness 與 Mini-SWE harness × 三款模型）
+    5. Varun Mohan 的 X 貼文截圖（宣布 Antigravity 一週年重置所有模型額度，Nov 18, 2026）
+  - 評論區：`0` 則留言（頁面顯示「暫無評論」）。
 
 ---
 
