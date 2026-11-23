@@ -64,6 +64,23 @@
    "author_claim": "full",
    "corrections": 3,
    "report": "reviews/reports/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval/2026-11-23-04-review-codex.md"
+  },
+  {
+   "reviewed_at": "2026-11-24",
+   "reviewer": "codex/gpt-6.1-sol@01a20a57-6cc8-7020-be83-8559f88dd626",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "d8c4e4adaf1e44205f20567d5f173066817d71738ffdeae7d46c8d9ec0015ad9",
+   "hash_version": 1,
+   "verdict": "pass",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 0,
+   "report": "reviews/reports/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval/2026-11-24-05-review-codex.md"
   }
  ]
 }
