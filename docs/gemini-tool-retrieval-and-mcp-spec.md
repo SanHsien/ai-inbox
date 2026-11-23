@@ -61,9 +61,9 @@ User Prompt ──► [ System Prompt + 待命區工具清單 (defer_loading: tr
 | :--- | :--- | :--- |
 | **1. API 端點與預覽狀態** | **僅限預覽版（Preview）`v1beta` Interactions API 支援**；**傳統 `generateContent` 端點不支援**（[官方限制](https://aistudio.google.com/docs/tool-retrieval#limitations)） | 既有基於 `generateContent` 的應用程式無法只加 `tool_search` 就直接使用，必須先遷移至 `v1beta` Interactions API。 |
 | **2. 官方支援模型清單（共 6 款）** | 依 [官方支援型號表](https://aistudio.google.com/docs/tool-retrieval#supported-models)（2026-11-22），僅明確列出 6 款型號：<br>- `gemini-4-carbon`<br>- `gemini-4-neon`<br>- `gemini-4-hydrogen`<br>- `gemini-4-argon`<br>- `gemini-3.8-flash`<br>- `gemini-3.6-flash` | **嚴禁以「Gemini 3.6 以上皆支援」做版本號萬用字元推論**；路由設定必須嚴格核對這 6 個明確型號字串。 |
-| **3. 延遲載入與遠端 MCP** | 單一工具或整台**遠端 MCP Server** 的工具集合可設定 `defer_loading: true`，並搭配內建 `tool_search` 按需載入（[官方說明](https://aistudio.google.com/docs/tool-retrieval)） | 待命工具的 `name` 與 `description` 仍會隨每個待命工具累加進入初始請求，因此初始負擔**並非恆定常數**，而是較完整 Schema 小、但仍隨待命工具數線性增加。 |
-| **4. 計費模型與成本反轉邊界** | 依 [官方計費說明](https://aistudio.google.com/docs/tool-retrieval#pricing)：<br>1. 無獨立的檢索服務費。<br>2. **但觸發 `tool_search` 會產生額外的模型呼叫**：搜尋時的完整對話上下文與被載入工具的 Schema 提示 Token 會計入 `total_tool_use_tokens`，並按該模型的 Input Token 費率計價。 | **並非「掛載工具越多就必然越省」**。官方明確提示：若工具集較小、或對話上下文很長且每輪高頻觸發 `tool_search`（導致長上下文在搜尋呼叫中被重複計費），**傳統靜態載入反而可能比 Tool Retrieval 更便宜**。 |
-| **5. 快取機制（僅隱式快取）** | 依 [官方快取文件](https://aistudio.google.com/docs/caching)，**Interactions API 不支援顯式快取（Explicit Caching），僅相容隱式快取（Implicit Caching）** | 隱式快取需滿足最低 Token 長度門檻與自動命中條件；前綴穩定不代表保證命中或保證低延遲，實務上必須檢查 API 回應的 `usage.total_cached_tokens` 確認實際快取效益。 |
+| **3. 延遲載入、摘要截短與遠端 MCP** | 單一工具或整台**遠端 MCP Server** 的工具集合可設定 `defer_loading: true` 並搭配 `tool_search` 按需載入（[官方說明](https://aistudio.google.com/docs/tool-retrieval)）；依[計費規則](https://aistudio.google.com/docs/tool-retrieval#pricing)，初始上下文僅計入待命工具的 `name` 與 **`short_description`（若未設定 `short_description`，則僅取 `description` 的第一句話）** | 待命工具的名稱與單句摘要仍會隨每個待命工具累加進入初始請求（非恆定常數）；且根據[官方限制](https://aistudio.google.com/docs/tool-retrieval#limitations)，**已被檢索載入的工具會保留在該段對話後續回合中**。 |
+| **4. 計費模型與成本反轉邊界** | 依 [官方計費說明](https://aistudio.google.com/docs/tool-retrieval#pricing)：<br>1. 無獨立的檢索服務費。<br>2. **但觸發 `tool_search` 會產生額外的模型呼叫**：搜尋時的完整對話上下文與被載入工具的 Schema 提示 Token 會計入 `total_tool_use_tokens`，並按該模型的 Input Token 費率計價。 | **並非「掛載工具越多就必然越省」**。官方明確提示：若工具集較小、或對話上下文很長且頻繁觸發新工具搜尋（導致長上下文在搜尋呼叫中被計費），**傳統靜態載入反而可能比 Tool Retrieval 更便宜**。 |
+| **5. 快取機制（僅隱式快取）** | 依 [官方快取文件](https://aistudio.google.com/docs/caching?generate-content=true)，**Interactions API 不支援顯式快取（Explicit Caching），僅相容隱式快取（Implicit Caching）**（註：即使在 `generateContent` 下，顯式快取亦僅適用於支援它的 Gemini 3 / 2.5 模型，**Gemini 4 模型同樣僅支援隱式快取**） | 隱式快取需滿足最低 Token 長度門檻與自動命中條件；前綴穩定不代表保證命中或保證低延遲，實務上必須檢查 API 回應的 `usage.total_cached_tokens` 確認實際快取效益。 |
 
 ---
 
@@ -87,11 +87,11 @@ User Prompt ──► [ System Prompt + 待命區工具清單 (defer_loading: tr
 
 ### 3.1 開發與配置四大設計準則
 
-1. **先算損益再決定 `defer_loading`（Cost Break-Even Check）**：
-   - 設靜態全量 Schema 的 Token 數為 $S_{\text{full}}$，待命摘要的 Token 數為 $S_{\text{stub}}$，單輪對話上下文長度為 $C$，單輪觸發 `tool_search` 的機率為 $p$。
-   - 當觸發 `tool_search` 時，額外搜尋呼叫會消耗約 $C + S_{\text{loaded}}$ 的 `total_tool_use_tokens`。因此，**高頻使用（$p$ 高）或處於極長對話上下文（$C \gg S_{\text{full}}$）的工具，應維持靜態載入（`defer_loading: false`）**；僅將低頻、高 Schema 體積的長尾工具與遠端 MCP 放入待命區。
-2. **優化待命區工具名稱與描述（Retrieval-Friendly Naming & Description）**：
-   - 在 `defer_loading: true` 待命階段，`tool_search` 依賴工具的 `name` 與 `description` 進行匹配。工具描述應簡明寫出「核心動作 + 領域實體 + 適用／排除條件」，既幫助檢索命中，也控制待命摘要本身的 Token 累加量。
+1. **區分「工具使用頻率」與「新搜尋觸發頻率」（Cost Break-Even Check）**：
+   - 依 [官方限制說明](https://aistudio.google.com/docs/tool-retrieval#limitations)，**一旦待命工具在對話中被檢索並載入，其完整 Schema 會保留在該段對話的後續回合中**，後續在同一對話重複呼叫該工具時，並不會再次觸發 `tool_search`。
+   - 因此，**「工具使用頻率」不等於「新搜尋觸發頻率」**。在評估損益時，設靜態全量 Schema 為 $S_{\text{full}}$、待命短摘要為 $S_{\text{stub}}$、觸發新搜尋時的對話上下文為 $C$：每次**新觸發** `tool_search` 會產生約 $C + S_{\text{loaded}}$ 的 `total_tool_use_tokens`。對於幾乎每段新對話都會用到的核心工具，維持靜態載入（`defer_loading: false`）可省去首次搜尋的額外模型呼叫；而對於單次對話中極少動用的大型外掛或遠端 MCP 工具集，則設定 `defer_loading: true`，並依實際 `usage.total_tool_use_tokens` 數據評估成本。
+2. **優化 `short_description` 與 `description` 首句（遵循官方截短規則）**：
+   - 依 [官方計費與機制說明](https://aistudio.google.com/docs/tool-retrieval#pricing)，在 `defer_loading: true` 待命階段，系統初始僅計入並檢索工具的 `name` 與 **`short_description`；若未提供 `short_description`，則僅截取 `description` 的第一句話**。因此務必明確填寫 `short_description`（或將「核心動作 + 領域實體 + 適用條件」濃縮在 `description` 的第一句內），避免重要觸發關鍵詞寫在第二句以後而在待命階段被截斷漏檢。
 3. **監控 `total_tool_use_tokens` 與 `total_cached_tokens` 遙測指標**：
    - 在生產環境或基準測試中，不可僅憑理論推算宣稱省費或加速；必須在日誌中實際記錄 API 回應的 `usage.total_tool_use_tokens`（評估搜尋呼叫開銷）與 `usage.total_cached_tokens`（確認隱式快取是否真正命中）。
 4. **MCP 安全零信任防線不因按需載入而豁免**：

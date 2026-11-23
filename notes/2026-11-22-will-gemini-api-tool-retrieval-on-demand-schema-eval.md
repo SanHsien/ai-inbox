@@ -49,7 +49,7 @@ tags:
 - **留言計數**：0 則公開回覆。
 - **貼文重點與官方規格核實**：
   1. **解決傳統 Tool Calling 痛點（貼文觀點）**：貼文指出當 Agent 掛載大量工具時，每次請求全量傳遞完整參數 Schema 會帶來三大問題——Token 消耗加快、推論延遲增加、候選工具過多使模型容易挑錯。
-  2. **待命區（Standby Pool）設計**：透過 Tool Retrieval（在工具定義加上 `defer_loading: true`），初始請求僅向模型提供待命工具的名稱與功能說明，暫不載入完整參數 Schema（`defer_loading: true` 出自 [官方文件](https://aistudio.google.com/docs/tool-retrieval) 與官方 X 文章，貼文僅提及 `tool_search`）。
+  2. **待命區（Standby Pool）設計與摘要截短規則**：透過 Tool Retrieval（在工具定義加上 `defer_loading: true`），初始請求暫不載入完整參數 Schema（`defer_loading: true` 出自 [官方文件](https://aistudio.google.com/docs/tool-retrieval) 與官方 X 文章，貼文僅提及 `tool_search`）。**官方截短規則（[`#pricing`](https://aistudio.google.com/docs/tool-retrieval#pricing)）**：初始請求僅向模型提供並計入待命工具的名稱（`name`）與 **`short_description`；若未設定 `short_description`，則僅擷取 `description` 的第一句話**（並非將整段完整 `description` 都放進初始上下文）。
   3. **按需即時加載與 API 端點硬限制（`v1beta` Interactions API 限定）**：當模型判定需要特定工具時，由伺服器端透過 `tool_search` 動態檢索並載入完整參數定義。**官方硬限制（貼文未提）**：依 [官方限制說明](https://aistudio.google.com/docs/tool-retrieval#limitations)，此功能目前為**預覽版（Preview），僅限 `v1beta` 的 `Interactions API` 支援，傳統的 `generateContent` 端點並不支援**，既有基於 `generateContent` 的程式碼無法僅靠加一個 `tool_search` 參數直接套用。
   4. **託管式伺服器端搜尋**：工具檢索由 Google 伺服器端託管，開發者不需自建本地向量資料庫或檢索微服務。
   5. **支援遠端 MCP 工具集整批延遲載入**：依 [官方說明](https://aistudio.google.com/docs/tool-retrieval)，支援將遠端 Model Context Protocol (MCP) Server 的工具集合整批設定為延後載入（`defer_loading: true`）。
@@ -79,19 +79,19 @@ User Query ──► [ System Prompt + 待命區工具清單 (defer_loading: tru
 | 比較維度 | 傳統靜態全量宣告模式 | Gemini API Tool Retrieval (`v1beta` Interactions API) |
 | :--- | :--- | :--- |
 | **支援 API 端點** | `generateContent` 與 `Interactions API` 皆支援 | **僅限 `v1beta` Interactions API（預覽版）**，`generateContent` 不支援 |
-| **初始 Context 負擔** | 隨工具數與參數 Schema 複雜度線性增加 | 初始僅含待命工具名稱與描述，單工具負擔較小，但**總量仍隨工具數線性增加**（非恆定不變） |
+| **初始 Context 負擔** | 隨工具數與參數 Schema 複雜度線性增加 | 初始僅含待命工具名稱與 **`short_description`（未設定時僅取 `description` 第一句）**，單工具負擔較小，但**總量仍隨工具數線性增加**（非恆定不變） |
 | **呼叫次數與延遲** | 單輪無須額外檢索呼叫，但初始預填充 Token 較多 | 未觸發工具時初始 Prompt 較短；但**觸發 `tool_search` 時會增加一次伺服器端搜尋模型呼叫**（實際端到端延遲尚無公開基準實測） |
 | **工具選擇機制** | 模型直接從全量 Schema 中挑選（贴文指出工具極多時易受干擾） | 先經 `tool_search` 收斂候選工具再載入完整 Schema（設計目標為降低候選干擾，實際準確率提升幅度尚待基準實測） |
 | **MCP 支援度** | 需將所有啟用的 MCP 工具完整 Schema 放入請求 | 支援將遠端 MCP Server 工具集整批標記 `defer_loading: true` 按需載入 |
-| **快取支援（Caching）** | `generateContent` 支援顯式與隱式快取 | Interactions API **不支援顯式快取，僅相容隱式快取**（須視長度門檻與實際 `usage.total_cached_tokens` 判定是否命中） |
+| **快取支援（Caching）** | `generateContent` 支援隱式快取，並於**支援顯式快取的 Gemini 3 / 2.5 模型**支援顯式快取（**Gemini 4 不支援顯式快取**，見[官方快取文件](https://aistudio.google.com/docs/caching?generate-content=true)） | Interactions API **不支援顯式快取，僅相容隱式快取**（須視長度門檻與實際 `usage.total_cached_tokens` 判定是否命中） |
 | **計費與成本結構** | 按單次請求之全量 Input / Output Token 計費 | 無獨立服務費，但**搜尋呼叫會將完整上下文與載入之 Schema 計入 `total_tool_use_tokens` 按輸入費率計費**；長上下文高頻搜尋時靜態載入可能更省 |
 
 ---
 
 ## 3. 對多代理架構與本機 Agent 治理之實務啟發
 
-1. **工具載入需依「工具規模 × 觸發頻率 × 上下文長度」精算損益（非盲目開啟）**：
-   Tool Retrieval 提供了平台端託管的 `defer_loading` 機制，但因 `tool_search` 會產生包含完整上下文的額外模型呼叫（`total_tool_use_tokens`），在工程落地上必須區分「高頻常駐核心工具（直接靜態載入）」與「低頻龐大外掛／遠端 MCP 工具（設定 `defer_loading: true`）」，避免高頻工具每輪觸發搜尋反而造成雙倍上下文計費。
+1. **工具載入需區分「使用頻率」與「新搜尋觸發頻率」（已載入工具跨輪保留）**：
+   Tool Retrieval 提供了平台端託管的 `defer_loading` 機制，且觸發 `tool_search` 會產生包含完整上下文的額外模型呼叫（`total_tool_use_tokens`）。但依[官方限制與機制說明](https://aistudio.google.com/docs/tool-retrieval#limitations)，**一旦待命工具在對話中被檢索並載入，該工具就會保留在後續對話回合中（無須在同一對話後續每次呼叫該工具時重新觸發搜尋）**——因此**「工具使用頻率」不等於「新搜尋頻率」**，不能概括為高頻呼叫必造成每輪雙倍上下文計費。工程上建議將幾乎每段對話必用的核心工具維持靜態載入（省去首次搜尋呼叫），將低頻龐大外掛／遠端 MCP 工具設為 `defer_loading: true`，並依實際對話的 `usage.total_tool_use_tokens` 評估成本。
 2. **迁移評估須認明 `Interactions API` 端點限制**：
    目前多數既有 Gemini SDK 串接仍基於 `generateContent`；若要引入官方 Tool Retrieval，必須先評估遷移至 `v1beta` Interactions API 及放棄顯式快取（改依賴隱式快取）的架構成本。
 

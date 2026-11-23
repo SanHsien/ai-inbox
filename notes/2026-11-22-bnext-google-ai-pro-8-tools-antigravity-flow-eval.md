@@ -7,7 +7,7 @@ author: "蘇柔瑋"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
 written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
-revised_at: "2026-11-22"
+revised_at: "2026-11-23"
 source_review: full
 source_images: 8
 source_replies: 0
@@ -48,10 +48,10 @@ tags:
 | **Gemini App** | 日常對話、創意發想、多語言翻譯、文字潤飾與程式碼諮詢 | ★☆☆ | 依選用模型與進階功能設定基本使用上限；符合資格者可另購 AI 點數增加用量（與 Flow、Antigravity 共用同一種購買點數） |
 | **Google 搜尋 AI 模式** | 即時網路資訊查詢、規格與價格跨店比價、多模態圖文搜尋 | ★☆☆ | 依搜尋次數與模型配額計算，進階模型提供較高上限 |
 | **Gemini Notebook**（原 NotebookLM） | 匯入 PDF、研究報告與網站，進行可溯源 Grounding 問答與語音摘要 | ★★☆ | 分為**結構上限**（筆記本數量、單本來源文件數）與**共用動態運算額度**（依提示複雜度、模型、音訊／問答功能與對話長度計算，每 5 小時更新，另有每週上限） |
-| **Gmail / Google 文件內建 Gemini** | 跨郵件長串摘要、內聯草擬回覆、段落潤飾與 PTCF 提示框架 | ★★☆ | 依 Google Workspace 帳號方案與語言地區限制 |
+| **Gmail / Google 文件內建 Gemini** | 跨郵件長串摘要、內聯草擬回覆、段落潤飾與 PTCF 提示框架 | ★★☆ | 依**個人 Google AI 方案（如 Google AI Pro）**或 Google Workspace 帳號方案、帳號資格、語言與地區限制而異（[官方權益說明](https://support.google.com/googleone/answer/14534406?hl=en)） |
 | **Google Antigravity** | 桌面端 Agent 開發工具、授權本地資料夾多檔案修改、網站建置與 Vibe Coding | ★★★ | **Pro 基本配額**；用完後可自選是否消耗**購買或一次性促銷取得的 AI 點數**（開關在 Antigravity `Settings > Models`） |
 | **Google Flow** | 文字描述或參考圖片生成影片、運鏡視角控制、社群短影音素材製作 | ★★☆ | **Google Flow credits**：每日 50 點（所有使用者，不累計）+ **Pro 每月另加 1,000 點**（不遞延）；不夠時可另用購買的 AI 點數 |
-| **Google AI Studio** | 開發者模型原型驗證、Prompt 調校、Gemini API Key 配額調用 | ★★★ | 配額（RPM／TPM／RPD）按 Google Cloud 專案計算、不是按 API Key；付費層依模型按每百萬 token 計價；不等於 Pro 吃到飽 |
+| **Google AI Studio** | 開發者模型原型驗證、Prompt 調校、Gemini API Key 配額調用 | ★★★ | 分為**AI Studio 訂閱權益**（AI Pro 可提高 AI Studio 中 `Gemini 4 Neon`、`Nano Banana Pro` 的使用上限，見[官方權益](https://support.google.com/googleone/answer/14534406?hl=en)）與 **Gemini API 專案額度／計費**（API 的 RPM／TPM／RPD 限流按 Google Cloud 專案計算而非按 API Key；付費層依模型按每百萬 token 獨立計價） |
 | **Google Colab** | 雲端 Jupyter/Python 環境、GPU/TPU 算力調用、資料分析與 ML 運算 | ★★★ | 依運算單元（Compute Units）與連線工作階段時長限制 |
 
 ### 8 張插圖實測解析
@@ -76,7 +76,8 @@ tags:
   │     ├── Gemini App（依模型與功能的使用上限）
   │     ├── Google 搜尋 AI 模式
   │     ├── Gemini Notebook（結構上限：筆記本與來源數；共用運算額度：每 5 小時更新＋每週上限）
-  │     ├── Workspace 內建 Gemini（Gmail / Docs）
+  │     ├── Gmail / Google 文件內建 Gemini（個人 Google AI 方案或 Workspace 方案，依帳號資格與語系地區開放）
+  │     ├── Google AI Studio（AI Pro 提高 Studio 內 Gemini 4 Neon 與 Nano Banana Pro 使用上限；Gemini API 則按 Cloud 專案限流與計費）
   │     └── Google Antigravity（Pro 基本配額）
   │
   ├── 【Google Flow credits】（只能用在 Flow）
@@ -93,7 +94,7 @@ tags:
 - **點數不累計**：Flow 每日點數當天用不完不累計，每月點數不遞延到下個月。購買的 AI 點數依購買時的條款到期，官方沒寫固定天數。
 - **防止點數意外燒光的開關**：開關在 Antigravity 的 `Settings > Models`（toggle AI credit overages），不在 Google One；Google One 只能查點數餘額與使用紀錄。長時間執行或自動迴圈的工作，先確認這個開關的狀態。
 - **API 配額不是價格**：AI Studio／Gemini API 的 RPM、TPM、RPD 是限流上限，按 Google Cloud 專案計算（同專案多把 Key 共用）；價格另依模型按每百萬 token 計算。
-- **官方查證（2026-11-22，依獨立審查報告修正）**：[Flow 點數](https://support.google.com/flow/answer/16526234?hl=en)、[Gemini Notebook 用量說明](https://support.google.com/gemininotebook/answer/17670842?hl=en)、[Gemini Notebook 方案限制](https://support.google.com/gemininotebook/answer/16213268?hl=en)、[Antigravity 方案](https://antigravity.google/docs/plans)、[Antigravity 設定](https://antigravity.google/docs/settings)、[Antigravity 權限規則](https://antigravity.google/docs/permissions)、[Antigravity 舊版與企業代理設定](https://antigravity.google/docs/agent-settings)、[Google One AI 點數](https://support.google.com/googleone/answer/16287445)、[Gemini API 限流](https://aistudio.google.com/docs/rate-limits)、[Gemini API 價格](https://aistudio.google.com/docs/pricing)。
+- **官方查證（2026-11-23，依獨立審查報告修正）**：[Google AI Pro 官方權益](https://support.google.com/googleone/answer/14534406?hl=en)、[Flow 點數](https://support.google.com/flow/answer/16526234?hl=en)、[Gemini Notebook 用量說明](https://support.google.com/gemininotebook/answer/17670842?hl=en)、[Gemini Notebook 方案限制](https://support.google.com/gemininotebook/answer/16213268?hl=en)、[Antigravity 方案](https://antigravity.google/docs/plans)、[Antigravity 設定](https://antigravity.google/docs/settings)、[Antigravity 權限規則](https://antigravity.google/docs/permissions)、[Antigravity 舊版與企業代理設定](https://antigravity.google/docs/agent-settings)、[Google One AI 點數](https://support.google.com/googleone/answer/16287445)、[Gemini API 限流](https://aistudio.google.com/docs/rate-limits)、[Gemini API 價格](https://aistudio.google.com/docs/pricing)。
 
 ---
 

@@ -49,6 +49,23 @@
    "author_claim": "full",
    "corrections": 3,
    "report": "reviews/reports/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval/2026-11-23-03-review-claude.md"
+  },
+  {
+   "reviewed_at": "2026-11-23",
+   "reviewer": "codex/gpt-6.1-sol@01a2088f-986b-7502-b1a8-7c9192a1d30c",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "8e5b00daa7174ceac7f7000ffd39914abddb887e062f5ef34528eef4e22ab9b3",
+   "hash_version": 1,
+   "verdict": "pass",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 0,
+   "report": "reviews/reports/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval/2026-11-23-04-review-codex.md"
   }
  ]
 }

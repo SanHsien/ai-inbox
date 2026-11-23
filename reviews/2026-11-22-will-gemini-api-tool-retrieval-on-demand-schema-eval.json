@@ -47,6 +47,23 @@
    "author_claim": "full",
    "corrections": 3,
    "report": "reviews/reports/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval/2026-11-23-03-review-claude.md"
+  },
+  {
+   "reviewed_at": "2026-11-23",
+   "reviewer": "codex/gpt-6.1-sol@01a2089b-24d0-7f53-a807-fff881aacbeb",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "316adfaec19447b7d29af536bd3300f76c64cb4837732d2c4bbb7b6db753e4e5",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 3,
+   "report": "reviews/reports/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval/2026-11-23-04-review-codex.md"
   }
  ]
 }

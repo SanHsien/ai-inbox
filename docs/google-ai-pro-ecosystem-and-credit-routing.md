@@ -12,11 +12,13 @@
   - [`notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md`](../notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md)（Antigravity 與 Gemini 4 Neon 配置）
   - `notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md`（Gemini 4 Neon 與 Antigravity SWE-sweep 評測）
   - [`docs/model-burn-rate-routing-matrix.md`](./model-burn-rate-routing-matrix.md)（多模型選型與配額燃燒率矩陣）
-- **官方文件查證網址（2026-11-22 核實）**：
+- **官方文件查證網址（2026-11-23 核實）**：
+  - [Google AI Pro 官方訂閱權益說明](https://support.google.com/googleone/answer/14534406?hl=en)
   - [Google Flow 點數官方說明](https://support.google.com/flow/answer/16526234?hl=en)
   - [Google One AI 點數官方說明](https://support.google.com/googleone/answer/16287445)
   - [Gemini Notebook 用量與動態額度說明](https://support.google.com/gemininotebook/answer/17670842?hl=en)
   - [Gemini Notebook 方案結構限制](https://support.google.com/gemininotebook/answer/16213268?hl=en)
+  - [Gemini Notebook 回答準確性與問題回報說明](https://support.google.com/gemininotebook/answer/16179536?hl=en)
   - [Google Antigravity 方案與配額說明](https://antigravity.google/docs/plans)
   - [Google Antigravity 設定文件 (`Settings > Models`)](https://antigravity.google/docs/settings)
   - [Google Antigravity 權限模式文件 (`Permissions` 新版預設)](https://antigravity.google/docs/permissions)
@@ -34,11 +36,11 @@
 | :--- | :--- | :--- | :---: | :--- |
 | **1. 聊天與通用助理** | **Gemini App** | 日常問答、發想、多語翻譯、文字改寫、單段程式碼諮詢、掛載 `SKILL.md` | ★☆☆ | 依所選模型與功能享 Pro 基本使用上限；用盡後符合資格者可動用**另購之 AI credits** |
 | **2. 即時檢索與比價** | **Google 搜尋 AI 模式** | 即時網路資訊查證、跨電商規格與價格比對表、圖文多模態搜尋 | ★☆☆ | 依搜尋次數與進階模型配額計算 |
-| **3. 可溯源知識庫** | **Gemini Notebook**（原 NotebookLM） | 匯入多份 PDF、研究報告、網頁進行零幻覺 Grounding 對照摘要與語音導讀 | ★★☆ | 分為**結構限制**（筆記本總數、單本來源文件數上限）與**共用動態運算額度**（依提示複雜度、模型、音訊／問答功能與對話長度計算，每 5 小時更新並設每週上限） |
-| **4. 辦公文件協作** | **Gmail / Google 文件內建 Gemini** | 十餘封長串郵件三欄摘要（已確認／待解／需回覆）、文件段落精簡改寫 | ★★☆ | 依 Google Workspace / Google One 帳號方案與語系支援度開放 |
+| **3. 可溯源知識庫** | **Gemini Notebook**（原 NotebookLM） | 匯入多份 PDF、研究報告、網頁進行可溯源 Grounding 對照摘要與語音導讀（[官方說明](https://support.google.com/gemininotebook/answer/16179536?hl=en)提醒仍可能出現不正確回答，非零幻覺保證） | ★★☆ | 分為**結構限制**（筆記本總數、單本來源文件數上限）與**共用動態運算額度**（依提示複雜度、模型、音訊／問答功能與對話長度計算，每 5 小時更新並設每週上限） |
+| **4. 辦公文件協作** | **Gmail / Google 文件內建 Gemini** | 十餘封長串郵件三欄摘要（已確認／待解／需回覆）、文件段落精簡改寫 | ★★☆ | 依**個人 Google AI 方案（如 Google AI Pro）**或 Google Workspace 帳號方案、帳號資格、語言與地區限制開放（[官方權益](https://support.google.com/googleone/answer/14534406?hl=en)） |
 | **5. 多模態影片生成** | **Google Flow** | 文字或參考圖片生成短片、運鏡視角控制、行銷與社群影音素材製作 | ★★☆ | 先扣 **Google Flow credits**（每日 50 點 + Pro 每月 1,000 點）；不足時才可另用**購買的 AI credits** |
 | **6. 桌面端程式代理** | **Google Antigravity** | 本地儲存庫多檔案讀寫、網站與應用程式建置、終端機測試與自動化工作流 | ★★★ | 先用 **Pro 基本配額**；基本配額用盡後，依 `Settings > Models` 開關決定是否扣**購買的 AI credits** |
-| **7. 開發者原型與 API** | **Google AI Studio** | 模型參數調校、System Prompt 原型驗證、Decisions API / Tool Retrieval 測試 | ★★★ | **獨立於 Pro 訂閱吃到飽**：限流（RPM / TPM / RPD）按 **Google Cloud 專案**計算；付費層按每百萬 Token 計價 |
+| **7. 開發者原型與 API** | **Google AI Studio** | 模型參數調校、System Prompt 原型驗證、Decisions API / Tool Retrieval 測試 | ★★★ | 分為 **AI Studio 訂閱權益**（AI Pro 提高 Studio 內 `Gemini 4 Neon`、`Nano Banana Pro` 使用上限，見[官方權益](https://support.google.com/googleone/answer/14534406?hl=en)）與 **Gemini API 專案額度／計費**（API 限流 RPM / TPM / RPD 按 **Google Cloud 專案**計算；付費層按每百萬 Token 獨立計價） |
 | **8. 雲端算力與資料科學** | **Google Colab** | 雲端 Jupyter Notebook、Python 資料清洗、呼叫 GPU / TPU 執行 ML 訓練與推論 | ★★★ | 依運算單元（Compute Units）餘額與單次工作階段連線時長限制 |
 
 ---
@@ -53,7 +55,7 @@
   ├─► 軌道 A：Google Flow credits（訂閱內含，Flow 專用）
   │     ├── 每日免費配額：50 點 / 日（所有使用者皆有，當日未用完不累計）
   │     ├── Pro 月度配額：1,000 點 / 月（Pro 訂戶專屬，當月未用完不遞延至下月）
-  │     └── 適用範圍限制：僅限 Google Flow 影片生成使用，【不可】拿去扣 Antigravity 或 Gemini App
+  │     └── 適用範圍限制：僅限 Google Flow 內適用功能（含影片、圖片及 Flow Agent 生成）使用，【不可】拿去扣 Antigravity 或 Gemini App
   │
   └─► 軌道 B：AI credits（另外購買或一次性促銷取得，跨產品共用）
         ├── 適用範圍：可跨產品用於 Gemini App、Google Flow（當 Flow 點數用盡後）、Google Antigravity（當基本配額用盡後）

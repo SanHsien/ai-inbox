@@ -47,7 +47,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 
 - **非生成式判斷定位**：不生成自由文字，接收狀態與有界選項集，回傳選擇結果與校準後的信心機率。
 - **判斷原語與輸入模態演進（歷史快照 vs. 現行規格）**：
-  - **2026-09-21 貼文快照**：當時僅支援**純文字 / JSON 輸入**，並提供三種原語——[`Choice`](https://docs.typesafe.ai/primitives/choice)（多選分類，單次請求上限 **255 類**）、`Noul`（布林機率）、`Score`（量尺評分）。
+  - **2026-09-21 貼文快照**：當時僅支援**純文字 / JSON 輸入**，並提供三種原語——[`Choice`](https://docs.typesafe.ai/primitives/choice)（多選分類，**每一道 `Choice` 題目最多 255 個選項**，同一請求可包含多道題目）、`Noul`（布林機率）、`Score`（量尺評分）。
   - **2026-10-14 官方更新後現行規格**：依 [官方更新紀錄 (`Changelog`)](https://docs.typesafe.ai/changelog) 與 [圖片文件](https://docs.typesafe.ai/images)，Jev 自 `2026-10-14` 起**已新增圖片輸入支援（目前仍標為實驗性 Experimental）以及第四種原語 `Box`（邊界框定位）**。因此「Jev 無法讀圖、只能純文字輸入」僅適用於 2026-09 貼文快照，不代表現行 Jev 規格。
 - **延遲與計費**：官方宣稱延遲 70～500 ms（未獨立重測）；不逐字生成自由文字，計費上僅對 Input Token 收費、**Output Token 免費**（見[官方模型文件](https://docs.typesafe.ai/models)；但 API 回應的 `usage.output_tokens` 欄位仍會回傳非零數值，如 [Choice 官方範例](https://docs.typesafe.ai/primitives/choice)為 `34`，不可宣稱回應用量欄位必為零）。
 - **多語言與繁體中文能力狀態（歷史轉述 vs. 現行待測）**：
@@ -73,7 +73,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 | 專案名稱與可追溯出處 | 功能描述 | 實測數據與架構細節核實 |
 | :--- | :--- | :--- |
 | **[`fazlerocks/jevmail`](https://github.com/fazlerocks/jevmail)** | Gmail 五分類（需回覆/通知/促銷/推銷/垃圾），只讀不刪、本機執行 | 無量化準確率數據 |
-| **[`kyotofin/tax-doc-classifier`](https://github.com/kyotofin/tax-doc-classifier)** | 美國報稅文件逐頁辨識 261 種表單 | 專案自述：753 頁空白官方表單測試零分錯（~5% 把握偏低）；每頁 ~\$0.001（未獨立重測）。**架構核實（[`#how-it-works`](https://github.com/kyotofin/tax-doc-classifier#how-it-works)）**：採兩階段分層請求——第一層先區分 7 種頁面類型與 230 個表單選項加 `not_in_this_list`，僅在命中 5 組企業／外國母表（`5471`、`8865`、`8933`、`1118`、`5713`）時才觸發第二次請求細分其 35 張附表；作者說明採用分層是因為這些頁面上母表名稱比附表本身更明確（非因 `Choice` 255 類上限所致） |
+| **[`kyotofin/tax-doc-classifier`](https://github.com/kyotofin/tax-doc-classifier)** | 美國報稅文件逐頁辨識 261 種表單 | 專案自述：753 頁空白官方表單測試零分錯（~5% 把握偏低）；每頁 ~\$0.001（未獨立重測）。**架構核實（[`#how-it-works`](https://github.com/kyotofin/tax-doc-classifier#how-it-works)）**：採兩階段分層請求——第一層先區分 7 種頁面類型與 230 個表單選項加 `not_in_this_list`，僅在命中 5 組企業／外國母表（`5471`、`8865`、`8933`、`1118`、`5713`）時才觸發第二次請求細分其 35 張附表；作者說明採用分層是因為這些頁面上母表名稱比附表本身更明確（非因每道 `Choice` 題目 255 個選項上限所致） |
 | `jev-mail-classifier` | 信件分類並自動貼標籤、搬資料夾（近親專案如 [`ilyamk/jev-gmail-ai-spam-filter-and-labeling`](https://github.com/ilyamk/jev-gmail-ai-spam-filter-and-labeling)） | 無量化數據（貼文二手轉述，【待實測】） |
 
 ### 2.3 語音/電腦/家電操作
@@ -90,9 +90,9 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 | :--- | :--- | :--- |
 | **[`anpicasso/hermes-jev-approvals`](https://github.com/anpicasso/hermes-jev-approvals)** | Hermes Agent 指令語意審核：安全直接放行、可疑才跳出問人 | 依[專案 Metrics](https://github.com/anpicasso/hermes-jev-approvals/blob/main/docs/METRICS.md) 修正數據（**156 個跨三個設定檔分層抽樣真實指令**）：審核速度**快 9.8×**（405 ms vs. 3,968 ms）、需人工中斷次數**少 4.2×**（10 次 vs. 42 次）。原版 153 筆／8.7×／4.4× 實僅含單一設定檔，作者已承認誤報並撤回；該基準仍受限於單機（Linux 2 vCPU、7 GB）、對比單一預設輔助聊天模型，且為未在真實線上會話運行的專案自述（未獨立重測） |
 | **[`valentynkit/jev-belay`](https://github.com/valentynkit/jev-belay)** | Claude Code 說「做完了」時先查對話紀錄找證據 | 專案自述（100 筆單一作者真實會話之模型代理標註停止案例，含 12 筆假完成正例；小樣本且未獨立重測）：區分假完成與誠實停止之 **AUROC 0.976**（對照僅看結案文字 0.777），中位延遲 **346 ms** |
-| **[`noplan-inc/limpet`](https://github.com/noplan-inc/limpet)** | 不讓 AI 寫程式助理提早收工 | 無量化數據（架構設計參考） |
+| **[`noplan-inc/limpet`](https://github.com/noplan-inc/limpet)** | 不讓 AI 寫程式助理提早收工 | 專案 README 自述（[`#readme`](https://github.com/noplan-inc/limpet#readme)）：每次停止檢查延遲約 **0.7 秒**、成本約 **US\$0.0001**（未確認標準化準確率基準，未獨立重測） |
 | **[`y0usaf/pi-jev`](https://github.com/y0usaf/pi-jev)** | Pi 工具風險閘 | 無量化數據 |
-| **[`leepokai/jev-guard`](https://github.com/leepokai/jev-guard)** | 提示注入與危險動作守門 | 無量化數據 |
+| **[`leepokai/jev-guard`](https://github.com/leepokai/jev-guard)** | 提示注入與危險動作守門 | 專案 README 自述（[`#why-jev-price-and-speed-with-sources`](https://github.com/leepokai/jev-guard#why-jev-price-and-speed-with-sources)，2026-09 測試）：台灣直連延遲約 **0.75 秒**，經 Gateway 21 次校準呼叫之 p50 約 **580 ms**（作者自測小樣本，未獨立重現） |
 | **`jev-harness`（同名多專案）** | 判斷閘與影子模式；GitHub 上至少存在 [`nickylin/jev-harness`](https://github.com/nickylin/jev-harness)、[`AntonioCoppe/jev-harness`](https://github.com/AntonioCoppe/jev-harness) 與 [`TianyuCodings/JevHarness`](https://github.com/TianyuCodings/JevHarness) | 貼文未指定單一 owner，各倉庫皆無標準化第三方基準數據 |
 | **[`lgy1027/jevshield`](https://github.com/lgy1027/jevshield)** | LangChain 安全閘（另有同名 [`rajatrao/jevshield`](https://github.com/rajatrao/jevshield)） | 無量化數據 |
 | **[`AshutoshVJTI/progressgate`](https://github.com/AshutoshVJTI/progressgate)** | 偵測 AI 是否原地打轉 | 無量化數據 |
@@ -174,7 +174,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 - [ ] **`T-20261122-05`**｜**[優先級：中]** 將 Jev by TypeSafe AI 生態中與 Agent 安全閘門（`anpicasso/hermes-jev-approvals`、`valentynkit/jev-belay`、`noplan-inc/limpet`、`AshutoshVJTI/progressgate`、`Sraavan/tripwire`）與模型路由（`0xNatoshi/jev-codex-router`、`gargpratyush/jev-router`）相關的專案架構與數據限制，對照 Google Decisions API / Colibri 整理至 `docs/system-one-decision-model-landscape.md`
   - **目標範圍**：`C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3）
   - **執行步驟**：
-    1. 彙整 Jev 生態代表性專案（附確切 `owner/repo` 網址與 2026-09-21 快照日期），區分 2026-09 純文字快照與 2026-10-14 新增實驗性圖片／`Box` 原語之現行規格，釐清僅對 Input Token 收費／Output Token 免費（且回應 `usage.output_tokens` 非零），並註明 `Choice` 上限 255 類與 `kyotofin/tax-doc-classifier` 兩階段分層請求（第一層 230 類加 `not_in_this_list`，5 組母表因頁面母表名稱較明確而觸發第二層拆分 35 附表）架構。
+    1. 彙整 Jev 生態代表性專案（附確切 `owner/repo` 網址與 2026-09-21 快照日期），區分 2026-09 純文字快照與 2026-10-14 新增實驗性圖片／`Box` 原語之現行規格，釐清僅對 Input Token 收費／Output Token 免費（且回應 `usage.output_tokens` 非零），並註明每道 `Choice` 題目最多 255 個選項（同一請求可含多道題目）與 `kyotofin/tax-doc-classifier` 兩階段分層請求（第一層 230 類加 `not_in_this_list`，5 組母表因頁面母表名稱較明確而觸發第二層拆分 35 附表）架構。
     2. 完整記錄 `0xNatoshi/jev-codex-router`（舊政策歷史模擬、非實測配額節省、不代表現行成效）、`anisselbd/jev-phishing-bench`（1,000 釣魚 + 1,000 正常樣本；Jev 1.13 直接判斷 62.6%；5 項訊號經 A 組訓練邏輯迴歸於 B 組保留集達 95.0%、單一訊號 89.4%、確定性正則規則 91.8%）、`anpicasso/hermes-jev-approvals`（修正後 156 筆跨三設定檔 9.8× 速度／4.2× 較少人工中斷，註明舊 153 筆撤回與單機／單一輔助模型限制）、`valentynkit/jev-belay`（100 筆作者會話代理標註停止案例自測 AUROC 0.976、346 ms）與 `zhuyansen/jev-search-rerank-eval`（9,831 組為 Jev/Haiku 模型標註與 Claude 裁決、合併標籤下相對 `bge-m3` 信賴區間跨零、排除 Jev 裁判後顯著較差）之一手方法與限制。
     3. 標明 `Jev 1.14` 已改善多語支援、現行繁中表現為【待實測】，並將本專案的防禦性部署建議（結構化訊號拆解＋下游訓練／確定性規則、置信度門檻）與已確認官方規格分開。
     4. 整合 Agent 守門員模式（指令審核、工具執行前 `PreToolUse` 風險閘 `Sraavan/tripwire`〔允許／詢問／拒絕〕、防提早收工、原地打轉偵測）的通用架構模板。

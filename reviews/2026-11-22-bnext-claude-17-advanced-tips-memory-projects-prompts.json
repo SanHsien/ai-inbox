@@ -83,6 +83,23 @@
    "author_claim": "full",
    "corrections": 2,
    "report": "reviews/reports/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts/2026-11-23-05-review-claude.md"
+  },
+  {
+   "reviewed_at": "2026-11-23",
+   "reviewer": "codex/gpt-6.1-sol@01a20892-137f-77b0-a1d9-fb35ff11a7dc",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "30c2d1f562d4a917d645a26329bd51b66e53561654c26a0ed228b818cbed8299",
+   "hash_version": 1,
+   "verdict": "pass",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 0,
+   "report": "reviews/reports/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts/2026-11-23-06-review-codex.md"
   }
  ]
 }
