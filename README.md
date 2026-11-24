@@ -503,6 +503,7 @@
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群原創盤點：Jev by TypeSafe AI 上線六天 1,528 專案生態——Agent 守門員、模型路由、瀏覽器自動化與分類判斷全景分析](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | `jev`, `typesafe-ai`, `agent-guardrails` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群技術評析：Will 保哥評釋 Gemini API Tool Retrieval——按需動態載入工具 Schema、Interactions API 限制與計費／快取邊界核實](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | `gemini-api`, `tool-retrieval`, `tool-calling` | 0 / 1 |
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[CubeLV 官方教學評析：《交件卡：一步一步，讓你的公司自己跑》——三級漸進式放手、條件式自動核准與多 Agent 人機協作介面設計](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md) | `cubelv`, `hitl`, `handoff-cards` | 0 / 1 |
+| 2026-11-24 | ⚪ | ⏳ 待獨立審查｜[享知 Cultiwise YouTube 實測評析：《Gemini Notebook 短影音製作教學》——中文知識型 Shorts 生成能力、自訂風格提示詞與低動態簡報上限](./notes/2026-11-24-cultiwise-gemini-notebook-shorts-video-eval.md) | `gemini-notebook`, `notebooklm`, `shorts` | 0 / 0 |
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[X 貼文評析：Gonzalo Melo 以 Polycam + 每房 4 張照片 + GPT-6 Astra 打造 Home Assistant 3D 數位孿生控制面板](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | `threejs`, `home-assistant`, `polycam` | 0 / 1 |
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[李廠長來了 YouTube 實作評析：《我給自己招了4個AI員工，每週省下8小時！》——單代理四角色工作流、漸進授權階梯與「幫我找 vs 幫我讀」二元契約](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | `ai-agent`, `claude-cowork`, `chatgpt-work` | 0 / 1 |
 <!-- END GENERATED: index -->
@@ -612,6 +613,7 @@
 - Google八工具：[GoogleAIPro八工具評估](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md)
 - Jev六天開源生態：[Jev六天開源生態盤點](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md)
 - Gemini工具檢索：[Gemini工具按需檢索評估](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md)
+- 筆記短影音評析：[GeminiNotebook短影音實測](./notes/2026-11-24-cultiwise-gemini-notebook-shorts-video-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)

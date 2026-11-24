@@ -205,12 +205,39 @@ def download_audio(url: str, out_dir: Path) -> Path:
     return candidates[0]
 
 
+def _patch_faster_whisper_av_open() -> None:
+    """相容 PyAV >= 17：若 av.open 不接受 metadata_errors，於 faster_whisper.audio 包裝移除該參數。"""
+    try:
+        import av
+        import faster_whisper.audio as fw_audio
+    except (ImportError, AttributeError):
+        return
+
+    if getattr(fw_audio.av.open, "_ai_inbox_patched", False):
+        return
+    orig_open = av.open
+
+    def _compat_open(*args, **kwargs):
+        try:
+            return orig_open(*args, **kwargs)
+        except TypeError as exc:
+            if "metadata_errors" in kwargs and "metadata_errors" in str(exc):
+                kwargs = dict(kwargs)
+                kwargs.pop("metadata_errors", None)
+                return orig_open(*args, **kwargs)
+            raise
+
+    _compat_open._ai_inbox_patched = True  # type: ignore[attr-defined]
+    fw_audio.av.open = _compat_open
+
+
 def transcribe(audio: Path, out_file: Path, lang: str, model_name: str, device: str = "auto") -> tuple[float, str]:
     """以 faster-whisper 轉寫並寫出逐字稿，回傳 (音訊秒數, 實際使用裝置)。
 
     要求 cuda 但環境不支援時直接丟例外，不會靜默退回 CPU。
     """
     _register_cuda_dlls()
+    _patch_faster_whisper_av_open()
     actual_device = _resolve_device(device)
     from faster_whisper import WhisperModel
 

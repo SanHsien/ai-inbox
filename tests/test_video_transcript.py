@@ -236,6 +236,26 @@ class TranscribeTest(unittest.TestCase):
         wm.assert_called_once_with("small", device="cuda", compute_type="float16")
         self.assertEqual(out.read_text(encoding="utf-8"), "[01:05] 你好\n")
 
+    def test_patch_faster_whisper_av_open_drops_unsupported_metadata_errors(self):
+        calls = []
+
+        def fake_open(*args, **kwargs):
+            calls.append(kwargs)
+            if "metadata_errors" in kwargs:
+                raise TypeError("open() got an unexpected keyword argument 'metadata_errors'")
+            return "opened"
+
+        fake_av = types.SimpleNamespace(open=fake_open)
+        fake_fw_audio = types.SimpleNamespace(av=types.SimpleNamespace(open=fake_open))
+        fake_fw = types.SimpleNamespace(audio=fake_fw_audio)
+        with mock.patch.dict(sys.modules, {"av": fake_av, "faster_whisper": fake_fw, "faster_whisper.audio": fake_fw_audio}):
+            video_transcript._patch_faster_whisper_av_open()
+            res = fake_fw_audio.av.open("a.webm", mode="r", metadata_errors="ignore")
+        self.assertEqual(res, "opened")
+        self.assertEqual(len(calls), 2)
+        self.assertIn("metadata_errors", calls[0])
+        self.assertNotIn("metadata_errors", calls[1])
+
 
 if __name__ == "__main__":
     unittest.main()
