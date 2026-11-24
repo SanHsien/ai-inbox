@@ -1,25 +1,27 @@
 # 路線圖
 
 > 本 repo 後續工作的單一真相源。做完一項，就在同一個 commit 刪掉那一列；新工作只加在這裡。
-> 現況段的數字是 2026-11-15 依 `main` 查的快照（第三次），開工前先重查 GitHub。
+> 現況段的數字是 2026-11-24 依 `main`（`2ce397d`）查的快照，開工前先重查 GitHub。
 
 ## 現況
 
-public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（`notes/` 120 篇、`tools/` 31 支 CLI 工具、`docs/` 67 份、`templates/` 22 份、`assets/` 7 組、`tests/` 37 支測試檔；任務數與狀態以 README 任務總表為準），維護者持續直推 main 新增筆記與任務。健康：open issue 0、open PR 0、Dependabot 與 Code scanning 告警各 0，`CI Contract Verification`、`CodeQL` 皆 success；沒有 release。`README.md` 的任務總表、文章索引、四大知識圖譜與全庫產出物導覽皆由 `tools/build_index.py` 自動生成並由 `tools/verify_inbox.py` 執行契約與覆蓋率校驗。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
+public、非 fork 的個人 AI 情報筆記與跨 Agent 任務總管（2026-11-24 依 `main` `2ce397d` 快照：`notes/` 168 篇、`tools/` 31 支 CLI 工具、`docs/` 91 份、`templates/` 23 份、`assets/` 7 組、`tests/` 38 支測試檔；任務數與狀態以 README 任務總表為準，現行 265 項任務：未做 9／進行中 0／已做 177／不做 79），維護者持續直推 main 新增筆記與任務。健康：open issue 0、open PR 0、Dependabot 告警 0、Code scanning 告警 1（alert #9：`tools/check_external_refs.py:101` 的 `py/incomplete-url-substring-sanitization`），`CI Contract Verification`、`CodeQL` 皆 success；沒有 release。獨立審查管線（`queue --legacy 0`）目前 `fix` 道 0 件、待獨立審查／覆核 10 篇（11 項審查工作）。`README.md` 的任務總表、文章索引、四大知識圖譜與全庫產出物導覽皆由 `tools/build_index.py` 自動生成並由 `tools/verify_inbox.py` 執行契約與覆蓋率校驗。沒有依賴宣告檔，freshness 以 `.github/dependabot.yml:3` 的 `fleet-waiver` 登記為刻意不適用。
 
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 舊筆記逐步補審 | 審查制度上線時既有筆記以內容雜湊凍結免審，但其中仍有沒被第二人看過的；Codex 額度常有剩 | 每天排程 `python tools/review_pipeline.py cron --lane codex --legacy 2` 補審最新的免審筆記；`python tools/review_pipeline.py queue --legacy 200` 不再列出 codex 道的 review 工作 | Codex（排程自動）；`fix` 道由整合者 | [規劃](docs/review-pipeline-plan.md) 2.3 節 |
-| 處理 `fix` 道 | 審查要求修改的筆記，要有人照報告改、再送審；放著超過 7 天 `verify_inbox.py` 會失敗 | `python tools/review_pipeline.py queue --lane fix` 為空 | 筆記原作者或整合者 | [AGENTS.md](AGENTS.md) 流程 C 第 3 步 |
+| 舊筆記逐步補審 | 審查制度上線時既有筆記以內容雜湊凍結免審，但其中仍有沒被第二人看過的；Codex 額度常有剩 | 每天排程 `python tools/review_pipeline.py cron --lane codex --legacy 2` 補審最新的免審筆記；`python tools/review_pipeline.py queue --legacy 200` 不再列出 codex 道的 review 工作（若有退回由整合者改完再審） | Codex | [規劃](docs/review-pipeline-plan.md) 2.3 節 |
+| 完成待審筆記之獨立審查與強模型覆核（Codex 道） | 2026-11-21 起新增與修正的筆記尚有未完成獨立審查或觸發強模型覆核者，逾期 7 天 `verify_inbox.py` 會失敗，且其任務無法認領／結案 | 執行 `python tools/review_pipeline.py run --lane codex --commit` 完成 `codex` 道所有非 legacy 的 `review` 與 `audit` 項目；`python tools/review_pipeline.py queue --lane codex --legacy 0` 為空 | Codex | [規劃](docs/review-pipeline-plan.md) 2.4～2.5 節、`tools/review_pipeline.py` |
+| 完成待審筆記之來源補審與強模型覆核（Chrome 道） | 需登入或瀏覽器開啟原始來源的筆記（含社群貼文與觸發強模型 `audit` 的條目）無法由無頭環境完成，逾期 7 天 `verify_inbox.py` 會失敗 | 依 [AGENTS.md](AGENTS.md) 流程 C 第 2 步以 Chrome 工作階段完成 `chrome` 道非 legacy 的 `review` 與 `audit` 項目並入帳；`python tools/review_pipeline.py queue --lane chrome --legacy 0` 為空 | Claude Opus | [AGENTS.md](AGENTS.md) 流程 C 第 2 步、[規劃](docs/review-pipeline-plan.md) 2.4～2.5 節 |
+| 修復 Code scanning open alert #9（`tools/check_external_refs.py`） | CodeQL 報告 `tools/check_external_refs.py:101` 的 `'github.com/' in url` 屬不完整 URL 子字串比對（`py/incomplete-url-substring-sanitization`），可能誤判非 GitHub 網域 | 改以 `urllib.parse.urlsplit(url).hostname`（或既有的 `GITHUB` 正規表達式）精確比對 host，並於 `tests/test_check_external_refs.py` 補上反例測試；`python -m unittest discover -s tests` 通過且 `gh api "repos/SanHsien/ai-inbox/code-scanning/alerts?state=open" --jq 'length'` 為 0 | Claude Sonnet | `tools/check_external_refs.py:101`（GitHub Code scanning alert #9） |
 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 剩餘 `partial` 筆記 | 找到原始貼文的新線索（作者帳號、轉貼、搜尋引擎收錄），或 K-harness 重新公開 | 2026-11-18 再查轉引與存檔後剩 7 篇 `partial`，原始社群貼文都已搜尋過找不到（試過的方式寫在各篇 `source_review_note`，含 Wayback、archive.ph、ecosyste.ms、X／Threads 站內搜尋），轉引與替代來源都已讀完；Reddit 在本環境查不了，要維護者手動搜；pi-hybrid-harness 的 K-harness 連結 404，只剩 ecosyste.ms 的中繼資料。有新線索時照 SOP 第 3 節讀完改 `full`；`verify_inbox.py` 通過 | Claude（Fable 子 agent） | [重審 SOP](docs/source-review-sop.md) 第 5 節 |
+| 剩餘 `partial` 筆記 | 找到原始貼文的新線索（作者帳號、轉貼、搜尋引擎收錄）、K-harness 重新公開、文首題圖恢復截取，或補齊影片畫面截圖與需登入之社群回覆 | 現存 `source_review: partial` 筆記涵蓋 2026-11-18 既有來源查無／404 者、11-18 Carbon 文首題圖截圖逾時，以及 11-24 新增的影片畫面未看與需登入讀取之 X 回覆；補讀完整來源或取得新線索後依 SOP 第 3 節改為 `full` 並送審，`verify_inbox.py` 通過（現行清單以 `rg -n "source_review: partial" notes/` 為準） | Claude Opus | [重審 SOP](docs/source-review-sop.md) 第 5 節 |
 | Windows 常駐 Agent 人工設定與恢復驗收 | 維護者確定要部署，已確認既有排程 owner、登入前提與本機回復管道 | 基準階段的唯讀摘要、睡眠原值與 unknown 項釐清已於 2026-11-19 做完（工具原本讀不到睡眠值的錯已修）。剩下都要維護者在場：基準的 owner 核對、保存工作、本機回復方式；外網、鎖屏、登出、重啟、有界限觀察另需第二台裝置。分別記結果與限制，不以一次成功稱 24×7 穩定 | 維護者 | [維運規格](docs/windows-24x7-agent-ops-spec.md)的人工驗收表、[唯讀證據](docs/evidence/windows-agent-ops-readonly-check.md) 2026-11-19 一節 |
-| pii-guard 隔離動態驗證（採納條件） | 固定版本雙重靜態審計完成、SkillSpector 入口恢復，且另獲隔離實測授權 | 依評估第 8 節，只用一組假資料驗證 Windows ACL、離線／超時、Edit 與載入／既有 hook 相容性；遇停止條件即停，不改全域設定 | 維護者另行指派 | [唯讀評估](docs/pii-guard-readonly-assessment.md)（T-20261115-17，未結案） |
-| 重新確認 `av>=14,<17` 固定版本是否還需要 | `faster-whisper` 發布高於 1.2.1 的版本，或維護者在新機器重裝 `video_transcript` 環境 | 在乾淨 venv 以最新 `faster-whisper` 安裝並跑 `tools/video_transcript.py` 一次；依結果更新或刪除 `docs/video-transcript-howto.md:35` 與 `:53` 的 pin，兩處一致 | Claude Sonnet | `docs/video-transcript-howto.md:35`、`:53`；freshness 深掃報告（2026-10-28）「未處理／留意」 |
+| pii-guard 隔離動態驗證（採納條件） | 固定版本雙重靜態審計完成、SkillSpector 入口恢復，且另獲隔離實測授權 | 依評估第 8 節，只用一組假資料驗證 Windows ACL、離線／超時、Edit 與載入／既有 hook 相容性；遇停止條件即停，不改全域設定 | 維護者 | [唯讀評估](docs/pii-guard-readonly-assessment.md)（T-20261115-17，未結案） |
+| 重新確認 `av>=14,<17` 固定版本是否還需要 | `faster-whisper` 發布高於 1.2.1 的版本，或維護者在乾淨 venv 以 PyAV >= 17 實測 `tools/video_transcript.py`（`2ce397d` 已加執行期相容 patch） | 在乾淨 venv 安裝最新 `faster-whisper` 與 PyAV >= 17 並實跑 `tools/video_transcript.py` 一次；依實測結果更新或刪除 `docs/video-transcript-howto.md:35`、`:45`、`:53` 的 `<17` pin 與說明，各處一致 | Claude Sonnet | `2ce397d`、`docs/video-transcript-howto.md:35`、`:45`、`:53`；freshness 深掃報告（2026-10-28）「未處理／留意」 |
 | 新增依賴宣告檔時改用 dependency-freshness workflow | repo 新增 requirements／pyproject，或 `assets/inbox-band-mod` 補上 package.json | 加上含 `check_dependency_freshness` 的 workflow，並在同一 commit 刪掉 `.github/dependabot.yml:3` 的 `fleet-waiver`；`python -m fleet_ops audit`（repo-fleet-ops）該 repo freshness 欄不再是 `w` | Claude Sonnet | `.github/dependabot.yml:3`；freshness 深掃報告（2026-10-28） |
 | 編輯器匯出 JSON 轉驗證器輸入的轉換工具 | 維護者決定要讓 target-story 編輯器與驗證器串成一條流程 | 新工具把 `assets/target-story-editor` 的匯出餵進 `tools/verify_story_structure.py` 且 exit 0（至少一份編輯器匯出檔）、並有一個測試以固定匯出檔釘住輸出；`docs/target-story-generative-ui-spec.md` 第 3 節改寫並有測試對照 | 維護者 | 深掃報告（2026-10-26）缺陷 9 與「刻意不修」 |
 | `main` 開分支保護（禁止 force-push） | 維護者決定要開（屬 GitHub 安全設定） | 目前 force-push 會讓 CI 的審查紀錄只追加檢查報錯而不是放行；開了之後這類竄改在推送時就被拒。`gh api repos/SanHsien/ai-inbox/branches/main/protection` 不再回 404 | 維護者 | [REVIEW.md](REVIEW.md) 第 17 節、[規劃](docs/review-pipeline-plan.md) 第 4 節 |
