@@ -79,6 +79,28 @@ class ExternalRefsTest(unittest.TestCase):
             with self.subTest(response=response):
                 self.assertEqual(self.run_check(response)[0], 1)
 
+    def test_validate_result_ignores_github_text_outside_hostname(self):
+        for url in [
+                'https://evil.example/?x=github.com/owner/repo',
+                'https://github.com.evil.example/owner/repo',
+                'https://notgithub.com/owner/repo',
+                'https://github.com@evil.example/owner/repo',
+                'https://evil.example/github.com/owner/repo']:
+            with self.subTest(url=url):
+                refs.validate_result(url, {'status': 200})
+
+    def test_validate_result_requires_metadata_for_github_hosts(self):
+        for host in ['github.com', 'www.github.com', 'api.github.com',
+                     'GITHUB.COM']:
+            with self.subTest(host=host):
+                url = f'https://{host}/owner/repo'
+                with self.assertRaisesRegex(ValueError, 'invalid GitHub metadata'):
+                    refs.validate_result(url, {'status': 200})
+                refs.validate_result(url, {
+                    'status': 200, 'full_name': 'owner/repo', 'archived': False})
+        refs.validate_result('https://github.com/owner/repo', {'status': 404})
+        refs.validate_result('https://arxiv.org/abs/2301.12345', {'status': 200})
+
     def test_empty_missing_and_non_directory_exit_two(self):
         (self.notes / 'a.md').unlink()
         for path in [self.notes, self.root / 'missing', Path(__file__)]:

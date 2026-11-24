@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 265 項任務：🔴 未做 8／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 265 項任務：🔴 未做 9／🟡 進行中 0／🟢 已做 177／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -48,6 +48,7 @@
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261122-04` | 🔴 未做 | 中 | 評估 Gemini API Tool Retrieval（`v1beta` Interactions API、`defer_loading` / `tool_search`、計費與隱式快取邊界）在多工具 Agent 之整合規範，並納入 `docs/gemini-tool-retrieval-and-mcp-spec.md` | `C:\GitHub\ai-inbox\docs\gemini-tool-retrieval-and-mcp-spec.md`（收錄於集群 3） | [2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | 2026-11-22 |
 | `T-20261122-05` | 🔴 未做 | 中 | 將 Jev by TypeSafe AI 生態中與 Agent 安全閘門（`anpicasso/hermes-jev-approvals`、`valentynkit/jev-belay`、`noplan-inc/limpet`、`AshutoshVJTI/progressgate`、`Sraavan/tripwire`）與模型路由（`0xNatoshi/jev-codex-router`、`gargpratyush/jev-router`）相關的專案架構與數據限制，對照 Google Decisions API / Colibri 整理至 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3） | [2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | 2026-11-22 |
+| `T-20261113-01` | 🔴 未做 | 低 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | `SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | 2026-11-13 |
 | `T-20261122-01` | 🔴 未做 | 低 | 評估 `SKILL.md` 跨平台（Gemini / Claude / Antigravity）相容性檢查清單，並將「首句技能名稱定錨」與「前置步驟防跳步防呆語法」納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | 2026-11-22 |
 | `T-20261122-02` | 🔴 未做 | 低 | 將 Anthropic Agent Memory「記憶存策略、不存易過時狀態」的案例觀察（寶可夢紀錄）與「反覆走偏時編輯原提問」可選策略納入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | 2026-11-22 |
 | `T-20261122-03` | 🔴 未做 | 低 | 將 Google AI Pro 跨產品 AI 點數制度（Flow 點數、Antigravity 基本配額與溢出點數開關）與 8 大工具能力邊界梳理至 `docs/google-ai-pro-ecosystem-and-credit-routing.md` | `C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3） | [2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | 2026-11-22 |
@@ -57,7 +58,7 @@
 
 ### 🟢 已做（Done）
 
-<details><summary>展開查看已完成任務（共 178 項）</summary>
+<details><summary>展開查看已完成任務（共 177 項）</summary>
 
 | 任務 ID | 完成日期 | 待辦事項摘要 | 驗收證據（PR / Commit / 路徑） | 來源分析文章 |
 | :--- | :---: | :--- | :--- | :--- |
@@ -204,7 +205,6 @@
 | `T-20261108-05` | 2026-11-21 | 擴充 `tools/audit_fullstack_security.py` 與 `docs/production-smoke-security-checklist.md`，納入 Cloudflare Wrangler (`wrangler.toml` / `.dev.vars`) 機密隔離與 D1/KV/R2 邊緣部署防呆檢核 | 稽核退回後第三輪修正 f02e7cc（2026-11-21）：.dev.vars 是否會被提交改為逐目錄呼叫 git check-ignore -v -n --no-index，以 git 實際判定為準；三個重現由 0 項變為有報（根目錄錨定規則不涵蓋 app/.dev.vars、中間層 a/.gitignore 的 !.dev.vars、[vars] 的 DB_PASS／AUTH），另補四個自擬反例（已被追蹤的 .dev.vars、只靠 .git/info/exclude 或全域忽略檔、大小寫變體 .DEV.VARS、子目錄 .dev.vars.local 配錨定規則）；不在 git 工作樹內或 git 不可用時回報無法確認（exit 1）。新增 11 項回歸測試，修正前 10 項紅燈、修正後 tests/test_audit_fullstack_security.py 41 項全過，全庫 733 項通過（skip 2）；verify_inbox [PASS]。限制：鍵名含 KEY、AUTH 單字的一般變數（如 AUTH_URL）會誤報；.dev.vars.example 內容不掃。 | [2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack](./notes/2026-11-08-ccckmit-cloudflare-wrangler-deploy-serverless-stack.md) |
 | `T-20261108-06` | 2026-11-14 | 新增 `tools/check_external_refs.py`：掃描 `notes/` 內的 GitHub repo 與 arXiv 連結，確認存在、是否改名或封存 | 完成（2026-11-14）：tools/check_external_refs.py＋tests（404、改名、封存、私有略過、arXiv、壞快取、gh 輸出 UTF-8 解碼等）。實跑 94 個連結：92 OK，2 個 404 是筆記刻意記錄的「尚未 Fork」，1 改名、1 封存；證據 docs/evidence/external-refs-check-2026-11.md。整合者實跑時抓到 gh 輸出以 cp950 解碼而崩潰的 bug，已修並加回歸測試。 | [2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex](./notes/2026-11-08-claude-code-domain-skill-packs-media-design-social-claudex.md) |
 | `T-20261108-07` | 2026-11-17 | 查證原生顧問功能的計費與快取行為，並在 `SanHsien/agent-advisor` 的成本規則補上「顧問呼叫成本隨對話長度成長」警語 | docs/claude-advisor-cost-check.md（官方文件 2026-11-17 查證：顧問每次收完整對話、Claude Code 不快取、以顧問模型費率計）；SanHsien/agent-advisor commit 5ab3b22 在 Claude 版 cost-policy.md 新增警語並記入 CHANGELOG，dev_check.ps1 通過。 | [2026-11-08-claude-code-builtin-advisor-command-evaluation](./notes/2026-11-08-claude-code-builtin-advisor-command-evaluation.md) |
-| `T-20261113-01` | 2026-11-24 | 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線 | 產出 `docs/claude-artifact-slides-export-test.md`：Claude Pro 可用 Slides 類型；5 頁測試簡報（表格、長條圖、中英混排）實際匯出 PDF（Best）、PowerPoint 目前字型、PowerPoint 基本字型三種，用 PowerPoint COM 與 PyMuPDF 逐頁轉圖比對，另以 pptx skill 產同內容對照版。結果：PDF 版面一致但每頁是點陣圖；PPTX 為可編輯文字框與原生表格，圖表是圖片；目前字型版在沒有 Inter 的電腦上內文變襯線字；pptx skill 有原生圖表但重排版、不忠實。路線建議見文件。未測：投影片轉圖片、PNG、Google Slides、speaker notes。 | [2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) |
 | `T-20261114-01` | 2026-11-14 | 將 GPT-6.1 Terra 額度、credits 單價與 Fast 倍率核實結果增補進模型速查表 | `docs/model-burn-rate-routing-matrix.md` 新增第 9 節（9.1–9.6，約 66 行）。數字取自 2026-11-14 讀取的官方頁：Terra 35–285 對 Sol 15–160、Terra credits 25/1.25/125 對 Sol 50/2.5/250、Fast 2.5x／2x。線索中「額度增加」依官方原文「Overall Work and Codex plan limits are unchanged」標為措辭不精確。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
 | `T-20261114-03` | 2026-11-16 | 用本機用量儀表板實測 Terra 與 Sol 6.1 的實際耗額與任務品質，回填速查表第 9 節 | 完成（2026-11-16）：docs/model-burn-rate-routing-matrix.md 新增 9.7「本機實測」，第 0 節新增【本機實測】分級；原始資料、任務、隱藏驗收測試與腳本放在 docs/evidence/terra-sol-burn-2026-11-16/。3 個小任務 × Terra／Sol 6.1 Standard，加上任務 a 兩邊各跑一次 Fast，共 8 次（2 次撞上游 502 已重跑）。結果：品質全部通過隱藏驗收、看不出差異；Standard 每次多半只動 1 個百分點，解析度不足以驗證 Terra 約 2 倍；Sol Fast 一次 5 點、Standard 1 點，Terra Fast 2 點；Sol Fast 這次反而較慢。限制：每組只有 1 次樣本、額度為帳號共用。 | [2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) |
 | `T-20261114-04` | 2026-11-14 | `tools/verify_inbox.py` 新增檢查：筆記裡沒有任務 ID 的待辦核取方塊一律報錯，並清掉 11-11 至 11-14 六篇筆記的殘留清單 | 完成（2026-11-14）：verify_inbox 新增 check_idless_checkboxes（圍欄外、非 templates/），函式測試 3 項＋實際執行 verify_inbox.py 的整合測試；清理前對 7 篇筆記報 32 行缺 ID（exit 1），清理後 PASS。六篇筆記同時補齊範本章節並依審查改寫事實。 | [2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) |
@@ -436,7 +436,7 @@
 | 2026-11-11 | ⚪ | [Meta Astryx 開源設計系統：8 年內建、agent-ready、150+ 元件](./notes/2026-11-11-aiposthub-meta-astryx-open-source-design-system-agent-ready.md) | `design-system`, `meta`, `astryx` | 0 / 0 |
 | 2026-11-12 | ⚪ | [Claude Duet 研究預覽附贈 limit resets（Pro 3 次、Max／Ultra 1 次，12/15 到期）](./notes/2026-11-12-austinlo49-claude-duet-resets-fable52.md) | `claude`, `claude-duet`, `fable-5-2` | 0 / 0 |
 | 2026-11-13 | ⚪ | [Editkin：免費 Windows 本地優先 AI 剪輯器（0.16 起轉閉源 freeware，原始碼凍結於 0.15）](./notes/2026-11-13-hao0321-editkin-free-ai-video-editor-windows.md) | `editkin`, `video-editing`, `local-first` | 0 / 0 |
-| 2026-11-13 | 🟢 | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 1 / 1 |
+| 2026-11-13 | 🔴 | [Claude Code Artifacts 內建簡報編輯器：Canva 式介面、可分享、可匯出 PPTX/PDF](./notes/2026-11-13-hujiaxi-claude-code-artifacts-slides-canva-killer.md) | `claude-code`, `artifacts`, `slides` | 0 / 1 |
 | 2026-11-13 | ⚪ | [Muse 指揮 10 個免費工具組 AI 工作室：Kaggle/Simular/OpenRouter 等零成本架構](./notes/2026-11-13-soveryai9319-muse-free-ai-studio-10-tools.md) | `muse`, `free-tier`, `kaggle` | 0 / 0 |
 | 2026-11-14 | 🟢 | [GPT-6.1 Terra 額度與 Fast 倍率核實：Plus 約 Sol 的 2 倍、Fast 2.5x，但整體額度並未增加](./notes/2026-11-14-gpt-6-1-terra-codex-work-quota-fast-mode-routing.md) | `gpt-6-1-terra`, `codex`, `chatgpt-work` | 2 / 2（+1 不做） |
 | 2026-11-14 | 🟢 | [Claude Code 開越多越累：總 PM 派工 + claude-inbox 決定收件匣（Windows 原生不支援）](./notes/2026-11-14-jackle-chen-claude-code-super-pm-and-claude-inbox.md) | `claude-code`, `multi-session`, `super-pm` | 2 / 2 |
@@ -744,8 +744,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_tool_fallback_matrix.py`](./tools/verify_tool_fallback_matrix.py) | 檢查「產出導向工具流矩陣」設定檔（JSON）：五條產出路徑都要有主力與合格備援， | [`tests/test_verify_tool_fallback_matrix.py`](./tests/test_verify_tool_fallback_matrix.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 92 份）
-<details><summary>展開查看全部 92 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 91 份）
+<details><summary>展開查看全部 91 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -774,7 +774,6 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/buzz-nostr-agent-architecture.md`](./docs/buzz-nostr-agent-architecture.md) | Block Buzz 架構解析與 Nostr + ACP/MCP 代理人協同設計指引 |
 | [`docs/ccc-mcp-architecture-review.md`](./docs/ccc-mcp-architecture-review.md) | ccc-mcp 架構唯讀檢閱：與 agent-relay、claim-guard 的對照 |
 | [`docs/claude-advisor-cost-check.md`](./docs/claude-advisor-cost-check.md) | Claude Code 原生顧問（`/advisor`）計費與快取行為查證 |
-| [`docs/claude-artifact-slides-export-test.md`](./docs/claude-artifact-slides-export-test.md) | Claude Artifact「Slides」簡報匯出實測 |
 | [`docs/claude-bughunter-security-audit.md`](./docs/claude-bughunter-security-audit.md) | Claude-BugHunter 零信任安全審查：不安裝，只借鏡兩段純文字清單 |
 | [`docs/claude-code-domain-skill-packs-and-mcp-audit.md`](./docs/claude-code-domain-skill-packs-and-mcp-audit.md) | Claude Code 垂直領域 Skill 與 MCP 生態系盤點及安全採納規範 |
 | [`docs/claude-code-mods-windows-validation.md`](./docs/claude-code-mods-windows-validation.md) | Claude Code Mods 自體改造機制 Windows 11 本機二進位深度查驗與替代方案驗證報告 |

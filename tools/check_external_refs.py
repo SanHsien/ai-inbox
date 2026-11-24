@@ -11,6 +11,7 @@ import re
 import shutil
 import subprocess
 from urllib.error import HTTPError
+from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 
@@ -98,7 +99,9 @@ def query_ref(url: str, *, transport: str = 'auto') -> dict:
 def validate_result(url: str, result: object) -> None:
     if not isinstance(result, dict) or type(result.get('status')) is not int:
         raise ValueError('invalid response schema')
-    if result['status'] in (200, 301, 302, 307, 308) and 'github.com/' in url:
+    host = urlsplit(url).hostname or ''
+    if (result['status'] in (200, 301, 302, 307, 308)
+            and (host == 'github.com' or host.endswith('.github.com'))):
         name = result.get('full_name')
         if (not isinstance(name, str)
                 or not re.fullmatch(r'[\w-]+/[\w.-]+', name)
