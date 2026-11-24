@@ -1,5 +1,7 @@
 # REVIEW — 全庫覆核（latest-only）
 
+- 2026-11-25：已修復 CodeQL alert #9（`py/incomplete-url-substring-sanitization`）；`validate_result()` 改用 `urlsplit(url).hostname`，只比對 `github.com` 或真正的子網域，避免查詢參數、路徑及偽造網域誤判。修復 commit：`c9d747cdf79d8e2ce39ae2fb41ddd6ffc6d9f447`。反例測試 `test_validate_result_ignores_github_text_outside_hostname` 在舊邏輯失敗，修後通過；合法網域與 metadata 驗證亦有測試。驗收：`python -m unittest discover -s tests`（951 項、跳過 4 項）及 `python tools/verify_inbox.py` 均 exit 0。測試暫存目錄限於工作樹，程序環境的 `GIT_CEILING_DIRECTORIES` 設為該暫存目錄，避免非 Git repo 案例找到上層工作樹。
+
 - **覆核日期**：2026-10-25
 - **範圍**：`tools/`、`tests/`、`docs/`、`templates/`、`assets/`、`notes/` 全部已提交內容（約 2.7 萬行），以及 75 項「已做」任務的證據
 - **方式**：分 5 批獨立覆核（核心工具、外部裁判驗證器、功能型工具、文件範本成品、筆記證據），逐項造反例或實跑驗證；互動頁面以瀏覽器實際開啟檢查主控台
