@@ -6,7 +6,7 @@ source_platform: "facebook"
 author: "胡嘉璽"
 analyzed_at: "2026-11-13"
 analyzed_by: "antigravity"
-status: pending
+status: done
 cluster: 1
 cluster_role: "簡報工作流"
 short_title: "Claude Artifacts簡報"
@@ -30,7 +30,7 @@ tags:
 - **來源連結**：[Facebook 貼文：胡嘉璽](https://www.facebook.com/share/1CRZAaRBW7/)
 - **發布平台 / 作者**：`facebook` / `胡嘉璽`
 - **分析日期**：`2026-11-13`
-- **當前狀態**：`🔴 未做 (Pending)`
+- **當前狀態**：`🟢 已完成 (Done)`
 
 ---
 
@@ -184,10 +184,12 @@ https://claude.ai/code/artifact/<uuid>   預設私有（作者圖上的簡報網
 
 ## 4. 拆解待辦事項（Action Items）
 
-- [ ] **`T-20261113-01`**｜**[優先級：低]** 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線
+- [x] **`T-20261113-01`**｜**[優先級：低]** 實測 Claude Code 簡報 Artifact 的 PPTX／PDF 匯出品質，決定本機簡報走哪條路線
   - **目標範圍**：`SanHsien/ai-inbox` 的 `docs/`；本機 Claude Code 互動 session
   - **具體做法**：在 claude.ai 登入的 Claude Code 互動 session，用一份不含敏感資料的 5 頁大綱（含 1 張表格、1 張圖、中英文混排）請它做簡報，確認是否走 `Artifact` 的簡報類型；從檢視頁各下載一次 PDF、PowerPoint（current fonts）、PowerPoint（basic fonts），用 PowerPoint 開啟比對版面、字型、表格是否與網頁一致。同一份大綱再用 `pptx` skill 產一次作對照。
   - **驗收標準（DoD）**：產出 `docs/claude-artifact-slides-export-test.md`，記錄：實際觸發的工具呼叫、帳號方案是否可用、三種匯出檔逐頁比對結果（跑版處逐項列出）、與 `pptx` skill 產出的對照、最後的路線建議；若本機方案沒有這個功能，照實記錄並關閉任務。
+  - **完成日期**：2026-11-24
+  - **實作紀錄 / 證據**：產出 `docs/claude-artifact-slides-export-test.md`：Claude Pro 可用 Slides 類型；5 頁測試簡報（表格、長條圖、中英混排）實際匯出 PDF（Best）、PowerPoint 目前字型、PowerPoint 基本字型三種，用 PowerPoint COM 與 PyMuPDF 逐頁轉圖比對，另以 pptx skill 產同內容對照版。結果：PDF 版面一致但每頁是點陣圖；PPTX 為可編輯文字框與原生表格，圖表是圖片；目前字型版在沒有 Inter 的電腦上內文變襯線字；pptx skill 有原生圖表但重排版、不忠實。路線建議見文件。未測：投影片轉圖片、PNG、Google Slides、speaker notes。
 
 **參考連結**：
 - 官方 plugin：https://github.com/anthropics/claude-plugins-official/tree/main/plugins/project-artifact
