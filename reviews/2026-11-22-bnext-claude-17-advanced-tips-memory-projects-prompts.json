@@ -115,6 +115,21 @@
    "author_claim": "full",
    "corrections": 2,
    "report": "reviews/reports/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts/2026-11-24-07-review-claude.md"
+  },
+  {
+   "reviewed_at": "2026-11-24",
+   "reviewer": "claude/opus-5.5@e6ba4015-0a88-4012-9e1a-cef3c3754e71",
+   "role": "review",
+   "scope": [
+    "source"
+   ],
+   "content_sha256": "30c2d1f562d4a917d645a26329bd51b66e53561654c26a0ed228b818cbed8299",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts/2026-11-24-08-review-claude.md"
   }
  ]
 }
