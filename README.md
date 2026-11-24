@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 262 項任務：🔴 未做 6／🟡 進行中 0／🟢 已做 177／⚪ 不做 79
+> 共 263 項任務：🔴 未做 7／🟡 進行中 0／🟢 已做 177／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -52,6 +52,7 @@
 | `T-20261122-01` | 🔴 未做 | 低 | 評估 `SKILL.md` 跨平台（Gemini / Claude / Antigravity）相容性檢查清單，並將「首句技能名稱定錨」與「前置步驟防跳步防呆語法」納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | 2026-11-22 |
 | `T-20261122-02` | 🔴 未做 | 低 | 將 Anthropic Agent Memory「記憶存策略、不存易過時狀態」的案例觀察（寶可夢紀錄）與「反覆走偏時編輯原提問」可選策略納入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | 2026-11-22 |
 | `T-20261122-03` | 🔴 未做 | 低 | 將 Google AI Pro 跨產品 AI 點數制度（Flow 點數、Antigravity 基本配額與溢出點數開關）與 8 大工具能力邊界梳理至 `docs/google-ai-pro-ecosystem-and-credit-routing.md` | `C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3） | [2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | 2026-11-22 |
+| `T-20261124-01` | 🔴 未做 | 低 | 在 `docs/scan-to-threejs-spatial-agent-spec.md` 增補「3D 數位孿生裝置節點（`entityId`）綁定、狀態 HUD 投影與點擊事件（Raycasting）回呼契約」章節 | `C:\GitHub\ai-inbox\docs\scan-to-threejs-spatial-agent-spec.md`（收錄於集群 2；僅擴充規格，不強制引入 Home Assistant 實機部署） | [2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | 2026-11-24 |
 
 ### 🟢 已做（Done）
 
@@ -499,6 +500,7 @@
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Google AI Pro 八大工具全景實測——Antigravity 電腦檔案代理、Flow 影片生成與跨產品 AI 點數制](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | `google-ai-pro`, `gemini`, `antigravity` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群原創盤點：Jev by TypeSafe AI 上線六天 1,528 專案生態——Agent 守門員、模型路由、瀏覽器自動化與分類判斷全景分析](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | `jev`, `typesafe-ai`, `agent-guardrails` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群技術評析：Will 保哥評釋 Gemini API Tool Retrieval——按需動態載入工具 Schema、Interactions API 限制與計費／快取邊界核實](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | `gemini-api`, `tool-retrieval`, `tool-calling` | 0 / 1 |
+| 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[X 貼文評析：Gonzalo Melo 以 Polycam + 每房 4 張照片 + GPT-6 Astra 打造 Home Assistant 3D 數位孿生控制面板](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | `threejs`, `home-assistant`, `polycam` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -567,6 +569,7 @@
 - 網站六技能與驗證閘：[建站六技能與驗證討論](./notes/2026-11-19-omar-six-skills-web-ai-build-and-verification-gate.md)
 - 海報視覺解構Prompt：[關聖帝君瑞士Riso海報](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md)
 - 代碼影片創意分鏡：[Opus5.5影片十案例](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md)
+- 3D智慧家庭儀表板：[3D智慧家庭數位孿生](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
