@@ -6,8 +6,8 @@ source_platform: "使用者直接提供全文（疑似 Threads / Facebook 原創
 author: "楊三賢 (SanHsien)"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
-written_by: "antigravity/claude-opus-4.6@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; antigravity/gemini@88a0bc60-2711-4499-b5fd-829fab9292d8"
-revised_at: "2026-11-23"
+written_by: "antigravity/claude-opus-4.6@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; antigravity/gemini@88a0bc60-2711-4499-b5fd-829fab9292d8; codex/gpt-6.1-sol@01a20b8d-8bc2-7191-a7cc-7a104940ed47"
+revised_at: "2026-11-24"
 source_review: unavailable
 source_reviewed_at: "2026-11-22"
 source_review_note: "使用者於對話直接提供完整正文與留言區專案分類清單全文（無原始貼文 URL，無法於網頁重開原貼文核對圖片與留言計數）"
@@ -49,7 +49,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 - **判斷原語與輸入模態演進（歷史快照 vs. 現行規格）**：
   - **2026-09-21 貼文快照**：當時僅支援**純文字 / JSON 輸入**，並提供三種原語——[`Choice`](https://docs.typesafe.ai/primitives/choice)（多選分類，**每一道 `Choice` 題目最多 255 個選項**，同一請求可包含多道題目）、`Noul`（布林機率）、`Score`（量尺評分）。
   - **2026-10-14 官方更新後現行規格**：依 [官方更新紀錄 (`Changelog`)](https://docs.typesafe.ai/changelog) 與 [圖片文件](https://docs.typesafe.ai/images)，Jev 自 `2026-10-14` 起**已新增圖片輸入支援（目前仍標為實驗性 Experimental）以及第四種原語 `Box`（邊界框定位）**。因此「Jev 無法讀圖、只能純文字輸入」僅適用於 2026-09 貼文快照，不代表現行 Jev 規格。
-- **延遲與計費**：官方宣稱延遲 70～500 ms（未獨立重測）；不逐字生成自由文字，計費上僅對 Input Token 收費、**Output Token 免費**（見[官方模型文件](https://docs.typesafe.ai/models)；但 API 回應的 `usage.output_tokens` 欄位仍會回傳非零數值，如 [Choice 官方範例](https://docs.typesafe.ai/primitives/choice)為 `34`，不可宣稱回應用量欄位必為零）。
+- **延遲與計費**：原筆記所載延遲 70～500 ms 改列**來源未查證**，不視為已確認的官方宣稱；2026-11-24 核對[官方使用案例](https://docs.typesafe.ai/concepts/use-case-map)與[模型文件](https://docs.typesafe.ai/models)未找到此區間，使用案例頁目前描述約 150 ms（官方概述，未附此處量測條件、未獨立重測），兩者均不能當作端到端操作延遲。不逐字生成自由文字，計費上僅對 Input Token 收費、**Output Token 免費**（見[官方模型文件](https://docs.typesafe.ai/models)；但 API 回應的 `usage.output_tokens` 欄位仍會回傳非零數值，如 [Choice 官方範例](https://docs.typesafe.ai/primitives/choice)為 `34`，不可宣稱回應用量欄位必為零）。
 - **多語言與繁體中文能力狀態（歷史轉述 vs. 現行待測）**：
   - 貼文轉述 2026-09 初版說明稱「英文最準；中文、日文、韓文可用但精準度較低」（本次查核未在現行官方文件找到中、日、韓精準度排序頁）。
   - 依 [官方更新紀錄](https://docs.typesafe.ai/changelog)，官方僅確認 **`Jev 1.14` 改善了多語言支援（Improved multilingual support）**。這既不能證明中文限制已完全消失，也不足以將 9 月舊說法直接當作已確認的現行官方規格；**現行版本在繁體中文環境的實際準確率應列為【待實測】**。
@@ -80,7 +80,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 
 | 專案名稱與可追溯出處 | 功能描述 | 實測數據與來源限制 |
 | :--- | :--- | :--- |
-| **[`moritzkremb/jev-voice-browser`](https://github.com/moritzkremb/jev-voice-browser)** | 語音操作瀏覽器 | 專案自述：每說一字約 ~0.3 秒判斷意圖與點擊目標（未獨立重測） |
+| **[`moritzkremb/jev-voice-browser`](https://github.com/moritzkremb/jev-voice-browser)** | 語音操作瀏覽器 | 作者自述每次 Jev 判斷請求約 **250～350 ms**；部分逐字稿更新觸發請求，另有 200 ms 防抖、並行請求與完整指令判斷，**不是逐字延遲或語音操作端到端延遲**（[README](https://github.com/moritzkremb/jev-voice-browser#readme)，2026-11-24 核對；未獨立重測） |
 | **[`AboveColin/HA-Jev`](https://github.com/AboveColin/HA-Jev)** | Home Assistant 居家自動化問答與觸發 | 無量化基準數據 |
 | `jev-use`、`mobile-jev` | 一句話操作 Mac（讀系統輔助功能資訊，2026-09 快照時點）、手機畫面操作（相關清單見 [`walidboulanouar/awesome-jev-use-cases`](https://github.com/walidboulanouar/awesome-jev-use-cases)） | 無量化數據（貼文二手轉述，【待實測】） |
 
@@ -178,4 +178,5 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
     2. 完整記錄 `0xNatoshi/jev-codex-router`（舊政策歷史模擬、非實測配額節省、不代表現行成效）、`anisselbd/jev-phishing-bench`（1,000 釣魚 + 1,000 正常樣本；Jev 1.13 直接判斷 62.6%；5 項訊號經 A 組訓練邏輯迴歸於 B 組保留集達 95.0%、單一訊號 89.4%、確定性正則規則 91.8%）、`anpicasso/hermes-jev-approvals`（修正後 156 筆跨三設定檔 9.8× 速度／4.2× 較少人工中斷，註明舊 153 筆撤回與單機／單一輔助模型限制）、`valentynkit/jev-belay`（100 筆作者會話代理標註停止案例自測 AUROC 0.976、346 ms）與 `zhuyansen/jev-search-rerank-eval`（9,831 組為 Jev/Haiku 模型標註與 Claude 裁決、合併標籤下相對 `bge-m3` 信賴區間跨零、排除 Jev 裁判後顯著較差）之一手方法與限制。
     3. 標明 `Jev 1.14` 已改善多語支援、現行繁中表現為【待實測】，並將本專案的防禦性部署建議（結構化訊號拆解＋下游訓練／確定性規則、置信度門檻）與已確認官方規格分開。
     4. 整合 Agent 守門員模式（指令審核、工具執行前 `PreToolUse` 風險閘 `Sraavan/tripwire`〔允許／詢問／拒絕〕、防提早收工、原地打轉偵測）的通用架構模板。
-  - **驗收標準（DoD）**：產出 `docs/system-one-decision-model-landscape.md`，含 Jev（區分 9 月快照與 10 月圖片/`Box` 更新、僅對輸入收費／輸出免費且區分 `usage.output_tokens` 非零欄位）/ Decision 1 / Colibri 三方對照表、各專案 `owner/repo` 出處與實驗限制（釣魚信 5 訊號經 A 組訓練邏輯迴歸於保留集達 95.0% 與正則 91.8% 對照、指令審核修正後 156 筆 9.8×/4.2×、`Tripwire` 為 `PreToolUse` 風險閘、`jev-belay` 100 筆自測 AUROC 0.976、搜尋排序模型標註偏差、路由舊政策模擬聲明），且 `python tools/verify_inbox.py` 驗證通過。
+    5. 同步修正既有產出第 2 節的延遲比較與第 3.1 節「即時語音操控」：70～500 ms 保留為來源未查證，不作已確認官方數據；語音案例改為作者自述每次 Jev 請求 250～350 ms，註明非逐字或端到端延遲，附來源與核對日期，保留未獨立重測限制。
+  - **驗收標準（DoD）**：產出 `docs/system-one-decision-model-landscape.md`，含 Jev（區分 9 月快照與 10 月圖片/`Box` 更新、僅對輸入收費／輸出免費且區分 `usage.output_tokens` 非零欄位）/ Decision 1 / Colibri 三方對照表、各專案 `owner/repo` 出處與實驗限制（釣魚信 5 訊號經 A 組訓練邏輯迴歸於保留集達 95.0% 與正則 91.8% 對照、指令審核修正後 156 筆 9.8×/4.2×、`Tripwire` 為 `PreToolUse` 風險閘、`jev-belay` 100 筆自測 AUROC 0.976、搜尋排序模型標註偏差、路由舊政策模擬聲明），既有第 2 節與第 3.1 節亦須按上述延遲單位與證據分級修正、附來源與核對日期，且 `python tools/verify_inbox.py` 驗證通過。

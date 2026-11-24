@@ -6,8 +6,8 @@ source_platform: "bnext.com.tw (數位時代)"
 author: "蘇柔瑋"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
-written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
-revised_at: "2026-11-23"
+written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; codex/gpt-6.1-sol@01a20b8d-8bc2-7191-a7cc-7a104940ed47"
+revised_at: "2026-11-24"
 source_review: full
 source_images: 8
 source_replies: 0
@@ -51,10 +51,10 @@ tags:
 | **Gmail / Google 文件內建 Gemini** | 跨郵件長串摘要、內聯草擬回覆、段落潤飾與 PTCF 提示框架 | ★★☆ | 依**個人 Google AI 方案（如 Google AI Pro）**或 Google Workspace 帳號方案、帳號資格、語言與地區限制而異（[官方權益說明](https://support.google.com/googleone/answer/14534406?hl=en)） |
 | **Google Antigravity** | 桌面端 Agent 開發工具、授權本地資料夾多檔案修改、網站建置與 Vibe Coding | ★★★ | **Pro 基本配額**；用完後可自選是否消耗**購買或一次性促銷取得的 AI 點數**（開關在 Antigravity `Settings > Models`） |
 | **Google Flow** | 文字描述或參考圖片生成影片、運鏡視角控制、社群短影音素材製作 | ★★☆ | **Google Flow credits**：每日 50 點（所有使用者，不累計）+ **Pro 每月另加 1,000 點**（不遞延）；不夠時可另用購買的 AI 點數 |
-| **Google AI Studio** | 開發者模型原型驗證、Prompt 調校、Gemini API Key 配額調用 | ★★★ | 分為**AI Studio 訂閱權益**（AI Pro 可提高 AI Studio 中 `Gemini 4 Neon`、`Nano Banana Pro` 的使用上限，見[官方權益](https://support.google.com/googleone/answer/14534406?hl=en)）與 **Gemini API 專案額度／計費**（API 的 RPM／TPM／RPD 限流按 Google Cloud 專案計算而非按 API Key；付費層依模型按每百萬 token 獨立計價） |
+| **Google AI Studio** | 開發者模型原型驗證、Prompt 調校、Gemini API Key 配額調用 | ★★★ | 分為**AI Studio 訂閱權益**（AI Pro 可提高 AI Studio 中 `Gemini 4 Neon`、`Nano Banana Pro` 的使用上限，見[官方權益](https://support.google.com/googleone/answer/14534406?hl=en)）與 **Gemini API 專案額度／計費**（API 的 RPM／TPM／RPD 限流按 Google Cloud 專案計算而非按 API Key；API 獨立計費，依模型與功能按 token、圖片或其他單位計價） |
 | **Google Colab** | 雲端 Jupyter/Python 環境、GPU/TPU 算力調用、資料分析與 ML 運算 | ★★★ | 依運算單元（Compute Units）與連線工作階段時長限制 |
 
-### 8 張插圖實測解析
+### 8 張插圖實測解析（報導案例，二手轉述，未獨立實測）
 1. **圖 1（Google 搜尋 AI 模式）**：展示小家庭掃地機器人多維度比價與規格表輸出，並標註即時商家來源。
 2. **圖 2（Gemini Notebook）**：展示匯入 3 份研究報告後，針對共同結論、數據差異與趨勢之對照摘要。
 3. **圖 3（Gmail 內建 Gemini）**：展示針對十餘封來回郵件長串，快速萃取「已確認事項、待解問題、需回覆內容」之三欄摘要。
@@ -93,7 +93,7 @@ tags:
 - **兩種點數不要混為一談**：訂閱附贈的是 Google Flow credits，只能用在 Flow；Antigravity 超額用的是購買或一次性促銷取得的 AI credits。官方說明沒有寫 Flow 點數能拿去扣 Antigravity。
 - **點數不累計**：Flow 每日點數當天用不完不累計，每月點數不遞延到下個月。購買的 AI 點數依購買時的條款到期，官方沒寫固定天數。
 - **防止點數意外燒光的開關**：開關在 Antigravity 的 `Settings > Models`（toggle AI credit overages），不在 Google One；Google One 只能查點數餘額與使用紀錄。長時間執行或自動迴圈的工作，先確認這個開關的狀態。
-- **API 配額不是價格**：AI Studio／Gemini API 的 RPM、TPM、RPD 是限流上限，按 Google Cloud 專案計算（同專案多把 Key 共用）；價格另依模型按每百萬 token 計算。
+- **API 配額不是價格**：AI Studio／Gemini API 的 RPM、TPM、RPD 是限流上限，按 Google Cloud 專案計算（同專案多把 Key 共用）；API 獨立計費，依模型與功能按 token、圖片或其他單位計價；每百萬 token 僅適用於採該單位的項目（[官方價格頁](https://aistudio.google.com/docs/pricing)，2026-11-24 核對：含圖片與 Lyria 按首計費項目）。
 - **官方查證（2026-11-23，依獨立審查報告修正）**：[Google AI Pro 官方權益](https://support.google.com/googleone/answer/14534406?hl=en)、[Flow 點數](https://support.google.com/flow/answer/16526234?hl=en)、[Gemini Notebook 用量說明](https://support.google.com/gemininotebook/answer/17670842?hl=en)、[Gemini Notebook 方案限制](https://support.google.com/gemininotebook/answer/16213268?hl=en)、[Antigravity 方案](https://antigravity.google/docs/plans)、[Antigravity 設定](https://antigravity.google/docs/settings)、[Antigravity 權限規則](https://antigravity.google/docs/permissions)、[Antigravity 舊版與企業代理設定](https://antigravity.google/docs/agent-settings)、[Google One AI 點數](https://support.google.com/googleone/answer/16287445)、[Gemini API 限流](https://aistudio.google.com/docs/rate-limits)、[Gemini API 價格](https://aistudio.google.com/docs/pricing)。
 
 ---
@@ -127,4 +127,5 @@ tags:
     1. 記錄 8 大工具定位（聊天、搜尋、文件、筆記、影音、程式代理、API、雲端運算）。
     2. 分開寫 Google Flow credits（50 點/日、Pro 另加 1,000 點/月，只能用在 Flow）與購買的 AI credits（Gemini、Flow、Antigravity 共用），以及 Antigravity 超額開關的位置（`Settings > Models`）。
     3. 寫 Antigravity 權限設定規則：區分新版四種權限預設（各能存取什麼、哪些情況禁用 Turbo、明確權限規則與沙盒授權）與舊版／企業設定體系（`Non-Workspace Access` 保持關閉），以及先計畫再實作。
-  - **驗收標準（DoD）**：產出 `docs/google-ai-pro-ecosystem-and-credit-routing.md`，兩種點數分開說明並附官方網址，權限規則對應官方權限預設，且 `python tools/verify_inbox.py` 驗證通過。
+    4. 同步修正既有產出第 1 節 AI Studio 列與第 2.1 節第 4 點：API 獨立計費，依模型與功能按 token、圖片或其他單位計價；每百萬 token 僅限適用項目。報導操作案例、圖片解析與提示詞保留為二手轉述／待測，操作難度與治理建議標明為作者分析。
+  - **驗收標準（DoD）**：產出 `docs/google-ai-pro-ecosystem-and-credit-routing.md`，兩種點數分開說明並附官方網址，權限規則對應官方權限預設，既有第 1 節與第 2.1 節的 API 計費描述限定適用模型與功能、附官方價格頁，報導案例與作者分析分級清楚，且 `python tools/verify_inbox.py` 驗證通過。
