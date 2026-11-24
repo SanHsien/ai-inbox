@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 263 項任務：🔴 未做 7／🟡 進行中 0／🟢 已做 177／⚪ 不做 79
+> 共 264 項任務：🔴 未做 8／🟡 進行中 0／🟢 已做 177／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -53,6 +53,7 @@
 | `T-20261122-02` | 🔴 未做 | 低 | 將 Anthropic Agent Memory「記憶存策略、不存易過時狀態」的案例觀察（寶可夢紀錄）與「反覆走偏時編輯原提問」可選策略納入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | 2026-11-22 |
 | `T-20261122-03` | 🔴 未做 | 低 | 將 Google AI Pro 跨產品 AI 點數制度（Flow 點數、Antigravity 基本配額與溢出點數開關）與 8 大工具能力邊界梳理至 `docs/google-ai-pro-ecosystem-and-credit-routing.md` | `C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3） | [2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | 2026-11-22 |
 | `T-20261124-01` | 🔴 未做 | 低 | 在 `docs/scan-to-threejs-spatial-agent-spec.md` 增補「3D 數位孿生裝置節點（`entityId`）綁定、狀態 HUD 投影與點擊事件（Raycasting）回呼契約」章節 | `C:\GitHub\ai-inbox\docs\scan-to-threejs-spatial-agent-spec.md`（收錄於集群 2；僅擴充規格，不強制引入 Home Assistant 實機部署） | [2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | 2026-11-24 |
+| `T-20261124-02` | 🔴 未做 | 低 | 萃取 CubeLV「交件卡三級漸進放手（交給我核准／看條件／直接做）」與存量追認模式，整理為多 Agent 人機協作審批閘門設計參考並補入 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3，新增人機協作漸進放手設計模式節） | [2026-11-24-cubelv-handoff-cards-progressive-autonomy](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md) | 2026-11-24 |
 
 ### 🟢 已做（Done）
 
@@ -500,6 +501,7 @@
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[數位時代評析：Google AI Pro 八大工具全景實測——Antigravity 電腦檔案代理、Flow 影片生成與跨產品 AI 點數制](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | `google-ai-pro`, `gemini`, `antigravity` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群原創盤點：Jev by TypeSafe AI 上線六天 1,528 專案生態——Agent 守門員、模型路由、瀏覽器自動化與分類判斷全景分析](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | `jev`, `typesafe-ai`, `agent-guardrails` | 0 / 1 |
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群技術評析：Will 保哥評釋 Gemini API Tool Retrieval——按需動態載入工具 Schema、Interactions API 限制與計費／快取邊界核實](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | `gemini-api`, `tool-retrieval`, `tool-calling` | 0 / 1 |
+| 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[CubeLV 官方教學評析：《交件卡：一步一步，讓你的公司自己跑》——三級漸進式放手、條件式自動核准與多 Agent 人機協作介面設計](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md) | `cubelv`, `hitl`, `handoff-cards` | 0 / 1 |
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[X 貼文評析：Gonzalo Melo 以 Polycam + 每房 4 張照片 + GPT-6 Astra 打造 Home Assistant 3D 數位孿生控制面板](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | `threejs`, `home-assistant`, `polycam` | 0 / 1 |
 <!-- END GENERATED: index -->
 
@@ -544,6 +546,7 @@
 - Harness記憶哲學：[寫下來Harness記憶](./notes/2026-11-21-ben-thompson-write-things-down-harness-memory.md)
 - Neon+AGY效應：[Neon接入AGY三倍](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md)
 - Claude記憶與提示：[Claude17招進階技巧](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md)
+- 交件卡漸進放手：[CubeLV交件卡漸進放手](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
