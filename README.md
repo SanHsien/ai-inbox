@@ -507,6 +507,7 @@
 | 2026-11-24 | ⚪ | ⏳ 待獨立審查｜[享知 Cultiwise YouTube 實測評析：《Gemini Notebook 短影音製作教學》——中文知識型 Shorts 生成能力、自訂風格提示詞與低動態簡報上限](./notes/2026-11-24-cultiwise-gemini-notebook-shorts-video-eval.md) | `gemini-notebook`, `notebooklm`, `shorts` | 0 / 0 |
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[X 貼文評析：Gonzalo Melo 以 Polycam + 每房 4 張照片 + GPT-6 Astra 打造 Home Assistant 3D 數位孿生控制面板](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | `threejs`, `home-assistant`, `polycam` | 0 / 1 |
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[李廠長來了 YouTube 實作評析：《我給自己招了4個AI員工，每週省下8小時！》——單代理四角色工作流、漸進授權階梯與「幫我找 vs 幫我讀」二元契約](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | `ai-agent`, `claude-cowork`, `chatgpt-work` | 0 / 1 |
+| 2026-11-24 | ⚪ | ⏳ 待獨立審查｜[零度解說 YouTube 實測評析：《Opus 5.5 正式發布！實測做動畫、遊戲、寫代碼》——長程自主執行展示與「網頁版不耗配額」誤區勘誤](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md) | `claude-opus-5-5`, `code-as-video`, `webgl` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -615,6 +616,7 @@
 - Jev六天開源生態：[Jev六天開源生態盤點](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md)
 - Gemini工具檢索：[Gemini工具按需檢索評估](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md)
 - 筆記短影音評析：[GeminiNotebook短影音實測](./notes/2026-11-24-cultiwise-gemini-notebook-shorts-video-eval.md)
+- Opus5.5影音實測：[零度Opus5.5實測評析](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
