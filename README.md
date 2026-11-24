@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 264 項任務：🔴 未做 8／🟡 進行中 0／🟢 已做 177／⚪ 不做 79
+> 共 265 項任務：🔴 未做 9／🟡 進行中 0／🟢 已做 177／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -54,6 +54,7 @@
 | `T-20261122-03` | 🔴 未做 | 低 | 將 Google AI Pro 跨產品 AI 點數制度（Flow 點數、Antigravity 基本配額與溢出點數開關）與 8 大工具能力邊界梳理至 `docs/google-ai-pro-ecosystem-and-credit-routing.md` | `C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3） | [2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | 2026-11-22 |
 | `T-20261124-01` | 🔴 未做 | 低 | 在 `docs/scan-to-threejs-spatial-agent-spec.md` 增補「3D 數位孿生裝置節點（`entityId`）綁定、狀態 HUD 投影與點擊事件（Raycasting）回呼契約」章節 | `C:\GitHub\ai-inbox\docs\scan-to-threejs-spatial-agent-spec.md`（收錄於集群 2；僅擴充規格，不強制引入 Home Assistant 實機部署） | [2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | 2026-11-24 |
 | `T-20261124-02` | 🔴 未做 | 低 | 萃取 CubeLV「交件卡三級漸進放手（交給我核准／看條件／直接做）」與存量追認模式，整理為多 Agent 人機協作審批閘門設計參考並補入 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3，新增人機協作漸進放手設計模式節） | [2026-11-24-cubelv-handoff-cards-progressive-autonomy](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md) | 2026-11-24 |
+| `T-20261124-03` | 🔴 未做 | 低 | 補充單代理五要素結構、開工前追問閘門與「幫我找 vs 幫我讀（禁摘要 5 欄表）」提示詞模式至 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-24-lichangzhang-4-ai-employees-workflow-patterns](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | 2026-11-24 |
 
 ### 🟢 已做（Done）
 
@@ -503,6 +504,7 @@
 | 2026-11-22 | 🔴 | ⏳ 待獨立審查｜[社群技術評析：Will 保哥評釋 Gemini API Tool Retrieval——按需動態載入工具 Schema、Interactions API 限制與計費／快取邊界核實](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | `gemini-api`, `tool-retrieval`, `tool-calling` | 0 / 1 |
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[CubeLV 官方教學評析：《交件卡：一步一步，讓你的公司自己跑》——三級漸進式放手、條件式自動核准與多 Agent 人機協作介面設計](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md) | `cubelv`, `hitl`, `handoff-cards` | 0 / 1 |
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[X 貼文評析：Gonzalo Melo 以 Polycam + 每房 4 張照片 + GPT-6 Astra 打造 Home Assistant 3D 數位孿生控制面板](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | `threejs`, `home-assistant`, `polycam` | 0 / 1 |
+| 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[李廠長來了 YouTube 實作評析：《我給自己招了4個AI員工，每週省下8小時！》——單代理四角色工作流、漸進授權階梯與「幫我找 vs 幫我讀」二元契約](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | `ai-agent`, `claude-cowork`, `chatgpt-work` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -547,6 +549,7 @@
 - Neon+AGY效應：[Neon接入AGY三倍](./notes/2026-11-21-infoq-gemini4-neon-antigravity-swe-sweep-harness-eval.md)
 - Claude記憶與提示：[Claude17招進階技巧](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md)
 - 交件卡漸進放手：[CubeLV交件卡漸進放手](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md)
+- 單代理四角色工作流：[李廠長4個AI員工工作流評析](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
