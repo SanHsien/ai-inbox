@@ -51,6 +51,21 @@
    "author_claim": "full",
    "corrections": 0,
    "report": "reviews/reports/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval/2026-11-22-03-review-codex.md"
+  },
+  {
+   "reviewed_at": "2026-11-25",
+   "reviewer": "claude/opus-5.5@498c74d5-8c16-46e8-9fdc-3a900cc320b6",
+   "role": "review",
+   "scope": [
+    "source"
+   ],
+   "content_sha256": "74fe7830046104c20a71f85d64315e0aabb8d44c1ff48f4b8df58c9a5f7fe579",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 3,
+   "report": "reviews/reports/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval/2026-11-25-04-review-claude.md"
   }
  ]
 }
