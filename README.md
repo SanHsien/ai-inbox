@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 265 項任務：🔴 未做 8／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 267 項任務：🔴 未做 10／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -48,12 +48,14 @@
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
 | `T-20261122-04` | 🔴 未做 | 中 | 評估 Gemini API Tool Retrieval（`v1beta` Interactions API、`defer_loading` / `tool_search`、計費與隱式快取邊界）在多工具 Agent 之整合規範，並納入 `docs/gemini-tool-retrieval-and-mcp-spec.md` | `C:\GitHub\ai-inbox\docs\gemini-tool-retrieval-and-mcp-spec.md`（收錄於集群 3） | [2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | 2026-11-22 |
 | `T-20261122-05` | 🔴 未做 | 中 | 將 Jev by TypeSafe AI 生態中與 Agent 安全閘門（`anpicasso/hermes-jev-approvals`、`valentynkit/jev-belay`、`noplan-inc/limpet`、`AshutoshVJTI/progressgate`、`Sraavan/tripwire`）與模型路由（`0xNatoshi/jev-codex-router`、`gargpratyush/jev-router`）相關的專案架構與數據限制，對照 Google Decisions API / Colibri 整理至 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3） | [2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | 2026-11-22 |
+| `T-20261125-01` | 🔴 未做 | 中 | 萃取 Google AQuA（`ambient-quality-agent`）之「唯讀邊車架構、五階段聚類核驗與 `NEW/RECURRING/RESOLVED(14d)` 狀態機」撰寫為離線品質稽核參考規格 `docs/ambient-quality-agent-sidecar-spec.md` | `C:\GitHub\ai-inbox\docs\ambient-quality-agent-sidecar-spec.md`（收錄於集群 3） | [2026-11-25-google-aqua-adk-recipes-ambient-quality-eval](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | 2026-11-25 |
 | `T-20261122-01` | 🔴 未做 | 低 | 評估 `SKILL.md` 跨平台（Gemini / Claude / Antigravity）相容性檢查清單，並將「首句技能名稱定錨」與「前置步驟防跳步防呆語法」納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | 2026-11-22 |
 | `T-20261122-02` | 🔴 未做 | 低 | 將 Anthropic Agent Memory「記憶存策略、不存易過時狀態」的案例觀察（寶可夢紀錄）與「反覆走偏時編輯原提問」可選策略納入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | 2026-11-22 |
 | `T-20261122-03` | 🔴 未做 | 低 | 將 Google AI Pro 跨產品 AI 點數制度（Flow 點數、Antigravity 基本配額與溢出點數開關）與 8 大工具能力邊界梳理至 `docs/google-ai-pro-ecosystem-and-credit-routing.md` | `C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3） | [2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | 2026-11-22 |
 | `T-20261124-01` | 🔴 未做 | 低 | 在 `docs/scan-to-threejs-spatial-agent-spec.md` 增補「3D 數位孿生裝置節點（`entityId`）綁定、狀態 HUD 投影與點擊事件（Raycasting）回呼契約」章節 | `C:\GitHub\ai-inbox\docs\scan-to-threejs-spatial-agent-spec.md`（收錄於集群 2；僅擴充規格，不強制引入 Home Assistant 實機部署） | [2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | 2026-11-24 |
 | `T-20261124-02` | 🔴 未做 | 低 | 萃取 CubeLV「交件卡三級漸進放手（交給我核准／看條件／直接做）」與存量追認模式，整理為多 Agent 人機協作審批閘門設計參考並補入 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3，新增人機協作漸進放手設計模式節） | [2026-11-24-cubelv-handoff-cards-progressive-autonomy](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md) | 2026-11-24 |
 | `T-20261124-03` | 🔴 未做 | 低 | 補充單代理五要素結構、開工前追問閘門與「幫我找 vs 幫我讀（禁摘要 5 欄表）」提示詞模式至 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-24-lichangzhang-4-ai-employees-workflow-patterns](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | 2026-11-24 |
+| `T-20261125-02` | 🔴 未做 | 低 | 唯讀檢閱 `google/adk-recipes` 的 `.agents/skills/`（`github-pr-review`、`generate-python-runnability-test`、`repo-oracle`）與 `core/python/long-horizon-harness`、`safety-plugins`，評估可復用設計模式 | `C:\GitHub\ai-inbox\docs\`（可併入 `docs/ambient-quality-agent-sidecar-spec.md` 附錄或獨立唯讀評析報告，收錄於集群 3；嚴禁未經安全檢驗直接安裝第三方 skill） | [2026-11-25-google-aqua-adk-recipes-ambient-quality-eval](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | 2026-11-25 |
 
 ### 🟢 已做（Done）
 
@@ -508,6 +510,7 @@
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[X 貼文評析：Gonzalo Melo 以 Polycam + 每房 4 張照片 + GPT-6 Astra 打造 Home Assistant 3D 數位孿生控制面板](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md) | `threejs`, `home-assistant`, `polycam` | 0 / 1 |
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[李廠長來了 YouTube 實作評析：《我給自己招了4個AI員工，每週省下8小時！》——單代理四角色工作流、漸進授權階梯與「幫我找 vs 幫我讀」二元契約](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | `ai-agent`, `claude-cowork`, `chatgpt-work` | 0 / 1 |
 | 2026-11-24 | ⚪ | ⏳ 待獨立審查｜[零度解說 YouTube 實測評析：《Opus 5.5 正式發布！實測做動畫、遊戲、寫代碼》——長程自主執行展示與「網頁版不耗配額」誤區勘誤](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md) | `claude-opus-5-5`, `code-as-video`, `webgl` | 0 / 0 |
+| 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[Google 開源環境品質智慧體 AQuA 與 `google/adk-recipes` 評析：請求鏈路外唯讀邊車、五階段聚類診斷與佐證溯源機制](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | `google-adk`, `aqua`, `ambient-agent` | 0 / 2 |
 <!-- END GENERATED: index -->
 
 ---
@@ -617,6 +620,7 @@
 - Gemini工具檢索：[Gemini工具按需檢索評估](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md)
 - 筆記短影音評析：[GeminiNotebook短影音實測](./notes/2026-11-24-cultiwise-gemini-notebook-shorts-video-eval.md)
 - Opus5.5影音實測：[零度Opus5.5實測評析](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md)
+- AQuA邊車品質稽核：[Google AQuA邊車稽核評析](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
