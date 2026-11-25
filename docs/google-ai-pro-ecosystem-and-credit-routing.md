@@ -32,6 +32,8 @@
 
 為避免「買了 Google AI Pro 卻只用 Gemini 網頁版純聊天，或把重度多檔開發塞進網頁聊天導致斷頭」，將 8 大工具按職責與額度機制分流如下：
 
+操作門檻星等為文件作者主觀評估，非官方評級、報導評分或獨立實測；官方文件僅作功能、權益與計費查證依據。
+
 | 類別 | 工具名稱 | 核心適用場景與交付產物 | 操作門檻 | 額度與計費機制（依官方文件核實） |
 | :--- | :--- | :--- | :---: | :--- |
 | **1. 聊天與通用助理** | **Gemini App** | 日常問答、發想、多語翻譯、文字改寫、單段程式碼諮詢、掛載 `SKILL.md` | ★☆☆ | 依所選模型與功能享 Pro 基本使用上限；用盡後符合資格者可動用**另購之 AI credits** |
@@ -40,7 +42,7 @@
 | **4. 辦公文件協作** | **Gmail / Google 文件內建 Gemini** | 十餘封長串郵件三欄摘要（已確認／待解／需回覆）、文件段落精簡改寫 | ★★☆ | 依**個人 Google AI 方案（如 Google AI Pro）**或 Google Workspace 帳號方案、帳號資格、語言與地區限制開放（[官方權益](https://support.google.com/googleone/answer/14534406?hl=en)） |
 | **5. 多模態影片生成** | **Google Flow** | 文字或參考圖片生成短片、運鏡視角控制、行銷與社群影音素材製作 | ★★☆ | 先扣 **Google Flow credits**（每日 50 點 + Pro 每月 1,000 點）；不足時才可另用**購買的 AI credits** |
 | **6. 桌面端程式代理** | **Google Antigravity** | 本地儲存庫多檔案讀寫、網站與應用程式建置、終端機測試與自動化工作流 | ★★★ | 先用 **Pro 基本配額**；基本配額用盡後，依 `Settings > Models` 開關決定是否扣**購買的 AI credits** |
-| **7. 開發者原型與 API** | **Google AI Studio** | 模型參數調校、System Prompt 原型驗證、Decisions API / Tool Retrieval 測試 | ★★★ | 分為 **AI Studio 訂閱權益**（AI Pro 提高 Studio 內 `Gemini 4 Neon`、`Nano Banana Pro` 使用上限，見[官方權益](https://support.google.com/googleone/answer/14534406?hl=en)）與 **Gemini API 專案額度／計費**（API 限流 RPM / TPM / RPD 按 **Google Cloud 專案**計算；付費層按每百萬 Token 獨立計價） |
+| **7. 開發者原型與 API** | **Google AI Studio** | 模型參數調校、System Prompt 原型驗證、Decisions API / Tool Retrieval 測試 | ★★★ | 分為 **AI Studio 訂閱權益**（AI Pro 提高 Studio 內 `Gemini 4 Neon`、`Nano Banana Pro` 使用上限，見[官方權益](https://support.google.com/googleone/answer/14534406?hl=en)）與 **Gemini API 專案額度／計費**（API 限流 RPM / TPM / RPD 按 **Google Cloud 專案**計算；API 獨立計費，依模型與功能按 token、圖片、歌曲或其他單位計價，每百萬 token 僅限適用項目，見[官方價格頁](https://aistudio.google.com/docs/pricing)，2026-11-25 查證） |
 | **8. 雲端算力與資料科學** | **Google Colab** | 雲端 Jupyter Notebook、Python 資料清洗、呼叫 GPU / TPU 執行 ML 訓練與推論 | ★★★ | 依運算單元（Compute Units）餘額與單次工作階段連線時長限制 |
 
 ---
@@ -74,7 +76,7 @@
    - 依 [Antigravity 設定文件](https://antigravity.google/docs/settings)，控制 Antigravity 在基本配額用盡後是否自動扣減購買的 AI credits，其開關位於 **Antigravity 應用程式內的 `Settings > Models`（切换 `AI credit overages`）**，而非在 Google One 設定。
    - **操作規範**：在執行長時程自動化任務、多子代理並行（Swarm / Subagents）或大型重構迴圈前，**必須先檢查 `Settings > Models` 中的超額扣點開關狀態**，防止背景迴圈意外燒光購買的 AI 點數。
 4. **AI Studio / Gemini API 限流按「Google Cloud 專案」計算，而非按 API Key**：
-   - 依 [Gemini API 限流文件](https://aistudio.google.com/docs/rate-limits) 與 [價格頁](https://aistudio.google.com/docs/pricing)，RPM（每分鐘請求數）、TPM（每分鐘 Token 數）、RPD（每日請求數）等配額上限是綁定在 **Google Cloud Project（專案層級）**，同一專案下建立多把 API Key 會共用同一個配額池，無法透過「多開幾把 Key」突破限流；且 API 付費層係依實際 Input / Output Tokens 計費，不屬於 Google AI Pro 個人訂閱範圍。
+   - 依 [Gemini API 限流文件](https://aistudio.google.com/docs/rate-limits) 與 [價格頁](https://aistudio.google.com/docs/pricing)（2026-11-25 查證），RPM（每分鐘請求數）、TPM（每分鐘 Token 數）、RPD（每日請求數）等配額上限是綁定在 **Google Cloud Project（專案層級）**，同一專案下建立多把 API Key 會共用同一個配額池，無法透過「多開幾把 Key」突破限流。API 計費與 AI Studio 訂閱權益須分開說明：付費 API 依模型與功能採不同計價單位，不能一概寫成輸入／輸出 token 計費；例如文字模型採每百萬 token，部分圖片項目列每張價格，Lyria 音樂生成按首計費，工具另可能按請求計價，均以所用項目的官方價目為準。
 
 ---
 

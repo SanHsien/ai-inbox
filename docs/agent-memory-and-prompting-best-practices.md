@@ -15,6 +15,7 @@
 - **官方文件查證網址**：
   - [Anthropic 研究文章：〈The components of agent memory〉（2026-11-06）](https://www.anthropic.com/research/components-of-agent-memory)
   - [Anthropic 隱私中心：回饋資料保留與模型訓練說明](https://privacy.claude.com/en/articles/7996868-is-my-data-used-for-model-training)
+  - [Claude Chat／Cowork 新整合介面的限制](https://support.claude.com/en/articles/16761823-claude-cowork-and-chat-are-one-claude)（2026-11-25 查證：目前不支援從較早節點分支；不代表舊介面也不支援）
 
 ---
 
@@ -51,7 +52,7 @@ Anthropic 在〈The components of agent memory〉中揭露了三個不同模型�
 
 ## 2. 對話除錯與跨 Session 接手規範（附適用條件之可選策略）
 
-當 AI 在多輪對話中出現方向偏離或錯誤回答時，應依錯誤性質選擇「直接糾正」或「編輯原提問建立新分支」，而非盲目套用單一做法：
+當 AI 在多輪對話中出現方向偏離或錯誤回答時，可依錯誤性質與介面功能選擇直接糾正、編輯原提問建立新分支，或整理已確認資訊另開對話。以下是可選策略，尚未在本機比較其效果：
 
 ```text
 [模型回答出現錯誤或偏離]
@@ -61,8 +62,8 @@ Anthropic 在〈The components of agent memory〉中揭露了三個不同模型�
    │     └── 依據：Anthropic 官方文件與原文皆肯定以接續提示要求模型查核並修正局部錯誤
    │
    ├─► 情境 B：反覆受錯誤前提影響 / 需求一開始沒講清楚導致整條推理走偏
-   │     └── 策略（可選）：回到出錯前的「使用者原提問」點選 Edit 修改並重送（建立新對話分支），或整理已確認資訊另開新對話
-   │     └── 理由：錯誤的假設與長篇無效爭辯會留在當前分支脈絡中持續干擾注意力；切出新分支比在末端疊加補丁更乾淨
+   │     ├── 介面支援編輯／分支：可修改出錯前的使用者原提問並重送
+   │     └── Chat／Cowork 新整合介面目前不支援較早節點分支：整理已確認資訊另開對話
    │
    └─► 情境 C：長任務跨日接續 / 上下文逼近壓縮臨界點
          └── 策略：先產出結構化交接摘要（或 HANDOFF.md），再開啟新 Session 接手
@@ -73,7 +74,7 @@ Anthropic 在〈The components of agent memory〉中揭露了三個不同模型�
 | 策略名稱 | 性質與證據等級 | 適用條件（When to Use） | 不適用情境與注意事項 |
 | :--- | :--- | :--- | :--- |
 | **1. 後續提示直接糾正（Iterative Refinement）** | **官方標準做法**（Anthropic 官方提示工程文件建議） | 單一事實錯誤、漏看某個邊界條件、格式微調，且整體任務前提未被污染 | 若已連續糾正 2～3 輪仍在同一死胡同打轉，應停止繼續追問，改用策略 2 |
-| **2. 編輯原提問建立新分支（Edit Original Prompt）** | **可選策略**（須視前提是否受污染而定） | 初始提示詞有歧義、模型從第一步就誤解架構方向，且後續脈絡已被大量錯誤推理佔據 | 注意在 Claude Web / Desktop 點選 `Edit` 是**從該節點建立新的對話分支（Branch）**，並非「重置系統底層」；單純小錯無需動用 |
+| **2. 編輯原提問建立新分支（Edit Original Prompt）或另開對話** | **可選策略**（未經本機比較實測，不宣稱優於後續糾正） | 初始提示詞有歧義、模型誤解方向，且後續脈絡反覆受錯誤前提影響；編輯分支僅限介面提供此功能時 | 依[官方限制](https://support.claude.com/en/articles/16761823-claude-cowork-and-chat-are-one-claude)，Chat／Cowork 新整合介面目前不支援從較早節點分支，改整理已確認資訊另開對話；不能概括所有 Web／Desktop 介面皆支援，也不能把分支當成重置整段上下文；單純小錯可直接糾正 |
 | **3. 跨 Session 10 行交接摘要（10-Line Handoff Summary）** | **【二手轉述，待測】**（出自 Hassid 個人經驗轉述） | 長對話準備切換新視窗時，要求先輸出「目標、已確認決定、重要背景、未完成事項」摘要 | 「10 行」為經驗法則而非硬指標；在多 Agent 工程環境中，應優先使用標準化的 `agent-handoff` / `checkpoint` 技能寫入實體檔案 |
 
 ---

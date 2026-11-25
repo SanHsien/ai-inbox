@@ -6,8 +6,8 @@ source_platform: "bnext.com.tw (數位時代)"
 author: "蘇柔瑋"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
-written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; codex/gpt-6.1-sol@01a20b8d-8bc2-7191-a7cc-7a104940ed47"
-revised_at: "2026-11-24"
+written_by: "legacy/unknown@pre-review; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; codex/gpt-6.1-sol@01a20b8d-8bc2-7191-a7cc-7a104940ed47; codex/gpt-6.1-sol@01a21248-1b6a-7223-8678-a9a474c169fa"
+revised_at: "2026-11-25"
 source_review: full
 source_images: 8
 source_replies: 0
@@ -42,6 +42,8 @@ tags:
 ## 1. 原始資料盤點（正文解構與 8 大工具分工矩陣）
 
 報導針對眾多使用者「訂閱 Google AI Pro 僅當作純文字聊天工具」之痛點，系統性盤點 Google AI Pro 訂閱體系所涵蓋之 8 大工具能力光譜，涵蓋搜尋、研究、辦公、多模態影音創作與程式代理：
+
+操作難度星等為筆記作者主觀評估，非官方評級或獨立實測，也未確認為報導評分；不代表功能品質或實測效能。[Google AI Pro 官方權益](https://support.google.com/googleone/answer/14534406?hl=en)僅作權益與功能查證依據，不作星等依據。
 
 | 工具名稱 | 核心場景與功能特徵 | 操作難度 | 額度計算機制 |
 | :--- | :--- | :---: | :--- |
