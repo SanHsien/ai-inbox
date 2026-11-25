@@ -8,6 +8,7 @@
 ## 0. 來源筆記與官方依據
 
 - **來源筆記**：`notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md`
+- **來源與延伸範圍（2026-11-25 更正）**：[數位時代原文](https://www.bnext.com.tw/article/93097/gemini-skills-setup-guide)只列 Gemini、Claude、ChatGPT；本文件加入 Antigravity 與 Codex 是本 repo 自行延伸的評估範圍，不代表原文背書或已實測相容。
 - **交叉參照**：
   - [`notes/2026-10-19-android-official-skills-google-coding-agent.md`](../notes/2026-10-19-android-official-skills-google-coding-agent.md)（Google 官方 Agent Skills 目錄架構）
   - [`notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md`](../notes/2026-11-20-antigravity-gemini4-neon-12-prompts-eval.md)（Antigravity 全域與專案技能治理）

@@ -6,12 +6,13 @@ source_platform: "x"
 author: "Gonzalo Melo (@gonzalomelov)"
 analyzed_at: "2026-11-24"
 analyzed_by: "antigravity"
-written_by: "antigravity/gemini-4-hydrogen@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
-source_review: partial
-source_images: 0
-source_replies: 1
-source_reviewed_at: "2026-11-24"
-source_review_note: "貼文文字、附帶 43 秒示範影片（多時間點截圖檢查）與未登入可見 1 則留言（@oprfwa）已讀完；頁面顯示共 2 則回覆，第 2 則遭登入遮罩阻擋（skeleton 狀態）無法確認是否為作者續串或補充。"
+written_by: "antigravity/gemini-4-hydrogen@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; codex/gpt-6.1-sol@01a2125a-4d1e-73b1-86ee-52ace903a7f4"
+revised_at: "2026-11-25"
+source_review: full
+source_images: 1
+source_replies: 2
+source_reviewed_at: "2026-11-25"
+source_review_note: "依 2026-11-25 Chrome review 報告：影片 1 部（source_images 依報告計 1，靜態圖 0 張），登入後回覆計數 2、讀到 2，全部顯示，改為 full。兩則留言依報告，未自行核對；本次已直連 X 公開影片核對 00:01、00:04、00:26 畫面。"
 status: pending
 cluster: 2
 cluster_role: "3D智慧家庭儀表板"
@@ -46,11 +47,14 @@ tags:
   - 該貼文為參與 `@OpenAIDevs`「What can you ship with GPT-6 Astra? (24 hours)」活動之展示，互動數據為 2 則回覆、2 則轉貼、38 個喜歡、29 個書籤、4,800 次瀏覽。
   - 核心作法：以 **Polycam**（`@Polycam3D`）室內掃描加上**每個房間 4 張照片**與一份**一頁規格書（one-page spec）**作為輸入，由 **GPT-6 Astra** 為每個房間生成**程序化 Three.js（procedural Three.js）**程式碼，整合進 **Home Assistant**（`@home_assistant`）成為即時 3D 儀表板；點擊 3D 渲染場景中的燈具即可控制實體燈光開關。
 - **附帶媒體（靜態圖 0 張、示範影片 1 部 `00:43`，最高解析度 `1440×900`）**：
-  - `00:00–00:03`：畫面嵌於 Home Assistant 網頁介面（左側選單含 `Overview`、`Food Inventory`、`Home`、`Map`、`Energy`、`HACS`、`To-do lists` 等，左下角使用者為 `GM Gonzalo Melo`），主視窗初期空白載入。
+  - `00:00–00:04`：先顯示 Home Assistant 的 `Overview` 頁；`00:01` 可見歡迎文字與 Areas 卡片（Living Room、Kitchen、Bedroom、Study、Barbecue、Bathroom、Devices），約 `00:04` 切到 `Home` 頁後才呈現空白載入。本次直接核對公開影片；報告將 `Barbecue` 誤記為 `Balcony`，此處依畫面更正。
   - `00:09–00:20`：載入完成後呈深色背景**全屋等角視角（Isometric）3D 數位孿生模型**，右上角顯示即時天氣（`8.5 °C`、`cloudy · 54% humidity · wind 22 km/h`）。場景內各房間標註即時感測器與裝置狀態：`Sofa camera offline`、`DINING`、`Fridge 5°`、`HALLWAY`、`BEDROOM`、`Bedroom TV off`、`Floodlight off`，以及 `STUDY` 內的雙螢幕桌、`Gonzalo` 人員追蹤標籤、`Floor lamp off`、智慧燈泡（`100% · 2700 K` / `100% · 6500 K`）、智慧插座即時功耗（`0 W`）、電暖器等。示範者可拖曳旋轉並縮放拉近視角。
-  - `00:25`：點擊 3D 書房場景中的燈具後，介面立即彈出 Home Assistant 原生裝置控制卡片：`Study > WiZ 824513 (192.168.1.7)`（副標題 `Wiz`），顯示 `Off (1 minute ago)`、亮度滑桿、開關／模式切換、4 個色溫預設按鈕及底部 `Effect` 按鈕。
+  - `00:26`：點擊 3D 書房場景中的燈具後，介面彈出 Home Assistant 原生裝置控制卡片：`Study > WiZ 824512`（副標題 `Wiz`；省略畫面中的區域網路 IP），顯示 `Off (1 minute ago)`、亮度滑桿、開關／模式切換、4 個色溫預設按鈕及底部 `Effect` 按鈕；裝置名稱已直接核對公開影片。
   - `00:30–00:41`：顯示書房燈光狀態變更為開啟（`100% · 2700 K`）並將鏡頭拉回全屋 3D 俯視角度。
-- **留言區**：頁面顯示共 2 則回覆，未登入狀態下實際讀到 **1 則**（`@oprfwa` 回覆 `good job, well done`，無技術質疑或補充資料）；第 2 則回覆被登入遮罩阻擋（呈現載入骨架），無法確認是否為作者續串或外部提問。
+- **留言區**：依 [Chrome review 報告](../reviews/reports/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard/2026-11-25-01-review-claude.md)，登入後回覆計數 2、讀到 2，全部顯示；以下兩則依報告，未自行核對：
+  - John Perrone（`@jjperrone`，9 月 25 日）：原以為需要會 3D 建模，看到掃描加每房 4 張照片後覺得可行，想當週末專案；無技術質疑或更正。
+  - `@oprfwa`（9 月 28 日）：正面稱讚，無技術補充。
+- **本次修正影響與來源**：依登入後報告解除留言缺漏、改為 `full`；另從 [X 公開媒體資料](https://cdn.syndication.twimg.com/tweet-result?id=2096610464545325097&token=1) 取得[公開影片](https://video.twimg.com/amplify_video/2096609477940142080/vid/avc1/1440x900/6tJKyVMwPz4coyMz.mp4)，核對開場時序與燈具名稱。這些更正不增加原始碼或可重現性的證據。
 
 ---
 

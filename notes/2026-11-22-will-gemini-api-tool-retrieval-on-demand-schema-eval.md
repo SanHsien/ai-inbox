@@ -6,12 +6,13 @@ source_platform: "facebook.com (Will 保哥的技術交流中心)"
 author: "Will 保哥 (黃保翕)"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
-written_by: "antigravity/gemini-pro@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
-revised_at: "2026-11-23"
+written_by: "antigravity/gemini-pro@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; claude/opus-5.5@e7344aab-d6b6-4fcb-961e-1304a5af6031; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; codex/gpt-6.1-sol@01a2125a-4d1e-73b1-86ee-52ace903a7f4"
+revised_at: "2026-11-25"
 source_review: full
 source_images: 1
 source_replies: 0
-source_reviewed_at: "2026-11-23"
+source_reviewed_at: "2026-11-25"
+source_review_note: "full 與 1 張連結預覽卡、0 則留言依 2026-11-25 Chrome audit 報告維持；Facebook 登入後的頁面內容依報告，未自行核對。本次另直連公開 X 圖片核對原圖，移除把縮圖尺寸與傳輸格式當作圖片規格的敘述。"
 status: pending
 cluster: 3
 cluster_role: "Gemini工具檢索"
@@ -41,12 +42,13 @@ tags:
 
 ---
 
-## 1. 原始資料盤點（貼文轉述重點與官方一手文件對照核實）
+## 0. 原始資料盤點（貼文轉述重點與官方一手文件對照核實）
 
 微軟 MVP 與技術教育者 Will 保哥（黃保翕）於 2026-11-20 針對 Google AI Studio 釋出的預覽功能「Gemini API Tool Retrieval」發表技術評析。以下逐點列出貼文觀點（二手評析）並對照 Google 官方文件（一手來源，2026-11-22 查核）補齊介面、計費、快取與型號限制：
 
-- **隨文附圖**：1 張（引用自 Google AI Studio 官方 X 發布之架構主視覺橫幅 `Introducing Tool Retrieval in the Gemini API`，解析度 2048x819，WEBP 格式）。
-- **留言計數**：0 則公開回覆。
+- **隨文附圖**：1 張：X 文章連結預覽卡（Google AI Studio 主視覺橫幅），不是作者另行上傳的圖片。Facebook 頁面呈現方式依 [Chrome audit 報告](../reviews/reports/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval/2026-11-25-07-audit-claude.md)，未自行核對；本次已直連 [X 公開原圖](https://pbs.twimg.com/media/HXgZfNKW4AIwKHG?format=jpg&name=orig) 確認，移除將縮圖尺寸與傳輸格式誤當固定規格的描述。
+- **留言計數**：依同份登入後報告，貼文計數 0、讀到 0，頁面顯示尚無留言；依報告，未自行核對。
+- **本次修正影響**：更正圖片來源與規格描述，不改動工具檢索的技術結論或任務狀態；產出檔存在本身不等於已完成全部驗收。
 - **貼文重點與官方規格核實**：
   1. **解決傳統 Tool Calling 痛點（貼文觀點）**：貼文指出當 Agent 掛載大量工具時，每次請求全量傳遞完整參數 Schema 會帶來三大問題——Token 消耗加快、推論延遲增加、候選工具過多使模型容易挑錯。
   2. **待命區（Standby Pool）設計與摘要截短規則**：透過 Tool Retrieval（在工具定義加上 `defer_loading: true`），初始請求暫不載入完整參數 Schema（`defer_loading: true` 出自 [官方文件](https://aistudio.google.com/docs/tool-retrieval) 與官方 X 文章，貼文僅提及 `tool_search`）。**官方截短規則（[`#pricing`](https://aistudio.google.com/docs/tool-retrieval#pricing)）**：初始請求僅向模型提供並計入待命工具的名稱（`name`）與 **`short_description`；若未設定 `short_description`，則僅擷取 `description` 的第一句話**（並非將整段完整 `description` 都放進初始上下文）。
@@ -81,7 +83,7 @@ User Query ──► [ System Prompt + 待命區工具清單 (defer_loading: tru
 | **支援 API 端點** | `generateContent` 與 `Interactions API` 皆支援 | **僅限 `v1beta` Interactions API（預覽版）**，`generateContent` 不支援 |
 | **初始 Context 負擔** | 隨工具數與參數 Schema 複雜度線性增加 | 初始僅含待命工具名稱與 **`short_description`（未設定時僅取 `description` 第一句）**，單工具負擔較小，但**總量仍隨工具數線性增加**（非恆定不變） |
 | **呼叫次數與延遲** | 單輪無須額外檢索呼叫，但初始預填充 Token 較多 | 未觸發工具時初始 Prompt 較短；但**觸發 `tool_search` 時會增加一次伺服器端搜尋模型呼叫**（實際端到端延遲尚無公開基準實測） |
-| **工具選擇機制** | 模型直接從全量 Schema 中挑選（贴文指出工具極多時易受干擾） | 先經 `tool_search` 收斂候選工具再載入完整 Schema（設計目標為降低候選干擾，實際準確率提升幅度尚待基準實測） |
+| **工具選擇機制** | 模型直接從全量 Schema 中挑選（貼文指出工具極多時易受干擾） | 先經 `tool_search` 收斂候選工具再載入完整 Schema（設計目標為降低候選干擾，實際準確率提升幅度尚待基準實測） |
 | **MCP 支援度** | 需將所有啟用的 MCP 工具完整 Schema 放入請求 | 支援將遠端 MCP Server 工具集整批標記 `defer_loading: true` 按需載入 |
 | **快取支援（Caching）** | `generateContent` 支援隱式快取，並於**支援顯式快取的 Gemini 3 / 2.5 模型**支援顯式快取（**Gemini 4 不支援顯式快取**，見[官方快取文件](https://aistudio.google.com/docs/caching?generate-content=true)） | Interactions API **不支援顯式快取，僅相容隱式快取**（須視長度門檻與實際 `usage.total_cached_tokens` 判定是否命中） |
 | **計費與成本結構** | 按單次請求之全量 Input / Output Token 計費 | 無獨立服務費，但**搜尋呼叫會將完整上下文與載入之 Schema 計入 `total_tool_use_tokens` 按輸入費率計費**；長上下文高頻搜尋時靜態載入可能更省 |
@@ -92,7 +94,7 @@ User Query ──► [ System Prompt + 待命區工具清單 (defer_loading: tru
 
 1. **工具載入需區分「使用頻率」與「新搜尋觸發頻率」（已載入工具跨輪保留）**：
    Tool Retrieval 提供了平台端託管的 `defer_loading` 機制，且觸發 `tool_search` 會產生包含完整上下文的額外模型呼叫（`total_tool_use_tokens`）。但依[官方限制與機制說明](https://aistudio.google.com/docs/tool-retrieval#limitations)，**一旦待命工具在對話中被檢索並載入，該工具就會保留在後續對話回合中（無須在同一對話後續每次呼叫該工具時重新觸發搜尋）**——因此**「工具使用頻率」不等於「新搜尋頻率」**，不能概括為高頻呼叫必造成每輪雙倍上下文計費。工程上建議將幾乎每段對話必用的核心工具維持靜態載入（省去首次搜尋呼叫），將低頻龐大外掛／遠端 MCP 工具設為 `defer_loading: true`，並依實際對話的 `usage.total_tool_use_tokens` 評估成本。
-2. **迁移評估須認明 `Interactions API` 端點限制**：
+2. **遷移評估須認明 `Interactions API` 端點限制**：
    目前多數既有 Gemini SDK 串接仍基於 `generateContent`；若要引入官方 Tool Retrieval，必須先評估遷移至 `v1beta` Interactions API 及放棄顯式快取（改依賴隱式快取）的架構成本。
 
 ---
