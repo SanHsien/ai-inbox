@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 268 項任務：🔴 未做 11／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 269 項任務：🔴 未做 12／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -57,6 +57,7 @@
 | `T-20261124-03` | 🔴 未做 | 低 | 補充單代理五要素結構、開工前追問閘門與「幫我找 vs 幫我讀（禁摘要 5 欄表）」提示詞模式至 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-24-lichangzhang-4-ai-employees-workflow-patterns](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | 2026-11-24 |
 | `T-20261125-02` | 🔴 未做 | 低 | 唯讀檢閱 `google/adk-recipes` 的 `.agents/skills/`（`github-pr-review`、`generate-python-runnability-test`、`repo-oracle`）與 `core/python/long-horizon-harness`、`safety-plugins`，評估可復用設計模式 | `C:\GitHub\ai-inbox\docs\`（可併入 `docs/ambient-quality-agent-sidecar-spec.md` 附錄或獨立唯讀評析報告，收錄於集群 3；嚴禁未經安全檢驗直接安裝第三方 skill） | [2026-11-25-google-aqua-adk-recipes-ambient-quality-eval](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | 2026-11-25 |
 | `T-20261125-03` | 🔴 未做 | 低 | 將 Claude `Install as app` 之「三級權限分層、版本綁定重授權與作者來源閘門」安全模型及離線選型對照補入 `docs/visual-agent-artifacts-engineering-spec.md` | `C:\GitHub\ai-inbox\docs\visual-agent-artifacts-engineering-spec.md`（收錄於集群 2） | [2026-11-25-kocpc-claude-install-as-app-artifacts-desktop](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | 2026-11-25 |
+| `T-20261125-04` | 🔴 未做 | 低 | 將 Google `Procedural Graphs`（`arXiv:2609.09153`）之「`(procedure, relation, procedure)` 2-hop 局部導引、Validation Gating 與 Rejection Memory」模式補入 `docs/harness2-recursive-agent-harnessing-spec.md` | `C:\GitHub\ai-inbox\docs\harness2-recursive-agent-harnessing-spec.md`（收錄於集群 1） | [2026-11-25-google-procedural-graphs-self-evolving-agents](./notes/2026-11-25-google-procedural-graphs-self-evolving-agents.md) | 2026-11-25 |
 
 ### 🟢 已做（Done）
 
@@ -512,6 +513,7 @@
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[李廠長來了 YouTube 實作評析：《我給自己招了4個AI員工，每週省下8小時！》——單代理四角色工作流、漸進授權階梯與「幫我找 vs 幫我讀」二元契約](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | `ai-agent`, `claude-cowork`, `chatgpt-work` | 0 / 1 |
 | 2026-11-24 | ⚪ | ⏳ 待獨立審查｜[零度解說 YouTube 實測評析：《Opus 5.5 正式發布！實測做動畫、遊戲、寫代碼》——長程自主執行展示與「網頁版不耗配額」誤區勘誤](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md) | `claude-opus-5-5`, `code-as-video`, `webgl` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[Google 開源環境品質智慧體 AQuA 與 `google/adk-recipes` 評析：請求鏈路外唯讀邊車、五階段聚類診斷與佐證溯源機制](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | `google-adk`, `aqua`, `ambient-agent` | 0 / 2 |
+| 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[Google《Procedural Graphs (arXiv:2609.09153)》評析：不重訓權重的 `(procedure, relation, procedure)` 自演化執行圖譜、驗證守門與拒絕記憶](./notes/2026-11-25-google-procedural-graphs-self-evolving-agents.md) | `procedural-graphs`, `self-evolving-agents`, `google-research` | 0 / 1 |
 | 2026-11-25 | ⚪ | ⏳ 待獨立審查｜[GitHub 專案評析：`Black-Magic-Lab/NEIN`（原 `hirakujira/NEIN`）——LINE iOS/macOS 副裝置雙開與去廣告二進位修補工具](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md) | `ios`, `macos`, `line` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[電腦王阿達評析：《Claude 推出 Install as app 功能》——Artifacts 桌面化三級權限模型、版本綁定重授權與離線依賴邊界](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | `claude-desktop`, `artifacts`, `install-as-app` | 0 / 1 |
 <!-- END GENERATED: index -->
@@ -559,6 +561,7 @@
 - Claude記憶與提示：[Claude17招進階技巧](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md)
 - 交件卡漸進放手：[CubeLV交件卡漸進放手](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md)
 - 單代理四角色工作流：[李廠長4個AI員工工作流評析](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md)
+- 程序圖譜自我演化：[Google程序圖譜PG評析](./notes/2026-11-25-google-procedural-graphs-self-evolving-agents.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
