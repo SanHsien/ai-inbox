@@ -7,7 +7,7 @@ author: "楊三賢 (SanHsien)"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
 written_by: "antigravity/claude-opus-4.6@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; antigravity/gemini@88a0bc60-2711-4499-b5fd-829fab9292d8; codex/gpt-6.1-sol@01a20b8d-8bc2-7191-a7cc-7a104940ed47"
-revised_at: "2026-11-24"
+revised_at: "2026-11-25"
 source_review: unavailable
 source_reviewed_at: "2026-11-22"
 source_review_note: "使用者於對話直接提供完整正文與留言區專案分類清單全文（無原始貼文 URL，無法於網頁重開原貼文核對圖片與留言計數）"
@@ -66,6 +66,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 | :--- | :--- | :--- |
 | **[`valentynkit/jev-skip`](https://github.com/valentynkit/jev-skip)** | 讀 YouTube 字幕判斷業配並自動跳過 | 專案自述（23 支影片）：抓出 SponsorBlock 標註秒數之 77%，每支成本 ~\$0.0008，每小時誤跳 ~34 秒；作者註明為透過轉接服務測試，未以官方介面重測 |
 | **[`kitze/unclutter`](https://github.com/kitze/unclutter)** | 判斷網頁區塊為雜訊並移除 | 無量化數據（專案 README 展示功能） |
+| **Marcel Pociot X 資訊流過濾外掛**（2026-11-25 補充） | 接入 Jev 以自然語言規則過濾 X 平台不想看的貼文 | 開發者公開展示自述每則貼文平均判斷耗時約 **380 ms**（未唯一確認公開 GitHub 倉庫，未獨立重測） |
 | `sift`、`typesafe-adblock`、`jev_antispam_bot`、`youtube-sponsor-detection` | X 貼文六分類隱藏、網頁廣告判斷（作者自述好玩專案）、Telegram 防灌水、YouTube 業配偵測 | 貼文僅列名稱與用途描述，未附量化數據（同名通用詞或未唯一確認 repo，列為貼文二手轉述，【待實測】） |
 
 ### 2.2 信箱與文件分類
@@ -106,6 +107,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 | **[`0xNatoshi/jev-codex-router`](https://github.com/0xNatoshi/jev-codex-router#jev-codex-router)** | Codex 每輪用 Jev 決定模型與思考深度 | 專案自述：237 個歷史回合回測較全用最貴模型少 ~60%。**重要限制**：作者於 README 明示此數字為**舊版路由政策（Legacy Policy）的歷史模擬回測，並非實際量測的 Codex 配額或帳單節省，也不證明現行版本政策的實際成效** |
 | **`jev-router`（同名多專案）** | Claude Code 模型路由，對應 [`gargpratyush/jev-router`](https://github.com/gargpratyush/jev-router) 與 [`BillionsBobby/JevRouter`](https://github.com/BillionsBobby/JevRouter) | 無統一第三方實測數據 |
 | **[`tamaratran/jev-pruner`](https://github.com/tamaratran/jev-pruner)** | 修剪過長 Bash 輸出 | 無量化數據 |
+| **[`tamaratran/fast-jev-compaction`](https://github.com/tamaratran/fast-jev-compaction)**（2026-11-25 補充，8,023 stars） | Claude Code 外掛＋npm 套件：以 Jev `noul` 剪枝取代有損 LLM 摘要壓縮 | **無失真剪枝機制（README 一手核實）**：保留首則與最近 `preserveRecentMessages`（預設 6）則訊息；其餘每個 `tool_use`/`tool_result` 配對問兩題 `noul`（`keepCall` 與 `keepResult`），對照 `keepThreshold=0.5`：`keepResult≥0.5` 原文保留、`keepCall≥0.5` 僅留前 `300` 字元＋註記、否則整對移除；使用者／助手文字完全不改寫。分階段將狀態壓入 `maxStateTokens=25k`、批次 `maxRequestTokens=30k` 並行送出（Jev 失敗即 throw 由 hook 決定回退） |
 | **[`win4r/jev-skill-suggester`](https://github.com/win4r/jev-skill-suggester)** | 推薦該用哪個 skill（中英雙語） | 無量化數據 |
 | **[`kunchenguid/compact-adviser`](https://github.com/kunchenguid/compact-adviser)** | 判斷何時適合壓縮對話 | 無量化數據 |
 | **[`EliaAlberti/jev-rules`](https://github.com/EliaAlberti/jev-rules)** | 挑出適用規則減少 Claude 讀取量 | 無量化數據 |
@@ -166,6 +168,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 1. **Agent 守門員模式**：[`anpicasso/hermes-jev-approvals`](https://github.com/anpicasso/hermes-jev-approvals)（修正後 156 筆跨三個設定檔分層樣本自述快 9.8×、人工中斷少 4.2×；受限單機與單一輔助比較模型）、[`valentynkit/jev-belay`](https://github.com/valentynkit/jev-belay)（100 筆作者會話模型代理標註停止案例自述 AUROC 0.976、中位延遲 346 ms）與 [`noplan-inc/limpet`](https://github.com/noplan-inc/limpet)（防提早收工）提供了以 `Noul` 二元判斷輔助執行期把關的架構參考，[`Sraavan/tripwire`](https://github.com/Sraavan/tripwire) 則示範工具執行前（`PreToolUse`）風險審核（允許／詢問／拒絕），可與本專案確定性檢查腳本互補（以上專案量化數據皆未獨立重測）。
 2. **模型路由模擬與實測的區分**：[`0xNatoshi/jev-codex-router`](https://github.com/0xNatoshi/jev-codex-router#jev-codex-router) 的 237 回合省 ~60% **僅為舊版路由政策的歷史模擬回測，非實測 Codex 配額節省，亦不證明現行政策成效**；在與本專案 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 對照時，僅能視為路由模擬概念，不能當作已驗證的實際帳單節省證據。
 3. **訊號拆解、下游訓練與繁中防禦部署建議**：從 [`anisselbd/jev-phishing-bench`](https://github.com/anisselbd/jev-phishing-bench)（Jev 1.13 直接判斷 62.6%；單一最佳訊號 89.4% 低於確定性正則規則 91.8%；5 項訊號經 A 組訓練邏輯迴歸後於 B 組保留集才達 95.0%）可知，使用 System One 模型處理安全判斷時，**不僅應將複雜問題拆解為結構化子訊號，還須視任務搭配下游統計訓練或確定性規則組合**；且在 `Jev 1.14` 繁體中文表現完成本地實測前，本機防禦上建議優先搭配確定性規則與置信度門檻（此為本專案部署建議，非官方硬性限制規格）。
+4. **無失真上下文剪枝（2026-11-25 補充）**：[`tamaratran/fast-jev-compaction`](https://github.com/tamaratran/fast-jev-compaction) 示範了「**不生成摘要、只做 `noul` 二元剪枝**」的替代 `/compact` 路線——保留重要 `tool_result` 全文（避免摘要遺失路徑／錯誤碼），僅靠結構化保留決策壓縮歷史上下文，可與本庫 `idleCompaction` 及 `cc-session-reader` 策略對照評估。
 
 ---
 
@@ -179,4 +182,5 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
     3. 標明 `Jev 1.14` 已改善多語支援、現行繁中表現為【待實測】，並將本專案的防禦性部署建議（結構化訊號拆解＋下游訓練／確定性規則、置信度門檻）與已確認官方規格分開。
     4. 整合 Agent 守門員模式（指令審核、工具執行前 `PreToolUse` 風險閘 `Sraavan/tripwire`〔允許／詢問／拒絕〕、防提早收工、原地打轉偵測）的通用架構模板。
     5. 同步修正既有產出第 2 節的延遲比較與第 3.1 節「即時語音操控」：70～500 ms 保留為來源未查證，不作已確認官方數據；語音案例改為作者自述每次 Jev 請求 250～350 ms，註明非逐字或端到端延遲，附來源與核對日期，保留未獨立重測限制。
+    6. （2026-11-25 增補）收錄 `tamaratran/fast-jev-compaction`（`8,023` stars）之無失真 `noul` 上下文剪枝架構（`keepCall` / `keepResult` 雙門檻＋`preserveRecentMessages` 錨定）與 Marcel Pociot X 資訊流過濾（自述平均 380 ms/則）案例。
   - **驗收標準（DoD）**：產出 `docs/system-one-decision-model-landscape.md`，含 Jev（區分 9 月快照與 10 月圖片/`Box` 更新、僅對輸入收費／輸出免費且區分 `usage.output_tokens` 非零欄位）/ Decision 1 / Colibri 三方對照表、各專案 `owner/repo` 出處與實驗限制（釣魚信 5 訊號經 A 組訓練邏輯迴歸於保留集達 95.0% 與正則 91.8% 對照、指令審核修正後 156 筆 9.8×/4.2×、`Tripwire` 為 `PreToolUse` 風險閘、`jev-belay` 100 筆自測 AUROC 0.976、搜尋排序模型標註偏差、路由舊政策模擬聲明），既有第 2 節與第 3.1 節亦須按上述延遲單位與證據分級修正、附來源與核對日期，且 `python tools/verify_inbox.py` 驗證通過。
