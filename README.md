@@ -39,16 +39,18 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 270 項任務：🔴 未做 13／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 272 項任務：🔴 未做 15／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
 
 | 任務 ID | 狀態 | 優先級 | 待辦事項摘要 | 目標專案 / 範圍 | 來源分析文章 | 建立日期 |
 | :--- | :---: | :---: | :--- | :--- | :--- | :---: |
+| `T-20261125-06` | 🔴 未做 | 高 | 建立 Windows XAMPP 架站安全加固與 PHP2Shell（`CVE-2026-109618` / `109619`）應變檢核表 `docs/xampp-php2shell-hardening-checklist.md` | `C:\GitHub\ai-inbox\docs\xampp-php2shell-hardening-checklist.md`（收錄於集群 2） | [2026-11-25-openai-php2shell-checker-xampp-hardening](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md) | 2026-11-25 |
 | `T-20261122-04` | 🔴 未做 | 中 | 評估 Gemini API Tool Retrieval（`v1beta` Interactions API、`defer_loading` / `tool_search`、計費與隱式快取邊界）在多工具 Agent 之整合規範，並納入 `docs/gemini-tool-retrieval-and-mcp-spec.md` | `C:\GitHub\ai-inbox\docs\gemini-tool-retrieval-and-mcp-spec.md`（收錄於集群 3） | [2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval](./notes/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval.md) | 2026-11-22 |
 | `T-20261122-05` | 🔴 未做 | 中 | 將 Jev by TypeSafe AI 生態中與 Agent 安全閘門（`anpicasso/hermes-jev-approvals`、`valentynkit/jev-belay`、`noplan-inc/limpet`、`AshutoshVJTI/progressgate`、`Sraavan/tripwire`）與模型路由（`0xNatoshi/jev-codex-router`、`gargpratyush/jev-router`）相關的專案架構與數據限制，對照 Google Decisions API / Colibri 整理至 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3） | [2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | 2026-11-22 |
 | `T-20261125-01` | 🔴 未做 | 中 | 萃取 Google AQuA（`ambient-quality-agent`）之「唯讀邊車架構、五階段聚類核驗與 `NEW/RECURRING/RESOLVED(14d)` 狀態機」撰寫為離線品質稽核參考規格 `docs/ambient-quality-agent-sidecar-spec.md` | `C:\GitHub\ai-inbox\docs\ambient-quality-agent-sidecar-spec.md`（收錄於集群 3） | [2026-11-25-google-aqua-adk-recipes-ambient-quality-eval](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | 2026-11-25 |
+| `T-20261125-07` | 🔴 未做 | 中 | 評估將「運行期版本與標頭暴露檢查（參考 `openai/php2shell-checker`）」納入 `docs/production-smoke-security-checklist.md` | `C:\GitHub\ai-inbox\docs\production-smoke-security-checklist.md`（收錄於集群 2） | [2026-11-25-openai-php2shell-checker-xampp-hardening](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md) | 2026-11-25 |
 | `T-20261122-01` | 🔴 未做 | 低 | 評估 `SKILL.md` 跨平台（Gemini / Claude / Antigravity）相容性檢查清單，並將「首句技能名稱定錨」與「前置步驟防跳步防呆語法」納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | 2026-11-22 |
 | `T-20261122-02` | 🔴 未做 | 低 | 將 Anthropic Agent Memory「記憶存策略、不存易過時狀態」的案例觀察（寶可夢紀錄）與「反覆走偏時編輯原提問」可選策略納入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | 2026-11-22 |
 | `T-20261122-03` | 🔴 未做 | 低 | 將 Google AI Pro 跨產品 AI 點數制度（Flow 點數、Antigravity 基本配額與溢出點數開關）與 8 大工具能力邊界梳理至 `docs/google-ai-pro-ecosystem-and-credit-routing.md` | `C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3） | [2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | 2026-11-22 |
@@ -518,6 +520,7 @@
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[Google《Procedural Graphs (arXiv:2609.09153)》評析：不重訓權重的 `(procedure, relation, procedure)` 自演化執行圖譜、驗證守門與拒絕記憶](./notes/2026-11-25-google-procedural-graphs-self-evolving-agents.md) | `procedural-graphs`, `self-evolving-agents`, `google-research` | 0 / 1 |
 | 2026-11-25 | ⚪ | ⏳ 待獨立審查｜[GitHub 專案評析：`Black-Magic-Lab/NEIN`（原 `hirakujira/NEIN`）——LINE iOS/macOS 副裝置雙開與去廣告二進位修補工具](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md) | `ios`, `macos`, `line` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[電腦王阿達評析：《Claude 推出 Install as app 功能》——Artifacts 桌面化三級權限模型、版本綁定重授權與離線依賴邊界](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | `claude-desktop`, `artifacts`, `install-as-app` | 0 / 1 |
+| 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[PHP2Shell（CVE-2026-109618 / 109619）、OpenAI `php2shell-checker` 與 Windows XAMPP 架站安全加固評估](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md) | `php2shell`, `cve-2026-109618`, `cve-2026-109619` | 0 / 2 |
 <!-- END GENERATED: index -->
 
 ---
@@ -592,6 +595,7 @@
 - 3D智慧家庭儀表板：[3D智慧家庭數位孿生](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md)
 - 純Rust逆向重建：[Craft Anything評析](./notes/2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild.md)
 - 工具桌面化權限：[Claude桌面App權限評析](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md)
+- XAMPP架站安全：[PHP2Shell與XAMPP加固](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
