@@ -512,6 +512,7 @@
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[李廠長來了 YouTube 實作評析：《我給自己招了4個AI員工，每週省下8小時！》——單代理四角色工作流、漸進授權階梯與「幫我找 vs 幫我讀」二元契約](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | `ai-agent`, `claude-cowork`, `chatgpt-work` | 0 / 1 |
 | 2026-11-24 | ⚪ | ⏳ 待獨立審查｜[零度解說 YouTube 實測評析：《Opus 5.5 正式發布！實測做動畫、遊戲、寫代碼》——長程自主執行展示與「網頁版不耗配額」誤區勘誤](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md) | `claude-opus-5-5`, `code-as-video`, `webgl` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[Google 開源環境品質智慧體 AQuA 與 `google/adk-recipes` 評析：請求鏈路外唯讀邊車、五階段聚類診斷與佐證溯源機制](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | `google-adk`, `aqua`, `ambient-agent` | 0 / 2 |
+| 2026-11-25 | ⚪ | ⏳ 待獨立審查｜[GitHub 專案評析：`Black-Magic-Lab/NEIN`（原 `hirakujira/NEIN`）——LINE iOS/macOS 副裝置雙開與去廣告二進位修補工具](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md) | `ios`, `macos`, `line` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[電腦王阿達評析：《Claude 推出 Install as app 功能》——Artifacts 桌面化三級權限模型、版本綁定重授權與離線依賴邊界](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | `claude-desktop`, `artifacts`, `install-as-app` | 0 / 1 |
 <!-- END GENERATED: index -->
 
@@ -634,6 +635,7 @@
 - 電商分潤真假查證：[亞馬遜與蝦皮分潤查證](./notes/2026-11-15-amazon-associates-shopee-affiliate-fact-check.md)
 - ChatGPT分發紅利：[ChatGPT MCP分發紅利](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md)
 - Muse實測與限制：[MetaMuse十種玩法與限制](./notes/2026-11-24-brayden-chen-muse-ai-agent-10-use-cases.md)
+- LINE逆向修補評析：[NEIN LINE去廣告雙開評析](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md)
 <!-- END GENERATED: clusters -->
 
 ---
