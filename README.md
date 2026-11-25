@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 267 項任務：🔴 未做 10／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 268 項任務：🔴 未做 11／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -56,6 +56,7 @@
 | `T-20261124-02` | 🔴 未做 | 低 | 萃取 CubeLV「交件卡三級漸進放手（交給我核准／看條件／直接做）」與存量追認模式，整理為多 Agent 人機協作審批閘門設計參考並補入 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3，新增人機協作漸進放手設計模式節） | [2026-11-24-cubelv-handoff-cards-progressive-autonomy](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md) | 2026-11-24 |
 | `T-20261124-03` | 🔴 未做 | 低 | 補充單代理五要素結構、開工前追問閘門與「幫我找 vs 幫我讀（禁摘要 5 欄表）」提示詞模式至 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-24-lichangzhang-4-ai-employees-workflow-patterns](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | 2026-11-24 |
 | `T-20261125-02` | 🔴 未做 | 低 | 唯讀檢閱 `google/adk-recipes` 的 `.agents/skills/`（`github-pr-review`、`generate-python-runnability-test`、`repo-oracle`）與 `core/python/long-horizon-harness`、`safety-plugins`，評估可復用設計模式 | `C:\GitHub\ai-inbox\docs\`（可併入 `docs/ambient-quality-agent-sidecar-spec.md` 附錄或獨立唯讀評析報告，收錄於集群 3；嚴禁未經安全檢驗直接安裝第三方 skill） | [2026-11-25-google-aqua-adk-recipes-ambient-quality-eval](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | 2026-11-25 |
+| `T-20261125-03` | 🔴 未做 | 低 | 將 Claude `Install as app` 之「三級權限分層、版本綁定重授權與作者來源閘門」安全模型及離線選型對照補入 `docs/visual-agent-artifacts-engineering-spec.md` | `C:\GitHub\ai-inbox\docs\visual-agent-artifacts-engineering-spec.md`（收錄於集群 2） | [2026-11-25-kocpc-claude-install-as-app-artifacts-desktop](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | 2026-11-25 |
 
 ### 🟢 已做（Done）
 
@@ -511,6 +512,7 @@
 | 2026-11-24 | 🔴 | ⏳ 待獨立審查｜[李廠長來了 YouTube 實作評析：《我給自己招了4個AI員工，每週省下8小時！》——單代理四角色工作流、漸進授權階梯與「幫我找 vs 幫我讀」二元契約](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md) | `ai-agent`, `claude-cowork`, `chatgpt-work` | 0 / 1 |
 | 2026-11-24 | ⚪ | ⏳ 待獨立審查｜[零度解說 YouTube 實測評析：《Opus 5.5 正式發布！實測做動畫、遊戲、寫代碼》——長程自主執行展示與「網頁版不耗配額」誤區勘誤](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md) | `claude-opus-5-5`, `code-as-video`, `webgl` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[Google 開源環境品質智慧體 AQuA 與 `google/adk-recipes` 評析：請求鏈路外唯讀邊車、五階段聚類診斷與佐證溯源機制](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | `google-adk`, `aqua`, `ambient-agent` | 0 / 2 |
+| 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[電腦王阿達評析：《Claude 推出 Install as app 功能》——Artifacts 桌面化三級權限模型、版本綁定重授權與離線依賴邊界](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | `claude-desktop`, `artifacts`, `install-as-app` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -582,6 +584,7 @@
 - 海報視覺解構Prompt：[關聖帝君瑞士Riso海報](./notes/2026-11-19-shengan231202-guanyu-swiss-riso-poster-prompt.md)
 - 代碼影片創意分鏡：[Opus5.5影片十案例](./notes/2026-11-20-nicekate-opus-5-5-code-as-video-10-cases.md)
 - 3D智慧家庭儀表板：[3D智慧家庭數位孿生](./notes/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard.md)
+- 工具桌面化權限：[Claude桌面App權限評析](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
