@@ -353,8 +353,14 @@
 
 ## 18. 三篇筆記 fix 道修正（2026-11-25）
 
-- **修復版本**：工作樹未提交；維護者本輪明確要求不 commit、不 push，因此沒有修復 commit hash。既有審查報告與紀錄未修改，本節只記修正結果，不代替獨立放行。
+- **修復版本**：`48f9f93`（2026-11-25）。既有審查報告與紀錄未修改，本節只記修正結果，不代替獨立放行。
 - **Gemini Skills**（[來源審查](reviews/reports/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval/2026-11-25-04-review-claude.md)，3 處）：直連原文及 7 張公開圖片，確認原文只列 Gemini／Claude／ChatGPT；Antigravity 改註 repo 自行延伸，並同步 `docs/cross-platform-skill-spec.md` 的來源邊界。圖 5 改為成功回覆（失敗畫面在圖 4），圖 6 改為裝飾插畫，補計封面，圖片數改 7。
 - **Gemini Tool Retrieval**（[覆核報告](reviews/reports/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval/2026-11-25-07-audit-claude.md)，1 處）：附圖改為 X 連結預覽卡，移除縮圖尺寸與傳輸格式；公開原圖已直連核對，Facebook 登入後頁面呈現與 0 則留言依報告，未自行核對。另修正「贴文／迁移」為「貼文／遷移」。`docs/gemini-tool-retrieval-and-mcp-spec.md` 沒有上述圖片敘述，未修改；未以檔案存在為由結案任務。
 - **Polycam／Home Assistant**（[來源審查](reviews/reports/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard/2026-11-25-01-review-claude.md)，3 處）：依報告補 John Perrone 回饋，回覆數改 2、`source_review` 改 `full`、媒體計數依報告改 1（影片 1 部、靜態圖 0 張），更新來源備註。兩則登入後留言依報告，未自行核對。直連公開影片核對 00:01／00:04／00:26，修正 Overview → Home 空白載入時序與 `WiZ 824512`，省略區域網路 IP。報告列的 `Balcony` 不採用：00:01 實際顯示 `Barbecue`。
 - 三篇皆追加本輪完整 session 身分與 `revised_at: 2026-11-25`；同步來源盤點日期及 `ROADMAP.md` 的補讀範圍。再審由 ROADMAP 既有審查項目追蹤。
+
+## 19. 兩篇筆記 fix 道修正（2026-11-25，Codex 道審查）
+
+- **修復版本**：`683d947`（2026-11-25）。既有審查報告與紀錄未修改，本節只記修正結果，不代替獨立放行。
+- **Claude 17 招**（[審查報告](reviews/reports/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts/2026-11-25-09-review-codex.md)，1 處）：「編輯原提問建立分支」補上介面限制，Chat／Cowork 新整合介面目前不支援從較早節點分支，改整理已確認資訊另開對話；同步修正 `docs/agent-memory-and-prompting-best-practices.md` 第 2 節流程與第 2.1 節策略表，不宣稱效果優於後續糾正。
+- **Google AI Pro 八工具**（[審查報告](reviews/reports/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval/2026-11-25-05-review-codex.md)，1 處）：工具矩陣前註明操作難度星等是筆記作者主觀評估；`docs/google-ai-pro-ecosystem-and-credit-routing.md` 兩處 API 計費改為依模型與功能區分計價單位。
