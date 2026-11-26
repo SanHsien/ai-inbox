@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 277 項任務：🔴 未做 20／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 278 項任務：🔴 未做 21／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -66,6 +66,7 @@
 | `T-20261126-03` | 🔴 未做 | 低 | 將《Gemini Notebook 學術用法指南》之「外圍／核心兩層語料切分、四大約束（含『無法確認』退路）、草稿出處反查與掃描 PDF／13% 幻覺／遺漏對帳紀律」補入 `templates/academic-reading-prompt.md` | `C:\GitHub\ai-inbox\templates\academic-reading-prompt.md`（收錄於集群 3） | [2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md) | 2026-11-26 |
 | `T-20261126-04` | 🔴 未做 | 低 | 將「無術語時序敘事＋行內粗體標註偏離最新意圖」PR 稽核提示詞補入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-26-claude-long-thread-pr-intent-drift-prompt](./notes/2026-11-26-claude-long-thread-pr-intent-drift-prompt.md) | 2026-11-26 |
 | `T-20261126-05` | 🔴 未做 | 低 | 將「跨會話小問題日誌（`papercuts.md`：`date · symptom · fix · project`＋失敗時優先按需讀取）」模式補入 `docs/agent-memory-and-prompting-best-practices.md`，並評估於 `agent-assets` 建立對應知識檔 | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1；可選延伸至 `C:\GitHub\agent-assets\knowledge\`） | [2026-11-26-claude-md-global-papercuts-log-pattern](./notes/2026-11-26-claude-md-global-papercuts-log-pattern.md) | 2026-11-26 |
+| `T-20261126-06` | 🔴 未做 | 低 | 將 UN System Data Commons（`data.un.org`）、官方 MCP／REST 文件入口與 `datacommonsorg/agent-toolkit` 補入 `docs/free-public-apis.md` | `C:\GitHub\ai-inbox\docs\free-public-apis.md`（收錄於集群 3） | [2026-11-26-un-system-data-commons-google-mcp](./notes/2026-11-26-un-system-data-commons-google-mcp.md) | 2026-11-26 |
 
 ### 🟢 已做（Done）
 
@@ -535,6 +536,7 @@
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《GPT-6 Sol、Luna 值不值得用？》——降價優勢、3D/寫作短板與 `AGENTS.md` 遵從度退步回報](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md) | `openai`, `gpt-6-sol`, `gpt-6-luna` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《Opus 5.5 只用 Medium，就能做到這個程度？》——推論深度倒掛現象、空間演算法與 3D 建模參考圖落差](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md) | `claude-opus-5-5`, `effort-routing`, `code-as-video` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Threads 社群教學評析：《動畫互動網站五步 Prompt 框架》——視覺鏡頭口語化拆解、先列素材與 Awwwards 罐頭風險](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md) | `frontend`, `animation`, `prompt-engineering` | 0 / 0 |
+| 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[UN System Data Commons（`data.un.org`）評析：Google Data Commons 驅動之 26 機構 AI-Ready 知識圖譜與 MCP 接入](./notes/2026-11-26-un-system-data-commons-google-mcp.md) | `data-commons`, `un-data`, `knowledge-graph` | 0 / 1 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[RESEARCHER.TW《Gemini Notebook 學術用法指南（101 頁）》評析：兩層語料抽屜、草稿出處體檢、三項幻覺實測與五大踩雷防線](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md) | `gemini-notebook`, `notebooklm`, `academic-research` | 0 / 1 |
 <!-- END GENERATED: index -->
 
@@ -658,6 +660,7 @@
 - Opus5.5影音實測：[零度Opus5.5實測評析](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md)
 - AQuA邊車品質稽核：[Google AQuA邊車稽核評析](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md)
 - Opus5.5實測評析：[NiceKate Opus5.5實測](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md)
+- UN統計MCP知識圖譜：[UN數據圖譜與MCP評析](./notes/2026-11-26-un-system-data-commons-google-mcp.md)
 - 學術語料庫工作流：[GeminiNotebook學術指南](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
