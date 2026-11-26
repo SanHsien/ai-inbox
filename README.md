@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 272 項任務：🔴 未做 15／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 273 項任務：🔴 未做 16／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -61,6 +61,7 @@
 | `T-20261125-03` | 🔴 未做 | 低 | 將 Claude `Install as app` 之「三級權限分層、版本綁定重授權與作者來源閘門」安全模型及離線選型對照補入 `docs/visual-agent-artifacts-engineering-spec.md` | `C:\GitHub\ai-inbox\docs\visual-agent-artifacts-engineering-spec.md`（收錄於集群 2） | [2026-11-25-kocpc-claude-install-as-app-artifacts-desktop](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | 2026-11-25 |
 | `T-20261125-04` | 🔴 未做 | 低 | 將 Google `Procedural Graphs`（`arXiv:2609.09153`）之「`(procedure, relation, procedure)` 2-hop 局部導引、Validation Gating 與 Rejection Memory」模式補入 `docs/harness2-recursive-agent-harnessing-spec.md` | `C:\GitHub\ai-inbox\docs\harness2-recursive-agent-harnessing-spec.md`（收錄於集群 1） | [2026-11-25-google-procedural-graphs-self-evolving-agents](./notes/2026-11-25-google-procedural-graphs-self-evolving-agents.md) | 2026-11-25 |
 | `T-20261125-05` | 🔴 未做 | 低 | 唯讀對照 `storytold/craft-anything` 的 `Study → Build → Check → Ready` 目錄契約、`core_evidence_browse` 分頁模式與三視窗視覺比對規格，補入 `docs/reverse-engineering-pipeline-spec.md` | `C:\GitHub\ai-inbox\docs\reverse-engineering-pipeline-spec.md`（收錄於集群 2；僅做規格對照，不編譯或安裝 Early Alpha 二進位依賴） | [2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild](./notes/2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild.md) | 2026-11-25 |
+| `T-20261126-01` | 🔴 未做 | 低 | 將 Anthropic Trust Center 揭露之 `CVE-2026-22561`（Windows 安裝程式 DLL 劫持）與商業方案資料保留／BAA 排除邊界補入 `docs/claude-security-guidance-windows-setup.md` | `C:\GitHub\ai-inbox\docs\claude-security-guidance-windows-setup.md`（收錄於集群 2） | [2026-11-26-anthropic-small-business-cowork-trust-center](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md) | 2026-11-26 |
 
 ### 🟢 已做（Done）
 
@@ -521,6 +522,7 @@
 | 2026-11-25 | ⚪ | ⏳ 待獨立審查｜[GitHub 專案評析：`Black-Magic-Lab/NEIN`（原 `hirakujira/NEIN`）——LINE iOS/macOS 副裝置雙開與去廣告二進位修補工具](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md) | `ios`, `macos`, `line` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[電腦王阿達評析：《Claude 推出 Install as app 功能》——Artifacts 桌面化三級權限模型、版本綁定重授權與離線依賴邊界](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | `claude-desktop`, `artifacts`, `install-as-app` | 0 / 1 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[PHP2Shell（CVE-2026-109618 / 109619）、OpenAI `php2shell-checker` 與 Windows XAMPP 架站安全加固評估](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md) | `php2shell`, `cve-2026-109618`, `cve-2026-109619` | 0 / 2 |
+| 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[Claude for Small Business（43 工作流／27 整合）與 Anthropic Trust Center 合規安全評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md) | `anthropic`, `claude-cowork`, `claude-for-small-business` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[OpenAI 第二輪 Codex for OSS 開源資助評析：10,000 名額、半年每月 \$100 Pro 與免硬性星數門檻](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md) | `openai`, `codex`, `open-source` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -597,6 +599,7 @@
 - 純Rust逆向重建：[Craft Anything評析](./notes/2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild.md)
 - 工具桌面化權限：[Claude桌面App權限評析](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md)
 - XAMPP架站安全：[PHP2Shell與XAMPP加固](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md)
+- Claude企業合規：[Claude中小企與合規評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
