@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 274 項任務：🔴 未做 17／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 275 項任務：🔴 未做 18／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -63,6 +63,7 @@
 | `T-20261125-04` | 🔴 未做 | 低 | 將 Google `Procedural Graphs`（`arXiv:2609.09153`）之「`(procedure, relation, procedure)` 2-hop 局部導引、Validation Gating 與 Rejection Memory」模式補入 `docs/harness2-recursive-agent-harnessing-spec.md` | `C:\GitHub\ai-inbox\docs\harness2-recursive-agent-harnessing-spec.md`（收錄於集群 1） | [2026-11-25-google-procedural-graphs-self-evolving-agents](./notes/2026-11-25-google-procedural-graphs-self-evolving-agents.md) | 2026-11-25 |
 | `T-20261125-05` | 🔴 未做 | 低 | 唯讀對照 `storytold/craft-anything` 的 `Study → Build → Check → Ready` 目錄契約、`core_evidence_browse` 分頁模式與三視窗視覺比對規格，補入 `docs/reverse-engineering-pipeline-spec.md` | `C:\GitHub\ai-inbox\docs\reverse-engineering-pipeline-spec.md`（收錄於集群 2；僅做規格對照，不編譯或安裝 Early Alpha 二進位依賴） | [2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild](./notes/2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild.md) | 2026-11-25 |
 | `T-20261126-01` | 🔴 未做 | 低 | 將 Anthropic Trust Center 揭露之 `CVE-2026-22561`（Windows 安裝程式 DLL 劫持）與商業方案資料保留／BAA 排除邊界補入 `docs/claude-security-guidance-windows-setup.md` | `C:\GitHub\ai-inbox\docs\claude-security-guidance-windows-setup.md`（收錄於集群 2） | [2026-11-26-anthropic-small-business-cowork-trust-center](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md) | 2026-11-26 |
+| `T-20261126-03` | 🔴 未做 | 低 | 將《Gemini Notebook 學術用法指南》之「外圍／核心兩層語料切分、四大約束（含『無法確認』退路）、草稿出處反查與掃描 PDF／13% 幻覺／遺漏對帳紀律」補入 `templates/academic-reading-prompt.md` | `C:\GitHub\ai-inbox\templates\academic-reading-prompt.md`（收錄於集群 3） | [2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md) | 2026-11-26 |
 
 ### 🟢 已做（Done）
 
@@ -528,6 +529,7 @@
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[OpenAI 第二輪 Codex for OSS 開源資助評析：10,000 名額、半年每月 \$100 Pro 與免硬性星數門檻](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md) | `openai`, `codex`, `open-source` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《GPT-6 Sol、Luna 值不值得用？》——降價優勢、3D/寫作短板與 `AGENTS.md` 遵從度退步回報](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md) | `openai`, `gpt-6-sol`, `gpt-6-luna` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《Opus 5.5 只用 Medium，就能做到這個程度？》——推論深度倒掛現象、空間演算法與 3D 建模參考圖落差](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md) | `claude-opus-5-5`, `effort-routing`, `code-as-video` | 0 / 0 |
+| 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[RESEARCHER.TW《Gemini Notebook 學術用法指南（101 頁）》評析：兩層語料抽屜、草稿出處體檢、三項幻覺實測與五大踩雷防線](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md) | `gemini-notebook`, `notebooklm`, `academic-research` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -646,6 +648,7 @@
 - Opus5.5影音實測：[零度Opus5.5實測評析](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md)
 - AQuA邊車品質稽核：[Google AQuA邊車稽核評析](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md)
 - Opus5.5實測評析：[NiceKate Opus5.5實測](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md)
+- 學術語料庫工作流：[GeminiNotebook學術指南](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
