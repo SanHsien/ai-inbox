@@ -364,3 +364,9 @@
 - **修復版本**：`683d947`（2026-11-25）。既有審查報告與紀錄未修改，本節只記修正結果，不代替獨立放行。
 - **Claude 17 招**（[審查報告](reviews/reports/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts/2026-11-25-09-review-codex.md)，1 處）：「編輯原提問建立分支」補上介面限制，Chat／Cowork 新整合介面目前不支援從較早節點分支，改整理已確認資訊另開對話；同步修正 `docs/agent-memory-and-prompting-best-practices.md` 第 2 節流程與第 2.1 節策略表，不宣稱效果優於後續糾正。
 - **Google AI Pro 八工具**（[審查報告](reviews/reports/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval/2026-11-25-05-review-codex.md)，1 處）：工具矩陣前註明操作難度星等是筆記作者主觀評估；`docs/google-ai-pro-ecosystem-and-credit-routing.md` 兩處 API 計費改為依模型與功能區分計價單位。
+
+## 20. Craft Anything 與 Polycam 來源退修（2026-11-26）
+
+- **修復版本**：`e69b9fc`（2026-11-26）。兩篇各自排入獨立再審。
+- **Craft Anything**（[來源審查](reviews/reports/2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild/2026-11-26-01-review-claude.md)，4 處）：移除 Meta AI 回覆所衍生的實測及官方政策聲稱，補上漏記的提問及兩則引用。貼文計數 7，登入後可見的 6 則串內回覆均由審查者讀完，引用另計。
+- **Polycam／Home Assistant**（[來源再審](reviews/reports/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard/2026-11-26-02-review-claude.md)，1 處）：補記 Polycam 官方引用，註明該引用未提供技術驗證。登入後可見內容依各篇 Chrome 審查報告。
