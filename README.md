@@ -539,6 +539,7 @@
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Threads 社群教學評析：《動畫互動網站五步 Prompt 框架》——視覺鏡頭口語化拆解、先列素材與 Awwwards 罐頭風險](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md) | `frontend`, `animation`, `prompt-engineering` | 0 / 0 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[UN System Data Commons（`data.un.org`）評析：Google Data Commons 驅動之 26 機構 AI-Ready 知識圖譜與 MCP 接入](./notes/2026-11-26-un-system-data-commons-google-mcp.md) | `data-commons`, `un-data`, `knowledge-graph` | 0 / 1 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[RESEARCHER.TW《Gemini Notebook 學術用法指南（101 頁）》評析：兩層語料抽屜、草稿出處體檢、三項幻覺實測與五大踩雷防線](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md) | `gemini-notebook`, `notebooklm`, `academic-research` | 0 / 1 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Cinematique（VVSVS）150 種免費 AI 電影攝影提示詞資料庫與電腦王阿達報導評估](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md) | `ai-video`, `image-generation`, `cinematography` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -621,6 +622,7 @@
 - MCP市集與審查：[Claude市集與MCP審查評析](./notes/2026-11-26-anthropic-claude-marketplace-mcp-review-eval.md)
 - Claude企業合規：[Claude中小企與合規評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md)
 - 動畫網站提示框架：[Threads動畫網站五步法](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md)
+- 電影攝影Prompt詞庫：[Cinematique電影提示詞庫](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
