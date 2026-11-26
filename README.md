@@ -535,6 +535,7 @@
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[CLAUDE.md 實戰模式評析：跨會話共享的《開發小問題日誌（papercuts.md）》與零常駐 Token 故障查詢觸發](./notes/2026-11-26-claude-md-global-papercuts-log-pattern.md) | `claude-md`, `context-budget`, `troubleshooting` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[社群實作評析：《Codex Plus 額度恢復自動喚醒可攜工具》——排程續跑需求、UI 焦點風險與原生 `codex queue` 對照](./notes/2026-11-26-codex-plus-quota-reset-auto-wake-tool.md) | `codex`, `quota-reset`, `auto-wakeup` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[YouTube「ComfyUI+Seedance2.5 全流程自動化製作 AI 漫劇（51 分鐘）」畫面查證與節點架構拆解](./notes/2026-11-26-comfyui-seedance-ai-comic-drama-fact-check.md) | `ai-video`, `ai-drama`, `comfyui` | 0 / 0 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[YouTube「GPT-6 Astra 自己動鼠標替你幹活」逐字稿拆解：Computer Use、授權鑰匙邊界與 9.9 億 Token 帳單警示](./notes/2026-11-26-guijilab-gpt-6-astra-computer-use-eval.md) | `gpt-6-astra`, `chatgpt-work`, `computer-use` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[YouTube「GPT Image 2.5 八大場景深度實測」逐字稿拆解：座標打點修圖與 Image 關鍵幀＋Codex＋Seedance 分身管線](./notes/2026-11-26-lingtalkai-gpt-image-2-5-eight-scenarios-eval.md) | `gpt-image`, `image-generation`, `seedance` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《GPT-6 Sol、Luna 值不值得用？》——降價優勢、3D/寫作短板與 `AGENTS.md` 遵從度退步回報](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md) | `openai`, `gpt-6-sol`, `gpt-6-luna` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《Opus 5.5 只用 Medium，就能做到這個程度？》——推論深度倒掛現象、空間演算法與 3D 建模參考圖落差](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md) | `claude-opus-5-5`, `effort-routing`, `code-as-video` | 0 / 0 |
@@ -591,6 +592,7 @@
 - PR意圖漂移稽核：[長對話PR意圖漂移稽核](./notes/2026-11-26-claude-long-thread-pr-intent-drift-prompt.md)
 - 跨會話小問題日誌：[Papercuts跨會話踩坑日誌](./notes/2026-11-26-claude-md-global-papercuts-log-pattern.md)
 - Codex額度自動喚醒：[Codex Plus額度自動喚醒](./notes/2026-11-26-codex-plus-quota-reset-auto-wake-tool.md)
+- Astra成本與授權：[GPT-6 Astra工作流拆解](./notes/2026-11-26-guijilab-gpt-6-astra-computer-use-eval.md)
 - Sol與Luna實測：[GPT-6 Sol與Luna實測](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
