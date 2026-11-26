@@ -7,7 +7,7 @@ author: "楊三賢 (SanHsien)"
 analyzed_at: "2026-11-22"
 analyzed_by: "antigravity"
 written_by: "antigravity/claude-opus-4.6@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; antigravity/gemini-4-argon@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; antigravity/gemini@88a0bc60-2711-4499-b5fd-829fab9292d8; codex/gpt-6.1-sol@01a20b8d-8bc2-7191-a7cc-7a104940ed47"
-revised_at: "2026-11-25"
+revised_at: "2026-11-26"
 source_review: unavailable
 source_reviewed_at: "2026-11-22"
 source_review_note: "使用者於對話直接提供完整正文與留言區專案分類清單全文（無原始貼文 URL，無法於網頁重開原貼文核對圖片與留言計數）"
@@ -49,7 +49,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 - **判斷原語與輸入模態演進（歷史快照 vs. 現行規格）**：
   - **2026-09-21 貼文快照**：當時僅支援**純文字 / JSON 輸入**，並提供三種原語——[`Choice`](https://docs.typesafe.ai/primitives/choice)（多選分類，**每一道 `Choice` 題目最多 255 個選項**，同一請求可包含多道題目）、`Noul`（布林機率）、`Score`（量尺評分）。
   - **2026-10-14 官方更新後現行規格**：依 [官方更新紀錄 (`Changelog`)](https://docs.typesafe.ai/changelog) 與 [圖片文件](https://docs.typesafe.ai/images)，Jev 自 `2026-10-14` 起**已新增圖片輸入支援（目前仍標為實驗性 Experimental）以及第四種原語 `Box`（邊界框定位）**。因此「Jev 無法讀圖、只能純文字輸入」僅適用於 2026-09 貼文快照，不代表現行 Jev 規格。
-- **延遲與計費**：原筆記所載延遲 70～500 ms 改列**來源未查證**，不視為已確認的官方宣稱；2026-11-24 核對[官方使用案例](https://docs.typesafe.ai/concepts/use-case-map)與[模型文件](https://docs.typesafe.ai/models)未找到此區間，使用案例頁目前描述約 150 ms（官方概述，未附此處量測條件、未獨立重測），兩者均不能當作端到端操作延遲。不逐字生成自由文字，計費上僅對 Input Token 收費、**Output Token 免費**（見[官方模型文件](https://docs.typesafe.ai/models)；但 API 回應的 `usage.output_tokens` 欄位仍會回傳非零數值，如 [Choice 官方範例](https://docs.typesafe.ai/primitives/choice)為 `34`，不可宣稱回應用量欄位必為零）。
+- **延遲與計費**：原筆記所載延遲 70～500 ms 改列**來源未查證**，不視為已確認的官方宣稱；2026-11-24 核對[官方使用案例](https://docs.typesafe.ai/concepts/use-case-map)與[模型文件](https://docs.typesafe.ai/models)未找到此區間，使用案例頁目前描述約 150 ms（官方概述，未附此處量測條件、未獨立重測），兩者均不能當作端到端操作延遲。不逐字生成自由文字，計費上僅對 Input Token 收費、**Output Token 免費**（見[官方模型文件](https://docs.typesafe.ai/models)；OpenRouter 報價於 `@3three_AI` 長文引述 Jev 1.13 為輸入 `\$0.042 / 1M tokens`、輸出 `\$0`，未獨立重測；API 回應的 `usage.output_tokens` 欄位仍會回傳非零數值，如 [Choice 官方範例](https://docs.typesafe.ai/primitives/choice)為 `34`，不可宣稱回應用量欄位必為零）。
 - **多語言與繁體中文能力狀態（歷史轉述 vs. 現行待測）**：
   - 貼文轉述 2026-09 初版說明稱「英文最準；中文、日文、韓文可用但精準度較低」（本次查核未在現行官方文件找到中、日、韓精準度排序頁）。
   - 依 [官方更新紀錄](https://docs.typesafe.ai/changelog)，官方僅確認 **`Jev 1.14` 改善了多語言支援（Improved multilingual support）**。這既不能證明中文限制已完全消失，也不足以將 9 月舊說法直接當作已確認的現行官方規格；**現行版本在繁體中文環境的實際準確率應列為【待實測】**。
@@ -66,7 +66,8 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 | :--- | :--- | :--- |
 | **[`valentynkit/jev-skip`](https://github.com/valentynkit/jev-skip)** | 讀 YouTube 字幕判斷業配並自動跳過 | 專案自述（23 支影片）：抓出 SponsorBlock 標註秒數之 77%，每支成本 ~\$0.0008，每小時誤跳 ~34 秒；作者註明為透過轉接服務測試，未以官方介面重測 |
 | **[`kitze/unclutter`](https://github.com/kitze/unclutter)** | 判斷網頁區塊為雜訊並移除 | 無量化數據（專案 README 展示功能） |
-| **Marcel Pociot X 資訊流過濾外掛**（2026-11-25 補充） | 接入 Jev 以自然語言規則過濾 X 平台不想看的貼文 | 開發者公開展示自述每則貼文平均判斷耗時約 **380 ms**（未唯一確認公開 GitHub 倉庫，未獨立重測） |
+| **Marcel Pociot X 資訊流過濾外掛**（2026-11-25 補充；[`marcelpociot/2100520134481735729`](https://x.com/marcelpociot/status/2100520134481735729)） | 接入 Jev 以自然語言規則過濾 X 平台不想看的貼文 | 開發者公開展示自述每則貼文平均判斷耗時約 **380 ms**（未唯一確認公開 GitHub 倉庫，未獨立重測） |
+| **內容評分／AI 味檢測／few-shot 篩選**（2026-11-26 自 [`@3three_AI`](https://x.com/3three_AI/status/2102234751591653484) 併入） | Rob Hallam 貼文診斷（[`2100722975645598191`](https://x.com/robj3d3/status/2100722975645598191)）、Dan Willoughby「Sniff Test」AI 味 10 題逐段檢查（[`2100990605308441076`](https://x.com/DanRWilloughby/status/2100990605308441076)）、Paolo Rosson 16 則收藏 few-shot 分 `HIDE/SKIM/SAVE`（[`2100915304062710263`](https://x.com/redp314/status/2100915304062710263)） | 作者自述 Rob Hallam 1 秒可跑 61 題判斷、成本約 `\$0.0004`（基於 207 創作者 9,481 篇貼文，約 2/3 機率挑出較佳貼文；屬二手轉述，未獨立重測） |
 | `sift`、`typesafe-adblock`、`jev_antispam_bot`、`youtube-sponsor-detection` | X 貼文六分類隱藏、網頁廣告判斷（作者自述好玩專案）、Telegram 防灌水、YouTube 業配偵測 | 貼文僅列名稱與用途描述，未附量化數據（同名通用詞或未唯一確認 repo，列為貼文二手轉述，【待實測】） |
 
 ### 2.2 信箱與文件分類
@@ -99,6 +100,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 | **[`AshutoshVJTI/progressgate`](https://github.com/AshutoshVJTI/progressgate)** | 偵測 AI 是否原地打轉 | 無量化數據 |
 | **[`Sraavan/tripwire`](https://github.com/Sraavan/tripwire)** | Claude Code 工具執行前（`PreToolUse`）風險審核安全閘，以 7 個是非題評估風險並回傳**允許（allow）、詢問（ask）或拒絕（deny）**三種決策 | 專案自述實驗評測（66 情境×5 次重複，限 macOS、案例與標籤由 Claude Code 產生未經人工覆核、實際僅跑過 shadow mode，未獨立重測）：危險呼叫 0/140 放行、安全呼叫誤擋 8.9%、p50 延遲 215 ms |
 | `jev-git`、`jev-secret-detection` | commit 前擋密鑰與危險指令、程式變更是否洩密 | 貼文僅列名稱，未附量化數據（未查證具體單一 repo，列為貼文二手轉述，【待實測】） |
+| **[`thruwire/foreman`](https://github.com/thruwire/foreman)**、[`devagrawal09/jev-review`](https://github.com/devagrawal09/jev-review)、[`blakestone-x/jev-mcp`](https://github.com/blakestone-x/jev-mcp)、[`awlevin/typesafe-computer-use`](https://github.com/awlevin/typesafe-computer-use)（2026-11-26 自 `@3three_AI` 併入） | Agent 監工（判斷完成／測試足夠／死迴圈）、Git diff 風險排序、Jev MCP 判斷工具、桌面動作決策；另 Vercel `fx`（[`rauchg/2100307962262872105`](https://x.com/rauchg/status/2100307962262872105)）接 Jev 作指令安全閘門 | `jev-mcp` 實戰指出**須明文指示主 Agent 何時委派給 Jev，否則大模型容易忽略該工具**；Vercel `fx` 自述測試條件下 p95 延遲最高約 18× 提升（二手轉述，未獨立重測） |
 
 ### 2.5 模型路由與 Token 節省
 
@@ -169,6 +171,7 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 2. **模型路由模擬與實測的區分**：[`0xNatoshi/jev-codex-router`](https://github.com/0xNatoshi/jev-codex-router#jev-codex-router) 的 237 回合省 ~60% **僅為舊版路由政策的歷史模擬回測，非實測 Codex 配額節省，亦不證明現行政策成效**；在與本專案 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 對照時，僅能視為路由模擬概念，不能當作已驗證的實際帳單節省證據。
 3. **訊號拆解、下游訓練與繁中防禦部署建議**：從 [`anisselbd/jev-phishing-bench`](https://github.com/anisselbd/jev-phishing-bench)（Jev 1.13 直接判斷 62.6%；單一最佳訊號 89.4% 低於確定性正則規則 91.8%；5 項訊號經 A 組訓練邏輯迴歸後於 B 組保留集才達 95.0%）可知，使用 System One 模型處理安全判斷時，**不僅應將複雜問題拆解為結構化子訊號，還須視任務搭配下游統計訓練或確定性規則組合**；且在 `Jev 1.14` 繁體中文表現完成本地實測前，本機防禦上建議優先搭配確定性規則與置信度門檻（此為本專案部署建議，非官方硬性限制規格）。
 4. **無失真上下文剪枝（2026-11-25 補充）**：[`tamaratran/fast-jev-compaction`](https://github.com/tamaratran/fast-jev-compaction) 示範了「**不生成摘要、只做 `noul` 二元剪枝**」的替代 `/compact` 路線——保留重要 `tool_result` 全文（避免摘要遺失路徑／錯誤碼），僅靠結構化保留決策壓縮歷史上下文，可與本庫 `idleCompaction` 及 `cc-session-reader` 策略對照評估。
+5. **MCP 委派防忽略規則（2026-11-26 自 `@3three_AI` 併入）**：[`blakestone-x/jev-mcp`](https://github.com/blakestone-x/jev-mcp) 與社群實戰指出，僅掛載 Jev MCP 工具給主 Agent 往往會被大模型忽略；必須在系統提示詞或規則中**明文規定哪幾類判斷強制交給 Jev（或 System One 閘門）**，才不會退回昂貴的純生成式判斷。
 
 ---
 
@@ -183,4 +186,5 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
     4. 整合 Agent 守門員模式（指令審核、工具執行前 `PreToolUse` 風險閘 `Sraavan/tripwire`〔允許／詢問／拒絕〕、防提早收工、原地打轉偵測）的通用架構模板。
     5. 同步修正既有產出第 2 節的延遲比較與第 3.1 節「即時語音操控」：70～500 ms 保留為來源未查證，不作已確認官方數據；語音案例改為作者自述每次 Jev 請求 250～350 ms，註明非逐字或端到端延遲，附來源與核對日期，保留未獨立重測限制。
     6. （2026-11-25 增補）收錄 `tamaratran/fast-jev-compaction`（`8,023` stars）之無失真 `noul` 上下文剪枝架構（`keepCall` / `keepResult` 雙門檻＋`preserveRecentMessages` 錨定）與 Marcel Pociot X 資訊流過濾（自述平均 380 ms/則）案例。
+    7. （2026-11-26 自 `@3three_AI` 增補）補齊 `thruwire/foreman`、`devagrawal09/jev-review`、`blakestone-x/jev-mcp`（「須明文要求委派給 Jev，否則主模型易忽略」之 MCP 整合原則）與 Dan Willoughby「Sniff Test」AI 味 10 題檢查參考。
   - **驗收標準（DoD）**：產出 `docs/system-one-decision-model-landscape.md`，含 Jev（區分 9 月快照與 10 月圖片/`Box` 更新、僅對輸入收費／輸出免費且區分 `usage.output_tokens` 非零欄位）/ Decision 1 / Colibri 三方對照表、各專案 `owner/repo` 出處與實驗限制（釣魚信 5 訊號經 A 組訓練邏輯迴歸於保留集達 95.0% 與正則 91.8% 對照、指令審核修正後 156 筆 9.8×/4.2×、`Tripwire` 為 `PreToolUse` 風險閘、`jev-belay` 100 筆自測 AUROC 0.976、搜尋排序模型標註偏差、路由舊政策模擬聲明），既有第 2 節與第 3.1 節亦須按上述延遲單位與證據分級修正、附來源與核對日期，且 `python tools/verify_inbox.py` 驗證通過。
