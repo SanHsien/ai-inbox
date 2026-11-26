@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 273 項任務：🔴 未做 16／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 274 項任務：🔴 未做 17／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -51,6 +51,7 @@
 | `T-20261122-05` | 🔴 未做 | 中 | 將 Jev by TypeSafe AI 生態中與 Agent 安全閘門（`anpicasso/hermes-jev-approvals`、`valentynkit/jev-belay`、`noplan-inc/limpet`、`AshutoshVJTI/progressgate`、`Sraavan/tripwire`）與模型路由（`0xNatoshi/jev-codex-router`、`gargpratyush/jev-router`）相關的專案架構與數據限制，對照 Google Decisions API / Colibri 整理至 `docs/system-one-decision-model-landscape.md` | `C:\GitHub\ai-inbox\docs\system-one-decision-model-landscape.md`（收錄於集群 3） | [2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog](./notes/2026-11-22-jev-typesafe-six-day-open-source-ecosystem-catalog.md) | 2026-11-22 |
 | `T-20261125-01` | 🔴 未做 | 中 | 萃取 Google AQuA（`ambient-quality-agent`）之「唯讀邊車架構、五階段聚類核驗與 `NEW/RECURRING/RESOLVED(14d)` 狀態機」撰寫為離線品質稽核參考規格 `docs/ambient-quality-agent-sidecar-spec.md` | `C:\GitHub\ai-inbox\docs\ambient-quality-agent-sidecar-spec.md`（收錄於集群 3） | [2026-11-25-google-aqua-adk-recipes-ambient-quality-eval](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md) | 2026-11-25 |
 | `T-20261125-07` | 🔴 未做 | 中 | 評估將「運行期版本與標頭暴露檢查（參考 `openai/php2shell-checker`）」納入 `docs/production-smoke-security-checklist.md` | `C:\GitHub\ai-inbox\docs\production-smoke-security-checklist.md`（收錄於集群 2） | [2026-11-25-openai-php2shell-checker-xampp-hardening](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md) | 2026-11-25 |
+| `T-20261126-02` | 🔴 未做 | 中 | 萃取 Anthropic 官方 MCP Connectors 安全審查標準（讀寫分離、`readOnlyHint`/`destructiveHint`、Prompt Injection 禁令）與 Linked Billing 合規斷點，補入 `docs/claude-code-domain-skill-packs-and-mcp-audit.md` | `C:\GitHub\ai-inbox\docs\claude-code-domain-skill-packs-and-mcp-audit.md`（收錄於集群 2） | [2026-11-26-anthropic-claude-marketplace-mcp-review-eval](./notes/2026-11-26-anthropic-claude-marketplace-mcp-review-eval.md) | 2026-11-26 |
 | `T-20261122-01` | 🔴 未做 | 低 | 評估 `SKILL.md` 跨平台（Gemini / Claude / Antigravity）相容性檢查清單，並將「首句技能名稱定錨」與「前置步驟防跳步防呆語法」納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval](./notes/2026-11-22-bnext-gemini-skills-setup-and-prompt-anchoring-eval.md) | 2026-11-22 |
 | `T-20261122-02` | 🔴 未做 | 低 | 將 Anthropic Agent Memory「記憶存策略、不存易過時狀態」的案例觀察（寶可夢紀錄）與「反覆走偏時編輯原提問」可選策略納入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts](./notes/2026-11-22-bnext-claude-17-advanced-tips-memory-projects-prompts.md) | 2026-11-22 |
 | `T-20261122-03` | 🔴 未做 | 低 | 將 Google AI Pro 跨產品 AI 點數制度（Flow 點數、Antigravity 基本配額與溢出點數開關）與 8 大工具能力邊界梳理至 `docs/google-ai-pro-ecosystem-and-credit-routing.md` | `C:\GitHub\ai-inbox\docs\google-ai-pro-ecosystem-and-credit-routing.md`（收錄於集群 3） | [2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval](./notes/2026-11-22-bnext-google-ai-pro-8-tools-antigravity-flow-eval.md) | 2026-11-22 |
@@ -522,6 +523,7 @@
 | 2026-11-25 | ⚪ | ⏳ 待獨立審查｜[GitHub 專案評析：`Black-Magic-Lab/NEIN`（原 `hirakujira/NEIN`）——LINE iOS/macOS 副裝置雙開與去廣告二進位修補工具](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md) | `ios`, `macos`, `line` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[電腦王阿達評析：《Claude 推出 Install as app 功能》——Artifacts 桌面化三級權限模型、版本綁定重授權與離線依賴邊界](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | `claude-desktop`, `artifacts`, `install-as-app` | 0 / 1 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[PHP2Shell（CVE-2026-109618 / 109619）、OpenAI `php2shell-checker` 與 Windows XAMPP 架站安全加固評估](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md) | `php2shell`, `cve-2026-109618`, `cve-2026-109619` | 0 / 2 |
+| 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[Claude Marketplace 上線評析：2,000+ 生態整合、承諾額度採購、Linked Billing 合規邊界與 MCP 官方審查標準](./notes/2026-11-26-anthropic-claude-marketplace-mcp-review-eval.md) | `claude-marketplace`, `anthropic`, `mcp` | 0 / 1 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[Claude for Small Business（43 工作流／27 整合）與 Anthropic Trust Center 合規安全評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md) | `anthropic`, `claude-cowork`, `claude-for-small-business` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[OpenAI 第二輪 Codex for OSS 開源資助評析：10,000 名額、半年每月 \$100 Pro 與免硬性星數門檻](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md) | `openai`, `codex`, `open-source` | 0 / 0 |
 <!-- END GENERATED: index -->
@@ -599,6 +601,7 @@
 - 純Rust逆向重建：[Craft Anything評析](./notes/2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild.md)
 - 工具桌面化權限：[Claude桌面App權限評析](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md)
 - XAMPP架站安全：[PHP2Shell與XAMPP加固](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md)
+- MCP市集與審查：[Claude市集與MCP審查評析](./notes/2026-11-26-anthropic-claude-marketplace-mcp-review-eval.md)
 - Claude企業合規：[Claude中小企與合規評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
