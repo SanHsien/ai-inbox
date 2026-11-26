@@ -101,6 +101,8 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 | **[`Sraavan/tripwire`](https://github.com/Sraavan/tripwire)** | Claude Code 工具執行前（`PreToolUse`）風險審核安全閘，以 7 個是非題評估風險並回傳**允許（allow）、詢問（ask）或拒絕（deny）**三種決策 | 專案自述實驗評測（66 情境×5 次重複，限 macOS、案例與標籤由 Claude Code 產生未經人工覆核、實際僅跑過 shadow mode，未獨立重測）：危險呼叫 0/140 放行、安全呼叫誤擋 8.9%、p50 延遲 215 ms |
 | `jev-git`、`jev-secret-detection` | commit 前擋密鑰與危險指令、程式變更是否洩密 | 貼文僅列名稱，未附量化數據（未查證具體單一 repo，列為貼文二手轉述，【待實測】） |
 | **[`thruwire/foreman`](https://github.com/thruwire/foreman)**、[`devagrawal09/jev-review`](https://github.com/devagrawal09/jev-review)、[`blakestone-x/jev-mcp`](https://github.com/blakestone-x/jev-mcp)、[`awlevin/typesafe-computer-use`](https://github.com/awlevin/typesafe-computer-use)（2026-11-26 自 `@3three_AI` 併入） | Agent 監工（判斷完成／測試足夠／死迴圈）、Git diff 風險排序、Jev MCP 判斷工具、桌面動作決策；另 Vercel `fx`（[`rauchg/2100307962262872105`](https://x.com/rauchg/status/2100307962262872105)）接 Jev 作指令安全閘門 | `jev-mcp` 實戰指出**須明文指示主 Agent 何時委派給 Jev，否則大模型容易忽略該工具**；Vercel `fx` 自述測試條件下 p95 延遲最高約 18× 提升（二手轉述，未獨立重測） |
+| **[`qkal/Canny`](https://github.com/qkal/Canny)**（2026-11-26 補充，136 stars） | 比對工具輸出、Diff 與測試結果防止 Coding Agent 假完工 | **確定性為主、Jev 為輔**：`Deterministic hooks decide, TypeSafe's Jev advises`，採 append-only ledger、零執行期依賴（未獨立重測） |
+| **[`itsmostafa/typesafe-mcp`](https://github.com/itsmostafa/typesafe-mcp)**（366 stars）、[`jkudish/jev-mcp`](https://github.com/jkudish/jev-mcp)（593 stars）、[`sharziki/semdecide`](https://github.com/sharziki/semdecide)（87 stars） | 通用 System One MCP（支援 Jev / D1 / CLM / Laya）、型別化 Jev MCP 工具箱、Unix/CI 管線語意 CLI | 2026-11-26 GitHub API 核實存在與星數；無第三方統一基準（未獨立重測） |
 
 ### 2.5 模型路由與 Token 節省
 
@@ -110,6 +112,8 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 | **`jev-router`（同名多專案）** | Claude Code 模型路由，對應 [`gargpratyush/jev-router`](https://github.com/gargpratyush/jev-router) 與 [`BillionsBobby/JevRouter`](https://github.com/BillionsBobby/JevRouter) | 無統一第三方實測數據 |
 | **[`tamaratran/jev-pruner`](https://github.com/tamaratran/jev-pruner)** | 修剪過長 Bash 輸出 | 無量化數據 |
 | **[`tamaratran/fast-jev-compaction`](https://github.com/tamaratran/fast-jev-compaction)**（2026-11-25 補充，8,023 stars） | Claude Code 外掛＋npm 套件：以 Jev `noul` 剪枝取代有損 LLM 摘要壓縮 | **無失真剪枝機制（README 一手核實）**：保留首則與最近 `preserveRecentMessages`（預設 6）則訊息；其餘每個 `tool_use`/`tool_result` 配對問兩題 `noul`（`keepCall` 與 `keepResult`），對照 `keepThreshold=0.5`：`keepResult≥0.5` 原文保留、`keepCall≥0.5` 僅留前 `300` 字元＋註記、否則整對移除；使用者／助手文字完全不改寫。分階段將狀態壓入 `maxStateTokens=25k`、批次 `maxRequestTokens=30k` 並行送出（Jev 失敗即 throw 由 hook 決定回退） |
+| **[`GhalebDweikat/winnow`](https://github.com/GhalebDweikat/winnow)**（2026-11-26 補充，115 stars） | Claude Code 上下文入口過濾（Context Sieve）：`Read`/`Bash`/`Grep` 結果進入上下文前先由 System One 篩選 | 與 `fast-jev-compaction`（事後剪枝）互補之**事前入口過濾（pre-entry sieve）**（未獨立重測） |
+| **[`ellipsis-dev/blink`](https://github.com/ellipsis-dev/blink)**（106 stars）、[`jexp/neo4jev`](https://github.com/jexp/neo4jev)（190 stars） | 逐層資料夾相關性導航 Codebase、Neo4j 知識圖譜鄰邊分類探勘 | 2026-11-26 GitHub API 核實存在；無標準化基準數據（未獨立重測） |
 | **[`win4r/jev-skill-suggester`](https://github.com/win4r/jev-skill-suggester)** | 推薦該用哪個 skill（中英雙語） | 無量化數據 |
 | **[`kunchenguid/compact-adviser`](https://github.com/kunchenguid/compact-adviser)** | 判斷何時適合壓縮對話 | 無量化數據 |
 | **[`EliaAlberti/jev-rules`](https://github.com/EliaAlberti/jev-rules)** | 挑出適用規則減少 Claude 讀取量 | 無量化數據 |
@@ -123,9 +127,9 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 
 ### 2.7 程式開發工具、遊戲與交易（貼文概覽）
 
-- **程式開發**：`jev-review`、`jev-semgrep`、`jev-shell-history`、`jevcache`（貼文僅列名稱，二手轉述且無量化數據，【待測】）。
-- **遊戲展示**：超級瑪利歐、寶可夢、俄羅斯方塊、五子棋、星海爭霸、文明帝國二代等。於 2026-09 快照時點皆將遊戲狀態轉文字餵入以展示反應速度，文明帝國作者明載未驗證能完整贏一場（【待測】）。
-- **交易（高風險，僅供知悉）**：`QuantDinger`、`jev-trader`（貼文僅列名稱，無驗證數據，【待測】）。
+- **程式開發與 UI / 資料流**（2026-11-26 GitHub API 核實補充）：[`vercel-labs/json-render`](https://github.com/vercel-labs/json-render)（`19,851` stars，生成式 UI 實驗以 Jev 挑選元件屬性）、[`lahfir/agent-desktop`](https://github.com/lahfir/agent-desktop)（`26,798` stars，無障礙樹桌面操作 CLI）、[`AkashPriyadarshii/jev-curate`](https://github.com/AkashPriyadarshii/jev-curate)（`116` stars，Rust 串流 Parquet/JSONL 訓練資料過濾，自述 24.0 rows/sec）、[`monteduro/killmyidea`](https://github.com/monteduro/killmyidea)（`280` stars，點子 `KILL/FIX/SHIP` 評分）；另有貼文僅列名稱之 `jev-semgrep`、`jev-shell-history`、`jevcache`（【待測】）。
+- **遊戲展示**：[`fhshaik/typesafe-mario`](https://github.com/fhshaik/typesafe-mario)、[`RomanSlack/jev-drone`](https://github.com/RomanSlack/jev-drone)、[`emrickgarrett/OneVOneJev`](https://github.com/emrickgarrett/OneVOneJev)（44 stars，Three.js 1v1 FPS）、寶可夢、俄羅斯方塊、五子棋、星海爭霸、文明帝國二代等。皆將遊戲／模擬器 RAM 狀態轉結構化文字餵入以展示反應速度，文明帝國作者明載未驗證能完整贏一場（【待測】）。
+- **交易（高風險，僅供知悉）**：[`jarrodwatts/jev-trader`](https://github.com/jarrodwatts/jev-trader)（`3,156` stars，Monad 測試網每區塊造市決策，轉述模型延遲 ~81 ms）、[`irfndi/prism-liquidity-agent`](https://github.com/irfndi/prism-liquidity-agent)（`136` stars，Meteora DLMM 流動性訊號代理，不直接下單而輸出風控狀態訊號給策略執行）與 `QuantDinger`（未獨立重測，【待測】）。
 
 ### 2.8 兩項評測基準專案之一手方法與結果核實（重要校準）
 
@@ -170,8 +174,8 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
 1. **Agent 守門員模式**：[`anpicasso/hermes-jev-approvals`](https://github.com/anpicasso/hermes-jev-approvals)（修正後 156 筆跨三個設定檔分層樣本自述快 9.8×、人工中斷少 4.2×；受限單機與單一輔助比較模型）、[`valentynkit/jev-belay`](https://github.com/valentynkit/jev-belay)（100 筆作者會話模型代理標註停止案例自述 AUROC 0.976、中位延遲 346 ms）與 [`noplan-inc/limpet`](https://github.com/noplan-inc/limpet)（防提早收工）提供了以 `Noul` 二元判斷輔助執行期把關的架構參考，[`Sraavan/tripwire`](https://github.com/Sraavan/tripwire) 則示範工具執行前（`PreToolUse`）風險審核（允許／詢問／拒絕），可與本專案確定性檢查腳本互補（以上專案量化數據皆未獨立重測）。
 2. **模型路由模擬與實測的區分**：[`0xNatoshi/jev-codex-router`](https://github.com/0xNatoshi/jev-codex-router#jev-codex-router) 的 237 回合省 ~60% **僅為舊版路由政策的歷史模擬回測，非實測 Codex 配額節省，亦不證明現行政策成效**；在與本專案 [`docs/model-burn-rate-routing-matrix.md`](../docs/model-burn-rate-routing-matrix.md) 對照時，僅能視為路由模擬概念，不能當作已驗證的實際帳單節省證據。
 3. **訊號拆解、下游訓練與繁中防禦部署建議**：從 [`anisselbd/jev-phishing-bench`](https://github.com/anisselbd/jev-phishing-bench)（Jev 1.13 直接判斷 62.6%；單一最佳訊號 89.4% 低於確定性正則規則 91.8%；5 項訊號經 A 組訓練邏輯迴歸後於 B 組保留集才達 95.0%）可知，使用 System One 模型處理安全判斷時，**不僅應將複雜問題拆解為結構化子訊號，還須視任務搭配下游統計訓練或確定性規則組合**；且在 `Jev 1.14` 繁體中文表現完成本地實測前，本機防禦上建議優先搭配確定性規則與置信度門檻（此為本專案部署建議，非官方硬性限制規格）。
-4. **無失真上下文剪枝（2026-11-25 補充）**：[`tamaratran/fast-jev-compaction`](https://github.com/tamaratran/fast-jev-compaction) 示範了「**不生成摘要、只做 `noul` 二元剪枝**」的替代 `/compact` 路線——保留重要 `tool_result` 全文（避免摘要遺失路徑／錯誤碼），僅靠結構化保留決策壓縮歷史上下文，可與本庫 `idleCompaction` 及 `cc-session-reader` 策略對照評估。
-5. **MCP 委派防忽略規則（2026-11-26 自 `@3three_AI` 併入）**：[`blakestone-x/jev-mcp`](https://github.com/blakestone-x/jev-mcp) 與社群實戰指出，僅掛載 Jev MCP 工具給主 Agent 往往會被大模型忽略；必須在系統提示詞或規則中**明文規定哪幾類判斷強制交給 Jev（或 System One 閘門）**，才不會退回昂貴的純生成式判斷。
+4. **無失真上下文剪枝與入口過濾（2026-11-25/26 補充）**：[`tamaratran/fast-jev-compaction`](https://github.com/tamaratran/fast-jev-compaction)（事後無損剪枝）與 [`GhalebDweikat/winnow`](https://github.com/GhalebDweikat/winnow)（`Read`/`Bash`/`Grep` 事前入口過濾）構成雙層防膨脹機制——保留重要 `tool_result` 全文、攔截無關雜訊，可與本庫 `idleCompaction` 及 `cc-session-reader` 策略對照評估。
+5. **MCP 委派防忽略規則與「確定性裁決＋Jev 建議」原則（2026-11-26 補充）**：[`blakestone-x/jev-mcp`](https://github.com/blakestone-x/jev-mcp) 與 [`itsmostafa/typesafe-mcp`](https://github.com/itsmostafa/typesafe-mcp) / [`jkudish/jev-mcp`](https://github.com/jkudish/jev-mcp) 顯示僅掛載 MCP 易被主模型忽略，須明文強制委派規則；同時 [`qkal/Canny`](https://github.com/qkal/Canny) 示範了更安全的邊界：**「確定性 Hook 裁決、Jev 僅作顧問建議（Deterministic hooks decide, Jev advises）」**，與本庫不放任機率模型單獨放行高風險閘門的紀律一致。
 
 ---
 
@@ -187,4 +191,5 @@ TypeSafe AI 於 `2026-09-15` 發布 Jev。以下將貼文所描述的 **2026-09 
     5. 同步修正既有產出第 2 節的延遲比較與第 3.1 節「即時語音操控」：70～500 ms 保留為來源未查證，不作已確認官方數據；語音案例改為作者自述每次 Jev 請求 250～350 ms，註明非逐字或端到端延遲，附來源與核對日期，保留未獨立重測限制。
     6. （2026-11-25 增補）收錄 `tamaratran/fast-jev-compaction`（`8,023` stars）之無失真 `noul` 上下文剪枝架構（`keepCall` / `keepResult` 雙門檻＋`preserveRecentMessages` 錨定）與 Marcel Pociot X 資訊流過濾（自述平均 380 ms/則）案例。
     7. （2026-11-26 自 `@3three_AI` 增補）補齊 `thruwire/foreman`、`devagrawal09/jev-review`、`blakestone-x/jev-mcp`（「須明文要求委派給 Jev，否則主模型易忽略」之 MCP 整合原則）與 Dan Willoughby「Sniff Test」AI 味 10 題檢查參考。
+    8. （2026-11-26 續補）納入 `qkal/Canny`（「確定性 Hook 裁決、Jev 僅作顧問建議」防假完工）、`GhalebDweikat/winnow`（事前入口過濾 vs `fast-jev-compaction` 事後剪枝）、`itsmostafa/typesafe-mcp`、`jkudish/jev-mcp`、`sharziki/semdecide`、`ellipsis-dev/blink` 與 `jexp/neo4jev` 圖譜導航模式。
   - **驗收標準（DoD）**：產出 `docs/system-one-decision-model-landscape.md`，含 Jev（區分 9 月快照與 10 月圖片/`Box` 更新、僅對輸入收費／輸出免費且區分 `usage.output_tokens` 非零欄位）/ Decision 1 / Colibri 三方對照表、各專案 `owner/repo` 出處與實驗限制（釣魚信 5 訊號經 A 組訓練邏輯迴歸於保留集達 95.0% 與正則 91.8% 對照、指令審核修正後 156 筆 9.8×/4.2×、`Tripwire` 為 `PreToolUse` 風險閘、`jev-belay` 100 筆自測 AUROC 0.976、搜尋排序模型標註偏差、路由舊政策模擬聲明），既有第 2 節與第 3.1 節亦須按上述延遲單位與證據分級修正、附來源與核對日期，且 `python tools/verify_inbox.py` 驗證通過。
