@@ -531,6 +531,7 @@
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[OpenAI 第二輪 Codex for OSS 開源資助評析：10,000 名額、半年每月 \$100 Pro 與免硬性星數門檻](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md) | `openai`, `codex`, `open-source` | 0 / 0 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[長對話收斂與 PR 意圖漂移稽核提示詞評析：無術語時序敘事＋行內粗體標註偏離項目](./notes/2026-11-26-claude-long-thread-pr-intent-drift-prompt.md) | `prompt-engineering`, `intent-drift`, `pr-review` | 0 / 1 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[CLAUDE.md 實戰模式評析：跨會話共享的《開發小問題日誌（papercuts.md）》與零常駐 Token 故障查詢觸發](./notes/2026-11-26-claude-md-global-papercuts-log-pattern.md) | `claude-md`, `context-budget`, `troubleshooting` | 0 / 1 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[社群實作評析：《Codex Plus 額度恢復自動喚醒可攜工具》——排程續跑需求、UI 焦點風險與原生 `codex queue` 對照](./notes/2026-11-26-codex-plus-quota-reset-auto-wake-tool.md) | `codex`, `quota-reset`, `auto-wakeup` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《GPT-6 Sol、Luna 值不值得用？》——降價優勢、3D/寫作短板與 `AGENTS.md` 遵從度退步回報](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md) | `openai`, `gpt-6-sol`, `gpt-6-luna` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《Opus 5.5 只用 Medium，就能做到這個程度？》——推論深度倒掛現象、空間演算法與 3D 建模參考圖落差](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md) | `claude-opus-5-5`, `effort-routing`, `code-as-video` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Threads 社群教學評析：《動畫互動網站五步 Prompt 框架》——視覺鏡頭口語化拆解、先列素材與 Awwwards 罐頭風險](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md) | `frontend`, `animation`, `prompt-engineering` | 0 / 0 |
@@ -583,6 +584,7 @@
 - 程序圖譜自我演化：[Google程序圖譜PG評析](./notes/2026-11-25-google-procedural-graphs-self-evolving-agents.md)
 - PR意圖漂移稽核：[長對話PR意圖漂移稽核](./notes/2026-11-26-claude-long-thread-pr-intent-drift-prompt.md)
 - 跨會話小問題日誌：[Papercuts跨會話踩坑日誌](./notes/2026-11-26-claude-md-global-papercuts-log-pattern.md)
+- Codex額度自動喚醒：[Codex Plus額度自動喚醒](./notes/2026-11-26-codex-plus-quota-reset-auto-wake-tool.md)
 - Sol與Luna實測：[GPT-6 Sol與Luna實測](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
