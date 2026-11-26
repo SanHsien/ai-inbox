@@ -521,6 +521,7 @@
 | 2026-11-25 | ⚪ | ⏳ 待獨立審查｜[GitHub 專案評析：`Black-Magic-Lab/NEIN`（原 `hirakujira/NEIN`）——LINE iOS/macOS 副裝置雙開與去廣告二進位修補工具](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md) | `ios`, `macos`, `line` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[電腦王阿達評析：《Claude 推出 Install as app 功能》——Artifacts 桌面化三級權限模型、版本綁定重授權與離線依賴邊界](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | `claude-desktop`, `artifacts`, `install-as-app` | 0 / 1 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[PHP2Shell（CVE-2026-109618 / 109619）、OpenAI `php2shell-checker` 與 Windows XAMPP 架站安全加固評估](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md) | `php2shell`, `cve-2026-109618`, `cve-2026-109619` | 0 / 2 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[OpenAI 第二輪 Codex for OSS 開源資助評析：10,000 名額、半年每月 \$100 Pro 與免硬性星數門檻](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md) | `openai`, `codex`, `open-source` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -646,6 +647,7 @@
 - ChatGPT分發紅利：[ChatGPT MCP分發紅利](./notes/2026-11-15-chatgpt-apps-mcp-proactive-discovery-and-dsh.md)
 - Muse實測與限制：[MetaMuse十種玩法與限制](./notes/2026-11-24-brayden-chen-muse-ai-agent-10-use-cases.md)
 - LINE逆向修補評析：[NEIN LINE去廣告雙開評析](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md)
+- 開源資助與生態動態：[Codex for OSS第二輪](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md)
 <!-- END GENERATED: clusters -->
 
 ---
