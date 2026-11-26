@@ -526,6 +526,7 @@
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[Claude Marketplace 上線評析：2,000+ 生態整合、承諾額度採購、Linked Billing 合規邊界與 MCP 官方審查標準](./notes/2026-11-26-anthropic-claude-marketplace-mcp-review-eval.md) | `claude-marketplace`, `anthropic`, `mcp` | 0 / 1 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[Claude for Small Business（43 工作流／27 整合）與 Anthropic Trust Center 合規安全評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md) | `anthropic`, `claude-cowork`, `claude-for-small-business` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[OpenAI 第二輪 Codex for OSS 開源資助評析：10,000 名額、半年每月 \$100 Pro 與免硬性星數門檻](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md) | `openai`, `codex`, `open-source` | 0 / 0 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《GPT-6 Sol、Luna 值不值得用？》——降價優勢、3D/寫作短板與 `AGENTS.md` 遵從度退步回報](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md) | `openai`, `gpt-6-sol`, `gpt-6-luna` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《Opus 5.5 只用 Medium，就能做到這個程度？》——推論深度倒掛現象、空間演算法與 3D 建模參考圖落差](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md) | `claude-opus-5-5`, `effort-routing`, `code-as-video` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -573,6 +574,7 @@
 - 交件卡漸進放手：[CubeLV交件卡漸進放手](./notes/2026-11-24-cubelv-handoff-cards-progressive-autonomy.md)
 - 單代理四角色工作流：[李廠長4個AI員工工作流評析](./notes/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns.md)
 - 程序圖譜自我演化：[Google程序圖譜PG評析](./notes/2026-11-25-google-procedural-graphs-self-evolving-agents.md)
+- Sol與Luna實測：[GPT-6 Sol與Luna實測](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md)
 
 **集群 2：Code-as-Video、視覺動效與 Generative UI**
 - 審美防線與字型排版：[Shipper 反 AI 罐頭設計](./notes/2026-10-17-shipper-epstein-md-anti-ai-slop.md)、[TasteSkill v2](./notes/2026-10-17-tasteskill-v2-anti-slop-frontend.md)、[Canva 中文字型貼文評估](./notes/2026-11-07-threads-canva-chinese-fonts-share-evaluation.md)
