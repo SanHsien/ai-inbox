@@ -534,6 +534,7 @@
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[長對話收斂與 PR 意圖漂移稽核提示詞評析：無術語時序敘事＋行內粗體標註偏離項目](./notes/2026-11-26-claude-long-thread-pr-intent-drift-prompt.md) | `prompt-engineering`, `intent-drift`, `pr-review` | 0 / 1 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[CLAUDE.md 實戰模式評析：跨會話共享的《開發小問題日誌（papercuts.md）》與零常駐 Token 故障查詢觸發](./notes/2026-11-26-claude-md-global-papercuts-log-pattern.md) | `claude-md`, `context-budget`, `troubleshooting` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[社群實作評析：《Codex Plus 額度恢復自動喚醒可攜工具》——排程續跑需求、UI 焦點風險與原生 `codex queue` 對照](./notes/2026-11-26-codex-plus-quota-reset-auto-wake-tool.md) | `codex`, `quota-reset`, `auto-wakeup` | 0 / 0 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[YouTube「ComfyUI+Seedance2.5 全流程自動化製作 AI 漫劇（51 分鐘）」畫面查證與節點架構拆解](./notes/2026-11-26-comfyui-seedance-ai-comic-drama-fact-check.md) | `ai-video`, `ai-drama`, `comfyui` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《GPT-6 Sol、Luna 值不值得用？》——降價優勢、3D/寫作短板與 `AGENTS.md` 遵從度退步回報](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md) | `openai`, `gpt-6-sol`, `gpt-6-luna` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《Opus 5.5 只用 Medium，就能做到這個程度？》——推論深度倒掛現象、空間演算法與 3D 建模參考圖落差](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md) | `claude-opus-5-5`, `effort-routing`, `code-as-video` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Threads 社群教學評析：《動畫互動網站五步 Prompt 框架》——視覺鏡頭口語化拆解、先列素材與 Awwwards 罐頭風險](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md) | `frontend`, `animation`, `prompt-engineering` | 0 / 0 |
@@ -678,6 +679,7 @@
 - Muse實測與限制：[MetaMuse十種玩法與限制](./notes/2026-11-24-brayden-chen-muse-ai-agent-10-use-cases.md)
 - LINE逆向修補評析：[NEIN LINE去廣告雙開評析](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md)
 - 開源資助與生態動態：[Codex for OSS第二輪](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md)
+- ComfyUI漫劇拆解：[ComfyUI漫劇工作流查證](./notes/2026-11-26-comfyui-seedance-ai-comic-drama-fact-check.md)
 <!-- END GENERATED: clusters -->
 
 ---
