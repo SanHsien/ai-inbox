@@ -6,12 +6,13 @@ source_platform: "Threads (@aiposthub) / GitHub (storytold/craft-anything)"
 author: "AI郵報 (@aiposthub) / storytold"
 analyzed_at: "2026-11-25"
 analyzed_by: "antigravity"
-written_by: "antigravity/gemini-4-hydrogen@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
+written_by: "antigravity/gemini-4-hydrogen@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; codex/gpt-6.2-sol@01a21765-3f7c-7ed1-93a3-ae4311b8a38b"
+revised_at: "2026-11-26"
 source_review: full
 source_images: 1
-source_replies: 5
-source_reviewed_at: "2026-11-25"
-source_review_note: "已透過內建瀏覽器完整閱讀 @aiposthub 主貼文、3 則續寫串文、連結預覽卡縮圖與 2 則可見回覆（頁標 7 則，其餘 2 則未登入不顯示），並透過 gh api 唯讀查證 storytold/craft-anything 倉庫 metadata、crates/ 目錄與 README.md 全文；未下載執行 Rust 建置或閱讀外部 aiposthub.com 長文。"
+source_replies: 6
+source_reviewed_at: "2026-11-26"
+source_review_note: "依 2026-11-26 Chrome 登入審查報告，已讀主貼文、1 張連結預覽卡及平台顯示的全部 6 則串內回覆（3 則作者續樓、3 則留言）。貼文計數為 7 則，差 1 則登入後也不顯示。另讀 2 則引用，未計入串內回覆。本次修正採用審查報告的登入可見內容。"
 status: pending
 cluster: 2
 cluster_role: "純Rust逆向重建"
@@ -52,7 +53,10 @@ tags:
 - **純 Rust 引擎與 320 項工具（`crates/` 實查）**：
   - 13 個 crate（`ai`, `analysis`, `disasm`, `engine`, `engines`, `evidence`, `formats`, `js`, `mcp`, `platform`, `setup`, `testkit`, `ui-egui`），引擎層 300 工具＋AI／設定層 20 工具共 320 項，同時暴露為桌面 App（`egui`）、CLI（`craft-anything-cli`）與 MCP Server（`craft-anything-cli mcp`）。
   - 大型證據先回傳摘要再以 `core_evidence_browse` 分頁讀取；專案目錄結構固定為 `craft.json`、`capture/`、`app/`、`checks/`、`investigation.cany/`、`inbox/`。
-- **Threads 留言重點**：`@b8601166` 詢問遊戲逆向實例，`@meta.ai` 彙整其支援識別約 12 種遊戲引擎並預設以 Unity / Unreal / Godot 重建，惟社群實測仍屬 Early Alpha（如 Chrome 小恐龍與 HTML5 小遊戲複刻），且官方明言**不繞過登入／DRM／反作弊**。
+- **Threads 留言與引用**（依 [2026-11-26 Chrome 審查報告](../reviews/reports/2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild/2026-11-26-01-review-claude.md)）：
+  - 網友 @b8601166 問能否逆向遊戲及是否有案例。@xinhuang700716 問能否把舊網路遊戲的客戶端做成單機版。兩則都是提問，沒有提供實測結果。
+  - @meta.ai 的回覆由平台自動產生，無法佐證社群實測或專案官方政策。專案的 Early Alpha 狀態以倉庫 README 為準。
+  - 兩則引用來自 @mpbill531（無文字）與 @yuminwellness（僅一字回應），都沒有技術補充。引用另計，未納入 6 則串內回覆。
 
 ---
 

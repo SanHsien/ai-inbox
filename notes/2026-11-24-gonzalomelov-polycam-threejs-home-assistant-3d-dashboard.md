@@ -6,13 +6,13 @@ source_platform: "x"
 author: "Gonzalo Melo (@gonzalomelov)"
 analyzed_at: "2026-11-24"
 analyzed_by: "antigravity"
-written_by: "antigravity/gemini-4-hydrogen@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; codex/gpt-6.1-sol@01a2125a-4d1e-73b1-86ee-52ace903a7f4"
-revised_at: "2026-11-25"
+written_by: "antigravity/gemini-4-hydrogen@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9; codex/gpt-6.1-sol@01a2125a-4d1e-73b1-86ee-52ace903a7f4; codex/gpt-6.2-sol@01a21765-3f7c-7ed1-93a3-ae4311b8a38b"
+revised_at: "2026-11-26"
 source_review: full
 source_images: 1
 source_replies: 2
-source_reviewed_at: "2026-11-25"
-source_review_note: "依 2026-11-25 Chrome review 報告：影片 1 部（source_images 依報告計 1，靜態圖 0 張），登入後回覆計數 2、讀到 2，全部顯示，改為 full。兩則留言依報告，未自行核對；本次已直連 X 公開影片核對 00:01、00:04、00:26 畫面。"
+source_reviewed_at: "2026-11-26"
+source_review_note: "依 2026-11-25 Chrome review 報告：影片 1 部（source_images 依報告計 1，靜態圖 0 張），登入後回覆計數 2、讀到 2，全部顯示，改為 full。兩則留言依報告，未自行核對；前次已直連 X 公開影片核對 00:01、00:04、00:26 畫面。 2026-11-26 Chrome 再審另查得 1 則引用，未計入回覆數。此次引用內容依再審報告。"
 status: pending
 cluster: 2
 cluster_role: "3D智慧家庭儀表板"
@@ -54,7 +54,8 @@ tags:
 - **留言區**：依 [Chrome review 報告](../reviews/reports/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard/2026-11-25-01-review-claude.md)，登入後回覆計數 2、讀到 2，全部顯示；以下兩則依報告，未自行核對：
   - John Perrone（`@jjperrone`，9 月 25 日）：原以為需要會 3D 建模，看到掃描加每房 4 張照片後覺得可行，想當週末專案；無技術質疑或更正。
   - `@oprfwa`（9 月 28 日）：正面稱讚，無技術補充。
-- **本次修正影響與來源**：依登入後報告解除留言缺漏、改為 `full`；另從 [X 公開媒體資料](https://cdn.syndication.twimg.com/tweet-result?id=2096610464545325097&token=1) 取得[公開影片](https://video.twimg.com/amplify_video/2096609477940142080/vid/avc1/1440x900/6tJKyVMwPz4coyMz.mp4)，核對開場時序與燈具名稱。這些更正不增加原始碼或可重現性的證據。
+- **引用貼文**：依 [2026-11-26 Chrome 再審報告](../reviews/reports/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard/2026-11-26-02-review-claude.md)，Polycam 官方帳號 @Polycam3D 於 9 月 11 日引用貼文，稱這是 Polycam 掃描資料搭配 Astra 的創意用法。這則引用未提供技術驗證，另計於 2 則串內回覆之外。
+- **前次修正影響與來源**：依登入後報告解除留言缺漏、改為 `full`；另從 [X 公開媒體資料](https://cdn.syndication.twimg.com/tweet-result?id=2096610464545325097&token=1) 取得[公開影片](https://video.twimg.com/amplify_video/2096609477940142080/vid/avc1/1440x900/6tJKyVMwPz4coyMz.mp4)，核對開場時序與燈具名稱。這些更正不增加原始碼或可重現性的證據。
 
 ---
 
