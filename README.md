@@ -529,6 +529,7 @@
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[OpenAI 第二輪 Codex for OSS 開源資助評析：10,000 名額、半年每月 \$100 Pro 與免硬性星數門檻](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md) | `openai`, `codex`, `open-source` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《GPT-6 Sol、Luna 值不值得用？》——降價優勢、3D/寫作短板與 `AGENTS.md` 遵從度退步回報](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md) | `openai`, `gpt-6-sol`, `gpt-6-luna` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《Opus 5.5 只用 Medium，就能做到這個程度？》——推論深度倒掛現象、空間演算法與 3D 建模參考圖落差](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md) | `claude-opus-5-5`, `effort-routing`, `code-as-video` | 0 / 0 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Threads 社群教學評析：《動畫互動網站五步 Prompt 框架》——視覺鏡頭口語化拆解、先列素材與 Awwwards 罐頭風險](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md) | `frontend`, `animation`, `prompt-engineering` | 0 / 0 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[RESEARCHER.TW《Gemini Notebook 學術用法指南（101 頁）》評析：兩層語料抽屜、草稿出處體檢、三項幻覺實測與五大踩雷防線](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md) | `gemini-notebook`, `notebooklm`, `academic-research` | 0 / 1 |
 <!-- END GENERATED: index -->
 
@@ -608,6 +609,7 @@
 - XAMPP架站安全：[PHP2Shell與XAMPP加固](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md)
 - MCP市集與審查：[Claude市集與MCP審查評析](./notes/2026-11-26-anthropic-claude-marketplace-mcp-review-eval.md)
 - Claude企業合規：[Claude中小企與合規評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md)
+- 動畫網站提示框架：[Threads動畫網站五步法](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
