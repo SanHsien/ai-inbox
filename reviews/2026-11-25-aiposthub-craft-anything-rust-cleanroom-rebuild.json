@@ -1,0 +1,20 @@
+{
+ "note": "2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-26",
+   "reviewer": "claude/opus-5.5@f3fabcc5-ccb8-40bf-8a7b-d4e8eeeb8641",
+   "role": "review",
+   "scope": [
+    "source"
+   ],
+   "content_sha256": "828b7b9e390550cd215540f097695bbd8c2f8721ac0ad7f56b43a5a4714487f4",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 4,
+   "report": "reviews/reports/2026-11-25-aiposthub-craft-anything-rust-cleanroom-rebuild/2026-11-26-01-review-claude.md"
+  }
+ ]
+}
