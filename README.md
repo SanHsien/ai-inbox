@@ -535,6 +535,7 @@
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[CLAUDE.md 實戰模式評析：跨會話共享的《開發小問題日誌（papercuts.md）》與零常駐 Token 故障查詢觸發](./notes/2026-11-26-claude-md-global-papercuts-log-pattern.md) | `claude-md`, `context-budget`, `troubleshooting` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[社群實作評析：《Codex Plus 額度恢復自動喚醒可攜工具》——排程續跑需求、UI 焦點風險與原生 `codex queue` 對照](./notes/2026-11-26-codex-plus-quota-reset-auto-wake-tool.md) | `codex`, `quota-reset`, `auto-wakeup` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[YouTube「ComfyUI+Seedance2.5 全流程自動化製作 AI 漫劇（51 分鐘）」畫面查證與節點架構拆解](./notes/2026-11-26-comfyui-seedance-ai-comic-drama-fact-check.md) | `ai-video`, `ai-drama`, `comfyui` | 0 / 0 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[YouTube「GPT Image 2.5 八大場景深度實測」逐字稿拆解：座標打點修圖與 Image 關鍵幀＋Codex＋Seedance 分身管線](./notes/2026-11-26-lingtalkai-gpt-image-2-5-eight-scenarios-eval.md) | `gpt-image`, `image-generation`, `seedance` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《GPT-6 Sol、Luna 值不值得用？》——降價優勢、3D/寫作短板與 `AGENTS.md` 遵從度退步回報](./notes/2026-11-26-nicekate-gpt-6-sol-luna-benchmark.md) | `openai`, `gpt-6-sol`, `gpt-6-luna` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《Opus 5.5 只用 Medium，就能做到這個程度？》——推論深度倒掛現象、空間演算法與 3D 建模參考圖落差](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md) | `claude-opus-5-5`, `effort-routing`, `code-as-video` | 0 / 0 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Threads 社群教學評析：《動畫互動網站五步 Prompt 框架》——視覺鏡頭口語化拆解、先列素材與 Awwwards 罐頭風險](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md) | `frontend`, `animation`, `prompt-engineering` | 0 / 0 |
@@ -622,6 +623,7 @@
 - XAMPP架站安全：[PHP2Shell與XAMPP加固](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md)
 - MCP市集與審查：[Claude市集與MCP審查評析](./notes/2026-11-26-anthropic-claude-marketplace-mcp-review-eval.md)
 - Claude企業合規：[Claude中小企與合規評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md)
+- Image2.5實測：[GPT Image 2.5八大實測](./notes/2026-11-26-lingtalkai-gpt-image-2-5-eight-scenarios-eval.md)
 - 動畫網站提示框架：[Threads動畫網站五步法](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md)
 - 電影攝影Prompt詞庫：[Cinematique電影提示詞庫](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md)
 
