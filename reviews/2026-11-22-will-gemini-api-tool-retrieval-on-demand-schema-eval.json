@@ -114,6 +114,21 @@
    "author_claim": "full",
    "corrections": 1,
    "report": "reviews/reports/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval/2026-11-25-07-audit-claude.md"
+  },
+  {
+   "reviewed_at": "2026-11-26",
+   "reviewer": "claude/opus-5.5@f3fabcc5-ccb8-40bf-8a7b-d4e8eeeb8641",
+   "role": "review",
+   "scope": [
+    "source"
+   ],
+   "content_sha256": "f5207f7c4353290ba19534bcbae96ef3479ce49cb1dbf152081fe760ea089006",
+   "hash_version": 1,
+   "verdict": "pass",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 0,
+   "report": "reviews/reports/2026-11-22-will-gemini-api-tool-retrieval-on-demand-schema-eval/2026-11-26-08-review-claude.md"
   }
  ]
 }
