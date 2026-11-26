@@ -527,6 +527,7 @@
 | 2026-11-25 | ⚪ | ⏳ 待獨立審查｜[GitHub 專案評析：`Black-Magic-Lab/NEIN`（原 `hirakujira/NEIN`）——LINE iOS/macOS 副裝置雙開與去廣告二進位修補工具](./notes/2026-11-25-hirakujira-nein-line-ios-macos-patcher-eval.md) | `ios`, `macos`, `line` | 0 / 0 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[電腦王阿達評析：《Claude 推出 Install as app 功能》——Artifacts 桌面化三級權限模型、版本綁定重授權與離線依賴邊界](./notes/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop.md) | `claude-desktop`, `artifacts`, `install-as-app` | 0 / 1 |
 | 2026-11-25 | 🔴 | ⏳ 待獨立審查｜[PHP2Shell（CVE-2026-109618 / 109619）、OpenAI `php2shell-checker` 與 Windows XAMPP 架站安全加固評估](./notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md) | `php2shell`, `cve-2026-109618`, `cve-2026-109619` | 0 / 2 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[鳥和弦 v1 簡化版旋律生成 App 與 Suno 結構化提示詞工作流評估](./notes/2026-11-26-aiarttw-birdchord-v1-suno-workflow.md) | `suno`, `music-generation`, `chord-progression` | 0 / 0 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[Claude Marketplace 上線評析：2,000+ 生態整合、承諾額度採購、Linked Billing 合規邊界與 MCP 官方審查標準](./notes/2026-11-26-anthropic-claude-marketplace-mcp-review-eval.md) | `claude-marketplace`, `anthropic`, `mcp` | 0 / 1 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[Claude for Small Business（43 工作流／27 整合）與 Anthropic Trust Center 合規安全評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md) | `anthropic`, `claude-cowork`, `claude-for-small-business` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[OpenAI 第二輪 Codex for OSS 開源資助評析：10,000 名額、半年每月 \$100 Pro 與免硬性星數門檻](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md) | `openai`, `codex`, `open-source` | 0 / 0 |
@@ -659,6 +660,7 @@
 - 筆記短影音評析：[GeminiNotebook短影音實測](./notes/2026-11-24-cultiwise-gemini-notebook-shorts-video-eval.md)
 - Opus5.5影音實測：[零度Opus5.5實測評析](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md)
 - AQuA邊車品質稽核：[Google AQuA邊車稽核評析](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md)
+- 和弦旋律與Suno範本：[鳥和弦v1與Suno工作流](./notes/2026-11-26-aiarttw-birdchord-v1-suno-workflow.md)
 - Opus5.5實測評析：[NiceKate Opus5.5實測](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md)
 - UN統計MCP知識圖譜：[UN數據圖譜與MCP評析](./notes/2026-11-26-un-system-data-commons-google-mcp.md)
 - 學術語料庫工作流：[GeminiNotebook學術指南](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md)
