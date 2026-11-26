@@ -526,6 +526,7 @@
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[Claude Marketplace 上線評析：2,000+ 生態整合、承諾額度採購、Linked Billing 合規邊界與 MCP 官方審查標準](./notes/2026-11-26-anthropic-claude-marketplace-mcp-review-eval.md) | `claude-marketplace`, `anthropic`, `mcp` | 0 / 1 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[Claude for Small Business（43 工作流／27 整合）與 Anthropic Trust Center 合規安全評析](./notes/2026-11-26-anthropic-small-business-cowork-trust-center.md) | `anthropic`, `claude-cowork`, `claude-for-small-business` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[OpenAI 第二輪 Codex for OSS 開源資助評析：10,000 名額、半年每月 \$100 Pro 與免硬性星數門檻](./notes/2026-11-26-charliermarsh-openai-codex-for-oss-round2.md) | `openai`, `codex`, `open-source` | 0 / 0 |
+| 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[NiceKate AI 實測評析：《Opus 5.5 只用 Medium，就能做到這個程度？》——推論深度倒掛現象、空間演算法與 3D 建模參考圖落差](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md) | `claude-opus-5-5`, `effort-routing`, `code-as-video` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -642,6 +643,7 @@
 - 筆記短影音評析：[GeminiNotebook短影音實測](./notes/2026-11-24-cultiwise-gemini-notebook-shorts-video-eval.md)
 - Opus5.5影音實測：[零度Opus5.5實測評析](./notes/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats.md)
 - AQuA邊車品質稽核：[Google AQuA邊車稽核評析](./notes/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval.md)
+- Opus5.5實測評析：[NiceKate Opus5.5實測](./notes/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
