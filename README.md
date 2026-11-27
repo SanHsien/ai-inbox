@@ -544,6 +544,7 @@
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[RESEARCHER.TW《Gemini Notebook 學術用法指南（101 頁）》評析：兩層語料抽屜、草稿出處體檢、三項幻覺實測與五大踩雷防線](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md) | `gemini-notebook`, `notebooklm`, `academic-research` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Cinematique（VVSVS）150 種免費 AI 電影攝影提示詞資料庫與電腦王阿達報導評估](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md) | `ai-video`, `image-generation`, `cinematography` | 0 / 0 |
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[Threads 貼文與 GitHub 深挖：AstrBot（47.6k Stars）多平台 IM AI 機器人框架架構、LINE 限制與 AGPL-3.0 評估](./notes/2026-11-27-aiposthub-astrbot-im-agent-framework-eval.md) | `astrbot`, `im-agent`, `line` | 0 / 0 |
+| 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[Facebook 社團實測：10 款無審查地端模型（24GB–128GB）Token 速度基準、Strata 避坑與雲地協作架構](./notes/2026-11-27-darkschen-10-uncensored-local-llms-benchmark.md) | `local-llm`, `uncensored`, `strata` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -673,6 +674,7 @@
 - UN統計MCP知識圖譜：[UN數據圖譜與MCP評析](./notes/2026-11-26-un-system-data-commons-google-mcp.md)
 - 學術語料庫工作流：[GeminiNotebook學術指南](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md)
 - 多平台IM框架：[AstrBot多平台IM框架評估](./notes/2026-11-27-aiposthub-astrbot-im-agent-framework-eval.md)
+- 地端無審查模型選型：[10款無審查地端模型實測](./notes/2026-11-27-darkschen-10-uncensored-local-llms-benchmark.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
