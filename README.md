@@ -547,6 +547,7 @@
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[AI實戰派：GPT-Images 2.5 內建畫板、原生透明 PNG 與商業模板實測評估](./notes/2026-11-27-ai-practitioners-gpt-image-2-5-eight-workflows.md) | `gpt-image`, `image-generation`, `chatgpt-ui` | 0 / 0 |
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[Threads 貼文與 GitHub 深挖：AstrBot（47.6k Stars）多平台 IM AI 機器人框架架構、LINE 限制與 AGPL-3.0 評估](./notes/2026-11-27-aiposthub-astrbot-im-agent-framework-eval.md) | `astrbot`, `im-agent`, `line` | 0 / 0 |
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[Facebook 社團實測：10 款無審查地端模型（24GB–128GB）Token 速度基準、Strata 避坑與雲地協作架構](./notes/2026-11-27-darkschen-10-uncensored-local-llms-benchmark.md) | `local-llm`, `uncensored`, `strata` | 0 / 0 |
+| 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[OpenAI ChatGPT Pets 升級與 Mini 模式：桌面常駐懸浮啟動列與背景任務狀態追蹤評估](./notes/2026-11-27-openai-chatgpt-pets-mini-mode-eval.md) | `chatgpt-desktop`, `chatgpt-pets`, `mini-mode` | 0 / 0 |
 | 2026-11-27 | 🔴 | ⏳ 待獨立審查｜[Tracy AI小妹：Claude＋Blender＋Edimakor AI 電影與音樂 MV 工作流實測評估](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md) | `ai-video`, `blender`, `bpy` | 0 / 1 |
 <!-- END GENERATED: index -->
 
@@ -680,6 +681,7 @@
 - 學術語料庫工作流：[GeminiNotebook學術指南](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md)
 - 多平台IM框架：[AstrBot多平台IM框架評估](./notes/2026-11-27-aiposthub-astrbot-im-agent-framework-eval.md)
 - 地端無審查模型選型：[10款無審查地端模型實測](./notes/2026-11-27-darkschen-10-uncensored-local-llms-benchmark.md)
+- 桌面懸浮列UX：[ChatGPT Pets與Mini](./notes/2026-11-27-openai-chatgpt-pets-mini-mode-eval.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
