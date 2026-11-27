@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 278 項任務：🔴 未做 21／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 279 項任務：🔴 未做 22／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -67,6 +67,7 @@
 | `T-20261126-04` | 🔴 未做 | 低 | 將「無術語時序敘事＋行內粗體標註偏離最新意圖」PR 稽核提示詞補入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-26-claude-long-thread-pr-intent-drift-prompt](./notes/2026-11-26-claude-long-thread-pr-intent-drift-prompt.md) | 2026-11-26 |
 | `T-20261126-05` | 🔴 未做 | 低 | 將「跨會話小問題日誌（`papercuts.md`：`date · symptom · fix · project`＋失敗時優先按需讀取）」模式補入 `docs/agent-memory-and-prompting-best-practices.md`，並評估於 `agent-assets` 建立對應知識檔 | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1；可選延伸至 `C:\GitHub\agent-assets\knowledge\`） | [2026-11-26-claude-md-global-papercuts-log-pattern](./notes/2026-11-26-claude-md-global-papercuts-log-pattern.md) | 2026-11-26 |
 | `T-20261126-06` | 🔴 未做 | 低 | 將 UN System Data Commons（`data.un.org`）、官方 MCP／REST 文件入口與 `datacommonsorg/agent-toolkit` 補入 `docs/free-public-apis.md` | `C:\GitHub\ai-inbox\docs\free-public-apis.md`（收錄於集群 3） | [2026-11-26-un-system-data-commons-google-mcp](./notes/2026-11-26-un-system-data-commons-google-mcp.md) | 2026-11-26 |
+| `T-20261127-01` | 🔴 未做 | 低 | 在 `docs/3d-gui-agent-control-bridge.md` 補充「免 MCP 之 `bpy` 灰盒運鏡參考片 → Video-to-Video 雙輸入控片」輕量替代路徑 | `C:\GitHub\ai-inbox\docs\3d-gui-agent-control-bridge.md`（收錄於集群 2） | [2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md) | 2026-11-27 |
 
 ### 🟢 已做（Done）
 
@@ -545,6 +546,7 @@
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Cinematique（VVSVS）150 種免費 AI 電影攝影提示詞資料庫與電腦王阿達報導評估](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md) | `ai-video`, `image-generation`, `cinematography` | 0 / 0 |
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[Threads 貼文與 GitHub 深挖：AstrBot（47.6k Stars）多平台 IM AI 機器人框架架構、LINE 限制與 AGPL-3.0 評估](./notes/2026-11-27-aiposthub-astrbot-im-agent-framework-eval.md) | `astrbot`, `im-agent`, `line` | 0 / 0 |
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[Facebook 社團實測：10 款無審查地端模型（24GB–128GB）Token 速度基準、Strata 避坑與雲地協作架構](./notes/2026-11-27-darkschen-10-uncensored-local-llms-benchmark.md) | `local-llm`, `uncensored`, `strata` | 0 / 0 |
+| 2026-11-27 | 🔴 | ⏳ 待獨立審查｜[Tracy AI小妹：Claude＋Blender＋Edimakor AI 電影與音樂 MV 工作流實測評估](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md) | `ai-video`, `blender`, `bpy` | 0 / 1 |
 <!-- END GENERATED: index -->
 
 ---
@@ -630,6 +632,7 @@
 - Image2.5實測：[GPT Image 2.5八大實測](./notes/2026-11-26-lingtalkai-gpt-image-2-5-eight-scenarios-eval.md)
 - 動畫網站提示框架：[Threads動畫網站五步法](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md)
 - 電影攝影Prompt詞庫：[Cinematique電影提示詞庫](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md)
+- Blender灰盒控片：[Claude+Blender控片教學](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
