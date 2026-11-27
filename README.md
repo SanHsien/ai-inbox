@@ -483,7 +483,7 @@
 | 2026-11-15 | 🟢 | [Rikyū（rikyu.ai）：構造幾何向量 Logo 生成與 MCP 設計工作流查證評估](./notes/2026-11-15-rikyu-geometric-vector-logo-mcp.md) | `vector-design`, `svg`, `geometric-logo` | 1 / 1 |
 | 2026-11-15 | ⚪ | [Runway MCP ＋ 程式化動態圖形（報紙剪貼拼貼 60 秒短片）工作流與分權 Prompt 評估](./notes/2026-11-15-runway-mcp-collage-motion-graphics-prompt.md) | `runway-mcp`, `motion-graphics`, `remotion` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Threads 案例評估：@chia.hsun301 一人公司 AI 產能月報與商業變現結構](./notes/2026-11-16-chia-hsun301-ai-solo-operator-roi.md) | `ai-workflow`, `solo-operator`, `cosyvoice-3` | 0 / 0 |
-| 2026-11-16 | ⚪ | [Facebook 貼文與留言評估：陳盟升（Darkschen）兩顆 5TB Google Drive 邊載邊傳備份開源大模型](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md) | `open-weights`, `google-drive`, `backup` | 0 / 0 |
+| 2026-11-16 | ⚪ | ⏳ 待獨立審查｜[Facebook 貼文與留言評估：陳盟升（Darkschen）兩顆 5TB Google Drive 邊載邊傳備份開源大模型](./notes/2026-11-16-darkschen-open-weights-google-drive-backup.md) | `open-weights`, `google-drive`, `backup` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文與留言串評估：不依賴單一 AI 的本地 Skill/Handoff/Memory 工作流](./notes/2026-11-16-isaac-wong-ai-agnostic-local-workflow-comments.md) | `claude-code`, `handoff`, `markdown-memory` | 0 / 0 |
 | 2026-11-16 | ⚪ | [Claude Taiwan 貼文評估：Jack Liu《重開機一鍵復原》工具開發與 Claude 協作四原則](./notes/2026-11-16-jack-liu-windows-reboot-restore-vibe-coding.md) | `vibe-coding`, `windows`, `reboot-restore` | 0 / 0 |
 | 2026-11-17 | ⚪ | [Threads 情報與留言評估：Scrapling（D4Vinci/Scrapling）Python 爬蟲框架與原生 MCP Server](./notes/2026-11-17-scrapling-python-mcp-crawler-eval.md) | `scrapling`, `web-scraping`, `mcp` | 0 / 0（+1 不做） |
