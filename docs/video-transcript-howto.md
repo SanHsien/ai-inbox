@@ -42,7 +42,7 @@ python -m pip install --user -U yt-dlp "yt-dlp[curl-cffi]" faster-whisper "av>=1
 - **套件（User site-packages `%USERPROFILE%\AppData\Roaming\Python\Python314\site-packages`）**：
   - `yt-dlp` 2026.10.21 + `curl-cffi` 0.16.3
   - `faster-whisper` 1.2.1 + `ctranslate2` 4.8.3
-  - `av` 16.1.0（鎖定 `<17`）
+  - `av` 16.1.0（鎖定 `<17`；`tools/video_transcript.py` 本身已相容 `av` 19，見下方陷阱表）
   - `nvidia-cublas-cu12` 12.9.2.10、`nvidia-cudnn-cu12` 9.27.0.42、`nvidia-cuda-nvrtc-cu12` 12.9.86
 
 ### 已知陷阱（每一條都是實際踩過的）
@@ -50,7 +50,7 @@ python -m pip install --user -U yt-dlp "yt-dlp[curl-cffi]" faster-whisper "av>=1
 | 症狀 | 原因 | 解法 |
 | --- | --- | --- |
 | `yt-dlp` 指令找不到 | Scripts 目錄 `…\Python314\Scripts` 不在 PATH | 一律用 `python -m yt_dlp`；腳本已內建 |
-| `TypeError: open() got an unexpected keyword argument 'metadata_errors'` | pip 預設裝到 `av` 19，與 `faster-whisper` 1.2.1 不相容 | `python -m pip install --user "av>=14,<17"`（實測 16.1.0 可用） |
+| `TypeError: open() got an unexpected keyword argument 'metadata_errors'` | pip 預設裝到 `av` 19，與 `faster-whisper` 1.2.1 不相容（`faster_whisper/audio.py` 固定傳 `metadata_errors="ignore"`） | 用 `tools/video_transcript.py` 不需處理：2026-11-27 在乾淨 venv（`faster-whisper` 1.2.1、`av` 19.0.2、`ctranslate2` 4.9.1）實跑一支 19 秒 YouTube 影片，exit 0 並產出逐字稿，執行期 patch 有效；同環境直接呼叫 `faster_whisper.audio.decode_audio()` 仍報此錯。其他程式直接用 `faster-whisper` 時才需 `"av>=14,<17"`（實測 16.1.0 可用），因此安裝指令保留此 pin |
 | `RuntimeError: Library cublas64_12.dll is not found or cannot be loaded` | `ctranslate2` 走 CUDA 需要 `cublas64_12.dll` 與 `cudnn64_9.dll`，但 pip wheel 裝在 `site-packages/nvidia/*/bin`，不在系統 `PATH` | 安裝 `nvidia-cublas-cu12 nvidia-cudnn-cu12`；`tools/video_transcript.py` 的 `_register_cuda_dlls()` 已在啟動時自動掛載 DLL 路徑 |
 | 字幕下載 `HTTP Error 429: Too Many Requests` | YouTube 字幕端點限流；裝 `yt-dlp[curl-cffi]` impersonation 也沒解 | 直接改走 `video_transcript.py` 音訊轉寫；**不要連續狂打字幕端點** |
 | 抓網頁取得的字幕網址下載得到 0 位元組 | 自動字幕網址需額外簽章憑證 | 同上，不要手刻 `timedtext` 網址 |
