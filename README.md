@@ -805,8 +805,8 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`tools/verify_tool_fallback_matrix.py`](./tools/verify_tool_fallback_matrix.py) | 檢查「產出導向工具流矩陣」設定檔（JSON）：五條產出路徑都要有主力與合格備援， | [`tests/test_verify_tool_fallback_matrix.py`](./tests/test_verify_tool_fallback_matrix.py) |
 | [`tools/video_transcript.py`](./tools/video_transcript.py) | 影片逐字稿工具：yt-dlp 抓音訊 + faster-whisper 本機轉寫（支援 NVIDIA GPU 加速） | [`tests/test_video_transcript.py`](./tests/test_video_transcript.py) |
 
-### 2. 技術規範與實測報告（`docs/`，共 92 份）
-<details><summary>展開查看全部 92 份技術規範與實測報告</summary>
+### 2. 技術規範與實測報告（`docs/`，共 93 份）
+<details><summary>展開查看全部 93 份技術規範與實測報告</summary>
 
 | 文件路徑 | 主題 |
 | :--- | :--- |
@@ -900,6 +900,7 @@ Phase 4 的前三階段檢討、缺口盤點與 DoD（每項都附反例）見 [
 | [`docs/web-to-app-evaluation.md`](./docs/web-to-app-evaluation.md) | WebToApp（網站轉 Android App）技術評估與本機環境驗證報告 |
 | [`docs/web-to-app-freelance-workflow.md`](./docs/web-to-app-freelance-workflow.md) | 網站轉 Android App 接案標準作業流程與風險防範規格 |
 | [`docs/windows-24x7-agent-ops-spec.md`](./docs/windows-24x7-agent-ops-spec.md) | Windows 11 常駐 Agent 維運規格 |
+| [`docs/xampp-php2shell-hardening-checklist.md`](./docs/xampp-php2shell-hardening-checklist.md) | Windows XAMPP 架站安全加固與 PHP2Shell 應變檢核表 (XAMPP & PHP2Shell Hardening Checklist) |
 | [`docs/zeabur-incident-credential-audit.md`](./docs/zeabur-incident-credential-audit.md) | Zeabur 資安事件衝擊盤點與憑證安全稽核報告 |
 | [`docs/zero-build-shader-hero-sections-spec.md`](./docs/zero-build-shader-hero-sections-spec.md) | Zero-Build WebGL/Shader Hero Section 架構規範與視覺資產手冊 |
 
