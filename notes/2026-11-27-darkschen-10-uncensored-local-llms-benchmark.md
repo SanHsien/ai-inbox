@@ -75,3 +75,14 @@ tags:
 1. **Strata 官方內建模型「都有審查」**：作者與留言 `Chen Nick` 明確提醒不要直接從 Strata 內建清單下載（浪費頻寬），應手動下載 `SC117` 等去審查模型後，在 Strata 指定本地路徑。
 2. **多模態引擎差異**：`Garfield Huang` 實測 LM Studio（雖底層也是 `llama.cpp`）會回覆無法看影片；作者明確表示已不再手動折騰 LM Studio，而是**直接交給 `Claude Code` 幫忙裝引擎、改拒答修正檔（如 Hy4-Flash）與測速**。
 3. **雲地協作定位**：保留訂閱制雲端模型（如 Claude）做高階規劃與指揮，把會觸發思想或內容審查的子任務派給地端無審查模型處理。
+
+---
+
+## 四、本機下載進度與結案紀錄（`2026-11-27`）
+
+- **目標環境條件**：Windows 11 + NVIDIA RTX 3060（12 GB VRAM）+ 32 GB RAM，單模型總量限制 `<= 22 GB`，排除 Mac MLX、DGX-Spark NVFP4 與無法於本機運行的超大權重。
+- **已完成下載並通過 SHA-256 校驗**（存放於 `C:\AgentData\uncensored-open-models\`，總計 3 個倉庫共 27 檔、`59,257,085,042` bytes / `59.257 GB`）：
+  1. `SC117/Inkling-2-Mini-abliterated-Strata`（`SQ-10` 10.47 GB、`SQ-20` 19.35 GB、`Vision` 0.64 GB 及 tokenizer/configs，合計 `30.49 GB`）
+  2. `SC117/occamy-1.0-abliterated-FIT-GGUF`（`FIT-BALANCED-14G-IQ3_S.gguf` 14.82 GB + `mmproj` 0.90 GB，合計 `15.72 GB`）
+  3. `jegreene/Swift-1.5-Qwen3.8-27B-heretic-GSQ-RCO-GGUF`（`IQ3_S-mtp.gguf` 12.12 GB + `mmproj` 0.93 GB 等，合計 `13.05 GB`，作為通用 GGUF 替代原 DGX-Spark NVFP4 版）
+- **已依本機上限略過**：`Nemotron-3.5-Bolt-74B`（實佔 ~29 GB）、`Qwen3.8-Flash-Next`（66 GB+）、`Hy4-Flash`（62 GB+）及 Mac MLX 版。詳見 `C:\AgentData\uncensored-open-models\MANIFEST.md`。就本機硬體條件而言，本篇可運行模型收集已結案完成。

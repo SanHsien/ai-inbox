@@ -6,6 +6,8 @@ source_platform: "Facebook"
 author: "陳盟升 (@darkschen)"
 analyzed_at: "2026-11-16"
 analyzed_by: "antigravity"
+written_by: "antigravity/gemini-4-hydrogen@ac6a8875-15e0-4f9f-ad0a-058d7b01bba9"
+revised_at: "2026-11-27"
 source_review: full
 source_images: 1
 source_replies: 38
@@ -78,3 +80,14 @@ tags:
 
 - **是否納入開發／工作流待辦**：**暫不建立工程任務**（維持 `status: archived`）。
   - **理由**：本貼文屬特定大記憶體工作站（Mac Studio 512GB）的開源大模型權重冷備份經驗分享，對本機 Windows 11 日常開發工作流無直接缺口；保留「串流邊載邊傳＋8MB/s 避開 Google Drive 750GB 日限」與網友提醒的「Colab 雲對雲備援 / 寬頻限流 / ModelScope 鏡像」作為未來有需要時的操作參考即可。
+
+---
+
+## 4. 本機篩選與下載進度紀錄（`2026-11-27`）
+
+- **查證與篩選範圍**：針對本篇第一顆硬碟的 5 款無審查模型家族，於 Hugging Face 實查 Windows 可運行之 `GGUF / Strata` 無審查版（排除官方原版與 Mac MLX 版），並依本機規格（Windows 11 / RTX 3060 12GB VRAM / 32GB RAM）設定單模型 `<= 22 GB` 上限。
+- **已下載並通過驗證（存放於 `D:\AgentData\uncensored-open-models\`）**：
+  - `千問 3.8 Heretic 無審查` → 改選通用 `0bserverx/Qwen3.8-27B-Heretic-Abliterated-Uncensored-GGUF` 的 `RVN-Q4_K_M-multilingual.gguf`（`16,547,400,224` bytes / `16.55 GB`），已通過 GGUF Header（`b'GGUF'`）與 SHA-256 校驗。
+- **查證無 `<= 22 GB` 本機可運行版（已略過）**：
+  - `Orca 千問 3.8 Flash Next 無審查`（最小獨立版 `TQ1_0-noPLE` `29.69 GB`）、`DeepSeek V4.1 Flash 1017 無審查`（最小 `91.86 GB`）、`GLM-5.3 Flash 無審查`（最小 `61.40 GB`）、`MiniMax M3 無審查`（最小 `111.94 GB`；另發現 2.07 GB 異常檔標頭為 `0x00000000` 已排除）。
+- **結案狀態**：詳見 `D:\AgentData\uncensored-open-models\MANIFEST.md`。就本機硬體條件而言，可運行的無審查版篩選與下載已全數完成。
