@@ -1,6 +1,6 @@
 # Windows XAMPP 架站安全加固與 PHP2Shell 應變檢核表 (XAMPP & PHP2Shell Hardening Checklist)
 
-> 來源筆記：[`notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md`](../notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md)（任務 `T-20261125-06`）  
+> 來源筆記：`notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md`（任務 `T-20261125-06`）  
 > 適用環境：Windows 10／11／Server 上以 XAMPP（Apache + PHP + MariaDB）承載對外或內網服務的主機；預設安裝路徑 `C:\xampp`。  
 > 使用方式：照第 0 節判斷急迫度，再依第 1 → 2 → 3 節走完 PHP2Shell 應變，最後逐項勾選第 4 節的生產加固。每一項都附「怎麼查」與「改成什麼」。
 
@@ -295,6 +295,6 @@
 
 ## 6. 參考
 
-- 來源筆記：[`notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md`](../notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md)
+- 來源筆記：`notes/2026-11-25-openai-php2shell-checker-xampp-hardening.md`
 - 檢查工具：[`openai/php2shell-checker`](https://github.com/openai/php2shell-checker)
 - 相關檢核表：[`docs/production-smoke-security-checklist.md`](./production-smoke-security-checklist.md)（後續由 `T-20261125-07` 補入標頭暴露與執行期版本門檻檢核）
