@@ -544,6 +544,7 @@
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[UN System Data Commons（`data.un.org`）評析：Google Data Commons 驅動之 26 機構 AI-Ready 知識圖譜與 MCP 接入](./notes/2026-11-26-un-system-data-commons-google-mcp.md) | `data-commons`, `un-data`, `knowledge-graph` | 0 / 1 |
 | 2026-11-26 | 🔴 | ⏳ 待獨立審查｜[RESEARCHER.TW《Gemini Notebook 學術用法指南（101 頁）》評析：兩層語料抽屜、草稿出處體檢、三項幻覺實測與五大踩雷防線](./notes/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide.md) | `gemini-notebook`, `notebooklm`, `academic-research` | 0 / 1 |
 | 2026-11-26 | ⚪ | ⏳ 待獨立審查｜[Cinematique（VVSVS）150 種免費 AI 電影攝影提示詞資料庫與電腦王阿達報導評估](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md) | `ai-video`, `image-generation`, `cinematography` | 0 / 0 |
+| 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[AI實戰派：GPT-Images 2.5 內建畫板、原生透明 PNG 與商業模板實測評估](./notes/2026-11-27-ai-practitioners-gpt-image-2-5-eight-workflows.md) | `gpt-image`, `image-generation`, `chatgpt-ui` | 0 / 0 |
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[Threads 貼文與 GitHub 深挖：AstrBot（47.6k Stars）多平台 IM AI 機器人框架架構、LINE 限制與 AGPL-3.0 評估](./notes/2026-11-27-aiposthub-astrbot-im-agent-framework-eval.md) | `astrbot`, `im-agent`, `line` | 0 / 0 |
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[Facebook 社團實測：10 款無審查地端模型（24GB–128GB）Token 速度基準、Strata 避坑與雲地協作架構](./notes/2026-11-27-darkschen-10-uncensored-local-llms-benchmark.md) | `local-llm`, `uncensored`, `strata` | 0 / 0 |
 | 2026-11-27 | 🔴 | ⏳ 待獨立審查｜[Tracy AI小妹：Claude＋Blender＋Edimakor AI 電影與音樂 MV 工作流實測評估](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md) | `ai-video`, `blender`, `bpy` | 0 / 1 |
@@ -632,6 +633,7 @@
 - Image2.5實測：[GPT Image 2.5八大實測](./notes/2026-11-26-lingtalkai-gpt-image-2-5-eight-scenarios-eval.md)
 - 動畫網站提示框架：[Threads動畫網站五步法](./notes/2026-11-26-threads-animated-website-5-step-prompt-framework.md)
 - 電影攝影Prompt詞庫：[Cinematique電影提示詞庫](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md)
+- Image2.5手繪編修：[AI實戰派Image2.5實測](./notes/2026-11-27-ai-practitioners-gpt-image-2-5-eight-workflows.md)
 - Blender灰盒控片：[Claude+Blender控片教學](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
