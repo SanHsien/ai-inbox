@@ -1,0 +1,21 @@
+{
+ "note": "2026-11-26-guijilab-gpt-6-astra-computer-use-eval",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a222b4-856d-78d1-90a5-e63559f979d4",
+   "role": "review",
+   "scope": [
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "245bf7509c2b0c7d0188b906dbb94250e816c54e0116072aa15c5b880bf2244d",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 3,
+   "report": "reviews/reports/2026-11-26-guijilab-gpt-6-astra-computer-use-eval/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
