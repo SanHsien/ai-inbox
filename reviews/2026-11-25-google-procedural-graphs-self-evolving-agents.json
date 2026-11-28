@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-25-google-procedural-graphs-self-evolving-agents",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a22256-d10d-7752-9452-83ad88552491",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "5f95a0af3dacf2eaddc93f70919a783537c595bb758e4ea0bf2eab306bf24c80",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "partial",
+   "author_claim": "partial",
+   "corrections": 5,
+   "report": "reviews/reports/2026-11-25-google-procedural-graphs-self-evolving-agents/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
