@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 282 項任務：🔴 未做 25／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 284 項任務：🔴 未做 27／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -71,6 +71,8 @@
 | `T-20261128-01` | 🔴 未做 | 低 | 將 OpenAI《Rethinking skills and prompts for GPT-6 Astra》之觸發詞精簡、漸進揭露與情境式 `AGENTS.md` 原則納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md) | 2026-11-28 |
 | `T-20261128-02` | 🔴 未做 | 低 | 將「前置定義完成標準（防過早暫停）」與「已知安全本地測試閉環預授權」提示詞模式補入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md) | 2026-11-28 |
 | `T-20261128-03` | 🔴 未做 | 低 | 唯讀檢閱 `anthropics/claude-code-playground` 與 `anthropics/launch-your-agent`，整理可借鏡之 Hook／權限邊界與 DoD 評分工作流至 `docs/claude-code-playground-and-cma-review.md` | `C:\GitHub\ai-inbox\docs\claude-code-playground-and-cma-review.md`（收錄於集群 1；僅透過 GitHub API／唯讀讀取檢閱，嚴禁直接安裝執行其 hooks 或複製 `settings.json` `allow` 清單） | [2026-11-28-ai-chill-anthropic-five-official-repos-eval](./notes/2026-11-28-ai-chill-anthropic-five-official-repos-eval.md) | 2026-11-28 |
+| `T-20261128-04` | 🔴 未做 | 低 | 唯讀檢閱 `DietrichGebert/ponytail`（MIT），評估其省 Token／「少寫程式＋高風險附測試」提示設計並補充至 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1；僅透過 GitHub API 唯讀檢閱規則與實作，不執行 `npm`／安裝腳本） | [2026-11-28-shuhao-chang-four-claude-plugins-skillspector](./notes/2026-11-28-shuhao-chang-four-claude-plugins-skillspector.md) | 2026-11-28 |
+| `T-20261128-05` | 🔴 未做 | 低 | 唯讀檢閱 `lemomo-ai/lemo-opuscar`（先核對授權條款），萃取無影片模型之電影風格編排原則補入 `docs/code-as-video-creative-patterns.md` | `C:\GitHub\ai-inbox\docs\code-as-video-creative-patterns.md`（收錄於集群 2；因 repo 授權為 `NOASSERTION`，若無明確開源授權則僅記錄高階風格架構概念，嚴禁搬運程式碼或直接安裝） | [2026-11-28-shuhao-chang-four-claude-plugins-skillspector](./notes/2026-11-28-shuhao-chang-four-claude-plugins-skillspector.md) | 2026-11-28 |
 
 ### 🟢 已做（Done）
 
@@ -554,6 +556,7 @@
 | 2026-11-27 | 🔴 | ⏳ 待獨立審查｜[Tracy AI小妹：Claude＋Blender＋Edimakor AI 電影與音樂 MV 工作流實測評估](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md) | `ai-video`, `blender`, `bpy` | 0 / 1 |
 | 2026-11-28 | 🔴 | ⏳ 待獨立審查｜[Threads「Anthropic 內部 Claude Code 五大開源倉庫」事實核對與權限／架構評估](./notes/2026-11-28-ai-chill-anthropic-five-official-repos-eval.md) | `claude-code`, `anthropic`, `skills` | 0 / 1 |
 | 2026-11-28 | 🔴 | ⏳ 待獨立審查｜[OpenAI Developers《Rethinking skills and prompts for GPT-6 Astra》：Skills 觸發、AGENTS.md 與完成標準調優評估](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md) | `gpt-6-astra`, `agents-md`, `skills` | 0 / 2 |
+| 2026-11-28 | 🔴 | ⏳ 待獨立審查｜[Threads「四個 Claude Code 外掛與 SkillSpector 裝前安檢」查證與技術評估](./notes/2026-11-28-shuhao-chang-four-claude-plugins-skillspector.md) | `claude-code`, `skillspector`, `ponytail` | 0 / 2 |
 | 2026-11-28 | ⚪ | ⏳ 待獨立審查｜[Threads「現代主義雜誌編輯風拼貼」ChatGPT 提示詞拆解與實測回饋](./notes/2026-11-28-stockvistaai-modernist-editorial-collage-prompt.md) | `prompt-engineering`, `chatgpt-image`, `editorial-collage` | 0 / 0 |
 <!-- END GENERATED: index -->
 
@@ -691,6 +694,7 @@
 - 地端無審查模型選型：[10款無審查地端模型實測](./notes/2026-11-27-darkschen-10-uncensored-local-llms-benchmark.md)
 - 桌面懸浮列UX：[ChatGPT Pets與Mini](./notes/2026-11-27-openai-chatgpt-pets-mini-mode-eval.md)
 - Astra規則調優：[GPT-6 Astra規則優化指南](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md)
+- 四個外掛與安檢：[Claude四外掛與Skill安檢](./notes/2026-11-28-shuhao-chang-four-claude-plugins-skillspector.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
