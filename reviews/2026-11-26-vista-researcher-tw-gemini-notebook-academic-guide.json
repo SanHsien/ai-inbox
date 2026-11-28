@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a222bf-0b87-7663-975b-3d30f9731970",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "b5ac47d022adc38c6265db624f4848404412fbaa9156843161f4c46ac1969071",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 6,
+   "report": "reviews/reports/2026-11-26-vista-researcher-tw-gemini-notebook-academic-guide/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
