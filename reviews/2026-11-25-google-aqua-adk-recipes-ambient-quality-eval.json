@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-25-google-aqua-adk-recipes-ambient-quality-eval",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a22253-59f5-7fa3-8959-e913189c530d",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "69e13fa57bf09c9c318cf837c37fc7bea6edd2fd2ce4ecf95ebb34cb0fece3ba",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 1,
+   "report": "reviews/reports/2026-11-25-google-aqua-adk-recipes-ambient-quality-eval/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
