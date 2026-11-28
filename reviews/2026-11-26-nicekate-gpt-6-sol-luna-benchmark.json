@@ -1,0 +1,21 @@
+{
+ "note": "2026-11-26-nicekate-gpt-6-sol-luna-benchmark",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a222ba-8870-7532-8baa-2b7371d65c82",
+   "role": "review",
+   "scope": [
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "7cb28bb90bec3f2da4eec4d802ff86c85b2a8840456ad0fbdc8058fb2897d599",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "partial",
+   "author_claim": "partial",
+   "corrections": 1,
+   "report": "reviews/reports/2026-11-26-nicekate-gpt-6-sol-luna-benchmark/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
