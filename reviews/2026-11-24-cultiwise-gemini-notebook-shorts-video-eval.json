@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-24-cultiwise-gemini-notebook-shorts-video-eval",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a22243-2d74-7583-8b79-dc442429722e",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "a8c91790df55e9f607d598abda175a7aaeacb7b856a308e83920193b67b74282",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "partial",
+   "author_claim": "partial",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-24-cultiwise-gemini-notebook-shorts-video-eval/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
