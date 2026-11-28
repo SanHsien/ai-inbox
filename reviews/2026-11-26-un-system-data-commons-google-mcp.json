@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-26-un-system-data-commons-google-mcp",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a222b2-54e9-7ff3-8746-56018543dee0",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "32ec70e2c1bd163e77cb8c0cf9bac49a037d502d92139b2231e9527bf9f2d089",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 1,
+   "report": "reviews/reports/2026-11-26-un-system-data-commons-google-mcp/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
