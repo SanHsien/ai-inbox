@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-24-brayden-chen-muse-ai-agent-10-use-cases",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a2223d-834f-7d23-9eeb-242bd512ab50",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "4e5215fbb8a42161e786e44db9e14b458b8525d7c197e42e66347f6e09c22d6d",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "partial",
+   "author_claim": "partial",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-24-brayden-chen-muse-ai-agent-10-use-cases/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
