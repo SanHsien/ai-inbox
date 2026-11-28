@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-24-lichangzhang-4-ai-employees-workflow-patterns",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a2224e-594e-72e2-aed5-2028e1dc3044",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "2546f87abf98980fa037cb593547ee85b91c6219f5e5fe61d534b1512c14b0ae",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "partial",
+   "author_claim": "partial",
+   "corrections": 3,
+   "report": "reviews/reports/2026-11-24-lichangzhang-4-ai-employees-workflow-patterns/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
