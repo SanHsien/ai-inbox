@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-26-anthropic-claude-marketplace-mcp-review-eval",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a22262-4a85-7af3-91ac-7453d3d62738",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "e139d90fdbb619269b280c40827d5c5f1368fb2cd97436b689d7dfde378f9348",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-26-anthropic-claude-marketplace-mcp-review-eval/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
