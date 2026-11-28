@@ -30,6 +30,23 @@
    "author_claim": "full",
    "corrections": 1,
    "report": "reviews/reports/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard/2026-11-26-02-review-claude.md"
+  },
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a2224b-d33c-7890-a733-0c9d4479d948",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "ef20e8e23572cbcf38fad1f949e83cfef68067a91013dfa52172039a459f1937",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 3,
+   "report": "reviews/reports/2026-11-24-gonzalomelov-polycam-threejs-home-assistant-3d-dashboard/2026-11-28-03-review-codex.md"
   }
  ]
 }
