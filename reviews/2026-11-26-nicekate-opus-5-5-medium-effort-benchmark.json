@@ -1,0 +1,21 @@
+{
+ "note": "2026-11-26-nicekate-opus-5-5-medium-effort-benchmark",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a222bc-7549-71d1-a470-a8d35c0bd1a5",
+   "role": "review",
+   "scope": [
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "ac27ae2a9b4f621230bb5eff734e1f9bf212b1b40bd1aab6bb409541bcfa1c2d",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "partial",
+   "author_claim": "partial",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-26-nicekate-opus-5-5-medium-effort-benchmark/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
