@@ -1,0 +1,21 @@
+{
+ "note": "2026-11-26-comfyui-seedance-ai-comic-drama-fact-check",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a222b0-5037-75d3-bf0b-46c7307036ce",
+   "role": "review",
+   "scope": [
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "92a4a4117f87e866e43118f10b43f9d33251f158e5068e0a7143e65cf8d91299",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-26-comfyui-seedance-ai-comic-drama-fact-check/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
