@@ -39,7 +39,7 @@
 > ⚙️ 以下兩張表與文章索引由 `python tools/build_index.py` 從 `notes/` 自動產生，**請勿手改**；要改狀態就改對應筆記，再重跑腳本。
 
 <!-- BEGIN GENERATED: tasks -->
-> 共 279 項任務：🔴 未做 22／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
+> 共 281 項任務：🔴 未做 24／🟡 進行中 0／🟢 已做 178／⚪ 不做 79
 > 💡 **快速派工／認領**：執行 `python tools/task_cli.py next` 查看推薦待辦、`claim <ID>` 認領、`complete <ID> --evidence "..."` 結案。
 
 ### 🔴 待辦與進行中（Active Queue — 依進行中與優先級排序）
@@ -68,6 +68,8 @@
 | `T-20261126-05` | 🔴 未做 | 低 | 將「跨會話小問題日誌（`papercuts.md`：`date · symptom · fix · project`＋失敗時優先按需讀取）」模式補入 `docs/agent-memory-and-prompting-best-practices.md`，並評估於 `agent-assets` 建立對應知識檔 | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1；可選延伸至 `C:\GitHub\agent-assets\knowledge\`） | [2026-11-26-claude-md-global-papercuts-log-pattern](./notes/2026-11-26-claude-md-global-papercuts-log-pattern.md) | 2026-11-26 |
 | `T-20261126-06` | 🔴 未做 | 低 | 將 UN System Data Commons（`data.un.org`）、官方 MCP／REST 文件入口與 `datacommonsorg/agent-toolkit` 補入 `docs/free-public-apis.md` | `C:\GitHub\ai-inbox\docs\free-public-apis.md`（收錄於集群 3） | [2026-11-26-un-system-data-commons-google-mcp](./notes/2026-11-26-un-system-data-commons-google-mcp.md) | 2026-11-26 |
 | `T-20261127-01` | 🔴 未做 | 低 | 在 `docs/3d-gui-agent-control-bridge.md` 補充「免 MCP 之 `bpy` 灰盒運鏡參考片 → Video-to-Video 雙輸入控片」輕量替代路徑 | `C:\GitHub\ai-inbox\docs\3d-gui-agent-control-bridge.md`（收錄於集群 2） | [2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md) | 2026-11-27 |
+| `T-20261128-01` | 🔴 未做 | 低 | 將 OpenAI《Rethinking skills and prompts for GPT-6 Astra》之觸發詞精簡、漸進揭露與情境式 `AGENTS.md` 原則納入 `docs/cross-platform-skill-spec.md` | `C:\GitHub\ai-inbox\docs\cross-platform-skill-spec.md`（收錄於集群 3） | [2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md) | 2026-11-28 |
+| `T-20261128-02` | 🔴 未做 | 低 | 將「前置定義完成標準（防過早暫停）」與「已知安全本地測試閉環預授權」提示詞模式補入 `docs/agent-memory-and-prompting-best-practices.md` | `C:\GitHub\ai-inbox\docs\agent-memory-and-prompting-best-practices.md`（收錄於集群 1） | [2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md) | 2026-11-28 |
 
 ### 🟢 已做（Done）
 
@@ -549,6 +551,7 @@
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[Facebook 社團實測：10 款無審查地端模型（24GB–128GB）Token 速度基準、Strata 避坑與雲地協作架構](./notes/2026-11-27-darkschen-10-uncensored-local-llms-benchmark.md) | `local-llm`, `uncensored`, `strata` | 0 / 0 |
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[OpenAI ChatGPT Pets 升級與 Mini 模式：桌面常駐懸浮啟動列與背景任務狀態追蹤評估](./notes/2026-11-27-openai-chatgpt-pets-mini-mode-eval.md) | `chatgpt-desktop`, `chatgpt-pets`, `mini-mode` | 0 / 0 |
 | 2026-11-27 | 🔴 | ⏳ 待獨立審查｜[Tracy AI小妹：Claude＋Blender＋Edimakor AI 電影與音樂 MV 工作流實測評估](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md) | `ai-video`, `blender`, `bpy` | 0 / 1 |
+| 2026-11-28 | 🔴 | ⏳ 待獨立審查｜[OpenAI Developers《Rethinking skills and prompts for GPT-6 Astra》：Skills 觸發、AGENTS.md 與完成標準調優評估](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md) | `gpt-6-astra`, `agents-md`, `skills` | 0 / 2 |
 <!-- END GENERATED: index -->
 
 ---
@@ -682,6 +685,7 @@
 - 多平台IM框架：[AstrBot多平台IM框架評估](./notes/2026-11-27-aiposthub-astrbot-im-agent-framework-eval.md)
 - 地端無審查模型選型：[10款無審查地端模型實測](./notes/2026-11-27-darkschen-10-uncensored-local-llms-benchmark.md)
 - 桌面懸浮列UX：[ChatGPT Pets與Mini](./notes/2026-11-27-openai-chatgpt-pets-mini-mode-eval.md)
+- Astra規則調優：[GPT-6 Astra規則優化指南](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md)
 
 **集群 4：文獻研究、論文閱讀與全端工程實踐**
 - 學術論文閱讀與視覺分割：[5W1H / CQR / KSU](./notes/2026-10-17-academic-reading-framework.md)、[Meta SAM 3.1 視訊分割](./notes/2026-10-17-meta-sam-3-1-video-segmentation.md)、[PaperRead 論文雙語對照](./notes/2026-10-17-moonlight-bilingual-paper-reader.md)
