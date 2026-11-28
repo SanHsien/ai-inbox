@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-26-claude-md-global-papercuts-log-pattern",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a22260-a8fa-7ce1-8e82-9308779c9e4b",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "3b666cb2b1e8eb53d47f0388df2a85e90842b94969ddd48a8eec567b86cf4ed9",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "unavailable",
+   "author_claim": "unavailable",
+   "corrections": 1,
+   "report": "reviews/reports/2026-11-26-claude-md-global-papercuts-log-pattern/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
