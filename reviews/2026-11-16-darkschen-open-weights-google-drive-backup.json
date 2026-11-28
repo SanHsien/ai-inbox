@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-16-darkschen-open-weights-google-drive-backup",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a22195-53bf-76e1-bad2-923746444f6c",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "6fe1253c7bef07af736802a2bbddba4049180e208f63b5ade730689839ad9006",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 3,
+   "report": "reviews/reports/2026-11-16-darkschen-open-weights-google-drive-backup/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
