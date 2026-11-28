@@ -552,6 +552,7 @@
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[OpenAI ChatGPT Pets 升級與 Mini 模式：桌面常駐懸浮啟動列與背景任務狀態追蹤評估](./notes/2026-11-27-openai-chatgpt-pets-mini-mode-eval.md) | `chatgpt-desktop`, `chatgpt-pets`, `mini-mode` | 0 / 0 |
 | 2026-11-27 | 🔴 | ⏳ 待獨立審查｜[Tracy AI小妹：Claude＋Blender＋Edimakor AI 電影與音樂 MV 工作流實測評估](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md) | `ai-video`, `blender`, `bpy` | 0 / 1 |
 | 2026-11-28 | 🔴 | ⏳ 待獨立審查｜[OpenAI Developers《Rethinking skills and prompts for GPT-6 Astra》：Skills 觸發、AGENTS.md 與完成標準調優評估](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md) | `gpt-6-astra`, `agents-md`, `skills` | 0 / 2 |
+| 2026-11-28 | ⚪ | ⏳ 待獨立審查｜[Threads「現代主義雜誌編輯風拼貼」ChatGPT 提示詞拆解與實測回饋](./notes/2026-11-28-stockvistaai-modernist-editorial-collage-prompt.md) | `prompt-engineering`, `chatgpt-image`, `editorial-collage` | 0 / 0 |
 <!-- END GENERATED: index -->
 
 ---
@@ -639,6 +640,7 @@
 - 電影攝影Prompt詞庫：[Cinematique電影提示詞庫](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md)
 - Image2.5手繪編修：[AI實戰派Image2.5實測](./notes/2026-11-27-ai-practitioners-gpt-image-2-5-eight-workflows.md)
 - Blender灰盒控片：[Claude+Blender控片教學](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md)
+- 雜誌拼貼提示詞：[現代主義雜誌拼貼提示詞](./notes/2026-11-28-stockvistaai-modernist-editorial-collage-prompt.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
 - 跨網情報與知識檢索：[Agent-Reach](./notes/2026-10-17-agent-reach-social-intelligence.md)、[XERJ Corpus Hub](./notes/2026-10-17-xerj-corpus-hub.md)、[Public APIs 免費 API 資源庫](./notes/2026-10-20-public-apis-free-open-resources.md)、[Gemini Notebook MCP 預覽評估](./notes/2026-11-07-gemini-notebook-official-api-mcp-preview.md)
