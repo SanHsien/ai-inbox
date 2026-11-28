@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-25-kocpc-claude-install-as-app-artifacts-desktop",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a2225a-6f06-74d0-8a8b-cef2bc02fe49",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "1156054708b9aa060c4c2315c7cbf681c738fd71034613d4da66726d29509f73",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-25-kocpc-claude-install-as-app-artifacts-desktop/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
