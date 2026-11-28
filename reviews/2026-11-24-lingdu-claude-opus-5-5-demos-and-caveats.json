@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a22251-2bc7-79e0-903e-d8b97434229a",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "445fab325fde30df5c542e1488b8229af91bb80f9eddf0f8644d71c5fbdb795b",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "partial",
+   "author_claim": "partial",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-24-lingdu-claude-opus-5-5-demos-and-caveats/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
