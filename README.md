@@ -555,6 +555,7 @@
 | 2026-11-27 | ⚪ | ⏳ 待獨立審查｜[OpenAI ChatGPT Pets 升級與 Mini 模式：桌面常駐懸浮啟動列與背景任務狀態追蹤評估](./notes/2026-11-27-openai-chatgpt-pets-mini-mode-eval.md) | `chatgpt-desktop`, `chatgpt-pets`, `mini-mode` | 0 / 0 |
 | 2026-11-27 | 🔴 | ⏳ 待獨立審查｜[Tracy AI小妹：Claude＋Blender＋Edimakor AI 電影與音樂 MV 工作流實測評估](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md) | `ai-video`, `blender`, `bpy` | 0 / 1 |
 | 2026-11-28 | 🔴 | ⏳ 待獨立審查｜[Threads「Anthropic 內部 Claude Code 五大開源倉庫」事實核對與權限／架構評估](./notes/2026-11-28-ai-chill-anthropic-five-official-repos-eval.md) | `claude-code`, `anthropic`, `skills` | 0 / 1 |
+| 2026-11-28 | ⚪ | ⏳ 待獨立審查｜[Threads「Claude 搭配四種動畫框架（Python／Motion Canvas／Three.js／Blender）」視覺對比評估](./notes/2026-11-28-aiposthub-claude-four-animation-frameworks-eval.md) | `claude`, `code-as-video`, `motion-canvas` | 0 / 0 |
 | 2026-11-28 | 🔴 | ⏳ 待獨立審查｜[OpenAI Developers《Rethinking skills and prompts for GPT-6 Astra》：Skills 觸發、AGENTS.md 與完成標準調優評估](./notes/2026-11-28-openai-devs-rethinking-skills-prompts-gpt-6-astra.md) | `gpt-6-astra`, `agents-md`, `skills` | 0 / 2 |
 | 2026-11-28 | 🔴 | ⏳ 待獨立審查｜[Threads「四個 Claude Code 外掛與 SkillSpector 裝前安檢」查證與技術評估](./notes/2026-11-28-shuhao-chang-four-claude-plugins-skillspector.md) | `claude-code`, `skillspector`, `ponytail` | 0 / 2 |
 | 2026-11-28 | ⚪ | ⏳ 待獨立審查｜[Threads「現代主義雜誌編輯風拼貼」ChatGPT 提示詞拆解與實測回饋](./notes/2026-11-28-stockvistaai-modernist-editorial-collage-prompt.md) | `prompt-engineering`, `chatgpt-image`, `editorial-collage` | 0 / 0 |
@@ -646,6 +647,7 @@
 - 電影攝影Prompt詞庫：[Cinematique電影提示詞庫](./notes/2026-11-26-vvsvs-cinematique-prompt-library.md)
 - Image2.5手繪編修：[AI實戰派Image2.5實測](./notes/2026-11-27-ai-practitioners-gpt-image-2-5-eight-workflows.md)
 - Blender灰盒控片：[Claude+Blender控片教學](./notes/2026-11-27-tracy-ai-claude-blender-edimakor-mv-eval.md)
+- 四框架動畫對比：[Claude四框架動畫對比](./notes/2026-11-28-aiposthub-claude-four-animation-frameworks-eval.md)
 - 雜誌拼貼提示詞：[現代主義雜誌拼貼提示詞](./notes/2026-11-28-stockvistaai-modernist-editorial-collage-prompt.md)
 
 **集群 3：Agent 原生工具鏈、環境感知與擴充生態**
