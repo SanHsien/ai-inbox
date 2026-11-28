@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-26-claude-long-thread-pr-intent-drift-prompt",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a2225e-d175-76b2-a7c7-8c203ff690a1",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "f9d0d85e74f8f26cf01f170ec2afbbdb07151b8e5987a432e1a80e27a7c28a2c",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "unavailable",
+   "author_claim": "unavailable",
+   "corrections": 2,
+   "report": "reviews/reports/2026-11-26-claude-long-thread-pr-intent-drift-prompt/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
