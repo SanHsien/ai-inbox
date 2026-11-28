@@ -1,0 +1,22 @@
+{
+ "note": "2026-11-26-vvsvs-cinematique-prompt-library",
+ "reviews": [
+  {
+   "reviewed_at": "2026-11-28",
+   "reviewer": "codex/gpt-6.1-sol@01a222c5-1544-7da2-83c1-14ba5bea4b17",
+   "role": "review",
+   "scope": [
+    "facts",
+    "evidence",
+    "task_impact"
+   ],
+   "content_sha256": "8f08537208962ac7ca72b0076cbf58bfedb050f91b4af83a86149551d322dd3e",
+   "hash_version": 1,
+   "verdict": "changes_requested",
+   "source_review": "full",
+   "author_claim": "full",
+   "corrections": 3,
+   "report": "reviews/reports/2026-11-26-vvsvs-cinematique-prompt-library/2026-11-28-01-review-codex.md"
+  }
+ ]
+}
